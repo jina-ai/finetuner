@@ -58,7 +58,7 @@ class KerasTrainer(BaseTrainer):
             raise NotImplementedError
 
         wrapped_model.compile(loss=self.loss)
-
+        wrapped_model.summary()
         return wrapped_model
 
     def _da_gen(self, doc_array):
