@@ -3,8 +3,16 @@ from typing import Dict
 import numpy as np
 from jina import Executor, DocumentArray, requests
 from jina.types.arrays.memmap import DocumentArrayMemmap
+import tensorflow as tf
 
-from .train import user_model
+user_model = tf.keras.Sequential(
+    [
+        tf.keras.layers.Flatten(input_shape=(28, 28)),
+        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(10),
+    ]
+)
 
 
 class MyIndexer(Executor):

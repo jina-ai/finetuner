@@ -1,4 +1,4 @@
-from typing import Union, Optional, Iterator, Generator, Callable
+from typing import Union, Optional, Iterator, Callable
 
 import tensorflow as tf
 from jina import DocumentArray, Document
@@ -6,8 +6,8 @@ from jina.types.arrays.memmap import DocumentArrayMemmap
 from tensorflow import keras
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Layer
-from . import head_models
 
+from . import head_models
 from ..base import BaseTrainer
 
 
@@ -93,7 +93,7 @@ class KerasTrainer(BaseTrainer):
             DocumentArray,
             DocumentArrayMemmap,
             Iterator[Document],
-            Callable[..., Iterator[Document]]
+            Callable[..., Iterator[Document]],
         ],
         **kwargs,
     ) -> None:
@@ -105,4 +105,4 @@ class KerasTrainer(BaseTrainer):
         )
 
     def save(self, *args, **kwargs):
-        self.wrapped_model.save(*args, **kwargs)
+        self.base_model.save(*args, **kwargs)
