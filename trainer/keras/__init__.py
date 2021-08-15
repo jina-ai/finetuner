@@ -6,34 +6,19 @@ from jina.types.arrays.memmap import DocumentArrayMemmap
 from tensorflow import keras
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Layer
+from . import head_models
 
 from ..base import BaseTrainer
 
 
-class HatLayer(Layer):
-    """
-    This layer is responsible for computing the distance between the anchor
-    embedding and the positive embedding, and the anchor embedding and the
-    negative embedding.
-    """
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.fc = tf.keras.layers.Dense(1)
-
-    def call(self, lvalue, rvalue):
-        x = tf.concat([lvalue, rvalue, tf.abs(lvalue - rvalue)], axis=-1)
-        return self.fc(x)
-
-
 class KerasTrainer(BaseTrainer):
     def __init__(
-            self,
-            base_model: Optional[Model] = None,
-            arity: int = 2,
-            head_model: Union[Layer, str, None] = None,
-            loss: str = 'mean_absolute_error',
-            **kwargs,
+        self,
+        base_model: Optional[Model] = None,
+        arity: int = 2,
+        head_model: Union[Layer, str, None] = 'HatLayer',
+        loss: str = 'hinge',
+        **kwargs,
     ):
         self._base_model = base_model
         self._head_model = head_model
@@ -64,7 +49,9 @@ class KerasTrainer(BaseTrainer):
         input_values = [keras.Input(shape=input_shape) for _ in range(self.arity)]
         if self.arity == 2:
             # siamese structure
-            head_layer = HatLayer()(*(self._base_model(v) for v in input_values))
+            head_layer = getattr(head_models, self._head_model)()(
+                *(self._base_model(v) for v in input_values)
+            )
             wrapped_model = Model(inputs=input_values, outputs=head_layer)
         elif self.arity == 3:
             # triplet structure
@@ -79,7 +66,9 @@ class KerasTrainer(BaseTrainer):
     def _da_gen(self, doc_array):
         for d in doc_array:
             for m in d.matches:
-                yield (d.content, m.content), m.tags['trainer']['label']
+                yield (d.content, m.content), 1 if int(
+                    m.tags['trainer']['label']
+                ) == 1 else -1
 
     def _da_to_tf_generator(self, doc_array):
         input_shape = self.base_model.input_shape[1:]
@@ -96,18 +85,20 @@ class KerasTrainer(BaseTrainer):
         )
 
     def fit(
-            self,
-            doc_array: Union[
-                DocumentArray,
-                DocumentArrayMemmap,
-                Iterator[Document],
-                Generator[Document, None, None],
-            ],
-            **kwargs,
+        self,
+        doc_array: Union[
+            DocumentArray,
+            DocumentArrayMemmap,
+            Iterator[Document],
+            Generator[Document, None, None],
+        ],
+        **kwargs,
     ) -> None:
         wrapped_model = self._compile()
         wrapped_model.summary()
         wrapped_model.fit(
-            self._da_to_tf_generator(doc_array).shuffle(buffer_size=4096).batch(512, drop_remainder=True),
+            self._da_to_tf_generator(doc_array)
+            .shuffle(buffer_size=4096)
+            .batch(512, drop_remainder=True),
             **kwargs,
         )
