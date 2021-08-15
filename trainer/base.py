@@ -27,6 +27,7 @@ class BaseTrainer(ABC):
         ...
 
     @base_model.setter
+    @abc.abstractmethod
     def base_model(self, val: AnyDNN):
         """Set the base model of this object to a deep neural network object. """
         ...
@@ -38,6 +39,7 @@ class BaseTrainer(ABC):
         ...
 
     @arity.setter
+    @abc.abstractmethod
     def arity(self, val: int):
         """Set the arity of this object.
 
@@ -54,6 +56,7 @@ class BaseTrainer(ABC):
         ...
 
     @head_model.setter
+    @abc.abstractmethod
     def head_model(self, val: Union[str, AnyDNN]):
         """Set the head model of this object to one of the predefined head model or a deep neural network object.
 
@@ -69,6 +72,7 @@ class BaseTrainer(ABC):
         ...
 
     @loss.setter
+    @abc.abstractmethod
     def loss(self, val: str):
         """Set the loss function of this object to one of the predefined loss functions.
 
