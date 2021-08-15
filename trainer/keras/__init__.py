@@ -7,6 +7,7 @@ from tensorflow import keras
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Layer
 
+from tests.data_generator import fashion_match_doc_generator
 from ..base import BaseTrainer
 
 
@@ -16,9 +17,13 @@ class HatLayer(Layer):
     embedding and the positive embedding, and the anchor embedding and the
     negative embedding.
     """
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.fc = tf.keras.layers.Dense(1)
 
     def call(self, lvalue, rvalue):
-        return tf.concat([lvalue, rvalue, tf.abs(lvalue - rvalue)], axis=-1)
+        x = tf.concat([lvalue, rvalue, tf.abs(lvalue - rvalue)], axis=-1)
+        return self.fc(x)
 
 
 class KerasTrainer(BaseTrainer):
@@ -27,7 +32,7 @@ class KerasTrainer(BaseTrainer):
         base_model: Optional[Model] = None,
         arity: int = 2,
         head_model: Union[Layer, str, None] = None,
-        loss: str = 'hinge',
+        loss: str = 'mean_absolute_error',
         **kwargs,
     ):
         self._base_model = base_model
@@ -101,7 +106,8 @@ class KerasTrainer(BaseTrainer):
         **kwargs,
     ) -> None:
         wrapped_model = self._compile()
+        wrapped_model.summary()
         wrapped_model.fit(
-            self._da_to_tf_generator(doc_array).shuffle(buffer_size=4096).batch(1024, drop_remainder=True),
+            self._da_to_tf_generator(doc_array).shuffle(buffer_size=4096).batch(512, drop_remainder=True),
             **kwargs,
         )
