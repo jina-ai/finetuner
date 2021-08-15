@@ -20,10 +20,7 @@ class KerasTrainer(BaseTrainer):
         loss: str = 'hinge',
         **kwargs,
     ):
-        self._base_model = base_model
-        self._head_model = head_model
-        self._arity = arity
-        self._loss = loss
+        super().__init__(base_model, arity, head_model, loss, **kwargs)
 
     @property
     def base_model(self) -> Model:

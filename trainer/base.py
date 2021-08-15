@@ -9,7 +9,6 @@ AnyDNN = TypeVar('AnyDNN')  #: Any implementation of a Deep Neural Network objec
 
 
 class BaseTrainer(ABC):
-    @abc.abstractmethod
     def __init__(
         self,
         base_model: Optional[AnyDNN] = None,
@@ -18,7 +17,10 @@ class BaseTrainer(ABC):
         loss: Optional[str] = None,
         **kwargs
     ):
-        ...
+        self._base_model = base_model
+        self._head_model = head_model
+        self._arity = arity
+        self._loss = loss
 
     @property
     @abc.abstractmethod
@@ -97,3 +99,11 @@ class BaseTrainer(ABC):
         call :func:`fit` multiple times with different configs or data to get better models.
         """
         ...
+
+    @abc.abstractmethod
+    def save(self, *args, **kwargs):
+        """Save the weights of the ``base_model``.
+
+        Note that, the ``header_model`` and ``wrapped_model`` do not need to be stored, as they are auxiliary layers
+        for tuning ``base_model``.
+        """
