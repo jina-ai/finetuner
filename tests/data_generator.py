@@ -1,14 +1,51 @@
 # Downloading fashion mnist, copy from jina hello fashion
 # no surprise here
-
 import gzip
 import os
 import urllib.request
+from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
-from jina import Document
-from jina.logging.profile import ProgressBar
+from jina import Document, DocumentArray
+from jina.logging.profile import ProgressBar, TimeContext
+
+
+def fashion_match_doc_generator(
+    num_pos: int = 10, num_neg: int = 10, shuffle: bool = True
+):
+    rv = defaultdict(DocumentArray)
+    all_docs = DocumentArray(fashion_doc_generator())
+    if shuffle:
+        all_docs.shuffle()
+
+    copy_all_docs = DocumentArray()
+    with TimeContext('split by class labels'):
+        for d in all_docs:
+            class_label = int(d.tags['class'])
+            copy_d = Document(d, copy=True)
+            rv[class_label].append(copy_d)
+            copy_all_docs.append(copy_d)
+
+    for od in all_docs:
+        pos_label = int(od.tags['class'])
+        pos_samples = rv[pos_label].sample(num_pos)
+        for d in pos_samples:
+            d.tags['trainer'] = {'label': 1}
+
+        neg_samples = DocumentArray()
+        while len(neg_samples) < num_neg:
+            neg_samples.extend(
+                d for d in copy_all_docs.sample(num_neg) if d.tags['class'] != pos_label
+            )
+        neg_samples = neg_samples[:num_neg]
+
+        for d in neg_samples:
+            d.tags['trainer'] = {'label': 0}
+
+        od.matches.extend(pos_samples)
+        od.matches.extend(neg_samples)
+        yield od
 
 
 def fashion_doc_generator(download_proxy=None, task_name='download fashion-mnist'):
@@ -63,7 +100,6 @@ def fashion_doc_generator(download_proxy=None, task_name='download fashion-mnist
 
     for raw_img, lbl in zip(targets['index']['data'], targets['index-labels']['data']):
         yield Document(content=raw_img, tags={'class': int(lbl)})
-
 
 
 def _load_mnist(path):
