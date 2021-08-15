@@ -12,6 +12,12 @@ class HatLayer(Layer):
         return self.fc(x)
 
 
+class DistanceLayer(Layer):
+
+    def call(self, lvalue, rvalue):
+        return -tf.reduce_sum(tf.squared_difference(lvalue, rvalue), axis=-1, keepdims=True)
+
+
 class CosineLayer(Layer):
 
     def call(self, lvalue, rvalue):

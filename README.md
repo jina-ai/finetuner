@@ -38,3 +38,5 @@
     ```bash
     python examples/fashion/app.py
     ```
+
+3. **And it doesn't work atm**. The trained embedding does not make any sense.
