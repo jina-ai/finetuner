@@ -93,8 +93,7 @@ class KerasTrainer(BaseTrainer):
             DocumentArray,
             DocumentArrayMemmap,
             Iterator[Document],
-            Generator[Document, None, None],
-            Callable
+            Callable[..., Iterator[Document]]
         ],
         **kwargs,
     ) -> None:

@@ -1,8 +1,8 @@
 import abc
 from abc import ABC
-from typing import Optional, TypeVar, Union
+from typing import Optional, TypeVar, Union, Callable, Iterator
 
-from jina import DocumentArray
+from jina import DocumentArray, Document
 from jina.types.arrays.memmap import DocumentArrayMemmap
 
 AnyDNN = TypeVar('AnyDNN')  #: Any implementation of a Deep Neural Network object
@@ -82,7 +82,14 @@ class BaseTrainer(ABC):
 
     @abc.abstractmethod
     def fit(
-        self, doc_array: Union[DocumentArray, DocumentArrayMemmap], **kwargs
+        self,
+        doc_array: Union[
+            DocumentArray,
+            DocumentArrayMemmap,
+            Iterator[Document],
+            Callable[..., Iterator[Document]],
+        ],
+        **kwargs
     ) -> None:
         """Fit the :property:`base_model` on ``doc_array`` data.
 
