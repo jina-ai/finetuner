@@ -13,10 +13,12 @@ from jina.logging.profile import ProgressBar, TimeContext
 
 def fashion_match_documentarray(num_total: int = 60000, **kwargs):
     da = DocumentArray()
-    for d in fashion_match_doc_generator(**kwargs):
-        da.append(d)
-        if len(da) >= num_total:
-            break
+    with ProgressBar(task_name='build DA') as t:
+        for d in fashion_match_doc_generator(**kwargs):
+            da.append(d)
+            t.update_tick(.01)
+            if len(da) >= num_total:
+                break
     return da
 
 
