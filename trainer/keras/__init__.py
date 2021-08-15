@@ -104,5 +104,5 @@ class KerasTrainer(BaseTrainer):
             **kwargs,
         )
 
-    def save(self, **kwargs):
-        self.wrapped_model.save(**kwargs)
+    def save(self, *args, **kwargs):
+        self.wrapped_model.save(*args, **kwargs)
