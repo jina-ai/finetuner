@@ -15,6 +15,9 @@ user_model = tf.keras.Sequential([
     tf.keras.layers.Dense(10)
 ])
 
+print(isinstance(user_model, Model))
+print(user_model.input_shape[1:])
+exit()
 
 # trainable = False
 # for layer in model.layers:
@@ -39,12 +42,9 @@ class HatLayer(layers.Layer):
 lvalue = keras.Input(shape=target_shape)
 rvalue = keras.Input(shape=target_shape)
 
-hat_layer = HatLayer()(user_model(lvalue),
-                                 user_model(rvalue))
+hat_layer = HatLayer()(user_model(lvalue), user_model(rvalue))
 
-wrapped_model = Model(
-    inputs=[lvalue, rvalue], outputs=hat_layer
-)
+wrapped_model = Model(inputs=[lvalue, rvalue], outputs=hat_layer)
 
 wrapped_model.summary()
 
