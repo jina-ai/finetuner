@@ -1,4 +1,4 @@
-from typing import Union, Optional, Iterator, Generator
+from typing import Union, Optional, Iterator, Generator, Callable
 
 import tensorflow as tf
 from jina import DocumentArray, Document
@@ -41,7 +41,8 @@ class KerasTrainer(BaseTrainer):
     def loss(self) -> str:
         return self._loss
 
-    def _compile(self) -> Model:
+    @property
+    def wrapped_model(self) -> Model:
         if self.base_model is None:
             raise ValueError(f'base_model is not set')
 
@@ -64,6 +65,8 @@ class KerasTrainer(BaseTrainer):
         return wrapped_model
 
     def _da_gen(self, doc_array):
+        if callable(doc_array):
+            doc_array = doc_array()
         for d in doc_array:
             for m in d.matches:
                 yield (d.content, m.content), 1 if int(
@@ -91,14 +94,16 @@ class KerasTrainer(BaseTrainer):
             DocumentArrayMemmap,
             Iterator[Document],
             Generator[Document, None, None],
+            Callable
         ],
         **kwargs,
     ) -> None:
-        wrapped_model = self._compile()
-        wrapped_model.summary()
-        wrapped_model.fit(
+        self.wrapped_model.fit(
             self._da_to_tf_generator(doc_array)
             .shuffle(buffer_size=4096)
             .batch(512, drop_remainder=True),
             **kwargs,
         )
+
+    def save(self, **kwargs):
+        self.wrapped_model.save(**kwargs)
