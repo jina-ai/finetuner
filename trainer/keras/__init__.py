@@ -66,9 +66,7 @@ class KerasTrainer(BaseTrainer):
             doc_array = doc_array()
         for d in doc_array:
             for m in d.matches:
-                yield (d.content, m.content), 1 if int(
-                    m.tags['trainer']['label']
-                ) == 1 else -1
+                yield (d.content, m.content), m.tags['trainer']['label']
 
     def _da_to_tf_generator(self, doc_array):
         input_shape = self.base_model.input_shape[1:]

@@ -23,12 +23,11 @@ def fashion_match_documentarray(num_total: int = 60000, **kwargs):
 
 
 def fashion_match_doc_generator(
-        num_pos: int = 10, num_neg: int = 10, shuffle: bool = True
+        num_pos: int = 10, num_neg: int = 10,
+        pos_value: int = 1, neg_value: int = -1,
 ):
     rv = defaultdict(DocumentArray)
     all_docs = DocumentArray(fashion_doc_generator())
-    if shuffle:
-        all_docs.shuffle()
 
     copy_all_docs = DocumentArray()
     with TimeContext('split by class labels'):
@@ -42,7 +41,7 @@ def fashion_match_doc_generator(
         pos_label = int(od.tags['class'])
         pos_samples = rv[pos_label].sample(num_pos)
         for d in pos_samples:
-            d.tags['trainer'] = {'label': 1}
+            d.tags['trainer'] = {'label': pos_value}
 
         neg_samples = DocumentArray()
         while len(neg_samples) < num_neg:
@@ -52,7 +51,7 @@ def fashion_match_doc_generator(
         neg_samples = neg_samples[:num_neg]
 
         for d in neg_samples:
-            d.tags['trainer'] = {'label': 0}
+            d.tags['trainer'] = {'label': neg_value}
 
         od.matches.extend(pos_samples)
         od.matches.extend(neg_samples)
