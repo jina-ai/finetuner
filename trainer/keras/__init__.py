@@ -1,7 +1,7 @@
-from typing import Union, Optional
+from typing import Union, Optional, Iterator, Generator
 
 import tensorflow as tf
-from jina import DocumentArray
+from jina import DocumentArray, Document
 from jina.types.arrays.memmap import DocumentArrayMemmap
 from tensorflow import keras
 from tensorflow.keras import Model
@@ -23,12 +23,12 @@ class HatLayer(Layer):
 
 class KerasTrainer(BaseTrainer):
     def __init__(
-            self,
-            base_model: Optional[Model] = None,
-            arity: int = 2,
-            head_model: Union[Layer, str, None] = None,
-            loss: str = 'hinge',
-            **kwargs,
+        self,
+        base_model: Optional[Model] = None,
+        arity: int = 2,
+        head_model: Union[Layer, str, None] = None,
+        loss: str = 'hinge',
+        **kwargs,
     ):
         self._base_model = base_model
         self._head_model = head_model
@@ -71,8 +71,37 @@ class KerasTrainer(BaseTrainer):
 
         return wrapped_model
 
+    def _da_gen(self, doc_array):
+        for d in doc_array:
+            for m in d.matches:
+                yield (d.content, m.content), m.tags['trainer']['label']
+
+    def _da_to_tf_generator(self, doc_array):
+        input_shape = self.base_model.input_shape[1:]
+
+        return tf.data.Dataset.from_generator(
+            lambda: self._da_gen(doc_array),
+            output_signature=(
+                tuple(
+                    tf.TensorSpec(shape=input_shape, dtype=tf.float64)
+                    for _ in range(self.arity)
+                ),
+                tf.TensorSpec(shape=(), dtype=tf.float64),
+            ),
+        )
+
     def fit(
-            self, doc_array: Union[DocumentArray, DocumentArrayMemmap], **kwargs
+        self,
+        doc_array: Union[
+            DocumentArray,
+            DocumentArrayMemmap,
+            Iterator[Document],
+            Generator[Document, None, None],
+        ],
+        **kwargs,
     ) -> None:
         wrapped_model = self._compile()
-        # wrapped_model.fit()
+        wrapped_model.fit(
+            self._da_to_tf_generator(doc_array).shuffle(buffer_size=4096).batch(1024, drop_remainder=True),
+            **kwargs,
+        )
