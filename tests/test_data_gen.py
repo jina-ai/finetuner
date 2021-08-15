@@ -1,6 +1,6 @@
 import pytest
 
-from tests.data_generator import fashion_doc_generator, fashion_match_doc_generator
+from tests.data_generator import fashion_doc_generator, fashion_match_doc_generator, fashion_match_documentarray
 
 
 def test_doc_generator():
@@ -17,3 +17,9 @@ def test_fashion_matches_generator(num_pos, num_neg):
         assert all_labels.count(1) == num_pos
         assert all_labels.count(0) == num_neg
         break
+
+
+def test_fashion_documentarray():
+    da = fashion_match_documentarray(10, num_pos=2, num_neg=3)
+    assert len(da) == 10
+    assert len(da[0].matches) == 5

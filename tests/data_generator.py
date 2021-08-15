@@ -11,8 +11,17 @@ from jina import Document, DocumentArray
 from jina.logging.profile import ProgressBar, TimeContext
 
 
+def fashion_match_documentarray(num_total: int = 60000, **kwargs):
+    da = DocumentArray()
+    for d in fashion_match_doc_generator(**kwargs):
+        da.append(d)
+        if len(da) >= num_total:
+            break
+    return da
+
+
 def fashion_match_doc_generator(
-    num_pos: int = 10, num_neg: int = 10, shuffle: bool = True
+        num_pos: int = 10, num_neg: int = 10, shuffle: bool = True
 ):
     rv = defaultdict(DocumentArray)
     all_docs = DocumentArray(fashion_doc_generator())
