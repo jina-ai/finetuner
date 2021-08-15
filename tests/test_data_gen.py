@@ -16,6 +16,11 @@ def test_fashion_matches_generator(num_pos, num_neg):
         all_labels = [int(d.tags['trainer']['label']) for d in d.matches]
         assert all_labels.count(1) == num_pos
         assert all_labels.count(0) == num_neg
+        for m in d.matches:
+            if int(m.tags['trainer']['label']) == 1:
+                assert m.tags['class'] == d.tags['class']
+            else:
+                assert m.tags['class'] != d.tags['class']
         break
 
 
