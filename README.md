@@ -30,7 +30,7 @@
    from tests.data_generator import fashion_match_doc_generator as fmdg
    
    # fit and save the checkpoint
-   kt.fit(fmdg, epochs=10)
+   kt.fit(fmdg, epochs=3)
    kt.save('./examples/fashion/trained')
     ```
 
