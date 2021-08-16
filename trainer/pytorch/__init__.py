@@ -1,4 +1,4 @@
-from .base import BaseTrainer
+from ..base import BaseTrainer
 
 
 class PytorchTrainer(BaseTrainer):
