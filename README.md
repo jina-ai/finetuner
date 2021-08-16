@@ -4,6 +4,13 @@
 - [ ] Pytorch backend
 - [ ] Paddle backend
 
+## Requirements
+
+```bash
+git clone https://github.com/jina-ai/trainer.git
+pip install -e .
+```
+
 ## Use Fashion-MNIST matches data for testing
 
 ```python
@@ -18,7 +25,7 @@ from tests.data_generator import fashion_match_documentarray
 
 1. Use artificial pairwise data to train `user_model` in a siamese manner: 
 
-   - build a simple dense network with bottleneck as 10-dim
+   - build a simple dense network with bottleneck
       ```python
      import tensorflow as tf
    
@@ -35,7 +42,7 @@ from tests.data_generator import fashion_match_documentarray
       ```python
       from trainer.keras import KerasTrainer
    
-      kt = KerasTrainer(user_model, head_layer='HatLayer')
+      kt = KerasTrainer(user_model, head_layer='CosineLayer')
       ```
     
    - fit and save the checkpoint
