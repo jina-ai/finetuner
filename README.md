@@ -29,6 +29,7 @@
    from tests.data_generator import fashion_match_doc_generator as fmdg
    
    # fit and save the checkpoint
+   kt.save('./examples/fashion/initial')
    kt.fit(fmdg, epochs=1)
    kt.save('./examples/fashion/trained')
     ```
@@ -37,5 +38,3 @@
     ```bash
     python examples/fashion/app.py
     ```
-
-3. **And it doesn't work atm**. The trained embedding does not make any sense.
