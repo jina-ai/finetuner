@@ -16,15 +16,17 @@ def fashion_match_documentarray(num_total: int = 60000, **kwargs):
     with ProgressBar(task_name='build DA') as t:
         for d in fashion_match_doc_generator(**kwargs):
             da.append(d)
-            t.update_tick(.01)
+            t.update_tick(0.01)
             if len(da) >= num_total:
                 break
     return da
 
 
 def fashion_match_doc_generator(
-        num_pos: int = 10, num_neg: int = 10,
-        pos_value: int = 1, neg_value: int = -1,
+    num_pos: int = 10,
+    num_neg: int = 10,
+    pos_value: int = 1,
+    neg_value: int = -1,
 ):
     rv = defaultdict(DocumentArray)
     all_docs = DocumentArray(fashion_doc_generator())
@@ -109,7 +111,7 @@ def fashion_doc_generator(download_proxy=None, task_name='download fashion-mnist
                 v['data'] = _load_mnist(v['filename'])
 
     for raw_img, lbl in zip(targets['index']['data'], targets['index-labels']['data']):
-        yield Document(content=raw_img / 255., tags={'class': int(lbl)})
+        yield Document(content=raw_img / 255.0, tags={'class': int(lbl)})
 
 
 def _load_mnist(path):

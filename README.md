@@ -39,3 +39,7 @@
     ```bash
     python examples/fashion/app.py
     ```
+
+3. Check the results:
+   - Initial: `Precision@50: 71.41% Recall@50: 0.60%`
+   - Trained (3 Epochs): `Precision@50: 69.48% Recall@50: 0.58%`
