@@ -12,6 +12,8 @@ class JinaSiameseDataset(Dataset):
     Build a pair of Document, include `query` and `document`. Return their `embeddings` and their relevance.
 
     ..note::
+        Each match `Document` should have the `tags['trainer']['label']` to store the relevance degree between the match
+        and query `Document`.
 
     Example:
         >>> import numpy as np
@@ -49,9 +51,7 @@ class JinaSiameseDataset(Dataset):
         match = self.matches[index]
         label = match.tags['trainer']['label']
         query = None
-        for (
-            doc
-        ) in self.docs:  # this is ugly since we can not find reference doc by match
+        for doc in self.docs:  # this is ugly since we can not find reference doc by match
             match_ids = [d.id for d in doc.matches]
             if match.id in match_ids:
                 query = doc
