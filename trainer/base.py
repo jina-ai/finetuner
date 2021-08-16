@@ -104,6 +104,6 @@ class BaseTrainer(ABC):
     def save(self, *args, **kwargs):
         """Save the weights of the ``base_model``.
 
-        Note that, the ``header_model`` and ``wrapped_model`` do not need to be stored, as they are auxiliary layers
+        Note that, the ``head_layer`` and ``wrapped_model`` do not need to be stored, as they are auxiliary layers
         for tuning ``base_model``.
         """

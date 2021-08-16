@@ -13,12 +13,12 @@ from ..base import BaseTrainer
 
 class KerasTrainer(BaseTrainer):
     def __init__(
-            self,
-            base_model: Optional[Model] = None,
-            arity: int = 2,
-            head_layer: Union[HeadLayer, str, None] = 'HatLayer',
-            loss: Optional[str] = None,
-            **kwargs,
+        self,
+        base_model: Optional[Model] = None,
+        arity: int = 2,
+        head_layer: Union[HeadLayer, str, None] = 'HatLayer',
+        loss: Optional[str] = None,
+        **kwargs,
     ):
         super().__init__(base_model, arity, head_layer, loss, **kwargs)
 
@@ -33,7 +33,7 @@ class KerasTrainer(BaseTrainer):
     @property
     def head_layer(self) -> HeadLayer:
         if isinstance(self._head_layer, str):
-            return getattr(head_layers, self._head_layer)
+            return getattr(head_layers, self._head_layer)()
         elif isinstance(self._head_layer, HeadLayer):
             return self._head_layer
 
@@ -48,9 +48,7 @@ class KerasTrainer(BaseTrainer):
 
         input_shape = self.base_model.input_shape[1:]
         input_values = [keras.Input(shape=input_shape) for _ in range(self.arity)]
-        head_layer = self.head_layer()(
-            *(self._base_model(v) for v in input_values)
-        )
+        head_layer = self.head_layer(*(self._base_model(v) for v in input_values))
         wrapped_model = Model(inputs=input_values, outputs=head_layer)
 
         wrapped_model.compile(loss=self.loss)
@@ -80,19 +78,20 @@ class KerasTrainer(BaseTrainer):
         )
 
     def fit(
-            self,
-            doc_array: Union[
-                DocumentArray,
-                DocumentArrayMemmap,
-                Iterator[Document],
-                Callable[..., Iterator[Document]],
-            ],
-            **kwargs,
+        self,
+        doc_array: Union[
+            DocumentArray,
+            DocumentArrayMemmap,
+            Iterator[Document],
+            Callable[..., Iterator[Document]],
+        ],
+        batch_size: int = 256,
+        **kwargs,
     ) -> None:
         self.wrapped_model.fit(
             self._da_to_tf_generator(doc_array)
-                .shuffle(buffer_size=4096)
-                .batch(512, drop_remainder=True),
+            .shuffle(buffer_size=4096)
+            .batch(batch_size, drop_remainder=True),
             **kwargs,
         )
 
