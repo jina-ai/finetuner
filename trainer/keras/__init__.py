@@ -32,7 +32,10 @@ class KerasTrainer(BaseTrainer):
 
     @property
     def head_layer(self) -> HeadLayer:
-        return self._head_layer
+        if isinstance(self._head_layer, str):
+            return getattr(head_layers, self._head_layer)
+        elif isinstance(self._head_layer, HeadLayer):
+            return self._head_layer
 
     @property
     def loss(self) -> str:
@@ -45,7 +48,7 @@ class KerasTrainer(BaseTrainer):
 
         input_shape = self.base_model.input_shape[1:]
         input_values = [keras.Input(shape=input_shape) for _ in range(self.arity)]
-        head_layer = getattr(head_layers, self._head_layer)()(
+        head_layer = self.head_layer()(
             *(self._base_model(v) for v in input_values)
         )
         wrapped_model = Model(inputs=input_values, outputs=head_layer)
