@@ -34,12 +34,16 @@ class JinaSiameseDataset(Dataset):
         self,
         inputs: Union[DocumentArray, DocumentArrayMemmap],
     ):
-        self.docs = inputs
-        self.matches = self.docs.traverse_flat(traversal_paths=['m'])
+        self._pairs = []
+        for doc in inputs:
+            for match in doc.matches:
+                self._pairs.append(
+                    ((doc.content, match.content), match.tags['trainer']['label'])
+                )
 
     def __len__(self):
         """Get the length of the dataset."""
-        return len(self.matches)
+        return len(self._pairs)
 
     def __getitem__(self, index):
         """
@@ -47,13 +51,4 @@ class JinaSiameseDataset(Dataset):
         The pair consist a pair of query and a document returned as a tuple and a label field
         indicates their relevance degree.
         """
-        match = self.matches[index]
-        label = match.tags['trainer']['label']
-        query = None
-        for doc in self.docs:  # this is ugly since we can not find reference doc by match
-            match_ids = [d.id for d in doc.matches]
-            if match.id in match_ids:
-                query = doc
-                break
-
-        return (query.content, match.content), label
+        return self._pairs[index]
