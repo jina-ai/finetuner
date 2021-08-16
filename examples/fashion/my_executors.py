@@ -33,7 +33,7 @@ class MyIndexer(Executor):
         """
         docs.match(
             self._docs,
-            metric='sqeuclidean',
+            metric='cosine',
             normalization=(1, 0),
             limit=int(parameters['top_k']),
         )
