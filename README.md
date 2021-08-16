@@ -14,23 +14,22 @@
    
    user_model = tf.keras.Sequential(
        [
-        tf.keras.layers.Flatten(input_shape=(28, 28)),
-        tf.keras.layers.BatchNormalization(),
-        tf.keras.layers.Dense(128, activation='relu'),
-        tf.keras.layers.Dense(32),
+           tf.keras.layers.Flatten(input_shape=(28, 28)),
+           tf.keras.layers.Dense(128, activation='relu'),
+           tf.keras.layers.Dense(32),
        ]
    )
    
    # wrap the user model with our trainer
    from trainer.keras import KerasTrainer
    
-   kt = KerasTrainer(user_model)
+   kt = KerasTrainer(user_model, head_model='CosineLayer', loss='mse')
    
-   # generate artificial positive & negative data 
+   # generate artificial positive & negative data
    from tests.data_generator import fashion_match_doc_generator as fmdg
    
    # fit and save the checkpoint
-   kt.fit(fmdg, epochs=3)
+   kt.fit(fmdg, epochs=1)
    kt.save('./examples/fashion/trained')
     ```
 
