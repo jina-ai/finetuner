@@ -61,18 +61,19 @@ class KerasTrainer(BaseTrainer):
         wrapped_model.summary()
         return wrapped_model
 
-    def _da_gen(self, doc_array):
+    def _da_gen(self, doc_array, input_shape):
         if callable(doc_array):
             doc_array = doc_array()
         for d in doc_array:
+            d_blob = d.blob.reshape(input_shape)
             for m in d.matches:
-                yield (d.content, m.content), m.tags['trainer']['label']
+                yield (d_blob, m.blob.reshape(input_shape)), m.tags['trainer']['label']
 
     def _da_to_tf_generator(self, doc_array):
         input_shape = self.base_model.input_shape[1:]
 
         return tf.data.Dataset.from_generator(
-            lambda: self._da_gen(doc_array),
+            lambda: self._da_gen(doc_array, input_shape),
             output_signature=(
                 tuple(
                     tf.TensorSpec(shape=input_shape, dtype=tf.float64)
