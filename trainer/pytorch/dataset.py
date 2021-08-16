@@ -23,7 +23,7 @@ class JinaSiameseDataset(Dataset):
         >>> _ = doc1.matches.append(Document(embedding=np.array([9, 3, 6]), tags={'trainer': {'label': 0}}))
         >>> _ = doc1.matches.append(Document(embedding=np.array([1, 2, 4]), tags={'trainer': {'label': 1}}))
         >>> da.append(doc1)
-        >>> jina_dataset = JinaSiameseDataset(document_array=da)
+        >>> jina_dataset = JinaSiameseDataset(inputs=da)
         >>> jina_dataset[0]
         ((array([1, 2, 3]), array([9, 3, 6])), 0.0)
         >>> jina_dataset[1]
@@ -33,9 +33,9 @@ class JinaSiameseDataset(Dataset):
 
     def __init__(
         self,
-        document_array: Union[DocumentArray, DocumentArrayMemmap],
+        inputs: Union[DocumentArray, DocumentArrayMemmap],
     ):
-        self.docs = document_array
+        self.docs = inputs
         self.matches = self.docs.traverse_flat(traversal_paths=['m'])
 
     def __len__(self):
