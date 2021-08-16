@@ -23,7 +23,7 @@
    # wrap the user model with our trainer
    from trainer.keras import KerasTrainer
    
-   kt = KerasTrainer(user_model, head_model='CosineLayer', loss='mse')
+   kt = KerasTrainer(user_model, head_layer='HatLayer')
    
    # generate artificial positive & negative data
    from tests.data_generator import fashion_match_doc_generator as fmdg
@@ -32,6 +32,7 @@
    kt.save('./examples/fashion/initial')
    kt.fit(fmdg, epochs=1)
    kt.save('./examples/fashion/trained')
+
     ```
 
 2. Test the embedding in the Jina pipeline:
