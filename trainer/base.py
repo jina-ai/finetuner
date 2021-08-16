@@ -13,12 +13,12 @@ class BaseTrainer(ABC):
         self,
         base_model: Optional[AnyDNN] = None,
         arity: Optional[int] = None,
-        head_model: Union[AnyDNN, str, None] = None,
+        head_layer: Union[AnyDNN, str, None] = None,
         loss: Optional[str] = None,
         **kwargs
     ):
         self._base_model = base_model
-        self._head_model = head_model
+        self._head_layer = head_layer
         self._arity = arity
         self._loss = loss
 
@@ -53,13 +53,13 @@ class BaseTrainer(ABC):
 
     @property
     @abc.abstractmethod
-    def head_model(self) -> AnyDNN:
+    def head_layer(self) -> AnyDNN:
         """Get the head model of this object. """
         ...
 
-    @head_model.setter
+    @head_layer.setter
     @abc.abstractmethod
-    def head_model(self, val: Union[str, AnyDNN]):
+    def head_layer(self, val: Union[str, AnyDNN]):
         """Set the head model of this object to one of the predefined head model or a deep neural network object.
 
         When set to a deep neural network object, this network must map ``[R^D x R^D x ...] -> R``, where the length

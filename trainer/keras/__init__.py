@@ -5,22 +5,22 @@ from jina import DocumentArray, Document
 from jina.types.arrays.memmap import DocumentArrayMemmap
 from tensorflow import keras
 from tensorflow.keras import Model
-from tensorflow.keras.layers import Layer
 
-from . import head_models
+from . import head_layers
+from .head_layers import HeadLayer
 from ..base import BaseTrainer
 
 
 class KerasTrainer(BaseTrainer):
     def __init__(
-        self,
-        base_model: Optional[Model] = None,
-        arity: int = 2,
-        head_model: Union[Layer, str, None] = 'HatLayer',
-        loss: str = 'hinge',
-        **kwargs,
+            self,
+            base_model: Optional[Model] = None,
+            arity: int = 2,
+            head_layer: Union[HeadLayer, str, None] = 'HatLayer',
+            loss: Optional[str] = None,
+            **kwargs,
     ):
-        super().__init__(base_model, arity, head_model, loss, **kwargs)
+        super().__init__(base_model, arity, head_layer, loss, **kwargs)
 
     @property
     def base_model(self) -> Model:
@@ -31,12 +31,12 @@ class KerasTrainer(BaseTrainer):
         return self._arity
 
     @property
-    def head_model(self) -> Layer:
-        return self._head_model
+    def head_layer(self) -> HeadLayer:
+        return self._head_layer
 
     @property
     def loss(self) -> str:
-        return self._loss
+        return self._loss or self.head_layer.recommended_loss
 
     @property
     def wrapped_model(self) -> Model:
@@ -45,17 +45,10 @@ class KerasTrainer(BaseTrainer):
 
         input_shape = self.base_model.input_shape[1:]
         input_values = [keras.Input(shape=input_shape) for _ in range(self.arity)]
-        if self.arity == 2:
-            # siamese structure
-            head_layer = getattr(head_models, self._head_model)()(
-                *(self._base_model(v) for v in input_values)
-            )
-            wrapped_model = Model(inputs=input_values, outputs=head_layer)
-        elif self.arity == 3:
-            # triplet structure
-            raise NotImplementedError
-        else:
-            raise NotImplementedError
+        head_layer = getattr(head_layers, self._head_layer)()(
+            *(self._base_model(v) for v in input_values)
+        )
+        wrapped_model = Model(inputs=input_values, outputs=head_layer)
 
         wrapped_model.compile(loss=self.loss)
         wrapped_model.summary()
@@ -84,19 +77,19 @@ class KerasTrainer(BaseTrainer):
         )
 
     def fit(
-        self,
-        doc_array: Union[
-            DocumentArray,
-            DocumentArrayMemmap,
-            Iterator[Document],
-            Callable[..., Iterator[Document]],
-        ],
-        **kwargs,
+            self,
+            doc_array: Union[
+                DocumentArray,
+                DocumentArrayMemmap,
+                Iterator[Document],
+                Callable[..., Iterator[Document]],
+            ],
+            **kwargs,
     ) -> None:
         self.wrapped_model.fit(
             self._da_to_tf_generator(doc_array)
-            .shuffle(buffer_size=4096)
-            .batch(512, drop_remainder=True),
+                .shuffle(buffer_size=4096)
+                .batch(512, drop_remainder=True),
             **kwargs,
         )
 
