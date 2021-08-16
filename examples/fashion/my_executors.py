@@ -5,16 +5,6 @@ from jina import Executor, DocumentArray, requests
 from jina.types.arrays.memmap import DocumentArrayMemmap
 import tensorflow as tf
 
-user_model = tf.keras.Sequential(
-    [
-        tf.keras.layers.Flatten(input_shape=(28, 28)),
-        tf.keras.layers.BatchNormalization(),
-        tf.keras.layers.Dense(128, activation='relu'),
-        tf.keras.layers.Dense(32),
-    ]
-)
-
-
 class MyIndexer(Executor):
     """
     Executor with basic exact search using cosine distance
@@ -56,8 +46,7 @@ class MyEncoder(Executor):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        user_model.load_weights('./trained')
-        self.embedding_model = user_model
+        self.embedding_model = keras.models.load_model('./trained')
 
     @requests
     def encode(self, docs: 'DocumentArray', **kwargs):
