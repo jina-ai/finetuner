@@ -7,27 +7,53 @@ from torch.utils.data import Dataset
 
 class JinaSiameseDataset(Dataset):
     """
-    Given a Jina DocumentArray, generate a pair of Datasets with their similarity.
+    Given a Jina DocumentArray, generate a pair of Document with their similarity.
+    We collect all match Documents of each Document inside the DocumentArray or DocumentArrayMemmap.
+    Build a pair of Document, include `query` and `document`. Return their `embeddings` and their relevance.
+
+    ..note::
+
+    Example:
+        >>> import numpy as np
+        >>> from jina import Document, DocumentArray
+        >>> da = DocumentArray()
+        >>> doc1 = Document(embedding=np.array([1, 2, 3]))
+        >>> _ = doc1.matches.append(Document(embedding=np.array([9, 3, 6]), tags={'trainer': {'label': 0}}))
+        >>> _ = doc1.matches.append(Document(embedding=np.array([1, 2, 4]), tags={'trainer': {'label': 1}}))
+        >>> da.append(doc1)
+        >>> jina_dataset = JinaSiameseDataset(document_array=da)
+        >>> jina_dataset[0]
+        ((array([1, 2, 3]), array([9, 3, 6])), 0.0)
+        >>> jina_dataset[1]
+        ((array([1, 2, 3]), array([1, 2, 4])), 1.0)
 
     """
 
-    def __init__(self, document_array: Union[DocumentArray, DocumentArrayMemmap]):
+    def __init__(
+        self,
+        document_array: Union[DocumentArray, DocumentArrayMemmap],
+    ):
         self.docs = document_array
         self.matches = self.docs.traverse_flat(traversal_paths=['m'])
 
     def __len__(self):
+        """Get the length of the dataset."""
         return len(self.matches)
 
     def __getitem__(self, index):
-        """Should return a pair of Documents from Jina DA/DAM and matches.
-        The pair also consist a label indicates their relevance degree.
+        """
+        Should return a pair of Documents from Jina DocumentArray/DocumentArrayMemmap and their matches.
+        The pair consist a pair of query and a document returned as a tuple and a label field
+        indicates their relevance degree.
         """
         match = self.matches[index]
         label = match.tags['trainer']['label']
         query = None
-        for doc in self.docs:
-            match_ids = doc.get_attributes('id')
+        for (
+            doc
+        ) in self.docs:  # this is ugly since we can not find reference doc by match
+            match_ids = [d.id for d in doc.matches]
             if match.id in match_ids:
                 query = doc
                 break
-        return (query, match), label
+        return (query.embedding, match.embedding), label
