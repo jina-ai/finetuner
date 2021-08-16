@@ -3,6 +3,7 @@ from typing import Dict
 import numpy as np
 from jina import Executor, DocumentArray, requests
 from jina.types.arrays.memmap import DocumentArrayMemmap
+from tensorflow import keras
 
 
 class MyIndexer(Executor):
