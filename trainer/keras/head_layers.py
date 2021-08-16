@@ -39,12 +39,19 @@ class DistanceLayer(PairwiseHeadLayer):
         )
 
 
+class DiffLayer(PairwiseHeadLayer):
+    recommended_loss = 'mse'
+
+    def call(self, lvalue, rvalue):
+        return tf.reduce_sum(tf.abs(lvalue - rvalue), axis=-1, keepdims=True)
+
+
 class CosineLayer(PairwiseHeadLayer):
     recommended_loss = 'mse'
 
     def call(self, lvalue, rvalue):
-        normalize_a = tf.nn.l2_normalize(lvalue)
-        normalize_b = tf.nn.l2_normalize(rvalue)
+        normalize_a = tf.nn.l2_normalize(lvalue, axis=-1)
+        normalize_b = tf.nn.l2_normalize(rvalue, axis=-1)
         cos_similarity = tf.reduce_sum(
             tf.multiply(normalize_a, normalize_b), axis=-1, keepdims=True
         )
