@@ -3,7 +3,7 @@ from typing import Dict
 import numpy as np
 from jina import Executor, DocumentArray, requests
 from jina.types.arrays.memmap import DocumentArrayMemmap
-import tensorflow as tf
+
 
 class MyIndexer(Executor):
     """
@@ -58,7 +58,7 @@ class MyEncoder(Executor):
         # reduce dimension to 50 by random orthogonal projection
         content = np.stack(docs.get_attributes('content'))
         content = content[:, :, :, 0].reshape(-1, 28, 28)
-        embeds = self.embedding_model.predict(content)
+        embeds = self.embedding_model.predict(content / 255.0)
         for doc, embed, cont in zip(docs, embeds, content):
             doc.embedding = embed
             doc.content = cont
