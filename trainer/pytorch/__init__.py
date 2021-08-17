@@ -1,14 +1,12 @@
 from copy import deepcopy
 from typing import Union, Optional
 
-import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data.dataloader import DataLoader
 from jina.logging.logger import JinaLogger
 
 from ..base import BaseTrainer
-from .networks import SiameseNet
 from .dataset import JinaSiameseDataset
 
 
@@ -53,10 +51,7 @@ class PytorchTrainer(BaseTrainer):
 
     @property
     def wrapped_model(self) -> nn.Module:
-        if self.arity == 2:
-            return SiameseNet(base_model=self.base_model)
-        else:
-            raise NotImplementedError
+        pass
 
     def _get_data_loader(self, inputs):
         return DataLoader(
