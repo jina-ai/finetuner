@@ -5,7 +5,7 @@ from paddle import nn
 
 from ..base import BaseTrainer
 from .models.siamese import SiameseNet
-
+from .helper import create_dataloader
 
 class PaddleTrainer(BaseTrainer):
     def __init__(
@@ -53,7 +53,9 @@ class PaddleTrainer(BaseTrainer):
         else:
             raise NotImplementedError
 
-    def fit(self, train_loader, dev_loader=None, epochs: int = 1, **kwargs):
+    def fit(self, train_dataset, dev_dataset=None, epochs: int = 1, **kwargs):
+        train_loader = create_dataloader(train_dataset, mode='train', batch_size=8)
+        # dev_loader = create_dataloader(dev_dataset, mode='dev', batch_size=8) if dev_dataset else None
         for epoch in range(epochs):
             for batch_id, batch_data in enumerate(train_loader):
                 loss = self.wrapped_model.training_step(batch_data, batch_id)
