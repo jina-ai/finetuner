@@ -8,6 +8,6 @@ class DynamicInputsModel(nn.Module):
 
     def forward(self, *inputs):
         rv = []
-        for input in inputs:
-            rv.append(self._base_model(input))
+        for input_ in inputs:
+            rv.append(self._base_model(input_))
         return tuple(rv)
