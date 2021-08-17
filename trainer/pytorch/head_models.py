@@ -5,7 +5,7 @@ import torch.nn.functional as F
 
 
 class HeadLayer(nn.Module):
-    recommended_loss: str  #: the recommended loss function to be used when equipping this layer to base model
+    recommended_loss: nn.Module  #: the recommended loss function to be used when equipping this layer to base model
 
     @abc.abstractmethod
     def call(self, inputs, **kwargs):
@@ -19,7 +19,7 @@ class PairwiseHeadLayer(nn.Module):
 
 
 class CosineLayer(PairwiseHeadLayer):
-    recommended_loss = 'mse'
+    recommended_loss = nn.MSELoss()
 
     def call(self, lvalue, rvalue):
         normalize_a = F.normalize(lvalue, p=2, dim=1)
