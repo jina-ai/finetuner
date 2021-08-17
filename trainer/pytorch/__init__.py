@@ -8,7 +8,7 @@ from jina.logging.logger import JinaLogger
 from . import head_layers
 from ..base import BaseTrainer
 from .dataset import JinaSiameseDataset
-from .networks import DynamicInputsModel
+from .networks import SiameseInputs
 from .head_layers import HeadLayer
 
 
@@ -48,7 +48,7 @@ class PytorchTrainer(BaseTrainer):
         if self.base_model is None:
             raise ValueError(f'base_model is not set')
 
-        model_with_multiple_inputs = DynamicInputsModel(
+        model_with_multiple_inputs = SiameseInputs(
             base_model=self.base_model
         )  # build module
         net = nn.Sequential(
@@ -76,9 +76,9 @@ class PytorchTrainer(BaseTrainer):
 
         data_loader = self._get_data_loader(inputs=inputs)
 
-        optimizer = torch.optim.RMSprop()  # stay the same as keras
+        optimizer = torch.optim.RMSprop(params=model.parameters()) # stay the same as keras
         criterion = self.head_layer.recommended_loss
-        num_epochs = 10
+        num_epochs = 1
 
         for epoch in range(num_epochs):
             self.logger(f'Epoch {epoch}/{num_epochs - 1}')
