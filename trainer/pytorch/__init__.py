@@ -35,7 +35,7 @@ class PytorchTrainer(BaseTrainer):
     @property
     def head_layer(self) -> HeadLayer:
         if isinstance(self._head_layer, str):
-            return getattr(head_layers, self._head_layer)()
+            return getattr(head_layers, self._head_layer)
         elif isinstance(self._head_layer, HeadLayer):
             return self._head_layer
 
@@ -48,12 +48,8 @@ class PytorchTrainer(BaseTrainer):
         if self.base_model is None:
             raise ValueError(f'base_model is not set')
 
-        model_with_multiple_inputs = SiameseInputs(
-            base_model=self.base_model
-        )  # build module
-        net = nn.Sequential(
-            model_with_multiple_inputs, self.head_layer
-        )  # attach the hat layer
+        net = SiameseInputs(base_model=self.base_model)  # build module
+        net = self.head_layer(net)
         return net
 
     def _get_data_loader(self, inputs, batch_size=256, shuffle=False, num_workers=1):
@@ -76,12 +72,14 @@ class PytorchTrainer(BaseTrainer):
 
         data_loader = self._get_data_loader(inputs=inputs)
 
-        optimizer = torch.optim.RMSprop(params=model.parameters()) # stay the same as keras
+        optimizer = torch.optim.RMSprop(
+            params=model.parameters()
+        )  # stay the same as keras
         criterion = self.head_layer.recommended_loss
-        num_epochs = 1
+        num_epochs = 10
 
         for epoch in range(num_epochs):
-            self.logger(f'Epoch {epoch}/{num_epochs - 1}')
+            self.logger.info(f'Epoch {epoch}/{num_epochs - 1}')
             model.train()
 
             losses = []
