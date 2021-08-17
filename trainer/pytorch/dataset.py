@@ -38,7 +38,7 @@ class JinaSiameseDataset(Dataset):
         for doc in inputs:
             for match in doc.matches:
                 self._pairs.append(
-                    ((doc.content, match.content), match.tags['trainer']['label'])
+                    ((doc.blob, match.blob), match.tags['trainer']['label'])
                 )
 
     def __len__(self):
