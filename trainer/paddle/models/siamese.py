@@ -12,12 +12,12 @@ class SiameseNet(nn.Layer):
         self,
         base_model: Union['nn.Layer', str],
         head_layer: Union['nn.Layer', str] = None,
-        loss_fn: Union['nn.Layer', str] = None,
+        loss_fn: Union['nn.Layer', str] = 'cross_entropy',
     ):
         super(SiameseNet, self).__init__()
         self._base_model = base_model
         self._head_layer = head_layer
-        self._loss_fn = loss_fn
+        self._loss_fn = getattr(F, 'cross_entropy')
 
     def forward(self, anchors, positives):
         anchor_embeddings = self._base_model(anchors)
@@ -35,5 +35,5 @@ class SiameseNet(nn.Layer):
         num_classes = similarities.shape[0]
         sparse_labels = paddle.arange(0, num_classes, dtype='int64')
 
-        loss = F.cross_entropy(similarities, sparse_labels)
+        loss = self._loss_fn(similarities, sparse_labels)
         return loss
