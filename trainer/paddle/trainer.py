@@ -65,22 +65,13 @@ class PaddleTrainer(BaseTrainer):
         else:
             raise NotImplementedError
 
-    def _da_gen(self, doc_array, input_shape):
-        if callable(doc_array):
-            doc_array = doc_array()
-        for d in doc_array:
-            d_blob = d.blob.reshape(input_shape)
-            for m in d.matches:
-                yield (d_blob, m.blob.reshape(input_shape)), m.tags['trainer']['label']
-
     def create_dataset(self, doc_array, **kwargs):
         class _Dataset(paddle.io.IterableDataset):
             def __init__(self, doc_array):
-                self._doc_array = doc_array
+                self._doc_array = list(doc_array)
                 self._img_shape = [1, 28, 28]
 
             def __iter__(self):
-
                 for d in self._doc_array:
                     d_blob = d.blob.reshape(self._img_shape).astype('float32')
                     for m in d.matches:
@@ -101,15 +92,13 @@ class PaddleTrainer(BaseTrainer):
         ],
         dev_data=None,
         batch_size: int = 256,
-        epochs: int = 1,
+        epochs: int = 10,
         **kwargs,
     ):
         train_loader = create_dataloader(
             self.create_dataset(train_data), mode='train', batch_size=batch_size
         )
-        # dev_loader = create_dataloader(dev_dataset, mode='dev', batch_size=8) if dev_dataset else None
         for epoch in range(epochs):
-
             for batch_id, batch_data in enumerate(train_loader()):
                 loss = self.wrapped_model.training_step(batch_data, batch_id)
                 avg_loss = paddle.mean(loss)
