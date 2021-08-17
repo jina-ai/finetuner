@@ -45,7 +45,7 @@ class MyEncoder(Executor):
     Encode data using SVD decomposition
     """
 
-    def __init__(self, checkpoint_path: str='./trained', **kwargs):
+    def __init__(self, checkpoint_path: str = './trained', **kwargs):
         super().__init__(**kwargs)
         self.embedding_model = keras.models.load_model(checkpoint_path)
 

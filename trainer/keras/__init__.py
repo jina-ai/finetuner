@@ -48,8 +48,8 @@ class KerasTrainer(BaseTrainer):
 
         input_shape = self.base_model.input_shape[1:]
         input_values = [keras.Input(shape=input_shape) for _ in range(self.arity)]
-        head_layer = self.head_layer(*(self._base_model(v) for v in input_values))
-        wrapped_model = Model(inputs=input_values, outputs=head_layer)
+        head_values = self.head_layer(*(self.base_model(v) for v in input_values))
+        wrapped_model = Model(inputs=input_values, outputs=head_values)
 
         wrapped_model.compile(loss=self.loss)
         wrapped_model.summary()
