@@ -5,7 +5,7 @@ from tensorflow.keras.layers import Layer
 
 
 class HeadLayer(Layer):
-    recommended_loss: str  #: the recommended loss function to be used when equipping this layer to base model
+    default_loss: str  #: the recommended loss function to be used when equipping this layer to base model
 
     @abc.abstractmethod
     def call(self, inputs, **kwargs):
@@ -19,7 +19,7 @@ class PairwiseHeadLayer(HeadLayer):
 
 
 class HatLayer(PairwiseHeadLayer):
-    recommended_loss = 'hinge'
+    default_loss = 'hinge'
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -31,7 +31,7 @@ class HatLayer(PairwiseHeadLayer):
 
 
 class DistanceLayer(PairwiseHeadLayer):
-    recommended_loss = 'hinge'
+    default_loss = 'hinge'
 
     def call(self, lvalue, rvalue):
         return -tf.reduce_sum(
@@ -40,14 +40,15 @@ class DistanceLayer(PairwiseHeadLayer):
 
 
 class DiffLayer(PairwiseHeadLayer):
-    recommended_loss = 'mse'
+    default_loss = 'mse'
 
     def call(self, lvalue, rvalue):
         return tf.reduce_sum(tf.abs(lvalue - rvalue), axis=-1, keepdims=True)
 
 
 class CosineLayer(PairwiseHeadLayer):
-    recommended_loss = 'mse'
+
+    default_loss = 'mse'
 
     def call(self, lvalue, rvalue):
         normalize_a = tf.nn.l2_normalize(lvalue, axis=-1)

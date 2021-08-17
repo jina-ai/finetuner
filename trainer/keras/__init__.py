@@ -39,7 +39,7 @@ class KerasTrainer(BaseTrainer):
 
     @property
     def loss(self) -> str:
-        return self._loss or self.head_layer.recommended_loss
+        return self._loss or self.head_layer.default_loss
 
     @property
     def wrapped_model(self) -> Model:
