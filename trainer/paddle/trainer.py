@@ -20,19 +20,21 @@ class PaddleTrainer:
                 loss = self._model.training_step(batch_data, batch_id)
                 avg_loss = paddle.mean(loss)
 
+                # backward gradient
                 avg_loss.backward()
 
-                # 参数更新
+                # update parameters
                 self._optimizer.step()
-                # 将本次计算的梯度值清零，以便进行下一次迭代和梯度更新
+
+                # clean gradients
                 self._optimizer.clear_grad()
 
-                # 输出对应epoch、batch_id下的损失值，预测精确度
+
                 if batch_id % 100 == 0:
                     print("Epoch {} step {}, Loss = {:}".format(
                         epoch, batch_id, avg_loss.numpy()))
 
-            # evaluate
+            # evaluate (TODO)
 
     def save(self, target_filepath: str):
         model_dict = self._model.state_dict()
