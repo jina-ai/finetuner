@@ -1,3 +1,4 @@
+from typing import Union
 import numpy as np
 import paddle
 from paddle import nn
@@ -6,17 +7,27 @@ import paddle.nn.functional as F
 from ..contribs.simple_net import SimpleNet
 
 
-class SiameseModel(nn.Layer):
-    def __init__(self, backbone: str = 'simple'):
-        super(SiameseModel, self).__init__()
-        self._backbone = SimpleNet()
-        self.inverse_temperature = paddle.to_tensor(np.array([1.0/0.2], dtype='float32'))
+class SiameseNet(nn.Layer):
+    def __init__(
+        self,
+        base_model: Union['nn.Layer', str],
+        head_layer: Union['nn.Layer', str] = None,
+        loss_fn: Union['nn.Layer', str] = None,
+    ):
+        super(SiameseNet, self).__init__()
+        self._base_model = base_model
+        self._head_layer = head_layer
+        self._loss_fn = loss_fn
 
     def forward(self, anchors, positives):
-        anchor_embeddings = self._backbone(anchors)
-        positive_embeddings = self._backbone(positives)
-        similarities = paddle.matmul(anchor_embeddings, positive_embeddings, transpose_y=True)
-        similarities = paddle.multiply(similarities, self.inverse_temperature)
+        anchor_embeddings = self._base_model(anchors)
+        positive_embeddings = self._base_model(positives)
+        similarities = paddle.matmul(
+            anchor_embeddings, positive_embeddings, transpose_y=True
+        )
+
+        inverse_temperature = paddle.to_tensor(np.array([1.0 / 0.2], dtype='float32'))
+        similarities = paddle.multiply(similarities, inverse_temperature)
         return similarities
 
     def training_step(self, batch_data, batch_idx):
