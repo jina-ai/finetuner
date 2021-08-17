@@ -17,11 +17,11 @@ class PytorchTrainer(BaseTrainer):
         self,
         base_model: Optional[nn.Module] = None,
         arity: int = 2,
-        head_model: Union[nn.Module, str, None] = 'HatLayer',
+        head_layer: Union[HeadLayer, str, None] = 'HatLayer',
         loss: str = 'hinge',
         **kwargs,
     ):
-        super().__init__(base_model, arity, head_model, loss, **kwargs)
+        super().__init__(base_model, arity, head_layer, loss, **kwargs)
         self.logger = JinaLogger(self.__class__.__name__)
 
     @property
