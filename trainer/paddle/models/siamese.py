@@ -17,7 +17,17 @@ class SiameseNet(nn.Layer):
         super(SiameseNet, self).__init__()
         self._base_model = base_model
         self._head_layer = head_layer
-        self._loss_fn = getattr(F, 'cross_entropy')
+        if callable(loss_fn):
+            self._loss_fn = loss_fn
+        elif isinstance(loss_fn, str):
+            _loss_fn = getattr(F, loss_fn, None)
+            if not _loss_fn:
+                raise ValueError(f'The loss function {loss_fn} is not supported!')
+            self._loss_fn = _loss_fn
+        else:
+            self._loss_fn = F.cross_entropy
+
+
 
     def forward(self, anchors, positives):
         anchor_embeddings = self._base_model(anchors)
