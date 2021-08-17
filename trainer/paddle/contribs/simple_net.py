@@ -5,9 +5,9 @@ import random
 
 class SimpleNet(paddle.nn.Layer):
     def __init__(self):
-        super(MyNet, self).__init__()
+        super(SimpleNet, self).__init__()
 
-        self.conv1 = paddle.nn.Conv2D(in_channels=3,
+        self.conv1 = paddle.nn.Conv2D(in_channels=1,
                                       out_channels=32,
                                       kernel_size=(3, 3),
                                       stride=2)

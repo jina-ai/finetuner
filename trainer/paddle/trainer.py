@@ -3,28 +3,21 @@ import numpy as np
 import paddle
 import paddle.fluid as fluid
 
-from ..base import BaseTrainer
+# from ..base import BaseTrainer
 
-class PaddleTrainer(BaseTrainer):
-    def __init__(self, model: 'nn.Layer', loss_fn, optimizer, init_lr: float = 0.001, **kwargs):
+class PaddleTrainer:
+    def __init__(self, model: 'nn.Layer', optimizer = None, init_lr: float = 0.001, **kwargs):
         self._model = model
-        self._loss_fn = loss_fn
         self._optimizer = optimizer if optimizer else paddle.optimizer.Adam(learning_rate=0.0001, parameters=model.parameters())
         self._init_lr = init_lr
 
         self.kwargs = kwargs
 
-    def fit(self, train_loader, dev_loader, epochs: int = 1, **kwargs):
+    def fit(self, train_loader, dev_loader = None, epochs: int = 1, **kwargs):
         # Starts training and evaluating.
         for epoch in range(epochs):
             for batch_id, batch_data in enumerate(train_loader):
-                # img = data[0]
-                # label = data[1]
-
-                # 网络正向执行
-                pred, acc = self._model(**batch_data)
-
-                loss = self._loss_fn(pred, label)
+                loss = self._model.training_step(batch_data, batch_id)
                 avg_loss = paddle.mean(loss)
 
                 avg_loss.backward()
@@ -36,13 +29,12 @@ class PaddleTrainer(BaseTrainer):
 
                 # 输出对应epoch、batch_id下的损失值，预测精确度
                 if batch_id % 100 == 0:
-                    print("Epoch {} step {}, Loss = {:}, Accuracy = {:}".format(
-                        epoch, batch_id, avg_loss.numpy(), acc))
+                    print("Epoch {} step {}, Loss = {:}".format(
+                        epoch, batch_id, avg_loss.numpy()))
 
             # evaluate
 
     def save(self, target_filepath: str):
         model_dict = self._model.state_dict()
         paddle.save(model_dict, target_filepath)
-
 
