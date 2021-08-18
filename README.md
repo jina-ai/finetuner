@@ -1,7 +1,7 @@
 # trainer
 
 - [x] Keras backend
-- [ ] Pytorch backend
+- [x] Pytorch backend
 - [ ] Paddle backend
 
 ## Requirements
@@ -21,49 +21,47 @@ from tests.data_generator import fashion_match_doc_generator
 from tests.data_generator import fashion_match_documentarray
 ```
 
-## Example 1.1: use `KerasTrainer` to train a DNN for `jina hello fashion`
+## Example 1: train a DNN for `jina hello fashion`
 
 1. Use artificial pairwise data to train `user_model` in a siamese manner:
 
-    - build a simple dense network with bottleneck
-       ```python
-      import tensorflow as tf
-    
-      user_model = tf.keras.Sequential(
-          [
-              tf.keras.layers.Flatten(input_shape=(28, 28)),
-              tf.keras.layers.Dense(128, activation='relu'),
-              tf.keras.layers.Dense(32),
-          ]
-      )
-      ```
+<details>
+<summary>Using KerasTrainer</summary>
 
-    - wrap the user model with our trainer
-       ```python
-       from trainer.keras import KerasTrainer
-    
-       kt = KerasTrainer(user_model, head_layer='CosineLayer')
-       ```
+- build a simple dense network with bottleneck
 
-    - fit and save the checkpoint
+   ```python
+  import tensorflow as tf
 
-       ```python
-       from tests.data_generator import fashion_match_doc_generator as fmdg
-    
-       kt.fit(fmdg, epochs=1)
-       kt.save('./examples/fashion/trained')
-       ```
+  user_model = tf.keras.Sequential(
+      [
+          tf.keras.layers.Flatten(input_shape=(28, 28)),
+          tf.keras.layers.Dense(128, activation='relu'),
+          tf.keras.layers.Dense(32),
+      ]
+  )
+  ```
 
-2. Test `trained` model in the Jina `hello fashion` pipeline:
-    ```bash
-    python examples/fashion/app.py
-    ```
+- wrap the user model with our trainer
+   ```python
+   from trainer.keras import KerasTrainer
 
-3. Check the results:
-    - Initial: `Precision@50: 71.41% Recall@50: 0.60%`
-    - Trained (3 Epochs): `Precision@50: 69.48% Recall@50: 0.58%`
+   kt = KerasTrainer(user_model, head_layer='CosineLayer')
+   ```
 
-## Example 1.2: use `PytorchTrainer` to train a DNN for `jina hello fashion`
+- fit and save the checkpoint
+
+   ```python
+   from tests.data_generator import fashion_match_doc_generator as fmdg
+
+   kt.fit(fmdg, epochs=1)
+   kt.save('./examples/fashion/trained')
+   ```
+
+</details>
+
+<details>
+<summary>Using PytorchTrainer</summary>
 
 - build a simple dense network with bottleneck:
     ```python
@@ -93,3 +91,14 @@ from tests.data_generator import fashion_match_documentarray
     pt.save('./examples/fashion/trained.pt')
     ```
 
+</details>
+
+2. Test `trained` model in the Jina `hello fashion` pipeline:
+    ```bash
+    python examples/fashion/app.py
+    ```
+
+3. Check the results:
+    - Initial: `Precision@50: 71.41% Recall@50: 0.60%`
+    - Trained (3 Epochs): `Precision@50: 69.48% Recall@50: 0.58%`
+    
