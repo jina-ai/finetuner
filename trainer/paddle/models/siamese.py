@@ -27,27 +27,30 @@ class SiameseNet(nn.Layer):
         else:
             self._loss_fn = nn.MSELoss()
 
-        # self._accuracy_fn = paddle.metric.Accuracy()
+        self._accuracy_fn = paddle.metric.Accuracy()
 
-    def forward(self, anchors, refers):
-        anchor_embeddings = self._base_model(anchors)
-        ref_embeddings = self._base_model(refers)
+    def forward(self, x, y):
+        embeds_a = self._base_model(x)
+        embeds_b = self._base_model(y)
 
-        sims = paddle.fluid.layers.reduce_sum(
-            paddle.multiply(anchor_embeddings, ref_embeddings), dim=-1, keep_dim=True
+        inner_product = paddle.fluid.layers.reduce_sum(
+            paddle.multiply(embeds_a, embeds_b), dim=-1, keep_dim=True
         )
 
-        return sims
+        return inner_product
 
     def training_step(self, batch_data, batch_idx):
         x = self(*batch_data[0])
-        labels = batch_data[1].astype('float32')
 
-        loss = self._loss_fn(x, labels)
+        labels = batch_data[1]
+        loss = self._loss_fn(paddle.squeeze(x, axis=-1), labels)
 
-        # # only compute the acc of current batch
-        # self._accuracy_fn.reset()
-        # correct = self._accuracy_fn.compute(x, labels)
-        # self._accuracy_fn.update(correct)
-        # acc = self._accuracy_fn.accumulate()
-        return loss
+        preds = paddle.stack([1.0 - x, x], axis=-1)
+        labels = paddle.cast(labels > 0, dtype='int64')
+
+        # only compute the acc of current batch
+        self._accuracy_fn.reset()
+        correct = self._accuracy_fn.compute(preds, labels)
+        self._accuracy_fn.update(correct)
+        acc = self._accuracy_fn.accumulate()
+        return loss, acc

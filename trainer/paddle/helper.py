@@ -5,7 +5,7 @@ def create_dataloader(
     dataset: 'paddle.io.Dataset',
     mode: str = 'train',
     batch_size: int = 8,
-    shuffle: bool = False,
+    shuffle: bool = True,
     drop_last: bool = True,
     **kwargs,
 ):

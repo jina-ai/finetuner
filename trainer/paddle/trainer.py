@@ -1,5 +1,6 @@
 from typing import Optional, Union, Iterator, Callable
 import functools
+import numpy as np
 import paddle
 from paddle import nn
 
@@ -10,6 +11,8 @@ from ..base import BaseTrainer
 from .models.siamese import SiameseNet
 from .helper import create_dataloader
 from .nn import head_layers
+
+from tqdm import tqdm
 
 
 class PaddleTrainer(BaseTrainer):
@@ -23,7 +26,7 @@ class PaddleTrainer(BaseTrainer):
     ):
         super().__init__(base_model, arity, head_layer, loss, **kwargs)
 
-        self._optimizer = paddle.optimizer.Adam(
+        self._optimizer = paddle.optimizer.RMSProp(
             learning_rate=0.01, parameters=self.wrapped_model.parameters()
         )
 
@@ -66,19 +69,24 @@ class PaddleTrainer(BaseTrainer):
             raise NotImplementedError
 
     def create_dataset(self, doc_array, **kwargs):
-        class _Dataset(paddle.io.IterableDataset):
-            def __init__(self, doc_array):
-                self._doc_array = list(doc_array)
+        class _Dataset(paddle.io.Dataset):
+            def __init__(self, docs):
                 self._img_shape = [1, 28, 28]
-
-            def __iter__(self):
-                for d in self._doc_array:
-                    d_blob = d.blob.reshape(self._img_shape).astype('float32')
+                self._data = []
+                for d in tqdm(docs, desc='building dataset'):
+                    d_blob = d.blob.reshape(self._img_shape)
                     for m in d.matches:
-                        yield (
-                            d_blob,
+                        example = (
+                            d_blob.astype('float32'),
                             m.blob.reshape(self._img_shape).astype('float32'),
-                        ), m.tags['trainer']['label']
+                        ), np.float32(m.tags['trainer']['label'])
+                        self._data.append(example)
+
+            def __getitem__(self, idx):
+                return self._data[idx]
+
+            def __len__(self):
+                return len(self._data)
 
         return _Dataset(doc_array() if callable(doc_array) else doc_array)
 
@@ -92,18 +100,31 @@ class PaddleTrainer(BaseTrainer):
         ],
         dev_data=None,
         batch_size: int = 256,
+        shuffle: bool = True,
         epochs: int = 10,
         **kwargs,
     ):
         train_loader = create_dataloader(
-            self.create_dataset(train_data), mode='train', batch_size=batch_size
+            self.create_dataset(train_data),
+            mode='train',
+            batch_size=batch_size,
+            shuffle=shuffle,
         )
+        self.wrapped_model.train()
         for epoch in range(epochs):
-            for batch_id, batch_data in enumerate(train_loader()):
-                loss = self.wrapped_model.training_step(batch_data, batch_id)
+            losses = []
+            accs = []
+            for batch_id, batch_data in tqdm(
+                enumerate(train_loader()),
+                ascii=True,
+                total=len(train_loader),
+                desc=f'Epoch-{epoch}',
+            ):
+                # forward step
+                loss, acc = self.wrapped_model.training_step(batch_data, batch_id)
                 avg_loss = paddle.mean(loss)
 
-                # backward gradient
+                # backward step
                 avg_loss.backward()
 
                 # TODO: gradient accumulate
@@ -114,12 +135,18 @@ class PaddleTrainer(BaseTrainer):
                 # clean gradients
                 self._optimizer.clear_grad()
 
-                if batch_id % 100 == 0:
-                    print(
-                        "Epoch {} step {}, Loss = {:}".format(
-                            epoch, batch_id, avg_loss.numpy()
-                        )
-                    )
+                losses.append(avg_loss.numpy()[0])
+                accs.append(acc)
+
+                # if batch_id % 100 == 0:
+                #     print(
+                #         "Epoch {} step {}, Loss = {:}, Acc = {:}".format(
+                #             epoch, batch_id, avg_loss.numpy(), acc
+                #         )
+                #     )
+            print(
+                f'Epoch {epoch}, Loss = {sum(losses) / len(losses)}, Acc = {sum(accs) / len(accs)}'
+            )
 
             # evaluate (TODO)
 
