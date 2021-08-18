@@ -2,24 +2,32 @@ from typing import Union, Optional
 
 import torch
 import torch.nn as nn
-from torch.utils.data.dataloader import DataLoader
 from jina.logging.logger import JinaLogger
+from torch.utils.data.dataloader import DataLoader
 
 from . import head_layers
-from ..base import BaseTrainer
 from .dataset import JinaSiameseDataset
-from .networks import SiameseInputsLayer
 from .head_layers import HeadLayer
+from ..base import BaseTrainer
+
+
+class ArityModel(nn.Module):
+    def __init__(self, base_model):
+        super().__init__()
+        self._base_model = base_model
+
+    def forward(self, *args):
+        return tuple(self._base_model(a) for a in args)
 
 
 class PytorchTrainer(BaseTrainer):
     def __init__(
-        self,
-        base_model: Optional[nn.Module] = None,
-        arity: int = 2,
-        head_layer: Union[HeadLayer, str, None] = 'HatLayer',
-        loss: str = 'hinge',
-        **kwargs,
+            self,
+            base_model: Optional[nn.Module] = None,
+            arity: int = 2,
+            head_layer: Union[HeadLayer, str, None] = 'HatLayer',
+            loss: str = 'hinge',
+            **kwargs,
     ):
         super().__init__(base_model, arity, head_layer, loss, **kwargs)
         self.logger = JinaLogger(self.__class__.__name__)
@@ -41,15 +49,14 @@ class PytorchTrainer(BaseTrainer):
 
     @property
     def loss(self) -> str:
-        return self._loss or self.head_layer.recommended_loss
+        return self._loss or self.head_layer.default_loss
 
     @property
     def wrapped_model(self) -> nn.Module:
         if self.base_model is None:
             raise ValueError(f'base_model is not set')
 
-        net = SiameseInputsLayer(base_model=self.base_model)  # build module
-        net = self.head_layer(net)  # wrap with head layer
+        net = self.head_layer(ArityModel(self.base_model))  # wrap with head layer
         return net
 
     def _get_data_loader(self, inputs, batch_size=256, shuffle=False, num_workers=1):
@@ -61,9 +68,9 @@ class PytorchTrainer(BaseTrainer):
         )
 
     def fit(
-        self,
-        inputs,
-        **kwargs,
+            self,
+            inputs,
+            **kwargs,
     ) -> None:
         model = self.wrapped_model
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -74,7 +81,7 @@ class PytorchTrainer(BaseTrainer):
         optimizer = torch.optim.RMSprop(
             params=model.parameters()
         )  # stay the same as keras
-        criterion = self.head_layer.recommended_loss
+        loss_fn = self.head_layer.default_loss
         num_epochs = 10
 
         for epoch in range(num_epochs):
@@ -82,19 +89,14 @@ class PytorchTrainer(BaseTrainer):
             model.train()
 
             losses = []
-            correct = 0
-            total = 0
 
             for (l_input, r_input), label in data_loader:
                 l_input, r_input, label = map(
                     lambda x: x.to(device), [l_input, r_input, label]
                 )
 
-                prob = model(l_input, r_input)
-                loss = criterion(prob, label)
-                eval_sign = torch.eq(torch.sign(prob), label)
-                correct = torch.count_nonzero(eval_sign).item()
-                total = float(len(eval_sign))
+                head_value = model(l_input, r_input)
+                loss = loss_fn(head_value, label)
 
                 optimizer.zero_grad()
 
@@ -102,12 +104,16 @@ class PytorchTrainer(BaseTrainer):
                 optimizer.step()
 
                 losses.append(loss.item())
+
+            eval_sign = torch.eq(torch.sign(head_value), label)
+            correct = torch.count_nonzero(eval_sign).item()
+            total = len(eval_sign)
+
             self.logger.info(
                 "Training: Loss={:.2f} Accuracy={:.2f}".format(
                     sum(losses) / len(losses), correct / total
                 )
             )
-        # TODO eval phrase
 
     def save(self, *args, **kwargs):
         torch.save(self.base_model.state_dict(), *args, **kwargs)
