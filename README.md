@@ -25,73 +25,73 @@ from tests.data_generator import fashion_match_documentarray
 
 1. Use artificial pairwise data to train `user_model` in a siamese manner:
 
-<details>
-<summary>Using KerasTrainer</summary>
+   <details>
+   <summary>Using KerasTrainer</summary>
 
-- build a simple dense network with bottleneck
+   - build a simple dense network with bottleneck
 
-   ```python
-  import tensorflow as tf
+      ```python
+     import tensorflow as tf
 
-  user_model = tf.keras.Sequential(
-      [
-          tf.keras.layers.Flatten(input_shape=(28, 28)),
-          tf.keras.layers.Dense(128, activation='relu'),
-          tf.keras.layers.Dense(32),
-      ]
-  )
-  ```
+     user_model = tf.keras.Sequential(
+         [
+             tf.keras.layers.Flatten(input_shape=(28, 28)),
+             tf.keras.layers.Dense(128, activation='relu'),
+             tf.keras.layers.Dense(32),
+         ]
+     )
+     ```
 
-- wrap the user model with our trainer
-   ```python
-   from trainer.keras import KerasTrainer
+   - wrap the user model with our trainer
+      ```python
+      from trainer.keras import KerasTrainer
 
-   kt = KerasTrainer(user_model, head_layer='CosineLayer')
-   ```
+      kt = KerasTrainer(user_model, head_layer='CosineLayer')
+      ```
 
-- fit and save the checkpoint
+   - fit and save the checkpoint
 
-   ```python
-   from tests.data_generator import fashion_match_doc_generator as fmdg
+      ```python
+      from tests.data_generator import fashion_match_doc_generator as fmdg
 
-   kt.fit(fmdg, epochs=1)
-   kt.save('./examples/fashion/trained')
-   ```
+      kt.fit(fmdg, epochs=1)
+      kt.save('./examples/fashion/trained')
+      ```
 
-</details>
+   </details>
 
-<details>
-<summary>Using PytorchTrainer</summary>
+   <details>
+   <summary>Using PytorchTrainer</summary>
 
-- build a simple dense network with bottleneck:
-    ```python
-    import torch.nn as nn
-    
-    user_model = nn.Sequential(
-        nn.Flatten(),
-        nn.Linear(in_features=784, out_features=128),
-        nn.ReLU(),
-        nn.Linear(in_features=128, out_features=10)
-    )
-    ```
+   - build a simple dense network with bottleneck:
+       ```python
+       import torch.nn as nn
 
-- wrap the user model with our trainer:
-    ```python
-    from trainer.pytorch import PytorchTrainer
-    
-    pt = PytorchTrainer(user_model, head_layer='CosineLayer')
-    ```
+       user_model = nn.Sequential(
+           nn.Flatten(),
+           nn.Linear(in_features=784, out_features=128),
+           nn.ReLU(),
+           nn.Linear(in_features=128, out_features=10)
+       )
+       ```
 
-- fit and save the checkpoint:
+   - wrap the user model with our trainer:
+       ```python
+       from trainer.pytorch import PytorchTrainer
 
-    ```python
-    from tests.data_generator import fashion_match_documentarray as fmdg
-    
-    pt.fit(fmdg(num_total=50), epochs=10)
-    pt.save('./examples/fashion/trained.pt')
-    ```
+       pt = PytorchTrainer(user_model, head_layer='CosineLayer')
+       ```
 
-</details>
+   - fit and save the checkpoint:
+
+       ```python
+       from tests.data_generator import fashion_match_documentarray as fmdg
+
+       pt.fit(fmdg(num_total=50), epochs=10)
+       pt.save('./examples/fashion/trained.pt')
+       ```
+
+   </details>
 
 2. Observe the decreasing of training loss and increasing of the accuracy.
     
