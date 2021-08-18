@@ -49,7 +49,7 @@ class PytorchTrainer(BaseTrainer):
             raise ValueError(f'base_model is not set')
 
         net = SiameseInputs(base_model=self.base_model)  # build module
-        net = self.head_layer(net)
+        net = self.head_layer(net)  # wrap with head layer
         return net
 
     def _get_data_loader(self, inputs, batch_size=256, shuffle=False, num_workers=1):
@@ -63,7 +63,6 @@ class PytorchTrainer(BaseTrainer):
     def fit(
         self,
         inputs,
-        phase='train',
         **kwargs,
     ) -> None:
         model = self.wrapped_model
