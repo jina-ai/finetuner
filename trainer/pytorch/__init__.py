@@ -93,6 +93,9 @@ class PytorchTrainer(BaseTrainer):
 
                 prob = model(l_input, r_input)
                 loss = criterion(prob, label)
+                eval_sign = torch.eq(torch.sign(prob), label)
+                correct = torch.count_nonzero(eval_sign).item()
+                total = float(len(eval_sign))
 
                 optimizer.zero_grad()
 
@@ -100,8 +103,6 @@ class PytorchTrainer(BaseTrainer):
                 optimizer.step()
 
                 losses.append(loss.item())
-                correct += torch.count_nonzero(label == (prob > 0.5)).item()
-                total += len(label)
             self.logger.info(
                 "Training: Loss={:.2f} Accuracy={:.2f}".format(
                     sum(losses) / len(losses), correct / total
@@ -110,4 +111,4 @@ class PytorchTrainer(BaseTrainer):
         # TODO eval phrase
 
     def save(self, *args, **kwargs):
-        self.base_model.save(*args, **kwargs)
+        torch.save(self.base_model.state_dict(), *args, **kwargs)
