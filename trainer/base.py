@@ -1,8 +1,9 @@
 import abc
 from abc import ABC
-from typing import Optional, TypeVar, Union, Callable, Iterator
+from typing import Optional, TypeVar, Union, Callable, Iterator, Any
 
 from jina import DocumentArray, Document
+from jina.logging.logger import JinaLogger
 from jina.types.arrays.memmap import DocumentArrayMemmap
 
 AnyDNN = TypeVar('AnyDNN')  #: Any implementation of a Deep Neural Network object
@@ -14,34 +15,31 @@ class BaseTrainer(ABC):
         base_model: Optional[AnyDNN] = None,
         arity: Optional[int] = None,
         head_layer: Union[AnyDNN, str, None] = None,
-        loss: Optional[str] = None,
+        loss: Optional[Any] = None,
         **kwargs
     ):
         self._base_model = base_model
         self._head_layer = head_layer
         self._arity = arity
         self._loss = loss
+        self.logger = JinaLogger(self.__class__.__name__)
 
     @property
-    @abc.abstractmethod
     def base_model(self) -> AnyDNN:
         """Get the base model of this object."""
-        ...
+        return self._base_model
 
     @base_model.setter
-    @abc.abstractmethod
     def base_model(self, val: AnyDNN):
         """Set the base model of this object to a deep neural network object."""
-        ...
+        self._base_model = val
 
     @property
-    @abc.abstractmethod
     def arity(self) -> int:
         """Get the arity of this object."""
-        ...
+        return self._arity
 
     @arity.setter
-    @abc.abstractmethod
     def arity(self, val: int):
         """Set the arity of this object.
 
@@ -49,7 +47,7 @@ class BaseTrainer(ABC):
             - `arity = 2` corresponds to the siamese network;
             - `arity = 3` corresponds to the triplet network.
         """
-        ...
+        self._arity = val
 
     @property
     @abc.abstractmethod
@@ -68,19 +66,17 @@ class BaseTrainer(ABC):
         ...
 
     @property
-    @abc.abstractmethod
-    def loss(self) -> str:
+    def loss(self) -> Any:
         """Get the loss function of this object."""
-        ...
+        return self._loss or self.head_layer.default_loss
 
     @loss.setter
-    @abc.abstractmethod
-    def loss(self, val: str):
+    def loss(self, val: Any):
         """Set the loss function of this object to one of the predefined loss functions.
 
         It can be "hinge", "squared", ...
         """
-        ...
+        self._loss = val
 
     @abc.abstractmethod
     def fit(
@@ -91,6 +87,7 @@ class BaseTrainer(ABC):
             Iterator[Document],
             Callable[..., Iterator[Document]],
         ],
+        *args,
         **kwargs
     ) -> None:
         """Fit the :property:`base_model` on ``doc_array`` data.
@@ -107,3 +104,4 @@ class BaseTrainer(ABC):
         Note that, the ``head_layer`` and ``wrapped_model`` do not need to be stored, as they are auxiliary layers
         for tuning ``base_model``.
         """
+        ...

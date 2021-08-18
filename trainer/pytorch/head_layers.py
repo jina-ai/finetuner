@@ -5,32 +5,24 @@ import torch.nn.functional as F
 
 
 class HeadLayer(nn.Module):
-    recommended_loss: nn.Module  #: the recommended loss function to be used when equipping this layer to base model
+    default_loss: nn.Module  #: the recommended loss function to be used when equipping this layer to base model
+    arity: int
+
+    def __init__(self, arity_model: nn.Module):
+        super().__init__()
+        self._arity_model = arity_model
+
+    def forward(self, *inputs):
+        return self.call(*self._arity_model(*inputs))
 
     @abc.abstractmethod
-    def call(self, inputs, **kwargs):
+    def call(self, *args, **kwargs):
         ...
 
 
-class PairwiseHeadLayer(nn.Module):
-    @abc.abstractmethod
-    def call(self, lvalue, rvalue, **kwargs):
-        ...
+class CosineLayer(HeadLayer):
+    default_loss = nn.MSELoss()
+    arity = 2
 
-
-class CosineLayer(PairwiseHeadLayer):
-    recommended_loss = nn.MSELoss()
-
-    def __init__(self, model):
-        super(CosineLayer, self).__init__()
-        self.model = model
-
-    def call(self, l_input, r_input):
-        l_input, r_input = self.model(l_input, r_input)
-        normalize_a = F.normalize(l_input, p=2, dim=1)
-        normalize_b = F.normalize(r_input, p=2, dim=1)
-        cos_similarity = nn.CosineSimilarity(dim=1)
-        return cos_similarity(normalize_a, normalize_b)
-
-    def forward(self, l_input, r_input):
-        return self.call(l_input, r_input)
+    def call(self, lvalue, rvalue):
+        return F.cosine_similarity(lvalue, rvalue)
