@@ -139,6 +139,7 @@ class PaddleTrainer(BaseTrainer):
                             epoch, batch_id, avg_loss.numpy(), acc.numpy()
                         )
                     )
+            self.save(f'checkpoints/epoch_{epoch}.pd')
             print(
                 f'Epoch {epoch}, Loss = {sum(losses) / len(losses)}, Acc = {sum(accs) / len(accs)}'
             )
@@ -146,5 +147,5 @@ class PaddleTrainer(BaseTrainer):
             # evaluate (TODO)
 
     def save(self, target_filepath: str):
-        model_dict = self._model.state_dict()
+        model_dict = self.base_model.state_dict()
         paddle.save(model_dict, target_filepath)
