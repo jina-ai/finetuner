@@ -12,34 +12,12 @@ from ..base import BaseTrainer
 
 
 class KerasTrainer(BaseTrainer):
-    def __init__(
-        self,
-        base_model: Optional[Model] = None,
-        arity: int = 2,
-        head_layer: Union[HeadLayer, str, None] = 'HatLayer',
-        loss: Optional[str] = None,
-        **kwargs,
-    ):
-        super().__init__(base_model, arity, head_layer, loss, **kwargs)
-
-    @property
-    def base_model(self) -> Model:
-        return self._base_model
-
-    @property
-    def arity(self) -> int:
-        return self._arity
-
     @property
     def head_layer(self) -> HeadLayer:
         if isinstance(self._head_layer, str):
             return getattr(head_layers, self._head_layer)()
         elif isinstance(self._head_layer, HeadLayer):
             return self._head_layer
-
-    @property
-    def loss(self) -> str:
-        return self._loss or self.head_layer.default_loss
 
     @property
     def wrapped_model(self) -> Model:
