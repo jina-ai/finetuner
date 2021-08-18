@@ -8,7 +8,7 @@ from jina.logging.logger import JinaLogger
 from . import head_layers
 from ..base import BaseTrainer
 from .dataset import JinaSiameseDataset
-from .networks import SiameseInputs
+from .networks import SiameseInputsLayer
 from .head_layers import HeadLayer
 
 
@@ -48,7 +48,7 @@ class PytorchTrainer(BaseTrainer):
         if self.base_model is None:
             raise ValueError(f'base_model is not set')
 
-        net = SiameseInputs(base_model=self.base_model)  # build module
+        net = SiameseInputsLayer(base_model=self.base_model)  # build module
         net = self.head_layer(net)  # wrap with head layer
         return net
 

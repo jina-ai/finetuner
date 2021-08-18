@@ -1,9 +1,9 @@
 import torch.nn as nn
 
 
-class SiameseInputs(nn.Module):
+class SiameseInputsLayer(nn.Module):
     def __init__(self, base_model):
-        super(SiameseInputs, self).__init__()
+        super(SiameseInputsLayer, self).__init__()
         self._base_model = base_model
 
     def forward(self, l_input, r_input):
