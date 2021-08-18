@@ -51,7 +51,10 @@ class KerasTrainer(BaseTrainer):
         head_values = self.head_layer(*(self.base_model(v) for v in input_values))
         wrapped_model = Model(inputs=input_values, outputs=head_values)
 
-        wrapped_model.compile(loss=self.loss)
+        def metric_fn(y_true, y_predict):
+            return tf.equal(tf.math.sign(y_true), tf.math.sign(y_predict))
+
+        wrapped_model.compile(loss=self.loss, metrics=[metric_fn])
         wrapped_model.summary()
         return wrapped_model
 
