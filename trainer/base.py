@@ -87,6 +87,7 @@ class BaseTrainer(ABC):
             Iterator[Document],
             Callable[..., Iterator[Document]],
         ],
+        *args,
         **kwargs
     ) -> None:
         """Fit the :property:`base_model` on ``doc_array`` data.

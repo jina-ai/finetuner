@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from jina.logging.profile import ProgressBar
 from torch.utils.data.dataloader import DataLoader
 
 from . import head_layers
@@ -34,62 +35,62 @@ class PytorchTrainer(BaseTrainer):
 
         return self.head_layer(_ArityModel(self.base_model))  # wrap with head layer
 
-    def _get_data_loader(self, inputs, batch_size=256, shuffle=False, num_workers=1):
+    def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
         return DataLoader(
             dataset=JinaSiameseDataset(inputs=inputs),
             batch_size=batch_size,
             shuffle=shuffle,
-            num_workers=num_workers,
         )
 
     def fit(
         self,
-        inputs,
+        doc_array,
+        epochs: int,
         **kwargs,
     ) -> None:
         model = self.wrapped_model
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         model.to(device)
 
-        data_loader = self._get_data_loader(inputs=inputs)
+        data_loader = self._get_data_loader(inputs=doc_array)
 
         optimizer = torch.optim.RMSprop(
             params=model.parameters()
         )  # stay the same as keras
         loss_fn = self.head_layer.default_loss
-        num_epochs = 10
 
-        for epoch in range(num_epochs):
-            self.logger.info(f'Epoch {epoch}/{num_epochs - 1}')
+        for epoch in range(epochs):
             model.train()
 
             losses = []
             correct, total = 0, 0
+            with ProgressBar(task_name=f'Epoch {epoch+1}/{epochs}') as p:
+                for (l_input, r_input), label in data_loader:
+                    l_input, r_input, label = map(
+                        lambda x: x.to(device), [l_input, r_input, label]
+                    )
 
-            for (l_input, r_input), label in data_loader:
-                l_input, r_input, label = map(
-                    lambda x: x.to(device), [l_input, r_input, label]
+                    head_value = model(l_input, r_input)
+                    loss = loss_fn(head_value, label)
+
+                    optimizer.zero_grad()
+
+                    loss.backward()
+                    optimizer.step()
+
+                    losses.append(loss.item())
+
+                    eval_sign = torch.eq(torch.sign(head_value), label)
+                    correct += torch.count_nonzero(eval_sign).item()
+                    total += len(eval_sign)
+
+                    p.update()
+
+                self.logger.info(
+                    "Training: Loss={:.2f} Accuracy={:.2f}".format(
+                        sum(losses) / len(losses), correct / total
+                    )
                 )
-
-                head_value = model(l_input, r_input)
-                loss = loss_fn(head_value, label)
-
-                optimizer.zero_grad()
-
-                loss.backward()
-                optimizer.step()
-
-                losses.append(loss.item())
-
-                eval_sign = torch.eq(torch.sign(head_value), label)
-                correct += torch.count_nonzero(eval_sign).item()
-                total += len(eval_sign)
-
-            self.logger.info(
-                "Training: Loss={:.2f} Accuracy={:.2f}".format(
-                    sum(losses) / len(losses), correct / total
-                )
-            )
 
     def save(self, *args, **kwargs):
         torch.save(self.base_model.state_dict(), *args, **kwargs)
