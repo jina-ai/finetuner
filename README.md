@@ -93,7 +93,7 @@ from tests.data_generator import fashion_match_documentarray
 
 </details>
 
-2. Check the training loss and evaluation result
+2. Observe the decreasing of training loss and increasing of the accuracy.
     
     ```text
     Train on None steps
@@ -136,6 +136,6 @@ from tests.data_generator import fashion_match_documentarray
     python examples/fashion/app.py
     ```
 
-4. Open the browser and check the results:
+4. Open the browser and check the results.
 
     
