@@ -25,19 +25,19 @@ class BaseTrainer(ABC):
     @property
     @abc.abstractmethod
     def base_model(self) -> AnyDNN:
-        """Get the base model of this object. """
+        """Get the base model of this object."""
         ...
 
     @base_model.setter
     @abc.abstractmethod
     def base_model(self, val: AnyDNN):
-        """Set the base model of this object to a deep neural network object. """
+        """Set the base model of this object to a deep neural network object."""
         ...
 
     @property
     @abc.abstractmethod
     def arity(self) -> int:
-        """Get the arity of this object. """
+        """Get the arity of this object."""
         ...
 
     @arity.setter
@@ -54,7 +54,7 @@ class BaseTrainer(ABC):
     @property
     @abc.abstractmethod
     def head_layer(self) -> AnyDNN:
-        """Get the head model of this object. """
+        """Get the head model of this object."""
         ...
 
     @head_layer.setter
