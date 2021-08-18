@@ -35,3 +35,4 @@ trainer = PaddleTrainer(base_model=model, head_layer='CosineLayer')
 
 train_data_iter = fmdg(pos_value=1, neg_value=-1)
 trainer.fit(train_data_iter, batch_size=256, shuffle=True, epochs=10)
+trainer.save('simple_net.paddle')
