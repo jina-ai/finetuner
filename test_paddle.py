@@ -22,7 +22,7 @@ class SimpleNet(paddle.nn.Layer):
         x = self.fc1(x)
         x = self.relu(x)
         x = self.fc2(x)
-        x = x / paddle.norm(x, axis=1, keepdim=True)
+
         return x
 
 

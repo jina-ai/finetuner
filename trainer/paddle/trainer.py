@@ -114,12 +114,7 @@ class PaddleTrainer(BaseTrainer):
         for epoch in range(epochs):
             losses = []
             accs = []
-            for batch_id, batch_data in tqdm(
-                enumerate(train_loader()),
-                ascii=True,
-                total=len(train_loader),
-                desc=f'Epoch-{epoch}',
-            ):
+            for batch_id, batch_data in enumerate(train_loader()):
                 # forward step
                 loss, acc = self.wrapped_model.training_step(batch_data, batch_id)
                 avg_loss = paddle.mean(loss)
@@ -138,12 +133,12 @@ class PaddleTrainer(BaseTrainer):
                 losses.append(avg_loss.numpy()[0])
                 accs.append(acc)
 
-                # if batch_id % 100 == 0:
-                #     print(
-                #         "Epoch {} step {}, Loss = {:}, Acc = {:}".format(
-                #             epoch, batch_id, avg_loss.numpy(), acc
-                #         )
-                #     )
+                if batch_id % 100 == 0:
+                    print(
+                        "=> Epoch {} step {}, Loss = {:}, Acc = {:}".format(
+                            epoch, batch_id, avg_loss.numpy(), acc
+                        )
+                    )
             print(
                 f'Epoch {epoch}, Loss = {sum(losses) / len(losses)}, Acc = {sum(accs) / len(accs)}'
             )
