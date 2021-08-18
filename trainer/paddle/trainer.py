@@ -131,12 +131,12 @@ class PaddleTrainer(BaseTrainer):
                 self._optimizer.clear_grad()
 
                 losses.append(avg_loss.numpy()[0])
-                accs.append(acc)
+                accs.append(acc.numpy()[0])
 
                 if batch_id % 100 == 0:
                     print(
                         "=> Epoch {} step {}, Loss = {:}, Acc = {:}".format(
-                            epoch, batch_id, avg_loss.numpy(), acc
+                            epoch, batch_id, avg_loss.numpy(), acc.numpy()
                         )
                     )
             print(

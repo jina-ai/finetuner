@@ -33,24 +33,27 @@ class SiameseNet(nn.Layer):
         embeds_a = self._base_model(x)
         embeds_b = self._base_model(y)
 
-        inner_product = paddle.fluid.layers.reduce_sum(
-            paddle.multiply(embeds_a, embeds_b), dim=-1, keep_dim=True
-        )
+        cosine = self._head_layer(embeds_a, embeds_b)
 
-        return inner_product
+        return cosine
 
     def training_step(self, batch_data, batch_idx):
         x = self(*batch_data[0])
+        x = paddle.squeeze(x, axis=-1)
 
         labels = batch_data[1]
-        loss = self._loss_fn(paddle.squeeze(x, axis=-1), labels)
+        loss = self._loss_fn(x, labels)
 
-        preds = paddle.stack([1.0 - x, x], axis=-1)
-        labels = paddle.cast(labels > 0, dtype='int64')
+        corrects = paddle.equal(paddle.sign(x), paddle.sign(labels))
+        corrects = paddle.cast(corrects, dtype='float32')
+        accuracy = paddle.mean(corrects)
 
-        # only compute the acc of current batch
-        self._accuracy_fn.reset()
-        correct = self._accuracy_fn.compute(preds, labels)
-        self._accuracy_fn.update(correct)
-        acc = self._accuracy_fn.accumulate()
-        return loss, acc
+        # preds = paddle.stack([1.0 - x, x], axis=-1)
+        # labels = paddle.cast(labels > 0, dtype='int64')
+        #
+        # # only compute the acc of current batch
+        # self._accuracy_fn.reset()
+        # correct = self._accuracy_fn.compute(preds, labels)
+        # self._accuracy_fn.update(correct)
+        # acc = self._accuracy_fn.accumulate()
+        return loss, accuracy
