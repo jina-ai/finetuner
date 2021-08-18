@@ -22,6 +22,7 @@ class PaddleTrainer(BaseTrainer):
         arity: Optional[int] = 2,
         head_layer: Union['nn.Layer', str, None] = 'CosineLayer',
         loss: Union['nn.Layer', str, None] = None,
+        use_gpu: bool = False,
         **kwargs,
     ):
         super().__init__(base_model, arity, head_layer, loss, **kwargs)
@@ -29,6 +30,9 @@ class PaddleTrainer(BaseTrainer):
         self._optimizer = paddle.optimizer.RMSProp(
             learning_rate=0.01, parameters=self.wrapped_model.parameters()
         )
+
+        if use_gpu:
+            paddle.set_device('gpu')
 
         self.kwargs = kwargs
 
