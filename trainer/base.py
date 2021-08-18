@@ -13,7 +13,7 @@ class BaseTrainer(ABC):
     def __init__(
         self,
         base_model: Optional[AnyDNN] = None,
-        arity: Optional[int] = None,
+        arity: Optional[int] = 2,
         head_layer: Union[AnyDNN, str, None] = None,
         loss: Optional[Any] = None,
         **kwargs
