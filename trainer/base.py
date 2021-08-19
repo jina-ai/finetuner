@@ -1,12 +1,20 @@
 import abc
 from abc import ABC
-from typing import Optional, TypeVar, Union, Callable, Iterator, Any
+from typing import Optional, TypeVar, Union, Callable, Iterator, Any, Sequence
 
 from jina import DocumentArray, Document
 from jina.logging.logger import JinaLogger
 from jina.types.arrays.memmap import DocumentArrayMemmap
 
 AnyDNN = TypeVar('AnyDNN')  #: Any implementation of a Deep Neural Network object
+
+DocumentArrayLike = TypeVar(
+    'DocumentArrayLike',
+    Sequence[Document],
+    DocumentArray,
+    DocumentArrayMemmap,
+    Iterator[Document],
+)
 
 
 class BaseTrainer(ABC):
@@ -81,12 +89,16 @@ class BaseTrainer(ABC):
     @abc.abstractmethod
     def fit(
         self,
-        doc_array: Union[
-            DocumentArray,
-            DocumentArrayMemmap,
-            Iterator[Document],
-            Callable[..., Iterator[Document]],
+        train_data: Union[
+            DocumentArrayLike,
+            Callable[..., DocumentArrayLike],
         ],
+        eval_data: Optional[
+            Union[
+                DocumentArrayLike,
+                Callable[..., DocumentArrayLike],
+            ]
+        ] = None,
         *args,
         **kwargs
     ) -> None:

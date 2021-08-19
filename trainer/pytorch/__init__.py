@@ -1,3 +1,5 @@
+from typing import Union, Callable
+
 import torch
 import torch.nn as nn
 from jina.logging.profile import ProgressBar
@@ -6,7 +8,7 @@ from torch.utils.data.dataloader import DataLoader
 from . import head_layers
 from .dataset import JinaSiameseDataset
 from .head_layers import HeadLayer
-from ..base import BaseTrainer
+from ..base import BaseTrainer, DocumentArrayLike
 
 
 class _ArityModel(nn.Module):
@@ -44,8 +46,11 @@ class PytorchTrainer(BaseTrainer):
 
     def fit(
         self,
-        doc_array,
-        epochs: int,
+        train_data: Union[
+            DocumentArrayLike,
+            Callable[..., DocumentArrayLike],
+        ],
+        epochs: int = 10,
         **kwargs,
     ) -> None:
         model = self.wrapped_model
@@ -64,7 +69,7 @@ class PytorchTrainer(BaseTrainer):
             losses = []
             correct, total = 0, 0
 
-            data_loader = self._get_data_loader(inputs=doc_array)
+            data_loader = self._get_data_loader(inputs=train_data)
             with ProgressBar(task_name=f'Epoch {epoch+1}/{epochs}') as p:
                 for (l_input, r_input), label in data_loader:
                     l_input, r_input, label = map(

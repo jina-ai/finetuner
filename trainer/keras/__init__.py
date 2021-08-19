@@ -1,14 +1,12 @@
-from typing import Union, Optional, Iterator, Callable
+from typing import Union, Callable
 
 import tensorflow as tf
-from jina import DocumentArray, Document
-from jina.types.arrays.memmap import DocumentArrayMemmap
 from tensorflow import keras
 from tensorflow.keras import Model
 
 from . import head_layers
 from .head_layers import HeadLayer
-from ..base import BaseTrainer
+from ..base import BaseTrainer, DocumentArrayLike
 
 
 class KerasTrainer(BaseTrainer):
@@ -60,17 +58,15 @@ class KerasTrainer(BaseTrainer):
 
     def fit(
         self,
-        doc_array: Union[
-            DocumentArray,
-            DocumentArrayMemmap,
-            Iterator[Document],
-            Callable[..., Iterator[Document]],
+        train_data: Union[
+            DocumentArrayLike,
+            Callable[..., DocumentArrayLike],
         ],
         batch_size: int = 256,
         **kwargs,
     ) -> None:
         self.wrapped_model.fit(
-            self._da_to_tf_generator(doc_array)
+            self._da_to_tf_generator(train_data)
             .shuffle(buffer_size=4096)
             .batch(batch_size, drop_remainder=True),
             **kwargs,

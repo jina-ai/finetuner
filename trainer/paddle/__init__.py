@@ -1,14 +1,12 @@
-from typing import Union, Iterator, Callable
+from typing import Union, Callable
 
 import paddle
-from jina import Document, DocumentArray
-from jina.types.arrays.memmap import DocumentArrayMemmap
 from paddle import nn
 
 from . import head_layers
 from .dataset import JinaSiameseDataset
 from .head_layers import HeadLayer
-from ..base import BaseTrainer
+from ..base import BaseTrainer, DocumentArrayLike
 
 
 class _ArityModel(nn.Layer):
@@ -45,12 +43,9 @@ class PaddleTrainer(BaseTrainer):
     def fit(
         self,
         train_data: Union[
-            DocumentArray,
-            DocumentArrayMemmap,
-            Iterator[Document],
-            Callable[..., Iterator[Document]],
+            DocumentArrayLike,
+            Callable[..., DocumentArrayLike],
         ],
-        dev_data=None,
         batch_size: int = 256,
         shuffle: bool = True,
         epochs: int = 10,
@@ -98,8 +93,6 @@ class PaddleTrainer(BaseTrainer):
             print(
                 f'Epoch {epoch}, Loss = {sum(losses) / len(losses)}, Accuracy = {sum(accuracies) / len(accuracies)}'
             )
-
-            # evaluate (TODO)
 
     def save(self, save_path: str, input_spec: Union[list, tuple] = None):
         base_model = paddle.jit.to_static(self.base_model, input_spec=input_spec)
