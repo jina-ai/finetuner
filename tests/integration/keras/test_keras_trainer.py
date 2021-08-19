@@ -3,7 +3,7 @@ import tensorflow as tf
 from tensorflow import keras
 
 from trainer.keras import KerasTrainer
-from ..data_generator import fashion_match_doc_generator as fmdg
+from ...data_generator import fashion_match_doc_generator as fmdg
 
 
 def test_simple_sequential_model(tmpdir):

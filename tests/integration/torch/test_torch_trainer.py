@@ -5,7 +5,7 @@ import torch.nn as nn
 import numpy as np
 
 from trainer.pytorch import PytorchTrainer
-from ..data_generator import fashion_match_doc_generator as fmdg
+from ...data_generator import fashion_match_doc_generator as fmdg
 
 INPUT_DIM = 28
 OUTPUT_DIM = 32
