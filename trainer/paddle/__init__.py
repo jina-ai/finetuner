@@ -8,8 +8,8 @@ from jina.types.arrays.memmap import DocumentArrayMemmap
 from paddle import nn
 
 from . import head_layers
+from .dataset import JinaSiameseDataset
 from .head_layers import HeadLayer
-from .helper import create_dataloader
 from ..base import BaseTrainer
 
 
@@ -39,27 +39,11 @@ class PaddleTrainer(BaseTrainer):
 
         return self.head_layer(_ArityModel(self.base_model))  # wrap with head layer
 
-    def create_dataset(self, doc_array, **kwargs):
-        class _Dataset(paddle.io.Dataset):
-            def __init__(self, docs):
-                self._img_shape = [1, 28, 28]
-                self._data = []
-                for d in docs:
-                    d_blob = d.blob.reshape(self._img_shape)
-                    for m in d.matches:
-                        example = (
-                                      d_blob.astype('float32'),
-                                      m.blob.reshape(self._img_shape).astype('float32'),
-                                  ), np.float32(m.tags['trainer']['label'])
-                        self._data.append(example)
 
-            def __getitem__(self, idx):
-                return self._data[idx]
-
-            def __len__(self):
-                return len(self._data)
-
-        return _Dataset(doc_array() if callable(doc_array) else doc_array)
+    def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
+        paddle.io.DataLoader(JinaSiameseDataset(inputs=inputs),
+                             batch_size=batch_size,
+                             shuffle=shuffle)
 
     def fit(
             self,
@@ -80,12 +64,7 @@ class PaddleTrainer(BaseTrainer):
         if use_gpu:
             paddle.set_device('gpu')
 
-        train_loader = create_dataloader(
-            self.create_dataset(train_data),
-            mode='train',
-            batch_size=batch_size,
-            shuffle=shuffle,
-        )
+        data_loader = self._get_data_loader(inputs=train_data)
 
         optimizer = paddle.optimizer.RMSProp(
             learning_rate=0.01, parameters=model.parameters()
@@ -98,7 +77,7 @@ class PaddleTrainer(BaseTrainer):
 
             losses = []
             accuracies = []
-            for (l_input, r_input), label in train_loader:
+            for (l_input, r_input), label in data_loader:
                 # forward step
                 head_value = model(l_input, r_input)
                 loss = loss_fn(head_value, label)
