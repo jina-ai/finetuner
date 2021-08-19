@@ -2,8 +2,8 @@ from typing import Union, Callable
 
 import torch
 import torch.nn as nn
-from jina.logging.profile import ProgressBar
 from torch.utils.data.dataloader import DataLoader
+from jina.logging.profile import ProgressBar
 
 from . import head_layers
 from .dataset import JinaSiameseDataset
