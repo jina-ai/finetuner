@@ -140,7 +140,7 @@ jobs:
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:
-    needs: [core-test, check-black, code-injection]
+    needs: [core-test, check-black]
     if: always()
     runs-on: ubuntu-latest
     steps:
