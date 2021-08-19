@@ -1,7 +1,5 @@
-from typing import Dict
-import paddle
-from paddle import nn
 import numpy as np
+import paddle
 from jina import Executor, DocumentArray, requests
 
 
