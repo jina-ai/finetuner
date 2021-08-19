@@ -38,7 +38,8 @@ def main(checkpoint_dir):
 
     from trainer.paddle.trainer import PaddleTrainer
 
-    trainer = PaddleTrainer(base_model=user_model, head_layer='CosineLayer', use_gpu=True)
+
+    trainer = PaddleTrainer(base_model=user_model, head_layer='CosineLayer', checkpoint_dir=checkpoint_dir, use_gpu=True)
 
     from tests.data_generator import fashion_match_documentarray as fmdg
     train_data_iter = fmdg(num_total=50)
