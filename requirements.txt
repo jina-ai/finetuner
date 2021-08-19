@@ -1,0 +1,2 @@
+numpy
+https://github.com/jina-ai/jina/archive/refs/heads/master.zip

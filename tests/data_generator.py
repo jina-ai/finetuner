@@ -11,20 +11,19 @@ from jina import Document, DocumentArray
 from jina.logging.profile import ProgressBar, TimeContext
 
 
-def fashion_match_documentarray(num_total: int = 60000, **kwargs):
+def fashion_match_documentarray(**kwargs):
     da = DocumentArray()
     with ProgressBar(task_name='build DA') as t:
         for d in fashion_match_doc_generator(**kwargs):
             da.append(d)
             t.update_tick(0.01)
-            if len(da) >= num_total:
-                break
     return da
 
 
 def fashion_match_doc_generator(
     num_pos: int = 10,
     num_neg: int = 10,
+    num_total: int = 60000,
     pos_value: int = 1,
     neg_value: int = -1,
 ):
@@ -39,6 +38,7 @@ def fashion_match_doc_generator(
             rv[class_label].append(copy_d)
             copy_all_docs.append(copy_d)
 
+    n_d = 0
     for od in all_docs:
         pos_label = int(od.tags['class'])
         pos_samples = rv[pos_label].sample(num_pos)
@@ -57,7 +57,11 @@ def fashion_match_doc_generator(
 
         od.matches.extend(pos_samples)
         od.matches.extend(neg_samples)
+        n_d += 1
         yield od
+
+        if n_d >= num_total:
+            break
 
 
 def fashion_doc_generator(download_proxy=None, task_name='download fashion-mnist'):
