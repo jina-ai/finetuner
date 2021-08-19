@@ -17,9 +17,9 @@ class UserModel(nn.Module):
         self.act = nn.ReLU()
         self.fc = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(in_features=784, out_features=128),
+            nn.Linear(in_features=INPUT_DIM * INPUT_DIM, out_features=128),
             nn.ReLU(),
-            nn.Linear(in_features=128, out_features=32),
+            nn.Linear(in_features=128, out_features=OUTPUT_DIM),
         )
 
     def forward(self, x):
@@ -33,7 +33,7 @@ def test_simple_sequential_model(tmpdir):
     pt = PytorchTrainer(user_model, head_layer='CosineLayer')
 
     # fit and save the checkpoint
-    pt.fit(lambda: fmdg(num_total=1000), epochs=2, batch_size=256)
+    pt.fit(lambda: fmdg(num_total=1000), epochs=5, batch_size=256)
     pt.save(model_path)
 
     # load the checkpoint and ensure the dim

@@ -22,7 +22,7 @@ def test_simple_sequential_model(tmpdir):
     kt = KerasTrainer(user_model, head_layer='CosineLayer')
 
     # fit and save the checkpoint
-    kt.fit(fmdg(num_total=1000), epochs=10, batch_size=256)
+    kt.fit(fmdg(num_total=1000), epochs=5, batch_size=256)
     kt.save(tmpdir / 'trained.kt')
 
     embedding_model = keras.models.load_model(tmpdir / 'trained.kt')
