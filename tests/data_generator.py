@@ -115,7 +115,9 @@ def fashion_doc_generator(download_proxy=None, task_name='download fashion-mnist
                 v['data'] = _load_mnist(v['filename'])
 
     for raw_img, lbl in zip(targets['index']['data'], targets['index-labels']['data']):
-        yield Document(content=raw_img / 255.0, tags={'class': int(lbl)})
+        yield Document(
+            content=(raw_img / 255.0).astype(np.float32), tags={'class': int(lbl)}
+        )
 
 
 def _load_mnist(path):
