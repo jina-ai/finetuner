@@ -29,7 +29,9 @@ class MyPaddleEncoder(Executor):
     def __init__(self, model_path: str = './trained', **kwargs):
         super().__init__(**kwargs)
         self.embedding_model = SimpleNet()
-        self.embedding_model.load_dict(paddle.load(model_path))
+        state_dict = paddle.load(model_path)
+        print(f'=> state dict: {state_dict}')
+        self.embedding_model.set_state_dict(state_dict)
         self.embedding_model.eval()
 
     @requests

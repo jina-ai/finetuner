@@ -75,7 +75,7 @@ def hello_world(args):
     # load index flow from a YAML file
     f = (
         Flow()
-        .add(uses=MyPaddleEncoder, uses_with={'model_path': './checkpoints/epoch_9.pd'}, parallel=2)
+        .add(uses=MyPaddleEncoder, uses_with={'model_path': './checkpoints/epoch_99.pd'}, parallel=2)
         .add(uses=MyIndexer, workspace=args.workdir)
         .add(uses=MyEvaluator)
     )

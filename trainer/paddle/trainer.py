@@ -22,15 +22,18 @@ class PaddleTrainer(BaseTrainer):
         arity: Optional[int] = 2,
         head_layer: Union['nn.Layer', str, None] = 'CosineLayer',
         loss: Union['nn.Layer', str, None] = None,
+
         use_gpu: bool = False,
         **kwargs,
     ):
         super().__init__(base_model, arity, head_layer, loss, **kwargs)
 
-        self._optimizer = paddle.optimizer.RMSProp(
-            learning_rate=0.01, parameters=self.wrapped_model.parameters()
-        )
+        self._wrapped_model = self.wrapped_model()
 
+        # self._optimizer = paddle.optimizer.RMSProp(
+        #     learning_rate=0.1, parameters=self._wrapped_model.parameters()
+        # )
+        self._optimizer = paddle.optimizer.Adam(learning_rate=0.001, parameters=self._wrapped_model.parameters())
         if use_gpu:
             paddle.set_device('gpu')
 
@@ -59,7 +62,7 @@ class PaddleTrainer(BaseTrainer):
     def loss(self) -> str:
         return self._loss
 
-    @functools.cached_property
+    # @functools.cached_property
     def wrapped_model(self) -> 'nn.Layer':
         if self.base_model is None:
             raise ValueError(f'base_model is not set')
@@ -114,13 +117,13 @@ class PaddleTrainer(BaseTrainer):
             batch_size=batch_size,
             shuffle=shuffle,
         )
-        self.wrapped_model.train()
+        self._wrapped_model.train()
         for epoch in range(epochs):
             losses = []
             accs = []
             for batch_id, batch_data in enumerate(train_loader()):
                 # forward step
-                loss, acc = self.wrapped_model.training_step(batch_data, batch_id)
+                loss, acc = self._wrapped_model.training_step(batch_data, batch_id)
                 avg_loss = paddle.mean(loss)
 
                 # backward step
@@ -137,12 +140,13 @@ class PaddleTrainer(BaseTrainer):
                 losses.append(avg_loss.numpy()[0])
                 accs.append(acc.numpy()[0])
 
-                if batch_id % 100 == 0:
-                    print(
-                        "=> Epoch {} step {}, Loss = {:}, Acc = {:}".format(
-                            epoch, batch_id, avg_loss.numpy(), acc.numpy()
-                        )
-                    )
+                # if batch_id % 100 == 0:
+                #     print(
+                #         "=> Epoch {} step {}, Loss = {:}, Acc = {:}".format(
+                #             epoch, batch_id, avg_loss.numpy(), acc.numpy()
+                #         )
+                #     )
+
             self.save(f'checkpoints/epoch_{epoch}.pd')
             print(
                 f'Epoch {epoch}, Loss = {sum(losses) / len(losses)}, Acc = {sum(accs) / len(accs)}'

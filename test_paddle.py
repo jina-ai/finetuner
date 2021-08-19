@@ -31,8 +31,8 @@ paddle.summary(model, (64, 1, 28, 28))
 
 from trainer.paddle.trainer import PaddleTrainer
 
-trainer = PaddleTrainer(base_model=model, head_layer='CosineLayer')
+trainer = PaddleTrainer(base_model=model, head_layer='CosineLayer', use_gpu=True)
 
 train_data_iter = fmdg(pos_value=1, neg_value=-1)
-trainer.fit(train_data_iter, batch_size=256, shuffle=True, epochs=10)
+trainer.fit(train_data_iter, batch_size=256, shuffle=True, epochs=100)
 trainer.save('simple_net.paddle')
