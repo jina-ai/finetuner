@@ -5,7 +5,6 @@ import click
 paddle.utils.run_check()
 
 # the Document generator
-from tests.data_generator import fashion_match_doc_generator as fmdg
 
 
 class SimpleNet(paddle.nn.Layer):
@@ -29,16 +28,22 @@ class SimpleNet(paddle.nn.Layer):
 @click.command()
 @click.option('--checkpoint_dir', type=str)
 def main(checkpoint_dir):
-    model = SimpleNet()
-    paddle.summary(model, (64, 1, 28, 28))
+    user_model = nn.Sequential(
+        nn.Flatten(start_axis=1),
+        nn.Linear(in_features=784, out_features=128),
+        nn.ReLU(),
+        nn.Linear(in_features=128, out_features=32)
+    )
+    paddle.summary(user_model, (64, 1, 28, 28))
 
     from trainer.paddle.trainer import PaddleTrainer
 
-    trainer = PaddleTrainer(base_model=model, head_layer='CosineLayer', checkpoint_dir=checkpoint_dir, use_gpu=True)
+    trainer = PaddleTrainer(base_model=user_model, head_layer='CosineLayer', checkpoint_dir=checkpoint_dir, use_gpu=True)
 
-    train_data_iter = fmdg(pos_value=1, neg_value=-1)
-    trainer.fit(train_data_iter, batch_size=256, shuffle=True, epochs=100)
-
+    from tests.data_generator import fashion_match_documentarray as fmdg
+    train_data_iter = fmdg(num_total=50)
+    trainer.fit(train_data_iter, batch_size=256, shuffle=True, epochs=5)
+    trainer.save('examples/fashion/trained.pt')
 
 if __name__ == "__main__":
     main()
