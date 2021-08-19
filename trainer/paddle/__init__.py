@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Union, Iterator, Callable
 
 import paddle
@@ -102,5 +101,6 @@ class PaddleTrainer(BaseTrainer):
 
             # evaluate (TODO)
 
-    def save(self, save_path: Union[Path, str]):
-        paddle.save(self.base_model.state_dict(), str(save_path))
+    def save(self, save_path: str, input_spec: Union[list, tuple] = None):
+        base_model = paddle.jit.to_static(self.base_model, input_spec=input_spec)
+        paddle.jit.save(base_model, save_path)
