@@ -1,20 +1,20 @@
-# build a simple dense network with bottleneck as 10-dim
+import numpy as np
 import tensorflow as tf
+from tensorflow import keras
 
-# wrap the user model with our trainer
 from trainer.keras import KerasTrainer
-
-# generate artificial positive & negative data
 from ..data_generator import fashion_match_doc_generator as fmdg
 
 
-def test_simple_sequential_model():
+def test_simple_sequential_model(tmpdir):
+    embed_dim = 10
+
     user_model = tf.keras.Sequential(
         [
             tf.keras.layers.Flatten(input_shape=(28, 28)),
             tf.keras.layers.Dense(128, activation='relu'),
             tf.keras.layers.Dense(
-                10, activity_regularizer=tf.keras.regularizers.l1(0.01)
+                embed_dim, activity_regularizer=tf.keras.regularizers.l1(0.01)
             ),
         ]
     )
@@ -23,4 +23,9 @@ def test_simple_sequential_model():
 
     # fit and save the checkpoint
     kt.fit(fmdg(num_total=1000), epochs=10, batch_size=256)
-    kt.save('./examples/fashion/trained')
+    kt.save(tmpdir / 'trained.kt')
+
+    embedding_model = keras.models.load_model(tmpdir / 'trained.kt')
+    num_samples = 100
+    r = embedding_model.predict(np.random.random([100, 28, 28]))
+    assert r.shape == (num_samples, embed_dim)
