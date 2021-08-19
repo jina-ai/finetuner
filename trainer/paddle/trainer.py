@@ -203,15 +203,14 @@ class PaddleTrainer(BaseTrainer):
 
         self.current_epoch = max_epoch
 
-        self.load(self.checkpoint_dir / f'epoch_{max_epoch}')
+        self.load_checkpoint(self.checkpoint_dir / f'epoch_{max_epoch}')
 
     def _save_checkpoint(self):
         """Save model checkpoint and state dict"""
         save_dir = self.checkpoint_dir / f'epoch_{self.current_epoch}'
-        print(f'=> saving model checkpoint to {save_dir}')
-        self._save(save_dir)
+        self.save_checkpoint(save_dir)
 
-    def load(self, load_dir: Union[Path, str]):
+    def load_checkpoint(self, load_dir: Union[Path, str]):
         """load model"""
         if isinstance(load_dir, str):
             load_dir = Path(load_dir)
@@ -228,10 +227,11 @@ class PaddleTrainer(BaseTrainer):
         state_dict = paddle.load(str(load_dir / f'{self.optimizer_name}.pdopt'))
         self.optimizer.set_state_dict(state_dict)
 
-    def _save(self, save_dir: Union[Path, str]):
+    def save_checkpoint(self, save_dir: Union[Path, str]):
         if isinstance(save_dir, str):
             save_dir = Path(save_dir)
 
+        print(f'=> saving model checkpoint to {save_dir}')
         paddle.save(
             self.base_model.state_dict(),
             str(save_dir / f'{self.base_model_name}.pdparams'),
