@@ -1,72 +1,32 @@
-from typing import Optional, Union, Iterator, Callable
 from pathlib import Path
+from typing import Union, Iterator, Callable
+
 import numpy as np
 import paddle
-from paddle import nn
-
-try:
-    # new in python 3.8
-    from functools import cached_property
-except ImportError:
-    from cached_property import cached_property
-
-
 from jina import Document, DocumentArray
 from jina.types.arrays.memmap import DocumentArrayMemmap
-
-from ..base import BaseTrainer
-from .models.siamese import SiameseNet
-from .helper import create_dataloader
-from .nn import head_layers
-
+from paddle import nn
 from tqdm import tqdm
+
+import head_layers
+from .helper import create_dataloader
+from ..base import BaseTrainer
+
+
+class _ArityModel(nn.Layer):
+    """The helper class to copy the network for multi-inputs. """
+
+    def __init__(self, base_model: nn.Layer):
+        super().__init__()
+        self._base_model = base_model
+
+    def forward(self, *args):
+        return tuple(self._base_model(a) for a in args)
 
 
 class PaddleTrainer(BaseTrainer):
-    def __init__(
-        self,
-        base_model: Union['nn.Layer', str],
-        arity: Optional[int] = 2,
-        head_layer: Union['nn.Layer', str, None] = 'CosineLayer',
-        loss_fn: Union['nn.Layer', str, None] = None,
-        checkpoint_dir: Optional[Union[Path, str]] = None,
-        **kwargs,
-    ):
-        super().__init__(base_model, arity, head_layer, loss_fn, **kwargs)
-
-        # if not isinstance(self.base_model, paddle.nn.Layer):
-        #     raise TypeError(f'The model {self.base_model.__name__} is not a `paddle.nn.Layer` object.')
-
-        self._optimizer = paddle.optimizer.RMSProp(
-            learning_rate=0.01, parameters=self.wrapped_model.parameters()
-        )
-
-        if checkpoint_dir and isinstance(checkpoint_dir, str):
-            checkpoint_dir = Path(checkpoint_dir)
-
-        if checkpoint_dir and not checkpoint_dir.exists():
-            raise ValueError(f'The checkpoint dir {checkpoint_dir} does not exists')
-
-        self.checkpoint_dir = checkpoint_dir if checkpoint_dir else Path(f'checkpoints')
-        self.checkpoint_dir.mkdir(exist_ok=True)
-
-        self.current_epoch = 0
-
-        self._load_checkpoint()
-
-    @cached_property
-    def base_model(self) -> 'nn.Layer':
-        return self._base_model
 
     @property
-    def base_model_name(self):
-        return type(self.base_model).__name__
-
-    @property
-    def arity(self) -> int:
-        return self._arity
-
-    @cached_property
     def head_layer(self) -> 'nn.Layer':
         if isinstance(self._head_layer, str):
             return getattr(head_layers, self._head_layer)()
@@ -74,33 +34,11 @@ class PaddleTrainer(BaseTrainer):
             return self._head_layer
 
     @property
-    def head_layer_name(self):
-        return type(self.head_layer).__name__
-
-    @property
-    def optimizer(self) -> 'paddle.optimizer.Optimizer':
-        return self._optimizer
-
-    @property
-    def optimizer_name(self):
-        return type(self.optimizer).__name__
-
-    @property
-    def loss(self) -> str:
-        return self._loss
-
-    @cached_property
     def wrapped_model(self) -> 'nn.Layer':
         if self.base_model is None:
             raise ValueError(f'base_model is not set')
-        if self.arity == 2:
-            return SiameseNet(
-                base_model=self.base_model,
-                head_layer=self.head_layer,
-                loss_fn=self.loss,
-            )
-        else:
-            raise NotImplementedError
+
+        return self.head_layer(_ArityModel(self.base_model))  # wrap with head layer
 
     def create_dataset(self, doc_array, **kwargs):
         class _Dataset(paddle.io.Dataset):
@@ -111,9 +49,9 @@ class PaddleTrainer(BaseTrainer):
                     d_blob = d.blob.reshape(self._img_shape)
                     for m in d.matches:
                         example = (
-                            d_blob.astype('float32'),
-                            m.blob.reshape(self._img_shape).astype('float32'),
-                        ), np.float32(m.tags['trainer']['label'])
+                                      d_blob.astype('float32'),
+                                      m.blob.reshape(self._img_shape).astype('float32'),
+                                  ), np.float32(m.tags['trainer']['label'])
                         self._data.append(example)
 
             def __getitem__(self, idx):
@@ -125,20 +63,21 @@ class PaddleTrainer(BaseTrainer):
         return _Dataset(doc_array() if callable(doc_array) else doc_array)
 
     def fit(
-        self,
-        train_data: Union[
-            DocumentArray,
-            DocumentArrayMemmap,
-            Iterator[Document],
-            Callable[..., Iterator[Document]],
-        ],
-        dev_data=None,
-        batch_size: int = 256,
-        shuffle: bool = True,
-        epochs: int = 10,
-        use_gpu: bool = False,
-        **kwargs,
+            self,
+            train_data: Union[
+                DocumentArray,
+                DocumentArrayMemmap,
+                Iterator[Document],
+                Callable[..., Iterator[Document]],
+            ],
+            dev_data=None,
+            batch_size: int = 256,
+            shuffle: bool = True,
+            epochs: int = 10,
+            use_gpu: bool = False,
+            **kwargs,
     ):
+        model = self.wrapped_model
         if use_gpu:
             paddle.set_device('gpu')
 
@@ -149,40 +88,32 @@ class PaddleTrainer(BaseTrainer):
             shuffle=shuffle,
         )
 
-        self.wrapped_model.train()
-        for i in range(epochs):
-            self.current_epoch += 1
+        optimizer = paddle.optimizer.RMSProp(
+            learning_rate=0.01, parameters=model.parameters()
+        )
+
+        loss_fn = self.head_layer.default_loss
+
+        for epoch in range(epochs):
+            model.train()
+
             losses = []
             accs = []
-            for batch_id, batch_data in enumerate(train_loader()):
+            for (l_input, r_input), label in train_loader:
+                head_value = model(l_input, r_input)
+                loss = loss_fn(head_value, label)
+
                 # forward step
-                loss, acc = self.wrapped_model.training_step(batch_data, batch_id)
-                avg_loss = paddle.mean(loss)
-
+                optimizer.clear_grad()
                 # backward step
-                avg_loss.backward()
-
-                # TODO: gradient accumulate
-
+                loss.backward()
                 # update parameters
-                self.optimizer.step()
+                optimizer.step()
 
-                # clean gradients
-                self.optimizer.clear_grad()
+                losses.append(loss.numpy())
 
-                losses.append(avg_loss.numpy()[0])
-                accs.append(acc.numpy()[0])
-
-                # if batch_id % 100 == 0:
-                #     print(
-                #         "=> Epoch {} step {}, Loss = {:}, Acc = {:}".format(
-                #             epoch, batch_id, avg_loss.numpy(), acc.numpy()
-                #         )
-                #     )
-
-            self._save_checkpoint()
             print(
-                f'Epoch {self.current_epoch}, Loss = {sum(losses) / len(losses)}, Acc = {sum(accs) / len(accs)}'
+                f'Epoch {epoch}, Loss = {sum(losses) / len(losses)}'
             )
 
             # evaluate (TODO)
@@ -245,4 +176,4 @@ class PaddleTrainer(BaseTrainer):
         )
 
     def save(self, save_path: str):
-        paddle.save(self.base_model.state_dict(), save_path)
+        paddle.save(self.base_model, save_path)

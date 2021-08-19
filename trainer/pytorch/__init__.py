@@ -12,7 +12,7 @@ from ..base import BaseTrainer
 class _ArityModel(nn.Module):
     """The helper class to copy the network for multi-inputs. """
 
-    def __init__(self, base_model):
+    def __init__(self, base_model: nn.Module):
         super().__init__()
         self._base_model = base_model
 
