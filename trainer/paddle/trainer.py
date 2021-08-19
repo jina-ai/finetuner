@@ -1,17 +1,18 @@
 from typing import Optional, Union, Iterator, Callable
 from pathlib import Path
-import time
 import numpy as np
 import paddle
 from paddle import nn
 
 try:
+    # new in python 3.8
     from functools import cached_property
 except ImportError:
     from cached_property import cached_property
 
-from jina import Document, DocumentArray
-from jina.types.arrays.memmap import DocumentArrayMemmap
+if False:
+    from jina import Document, DocumentArray
+    from jina.types.arrays.memmap import DocumentArrayMemmap
 
 from ..base import BaseTrainer
 from .models.siamese import SiameseNet

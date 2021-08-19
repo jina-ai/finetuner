@@ -70,12 +70,12 @@ def hello_world(args):
     download_data(targets, args.download_proxy)
 
     # reduce the network load by using `fp16`, or even `uint8`
-    os.environ['JINA_ARRAY_QUANT'] = 'fp16'
+    # os.environ['JINA_ARRAY_QUANT'] = 'fp16'
     # now comes the real work
     # load index flow from a YAML file
     f = (
         Flow()
-        .add(uses=MyPaddleEncoder, uses_with={'model_path': './checkpoints/epoch_99/SimpleNet.pdparams'}, parallel=2)
+        .add(uses=MyPaddleEncoder, uses_with={'model_path': './checkpoints/epoch_520/SimpleNet.pdparams'}, parallel=2)
         .add(uses=MyIndexer, workspace=args.workdir)
         .add(uses=MyEvaluator)
     )

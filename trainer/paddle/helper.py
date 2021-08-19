@@ -9,6 +9,7 @@ def create_dataloader(
     drop_last: bool = True,
     **kwargs,
 ):
+
     sampler = paddle.io.BatchSampler(
         dataset=dataset, batch_size=batch_size, shuffle=shuffle, drop_last=drop_last
     )
