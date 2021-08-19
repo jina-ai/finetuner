@@ -10,9 +10,9 @@ try:
 except ImportError:
     from cached_property import cached_property
 
-if False:
-    from jina import Document, DocumentArray
-    from jina.types.arrays.memmap import DocumentArrayMemmap
+
+from jina import Document, DocumentArray
+from jina.types.arrays.memmap import DocumentArrayMemmap
 
 from ..base import BaseTrainer
 from .models.siamese import SiameseNet
@@ -209,7 +209,7 @@ class PaddleTrainer(BaseTrainer):
         """Save model checkpoint and state dict"""
         save_dir = self.checkpoint_dir / f'epoch_{self.current_epoch}'
         print(f'=> saving model checkpoint to {save_dir}')
-        self.save(save_dir)
+        self._save(save_dir)
 
     def load(self, load_dir: Union[Path, str]):
         """load model"""
@@ -228,7 +228,7 @@ class PaddleTrainer(BaseTrainer):
         state_dict = paddle.load(str(load_dir / f'{self.optimizer_name}.pdopt'))
         self.optimizer.set_state_dict(state_dict)
 
-    def save(self, save_dir: Union[Path, str]):
+    def _save(self, save_dir: Union[Path, str]):
         if isinstance(save_dir, str):
             save_dir = Path(save_dir)
 
@@ -243,3 +243,6 @@ class PaddleTrainer(BaseTrainer):
         paddle.save(
             self.optimizer.state_dict(), str(save_dir / f'{self.optimizer_name}.pdopt')
         )
+
+    def save(self, save_path: str):
+        paddle.save(self.base_model.state_dict(), save_path)

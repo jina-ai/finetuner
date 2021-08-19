@@ -1,4 +1,5 @@
 import paddle
+from paddle import nn
 import paddle.nn.functional as F
 import click
 paddle.utils.run_check()

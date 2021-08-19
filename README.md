@@ -93,6 +93,38 @@ from tests.data_generator import fashion_match_documentarray
 
    </details>
 
+   <details>
+   <summary>using PaddleTrainer</summary>
+   
+    - build a simple dense network with bottleneck:
+   
+        ```python
+        from paddle import nn
+        user_model = nn.Sequential(
+            nn.Flatten(start_axis=1),
+            nn.Linear(in_features=784, out_features=128),
+            nn.ReLU(),
+            nn.Linear(in_features=128, out_features=32)
+        )
+        ```
+    - wrap the user model with our trainer
+   
+        ```python
+       from trainer.paddle import PaddleTrainer
+      
+       pt = PaddleTrainer(user_model, head_layer='CosineLayer')
+       ```
+      
+    - fit and save the checkpoint
+   
+        ```python
+       from tests.data_generator import fashion_match_documentarray as fmdg
+
+       pt.fit(fmdg(num_total=50), epochs=10)
+       pt.save('./examples/fashion/trained.pdparams')
+       ```
+   </details>
+
 2. Observe the decreasing of training loss and increasing of the accuracy.
     
     ```text
