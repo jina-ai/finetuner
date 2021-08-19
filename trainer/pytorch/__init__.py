@@ -10,7 +10,7 @@ from ..base import BaseTrainer
 
 
 class _ArityModel(nn.Module):
-    """The helper class to copy the network for multi-inputs. """
+    """The helper class to copy the network for multi-inputs."""
 
     def __init__(self, base_model: nn.Module):
         super().__init__()
@@ -52,8 +52,6 @@ class PytorchTrainer(BaseTrainer):
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         model.to(device)
 
-        data_loader = self._get_data_loader(inputs=doc_array)
-
         optimizer = torch.optim.RMSprop(
             params=model.parameters()
         )  # stay the same as keras
@@ -65,6 +63,8 @@ class PytorchTrainer(BaseTrainer):
 
             losses = []
             correct, total = 0, 0
+
+            data_loader = self._get_data_loader(inputs=doc_array)
             with ProgressBar(task_name=f'Epoch {epoch+1}/{epochs}') as p:
                 for (l_input, r_input), label in data_loader:
                     l_input, r_input, label = map(
