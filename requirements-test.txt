@@ -7,3 +7,5 @@ pytest-asyncio
 pytest-reraise
 flaky
 mock
+pytest-custom_exit_code
+black

@@ -21,11 +21,11 @@ def fashion_match_documentarray(**kwargs):
 
 
 def fashion_match_doc_generator(
-        num_pos: int = 10,
-        num_neg: int = 10,
-        num_total: int = 60000,
-        pos_value: int = 1,
-        neg_value: int = -1
+    num_pos: int = 10,
+    num_neg: int = 10,
+    num_total: int = 60000,
+    pos_value: int = 1,
+    neg_value: int = -1,
 ):
     rv = defaultdict(DocumentArray)
     all_docs = DocumentArray(fashion_doc_generator())

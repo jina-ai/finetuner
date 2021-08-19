@@ -3,6 +3,7 @@ import tensorflow as tf
 
 # wrap the user model with our trainer
 from trainer.keras import KerasTrainer
+
 # generate artificial positive & negative data
 from ..data_generator import fashion_match_doc_generator as fmdg
 
@@ -12,7 +13,9 @@ def test_simple_sequential_model():
         [
             tf.keras.layers.Flatten(input_shape=(28, 28)),
             tf.keras.layers.Dense(128, activation='relu'),
-            tf.keras.layers.Dense(10, activity_regularizer=tf.keras.regularizers.l1(0.01)),
+            tf.keras.layers.Dense(
+                10, activity_regularizer=tf.keras.regularizers.l1(0.01)
+            ),
         ]
     )
 
