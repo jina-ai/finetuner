@@ -1,16 +1,14 @@
-from typing import Union, Iterator, Callable
+from typing import Union, Callable
 
 import paddle
 from paddle import nn
 from paddle.io import DataLoader
-from jina import Document, DocumentArray
 from jina.logging.profile import ProgressBar
-from jina.types.arrays.memmap import DocumentArrayMemmap
 
 from . import head_layers
-from ..base import BaseTrainer
-from .head_layers import HeadLayer
 from .dataset import JinaSiameseDataset
+from .head_layers import HeadLayer
+from ..base import BaseTrainer, DocumentArrayLike
 
 
 class _ArityModel(nn.Layer):
@@ -46,13 +44,10 @@ class PaddleTrainer(BaseTrainer):
 
     def fit(
         self,
-        doc_array: Union[
-            DocumentArray,
-            DocumentArrayMemmap,
-            Iterator[Document],
-            Callable[..., Iterator[Document]],
+        train_data: Union[
+            DocumentArrayLike,
+            Callable[..., DocumentArrayLike],
         ],
-        batch_size: int = 256,
         epochs: int = 10,
         use_gpu: bool = False,
         **kwargs,
@@ -73,7 +68,7 @@ class PaddleTrainer(BaseTrainer):
             losses = []
             accuracies = []
 
-            data_loader = self._get_data_loader(inputs=doc_array)
+            data_loader = self._get_data_loader(inputs=train_data)
             with ProgressBar(task_name=f'Epoch {epoch + 1}/{epochs}') as p:
                 for (l_input, r_input), label in data_loader:
                     # forward step
