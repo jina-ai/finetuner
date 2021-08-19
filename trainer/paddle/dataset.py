@@ -7,7 +7,6 @@ from jina.types.arrays.memmap import DocumentArrayMemmap
 
 
 class JinaSiameseDataset(paddle.io.Dataset):
-
     def __init__(self, inputs: Union[DocumentArray, DocumentArrayMemmap]):
         super().__init__()
         self._pairs = []
@@ -25,4 +24,3 @@ class JinaSiameseDataset(paddle.io.Dataset):
 
     def __getitem__(self, index):
         return self._pairs[index]
-

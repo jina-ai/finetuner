@@ -110,7 +110,7 @@ from tests.data_generator import fashion_match_documentarray
    </details>
 
    <details>
-   <summary>using PaddleTrainer</summary>
+   <summary>Using PaddleTrainer</summary>
    
     - build a simple dense network with bottleneck:
    
@@ -137,7 +137,10 @@ from tests.data_generator import fashion_match_documentarray
        from tests.data_generator import fashion_match_documentarray as fmdg
 
        pt.fit(fmdg(num_total=50), epochs=10)
-       pt.save('./examples/fashion/trained.pdparams')
+       
+       from paddle.static import InputSpec
+       x_spec = InputSpec(shape=[None, 28, 28], name='x')
+       pt.save('examples/fashion/paddle_ckpt', input_spec=[x_spec])
        ```
    </details>
 
