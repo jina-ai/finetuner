@@ -1,4 +1,4 @@
-from typing import Union, Iterable
+from typing import Union, Iterable, Callable
 
 import numpy as np
 from jina import Document, DocumentArray
@@ -9,7 +9,7 @@ from torch.utils.data import IterableDataset
 class JinaSiameseDataset(IterableDataset):
     def __init__(
         self,
-        inputs: Union[Iterable[Document], DocumentArray, DocumentArrayMemmap],
+        inputs: Union[Callable, Iterable[Document], DocumentArray, DocumentArrayMemmap],
     ):
         self._inputs = inputs() if callable(inputs) else inputs
 
