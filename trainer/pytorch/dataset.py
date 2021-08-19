@@ -1,22 +1,23 @@
-from typing import Union, Iterable, Callable
+from typing import Union, Callable
 
 import numpy as np
-from jina import Document, DocumentArray
-from jina.types.arrays.memmap import DocumentArrayMemmap
 from torch.utils.data import IterableDataset
+
+from ..base import DocumentArrayLike
 
 
 class JinaSiameseDataset(IterableDataset):
     def __init__(
         self,
-        inputs: Union[Callable, Iterable[Document], DocumentArray, DocumentArrayMemmap],
+        inputs: Union[
+            DocumentArrayLike,
+            Callable[..., DocumentArrayLike],
+        ],
     ):
         self._inputs = inputs() if callable(inputs) else inputs
 
     def __iter__(self):
-        for doc in self._inputs:
-            for match in doc.matches:
-                yield (
-                    doc.blob.astype(np.float32),
-                    match.blob.astype(np.float32),
-                ), np.float32(match.tags['trainer']['label'])
+        for d in self._inputs:
+            d_blob = d.blob
+            for m in d.matches:
+                yield (d_blob, m.blob), np.float32(m.tags['trainer']['label'])

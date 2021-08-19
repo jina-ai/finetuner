@@ -1,12 +1,9 @@
 from typing import Union, Callable
 
-import numpy as np
-from paddle.io import IterableDataset
-
 from ..base import DocumentArrayLike
 
 
-class JinaSiameseDataset(IterableDataset):
+class JinaSiameseDataset:
     def __init__(
         self,
         inputs: Union[
@@ -14,11 +11,10 @@ class JinaSiameseDataset(IterableDataset):
             Callable[..., DocumentArrayLike],
         ],
     ):
-        super().__init__()
         self._inputs = inputs() if callable(inputs) else inputs
 
     def __iter__(self):
         for d in self._inputs:
             d_blob = d.blob
             for m in d.matches:
-                yield (d_blob, m.blob), np.float32(m.tags['trainer']['label'])
+                yield (d_blob, m.blob), m.tags['trainer']['label']
