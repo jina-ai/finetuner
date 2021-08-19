@@ -17,9 +17,9 @@ class UserModel(nn.Module):
         self.act = nn.ReLU()
         self.fc = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(in_features=784, out_features=128),
+            nn.Linear(in_features=INPUT_DIM * INPUT_DIM, out_features=128),
             nn.ReLU(),
-            nn.Linear(in_features=128, out_features=32),
+            nn.Linear(in_features=128, out_features=OUTPUT_DIM),
         )
 
     def forward(self, x):

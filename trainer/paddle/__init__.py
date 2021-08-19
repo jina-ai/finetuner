@@ -1,18 +1,20 @@
 from typing import Union, Iterator, Callable
 
 import paddle
-from jina import Document, DocumentArray
-from jina.types.arrays.memmap import DocumentArrayMemmap
 from paddle import nn
+from paddle.io import DataLoader
+from jina import Document, DocumentArray
+from jina.logging.profile import ProgressBar
+from jina.types.arrays.memmap import DocumentArrayMemmap
 
 from . import head_layers
-from .dataset import JinaSiameseDataset
-from .head_layers import HeadLayer
 from ..base import BaseTrainer
+from .head_layers import HeadLayer
+from .dataset import JinaSiameseDataset
 
 
 class _ArityModel(nn.Layer):
-    """The helper class to copy the network for multi-inputs. """
+    """The helper class to copy the network for multi-inputs."""
 
     def __init__(self, base_model: nn.Layer):
         super().__init__()
@@ -38,21 +40,19 @@ class PaddleTrainer(BaseTrainer):
         return self.head_layer(_ArityModel(self.base_model))  # wrap with head layer
 
     def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
-        return paddle.io.DataLoader(
+        return DataLoader(
             JinaSiameseDataset(inputs=inputs), batch_size=batch_size, shuffle=shuffle
         )
 
     def fit(
         self,
-        train_data: Union[
+        doc_array: Union[
             DocumentArray,
             DocumentArrayMemmap,
             Iterator[Document],
             Callable[..., Iterator[Document]],
         ],
-        dev_data=None,
         batch_size: int = 256,
-        shuffle: bool = True,
         epochs: int = 10,
         use_gpu: bool = False,
         **kwargs,
@@ -60,8 +60,6 @@ class PaddleTrainer(BaseTrainer):
         model = self.wrapped_model
         if use_gpu:
             paddle.set_device('gpu')
-
-        data_loader = self._get_data_loader(inputs=train_data)
 
         optimizer = paddle.optimizer.RMSProp(
             learning_rate=0.01, parameters=model.parameters()
@@ -74,32 +72,32 @@ class PaddleTrainer(BaseTrainer):
 
             losses = []
             accuracies = []
-            for (l_input, r_input), label in data_loader:
-                # forward step
-                head_value = model(l_input, r_input)
-                loss = loss_fn(head_value, label)
 
-                # clean gradients
-                optimizer.clear_grad()
+            data_loader = self._get_data_loader(inputs=doc_array)
+            with ProgressBar(task_name=f'Epoch {epoch + 1}/{epochs}') as p:
+                for (l_input, r_input), label in data_loader:
+                    # forward step
+                    head_value = model(l_input, r_input)
+                    loss = loss_fn(head_value, label)
 
-                # backward step
-                loss.backward()
+                    # clean gradients
+                    optimizer.clear_grad()
 
-                # update parameters
-                optimizer.step()
+                    # backward step
+                    loss.backward()
 
-                corrects = paddle.equal(paddle.sign(head_value), paddle.sign(label))
-                corrects = paddle.cast(corrects, dtype='float32')
-                accuracy = paddle.mean(corrects, keepdim=True)
+                    # update parameters
+                    optimizer.step()
 
-                losses.append(loss.numpy())
-                accuracies.append(accuracy.numpy())
+                    corrects = paddle.equal(paddle.sign(head_value), paddle.sign(label))
+                    corrects = paddle.cast(corrects, dtype='float32')
+                    accuracy = paddle.mean(corrects, keepdim=True)
 
-            print(
-                f'Epoch {epoch}, Loss = {sum(losses) / len(losses)}, Accuracy = {sum(accuracies) / len(accuracies)}'
-            )
-
-            # evaluate (TODO)
+                    losses.append(loss.numpy())
+                    accuracies.append(accuracy.numpy())
+                self.logger.info(
+                    f'Epoch {epoch}, Loss = {sum(losses) / len(losses)}, Accuracy = {sum(accuracies) / len(accuracies)}'
+                )
 
     def save(self, save_path: str, input_spec: Union[list, tuple] = None):
         base_model = paddle.jit.to_static(self.base_model, input_spec=input_spec)

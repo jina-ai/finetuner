@@ -1,6 +1,10 @@
+from typing import Union, Iterator, Callable
+
 import torch
 import torch.nn as nn
+from jina import Document, DocumentArray
 from jina.logging.profile import ProgressBar
+from jina.types.arrays.memmap import DocumentArrayMemmap
 from torch.utils.data.dataloader import DataLoader
 
 from . import head_layers
@@ -44,7 +48,12 @@ class PytorchTrainer(BaseTrainer):
 
     def fit(
         self,
-        doc_array,
+        doc_array: Union[
+            DocumentArray,
+            DocumentArrayMemmap,
+            Iterator[Document],
+            Callable[..., Iterator[Document]],
+        ],
         epochs: int,
         **kwargs,
     ) -> None:
