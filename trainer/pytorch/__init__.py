@@ -2,11 +2,11 @@ from typing import Union, Callable
 
 import torch
 import torch.nn as nn
-from torch.utils.data.dataloader import DataLoader
 from jina.logging.profile import ProgressBar
+from torch.utils.data import IterableDataset
+from torch.utils.data.dataloader import DataLoader
 
 from . import head_layers
-from .dataset import JinaSiameseDataset
 from .head_layers import HeadLayer
 from ..base import BaseTrainer, DocumentArrayLike
 
@@ -38,8 +38,21 @@ class PytorchTrainer(BaseTrainer):
         return self.head_layer(_ArityModel(self.base_model))  # wrap with head layer
 
     def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
+        if self.arity == 2:
+
+            from ..dataset import SiameseMixin, Dataset
+
+            class _SiameseDataset(SiameseMixin, Dataset, IterableDataset):
+                ...
+
+            ds = _SiameseDataset
+        elif self.arity == 3:
+            raise NotImplementedError
+        else:
+            raise NotImplementedError
+
         return DataLoader(
-            dataset=JinaSiameseDataset(inputs=inputs),
+            dataset=ds(inputs=inputs),
             batch_size=batch_size,
             shuffle=shuffle,
         )
@@ -70,13 +83,10 @@ class PytorchTrainer(BaseTrainer):
             correct, total = 0, 0
 
             data_loader = self._get_data_loader(inputs=train_data)
-            with ProgressBar(task_name=f'Epoch {epoch+1}/{epochs}') as p:
-                for (l_input, r_input), label in data_loader:
-                    l_input, r_input, label = map(
-                        lambda x: x.to(device), [l_input, r_input, label]
-                    )
-
-                    head_value = model(l_input, r_input)
+            with ProgressBar(task_name=f'Epoch {epoch + 1}/{epochs}') as p:
+                for inputs, label in data_loader:
+                    # forward step
+                    head_value = model(*inputs)
                     loss = loss_fn(head_value, label)
 
                     optimizer.zero_grad()
@@ -93,9 +103,7 @@ class PytorchTrainer(BaseTrainer):
                     p.update()
 
                 self.logger.info(
-                    "Training: Loss={:.2f} Accuracy={:.2f}".format(
-                        sum(losses) / len(losses), correct / total
-                    )
+                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={float(correct / total)}'
                 )
 
     def save(self, *args, **kwargs):
