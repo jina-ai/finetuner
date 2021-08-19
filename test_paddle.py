@@ -34,6 +34,7 @@ def main(checkpoint_dir):
         nn.ReLU(),
         nn.Linear(in_features=128, out_features=32)
     )
+    # user_model = SimpleNet()
     paddle.summary(user_model, (64, 1, 28, 28))
 
     from trainer.paddle.trainer import PaddleTrainer
@@ -43,7 +44,10 @@ def main(checkpoint_dir):
     from tests.data_generator import fashion_match_documentarray as fmdg
     train_data_iter = fmdg(num_total=50)
     trainer.fit(train_data_iter, batch_size=256, shuffle=True, epochs=5)
-    trainer.save('examples/fashion/trained.pt')
+
+    from paddle.static import InputSpec
+    x_spec = InputSpec(shape=[None, 28, 28], name='x')
+    trainer.save('examples/fashion/paddle_ckpt', input_spec=[x_spec])
 
 if __name__ == "__main__":
     main()
