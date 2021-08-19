@@ -2,7 +2,7 @@
 
 - [x] Keras backend
 - [x] Pytorch backend
-- [ ] Paddle backend
+- [x] Paddle backend
 
 ## Requirements
 
