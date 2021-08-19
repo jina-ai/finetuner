@@ -75,7 +75,11 @@ def hello_world(args):
     # load index flow from a YAML file
     f = (
         Flow()
-        .add(uses=MyPaddleEncoder, uses_with={'model_path': 'examples/fashion/paddle_ckpt'}, parallel=2)
+        .add(
+            uses=MyPaddleEncoder,
+            uses_with={'model_path': 'examples/fashion/paddle_ckpt'},
+            parallel=2,
+        )
         .add(uses=MyIndexer, workspace=args.workdir)
         .add(uses=MyEvaluator)
     )

@@ -7,10 +7,9 @@ from torch.utils.data import Dataset
 
 
 class JinaSiameseDataset(Dataset):
-
     def __init__(
-            self,
-            inputs: Union[DocumentArray, DocumentArrayMemmap],
+        self,
+        inputs: Union[DocumentArray, DocumentArrayMemmap],
     ):
         self._pairs = []
         for doc in inputs:

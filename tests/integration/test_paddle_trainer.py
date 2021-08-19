@@ -13,7 +13,7 @@ def test_simple_sequential_model():
         nn.Flatten(start_axis=1),
         nn.Linear(in_features=784, out_features=128),
         nn.ReLU(),
-        nn.Linear(in_features=128, out_features=32)
+        nn.Linear(in_features=128, out_features=32),
     )
 
     pt = PaddleTrainer(user_model, head_layer='CosineLayer')
@@ -21,5 +21,6 @@ def test_simple_sequential_model():
     # fit and save the checkpoint
     pt.fit(fmdg(num_total=521), epochs=5, batch_size=256)
     from paddle.static import InputSpec
+
     x_spec = InputSpec(shape=[None, 28, 28], name='x')
     pt.save('./examples/fashion/trained', input_spec=[x_spec])

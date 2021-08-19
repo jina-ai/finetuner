@@ -6,14 +6,12 @@ from jina import Executor, DocumentArray, requests
 
 
 class MyPaddleEncoder(Executor):
-    """
-    """
+    """"""
 
     def __init__(self, model_path: str = './trained', **kwargs):
         super().__init__(**kwargs)
         self.embedding_model = paddle.jit.load(model_path)
         self.embedding_model.eval()
-
 
     @requests
     def encode(self, docs: 'DocumentArray', **kwargs):
