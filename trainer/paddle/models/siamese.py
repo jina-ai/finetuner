@@ -39,7 +39,6 @@ class SiameseNet(nn.Layer):
 
     def training_step(self, batch_data, batch_idx):
         x = self(*batch_data[0])
-        x = paddle.squeeze(x, axis=-1)
 
         labels = batch_data[1]
         loss = self._loss_fn(x, labels)

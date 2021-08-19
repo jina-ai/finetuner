@@ -1,8 +1,14 @@
 from typing import Optional, Union, Iterator, Callable
-import functools
+from pathlib import Path
+import time
 import numpy as np
 import paddle
 from paddle import nn
+
+try:
+    from functools import cached_property
+except ImportError:
+    from cached_property import cached_property
 
 from jina import Document, DocumentArray
 from jina.types.arrays.memmap import DocumentArrayMemmap
@@ -21,37 +27,45 @@ class PaddleTrainer(BaseTrainer):
         base_model: Union['nn.Layer', str],
         arity: Optional[int] = 2,
         head_layer: Union['nn.Layer', str, None] = 'CosineLayer',
-        loss: Union['nn.Layer', str, None] = None,
-
-        use_gpu: bool = False,
+        loss_fn: Union['nn.Layer', str, None] = None,
+        checkpoint_dir: Optional[Union[Path, str]] = None,
         **kwargs,
     ):
-        super().__init__(base_model, arity, head_layer, loss, **kwargs)
+        super().__init__(base_model, arity, head_layer, loss_fn, **kwargs)
 
-        self._wrapped_model = self.wrapped_model()
+        # if not isinstance(self.base_model, paddle.nn.Layer):
+        #     raise TypeError(f'The model {self.base_model.__name__} is not a `paddle.nn.Layer` object.')
 
-        # self._optimizer = paddle.optimizer.RMSProp(
-        #     learning_rate=0.1, parameters=self._wrapped_model.parameters()
-        # )
-        self._optimizer = paddle.optimizer.Adam(learning_rate=0.001, parameters=self._wrapped_model.parameters())
-        if use_gpu:
-            paddle.set_device('gpu')
+        self._optimizer = paddle.optimizer.RMSProp(
+            learning_rate=0.01, parameters=self.wrapped_model.parameters()
+        )
 
-        self.kwargs = kwargs
+        if checkpoint_dir and isinstance(checkpoint_dir, str):
+            checkpoint_dir = Path(checkpoint_dir)
 
-    @property
+        if checkpoint_dir and not checkpoint_dir.exists():
+            raise ValueError(f'The checkpoint dir {checkpoint_dir} does not exists')
+
+        self.checkpoint_dir = checkpoint_dir if checkpoint_dir else Path(f'checkpoints')
+        self.checkpoint_dir.mkdir(exist_ok=True)
+
+        self.current_epoch = 0
+
+        self._load_checkpoint()
+
+    @cached_property
     def base_model(self) -> 'nn.Layer':
         return self._base_model
+
+    @property
+    def base_model_name(self):
+        return type(self.base_model).__name__
 
     @property
     def arity(self) -> int:
         return self._arity
 
-    @property
-    def head_layer(self) -> 'nn.Layer':
-        return self._head_layer
-
-    @property
+    @cached_property
     def head_layer(self) -> 'nn.Layer':
         if isinstance(self._head_layer, str):
             return getattr(head_layers, self._head_layer)()
@@ -59,10 +73,22 @@ class PaddleTrainer(BaseTrainer):
             return self._head_layer
 
     @property
+    def head_layer_name(self):
+        return type(self.head_layer).__name__
+
+    @property
+    def optimizer(self) -> 'paddle.optimizer.Optimizer':
+        return self._optimizer
+
+    @property
+    def optimizer_name(self):
+        return type(self.optimizer).__name__
+
+    @property
     def loss(self) -> str:
         return self._loss
 
-    # @functools.cached_property
+    @cached_property
     def wrapped_model(self) -> 'nn.Layer':
         if self.base_model is None:
             raise ValueError(f'base_model is not set')
@@ -109,21 +135,27 @@ class PaddleTrainer(BaseTrainer):
         batch_size: int = 256,
         shuffle: bool = True,
         epochs: int = 10,
+        use_gpu: bool = False,
         **kwargs,
     ):
+        if use_gpu:
+            paddle.set_device('gpu')
+
         train_loader = create_dataloader(
             self.create_dataset(train_data),
             mode='train',
             batch_size=batch_size,
             shuffle=shuffle,
         )
-        self._wrapped_model.train()
-        for epoch in range(epochs):
+
+        self.wrapped_model.train()
+        for i in range(epochs):
+            self.current_epoch += 1
             losses = []
             accs = []
             for batch_id, batch_data in enumerate(train_loader()):
                 # forward step
-                loss, acc = self._wrapped_model.training_step(batch_data, batch_id)
+                loss, acc = self.wrapped_model.training_step(batch_data, batch_id)
                 avg_loss = paddle.mean(loss)
 
                 # backward step
@@ -132,10 +164,10 @@ class PaddleTrainer(BaseTrainer):
                 # TODO: gradient accumulate
 
                 # update parameters
-                self._optimizer.step()
+                self.optimizer.step()
 
                 # clean gradients
-                self._optimizer.clear_grad()
+                self.optimizer.clear_grad()
 
                 losses.append(avg_loss.numpy()[0])
                 accs.append(acc.numpy()[0])
@@ -147,13 +179,66 @@ class PaddleTrainer(BaseTrainer):
                 #         )
                 #     )
 
-            self.save(f'checkpoints/epoch_{epoch}.pd')
+            self._save_checkpoint()
             print(
-                f'Epoch {epoch}, Loss = {sum(losses) / len(losses)}, Acc = {sum(accs) / len(accs)}'
+                f'Epoch {self.current_epoch}, Loss = {sum(losses) / len(losses)}, Acc = {sum(accs) / len(accs)}'
             )
 
             # evaluate (TODO)
 
-    def save(self, target_filepath: str):
-        model_dict = self.base_model.state_dict()
-        paddle.save(model_dict, target_filepath)
+    def _load_checkpoint(self):
+        """Load checkpoint and state dict"""
+        max_epoch = -1
+        for file_path in self.checkpoint_dir.glob('epoch_*'):
+            _epoch = file_path.name.split('_')[-1]
+            if not _epoch.isdigit():
+                continue
+
+            max_epoch = max(max_epoch, int(_epoch))
+
+        if max_epoch == -1:
+            print('[warning] model checkpoint not found, start from scratch...')
+            return
+
+        self.current_epoch = max_epoch
+
+        self.load(self.checkpoint_dir / f'epoch_{max_epoch}')
+
+    def _save_checkpoint(self):
+        """Save model checkpoint and state dict"""
+        save_dir = self.checkpoint_dir / f'epoch_{self.current_epoch}'
+        print(f'=> saving model checkpoint to {save_dir}')
+        self.save(save_dir)
+
+    def load(self, load_dir: Union[Path, str]):
+        """load model"""
+        if isinstance(load_dir, str):
+            load_dir = Path(load_dir)
+        print(f'=> loading model checkpoint from {load_dir}')
+        # load base model checkpoint
+        state_dict = paddle.load(str(load_dir / f'{self.base_model_name}.pdparams'))
+        self.base_model.set_state_dict(state_dict)
+
+        # load head layer checkpoint
+        state_dict = paddle.load(str(load_dir / f'{self.head_layer_name}.pdparams'))
+        self.head_layer.set_state_dict(state_dict)
+
+        # load optimizer checkpoint
+        state_dict = paddle.load(str(load_dir / f'{self.optimizer_name}.pdopt'))
+        self.optimizer.set_state_dict(state_dict)
+
+    def save(self, save_dir: Union[Path, str]):
+        if isinstance(save_dir, str):
+            save_dir = Path(save_dir)
+
+        paddle.save(
+            self.base_model.state_dict(),
+            str(save_dir / f'{self.base_model_name}.pdparams'),
+        )
+        paddle.save(
+            self.head_layer.state_dict(),
+            str(save_dir / f'{self.head_layer_name}.pdparams'),
+        )
+        paddle.save(
+            self.optimizer.state_dict(), str(save_dir / f'{self.optimizer_name}.pdopt')
+        )

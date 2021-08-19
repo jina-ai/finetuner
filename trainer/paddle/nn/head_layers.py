@@ -1,14 +1,10 @@
 import paddle
 from paddle import nn
+import paddle.nn.functional as F
 
 
 class CosineLayer(nn.Layer):
     def forward(self, lvalue, rvalue):
-        lvalue = lvalue / paddle.norm(lvalue, axis=1, keepdim=True)
-        rvalue = rvalue / paddle.norm(rvalue, axis=1, keepdim=True)
-
-        cosine_sim = paddle.fluid.layers.reduce_sum(
-            paddle.multiply(lvalue, rvalue), dim=-1, keep_dim=True
-        )
+        cosine_sim = F.cosine_similarity(lvalue, rvalue)
 
         return cosine_sim

@@ -1,6 +1,6 @@
 import paddle
 import paddle.nn.functional as F
-
+import click
 paddle.utils.run_check()
 
 # the Document generator
@@ -25,14 +25,22 @@ class SimpleNet(paddle.nn.Layer):
 
         return x
 
+@click.command()
+@click.option('--checkpoint_dir', type=str)
+def main(checkpoint_dir):
+    model = SimpleNet()
+    paddle.summary(model, (64, 1, 28, 28))
 
-model = SimpleNet()
-paddle.summary(model, (64, 1, 28, 28))
+    from trainer.paddle.trainer import PaddleTrainer
 
-from trainer.paddle.trainer import PaddleTrainer
+    trainer = PaddleTrainer(base_model=model, head_layer='CosineLayer', checkpoint_dir=checkpoint_dir, use_gpu=True)
 
-trainer = PaddleTrainer(base_model=model, head_layer='CosineLayer', use_gpu=True)
+    train_data_iter = fmdg(pos_value=1, neg_value=-1)
+    trainer.fit(train_data_iter, batch_size=256, shuffle=True, epochs=100)
 
-train_data_iter = fmdg(pos_value=1, neg_value=-1)
-trainer.fit(train_data_iter, batch_size=256, shuffle=True, epochs=100)
-trainer.save('simple_net.paddle')
+
+if __name__ == "__main__":
+    main()
+
+
+

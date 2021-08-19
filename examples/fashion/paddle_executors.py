@@ -26,11 +26,10 @@ class MyPaddleEncoder(Executor):
     """
     """
 
-    def __init__(self, model_path: str = './trained', **kwargs):
+    def __init__(self, model_path: str = './model.pdparam', **kwargs):
         super().__init__(**kwargs)
         self.embedding_model = SimpleNet()
         state_dict = paddle.load(model_path)
-        print(f'=> state dict: {state_dict}')
         self.embedding_model.set_state_dict(state_dict)
         self.embedding_model.eval()
 
@@ -41,7 +40,6 @@ class MyPaddleEncoder(Executor):
         :param docs: input documents to update with an embedding
         :param kwargs: other keyword arguments
         """
-        # reduce dimension to 50 by random orthogonal projection
         content = np.stack(docs.get_attributes('content'))
         content = content[:, :, :, 0].reshape(-1, 28, 28)
 
