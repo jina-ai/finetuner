@@ -1,4 +1,3 @@
-import itertools
 from typing import Union, Iterable
 
 import numpy as np
@@ -12,21 +11,12 @@ class JinaSiameseDataset(IterableDataset):
         self,
         inputs: Union[Iterable[Document], DocumentArray, DocumentArrayMemmap],
     ):
-        self._inputs = inputs
+        self._inputs = inputs() if callable(inputs) else inputs
 
-    def __len__(self):
-        return len(self._pairs)
-
-    def _parse_da(self):
+    def __iter__(self):
         for doc in self._inputs:
             for match in doc.matches:
                 yield (
                     doc.blob.astype(np.float32),
                     match.blob.astype(np.float32),
                 ), np.float32(match.tags['trainer']['label'])
-
-    def _stream(self):
-        return itertools.cycle(self._parse_da())
-
-    def __iter__(self):
-        return self._stream()

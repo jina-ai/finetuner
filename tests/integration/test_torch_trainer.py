@@ -30,5 +30,5 @@ def test_simple_sequential_model():
     pt = PytorchTrainer(user_model, head_layer='CosineLayer')
 
     # fit and save the checkpoint
-    pt.fit(fmdg(num_total=1000), epochs=10, batch_size=256)
+    pt.fit(lambda: fmdg(num_total=1000), epochs=5, batch_size=256)
     pt.save('./examples/fashion/trained.pth')
