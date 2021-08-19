@@ -90,6 +90,8 @@ class PaddleTrainer(BaseTrainer):
 
                     losses.append(loss.numpy())
                     accuracies.append(accuracy.numpy())
+
+                    p.update()
                 self.logger.info(
                     f'Epoch {epoch}, Loss = {sum(losses) / len(losses)}, Accuracy = {sum(accuracies) / len(accuracies)}'
                 )
