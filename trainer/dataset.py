@@ -1,12 +1,11 @@
 from typing import Union, Callable
 
 import numpy as np
-from paddle.io import IterableDataset
 
-from ..base import DocumentArrayLike
+from .base import DocumentArrayLike
 
 
-class JinaSiameseDataset(IterableDataset):
+class Dataset:
     def __init__(
         self,
         inputs: Union[
@@ -17,6 +16,8 @@ class JinaSiameseDataset(IterableDataset):
         super().__init__()
         self._inputs = inputs() if callable(inputs) else inputs
 
+
+class SiameseMixin:
     def __iter__(self):
         for d in self._inputs:
             d_blob = d.blob

@@ -1,12 +1,12 @@
 from typing import Union, Callable
 
 import paddle
+from jina.logging.profile import ProgressBar
 from paddle import nn
 from paddle.io import DataLoader
-from jina.logging.profile import ProgressBar
+from paddle.io import IterableDataset
 
 from . import head_layers
-from .dataset import JinaSiameseDataset
 from .head_layers import HeadLayer
 from ..base import BaseTrainer, DocumentArrayLike
 
@@ -38,8 +38,24 @@ class PaddleTrainer(BaseTrainer):
         return self.head_layer(_ArityModel(self.base_model))  # wrap with head layer
 
     def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
+
+        if self.arity == 2:
+
+            from ..dataset import SiameseMixin, Dataset
+
+            class _SiameseDataset(SiameseMixin, Dataset, IterableDataset):
+                ...
+
+            ds = _SiameseDataset
+        elif self.arity == 3:
+            raise NotImplementedError
+        else:
+            raise NotImplementedError
+
         return DataLoader(
-            JinaSiameseDataset(inputs=inputs), batch_size=batch_size, shuffle=shuffle
+            dataset=ds(inputs=inputs),
+            batch_size=batch_size,
+            shuffle=shuffle,
         )
 
     def fit(
@@ -66,34 +82,33 @@ class PaddleTrainer(BaseTrainer):
             model.train()
 
             losses = []
-            accuracies = []
+            correct, total = 0, 0
 
             data_loader = self._get_data_loader(inputs=train_data)
             with ProgressBar(task_name=f'Epoch {epoch + 1}/{epochs}') as p:
-                for (l_input, r_input), label in data_loader:
+                for inputs, label in data_loader:
                     # forward step
-                    head_value = model(l_input, r_input)
+                    head_value = model(*inputs)
                     loss = loss_fn(head_value, label)
 
                     # clean gradients
                     optimizer.clear_grad()
 
-                    # backward step
                     loss.backward()
-
-                    # update parameters
                     optimizer.step()
 
-                    corrects = paddle.equal(paddle.sign(head_value), paddle.sign(label))
-                    corrects = paddle.cast(corrects, dtype='float32')
-                    accuracy = paddle.mean(corrects, keepdim=True)
-
                     losses.append(loss.numpy())
-                    accuracies.append(accuracy.numpy())
+
+                    eval_sign = paddle.equal(
+                        paddle.sign(head_value), paddle.sign(label)
+                    )
+                    correct += paddle.sum(paddle.nonzero(eval_sign)).numpy()
+                    total += len(eval_sign)
 
                     p.update()
+
                 self.logger.info(
-                    f'Epoch {epoch}, Loss = {sum(losses) / len(losses)}, Accuracy = {sum(accuracies) / len(accuracies)}'
+                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={float(correct / total)}'
                 )
 
     def save(self, save_path: str, input_spec: Union[list, tuple] = None):

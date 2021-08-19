@@ -5,7 +5,6 @@ from tensorflow import keras
 from tensorflow.keras import Model
 
 from . import head_layers
-from .dataset import JinaSiameseDataset
 from .head_layers import HeadLayer
 from ..base import BaseTrainer, DocumentArrayLike
 
@@ -35,18 +34,35 @@ class KerasTrainer(BaseTrainer):
         wrapped_model.summary()
         return wrapped_model
 
-    def _da_to_tf_generator(self, doc_array):
+    def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
+        if self.arity == 2:
+
+            from ..dataset import SiameseMixin, Dataset
+
+            class _SiameseDataset(SiameseMixin, Dataset):
+                ...
+
+            ds = _SiameseDataset
+        elif self.arity == 3:
+            raise NotImplementedError
+        else:
+            raise NotImplementedError
+
         input_shape = self.base_model.input_shape[1:]
 
-        return tf.data.Dataset.from_generator(
-            lambda: JinaSiameseDataset(doc_array),
-            output_signature=(
-                tuple(
-                    tf.TensorSpec(shape=input_shape, dtype=tf.float64)
-                    for _ in range(self.arity)
+        return (
+            tf.data.Dataset.from_generator(
+                lambda: ds(inputs),
+                output_signature=(
+                    tuple(
+                        tf.TensorSpec(shape=input_shape, dtype=tf.float64)
+                        for _ in range(self.arity)
+                    ),
+                    tf.TensorSpec(shape=(), dtype=tf.float64),
                 ),
-                tf.TensorSpec(shape=(), dtype=tf.float64),
-            ),
+            )
+            .shuffle(buffer_size=4096)
+            .batch(batch_size, drop_remainder=True)
         )
 
     def fit(
@@ -59,9 +75,7 @@ class KerasTrainer(BaseTrainer):
         **kwargs,
     ) -> None:
         self.wrapped_model.fit(
-            self._da_to_tf_generator(train_data)
-            .shuffle(buffer_size=4096)
-            .batch(batch_size, drop_remainder=True),
+            self._get_data_loader(train_data),
             **kwargs,
         )
 

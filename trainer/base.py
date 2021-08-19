@@ -1,5 +1,4 @@
 import abc
-from abc import ABC
 from typing import Optional, TypeVar, Union, Callable, Iterator, Any, Sequence
 
 from jina import DocumentArray, Document
@@ -17,7 +16,7 @@ DocumentArrayLike = TypeVar(
 )
 
 
-class BaseTrainer(ABC):
+class BaseTrainer(abc.ABC):
     def __init__(
         self,
         base_model: Optional[AnyDNN] = None,
