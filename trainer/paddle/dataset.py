@@ -1,17 +1,15 @@
 from typing import Union
 
 import numpy as np
+import paddle
 from jina import DocumentArray
 from jina.types.arrays.memmap import DocumentArrayMemmap
-from torch.utils.data import Dataset
 
 
-class JinaSiameseDataset(Dataset):
+class JinaSiameseDataset(paddle.io.Dataset):
 
-    def __init__(
-            self,
-            inputs: Union[DocumentArray, DocumentArrayMemmap],
-    ):
+    def __init__(self, inputs: Union[DocumentArray, DocumentArrayMemmap]):
+        super().__init__()
         self._pairs = []
         for doc in inputs:
             for match in doc.matches:
@@ -27,3 +25,4 @@ class JinaSiameseDataset(Dataset):
 
     def __getitem__(self, index):
         return self._pairs[index]
+
