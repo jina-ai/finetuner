@@ -3,7 +3,6 @@ from typing import Dict
 import numpy as np
 from jina import Executor, DocumentArray, requests
 from jina.types.arrays.memmap import DocumentArrayMemmap
-from tensorflow import keras
 
 
 class MyIndexer(Executor):
@@ -47,6 +46,8 @@ class MyEncoder(Executor):
 
     def __init__(self, checkpoint_path: str = './trained', **kwargs):
         super().__init__(**kwargs)
+        from tensorflow import keras
+
         self.embedding_model = keras.models.load_model(checkpoint_path)
 
     @requests
