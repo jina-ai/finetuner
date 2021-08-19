@@ -1,7 +1,6 @@
 from pathlib import Path
 from typing import Union, Iterator, Callable
 
-import numpy as np
 import paddle
 from jina import Document, DocumentArray
 from jina.types.arrays.memmap import DocumentArrayMemmap
@@ -39,26 +38,25 @@ class PaddleTrainer(BaseTrainer):
 
         return self.head_layer(_ArityModel(self.base_model))  # wrap with head layer
 
-
     def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
-        paddle.io.DataLoader(JinaSiameseDataset(inputs=inputs),
-                             batch_size=batch_size,
-                             shuffle=shuffle)
+        return paddle.io.DataLoader(
+            JinaSiameseDataset(inputs=inputs), batch_size=batch_size, shuffle=shuffle
+        )
 
     def fit(
-            self,
-            train_data: Union[
-                DocumentArray,
-                DocumentArrayMemmap,
-                Iterator[Document],
-                Callable[..., Iterator[Document]],
-            ],
-            dev_data=None,
-            batch_size: int = 256,
-            shuffle: bool = True,
-            epochs: int = 10,
-            use_gpu: bool = False,
-            **kwargs,
+        self,
+        train_data: Union[
+            DocumentArray,
+            DocumentArrayMemmap,
+            Iterator[Document],
+            Callable[..., Iterator[Document]],
+        ],
+        dev_data=None,
+        batch_size: int = 256,
+        shuffle: bool = True,
+        epochs: int = 10,
+        use_gpu: bool = False,
+        **kwargs,
     ):
         model = self.wrapped_model
         if use_gpu:

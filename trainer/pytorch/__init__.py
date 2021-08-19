@@ -57,6 +57,7 @@ class PytorchTrainer(BaseTrainer):
         optimizer = torch.optim.RMSprop(
             params=model.parameters()
         )  # stay the same as keras
+
         loss_fn = self.head_layer.default_loss
 
         for epoch in range(epochs):
