@@ -4,12 +4,28 @@
 - [x] Pytorch backend
 - [x] Paddle backend
 
-## Requirements
+## Dev Install
 
 ```bash
 git clone https://github.com/jina-ai/trainer.git
+cd trainer
+pip install -r requirements.txt
 pip install -e .
 ```
+
+Install tests requirements:
+
+```bash
+pip install -r ./github/requirements-test.txt
+pip install -r ./github/requirements-cicd.txt
+```
+
+The codebase is enforced with Black style, please enable precommit hook.
+
+```bash
+pre-commit install
+```
+
 
 ## Use Fashion-MNIST matches data for testing
 
