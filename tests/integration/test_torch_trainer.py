@@ -23,8 +23,7 @@ class UserModel(nn.Module):
         )
 
     def forward(self, x):
-        output = self.fc(x)
-        return output
+        return self.fc(x)
 
 
 def test_simple_sequential_model(tmpdir):
