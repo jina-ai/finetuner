@@ -33,7 +33,7 @@ def test_simple_sequential_model(tmpdir):
     pt = PytorchTrainer(user_model, head_layer='CosineLayer')
 
     # fit and save the checkpoint
-    pt.fit(lambda: fmdg(num_total=1000), epochs=2, batch_size=256)
+    pt.fit(lambda: fmdg(num_total=1000), epochs=5, batch_size=256)
     pt.save(model_path)
 
     # load the checkpoint and ensure the dim
