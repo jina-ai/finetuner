@@ -4,10 +4,10 @@ from typing import Union, Iterable
 import numpy as np
 from jina import Document, DocumentArray
 from jina.types.arrays.memmap import DocumentArrayMemmap
-from torch.utils.data import Dataset
+from torch.utils.data import IterableDataset
 
 
-class JinaSiameseDataset(Dataset):
+class JinaSiameseDataset(IterableDataset):
     def __init__(
         self,
         inputs: Union[Iterable[Document], DocumentArray, DocumentArrayMemmap],
