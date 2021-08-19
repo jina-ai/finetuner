@@ -93,4 +93,4 @@ class PytorchTrainer(BaseTrainer):
                 )
 
     def save(self, *args, **kwargs):
-        torch.save(self.base_model.state_dict(), *args, **kwargs)
+        torch.save(self.base_model, *args, **kwargs)
