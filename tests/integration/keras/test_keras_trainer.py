@@ -20,7 +20,7 @@ def test_simple_sequential_model(tmpdir, params):
         ]
     )
 
-    kt = KerasTrainer(user_model, head_layer='CosineLayer')
+    kt = KerasTrainer(user_model, head_layer='TripletLayer')
 
     # fit and save the checkpoint
     kt.fit(
