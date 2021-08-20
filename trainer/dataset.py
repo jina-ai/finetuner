@@ -1,3 +1,4 @@
+import itertools
 from typing import Union, Callable
 
 import numpy as np
@@ -27,8 +28,6 @@ class SiameseMixin:
 
 class TripletMixin:
     def __iter__(self):
-        import itertools
-
         for d in self._inputs:
             anchor = d.blob
             positives = []
@@ -40,5 +39,4 @@ class TripletMixin:
                     negatives.append(m.blob)
 
             for p, n in itertools.product(positives, negatives):
-                # (triplet data, weight)
-                yield (anchor, p, n), np.float32(1)
+                yield (anchor, p, n), np.float32(0)

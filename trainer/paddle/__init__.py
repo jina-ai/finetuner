@@ -95,10 +95,7 @@ class PaddleTrainer(BaseTrainer):
                     # forward step
                     head_value = model(*inputs)
 
-                    if isinstance(head_value, list) or isinstance(head_value, tuple):
-                        loss = loss_fn(*head_value, label)
-                    else:
-                        loss = loss_fn(head_value, label)
+                    loss = loss_fn(head_value, label)
 
                     # clean gradients
                     optimizer.clear_grad()
@@ -108,15 +105,17 @@ class PaddleTrainer(BaseTrainer):
 
                     losses.append(loss.numpy())
 
-                    # eval_sign = paddle.equal(
-                    #     paddle.sign(head_value), paddle.sign(label)
-                    # )
-                    # correct += paddle.sum(paddle.nonzero(eval_sign)).numpy()
-                    # total += len(eval_sign)
+                    eval_sign = paddle.equal(
+                        paddle.sign(head_value), paddle.sign(label)
+                    )
+                    correct += paddle.sum(paddle.nonzero(eval_sign)).numpy()
+                    total += len(eval_sign)
 
                     p.update()
 
-                self.logger.info(f'Training: Loss={sum(losses) / len(losses)} ')
+                self.logger.info(
+                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={float(correct / total)}'
+                )
 
     def save(self, save_path: str, input_spec: Union[list, tuple] = None):
         base_model = paddle.jit.to_static(self.base_model, input_spec=input_spec)
