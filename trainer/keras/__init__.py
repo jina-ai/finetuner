@@ -14,7 +14,7 @@ class KerasTrainer(BaseTrainer):
     @property
     def head_layer(self) -> HeadLayer:
         if isinstance(self._head_layer, str):
-            return getattr(head_layers, self._head_layer)()
+            return getattr(head_layers, self._head_layer)
         elif isinstance(self._head_layer, HeadLayer):
             return self._head_layer
 
@@ -25,14 +25,13 @@ class KerasTrainer(BaseTrainer):
 
         input_shape = self.base_model.input_shape[1:]
         input_values = [keras.Input(shape=input_shape) for _ in range(self.arity)]
-        head_values = self.head_layer(*(self.base_model(v) for v in input_values))
-        wrapped_model = Model(inputs=input_values, outputs=head_values)
+        head_layer = self.head_layer()
+        head_values = head_layer(*(self.base_model(v) for v in input_values))
+        wrapped_model = Model(inputs=input_values, outputs=head_values[0])
+        wrapped_model.compile(
+            loss=[head_layer.loss_fn, head_layer.loss_fn],
+        )
 
-        def metric_fn(y_true, y_predict):
-            return tf.equal(tf.math.sign(y_true), tf.math.sign(y_predict))
-
-        wrapped_model.compile(loss=self.loss, metrics=[metric_fn])
-        wrapped_model.summary()
         return wrapped_model
 
     def _get_data_loader(self, inputs, batch_size=256, shuffle=False):

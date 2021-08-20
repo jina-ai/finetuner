@@ -19,13 +19,14 @@ DocumentArrayLike = TypeVar(
 class BaseHead:
     arity: int
 
-    def __init__(self, arity_model: AnyDNN):
+    def __init__(self, arity_model: Optional[AnyDNN] = None):
         super().__init__()
         self._arity_model = arity_model
 
     def forward(self, *inputs):
-        args = self._arity_model(*inputs)
-        return self.get_output_for_loss(*args), self.get_output_for_metric(*args)
+        if self._arity_model:
+            inputs = self._arity_model(*inputs)
+        return self.get_output_for_loss(*inputs), self.get_output_for_metric(*inputs)
 
     @abc.abstractmethod
     def get_output_for_loss(self, *inputs):
