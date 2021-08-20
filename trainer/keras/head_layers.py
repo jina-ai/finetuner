@@ -9,7 +9,7 @@ class HeadLayer(Layer):
     arity: int  #: the arity of the inputs
 
     @abc.abstractmethod
-    def call(self, inputs, **kwargs):
+    def call(self, *args, **kwargs):
         ...
 
 

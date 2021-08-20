@@ -20,8 +20,8 @@ class BaseTrainer(abc.ABC):
     def __init__(
         self,
         base_model: Optional[AnyDNN] = None,
-        arity: Optional[int] = 2,
         head_layer: Union[AnyDNN, str, None] = None,
+        arity: Optional[int] = None,
         loss: Optional[Any] = None,
         **kwargs
     ):
@@ -44,7 +44,7 @@ class BaseTrainer(abc.ABC):
     @property
     def arity(self) -> int:
         """Get the arity of this object."""
-        return self._arity
+        return self._arity or self.head_layer.arity
 
     @arity.setter
     def arity(self, val: int):

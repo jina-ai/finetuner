@@ -1,5 +1,6 @@
 # Downloading fashion mnist, copy from jina hello fashion
 # no surprise here
+import copy
 import gzip
 import os
 import urllib.request
@@ -27,16 +28,10 @@ def fashion_match_doc_generator(
     pos_value: int = 1,
     neg_value: int = -1,
 ):
-    rv = defaultdict(DocumentArray)
     all_docs = DocumentArray(fashion_doc_generator())
 
-    copy_all_docs = DocumentArray()
-    with TimeContext('split by class labels'):
-        for d in all_docs:
-            class_label = int(d.tags['class'])
-            copy_d = Document(d, copy=True)
-            rv[class_label].append(copy_d)
-            copy_all_docs.append(copy_d)
+    copy_all_docs = copy.deepcopy(all_docs)
+    rv = copy_all_docs.split('class')
 
     n_d = 0
     for od in all_docs:

@@ -48,7 +48,12 @@ class PaddleTrainer(BaseTrainer):
 
             ds = _SiameseDataset
         elif self.arity == 3:
-            raise NotImplementedError
+            from ..dataset import TripletMixin, Dataset
+
+            class _TripletDataset(TripletMixin, Dataset, IterableDataset):
+                ...
+
+            ds = _TripletDataset
         else:
             raise NotImplementedError
 
@@ -89,6 +94,7 @@ class PaddleTrainer(BaseTrainer):
                 for inputs, label in data_loader:
                     # forward step
                     head_value = model(*inputs)
+
                     loss = loss_fn(head_value, label)
 
                     # clean gradients
