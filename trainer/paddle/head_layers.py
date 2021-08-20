@@ -4,8 +4,6 @@ import paddle
 import paddle.nn.functional as F
 from paddle import nn
 
-from .losses import TripletLoss
-
 
 class HeadLayer(nn.Layer):
     default_loss: nn.Layer  #: the recommended loss function to be used when equipping this layer to base model
@@ -32,7 +30,7 @@ class CosineLayer(HeadLayer):
 
 
 class TripletLayer(HeadLayer):
-    default_loss = TripletLoss()
+    default_loss = nn.MSELoss()
     arity = 3
 
     def __init__(self, arity_model: nn.Layer, margin: float = 1.0):
