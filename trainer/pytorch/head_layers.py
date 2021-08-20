@@ -32,8 +32,8 @@ class TripletLayer(HeadLayer):
     default_loss = 'mse'
     arity = 3
 
-    def __init__(self, margin: float = 1.0, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, arity_model: nn.Module, margin: float = 1.0):
+        super().__init__(arity_model)
         self._margin = margin
 
     def call(self, anchor, positive, negative):
