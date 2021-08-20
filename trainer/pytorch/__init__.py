@@ -5,8 +5,8 @@ import torch.nn as nn
 from jina.logging.profile import ProgressBar
 from torch.utils.data.dataloader import DataLoader
 
-from . import head_layers
-from .datasets import get_dataset
+from . import head_layers, datasets
+from ..helper import get_dataset
 from ..base import BaseTrainer, DocumentArrayLike, BaseHead, BaseArityModel
 
 
@@ -30,7 +30,7 @@ class PytorchTrainer(BaseTrainer):
         return self.head_layer(_ArityModel(self.base_model))  # wrap with head layer
 
     def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
-        ds = get_dataset(self.arity)
+        ds = get_dataset(datasets, self.arity)
         return DataLoader(
             dataset=ds(inputs=inputs),
             batch_size=batch_size,

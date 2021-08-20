@@ -4,9 +4,10 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import Model
 
-from . import head_layers
+from . import head_layers, datasets
 from .head_layers import HeadLayer
-from ..base import BaseTrainer, DocumentArrayLike, BaseDataset
+from ..base import BaseTrainer, DocumentArrayLike
+from ..helper import get_dataset
 
 
 class KerasTrainer(BaseTrainer):
@@ -35,24 +36,8 @@ class KerasTrainer(BaseTrainer):
         return wrapped_model
 
     def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
-        if self.arity == 2:
 
-            from ..dataset import SiameseMixin
-
-            class _SiameseDataset(SiameseMixin, BaseDataset):
-                ...
-
-            ds = _SiameseDataset
-        elif self.arity == 3:
-            from ..dataset import TripletMixin
-
-            class _TripletDataset(TripletMixin, BaseDataset):
-                ...
-
-            ds = _TripletDataset
-        else:
-            raise NotImplementedError
-
+        ds = get_dataset(datasets, self.arity)
         input_shape = self.base_model.input_shape[1:]
 
         return (
