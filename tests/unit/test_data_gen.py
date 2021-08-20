@@ -17,7 +17,7 @@ def test_doc_generator():
 @pytest.mark.parametrize('num_pos, num_neg', [(5, 7), (10, 10)])
 def test_fashion_matches_generator(num_pos, num_neg, pos_value, neg_value):
     for d in fashion_match_doc_generator(
-        num_pos, num_neg, pos_value=pos_value, neg_value=neg_value
+        num_pos=num_pos, num_neg=num_neg, pos_value=pos_value, neg_value=neg_value
     ):
         assert len(d.matches) == num_pos + num_neg
         all_labels = [int(d.tags['trainer']['label']) for d in d.matches]
