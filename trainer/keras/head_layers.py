@@ -55,3 +55,18 @@ class CosineLayer(HeadLayer):
             tf.multiply(normalize_a, normalize_b), axis=-1, keepdims=True
         )
         return cos_similarity
+
+
+class TripletLayer(HeadLayer):
+    default_loss = 'mse'
+    arity = 3
+
+    def __init__(self, margin: float = 1.0, **kwargs):
+        super().__init__(**kwargs)
+        self._margin = margin
+
+    def call(self, anchor, positive, negative):
+        dist_pos = tf.norm(anchor - positive, ord='euclidean', axis=-1, keepdims=True)
+        dist_neg = tf.norm(anchor - negative, ord='euclidean', axis=-1, keepdims=True)
+
+        return tf.nn.relu(dist_pos - dist_neg + self._margin)

@@ -73,8 +73,8 @@ class PytorchTrainer(BaseTrainer):
         **kwargs,
     ) -> None:
         model = self.wrapped_model
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        model.to(device)
+        # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        # model.to(device)
 
         optimizer = torch.optim.RMSprop(
             params=model.parameters()

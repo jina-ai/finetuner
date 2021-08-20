@@ -10,4 +10,6 @@ def params():
         'batch_size': 256,
         'feature_dim': 128,
         'learning_rate': 0.01,
+        'num_train': 1000,
+        'num_predict': 100,
     }

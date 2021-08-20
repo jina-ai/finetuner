@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 import tensorflow as tf
 from tensorflow import keras
 
@@ -6,7 +7,8 @@ from trainer.keras import KerasTrainer
 from ...data_generator import fashion_match_doc_generator as fmdg
 
 
-def test_simple_sequential_model(tmpdir, params):
+@pytest.mark.parametrize('head_layer', ['CosineLayer', 'TripletLayer'])
+def test_simple_sequential_model(tmpdir, params, head_layer):
     user_model = tf.keras.Sequential(
         [
             tf.keras.layers.Flatten(
@@ -20,19 +22,20 @@ def test_simple_sequential_model(tmpdir, params):
         ]
     )
 
-    kt = KerasTrainer(user_model, head_layer='CosineLayer')
+    kt = KerasTrainer(user_model, head_layer=head_layer)
 
     # fit and save the checkpoint
     kt.fit(
-        lambda: fmdg(num_total=1000),
+        lambda: fmdg(num_total=params['num_train']),
         epochs=params['epochs'],
         batch_size=params['batch_size'],
     )
     kt.save(tmpdir / 'trained.kt')
 
     embedding_model = keras.models.load_model(tmpdir / 'trained.kt')
-    num_samples = 100
     r = embedding_model.predict(
-        np.random.random([num_samples, params['input_dim'], params['input_dim']])
+        np.random.random(
+            [params['num_predict'], params['input_dim'], params['input_dim']]
+        )
     )
-    assert r.shape == (num_samples, params['output_dim'])
+    assert r.shape == (params['num_predict'], params['output_dim'])
