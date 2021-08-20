@@ -26,3 +26,15 @@ class CosineLayer(HeadLayer):
 
     def call(self, lvalue, rvalue):
         return F.cosine_similarity(lvalue, rvalue)
+
+
+class TripletLayer(HeadLayer):
+    default_loss = 'mse'
+    arity = 3
+
+    def __init__(self, margin: float = 1.0, **kwargs):
+        super().__init__(**kwargs)
+        self._margin = margin
+
+    def call(self, anchor, positive, negative):
+        return F.triplet_margin_loss(anchor, positive, negative, self._margin)

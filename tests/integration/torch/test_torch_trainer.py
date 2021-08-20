@@ -3,12 +3,14 @@ import os
 import torch
 import torch.nn as nn
 import numpy as np
+import pytest
 
 from trainer.pytorch import PytorchTrainer
 from ...data_generator import fashion_match_doc_generator as fmdg
 
 
-def test_simple_sequential_model(tmpdir, params):
+@pytest.mark.parametrize('head_layer', ['CosineLayer', 'TripletLayer'])
+def test_simple_sequential_model(tmpdir, params, head_layer):
     user_model = nn.Sequential(
         nn.Flatten(),
         nn.Linear(
@@ -20,7 +22,7 @@ def test_simple_sequential_model(tmpdir, params):
     )
     model_path = os.path.join(tmpdir, 'trained.pth')
 
-    pt = PytorchTrainer(user_model, head_layer='CosineLayer')
+    pt = PytorchTrainer(user_model, head_layer=head_layer)
 
     # fit and save the checkpoint
     pt.fit(
