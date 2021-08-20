@@ -3,11 +3,11 @@ from typing import Union, Callable
 import torch
 import torch.nn as nn
 from jina.logging.profile import ProgressBar
-from torch.utils.data import IterableDataset
 from torch.utils.data.dataloader import DataLoader
 
 from . import head_layers
-from ..base import BaseTrainer, DocumentArrayLike, BaseHead, BaseDataset, BaseArityModel
+from .datasets import get_dataset
+from ..base import BaseTrainer, DocumentArrayLike, BaseHead, BaseArityModel
 
 
 class _ArityModel(BaseArityModel, nn.Module):
@@ -30,25 +30,7 @@ class PytorchTrainer(BaseTrainer):
         return self.head_layer(_ArityModel(self.base_model))  # wrap with head layer
 
     def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
-        if self.arity == 2:
-
-            from ..dataset import SiameseMixin
-
-            class _SiameseDataset(SiameseMixin, BaseDataset, IterableDataset):
-                ...
-
-            ds = _SiameseDataset
-        elif self.arity == 3:
-
-            from ..dataset import TripletMixin
-
-            class _TripletDataset(TripletMixin, BaseDataset, IterableDataset):
-                ...
-
-            ds = _TripletDataset
-        else:
-            raise NotImplementedError
-
+        ds = get_dataset(self.arity)
         return DataLoader(
             dataset=ds(inputs=inputs),
             batch_size=batch_size,
@@ -97,7 +79,7 @@ class PytorchTrainer(BaseTrainer):
                     p.update()
 
                 self.logger.info(
-                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={sum(metrics)/len(metrics)}'
+                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={sum(metrics) / len(metrics)}'
                 )
 
     def save(self, *args, **kwargs):
