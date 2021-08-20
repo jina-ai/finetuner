@@ -27,13 +27,11 @@ class KerasTrainer(BaseTrainer):
         input_values = [keras.Input(shape=input_shape) for _ in range(self.arity)]
         head_layer = self.head_layer()
         head_values = head_layer(*(self.base_model(v) for v in input_values))
-        wrapped_model = Model(inputs=input_values, outputs=head_values)
-
+        wrapped_model = Model(inputs=input_values, outputs=head_values[0])
         wrapped_model.compile(
             loss=[head_layer.loss_fn, head_layer.loss_fn],
-            metrics=[head_layer.metric_fn, head_layer.metric_fn],
         )
-        wrapped_model.summary()
+
         return wrapped_model
 
     def _get_data_loader(self, inputs, batch_size=256, shuffle=False):

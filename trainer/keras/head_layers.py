@@ -24,7 +24,7 @@ class CosineLayer(HeadLayer):
         return self.get_output_for_loss(lvalue, rvalue)
 
     def loss_fn(self, target_val, pred_val):
-        return tf.losses.mean_squared_error(target_val, pred_val)
+        return tf.keras.metrics.mean_squared_error(target_val, pred_val)
 
     def metric_fn(self, target_val, pred_val):
         return tf.equal(tf.math.sign(pred_val), tf.math.sign(target_val))
@@ -56,7 +56,7 @@ class TripletLayer(HeadLayer):
         return a_p_cos, a_n_cos
 
     def loss_fn(self, target_val, pred_val):
-        return tf.losses.mean_squared_error(target_val, pred_val)
+        return tf.keras.metrics.mean_squared_error(target_val, pred_val)
 
     def metric_fn(self, target_val, pred_val):
         y_positive, y_negative = pred_val
