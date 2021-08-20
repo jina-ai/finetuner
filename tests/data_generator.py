@@ -22,9 +22,9 @@ def fashion_match_documentarray(**kwargs):
 
 
 def fashion_match_doc_generator(
+    num_total: int = 60000,
     num_pos: int = 10,
     num_neg: int = 10,
-    num_total: int = 60000,
     pos_value: int = 1,
     neg_value: int = -1,
 ):
@@ -35,7 +35,7 @@ def fashion_match_doc_generator(
 
     n_d = 0
     for od in all_docs:
-        pos_label = int(od.tags['class'])
+        pos_label = od.tags['class']
         pos_samples = rv[pos_label].sample(num_pos)
         for d in pos_samples:
             d.tags['trainer'] = {'label': pos_value}
