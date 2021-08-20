@@ -30,7 +30,9 @@ class TripletLayer(BaseHead, nn.Module):
         self._margin = margin
 
     def get_output_for_loss(self, anchor, positive, negative):
-        return F.triplet_margin_loss(anchor, positive, negative, self._margin)
+        return F.triplet_margin_loss(
+            anchor, positive, negative, self._margin, reduction='none'
+        )
 
     def get_output_for_metric(self, anchor, positive, negative):
         return F.cosine_similarity(anchor, positive), F.cosine_similarity(
