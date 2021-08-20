@@ -6,7 +6,7 @@ from tensorflow.keras import Model
 
 from . import head_layers
 from .head_layers import HeadLayer
-from ..base import BaseTrainer, DocumentArrayLike
+from ..base import BaseTrainer, DocumentArrayLike, BaseDataset
 
 
 class KerasTrainer(BaseTrainer):
@@ -37,16 +37,16 @@ class KerasTrainer(BaseTrainer):
     def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
         if self.arity == 2:
 
-            from ..dataset import SiameseMixin, Dataset
+            from ..dataset import SiameseMixin
 
-            class _SiameseDataset(SiameseMixin, Dataset):
+            class _SiameseDataset(SiameseMixin, BaseDataset):
                 ...
 
             ds = _SiameseDataset
         elif self.arity == 3:
-            from ..dataset import TripletMixin, Dataset
+            from ..dataset import TripletMixin
 
-            class _TripletDataset(TripletMixin, Dataset):
+            class _TripletDataset(TripletMixin, BaseDataset):
                 ...
 
             ds = _TripletDataset

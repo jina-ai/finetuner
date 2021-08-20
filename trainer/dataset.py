@@ -1,21 +1,6 @@
 import itertools
-from typing import Union, Callable
 
 import numpy as np
-
-from .base import DocumentArrayLike
-
-
-class Dataset:
-    def __init__(
-        self,
-        inputs: Union[
-            DocumentArrayLike,
-            Callable[..., DocumentArrayLike],
-        ],
-    ):
-        super().__init__()
-        self._inputs = inputs() if callable(inputs) else inputs
 
 
 class SiameseMixin:
