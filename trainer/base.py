@@ -21,14 +21,10 @@ class BaseTrainer(abc.ABC):
         self,
         base_model: Optional[AnyDNN] = None,
         head_layer: Union[AnyDNN, str, None] = None,
-        arity: Optional[int] = None,
-        loss: Optional[Any] = None,
         **kwargs
     ):
         self._base_model = base_model
         self._head_layer = head_layer
-        self._arity = arity
-        self._loss = loss
         self.logger = JinaLogger(self.__class__.__name__)
 
     @property
@@ -43,18 +39,13 @@ class BaseTrainer(abc.ABC):
 
     @property
     def arity(self) -> int:
-        """Get the arity of this object."""
-        return self._arity or self.head_layer.arity
-
-    @arity.setter
-    def arity(self, val: int):
-        """Set the arity of this object.
+        """Get the arity of this object.
 
         For example,
             - `arity = 2` corresponds to the siamese network;
             - `arity = 3` corresponds to the triplet network.
         """
-        self._arity = val
+        return self.head_layer.arity
 
     @property
     @abc.abstractmethod
@@ -74,16 +65,8 @@ class BaseTrainer(abc.ABC):
 
     @property
     def loss(self) -> Any:
-        """Get the loss function of this object."""
-        return self._loss or self.head_layer.default_loss
-
-    @loss.setter
-    def loss(self, val: Any):
-        """Set the loss function of this object to one of the predefined loss functions.
-
-        It can be "hinge", "squared", ...
-        """
-        self._loss = val
+        """Get the loss of this object."""
+        return self.head_layer.default_loss
 
     @abc.abstractmethod
     def fit(
