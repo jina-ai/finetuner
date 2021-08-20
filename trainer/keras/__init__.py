@@ -44,7 +44,12 @@ class KerasTrainer(BaseTrainer):
 
             ds = _SiameseDataset
         elif self.arity == 3:
-            raise NotImplementedError
+            from ..dataset import TripletMixin, Dataset
+
+            class _TripletDataset(TripletMixin, Dataset):
+                ...
+
+            ds = _TripletDataset
         else:
             raise NotImplementedError
 
