@@ -2,6 +2,7 @@ import abc
 
 import paddle.nn.functional as F
 from paddle import nn
+from .losses import TripletLoss
 
 
 class HeadLayer(nn.Layer):
@@ -26,3 +27,11 @@ class CosineLayer(HeadLayer):
 
     def call(self, lvalue, rvalue):
         return F.cosine_similarity(lvalue, rvalue)
+
+
+class TripletLayer(HeadLayer):
+    default_loss = TripletLoss()
+    arity = 3
+
+    def call(self, anchor, positive, negative):
+        return anchor, positive, negative
