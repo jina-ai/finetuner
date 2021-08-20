@@ -70,12 +70,11 @@ class PaddleTrainer(BaseTrainer):
             Callable[..., DocumentArrayLike],
         ],
         epochs: int = 10,
-        use_gpu: bool = False,
         **kwargs,
     ):
         model = self.wrapped_model
-        if use_gpu:
-            paddle.set_device('gpu')
+        # if use_gpu:
+        #     paddle.set_device('gpu')
 
         optimizer = paddle.optimizer.RMSProp(
             learning_rate=0.01, parameters=model.parameters()
