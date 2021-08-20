@@ -1,9 +1,9 @@
 import os
 
-import torch
-import torch.nn as nn
 import numpy as np
 import pytest
+import torch
+import torch.nn as nn
 
 from trainer.pytorch import PytorchTrainer
 from ...data_generator import fashion_match_doc_generator as fmdg
@@ -26,7 +26,7 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
 
     # fit and save the checkpoint
     pt.fit(
-        lambda: fmdg(num_total=1000),
+        lambda: fmdg(num_total=params['num_train']),
         epochs=params['epochs'],
         batch_size=params['batch_size'],
     )
@@ -35,11 +35,10 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
     # load the checkpoint and ensure the dim
     embedding_model = torch.load(model_path)
     embedding_model.eval()
-    num_samples = 5
     inputs = torch.from_numpy(
         np.random.random(
-            [num_samples, params['input_dim'], params['input_dim']]
+            [params['num_predict'], params['input_dim'], params['input_dim']]
         ).astype(np.float32)
     )
     r = embedding_model(inputs)
-    assert r.shape == (num_samples, params['output_dim'])
+    assert r.shape == (params['num_predict'], params['output_dim'])
