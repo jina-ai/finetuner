@@ -44,7 +44,7 @@ class BaseTrainer(abc.ABC):
     @property
     def arity(self) -> int:
         """Get the arity of this object."""
-        return self._arity or self.head_layer.artity
+        return self._arity or self.head_layer.arity
 
     @arity.setter
     def arity(self, val: int):
