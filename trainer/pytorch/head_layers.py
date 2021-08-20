@@ -29,7 +29,7 @@ class CosineLayer(HeadLayer):
 
 
 class TripletLayer(HeadLayer):
-    default_loss = 'mse'
+    default_loss = nn.MSELoss()
     arity = 3
 
     def __init__(self, arity_model: nn.Module, margin: float = 1.0):
