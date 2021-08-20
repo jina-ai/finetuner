@@ -8,7 +8,7 @@ from trainer.paddle import PaddleTrainer
 from ...data_generator import fashion_match_doc_generator as fmdg
 
 
-@pytest.mark.parametrize('head_layer', ['TripletLayer'])
+@pytest.mark.parametrize('head_layer', ['CosineLayer', 'TripletLayer'])
 def test_simple_sequential_model(tmpdir, params, head_layer):
     user_model = nn.Sequential(
         nn.Flatten(start_axis=1),
