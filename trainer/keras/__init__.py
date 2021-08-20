@@ -44,7 +44,7 @@ class KerasTrainer(BaseTrainer):
 
             ds = _SiameseDataset
         elif self.arity == 3:
-            from ..dataset import TripletMixin, BaseDataset
+            from ..dataset import TripletMixin
 
             class _TripletDataset(TripletMixin, BaseDataset):
                 ...

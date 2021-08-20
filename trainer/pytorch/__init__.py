@@ -7,18 +7,11 @@ from torch.utils.data import IterableDataset
 from torch.utils.data.dataloader import DataLoader
 
 from . import head_layers
-from ..base import BaseTrainer, DocumentArrayLike, BaseHead, BaseDataset
+from ..base import BaseTrainer, DocumentArrayLike, BaseHead, BaseDataset, BaseArityModel
 
 
-class _ArityModel(nn.Module):
-    """The helper class to copy the network for multi-inputs."""
-
-    def __init__(self, base_model: nn.Module):
-        super().__init__()
-        self._base_model = base_model
-
-    def forward(self, *args):
-        return tuple(self._base_model(a) for a in args)
+class _ArityModel(BaseArityModel, nn.Module):
+    ...
 
 
 class PytorchTrainer(BaseTrainer):
@@ -47,7 +40,7 @@ class PytorchTrainer(BaseTrainer):
             ds = _SiameseDataset
         elif self.arity == 3:
 
-            from ..dataset import TripletMixin, BaseDataset
+            from ..dataset import TripletMixin
 
             class _TripletDataset(TripletMixin, BaseDataset, IterableDataset):
                 ...
@@ -83,6 +76,7 @@ class PytorchTrainer(BaseTrainer):
             model.train()
 
             losses = []
+            metrics = []
 
             data_loader = self._get_data_loader(inputs=train_data)
             with ProgressBar(task_name=f'Epoch {epoch + 1}/{epochs}') as p:
@@ -98,11 +92,12 @@ class PytorchTrainer(BaseTrainer):
                     optimizer.step()
 
                     losses.append(loss.item())
+                    metrics.append(metric)
 
                     p.update()
 
                 self.logger.info(
-                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={metric}'
+                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={sum(metrics)/len(metrics)}'
                 )
 
     def save(self, *args, **kwargs):

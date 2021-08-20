@@ -139,3 +139,14 @@ class BaseDataset:
     ):
         super().__init__()
         self._inputs = inputs() if callable(inputs) else inputs
+
+
+class BaseArityModel:
+    """The helper class to copy the network for multi-inputs."""
+
+    def __init__(self, base_model: AnyDNN):
+        super().__init__()
+        self._base_model = base_model
+
+    def forward(self, *args):
+        return tuple(self._base_model(a) for a in args)
