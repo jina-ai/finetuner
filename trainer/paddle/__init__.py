@@ -108,7 +108,7 @@ class PaddleTrainer(BaseTrainer):
                     eval_sign = paddle.equal(
                         paddle.sign(head_value), paddle.sign(label)
                     )
-                    correct += paddle.sum(paddle.nonzero(eval_sign)).numpy()
+                    correct += paddle.sum(paddle.cast(eval_sign, 'int64')).numpy()
                     total += len(eval_sign)
 
                     p.update()
