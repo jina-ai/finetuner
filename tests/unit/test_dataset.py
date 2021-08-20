@@ -3,7 +3,8 @@ import pytest
 
 from tests.data_generator import fashion_match_doc_generator as fmdg
 from tests.data_generator import fashion_match_documentarray as fmda
-from trainer.dataset import SiameseMixin, Dataset, TripletMixin
+from trainer.dataset import SiameseMixin, TripletMixin
+from trainer.base import BaseDataset
 
 
 @pytest.mark.parametrize(
@@ -11,7 +12,7 @@ from trainer.dataset import SiameseMixin, Dataset, TripletMixin
     [fmdg(num_total=100), fmda(num_total=100), fmdg, lambda: fmda(num_total=100)],
 )
 def test_siamese_dataset(data_src):
-    class SD(SiameseMixin, Dataset):
+    class SD(SiameseMixin, BaseDataset):
         ...
 
     sd = SD(data_src)
@@ -29,7 +30,7 @@ def test_siamese_dataset(data_src):
     [fmdg(num_total=100), fmda(num_total=100), fmdg, lambda: fmda(num_total=100)],
 )
 def test_triplet_dataset(data_src):
-    class SD(TripletMixin, Dataset):
+    class SD(TripletMixin, BaseDataset):
         ...
 
     sd = SD(data_src)

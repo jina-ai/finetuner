@@ -16,6 +16,34 @@ DocumentArrayLike = TypeVar(
 )
 
 
+class BaseHead:
+    arity: int
+
+    def __init__(self, arity_model: AnyDNN):
+        super().__init__()
+        self._arity_model = arity_model
+
+    def forward(self, *inputs):
+        args = self._arity_model(*inputs)
+        return self.get_output_for_loss(*args), self.get_output_for_metric(*args)
+
+    @abc.abstractmethod
+    def get_output_for_loss(self, *inputs):
+        ...
+
+    @abc.abstractmethod
+    def get_output_for_metric(self, *inputs):
+        ...
+
+    @abc.abstractmethod
+    def loss_fn(self, pred_val, target_val):
+        ...
+
+    @abc.abstractmethod
+    def metric_fn(self, pred_val, target_val):
+        ...
+
+
 class BaseTrainer(abc.ABC):
     def __init__(
         self,
@@ -99,3 +127,15 @@ class BaseTrainer(abc.ABC):
         for tuning ``base_model``.
         """
         ...
+
+
+class BaseDataset:
+    def __init__(
+        self,
+        inputs: Union[
+            DocumentArrayLike,
+            Callable[..., DocumentArrayLike],
+        ],
+    ):
+        super().__init__()
+        self._inputs = inputs() if callable(inputs) else inputs

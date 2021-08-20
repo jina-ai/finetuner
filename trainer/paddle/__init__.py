@@ -7,8 +7,7 @@ from paddle.io import DataLoader
 from paddle.io import IterableDataset
 
 from . import head_layers
-from .head_layers import HeadLayer
-from ..base import BaseTrainer, DocumentArrayLike
+from ..base import BaseTrainer, DocumentArrayLike, BaseHead, BaseDataset
 
 
 class _ArityModel(nn.Layer):
@@ -24,7 +23,7 @@ class _ArityModel(nn.Layer):
 
 class PaddleTrainer(BaseTrainer):
     @property
-    def head_layer(self) -> HeadLayer:
+    def head_layer(self) -> BaseHead:
         if isinstance(self._head_layer, str):
             return getattr(head_layers, self._head_layer)
         elif isinstance(self._head_layer, nn.Layer):
@@ -41,16 +40,16 @@ class PaddleTrainer(BaseTrainer):
 
         if self.arity == 2:
 
-            from ..dataset import SiameseMixin, Dataset
+            from ..dataset import SiameseMixin
 
-            class _SiameseDataset(SiameseMixin, Dataset, IterableDataset):
+            class _SiameseDataset(SiameseMixin, BaseDataset, IterableDataset):
                 ...
 
             ds = _SiameseDataset
         elif self.arity == 3:
-            from ..dataset import TripletMixin, Dataset
+            from ..dataset import TripletMixin, BaseDataset
 
-            class _TripletDataset(TripletMixin, Dataset, IterableDataset):
+            class _TripletDataset(TripletMixin, BaseDataset, IterableDataset):
                 ...
 
             ds = _TripletDataset
@@ -73,28 +72,24 @@ class PaddleTrainer(BaseTrainer):
         **kwargs,
     ):
         model = self.wrapped_model
-        # if use_gpu:
-        #     paddle.set_device('gpu')
 
         optimizer = paddle.optimizer.RMSProp(
             learning_rate=0.01, parameters=model.parameters()
         )
 
-        loss_fn = self.head_layer.default_loss
-
         for epoch in range(epochs):
             model.train()
 
             losses = []
-            correct, total = 0, 0
 
             data_loader = self._get_data_loader(inputs=train_data)
             with ProgressBar(task_name=f'Epoch {epoch + 1}/{epochs}') as p:
                 for inputs, label in data_loader:
                     # forward step
-                    head_value = model(*inputs)
+                    outputs = model(*inputs)
 
-                    loss = loss_fn(head_value, label)
+                    loss = model.loss_fn(outputs[0], label)
+                    metric = model.metric_fn(outputs[1], label)
 
                     # clean gradients
                     optimizer.clear_grad()
@@ -104,16 +99,10 @@ class PaddleTrainer(BaseTrainer):
 
                     losses.append(loss.numpy())
 
-                    eval_sign = paddle.equal(
-                        paddle.sign(head_value), paddle.sign(label)
-                    )
-                    correct += paddle.sum(paddle.cast(eval_sign, 'int64')).numpy()
-                    total += len(eval_sign)
-
                     p.update()
 
                 self.logger.info(
-                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={float(correct / total)}'
+                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={metric}'
                 )
 
     def save(self, save_path: str, input_spec: Union[list, tuple] = None):

@@ -1,45 +1,12 @@
-import abc
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
-class HeadLayer(nn.Module):
-    arity: int
-
-    def __init__(self, arity_model: nn.Module):
-        super().__init__()
-        self._arity_model = arity_model
-
-    def forward(self, *inputs):
-        args = self._arity_model(*inputs)
-        return self.get_output_for_loss(*args), self.get_output_for_metric(*args)
-
-    @abc.abstractmethod
-    def get_output_for_loss(self, *inputs):
-        ...
-
-    @abc.abstractmethod
-    def get_output_for_metric(self, *inputs):
-        ...
-
-    @abc.abstractmethod
-    def loss_fn(self, pred_val, target_val):
-        ...
-
-    @abc.abstractmethod
-    def metric_fn(self, pred_val, target_val):
-        ...
+from trainer.base import BaseHead
 
 
-class CosineLayer(HeadLayer):
+class CosineLayer(BaseHead, nn.Module):
     arity = 2
-
-    def __init__(self, arity_model: nn.Module):
-        super().__init__(arity_model)
-        self._stats = 0
-        self._total = 0
 
     def get_output_for_loss(self, lvalue, rvalue):
         return F.cosine_similarity(lvalue, rvalue)
@@ -57,14 +24,12 @@ class CosineLayer(HeadLayer):
         return F.mse_loss(pred_val, target_val)
 
 
-class TripletLayer(HeadLayer):
+class TripletLayer(BaseHead, nn.Module):
     arity = 3
 
     def __init__(self, arity_model: nn.Module, margin: float = 1.0):
         super().__init__(arity_model)
         self._margin = margin
-        self._stats = 0
-        self._total = 0
 
     def get_output_for_loss(self, anchor, positive, negative):
         return F.triplet_margin_loss(anchor, positive, negative, self._margin)
