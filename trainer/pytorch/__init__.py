@@ -80,20 +80,18 @@ class PytorchTrainer(BaseTrainer):
             params=model.parameters()
         )  # stay the same as keras
 
-        loss_fn = self.head_layer.default_loss
-
         for epoch in range(epochs):
             model.train()
 
             losses = []
-            correct, total = 0, 0
 
             data_loader = self._get_data_loader(inputs=train_data)
             with ProgressBar(task_name=f'Epoch {epoch + 1}/{epochs}') as p:
                 for inputs, label in data_loader:
                     # forward step
-                    head_value = model(*inputs)
-                    loss = loss_fn(head_value, label)
+                    outputs = model(*inputs)
+                    loss = model.loss_fn(outputs[0], label)
+                    metric = model.metric_fn(outputs[1], label)
 
                     optimizer.zero_grad()
 
@@ -102,14 +100,10 @@ class PytorchTrainer(BaseTrainer):
 
                     losses.append(loss.item())
 
-                    eval_sign = torch.eq(torch.sign(head_value), label)
-                    correct += torch.count_nonzero(eval_sign).item()
-                    total += len(eval_sign)
-
                     p.update()
 
                 self.logger.info(
-                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={float(correct / total)}'
+                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={metric}'
                 )
 
     def save(self, *args, **kwargs):
