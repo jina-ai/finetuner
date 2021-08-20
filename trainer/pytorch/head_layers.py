@@ -17,11 +17,11 @@ class HeadLayer(nn.Module):
         return self.get_output_for_loss(*args), self.get_output_for_metric(*args)
 
     @abc.abstractmethod
-    def get_output_for_loss(self, *args):
+    def get_output_for_loss(self, *inputs):
         ...
 
     @abc.abstractmethod
-    def get_output_for_metric(self, *args):
+    def get_output_for_metric(self, *inputs):
         ...
 
     @abc.abstractmethod
@@ -29,7 +29,7 @@ class HeadLayer(nn.Module):
         ...
 
     @abc.abstractmethod
-    def metric_fn(self, *args):
+    def metric_fn(self, pred_val, target_val):
         ...
 
 
