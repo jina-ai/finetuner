@@ -16,7 +16,7 @@ DocumentArrayLike = TypeVar(
 )
 
 
-class BaseHead:
+class BaseHead(abc.ABC):
     arity: int
 
     def __init__(self, arity_model: Optional[AnyDNN] = None):
