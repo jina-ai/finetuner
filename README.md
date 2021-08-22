@@ -1,9 +1,5 @@
 # trainer
 
-- [x] Keras backend
-- [x] Pytorch backend
-- [x] Paddle backend
-
 ## Dev Install
 
 ```bash
