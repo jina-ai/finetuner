@@ -1,9 +1,5 @@
 # trainer
 
-- [x] Keras backend
-- [x] Pytorch backend
-- [x] Paddle backend
-
 ## Dev Install
 
 ```bash
@@ -29,13 +25,70 @@ pre-commit install
 
 ## Use Fashion-MNIST matches data for testing
 
-```python
-# the Document generator
-from tests.data_generator import fashion_match_doc_generator
+Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. Each image is a single channel 28x28 grayscale image. To convert this dataset for fitting our experiments & tests for trainer, we provide a function `tests.data_generator.fashion_match_doc_generator()` to generate synthetic matches data for each document.
 
-# or use it as a DocumentArray (slow, as it has to build all matches)
-from tests.data_generator import fashion_match_documentarray
+Specifically, each document contain the following info that are relevant to `trainer`.
+
+  - `.blob`: the image
+  - `.matches`: the generated positive & negative matches Document
+    - `.blob`: the matched Document's image 
+    - `.tags['trainer']['label']`: the match label, can be `1` or `-1` or user-defined, see below.
+
+Also, `fashion_match_doc_generator()` provides some interfaces for generating flexible synthetic data:
+
+#### To get only first 10 documents
+
+```python
+from tests.data_generator import fashion_match_doc_generator as fmdg
+
+for d in fmdg(num_total=10):
+    ...
 ```
+
+#### To set number of positive/negative samples per document
+
+```python
+from tests.data_generator import fashion_match_doc_generator as fmdg
+
+for d in fmdg(num_pos=2, num_neg=7):
+    ...
+```
+
+#### To set the label value of positive & negative samples
+
+```python
+from tests.data_generator import fashion_match_doc_generator as fmdg
+
+for d in fmdg(pos_value=1, neg_value=-1):
+    ...
+```
+
+#### To make image as 3-channel pseudo RGB image
+
+```python
+from tests.data_generator import fashion_match_doc_generator as fmdg
+
+for d in fmdg(channels=3):
+    ...
+```
+
+#### To upsample image as 112x112 3-channel pseudo RGB image
+
+```python
+from tests.data_generator import fashion_match_doc_generator as fmdg
+
+for d in fmdg(channels=3, upsampling=4):
+    ...
+```
+
+#### Use `DocumentArray` instead of Generator
+
+```python
+from tests.data_generator import fashion_match_documentarray as fmda
+
+da = fmda()  # slow, as it scans over all data
+```
+
 
 ## Example 1: train a DNN for `jina hello fashion`
 
@@ -145,42 +198,6 @@ from tests.data_generator import fashion_match_documentarray
    </details>
 
 2. Observe the decreasing of training loss and increasing of the accuracy.
-    
-    ```text
-    Train on None steps
-    Epoch 1/10
-    2021-08-18 08:26:03.029432: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:127] None of the MLIR optimization passes are enabled (registered 2)
-    split by class labels ...	split by class labels takes 1 second (1.32s)
-    4687/4687 [==============================] - 259s 54ms/step - batch: 2343.0000 - size: 1.0000 - loss: 0.5371 - metric_fn: 0.8644
-    Epoch 2/10
-    split by class labels ...	split by class labels takes 1 second (1.25s)
-    4687/4687 [==============================] - 257s 54ms/step - batch: 2343.0000 - size: 1.0000 - loss: 0.5052 - metric_fn: 0.8803
-    Epoch 3/10
-    split by class labels ...	split by class labels takes 1 second (1.40s)
-    4687/4687 [==============================] - 256s 54ms/step - batch: 2343.0000 - size: 1.0000 - loss: 0.4998 - metric_fn: 0.8835
-    Epoch 4/10
-    split by class labels ...	split by class labels takes 1 second (1.25s)
-    4687/4687 [==============================] - 249s 52ms/step - batch: 2343.0000 - size: 1.0000 - loss: 0.4960 - metric_fn: 0.8849
-    Epoch 5/10
-    split by class labels ...	split by class labels takes 1 second (1.45s)
-    4687/4687 [==============================] - 264s 55ms/step - batch: 2343.0000 - size: 1.0000 - loss: 0.4951 - metric_fn: 0.8869
-    Epoch 6/10
-    split by class labels ...	split by class labels takes 1 second (1.27s)
-    4687/4687 [==============================] - 252s 53ms/step - batch: 2343.0000 - size: 1.0000 - loss: 0.4935 - metric_fn: 0.8869
-    Epoch 7/10
-    split by class labels ...	split by class labels takes 1 second (1.28s)
-    4687/4687 [==============================] - 262s 55ms/step - batch: 2343.0000 - size: 1.0000 - loss: 0.4919 - metric_fn: 0.8871
-    Epoch 8/10
-    split by class labels ...	split by class labels takes 1 second (1.26s)
-    4687/4687 [==============================] - 269s 56ms/step - batch: 2343.0000 - size: 1.0000 - loss: 0.4914 - metric_fn: 0.8887
-    Epoch 9/10
-    split by class labels ...	split by class labels takes 1 second (1.32s)
-    4687/4687 [==============================] - 267s 56ms/step - batch: 2343.0000 - size: 1.0000 - loss: 0.4899 - metric_fn: 0.8899
-    Epoch 10/10
-    split by class labels ...	split by class labels takes 1 second (1.26s)
-    4687/4687 [==============================] - 258s 54ms/step - batch: 2343.0000 - size: 1.0000 - loss: 0.4897 - metric_fn: 0.8899
-    ```
-
 
 3. Test `trained` model in the Jina `hello fashion` pipeline:
     ```bash
