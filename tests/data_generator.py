@@ -130,7 +130,7 @@ def fashion_doc_generator(download_proxy=None, **kwargs):
         )
 
 
-def _load_mnist(path, upsampling, channels):
+def _load_mnist(path, upsampling: int = 1, channels: int = 0):
     """
     Load MNIST data
 
