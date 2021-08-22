@@ -2,19 +2,23 @@
 
 ## Dev Install
 
+Trainer requires your local `jina` as the latest master. It is the best if you have `jina` installed via `pip install -e .`.
+
 ```bash
 git clone https://github.com/jina-ai/trainer.git
 cd trainer
-pip install -r requirements.txt
+# pip install -r requirements.txt (only required when you do not have jina locally) 
 pip install -e .
 ```
 
-Install tests requirements:
+#### Install tests requirements
 
 ```bash
 pip install -r ./github/requirements-test.txt
 pip install -r ./github/requirements-cicd.txt
 ```
+
+#### Enable precommit hook
 
 The codebase is enforced with Black style, please enable precommit hook.
 
@@ -23,7 +27,7 @@ pre-commit install
 ```
 
 
-## Use Fashion-MNIST matches data for testing
+## Use Fashion-MNIST for synthetic matching data
 
 Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. Each image is a single channel 28x28 grayscale image. To convert this dataset for fitting our experiments & tests for trainer, we provide a function `tests.data_generator.fashion_match_doc_generator()` to generate synthetic matches data for each document.
 
@@ -90,7 +94,7 @@ da = fmda()  # slow, as it scans over all data
 ```
 
 
-## Example 1: train a DNN for `jina hello fashion`
+## Example 1: train arbitrary DNN for `jina hello fashion`
 
 1. Use artificial pairwise data to train `user_model` in a siamese manner:
 
