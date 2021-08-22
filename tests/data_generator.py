@@ -29,15 +29,15 @@ def fashion_match_doc_generator(
     upsampling: int = 1,
     channels: int = 0,
 ):
-    """
+    """Get a Generator of fashion-mnist Documents with synthetic matches.
 
-    :param num_total:
-    :param num_pos:
-    :param num_neg:
-    :param pos_value:
-    :param neg_value:
+    :param num_total: the total number of documents to return
+    :param num_pos: the number of positive matches per document
+    :param num_neg: the number of negative matches per document
+    :param pos_value: the label value of the positive matches
+    :param neg_value: the label value of the negative matches
     :param upsampling: the rescale factor, must be integer and >=1. It rescales the image into a bigger image.
-        For example, upsampling=2 gives 56 x 56 images.
+        For example, `upsampling=2` gives 56 x 56 images.
     :param channels: fashion-mnist data is gray-scale data, it does not have channel.
         One can set channel to 1 or 3 to simulate real grayscale or rgb imaga
     :return:
@@ -130,11 +130,15 @@ def fashion_doc_generator(download_proxy=None, **kwargs):
         )
 
 
-def _load_mnist(path, upsampling: int = 1, channels: int = 1):
+def _load_mnist(path, upsampling, channels):
     """
     Load MNIST data
 
     :param path: path of data
+    :param upsampling: the rescale factor, must be integer and >=1. It rescales the image into a bigger image.
+        For example, upsampling=2 gives 56 x 56 images.
+    :param channels: fashion-mnist data is gray-scale data, it does not have channel.
+        One can set channel to 1 or 3 to simulate real grayscale or rgb imaga
     :return: MNIST data in np.array
     """
 

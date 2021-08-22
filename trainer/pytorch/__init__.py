@@ -61,7 +61,7 @@ class PytorchTrainer(BaseTrainer):
             metrics = []
 
             data_loader = self._get_data_loader(inputs=train_data)
-            with ProgressBar(task_name=f'Epoch {epoch + 1}/{epochs}') as p:
+            with ProgressBar(f'Epoch {epoch + 1}/{epochs}') as p:
                 for inputs, label in data_loader:
                     # forward step
                     outputs = model(*inputs)
