@@ -89,6 +89,8 @@ for d in fmdg(channels=3, upsampling=4):
 
 ```python
 from tests.data_generator import fashion_match_documentarray as fmda
+
+da = fmda()  # slow, as it scans over all data
 ```
 
 
