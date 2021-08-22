@@ -27,7 +27,7 @@ pre-commit install
 ```
 
 
-## Use Fashion-MNIST for synthetic matching data
+## Use Fashion-MNIST as synthetic matching data
 
 Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. Each image is a single channel 28x28 grayscale image. To convert this dataset for fitting our experiments & tests, we provide a function `tests.data_generator.fashion_match_doc_generator()` to generate synthetic matches data for each document.
 
