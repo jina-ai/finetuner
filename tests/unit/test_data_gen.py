@@ -6,10 +6,29 @@ from ..data_generator import (
     fashion_match_documentarray,
 )
 
+# import matplotlib.pyplot as plt
+
 
 def test_doc_generator():
     for d in fashion_doc_generator():
         assert d.tags['class']
+        break
+
+
+@pytest.mark.parametrize('channels', [0, 1, 3])
+@pytest.mark.parametrize('upsampling', [1, 2, 4])
+def test_doc_generator_channel(channels, upsampling):
+    for d in fashion_doc_generator(channels=channels, upsampling=upsampling):
+        if channels == 0:
+            assert d.blob.ndim == 2
+        else:
+            assert d.blob.ndim == 3
+            assert d.blob.shape[-1] == channels
+
+        assert d.blob.shape[0] == 28 * upsampling
+        assert d.blob.shape[1] == 28 * upsampling
+        # plt.imshow(d.blob, aspect='equal')
+        # plt.show()
         break
 
 

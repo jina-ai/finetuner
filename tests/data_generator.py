@@ -4,20 +4,19 @@ import copy
 import gzip
 import os
 import urllib.request
-from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
 from jina import Document, DocumentArray
-from jina.logging.profile import ProgressBar, TimeContext
+from jina.logging.profile import ProgressBar
 
 
 def fashion_match_documentarray(**kwargs):
     da = DocumentArray()
-    with ProgressBar(task_name='build DA') as t:
+    with ProgressBar('build DA') as t:
         for d in fashion_match_doc_generator(**kwargs):
             da.append(d)
-            t.update_tick(0.01)
+            t.update(0.001)
     return da
 
 
@@ -27,8 +26,25 @@ def fashion_match_doc_generator(
     num_neg: int = 10,
     pos_value: int = 1,
     neg_value: int = -1,
+    upsampling: int = 1,
+    channels: int = 0,
 ):
-    all_docs = DocumentArray(fashion_doc_generator())
+    """
+
+    :param num_total:
+    :param num_pos:
+    :param num_neg:
+    :param pos_value:
+    :param neg_value:
+    :param upsampling: the rescale factor, must be integer and >=1. It rescales the image into a bigger image.
+        For example, upsampling=2 gives 56 x 56 images.
+    :param channels: fashion-mnist data is gray-scale data, it does not have channel.
+        One can set channel to 1 or 3 to simulate real grayscale or rgb imaga
+    :return:
+    """
+    all_docs = DocumentArray(
+        fashion_doc_generator(upsampling=upsampling, channels=channels)
+    )
 
     copy_all_docs = copy.deepcopy(all_docs)
     rv = copy_all_docs.split('class')
@@ -59,12 +75,11 @@ def fashion_match_doc_generator(
             break
 
 
-def fashion_doc_generator(download_proxy=None, task_name='download fashion-mnist'):
+def fashion_doc_generator(download_proxy=None, **kwargs):
     """
     Download data.
 
     :param download_proxy: download proxy (e.g. 'http', 'https')
-    :param task_name: name of the task
     """
 
     download_dir = './data'
@@ -98,16 +113,16 @@ def fashion_doc_generator(download_proxy=None, task_name='download fashion-mnist
         )
         opener.add_handler(proxy)
     urllib.request.install_opener(opener)
-    with ProgressBar(task_name=task_name) as t:
+    with ProgressBar('download fashion-mnist') as t:
         for k, v in targets.items():
             if not os.path.exists(v['filename']):
                 urllib.request.urlretrieve(
-                    v['url'], v['filename'], reporthook=lambda *x: t.update_tick(0.01)
+                    v['url'], v['filename'], reporthook=lambda *x: t.update(0.01)
                 )
             if k == 'index-labels' or k == 'query-labels':
                 v['data'] = _load_labels(v['filename'])
             if k == 'index' or k == 'query':
-                v['data'] = _load_mnist(v['filename'])
+                v['data'] = _load_mnist(v['filename'], **kwargs)
 
     for raw_img, lbl in zip(targets['index']['data'], targets['index-labels']['data']):
         yield Document(
@@ -115,7 +130,7 @@ def fashion_doc_generator(download_proxy=None, task_name='download fashion-mnist
         )
 
 
-def _load_mnist(path):
+def _load_mnist(path, upsampling: int = 1, channels: int = 1):
     """
     Load MNIST data
 
@@ -124,7 +139,12 @@ def _load_mnist(path):
     """
 
     with gzip.open(path, 'rb') as fp:
-        return np.frombuffer(fp.read(), dtype=np.uint8, offset=16).reshape([-1, 28, 28])
+        r = np.frombuffer(fp.read(), dtype=np.uint8, offset=16).reshape([-1, 28, 28])
+        if channels > 0:
+            r = np.stack((r,) * channels, axis=-1)
+        if upsampling > 1:
+            r = r.repeat(upsampling, axis=1).repeat(upsampling, axis=2)
+        return r
 
 
 def _load_labels(path: str):
