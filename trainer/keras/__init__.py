@@ -29,30 +29,31 @@ class KerasTrainer(BaseTrainer):
         head_values = head_layer(*(self.base_model(v) for v in input_values))
         wrapped_model = Model(inputs=input_values, outputs=head_values[0])
         wrapped_model.compile(
-            loss=[head_layer.loss_fn, head_layer.loss_fn],
+            loss=head_layer.loss_fn,
         )
 
         return wrapped_model
 
-    def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
+    def _get_data_loader(self, inputs, batch_size: int = 256, shuffle: bool = False):
 
         ds = get_dataset(datasets, self.arity)
         input_shape = self.base_model.input_shape[1:]
 
-        return (
-            tf.data.Dataset.from_generator(
-                lambda: ds(inputs),
-                output_signature=(
-                    tuple(
-                        tf.TensorSpec(shape=input_shape, dtype=tf.float64)
-                        for _ in range(self.arity)
-                    ),
-                    tf.TensorSpec(shape=(), dtype=tf.float64),
+        tf_data = tf.data.Dataset.from_generator(
+            lambda: ds(inputs),
+            output_signature=(
+                tuple(
+                    tf.TensorSpec(shape=input_shape, dtype=tf.float64)
+                    for _ in range(self.arity)
                 ),
-            )
-            .shuffle(buffer_size=4096)
-            .batch(batch_size, drop_remainder=True)
+                tf.TensorSpec(shape=(), dtype=tf.float64),
+            ),
         )
+
+        if shuffle:
+            tf_data = tf_data.shuffle(buffer_size=4096)
+
+        return tf_data.batch(batch_size, drop_remainder=True)
 
     def fit(
         self,
