@@ -28,6 +28,7 @@ def fashion_match_doc_generator(
     neg_value: int = -1,
     upsampling: int = 1,
     channels: int = 0,
+    channel_axis: int = -1,
 ):
     """Get a Generator of fashion-mnist Documents with synthetic matches.
 
@@ -40,10 +41,13 @@ def fashion_match_doc_generator(
         For example, `upsampling=2` gives 56 x 56 images.
     :param channels: fashion-mnist data is gray-scale data, it does not have channel.
         One can set channel to 1 or 3 to simulate real grayscale or rgb imaga
+    :param channel_axis: The axis for channels, e.g. for pytorch we expect B*C*W*H, channel axis should be 1.
     :return:
     """
     all_docs = DocumentArray(
-        fashion_doc_generator(upsampling=upsampling, channels=channels)
+        fashion_doc_generator(
+            upsampling=upsampling, channels=channels, channel_axis=channel_axis
+        )
     )
 
     copy_all_docs = copy.deepcopy(all_docs)
@@ -130,7 +134,7 @@ def fashion_doc_generator(download_proxy=None, **kwargs):
         )
 
 
-def _load_mnist(path, upsampling: int = 1, channels: int = 0):
+def _load_mnist(path, upsampling: int = 1, channels: int = 0, channel_axis=-1):
     """
     Load MNIST data
 
@@ -139,13 +143,14 @@ def _load_mnist(path, upsampling: int = 1, channels: int = 0):
         For example, upsampling=2 gives 56 x 56 images.
     :param channels: fashion-mnist data is gray-scale data, it does not have channel.
         One can set channel to 1 or 3 to simulate real grayscale or rgb imaga
+    :param channel_axis: The axis for channels, e.g. for pytorch we expect B*C*W*H, channel axis should be 1.
     :return: MNIST data in np.array
     """
 
     with gzip.open(path, 'rb') as fp:
         r = np.frombuffer(fp.read(), dtype=np.uint8, offset=16).reshape([-1, 28, 28])
         if channels > 0:
-            r = np.stack((r,) * channels, axis=-1)
+            r = np.stack((r,) * channels, axis=channel_axis)
         if upsampling > 1:
             r = r.repeat(upsampling, axis=1).repeat(upsampling, axis=2)
         return r
