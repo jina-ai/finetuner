@@ -146,13 +146,18 @@ def _load_mnist(path, upsampling: int = 1, channels: int = 0, channel_axis=-1):
     :param channel_axis: The axis for channels, e.g. for pytorch we expect B*C*W*H, channel axis should be 1.
     :return: MNIST data in np.array
     """
+    upsampling_axes = [1, 2, 3]
+    # remove B & C from axes, B has been excluded, only upsampling W & H
+    upsampling_axes.remove(channel_axis)
 
     with gzip.open(path, 'rb') as fp:
         r = np.frombuffer(fp.read(), dtype=np.uint8, offset=16).reshape([-1, 28, 28])
         if channels > 0:
             r = np.stack((r,) * channels, axis=channel_axis)
         if upsampling > 1:
-            r = r.repeat(upsampling, axis=1).repeat(upsampling, axis=2)
+            r = r.repeat(upsampling, axis=upsampling_axes[0]).repeat(
+                upsampling, axis=upsampling_axes[1]
+            )
         return r
 
 
