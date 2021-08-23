@@ -148,6 +148,8 @@ def _load_mnist(path, upsampling: int = 1, channels: int = 0, channel_axis=-1):
     """
     upsampling_axes = [1, 2, 3]
     # remove B & C from axes, B has been excluded, only upsampling W & H
+    if channel_axis < 0:
+        channel_axis = upsampling_axes[channel_axis]
     upsampling_axes.remove(channel_axis)
 
     with gzip.open(path, 'rb') as fp:
