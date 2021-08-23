@@ -41,6 +41,7 @@ def fashion_match_doc_generator(
         For example, `upsampling=2` gives 56 x 56 images.
     :param channels: fashion-mnist data is gray-scale data, it does not have channel.
         One can set channel to 1 or 3 to simulate real grayscale or rgb imaga
+    :param channel_axis: The axis for channels, e.g. for pytorch we expect B*C*W*H, channel axis should be 1.
     :return:
     """
     all_docs = DocumentArray(
