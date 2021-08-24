@@ -44,7 +44,7 @@ class KerasTrainer(BaseTrainer):
                     tf.TensorSpec(shape=input_shape, dtype=tf.float64)
                     for _ in range(self.arity)
                 ),
-                tf.TensorSpec(shape=(), dtype=tf.float32),
+                tf.TensorSpec(shape=(), dtype=tf.float64),
             ),
         )
 

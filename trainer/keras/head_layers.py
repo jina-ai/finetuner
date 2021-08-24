@@ -25,7 +25,9 @@ class CosineLayer(HeadLayer):
         return tf.keras.metrics.mean_squared_error(pred_val, target_val)
 
     def metric_fn(self, pred_val, target_val):
-        s = tf.count_nonzero(tf.equal(tf.math.sign(pred_val), tf.math.sign(target_val)))
+        s = tf.count_nonzero(
+            tf.equal(tf.greater(pred_val, 0), tf.greater(target_val, 0))
+        )
         return s / len(target_val)
 
 
