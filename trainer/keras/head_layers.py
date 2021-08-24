@@ -41,8 +41,8 @@ class TripletLayer(HeadLayer):
     def get_output_for_loss(self, anchor, positive, negative):
         # Seems that tf.norm suffers from numeric instability as explained here
         # https://github.com/tensorflow/tensorflow/issues/12071
-        dist_pos = tf.reduce_sum(tf.squared_difference(anchor, positive), axis=-1)
-        dist_neg = tf.reduce_sum(tf.squared_difference(anchor, negative), axis=-1)
+        dist_pos = tf.reduce_sum(tf.math.squared_difference(anchor, positive), axis=-1)
+        dist_neg = tf.reduce_sum(tf.math.squared_difference(anchor, negative), axis=-1)
 
         return tf.nn.relu(dist_pos - dist_neg + self._margin)
 
