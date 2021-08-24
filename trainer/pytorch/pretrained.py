@@ -7,8 +7,8 @@ from ..pretrained import ModelInterpreter
 
 
 class TorchModelInterpreter(ModelInterpreter):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.base_model = getattr(models, self._model_name)(pretrained=self._freeze)
         self._flat_model = None
 

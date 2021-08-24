@@ -6,7 +6,7 @@ class ModelInterpreter(abc.ABC):
     def __init__(
         self,
         model_name: str,
-        out_features: Optional[int],
+        out_features: Optional[int] = 32,
         freeze: bool = True,
         bias: bool = True,
     ):
