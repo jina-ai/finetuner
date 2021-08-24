@@ -74,15 +74,11 @@ class PaddleTrainer(BaseTrainer):
                     optimizer.step()
 
                     losses.append(loss.numpy())
-                    metrics.append(metric)
+                    metrics.append(metric.numpy())
 
                     p.update(
-                        details=f'Loss={sum(losses) / len(losses):.2f} Accuracy={sum(metrics) / len(metrics):.2f}'
+                        details=f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
                     )
-
-                self.logger.info(
-                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={sum(metrics) / len(metrics)}'
-                )
 
     def save(self, save_path: str, input_spec: Union[list, tuple] = None):
         base_model = paddle.jit.to_static(self.base_model, input_spec=input_spec)
