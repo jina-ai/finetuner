@@ -15,8 +15,11 @@ class ModelInterpreter:
         self._bias = bias
 
     @property
-    def flat_model(self):
-        """Unpack the model architecture recursively and rebuild the model."""
+    def flat_model(self) -> nn.Module:
+        """Unpack the model architecture recursively and rebuild the model.
+
+        :return: Flattened model.
+        """
         if not self._flat_model:
             modules = []
             for module in self.base_model.modules():
@@ -27,8 +30,11 @@ class ModelInterpreter:
         return self._flat_model
 
     @flat_model.setter
-    def flat_model(self, other_model):
-        """Unpack the model architecture recursively and rebuild the model."""
+    def flat_model(self, other_model: nn.Module):
+        """Unpack the model architecture recursively and rebuild the model.
+
+        :param other_model: Set the current flattened model as other model.
+        """
         self._flat_model = other_model
 
     def _interpret_linear_layers(self):
@@ -66,7 +72,7 @@ class ModelInterpreter:
         )
 
     @property
-    def trainable_layers(self) -> List[str]:
+    def trainable_layers(self) -> List[int]:
         """Get trainable layers, e.g. names Linear layers in the backbone model.
 
         :return: List of linear layer names.
