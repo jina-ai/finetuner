@@ -50,10 +50,10 @@ class TorchModelInterpreter(ModelInterpreter):
     def _chop_off_last_n_layers(self, layer_index: int):
         """Modify base_model in place based on :attr:`layer_name`.
 
-        For a pytorch application it normally consist of 2 cases.
-        First, a Linear layer is wrapped by one or multiple :class:`nn.Sequential`.
-           In this case, all Linear layers has been unpacked inside :meth:`_interpret_linear_layers`.
-           And the name of layer consist of 2 parts: [MODULE-NAME.LAYER_INDEX]
+        Remove last n layers given the layer index, and replace current layer with :class:`nn.Linear`
+            with the new :attr:`out_features` as dimensionality.
+        :param layer_index: the layer index to remove.
+        :return: Modified model.
         """
         name_layer_map = self._interpret_linear_layers()
         self.flat_model = self.flat_model[:layer_index]
@@ -67,6 +67,7 @@ class TorchModelInterpreter(ModelInterpreter):
                 bias=self._bias,
             ),
         )
+        return self.flat_model
 
     @property
     def trainable_layers(self) -> List[int]:
@@ -88,5 +89,4 @@ class TorchModelInterpreter(ModelInterpreter):
             msg = f'Layer index {layer_index} is not a valid layer in your model.'
             msg += f'expect one of the layer in {self.trainable_layers}.'
             raise ValueError(msg)
-        self._chop_off_last_n_layers(layer_index)
-        return self.flat_model
+        return self._chop_off_last_n_layers(layer_index)
