@@ -22,7 +22,7 @@ class CosineLayer(HeadLayer):
         return self.get_output_for_loss(lvalue, rvalue)
 
     def loss_fn(self, pred_val, target_val):
-        return tf.keras.metrics.mean_squared_error(pred_val, target_val)
+        return tf.keras.losses.mse(target_val, pred_val)
 
     def metric_fn(self, pred_val, target_val):
         s = tf.math.count_nonzero(
@@ -39,24 +39,22 @@ class TripletLayer(HeadLayer):
         self._margin = margin
 
     def get_output_for_loss(self, anchor, positive, negative):
-        dist_pos = tf.norm(anchor - positive, ord='euclidean', axis=-1)
-        dist_neg = tf.norm(anchor - negative, ord='euclidean', axis=-1)
+        # Seems that tf.norm suffers from numeric instability as explained here
+        # https://github.com/tensorflow/tensorflow/issues/12071
+        dist_pos = tf.reduce_sum(tf.math.squared_difference(anchor, positive), axis=-1)
+        dist_neg = tf.reduce_sum(tf.math.squared_difference(anchor, negative), axis=-1)
 
         return tf.nn.relu(dist_pos - dist_neg + self._margin)
 
     def get_output_for_metric(self, anchor, positive, negative):
-        normalize_a = tf.nn.l2_normalize(anchor, axis=-1)
-        normalize_p = tf.nn.l2_normalize(positive, axis=-1)
-        normalize_n = tf.nn.l2_normalize(negative, axis=-1)
-        a_p_cos = tf.reduce_sum(tf.multiply(normalize_a, normalize_p), axis=-1)
-        a_n_cos = tf.reduce_sum(tf.multiply(normalize_a, normalize_n), axis=-1)
-        return a_p_cos, a_n_cos
+        dist_pos = tf.reduce_sum(tf.math.squared_difference(anchor, positive), axis=-1)
+        dist_neg = tf.reduce_sum(tf.math.squared_difference(anchor, negative), axis=-1)
+        return dist_pos, dist_neg
 
     def loss_fn(self, pred_val, target_val):
-        return tf.keras.metrics.mean_squared_error(target_val, pred_val)
+        return tf.keras.losses.mse(target_val, pred_val)
 
     def metric_fn(self, pred_val, target_val):
-        y_positive, y_negative = pred_val
-        s_p = tf.math.count_nonzero(tf.greater(y_positive, 0))
-        s_n = tf.math.count_nonzero(tf.less(y_negative, 0))
-        return (s_p + s_n) / (len(y_positive) + len(y_negative))
+        dist_pos, dist_neg = pred_val
+        s = tf.math.count_nonzero(tf.less(dist_pos, dist_neg))
+        return s / len(target_val)
