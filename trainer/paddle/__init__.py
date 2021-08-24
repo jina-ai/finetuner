@@ -76,7 +76,9 @@ class PaddleTrainer(BaseTrainer):
                     losses.append(loss.numpy())
                     metrics.append(metric)
 
-                    p.update()
+                    p.update(
+                        details=f'Loss={sum(losses) / len(losses):.2f} Accuracy={sum(metrics) / len(metrics):.2f}'
+                    )
 
                 self.logger.info(
                     f'Training: Loss={sum(losses) / len(losses)} Accuracy={sum(metrics) / len(metrics)}'

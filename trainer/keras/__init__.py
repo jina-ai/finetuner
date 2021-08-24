@@ -44,7 +44,7 @@ class KerasTrainer(BaseTrainer):
                     tf.TensorSpec(shape=input_shape, dtype=tf.float64)
                     for _ in range(self.arity)
                 ),
-                tf.TensorSpec(shape=(), dtype=tf.float64),
+                tf.TensorSpec(shape=(), dtype=tf.float32),
             ),
         )
 
@@ -88,14 +88,12 @@ class KerasTrainer(BaseTrainer):
                     grads = tape.gradient(loss, model.trainable_weights)
                     optimizer.apply_gradients(zip(grads, model.trainable_weights))
 
-                    losses.append(loss.numpy())
-                    metrics.append(metric)
+                    losses.append(loss.numpy().mean())
+                    metrics.append(metric.numpy())
 
-                    p.update()
-
-                self.logger.info(
-                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={sum(metrics) / len(metrics)}'
-                )
+                    p.update(
+                        details=f'Loss={sum(losses) / len(losses):.2f} Accuracy={sum(metrics) / len(metrics):.2f}'
+                    )
 
     def save(self, *args, **kwargs):
         self.base_model.save(*args, **kwargs)

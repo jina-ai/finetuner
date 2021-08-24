@@ -17,7 +17,7 @@ class CosineLayer(BaseHead, nn.Layer):
     def metric_fn(self, pred_val, target_val):
         eval_sign = paddle.equal(paddle.sign(pred_val), paddle.sign(target_val))
         s = paddle.sum(paddle.cast(eval_sign, 'int64'))
-        return (s / len(pred_val)).numpy()
+        return s / len(pred_val)
 
     def loss_fn(self, pred_val, target_val):
         return F.mse_loss(pred_val, target_val)
@@ -50,7 +50,7 @@ class TripletLayer(BaseHead, nn.Layer):
         s_n = paddle.sum(
             paddle.cast(paddle.less_than(y_negative, paddle.zeros([1])), 'int32')
         )
-        return ((s_p + s_n) / (len(y_positive) + len(y_negative))).numpy()
+        return (s_p + s_n) / (len(y_positive) + len(y_negative))
 
     def loss_fn(self, pred_val, target_val):
         return F.mse_loss(pred_val, target_val)

@@ -16,7 +16,7 @@ class CosineLayer(BaseHead, nn.Module):
 
     def metric_fn(self, pred_val, target_val):
         s = torch.count_nonzero(torch.eq(torch.sign(pred_val), torch.sign(target_val)))
-        return (s / len(pred_val)).numpy()
+        return s / len(pred_val)
 
     def loss_fn(self, pred_val, target_val):
         return F.mse_loss(pred_val, target_val)
@@ -43,7 +43,7 @@ class TripletLayer(BaseHead, nn.Module):
         y_positive, y_negative = pred_val
         s_p = torch.count_nonzero(torch.greater(y_positive, 0))
         s_n = torch.count_nonzero(torch.less(y_negative, 0))
-        return ((s_p + s_n) / (len(y_positive) + len(y_negative))).numpy()
+        return (s_p + s_n) / (len(y_positive) + len(y_negative))
 
     def loss_fn(self, pred_val, target_val):
         return F.mse_loss(pred_val, target_val)
