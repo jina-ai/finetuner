@@ -25,7 +25,7 @@ class CosineLayer(HeadLayer):
         return tf.keras.metrics.mean_squared_error(pred_val, target_val)
 
     def metric_fn(self, pred_val, target_val):
-        s = tf.count_nonzero(
+        s = tf.math.count_nonzero(
             tf.equal(tf.greater(pred_val, 0), tf.greater(target_val, 0))
         )
         return s / len(target_val)
@@ -57,6 +57,6 @@ class TripletLayer(HeadLayer):
 
     def metric_fn(self, pred_val, target_val):
         y_positive, y_negative = pred_val
-        s_p = tf.count_nonzero(tf.greater(y_positive, 0))
-        s_n = tf.count_nonzero(tf.less(y_negative, 0))
+        s_p = tf.math.count_nonzero(tf.greater(y_positive, 0))
+        s_n = tf.math.count_nonzero(tf.less(y_negative, 0))
         return (s_p + s_n) / (len(y_positive) + len(y_negative))
