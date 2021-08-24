@@ -9,7 +9,7 @@ from ..pretrained import ModelInterpreter
 class TorchModelInterpreter(ModelInterpreter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.base_model = getattr(models, self._model_name)(pretrained=self._freeze)
+        self.base_model = getattr(models, self._model_name)(pretrained=True)
         self._flat_model = None
 
     @property
@@ -61,6 +61,9 @@ class TorchModelInterpreter(ModelInterpreter):
         """
         name_layer_map = self._interpret_linear_layers()
         self.flat_model = self.flat_model[:layer_index]
+        if self._freeze:
+            for param in self.flat_model.parameters():
+                param.requires_grad = False  # not trainable.
         setattr(
             self.flat_model,
             str(layer_index),
