@@ -12,14 +12,11 @@ class HeadLayer(BaseHead, Layer):
 class CosineLayer(HeadLayer):
     arity = 2
 
-    def get_output_for_loss(self, lvalue, rvalue):
+    def get_output(self, lvalue, rvalue):
         normalize_a = tf.nn.l2_normalize(lvalue, axis=-1)
         normalize_b = tf.nn.l2_normalize(rvalue, axis=-1)
         cos_similarity = tf.reduce_sum(tf.multiply(normalize_a, normalize_b), axis=-1)
         return cos_similarity
-
-    def get_output_for_metric(self, lvalue, rvalue):
-        return self.get_output_for_loss(lvalue, rvalue)
 
     def loss_fn(self, pred_val, target_val):
         return tf.keras.losses.mse(target_val, pred_val)
@@ -38,21 +35,17 @@ class TripletLayer(HeadLayer):
         super().__init__(**kwargs)
         self._margin = margin
 
-    def get_output_for_loss(self, anchor, positive, negative):
+    def get_output(self, anchor, positive, negative):
         # Seems that tf.norm suffers from numeric instability as explained here
         # https://github.com/tensorflow/tensorflow/issues/12071
         dist_pos = tf.reduce_sum(tf.math.squared_difference(anchor, positive), axis=-1)
         dist_neg = tf.reduce_sum(tf.math.squared_difference(anchor, negative), axis=-1)
 
-        return tf.nn.relu(dist_pos - dist_neg + self._margin)
-
-    def get_output_for_metric(self, anchor, positive, negative):
-        dist_pos = tf.reduce_sum(tf.math.squared_difference(anchor, positive), axis=-1)
-        dist_neg = tf.reduce_sum(tf.math.squared_difference(anchor, negative), axis=-1)
         return dist_pos, dist_neg
 
     def loss_fn(self, pred_val, target_val):
-        return tf.keras.losses.mse(target_val, pred_val)
+        dist_pos, dist_neg = pred_val
+        return tf.reduce_mean(tf.nn.relu(dist_pos - dist_neg + self._margin))
 
     def metric_fn(self, pred_val, target_val):
         dist_pos, dist_neg = pred_val

@@ -8,10 +8,7 @@ from ..base import BaseHead
 class CosineLayer(BaseHead, nn.Layer):
     arity = 2
 
-    def get_output_for_loss(self, lvalue, rvalue):
-        return F.cosine_similarity(lvalue, rvalue)
-
-    def get_output_for_metric(self, lvalue, rvalue):
+    def get_output(self, lvalue, rvalue):
         return F.cosine_similarity(lvalue, rvalue)
 
     def metric_fn(self, pred_val, target_val):
@@ -30,27 +27,18 @@ class TripletLayer(BaseHead, nn.Layer):
         super().__init__(arity_model)
         self._margin = margin
 
-    def get_output_for_loss(self, anchor, positive, negative):
-        dist_pos = paddle.pow(anchor - positive, 2).sum(axis=1)
-        dist_neg = paddle.pow(anchor - negative, 2).sum(axis=1)
+    def get_output(self, anchor, positive, negative):
+        dist_pos = paddle.square(anchor - positive).sum(axis=-1)
+        dist_neg = paddle.square(anchor - negative).sum(axis=-1)
 
-        return F.relu(dist_pos - dist_neg + self._margin)
-
-    def get_output_for_metric(self, anchor, positive, negative):
-        return F.cosine_similarity(anchor, positive), F.cosine_similarity(
-            anchor, negative
-        )
+        return dist_pos, dist_neg
 
     def metric_fn(self, pred_val, target_val):
-        y_positive, y_negative = pred_val
+        dist_pos, dist_neg = pred_val
 
-        s_p = paddle.sum(
-            paddle.cast(paddle.greater_than(y_positive, paddle.zeros([1])), 'int32')
-        )
-        s_n = paddle.sum(
-            paddle.cast(paddle.less_than(y_negative, paddle.zeros([1])), 'int32')
-        )
-        return (s_p + s_n) / (len(y_positive) + len(y_negative))
+        s = paddle.sum(paddle.cast(paddle.less_than(dist_pos, dist_neg), 'int32'))
+        return s / len(target_val)
 
     def loss_fn(self, pred_val, target_val):
-        return F.mse_loss(pred_val, target_val)
+        dist_pos, dist_neg = pred_val
+        return paddle.mean(F.relu(dist_pos - dist_neg + self._margin))

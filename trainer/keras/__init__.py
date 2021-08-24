@@ -80,15 +80,15 @@ class KerasTrainer(BaseTrainer):
                 for inputs, label in data_loader:
                     with tf.GradientTape() as tape:
                         outputs = model(inputs, training=True)
-                        loss = head_layer.loss_fn(pred_val=outputs[0], target_val=label)
+                        loss = head_layer.loss_fn(pred_val=outputs, target_val=label)
                         metric = head_layer.metric_fn(
-                            pred_val=outputs[1], target_val=label
+                            pred_val=outputs, target_val=label
                         )
 
                     grads = tape.gradient(loss, model.trainable_weights)
                     optimizer.apply_gradients(zip(grads, model.trainable_weights))
 
-                    losses.append(loss.numpy().mean())
+                    losses.append(loss.numpy())
                     metrics.append(metric.numpy())
 
                     p.update(

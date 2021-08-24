@@ -17,7 +17,6 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
             tf.keras.layers.Dense(params['feature_dim'], activation='relu'),
             tf.keras.layers.Dense(
                 params['output_dim'],
-                activity_regularizer=tf.keras.regularizers.l1(params['learning_rate']),
             ),
         ]
     )
