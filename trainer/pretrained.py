@@ -22,12 +22,12 @@ class ModelInterpreter(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def flat_model(self):
+    def _flat_model(self):
         ...
 
-    @flat_model.setter
+    @_flat_model.setter
     @abc.abstractmethod
-    def flat_model(self, other_model):
+    def _flat_model(self, other_model):
         ...
 
     @abc.abstractmethod

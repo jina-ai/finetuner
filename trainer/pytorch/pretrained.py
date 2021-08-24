@@ -10,10 +10,9 @@ class TorchModelInterpreter(ModelInterpreter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.base_model = getattr(models, self._model_name)(pretrained=True)
-        self._flat_model = None
 
     @property
-    def flat_model(self) -> nn.Module:
+    def _flat_model(self) -> nn.Module:
         """Unpack the model architecture recursively and rebuild the model.
 
         :return: Flattened model.
@@ -22,16 +21,14 @@ class TorchModelInterpreter(ModelInterpreter):
             Even if we rebuild :attr:`base_model` into :attr:`flat_model`, weight remains
             the same at layer level.
         """
-        if not self._flat_model:
-            modules = []
-            for module in self.base_model.modules():
-                if not isinstance(module, (nn.Sequential, type(self.base_model))):
-                    modules.append(module)
-            self._flat_model = nn.Sequential(*modules)
-        return self._flat_model
+        modules = []
+        for module in self.base_model.modules():
+            if not isinstance(module, (nn.Sequential, type(self.base_model))):
+                modules.append(module)
+        return nn.Sequential(*modules)
 
-    @flat_model.setter
-    def flat_model(self, other_model: nn.Module):
+    @_flat_model.setter
+    def _flat_model(self, other_model: nn.Module):
         """Unpack the model architecture recursively and rebuild the model.
 
         :param other_model: Set the current flattened model as other model.
@@ -46,7 +43,7 @@ class TorchModelInterpreter(ModelInterpreter):
             to keep the dimensionality of the new layer.
         """
         rv = {}
-        for name, module in self.flat_model.named_modules():
+        for name, module in self._flat_model.named_modules():
             if isinstance(module, nn.Linear):
                 rv[int(name)] = module
         return rv
@@ -60,12 +57,12 @@ class TorchModelInterpreter(ModelInterpreter):
         :return: Modified model.
         """
         name_layer_map = self._interpret_linear_layers()
-        self.flat_model = self.flat_model[:layer_index]
+        model = self._flat_model[:layer_index]
         if self._freeze:
-            for param in self.flat_model.parameters():
+            for param in model.parameters():
                 param.requires_grad = False  # not trainable.
         setattr(
-            self.flat_model,
+            model,
             str(layer_index),
             nn.Linear(
                 in_features=name_layer_map[layer_index].in_features,
@@ -74,7 +71,7 @@ class TorchModelInterpreter(ModelInterpreter):
                 bias=self._bias,
             ),
         )
-        return self.flat_model
+        return model
 
     @property
     def trainable_layers(self) -> List[int]:
