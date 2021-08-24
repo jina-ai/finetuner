@@ -9,9 +9,27 @@ class ModelInterpreter:
         self, model_name: str, out_features: Optional[int], freeze=True, bias=True
     ):
         self.base_model = getattr(models, model_name)(pretrained=freeze)
+        self._flat_model = None
         self._interpret_linear_layers()
-        self.out_features = out_features
-        self.bias = bias
+        self._out_features = out_features
+        self._bias = bias
+
+    @property
+    def flat_model(self):
+        """Unpack the model architecture recursively and rebuild the model."""
+        if not self._flat_model:
+            modules = []
+            for module in self.base_model.modules():
+                if isinstance(module, (nn.Sequential, type(self.base_model))):
+                    continue
+                modules.append(module)
+            self._flat_model = nn.Sequential(*modules)
+        return self._flat_model
+
+    @flat_model.setter
+    def flat_model(self, other_model):
+        """Unpack the model architecture recursively and rebuild the model."""
+        self._flat_model = other_model
 
     def _interpret_linear_layers(self):
         """Get all Linear layers inside a model.
@@ -21,12 +39,12 @@ class ModelInterpreter:
             to keep the dimensionality of the new layer.
         """
         rv = {}
-        for name, module in self.base_model.named_modules():
+        for name, module in self.flat_model.named_modules():
             if isinstance(module, nn.Linear):
-                rv[name] = module
+                rv[int(name)] = module
         return rv
 
-    def _chop_off_last_n_layers(self, layer_name: str):
+    def _chop_off_last_n_layers(self, layer_index: int):
         """Modify base_model in place based on :attr:`layer_name`.
 
         For a pytorch application it normally consist of 2 cases.
@@ -35,33 +53,17 @@ class ModelInterpreter:
            And the name of layer consist of 2 parts: [MODULE-NAME.LAYER_INDEX]
         """
         name_layer_map = self._interpret_linear_layers()
-        if '.' in layer_name:
-            module_name, layer_idx = layer_name.split('.')
-            module = getattr(self.base_model, module_name)
-            module = module[: int(layer_idx)]  # remove all layers after layer_idx
-            module.add_module(
-                module_name,
-                nn.Linear(
-                    in_features=name_layer_map[layer_name].in_features,
-                    out_features=self.out_features
-                    or name_layer_map[layer_name].out_features,
-                    bias=self.bias,
-                ),
-            )
-            setattr(self.base_model, module_name, module)
-        else:
-            # if . not included in layer_name, means it's not wrapped, and it's the last layer.
-            # no need to remove
-            setattr(
-                self.base_model,
-                layer_name,
-                nn.Linear(
-                    in_features=name_layer_map[layer_name].in_features,
-                    out_features=self.out_features
-                    or name_layer_map[layer_name].out_features,
-                    bias=self.bias,
-                ),
-            )
+        self.flat_model = self.flat_model[:layer_index]
+        setattr(
+            self.flat_model,
+            str(layer_index),
+            nn.Linear(
+                in_features=name_layer_map[layer_index].in_features,
+                out_features=self._out_features
+                or name_layer_map[layer_index].out_features,
+                bias=self._bias,
+            ),
+        )
 
     @property
     def trainable_layers(self) -> List[str]:
@@ -71,17 +73,17 @@ class ModelInterpreter:
         """
         return list(self._interpret_linear_layers().keys())
 
-    def modify_base_model(self, layer_name: str) -> nn.Module:
+    def modify_base_model(self, layer_index: int) -> nn.Module:
         """Modify base model based on :attr:`layer_name`. E.g. remove the last n layers
             for retrain.
-        :param layer_name: Layer name to modify, if specified, all later layers
+        :param layer_index: Layer name to modify, if specified, all later layers
             will be removed, the :attr:`out_features` of current layer will be replaced
             with the new output dimension.
         :return: The new base model to be trained.
         """
-        if layer_name not in self.trainable_layers:
-            msg = f'Layer name {layer_name} is not a valid layer in your model.'
+        if layer_index not in self.trainable_layers:
+            msg = f'Layer index {layer_index} is not a valid layer in your model.'
             msg += f'expect one of the layer in {self.trainable_layers}.'
             raise ValueError(msg)
-        self._chop_off_last_n_layers(layer_name)
-        return self.base_model
+        self._chop_off_last_n_layers(layer_index)
+        return self.flat_model
