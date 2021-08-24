@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import List
 
 import torch.nn as nn
 import torchvision.models as models
@@ -21,9 +21,8 @@ class TorchModelInterpreter(ModelInterpreter):
         if not self._flat_model:
             modules = []
             for module in self.base_model.modules():
-                if isinstance(module, (nn.Sequential, type(self.base_model))):
-                    continue
-                modules.append(module)
+                if not isinstance(module, (nn.Sequential, type(self.base_model))):
+                    modules.append(module)
             self._flat_model = nn.Sequential(*modules)
         return self._flat_model
 
