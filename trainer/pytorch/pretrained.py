@@ -17,6 +17,10 @@ class TorchModelInterpreter(ModelInterpreter):
         """Unpack the model architecture recursively and rebuild the model.
 
         :return: Flattened model.
+
+        ..note::
+            Even if we rebuild :attr:`base_model` into :attr:`flat_model`, weight remains
+            the same at layer level.
         """
         if not self._flat_model:
             modules = []
