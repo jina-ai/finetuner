@@ -65,8 +65,8 @@ class PytorchTrainer(BaseTrainer):
                 for inputs, label in data_loader:
                     # forward step
                     outputs = model(*inputs)
-                    loss = model.loss_fn(outputs[0], label)
-                    metric = model.metric_fn(outputs[1], label)
+                    loss = model.loss_fn(outputs, label)
+                    metric = model.metric_fn(outputs, label)
 
                     optimizer.zero_grad()
 

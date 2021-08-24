@@ -26,14 +26,10 @@ class BaseHead:
     def forward(self, *inputs):
         if self._arity_model:
             inputs = self._arity_model(*inputs)
-        return self.get_output_for_loss(*inputs), self.get_output_for_metric(*inputs)
+        return self.get_output(*inputs)
 
     @abc.abstractmethod
-    def get_output_for_loss(self, *inputs):
-        ...
-
-    @abc.abstractmethod
-    def get_output_for_metric(self, *inputs):
+    def get_output(self, *inputs):
         ...
 
     @abc.abstractmethod

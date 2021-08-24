@@ -64,8 +64,8 @@ class PaddleTrainer(BaseTrainer):
                     # forward step
                     outputs = model(*inputs)
 
-                    loss = model.loss_fn(outputs[0], label)
-                    metric = model.metric_fn(outputs[1], label)
+                    loss = model.loss_fn(outputs, label)
+                    metric = model.metric_fn(outputs, label)
 
                     # clean gradients
                     optimizer.clear_grad()
