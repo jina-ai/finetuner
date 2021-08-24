@@ -41,10 +41,10 @@ class KerasTrainer(BaseTrainer):
             lambda: ds(inputs),
             output_signature=(
                 tuple(
-                    tf.TensorSpec(shape=input_shape, dtype=tf.float64)
+                    tf.TensorSpec(shape=input_shape, dtype=tf.float32)
                     for _ in range(self.arity)
                 ),
-                tf.TensorSpec(shape=(), dtype=tf.float64),
+                tf.TensorSpec(shape=(), dtype=tf.float32),
             ),
         )
 
