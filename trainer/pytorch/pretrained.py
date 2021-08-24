@@ -3,16 +3,14 @@ from typing import Optional, List
 import torch.nn as nn
 import torchvision.models as models
 
+from ..pretrained import ModelInterpreter
 
-class ModelInterpreter:
-    def __init__(
-        self, model_name: str, out_features: Optional[int], freeze=True, bias=True
-    ):
-        self.base_model = getattr(models, model_name)(pretrained=freeze)
+
+class TorchModelInterpreter(ModelInterpreter):
+    def __init__(self):
+        super().__init__()
+        self.base_model = getattr(models, self._model_name)(pretrained=self._freeze)
         self._flat_model = None
-        self._interpret_linear_layers()
-        self._out_features = out_features
-        self._bias = bias
 
     @property
     def flat_model(self) -> nn.Module:
@@ -79,7 +77,7 @@ class ModelInterpreter:
         """
         return list(self._interpret_linear_layers().keys())
 
-    def modify_base_model(self, layer_index: int) -> nn.Module:
+    def get_modified_base_model(self, layer_index: int) -> nn.Module:
         """Modify base model based on :attr:`layer_name`. E.g. remove the last n layers
             for retrain.
         :param layer_index: Layer name to modify, if specified, all later layers
