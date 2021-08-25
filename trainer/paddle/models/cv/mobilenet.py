@@ -30,7 +30,7 @@ class MobileNet(nn.Layer, PretrainedModelMixin):
         self._output_class_logits = True
         if bottleneck_layer is not None:
             self._output_class_logits = False
-            assert bottleneck_layer >= -4 & bottleneck_layer < 4
+            assert bottleneck_layer >= -18 & bottleneck_layer < 19
 
         self._bottleneck_layer = bottleneck_layer
         self._freeze_layers = freeze_layers
@@ -40,21 +40,44 @@ class MobileNet(nn.Layer, PretrainedModelMixin):
         if freeze_layers:
             self.freeze_layers()
 
+        self.base_model.features = nn.Sequential(
+            *[self.get_bottleneck_layer(i) for i in range(self.output_layer)]
+        )
+
     @property
     def base_model(self):
         return self._base_model
 
     def forward(self, x):
         x = self.base_model.features(x)
-
         if self.base_model.with_pool:
             x = self.base_model.pool2d_avg(x)
 
-        if self.base_model.num_classes > 0:
+        if self._output_class_logits and self.base_model.num_classes > 0:
             x = paddle.flatten(x, 1)
             x = self.base_model.classifier(x)
+        else:
+            x = paddle.flatten(x, 1)
 
         return x
+
+    @property
+    def bottleneck_layers(self):
+        return {
+            name: layer for name, layer in self.base_model.features.named_children()
+        }
+
+    def get_bottleneck_layer(self, index: int):
+        assert index <= 18
+
+        return self.bottleneck_layers[str(index)]
+
+    @property
+    def output_layer(self):
+        if self._bottleneck_layer < 0:
+            return 19 + self._bottleneck_layer
+
+        return self._bottleneck_layer
 
     def freeze_layers(self):
         if self.base_model:
@@ -93,11 +116,5 @@ class MobileNet(nn.Layer, PretrainedModelMixin):
             the same at layer level.
         """
 
-        for prefix, layer in self.base_model.named_children():
-            print(f'{prefix} -> {layer}')
-        # for module in self._base_model.children():
-        #
-        #     if not isinstance(module, (nn.Sequential, type(self.base_model))):
-        #         modules.append(module)
-
-        return None
+        print(f'=> bottles: {list(self.bottleneck_layers.keys())}')
+        print(f'=> bottle at 1: {self.get_bottleneck_layer(1)}')
