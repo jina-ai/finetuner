@@ -3,6 +3,7 @@ from typing import Optional
 import torch
 import torch.nn as nn
 from jina.logging.profile import ProgressBar
+from torch.optim.optimizer import Optimizer
 from torch.utils.data.dataloader import DataLoader
 
 from . import head_layers, datasets
@@ -58,7 +59,9 @@ class PytorchTrainer(BaseTrainer):
 
                 p.update(message=get_desc_str())
 
-    def _train(self, data, model: nn.Module, optimizer, pbar_description: str):
+    def _train(
+        self, data, model: nn.Module, optimizer: Optimizer, pbar_description: str
+    ):
 
         model.train()
 

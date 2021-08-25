@@ -68,6 +68,15 @@ class BaseTrainer(abc.ABC):
         self._base_model = val
 
     @property
+    @abc.abstractmethod
+    def wrapped_model(self) -> AnyDNN:
+        """Get the wrapped model of this object.
+
+        A wrapped model is an arity model with a head_layer on top of it.
+        """
+        ...
+
+    @property
     def arity(self) -> int:
         """Get the arity of this object.
 
@@ -92,11 +101,6 @@ class BaseTrainer(abc.ABC):
         of left-hand-value depends on the value of :property:`arity`.
         """
         ...
-
-    @property
-    def loss(self) -> Any:
-        """Get the loss of this object."""
-        return self.head_layer.default_loss
 
     @abc.abstractmethod
     def fit(
