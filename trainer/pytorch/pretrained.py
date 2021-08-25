@@ -11,66 +11,58 @@ class TorchModelInterpreter(ModelInterpreter):
         super().__init__(*args, **kwargs)
         self.base_model = getattr(models, self._model_name)(pretrained=True)
 
-    @property
-    def _flat_model(self) -> nn.Module:
-        """Unpack the model architecture recursively and rebuild the model.
-
-        :return: Flattened model.
-
-        ..note::
-            Even if we rebuild :attr:`base_model` into :attr:`flat_model`, weight remains
-            the same at layer level.
-        """
-        modules = []
-        for module in self.base_model.modules():
-            if not isinstance(module, (nn.Sequential, type(self.base_model))):
-                modules.append(module)
-        return nn.Sequential(*modules)
-
-    @_flat_model.setter
-    def _flat_model(self, other_model: nn.Module):
-        """Unpack the model architecture recursively and rebuild the model.
-
-        :param other_model: Set the current flattened model as other model.
-        """
-        self._flat_model = other_model
-
     def _interpret_linear_layers(self):
-        """Get all Linear layers inside a model.
+        """Mapping of linear layer index and a layer represented as :class:`nn.Module`.
 
-        Pytorch use named_modules to get layers recursively.
-        :return rv: Dict indicates the layer names and Layer itself,
-            to keep the dimensionality of the new layer.
+        This property get the last n layers and build a map between layer index
+        and layer instance. The layer index will be represented as negative numbers,
+        e.g. -1 means the last layer is linear layer.
         """
         rv = {}
-        for name, module in self._flat_model.named_modules():
-            if isinstance(module, nn.Linear):
-                rv[int(name)] = module
+        if isinstance(self._last_layer, nn.Sequential):  # last layer is nested.
+            modules = list(self._last_layer.modules())
+            for index, module in enumerate(modules):
+                if isinstance(module, nn.Linear):
+                    rv[
+                        index - len(modules)
+                    ] = module  # reverse the order, e.g. -1 last layer
+        else:
+            modules = list(self.base_model.modules())
+            for index, module in enumerate(self.base_model.modules()):
+                if isinstance(module, nn.Linear):
+                    rv[index - len(modules)] = module
         return rv
 
+    @property
+    def _last_layer(self):
+        return list((self.base_model.children()))[-1]
+
+    @_last_layer.setter
+    def _last_layer(self, other_layer: nn.Module):
+        self._last_layer = other_layer
+
     def _chop_off_last_n_layers(self, layer_index: int):
-        """Modify base_model in place based on :attr:`layer_name`.
+        """Modify base_model based on :attr:`layer_name`.
 
         Remove last n layers given the layer index, and replace current layer with :class:`nn.Linear`
             with the new :attr:`out_features` as dimensionality.
-        :param layer_index: the layer index to remove.
+        :param layer_index: the layer index (a negative number )to remove.
         :return: Modified model.
         """
-        name_layer_map = self._interpret_linear_layers()
-        model = self._flat_model[:layer_index]
-        if self._freeze:
-            for param in model.parameters():
-                param.requires_grad = False  # not trainable.
-        setattr(
-            model,
-            str(layer_index),
-            nn.Linear(
-                in_features=name_layer_map[layer_index].in_features,
-                out_features=self._out_features
-                or name_layer_map[layer_index].out_features,
-                bias=self._bias,
-            ),
+        index_layer_map = self._interpret_linear_layers()
+        chopped_layer = index_layer_map[layer_index]
+        out_layer = nn.Linear(
+            in_features=chopped_layer.out_features,
+            out_features=self._out_features or chopped_layer.out_features,
+            bias=self._bias,
         )
+        model = self.base_model
+        if isinstance(self._last_layer, nn.Sequential):
+            modules = list(self._last_layer[:layer_index])
+            modules.append(out_layer)
+            model.classifier = nn.Sequential(*modules)
+        else:
+            model.fc = out_layer
         return model
 
     @property
