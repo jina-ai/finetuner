@@ -1,16 +1,16 @@
 import abc
-from typing import Optional
+from typing import Optional, Union
 
 
 class ModelParser(abc.ABC):
     def __init__(
         self,
-        model_name: str,
+        base_model: Union[str, 'AnyDnnType'],
         out_features: Optional[int] = 32,
         freeze: bool = True,
         bias: bool = True,
     ):
-        self.model_name = model_name
+        self.base_model = base_model
         self.out_features = out_features
         self.freeze = freeze
         self.bias = bias

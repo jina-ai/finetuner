@@ -9,7 +9,8 @@ from ..parser import ModelParser
 class TorchModelParser(ModelParser):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.base_model = getattr(models, self.model_name)(pretrained=True)
+        if isinstance(self.model, str):
+            self.model = getattr(models, self.model_name)(pretrained=True)
 
     def _parse_base_model(self):
         def _traverse_flat(model):
