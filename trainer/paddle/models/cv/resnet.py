@@ -20,6 +20,8 @@ class ResNet(nn.Layer, PretrainedModelMixin):
         pretrained_model: Union[str, bool] = False,
         bottleneck_layer: Optional[int] = None,
         freeze_layers: bool = False,
+        num_classes: int = 1000,
+        with_pool: bool = True,
         **kwargs,
     ):
         super(ResNet, self).__init__()
@@ -28,6 +30,11 @@ class ResNet(nn.Layer, PretrainedModelMixin):
 
         self._pretrained_model = pretrained_model
         self._base_model = None
+
+        self._num_classes = num_classes
+        self._with_pool = with_pool
+        if with_pool:
+            self.avgpool = nn.AdaptiveAvgPool2D((1, 1))
 
         self._output_class_logits = True
         if bottleneck_layer is not None:
@@ -38,12 +45,12 @@ class ResNet(nn.Layer, PretrainedModelMixin):
         self._freeze_layers = freeze_layers
 
     @property
-    def base_model(self):
-        return self._base_model
-
-    @property
     def bottleneck_layers(self):
-        return [self.get_bottleneck_layer(i) for i in range(4)]
+        return {
+            name: layer
+            for name, layer in self.base_model.named_children()
+            if name.startswith('layer')
+        }
 
     @property
     def output_layer(self):
@@ -55,13 +62,7 @@ class ResNet(nn.Layer, PretrainedModelMixin):
     def get_bottleneck_layer(self, index: int):
         assert index < 4
         # Note: `__getattr__` is overided in `nn.Layer`
-        return {name: layer for name, layer in self.base_model.named_children()}[
-            f'layer{index+1}'
-        ]
-
-    def freeze_layers(self):
-        if self.base_model:
-            freeze_params(self.base_model)
+        return self.bottleneck_layers[f'layer{index+1}']
 
     def forward(self, x):
         x = self.base_model.conv1(x)
@@ -69,11 +70,7 @@ class ResNet(nn.Layer, PretrainedModelMixin):
         x = self.base_model.relu(x)
         x = self.base_model.maxpool(x)
 
-        for i, layer in enumerate(self.bottleneck_layers):
-            x = layer(x)
-            # apply early stop
-            if (not self._output_class_logits) and self.output_layer == i:
-                break
+        x = self.base_model.features(x)
 
         if self._output_class_logits and (self.base_model.num_classes > 0):
             if self.base_model.with_pool:
@@ -103,8 +100,12 @@ class ResNet(nn.Layer, PretrainedModelMixin):
         params = paddle.load(weight_path)
         self.base_model.set_dict(params)
 
-    def to_static(self):
-        return None
+    @property
+    def input_spec(self):
+        from paddle.static import InputSpec
+
+        x_spec = InputSpec(shape=[None, 3, 224, 224], name='x')
+        return [x_spec]
 
 
 class ResNet18(ResNet):
@@ -115,43 +116,46 @@ class ResNet18(ResNet):
         pretrained_model: Union[str, bool] = False,
         bottleneck_layer: Optional[int] = None,
         freeze_layers: bool = False,
+        num_classes: int = 1000,
+        with_pool: bool = True,
         **kwargs,
     ):
         super().__init__(
             pretrained_model=pretrained_model,
             bottleneck_layer=bottleneck_layer,
             freeze_layers=freeze_layers,
+            num_classes=num_classes,
+            with_pool=with_pool,
             **kwargs,
         )
+
         self._base_model = resnet.resnet18(pretrained=False, **kwargs)
         if pretrained_model:
             self.load_pretrained()
         if freeze_layers:
             self.freeze_layers()
 
-    @property
-    def flat_model(self) -> nn.Layer:
-        """Unpack the model architecture recursively and rebuild the model.
-        :return: Flattened model.
-        ..note::
-            Even if we rebuild :attr:`model` into :attr:`flat_model`, weight remains
-            the same at layer level.
-        """
-        if not self._flat_model:
-            modules = []
+        self.base_model.features = nn.Sequential(
+            *[self.get_bottleneck_layer(i) for i in range(self.output_layer)]
+        )
 
-            for prefix, layer in self.base_model.named_children():
-                print(f'{prefix} -> {layer}')
-            # for module in self._base_model.children():
-            #
-            #     if not isinstance(module, (nn.Sequential, type(self.base_model))):
-            #         modules.append(module)
-            # self._flat_model = nn.Sequential(*modules)
-        # return self._flat_model
-        return None
-
-    def to_static(self):
-        from paddle.static import InputSpec
-
-        x_spec = InputSpec(shape=[None, 3, 224, 224], name='x')
-        return paddle.jit.to_static(self.base_model, input_spec=[x_spec])
+    # @property
+    # def flat_model(self) -> nn.Layer:
+    #     """Unpack the model architecture recursively and rebuild the model.
+    #     :return: Flattened model.
+    #     ..note::
+    #         Even if we rebuild :attr:`model` into :attr:`flat_model`, weight remains
+    #         the same at layer level.
+    #     """
+    #     if not self._flat_model:
+    #         modules = []
+    #
+    #         for prefix, layer in self.base_model.named_children():
+    #             print(f'{prefix} -> {layer}')
+    #         # for module in self._base_model.children():
+    #         #
+    #         #     if not isinstance(module, (nn.Sequential, type(self.base_model))):
+    #         #         modules.append(module)
+    #         # self._flat_model = nn.Sequential(*modules)
+    #     # return self._flat_model
+    #     return None

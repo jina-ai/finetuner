@@ -3,7 +3,7 @@ import paddle
 from paddle import nn
 from paddle.vision.models import mobilenetv2
 
-from .. import PretrainedModelMixin, freeze_params
+from .. import PretrainedModelMixin
 
 
 class MobileNet(nn.Layer, PretrainedModelMixin):
@@ -15,6 +15,8 @@ class MobileNet(nn.Layer, PretrainedModelMixin):
         bottleneck_layer: Optional[int] = None,
         freeze_layers: bool = False,
         scale: float = 1.0,
+        num_classes: int = 1000,
+        with_pool: bool = True,
         **kwargs,
     ):
         super(MobileNet, self).__init__()
@@ -22,21 +24,27 @@ class MobileNet(nn.Layer, PretrainedModelMixin):
             pretrained_model = False
 
         self._pretrained_model = pretrained_model
-        self._scale = scale
         self._base_model = mobilenetv2.mobilenet_v2(
             pretrained=False, scale=scale, **kwargs
         )
 
+        self._num_classes = num_classes
+        self._with_pool = with_pool
+        self._scale = scale
+        if with_pool:
+            self.pool2d_avg = nn.AdaptiveAvgPool2D(1)
+
         self._output_class_logits = True
         if bottleneck_layer is not None:
             self._output_class_logits = False
-            assert bottleneck_layer >= -18 & bottleneck_layer < 19
+            assert bottleneck_layer >= -19 & bottleneck_layer < 19
 
         self._bottleneck_layer = bottleneck_layer
         self._freeze_layers = freeze_layers
 
         if pretrained_model:
             self.load_pretrained()
+
         if freeze_layers:
             self.freeze_layers()
 
@@ -44,14 +52,10 @@ class MobileNet(nn.Layer, PretrainedModelMixin):
             *[self.get_bottleneck_layer(i) for i in range(self.output_layer)]
         )
 
-    @property
-    def base_model(self):
-        return self._base_model
-
     def forward(self, x):
         x = self.base_model.features(x)
-        if self.base_model.with_pool:
-            x = self.base_model.pool2d_avg(x)
+        if self._with_pool:
+            x = self.pool2d_avg(x)
 
         if self._output_class_logits and self.base_model.num_classes > 0:
             x = paddle.flatten(x, 1)
@@ -79,10 +83,6 @@ class MobileNet(nn.Layer, PretrainedModelMixin):
 
         return self._bottleneck_layer
 
-    def freeze_layers(self):
-        if self.base_model:
-            freeze_params(self.base_model)
-
     def load_pretrained(self):
         weight_path = None
         if self._pretrained_model is True:
@@ -102,19 +102,20 @@ class MobileNet(nn.Layer, PretrainedModelMixin):
         params = paddle.load(weight_path)
         self.base_model.set_dict(params)
 
-    def to_static(self):
+    @property
+    def input_spec(self):
         from paddle.static import InputSpec
 
         x_spec = InputSpec(shape=[None, 3, 224, 224], name='x')
-        return paddle.jit.to_static(self.base_model, input_spec=[x_spec])
+        return [x_spec]
 
-    def flat_model(self) -> nn.Layer:
-        """Unpack the model architecture recursively and rebuild the model.
-        :return: Flattened model.
-        ..note::
-            Even if we rebuild :attr:`model` into :attr:`flat_model`, weight remains
-            the same at layer level.
-        """
-
-        print(f'=> bottles: {list(self.bottleneck_layers.keys())}')
-        print(f'=> bottle at 1: {self.get_bottleneck_layer(1)}')
+    # def flat_model(self) -> nn.Layer:
+    #     """Unpack the model architecture recursively and rebuild the model.
+    #     :return: Flattened model.
+    #     ..note::
+    #         Even if we rebuild :attr:`model` into :attr:`flat_model`, weight remains
+    #         the same at layer level.
+    #     """
+    #
+    #     print(f'=> bottles: {list(self.bottleneck_layers.keys())}')
+    #     print(f'=> bottle at 1: {self.get_bottleneck_layer(1)}')
