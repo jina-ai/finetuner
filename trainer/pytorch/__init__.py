@@ -65,8 +65,8 @@ class PytorchTrainer(BaseTrainer):
                 for inputs, label in data_loader:
                     # forward step
                     outputs = model(*inputs)
-                    loss = model.loss_fn(outputs[0], label)
-                    metric = model.metric_fn(outputs[1], label)
+                    loss = model.loss_fn(outputs, label)
+                    metric = model.metric_fn(outputs, label)
 
                     optimizer.zero_grad()
 
@@ -74,13 +74,11 @@ class PytorchTrainer(BaseTrainer):
                     optimizer.step()
 
                     losses.append(loss.item())
-                    metrics.append(metric)
+                    metrics.append(metric.numpy())
 
-                    p.update()
-
-                self.logger.info(
-                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={sum(metrics) / len(metrics)}'
-                )
+                    p.update(
+                        details=f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+                    )
 
     def save(self, *args, **kwargs):
         torch.save(self.base_model, *args, **kwargs)

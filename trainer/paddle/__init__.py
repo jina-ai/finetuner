@@ -64,8 +64,8 @@ class PaddleTrainer(BaseTrainer):
                     # forward step
                     outputs = model(*inputs)
 
-                    loss = model.loss_fn(outputs[0], label)
-                    metric = model.metric_fn(outputs[1], label)
+                    loss = model.loss_fn(outputs, label)
+                    metric = model.metric_fn(outputs, label)
 
                     # clean gradients
                     optimizer.clear_grad()
@@ -74,13 +74,11 @@ class PaddleTrainer(BaseTrainer):
                     optimizer.step()
 
                     losses.append(loss.numpy())
-                    metrics.append(metric)
+                    metrics.append(metric.numpy())
 
-                    p.update()
-
-                self.logger.info(
-                    f'Training: Loss={sum(losses) / len(losses)} Accuracy={sum(metrics) / len(metrics)}'
-                )
+                    p.update(
+                        details=f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+                    )
 
     def save(self, save_path: str, input_spec: Union[list, tuple] = None):
         base_model = paddle.jit.to_static(self.base_model, input_spec=input_spec)
