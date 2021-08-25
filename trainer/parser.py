@@ -1,8 +1,8 @@
 import abc
-from typing import List, Optional
+from typing import Optional
 
 
-class ModelInterpreter(abc.ABC):
+class ModelParser(abc.ABC):
     def __init__(
         self,
         model_name: str,
@@ -14,21 +14,6 @@ class ModelInterpreter(abc.ABC):
         self._out_features = out_features
         self._freeze = freeze
         self._bias = bias
-
-    @property
-    @abc.abstractmethod
-    def trainable_layers(self) -> List[int]:
-        ...
-
-    @property
-    @abc.abstractmethod
-    def _flat_model(self):
-        ...
-
-    @_flat_model.setter
-    @abc.abstractmethod
-    def _flat_model(self, other_model):
-        ...
 
     @abc.abstractmethod
     def get_modified_base_model(self, layer_index: int):
