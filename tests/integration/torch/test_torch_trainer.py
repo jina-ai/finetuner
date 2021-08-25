@@ -26,7 +26,8 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
 
     # fit and save the checkpoint
     pt.fit(
-        lambda: fmdg(num_total=params['num_train']),
+        train_data=lambda: fmdg(num_total=params['num_train']),
+        eval_data=lambda: fmdg(num_total=params['num_eval'], is_testset=True),
         epochs=params['epochs'],
         batch_size=params['batch_size'],
     )

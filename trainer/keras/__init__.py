@@ -1,4 +1,4 @@
-from typing import Union, Callable
+from typing import Optional
 
 import tensorflow as tf
 from jina.logging.profile import ProgressBar
@@ -32,7 +32,7 @@ class KerasTrainer(BaseTrainer):
 
         return wrapped_model
 
-    def _get_data_loader(self, inputs, batch_size: int = 256, shuffle: bool = False):
+    def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
 
         ds = get_dataset(datasets, self.arity)
         input_shape = self.base_model.input_shape[1:]
@@ -53,47 +53,80 @@ class KerasTrainer(BaseTrainer):
 
         return tf_data.batch(batch_size, drop_remainder=True)
 
+    def _train(self, data, model: Model, optimizer, pbar_description: str):
+        head_layer = self.head_layer()
+
+        losses = []
+        metrics = []
+
+        with ProgressBar(pbar_description) as p:
+            for inputs, label in data:
+                with tf.GradientTape() as tape:
+                    outputs = model(inputs, training=True)
+                    loss = head_layer.loss_fn(pred_val=outputs, target_val=label)
+                    metric = head_layer.metric_fn(pred_val=outputs, target_val=label)
+
+                grads = tape.gradient(loss, model.trainable_weights)
+                optimizer.apply_gradients(zip(grads, model.trainable_weights))
+
+                losses.append(loss.numpy())
+                metrics.append(metric.numpy())
+
+                p.update(
+                    details=f'Loss={sum(losses) / len(losses):.2f} Accuracy={sum(metrics) / len(metrics):.2f}'
+                )
+
+    def _eval(self, data, model: Model, pbar_description: str):
+        head_layer = self.head_layer()
+
+        losses = []
+        metrics = []
+
+        with ProgressBar(pbar_description) as p:
+            for inputs, label in data:
+                outputs = model(inputs, training=False)
+                loss = head_layer.loss_fn(pred_val=outputs, target_val=label)
+                metric = head_layer.metric_fn(pred_val=outputs, target_val=label)
+
+                losses.append(loss.numpy())
+                metrics.append(metric.numpy())
+
+                p.update(
+                    details=f'Loss={sum(losses) / len(losses):.2f} Accuracy={sum(metrics) / len(metrics):.2f}'
+                )
+
     def fit(
         self,
-        train_data: Union[
-            DocumentArrayLike,
-            Callable[..., DocumentArrayLike],
-        ],
-        batch_size: int = 256,
+        train_data: DocumentArrayLike,
+        eval_data: Optional[DocumentArrayLike] = None,
         epochs: int = 10,
+        batch_size: int = 256,
         **kwargs,
     ) -> None:
 
         model = self.wrapped_model
 
-        head_layer = self.head_layer()
-        data_loader = self._get_data_loader(inputs=train_data)
+        _train_data = self._get_data_loader(
+            inputs=train_data, batch_size=batch_size, shuffle=False
+        )
+
+        if eval_data:
+            _eval_data = self._get_data_loader(
+                inputs=eval_data, batch_size=batch_size, shuffle=False
+            )
 
         optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.01)
 
         for epoch in range(epochs):
+            self._train(
+                _train_data,
+                model,
+                optimizer,
+                pbar_description=f'Epoch {epoch + 1}/{epochs}',
+            )
 
-            losses = []
-            metrics = []
-
-            with ProgressBar(f'Epoch {epoch + 1}/{epochs}') as p:
-                for inputs, label in data_loader:
-                    with tf.GradientTape() as tape:
-                        outputs = model(inputs, training=True)
-                        loss = head_layer.loss_fn(pred_val=outputs, target_val=label)
-                        metric = head_layer.metric_fn(
-                            pred_val=outputs, target_val=label
-                        )
-
-                    grads = tape.gradient(loss, model.trainable_weights)
-                    optimizer.apply_gradients(zip(grads, model.trainable_weights))
-
-                    losses.append(loss.numpy())
-                    metrics.append(metric.numpy())
-
-                    p.update(
-                        details=f'Loss={sum(losses) / len(losses):.2f} Accuracy={sum(metrics) / len(metrics):.2f}'
-                    )
+            if eval_data:
+                self._eval(_eval_data, model, pbar_description='Evaluating...')
 
     def save(self, *args, **kwargs):
         self.base_model.save(*args, **kwargs)

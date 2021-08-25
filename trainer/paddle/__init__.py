@@ -1,4 +1,4 @@
-from typing import Union, Callable
+from typing import Union, Optional
 
 import paddle
 from jina.logging.profile import ProgressBar
@@ -6,8 +6,8 @@ from paddle import nn
 from paddle.io import DataLoader
 
 from . import head_layers, datasets
+from ..base import BaseTrainer, BaseHead, BaseArityModel, DocumentArrayLike
 from ..helper import get_dataset
-from ..base import BaseTrainer, DocumentArrayLike, BaseHead, BaseArityModel
 
 
 class _ArityModel(BaseArityModel, nn.Layer):
@@ -29,7 +29,7 @@ class PaddleTrainer(BaseTrainer):
 
         return self.head_layer(_ArityModel(self.base_model))  # wrap with head layer
 
-    def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
+    def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
         ds = get_dataset(datasets, self.arity)
         return DataLoader(
             dataset=ds(inputs=inputs),
@@ -39,11 +39,10 @@ class PaddleTrainer(BaseTrainer):
 
     def fit(
         self,
-        train_data: Union[
-            DocumentArrayLike,
-            Callable[..., DocumentArrayLike],
-        ],
+        train_data: DocumentArrayLike,
+        eval_data: Optional[DocumentArrayLike] = None,
         epochs: int = 10,
+        batch_size: int = 256,
         **kwargs,
     ):
         model = self.wrapped_model
@@ -58,7 +57,9 @@ class PaddleTrainer(BaseTrainer):
             losses = []
             metrics = []
 
-            data_loader = self._get_data_loader(inputs=train_data)
+            data_loader = self._get_data_loader(
+                inputs=train_data, batch_size=batch_size, shuffle=False
+            )
             with ProgressBar(f'Epoch {epoch + 1}/{epochs}') as p:
                 for inputs, label in data_loader:
                     # forward step

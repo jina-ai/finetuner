@@ -29,6 +29,7 @@ def fashion_match_doc_generator(
     upsampling: int = 1,
     channels: int = 0,
     channel_axis: int = -1,
+    is_testset: bool = False,
 ):
     """Get a Generator of fashion-mnist Documents with synthetic matches.
 
@@ -42,11 +43,15 @@ def fashion_match_doc_generator(
     :param channels: fashion-mnist data is gray-scale data, it does not have channel.
         One can set channel to 1 or 3 to simulate real grayscale or rgb imaga
     :param channel_axis: The axis for channels, e.g. for pytorch we expect B*C*W*H, channel axis should be 1.
+    :param is_testset: If to generate test data
     :return:
     """
     all_docs = DocumentArray(
         fashion_doc_generator(
-            upsampling=upsampling, channels=channels, channel_axis=channel_axis
+            upsampling=upsampling,
+            channels=channels,
+            channel_axis=channel_axis,
+            is_testset=is_testset,
         )
     )
 
@@ -79,7 +84,7 @@ def fashion_match_doc_generator(
             break
 
 
-def fashion_doc_generator(download_proxy=None, **kwargs):
+def fashion_doc_generator(download_proxy=None, is_testset=False, **kwargs):
     """
     Download data.
 
@@ -128,7 +133,14 @@ def fashion_doc_generator(download_proxy=None, **kwargs):
             if k == 'index' or k == 'query':
                 v['data'] = _load_mnist(v['filename'], **kwargs)
 
-    for raw_img, lbl in zip(targets['index']['data'], targets['index-labels']['data']):
+    if is_testset:
+        partition = 'query'
+    else:
+        partition = 'index'
+
+    for raw_img, lbl in zip(
+        targets[partition]['data'], targets[f'{partition}-labels']['data']
+    ):
         yield Document(
             content=(raw_img / 255.0).astype(np.float32), tags={'class': int(lbl)}
         )

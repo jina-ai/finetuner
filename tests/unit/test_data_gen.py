@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 from ..data_generator import (
@@ -7,6 +8,14 @@ from ..data_generator import (
 )
 
 # import matplotlib.pyplot as plt
+
+
+def test_train_test_generator():
+    fmdg_train = fashion_match_doc_generator(is_testset=True)
+    fmdg_test = fashion_match_doc_generator(is_testset=False)
+    for d1, d2 in zip(fmdg_train, fmdg_test):
+        assert np.any(np.not_equal(d1.blob, d2.blob))
+        break
 
 
 def test_doc_generator():
