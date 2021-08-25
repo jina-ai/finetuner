@@ -10,10 +10,10 @@ class ModelParser(abc.ABC):
         freeze: bool = True,
         bias: bool = True,
     ):
-        self._model_name = model_name
-        self._out_features = out_features
-        self._freeze = freeze
-        self._bias = bias
+        self.model_name = model_name
+        self.out_features = out_features
+        self.freeze = freeze
+        self.bias = bias
 
     @abc.abstractmethod
     def get_modified_base_model(self, layer_index: int):

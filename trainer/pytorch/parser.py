@@ -9,7 +9,7 @@ from ..parser import ModelParser
 class TorchModelParser(ModelParser):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.base_model = getattr(models, self._model_name)(pretrained=True)
+        self.base_model = getattr(models, self.model_name)(pretrained=True)
 
     def _parse_base_model(self):
         def _traverse_flat(model):
@@ -38,13 +38,13 @@ class TorchModelParser(ModelParser):
         modules = self._parse_base_model()
         chopped_layer = modules[layer_index]
         model_extracted = nn.Sequential(*modules[:layer_index])
-        if self._freeze:
+        if self.freeze:
             for layer in model_extracted.modules():
                 layer.require_grad = False
         tail_layer = nn.Linear(
             in_features=chopped_layer.in_features,
-            out_features=self._out_features or chopped_layer.out_features,
-            bias=self._bias,
+            out_features=self.out_features or chopped_layer.out_features,
+            bias=self.bias,
         )  # trainable tail layer
         return nn.Sequential(model_extracted, tail_layer)
 
