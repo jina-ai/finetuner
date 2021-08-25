@@ -44,8 +44,12 @@ class PaddleTrainer(BaseTrainer):
             Callable[..., DocumentArrayLike],
         ],
         epochs: int = 10,
+        use_gpu: bool = False,
         **kwargs,
     ):
+        if use_gpu:
+            paddle.set_device('gpu')
+
         model = self.wrapped_model
 
         optimizer = paddle.optimizer.RMSProp(
@@ -60,7 +64,7 @@ class PaddleTrainer(BaseTrainer):
 
             data_loader = self._get_data_loader(inputs=train_data)
             with ProgressBar(f'Epoch {epoch + 1}/{epochs}') as p:
-                for inputs, label in data_loader:
+                for i, (inputs, label) in enumerate(data_loader):
                     # forward step
                     outputs = model(*inputs)
 
@@ -76,10 +80,23 @@ class PaddleTrainer(BaseTrainer):
                     losses.append(loss.numpy())
                     metrics.append(metric.numpy())
 
-                    p.update(
-                        details=f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
-                    )
+                    # p.update(
+                    #     details=f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+                    # )
+                    p.update()
+                    if i % 100 == 0:
+                        print(
+                            f'=> [Epoch {epoch+1}] Step={i} Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+                        )
 
     def save(self, save_path: str, input_spec: Union[list, tuple] = None):
-        base_model = paddle.jit.to_static(self.base_model, input_spec=input_spec)
-        paddle.jit.save(base_model, save_path)
+        base_static_model = None
+        if hasattr(self.base_model, 'to_static'):
+            base_static_model = self.base_model.to_static()
+
+        if not base_static_model:
+            base_static_model = paddle.jit.to_static(
+                self.base_model, input_spec=input_spec
+            )
+
+        paddle.jit.save(base_static_model, save_path)

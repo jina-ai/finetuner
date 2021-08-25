@@ -103,6 +103,9 @@ class ResNet(nn.Layer, PretrainedModelMixin):
         params = paddle.load(weight_path)
         self.base_model.set_dict(params)
 
+    def to_static(self):
+        return None
+
 
 class ResNet18(ResNet):
     model_name = 'resnet18'
@@ -146,3 +149,9 @@ class ResNet18(ResNet):
             # self._flat_model = nn.Sequential(*modules)
         # return self._flat_model
         return None
+
+    def to_static(self):
+        from paddle.static import InputSpec
+
+        x_spec = InputSpec(shape=[None, 3, 224, 224], name='x')
+        return paddle.jit.to_static(self.base_model, input_spec=[x_spec])

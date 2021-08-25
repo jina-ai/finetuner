@@ -12,3 +12,7 @@ class PretrainedModelMixin:
     @abc.abstractmethod
     def load_pretrained(self, model_path: str):
         ...
+
+    @abc.abstractmethod
+    def to_static(self):
+        ...
