@@ -4,7 +4,7 @@ import paddle
 from paddle import nn
 from paddle.vision.models import resnet
 
-from .. import PretrainedModelMixin, freeze_params
+from .. import PretrainedModelMixin
 
 
 class ResNet(nn.Layer, PretrainedModelMixin):
