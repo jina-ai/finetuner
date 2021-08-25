@@ -7,13 +7,18 @@ from jina.types.arrays.memmap import DocumentArrayMemmap
 
 AnyDNN = TypeVar('AnyDNN')  #: Any implementation of a Deep Neural Network object
 
-DocumentArrayLike = TypeVar(
-    'DocumentArrayLike',
+DocumentSequence = TypeVar(
+    'DocumentSequence',
     Sequence[Document],
     DocumentArray,
     DocumentArrayMemmap,
     Iterator[Document],
 )
+
+DocumentArrayLike = Union[
+    DocumentSequence,
+    Callable[..., DocumentSequence],
+]
 
 
 class BaseHead:
@@ -63,6 +68,15 @@ class BaseTrainer(abc.ABC):
         self._base_model = val
 
     @property
+    @abc.abstractmethod
+    def wrapped_model(self) -> AnyDNN:
+        """Get the wrapped model of this object.
+
+        A wrapped model is an arity model with a head_layer on top of it.
+        """
+        ...
+
+    @property
     def arity(self) -> int:
         """Get the arity of this object.
 
@@ -88,24 +102,13 @@ class BaseTrainer(abc.ABC):
         """
         ...
 
-    @property
-    def loss(self) -> Any:
-        """Get the loss of this object."""
-        return self.head_layer.default_loss
-
     @abc.abstractmethod
     def fit(
         self,
-        train_data: Union[
-            DocumentArrayLike,
-            Callable[..., DocumentArrayLike],
-        ],
-        eval_data: Optional[
-            Union[
-                DocumentArrayLike,
-                Callable[..., DocumentArrayLike],
-            ]
-        ] = None,
+        train_data: DocumentArrayLike,
+        eval_data: Optional[DocumentArrayLike] = None,
+        epochs: int = 10,
+        batch_size: int = 256,
         *args,
         **kwargs
     ) -> None:
@@ -125,14 +128,21 @@ class BaseTrainer(abc.ABC):
         """
         ...
 
+    @abc.abstractmethod
+    def _train(self, data, model, optimizer, pbar_description):
+        """Train the model"""
+        ...
+
+    @abc.abstractmethod
+    def _eval(self, data, model, pbar_description):
+        """Evaluate the model"""
+        ...
+
 
 class BaseDataset:
     def __init__(
         self,
-        inputs: Union[
-            DocumentArrayLike,
-            Callable[..., DocumentArrayLike],
-        ],
+        inputs: DocumentArrayLike,
     ):
         super().__init__()
         self._inputs = inputs() if callable(inputs) else inputs

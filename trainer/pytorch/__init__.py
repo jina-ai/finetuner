@@ -1,13 +1,14 @@
-from typing import Union, Callable
+from typing import Optional
 
 import torch
 import torch.nn as nn
 from jina.logging.profile import ProgressBar
+from torch.optim.optimizer import Optimizer
 from torch.utils.data.dataloader import DataLoader
 
 from . import head_layers, datasets
+from ..base import BaseTrainer, BaseHead, BaseArityModel, DocumentArrayLike
 from ..helper import get_dataset
-from ..base import BaseTrainer, DocumentArrayLike, BaseHead, BaseArityModel
 
 
 class _ArityModel(BaseArityModel, nn.Module):
@@ -29,7 +30,7 @@ class PytorchTrainer(BaseTrainer):
 
         return self.head_layer(_ArityModel(self.base_model))  # wrap with head layer
 
-    def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
+    def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
         ds = get_dataset(datasets, self.arity)
         return DataLoader(
             dataset=ds(inputs=inputs),
@@ -37,48 +38,89 @@ class PytorchTrainer(BaseTrainer):
             shuffle=shuffle,
         )
 
+    def _eval(self, data, model: nn.Module, pbar_description: str):
+        model.eval()
+
+        losses = []
+        metrics = []
+
+        get_desc_str = (
+            lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+        )
+
+        with ProgressBar(pbar_description, message_on_done=get_desc_str) as p:
+            for inputs, label in data:
+                outputs = model(*inputs)
+                loss = model.loss_fn(outputs, label)
+                metric = model.metric_fn(outputs, label)
+
+                losses.append(loss.item())
+                metrics.append(metric.numpy())
+
+                p.update(message=get_desc_str())
+
+    def _train(
+        self, data, model: nn.Module, optimizer: Optimizer, pbar_description: str
+    ):
+
+        model.train()
+
+        losses = []
+        metrics = []
+
+        get_desc_str = (
+            lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+        )
+
+        with ProgressBar(pbar_description, message_on_done=get_desc_str) as p:
+            for inputs, label in data:
+                # forward step
+                outputs = model(*inputs)
+                loss = model.loss_fn(outputs, label)
+                metric = model.metric_fn(outputs, label)
+
+                optimizer.zero_grad()
+
+                loss.backward()
+                optimizer.step()
+
+                losses.append(loss.item())
+                metrics.append(metric.numpy())
+
+                p.update(message=get_desc_str())
+
     def fit(
         self,
-        train_data: Union[
-            DocumentArrayLike,
-            Callable[..., DocumentArrayLike],
-        ],
+        train_data: DocumentArrayLike,
+        eval_data: Optional[DocumentArrayLike] = None,
         epochs: int = 10,
+        batch_size: int = 256,
         **kwargs,
     ) -> None:
         model = self.wrapped_model
-        # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        # model.to(device)
 
         optimizer = torch.optim.RMSprop(
             params=model.parameters()
         )  # stay the same as keras
 
         for epoch in range(epochs):
-            model.train()
+            _data = self._get_data_loader(
+                inputs=train_data, batch_size=batch_size, shuffle=False
+            )
 
-            losses = []
-            metrics = []
+            self._train(
+                _data,
+                model,
+                optimizer,
+                pbar_description=f'Epoch {epoch + 1}/{epochs}',
+            )
 
-            data_loader = self._get_data_loader(inputs=train_data)
-            with ProgressBar(f'Epoch {epoch + 1}/{epochs}') as p:
-                for inputs, label in data_loader:
-                    # forward step
-                    outputs = model(*inputs)
-                    loss = model.loss_fn(outputs, label)
-                    metric = model.metric_fn(outputs, label)
+            if eval_data:
+                _data = self._get_data_loader(
+                    inputs=eval_data, batch_size=batch_size, shuffle=False
+                )
 
-                    optimizer.zero_grad()
-
-                    loss.backward()
-                    optimizer.step()
-
-                    losses.append(loss.item())
-                    metrics.append(metric.numpy())
-
-                    p.update(
-                        details=f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
-                    )
+                self._eval(_data, model, pbar_description='Evaluating')
 
     def save(self, *args, **kwargs):
         torch.save(self.base_model, *args, **kwargs)

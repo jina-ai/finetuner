@@ -11,5 +11,6 @@ def params():
         'feature_dim': 128,
         'learning_rate': 0.01,
         'num_train': 1000,
+        'num_eval': 1000,
         'num_predict': 100,
     }

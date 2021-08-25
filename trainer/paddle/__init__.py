@@ -1,13 +1,14 @@
-from typing import Union, Callable
+from typing import Union, Optional
 
 import paddle
 from jina.logging.profile import ProgressBar
 from paddle import nn
 from paddle.io import DataLoader
+from paddle.optimizer import Optimizer
 
 from . import head_layers, datasets
+from ..base import BaseTrainer, BaseHead, BaseArityModel, DocumentArrayLike
 from ..helper import get_dataset
-from ..base import BaseTrainer, DocumentArrayLike, BaseHead, BaseArityModel
 
 
 class _ArityModel(BaseArityModel, nn.Layer):
@@ -29,7 +30,7 @@ class PaddleTrainer(BaseTrainer):
 
         return self.head_layer(_ArityModel(self.base_model))  # wrap with head layer
 
-    def _get_data_loader(self, inputs, batch_size=256, shuffle=False):
+    def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
         ds = get_dataset(datasets, self.arity)
         return DataLoader(
             dataset=ds(inputs=inputs),
@@ -37,13 +38,63 @@ class PaddleTrainer(BaseTrainer):
             shuffle=shuffle,
         )
 
+    def _eval(self, data, model: nn.Layer, pbar_description: str):
+        model.eval()
+
+        losses = []
+        metrics = []
+
+        get_desc_str = (
+            lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+        )
+
+        with ProgressBar(pbar_description, message_on_done=get_desc_str) as p:
+            for inputs, label in data:
+                outputs = model(*inputs)
+                loss = model.loss_fn(outputs, label)
+                metric = model.metric_fn(outputs, label)
+
+                losses.append(loss.item())
+                metrics.append(metric.numpy())
+
+                p.update(message=get_desc_str())
+
+    def _train(
+        self, data, model: nn.Layer, optimizer: Optimizer, pbar_description: str
+    ):
+
+        model.train()
+
+        losses = []
+        metrics = []
+
+        get_desc_str = (
+            lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+        )
+
+        with ProgressBar(pbar_description, message_on_done=get_desc_str) as p:
+            for inputs, label in data:
+                # forward step
+                outputs = model(*inputs)
+                loss = model.loss_fn(outputs, label)
+                metric = model.metric_fn(outputs, label)
+
+                optimizer.clear_grad()
+
+                loss.backward()
+                optimizer.step()
+
+                losses.append(loss.item())
+                metrics.append(metric.numpy())
+
+                p.update(message=get_desc_str())
+
     def fit(
         self,
-        train_data: Union[
-            DocumentArrayLike,
-            Callable[..., DocumentArrayLike],
-        ],
+        train_data: DocumentArrayLike,
+        eval_data: Optional[DocumentArrayLike] = None,
         epochs: int = 10,
+        batch_size: int = 256,
         **kwargs,
     ):
         model = self.wrapped_model
@@ -53,32 +104,23 @@ class PaddleTrainer(BaseTrainer):
         )
 
         for epoch in range(epochs):
-            model.train()
+            _data = self._get_data_loader(
+                inputs=train_data, batch_size=batch_size, shuffle=False
+            )
 
-            losses = []
-            metrics = []
+            self._train(
+                _data,
+                model,
+                optimizer,
+                pbar_description=f'Epoch {epoch + 1}/{epochs}',
+            )
 
-            data_loader = self._get_data_loader(inputs=train_data)
-            with ProgressBar(f'Epoch {epoch + 1}/{epochs}') as p:
-                for inputs, label in data_loader:
-                    # forward step
-                    outputs = model(*inputs)
+            if eval_data:
+                _data = self._get_data_loader(
+                    inputs=eval_data, batch_size=batch_size, shuffle=False
+                )
 
-                    loss = model.loss_fn(outputs, label)
-                    metric = model.metric_fn(outputs, label)
-
-                    # clean gradients
-                    optimizer.clear_grad()
-
-                    loss.backward()
-                    optimizer.step()
-
-                    losses.append(loss.numpy())
-                    metrics.append(metric.numpy())
-
-                    p.update(
-                        details=f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
-                    )
+                self._eval(_data, model, pbar_description='Evaluating')
 
     def save(self, save_path: str, input_spec: Union[list, tuple] = None):
         base_model = paddle.jit.to_static(self.base_model, input_spec=input_spec)
