@@ -96,7 +96,7 @@ class PytorchTrainer(BaseTrainer):
         epochs: int = 10,
         batch_size: int = 256,
         **kwargs,
-    ) -> None:
+    ):
         model = self.wrapped_model
 
         optimizer = torch.optim.RMSprop(
