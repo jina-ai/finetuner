@@ -47,7 +47,7 @@ class PytorchTrainer(BaseTrainer):
             lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
         )
 
-        with ProgressBar(pbar_description, on_done=get_desc_str) as p:
+        with ProgressBar(pbar_description, message_on_done=get_desc_str) as p:
             for inputs, label in data:
                 outputs = model(*inputs)
                 loss = model.loss_fn(outputs, label)
@@ -56,7 +56,7 @@ class PytorchTrainer(BaseTrainer):
                 losses.append(loss.item())
                 metrics.append(metric.numpy())
 
-                p.update(details=get_desc_str())
+                p.update(message=get_desc_str())
 
     def _train(self, data, model: nn.Module, optimizer, pbar_description: str):
 
@@ -69,7 +69,7 @@ class PytorchTrainer(BaseTrainer):
             lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
         )
 
-        with ProgressBar(pbar_description, on_done=get_desc_str) as p:
+        with ProgressBar(pbar_description, message_on_done=get_desc_str) as p:
             for inputs, label in data:
                 # forward step
                 outputs = model(*inputs)
@@ -84,7 +84,7 @@ class PytorchTrainer(BaseTrainer):
                 losses.append(loss.item())
                 metrics.append(metric.numpy())
 
-                p.update(details=get_desc_str())
+                p.update(message=get_desc_str())
 
     def fit(
         self,
@@ -117,7 +117,7 @@ class PytorchTrainer(BaseTrainer):
                     inputs=eval_data, batch_size=batch_size, shuffle=False
                 )
 
-                self._eval(_data, model, pbar_description='Evaluating...')
+                self._eval(_data, model, pbar_description='Evaluating')
 
     def save(self, *args, **kwargs):
         torch.save(self.base_model, *args, **kwargs)

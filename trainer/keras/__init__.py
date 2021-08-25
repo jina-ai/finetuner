@@ -59,7 +59,11 @@ class KerasTrainer(BaseTrainer):
         losses = []
         metrics = []
 
-        with ProgressBar(pbar_description) as p:
+        get_desc_str = (
+            lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+        )
+
+        with ProgressBar(pbar_description, message_on_done=get_desc_str) as p:
             for inputs, label in data:
                 with tf.GradientTape() as tape:
                     outputs = model(inputs, training=True)
@@ -72,9 +76,7 @@ class KerasTrainer(BaseTrainer):
                 losses.append(loss.numpy())
                 metrics.append(metric.numpy())
 
-                p.update(
-                    details=f'Loss={sum(losses) / len(losses):.2f} Accuracy={sum(metrics) / len(metrics):.2f}'
-                )
+                p.update(message=get_desc_str())
 
     def _eval(self, data, model: Model, pbar_description: str):
         head_layer = self.head_layer()
@@ -82,7 +84,11 @@ class KerasTrainer(BaseTrainer):
         losses = []
         metrics = []
 
-        with ProgressBar(pbar_description) as p:
+        get_desc_str = (
+            lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+        )
+
+        with ProgressBar(pbar_description, message_on_done=get_desc_str) as p:
             for inputs, label in data:
                 outputs = model(inputs, training=False)
                 loss = head_layer.loss_fn(pred_val=outputs, target_val=label)
@@ -91,9 +97,7 @@ class KerasTrainer(BaseTrainer):
                 losses.append(loss.numpy())
                 metrics.append(metric.numpy())
 
-                p.update(
-                    details=f'Loss={sum(losses) / len(losses):.2f} Accuracy={sum(metrics) / len(metrics):.2f}'
-                )
+                p.update(message=get_desc_str())
 
     def fit(
         self,
@@ -126,7 +130,7 @@ class KerasTrainer(BaseTrainer):
             )
 
             if eval_data:
-                self._eval(_eval_data, model, pbar_description='Evaluating...')
+                self._eval(_eval_data, model, pbar_description='Evaluating')
 
     def save(self, *args, **kwargs):
         self.base_model.save(*args, **kwargs)
