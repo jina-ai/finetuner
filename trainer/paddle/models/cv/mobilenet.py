@@ -58,6 +58,8 @@ class MobileNet(nn.Layer, PretrainedModelMixin):
             x = self.pool2d_avg(x)
 
         if self._output_class_logits and self.base_model.num_classes > 0:
+            if self.base_model.with_pool:
+                x = self.base_model.pool2d_avg(x)
             x = paddle.flatten(x, 1)
             x = self.base_model.classifier(x)
         else:
