@@ -6,7 +6,7 @@ class ModelParser(abc.ABC):
     def __init__(
         self,
         base_model: Union[str, 'AnyDnnType'],
-        out_features: Optional[int] = 32,
+        out_features: Optional[int] = None,
         freeze: bool = True,
         bias: bool = True,
     ):
