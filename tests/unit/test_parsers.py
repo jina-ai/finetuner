@@ -1,21 +1,43 @@
+import paddle
+import pytest
 import tensorflow as tf
-from paddle import nn
+import torch
+
+from trainer.paddle.parser import get_candidate_layers as gcl_p
+from trainer.pytorch.parser import get_candidate_layers as gcl_t
 
 
-def test_paddle_model_parser():
-    user_model = nn.Sequential(
-        nn.Flatten(),
-        nn.Linear(
-            in_features=28 * 28,
-            out_features=128,
+@pytest.mark.parametrize(
+    'user_model, parser',
+    [
+        (
+            paddle.nn.Sequential(
+                paddle.nn.Flatten(),
+                paddle.nn.Linear(
+                    in_features=28 * 28,
+                    out_features=128,
+                ),
+                paddle.nn.ReLU(),
+                paddle.nn.Linear(in_features=128, out_features=32),
+            ),
+            gcl_p,
         ),
-        nn.ReLU(),
-        nn.Linear(in_features=128, out_features=32),
-    )
-
-    from trainer.paddle.parser import get_candidate_layers
-
-    r = get_candidate_layers(user_model, input_size=(1, 28, 28))
+        (
+            torch.nn.Sequential(
+                torch.nn.Flatten(),
+                torch.nn.Linear(
+                    in_features=28 * 28,
+                    out_features=128,
+                ),
+                torch.nn.ReLU(),
+                torch.nn.Linear(in_features=128, out_features=32),
+            ),
+            gcl_t,
+        ),
+    ],
+)
+def test_paddle_torch_model_parser(user_model, parser):
+    r = parser(user_model, input_size=(1, 28, 28))
     assert len(r) == 4
 
     # flat layer can be a nonparametric candidate
