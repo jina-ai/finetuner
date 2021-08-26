@@ -1,4 +1,3 @@
-import numbers
 from collections import OrderedDict
 
 import numpy as np
@@ -7,30 +6,9 @@ from paddle import nn
 
 
 def get_candidate_layers(model, input_size):
-    def _all_is_number(items):
-        for item in items:
-            if not isinstance(item, numbers.Number):
-                return False
-        return True
-
-    def _build_dtypes(input_size, dtype):
-        if dtype is None:
-            dtype = 'float32'
-
-        if isinstance(input_size, (list, tuple)) and _all_is_number(input_size):
-            return [dtype]
-        else:
-            return [_build_dtypes(i, dtype) for i in input_size]
-
-    dtypes = _build_dtypes(input_size, None)
+    dtypes = ['float32'] * len(input_size)
 
     depth = len(list(model.sublayers()))
-
-    def _get_shape_from_tensor(x):
-        if isinstance(x, (paddle.fluid.Variable, paddle.fluid.core.VarBase)):
-            return list(x.shape)
-        elif isinstance(x, (list, tuple)):
-            return [_get_shape_from_tensor(xx) for xx in x]
 
     def _get_output_shape(output):
         if isinstance(output, (list, tuple)):
@@ -42,11 +20,19 @@ def get_candidate_layers(model, input_size):
     def register_hook(layer):
         def hook(layer, input, output):
 
-            m_key = layer._full_name
+            class_name = str(layer.__class__).split(".")[-1].split("'")[0]
+
+            try:
+                layer_idx = int(layer._full_name.split('_')[-1])
+            except:
+                layer_idx = len(summary)
+
+            m_key = f'{class_name}-{layer_idx+1}'
+
             summary[m_key] = OrderedDict()
             summary[m_key]['cls_name'] = layer.__class__.__name__
             summary[m_key]['name'] = layer._full_name
-            summary[m_key]["output_shape"] = _get_output_shape(output)
+            summary[m_key]['output_shape'] = _get_output_shape(output)
 
             params = 0
             if paddle.in_dynamic_mode():
@@ -57,7 +43,7 @@ def get_candidate_layers(model, input_size):
             for k, v in layer_state_dict.items():
                 params += np.prod(v.shape)
 
-            summary[m_key]["nb_params"] = params
+            summary[m_key]['nb_params'] = params
 
         if (
             not isinstance(layer, nn.Sequential)
@@ -73,17 +59,10 @@ def get_candidate_layers(model, input_size):
     if isinstance(input_size, tuple):
         input_size = [input_size]
 
-    def build_input(input_size, dtypes):
-        if isinstance(input_size, (list, tuple)) and _all_is_number(input_size):
-            if isinstance(dtypes, (list, tuple)):
-                dtype = dtypes[0]
-            else:
-                dtype = dtypes
-            return paddle.cast(paddle.rand(list(input_size)), dtype)
-        else:
-            return [build_input(i, dtype) for i, dtype in zip(input_size, dtypes)]
-
-    x = build_input(input_size, dtypes)
+    x = [
+        paddle.cast(paddle.rand([2, *in_size]), dtype)
+        for in_size, dtype in zip(input_size, dtypes)
+    ]
 
     # create properties
     summary = OrderedDict()
