@@ -1,8 +1,8 @@
 from collections import OrderedDict
 
-import numpy as np
 import torch
 from torch import nn
+import numpy as np
 
 
 def get_candidate_layers(model, input_size):
@@ -81,3 +81,33 @@ def get_candidate_layers(model, input_size):
         )
 
     return results
+
+
+def parse(model, input_size, layer_index, freeze=True):
+    def _traverse_flat(model):
+        flattened = []
+        childs = list(model.children())
+        if not childs:
+            return model
+        else:
+            for child in childs:
+                try:
+                    flattened.extend(_traverse_flat(child))
+                except TypeError:
+                    flattened.append(_traverse_flat(child))
+        return flattened
+
+    candidate_layers = get_candidate_layers(model, input_size)
+    candidate_layer = [
+        item for item in candidate_layers if item['layer_idx'] == layer_index
+    ]
+    if not candidate_layer:
+        indices = [item['layer_idx'] for item in candidate_layers]
+        raise ValueError(f'Layer index {layer_index} should be one of {indices}')
+    candidate_layer = candidate_layer[0]
+    modules = _traverse_flat(model)
+    new_model = nn.Sequential(*modules[: candidate_layer['layer_idx']])
+    if freeze:
+        for param in new_model.parameters():
+            param.requires_grad = False
+    return new_model

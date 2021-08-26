@@ -5,6 +5,20 @@ import torch
 
 from trainer.paddle.parser import get_candidate_layers as gcl_p
 from trainer.pytorch.parser import get_candidate_layers as gcl_t
+from trainer.pytorch.parser import parse as parse_t
+
+
+@pytest.fixture
+def torch_model():
+    return torch.nn.Sequential(
+        torch.nn.Flatten(),
+        torch.nn.Linear(
+            in_features=28 * 28,
+            out_features=128,
+        ),
+        torch.nn.ReLU(),
+        torch.nn.Linear(in_features=128, out_features=32),
+    )
 
 
 @pytest.mark.parametrize(
@@ -81,3 +95,18 @@ def test_keras_model_parser():
 
     assert r[2]['output_features'] == 32
     assert r[2]['params'] == 4128
+
+
+@pytest.mark.parametrize('freeze, expected', [(True, False), (False, True)])
+def test_torch_parse_given_correct_layer_index(torch_model, freeze, expected):
+    model = parse_t(torch_model, input_size=(1, 28, 28), layer_index=2, freeze=freeze)
+    for param in model.parameters():
+        assert param.requires_grad == expected
+    childs = list(model.children())
+    assert childs[-1].out_features == 128
+    assert len(childs) == 2
+
+
+def test_torch_parse_given_incorrect_layer_index(torch_model):
+    with pytest.raises(ValueError):
+        _ = parse_t(torch_model, input_size=(1, 28, 28), layer_index=1000, freeze=True)
