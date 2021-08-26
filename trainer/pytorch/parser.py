@@ -10,7 +10,11 @@ def get_candidate_layers(model, input_size):
 
     def _get_output_shape(output):
         if isinstance(output, (list, tuple)):
-            output_shape = [[-1] + list(o.size())[1:] for o in output]
+            output_shape = []
+            for o in output:
+                if isinstance(o, tuple):  # lstm returns hidden state and cell state
+                    o = o[0]
+            output_shape.append([-1] + list(o.size())[1:])
         else:
             output_shape = list(output.size())
         return output_shape
