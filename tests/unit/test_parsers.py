@@ -97,14 +97,19 @@ def test_keras_model_parser():
     assert r[2]['params'] == 4128
 
 
-@pytest.mark.parametrize('freeze, expected', [(True, False), (False, True)])
+@pytest.mark.parametrize(
+    'freeze, expected',
+    [(True, [False, False, True, True]), (False, [True, True, True, True])],
+)
 def test_torch_parse_given_correct_layer_index(torch_model, freeze, expected):
-    model = parse_t(torch_model, input_size=(1, 28, 28), layer_index=2, freeze=freeze)
-    for param in model.parameters():
-        assert param.requires_grad == expected
+    model = parse_t(torch_model, input_size=(1, 28, 28), layer_index=3, freeze=freeze)
+    trainable = []
+    for param in list(model.parameters()):
+        trainable.append(param.requires_grad)
+    assert trainable == expected
     childs = list(model.children())
-    assert childs[-1].out_features == 128
-    assert len(childs) == 2
+    assert childs[-1].out_features == 32
+    assert len(childs) == 4
 
 
 def test_torch_parse_given_incorrect_layer_index(torch_model):

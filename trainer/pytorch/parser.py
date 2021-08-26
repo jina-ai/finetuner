@@ -98,16 +98,19 @@ def parse(model, input_size, layer_index, freeze=True):
         return flattened
 
     candidate_layers = get_candidate_layers(model, input_size)
-    candidate_layer = [
-        item for item in candidate_layers if item['layer_idx'] == layer_index
-    ]
+    candidate_layer = None
+    for layer in candidate_layers:
+        if layer['layer_idx'] == layer_index:
+            candidate_layer = layer
+            break
     if not candidate_layer:
         indices = [item['layer_idx'] for item in candidate_layers]
         raise ValueError(f'Layer index {layer_index} should be one of {indices}')
-    candidate_layer = candidate_layer[0]
     modules = _traverse_flat(model)
+    last_layer = modules[candidate_layer['layer_idx']]
     new_model = nn.Sequential(*modules[: candidate_layer['layer_idx']])
     if freeze:
         for param in new_model.parameters():
             param.requires_grad = False
+    new_model.add_module(name='top', module=last_layer)
     return new_model
