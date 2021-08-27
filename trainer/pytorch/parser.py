@@ -13,10 +13,14 @@ def get_candidate_layers(model, input_size, dtype=torch.FloatTensor):
         if isinstance(output, (list, tuple)):
             output_shape = []
             for o in output:
-                if isinstance(o, tuple):  # lstm returns hidden state and cell state
+                if isinstance(
+                    o, tuple
+                ):  # NOTE: lstm returns output and a tuple of (hidden_state, cell_state).
                     o = o[0]
                     output_shape.append([-1] + list(o.size())[1:])
-        elif isinstance(output, ModelOutput):
+        elif isinstance(
+            output, ModelOutput
+        ):  # NOTE: Transformers has it's own output class.
             output_shape = list(output.last_hidden_state.size())
         else:
             output_shape = list(output.size())
@@ -88,39 +92,3 @@ def get_candidate_layers(model, input_size, dtype=torch.FloatTensor):
         )
 
     return results
-
-
-def parse(model, input_size, layer_index, freeze=True, dtype=torch.FloatTensor):
-    def _traverse_flat(model):
-        flattened = []
-        childs = list(model.children())
-        if not childs:
-            return model
-        else:
-            for child in childs:
-                try:
-                    flattened.extend(_traverse_flat(child))
-                except TypeError:
-                    flattened.append(_traverse_flat(child))
-        return flattened
-
-    candidate_layers = get_candidate_layers(model, input_size, dtype)
-    candidate_layer = None
-    for layer in candidate_layers:
-        if layer['layer_idx'] == layer_index:
-            candidate_layer = layer
-            break
-    if not candidate_layer:
-        indices = [item['layer_idx'] for item in candidate_layers]
-        raise ValueError(f'Layer index {layer_index} should be one of {indices}')
-    modules = _traverse_flat(model)
-    if len(modules) > 1:
-        last_layer = modules[candidate_layer['layer_idx']]
-        new_model = nn.Sequential(*modules[: candidate_layer['layer_idx']])
-        if freeze:
-            for param in new_model.parameters():
-                param.requires_grad = False
-        new_model.add_module(name='top', module=last_layer)
-    else:
-        new_model = nn.Sequential(modules[0])
-    return new_model
