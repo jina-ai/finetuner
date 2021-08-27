@@ -15,7 +15,7 @@ def get_candidate_layers(model, input_size, dtype=torch.FloatTensor):
             for o in output:
                 if isinstance(o, tuple):  # lstm returns hidden state and cell state
                     o = o[0]
-            output_shape.append([-1] + list(o.size())[1:])
+                    output_shape.append([-1] + list(o.size())[1:])
         elif isinstance(output, ModelOutput):
             output_shape = list(output.last_hidden_state.size())
         else:
@@ -90,7 +90,7 @@ def get_candidate_layers(model, input_size, dtype=torch.FloatTensor):
     return results
 
 
-def parse(model, input_size, layer_index, freeze=True):
+def parse(model, input_size, layer_index, freeze=True, dtype=torch.FloatTensor):
     def _traverse_flat(model):
         flattened = []
         childs = list(model.children())
@@ -104,7 +104,7 @@ def parse(model, input_size, layer_index, freeze=True):
                     flattened.append(_traverse_flat(child))
         return flattened
 
-    candidate_layers = get_candidate_layers(model, input_size)
+    candidate_layers = get_candidate_layers(model, input_size, dtype)
     candidate_layer = None
     for layer in candidate_layers:
         if layer['layer_idx'] == layer_index:
