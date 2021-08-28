@@ -123,4 +123,4 @@ class PytorchTrainer(BaseTrainer):
                 self._eval(_data, model, pbar_description='Evaluating')
 
     def save(self, *args, **kwargs):
-        torch.save(self.base_model, *args, **kwargs)
+        torch.save(self.base_model.state_dict(), *args, **kwargs)
