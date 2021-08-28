@@ -39,6 +39,6 @@ def test_text_to_int_sequence_max_len_longer():
 
 def test_text_to_int_sequence_max_len_shorter():
     vocab = build_vocab(texts)
-    assert text_to_int_sequence(texts[0], vocab, 1) == [3]
-    assert text_to_int_sequence(texts[1], vocab, 1) == [4]
-    assert text_to_int_sequence(texts[2], vocab, 1) == [4]
+    assert text_to_int_sequence(texts[0], vocab, 1) == [2]
+    assert text_to_int_sequence(texts[1], vocab, 1) == [3]
+    assert text_to_int_sequence(texts[2], vocab, 1) == [3]
