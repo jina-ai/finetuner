@@ -35,14 +35,14 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
     pt.save(model_path)
 
     # load the checkpoint and ensure the dim
-    embedding_model = torch.load(model_path)
-    embedding_model.eval()
+    user_model.load_state_dict(torch.load(model_path))
+    user_model.eval()
     inputs = torch.from_numpy(
         np.random.random(
             [params['num_predict'], params['input_dim'], params['input_dim']]
         ).astype(np.float32)
     )
-    r = embedding_model(inputs)
+    r = user_model(inputs)
     assert r.shape == (params['num_predict'], params['output_dim'])
 
 
