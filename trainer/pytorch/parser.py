@@ -21,7 +21,9 @@ def get_candidate_layers(model, input_size, dtype=torch.FloatTensor):
             output_shape = list(output.size())
         else:
             # NOTE: Transformers has it's own output class.
-            # type: transformers.modeling_outputs.ModelOutput
+            from transformers.modeling_outputs import ModelOutput
+
+            # type: ModelOutput
             output_shape = list(output.last_hidden_state.size())
         return output_shape
 
