@@ -3,13 +3,18 @@ from collections import OrderedDict
 import torch
 from torch import nn
 import numpy as np
-from transformers.modeling_outputs import ModelOutput
+
+if False:
+    from transformers.modeling_outputs import ModelOutput
 
 
 def get_candidate_layers(model, input_size, dtype=torch.FloatTensor):
     dtypes = [dtype] * len(input_size)
 
     def _get_output_shape(output):
+
+        from transformers.modeling_outputs import ModelOutput
+
         if isinstance(output, (list, tuple)):
             output_shape = []
             for o in output:
@@ -17,7 +22,7 @@ def get_candidate_layers(model, input_size, dtype=torch.FloatTensor):
                     o, tuple
                 ):  # NOTE: lstm returns output and a tuple of (hidden_state, cell_state).
                     o = o[0]
-                    output_shape.append([-1] + list(o.size())[1:])
+                output_shape.append([-1] + list(o.size())[1:])
         elif isinstance(
             output, ModelOutput
         ):  # NOTE: Transformers has it's own output class.

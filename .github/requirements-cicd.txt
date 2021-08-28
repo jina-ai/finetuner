@@ -2,3 +2,5 @@ numpy
 tensorflow
 paddlepaddle
 torch
+torchvision
+transformers
