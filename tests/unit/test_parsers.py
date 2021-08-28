@@ -153,10 +153,10 @@ def test_parse_torch_given_vision_model(cnn_model):
 
 def test_parse_torch_given_lstm_model(lstm_model):
     input_size = 128  # seq
-    candidate_layers = gcl_t(lstm_model, input_size=(1, input_size))
-    assert len(candidate_layers) == 1  # stacked 3 layer lstm
-    assert candidate_layers[0]['output_features'] == 1024
-    assert candidate_layers[0]['params'] == 0
+    r = gcl_t(lstm_model, input_size=(1, input_size))
+    assert len(r) == 2
+    assert r[1]['output_features'] == 1024
+    assert r[1]['params'] == 0
 
 
 def test_parse_torch_given_transformer_model(transformer_model):
