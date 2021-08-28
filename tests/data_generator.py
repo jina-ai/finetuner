@@ -11,6 +11,8 @@ from jina import Document, DocumentArray
 from jina.logging.profile import ProgressBar
 from jina.types.document.generators import from_csv
 
+from tests.text_sequence import build_vocab, text_to_int_sequence
+
 
 def fashion_match_documentarray(**kwargs):
     da = DocumentArray()
@@ -31,11 +33,22 @@ def qa_match_documentarray(**kwargs):
 
 
 def qa_match_doc_generator(
-    num_total: int = 481, num_neg: int = 1, pos_value: int = 1, neg_value: int = -1
+    num_total: int = 481,
+    num_neg: int = 5,
+    pos_value: int = 1,
+    neg_value: int = -1,
+    to_ndarray: bool = True,
+    max_seq_len: int = 100,
 ):
     num_doc = 0
 
     all_docs = DocumentArray(qa_data_generator())
+    all_texts = (
+        all_docs.get_attributes('tags__question')
+        + all_docs.get_attributes('tags__answer')
+        + all_docs.get_attributes('tags__wrong_answer')
+    )
+    vocab = build_vocab(all_texts, min_freq=2)
 
     for d in all_docs:
         d.text = d.tags['question']
@@ -43,6 +56,17 @@ def qa_match_doc_generator(
         m_n = Document(
             text=d.tags['wrong_answer'], tags={'trainer': {'label': neg_value}}
         )
+        if to_ndarray:
+            d.blob = np.array(
+                text_to_int_sequence(d.text, vocab, max_seq_len), np.int32
+            )
+            m_p.blob = np.array(
+                text_to_int_sequence(m_p.text, vocab, max_seq_len), np.int32
+            )
+            m_n.blob = np.array(
+                text_to_int_sequence(m_n.text, vocab, max_seq_len), np.int32
+            )
+
         d.matches.append(m_p)
         d.matches.append(m_n)
         cur_num_neg = 1
@@ -53,6 +77,11 @@ def qa_match_doc_generator(
                     new_nd = Document(
                         text=n_d.tags['answer'], tags={'trainer': {'label': neg_value}}
                     )
+                    if to_ndarray:
+                        new_nd.blob = np.array(
+                            text_to_int_sequence(new_nd.text, vocab, max_seq_len),
+                            np.int32,
+                        )
                     d.matches.append(new_nd)
                     cur_num_neg += 1
                     if cur_num_neg >= num_neg:

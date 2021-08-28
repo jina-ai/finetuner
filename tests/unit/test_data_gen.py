@@ -85,11 +85,25 @@ def test_qa_documentarray():
 
 @pytest.mark.parametrize('pos_value, neg_value', [(1, 0), (1, -1)])
 @pytest.mark.parametrize('num_neg', [1, 2, 10])
-def test_qa_match_doc_generator(pos_value, neg_value, num_neg):
+@pytest.mark.parametrize('to_ndarray', [True, False])
+def test_qa_match_doc_generator(pos_value, neg_value, num_neg, to_ndarray):
     for d in qa_match_doc_generator(
-        num_neg=num_neg, pos_value=pos_value, neg_value=neg_value
+        num_neg=num_neg, pos_value=pos_value, neg_value=neg_value, to_ndarray=to_ndarray
     ):
         assert len(d.matches) == 1 + num_neg
         all_labels = [int(d.tags['trainer']['label']) for d in d.matches]
         assert all_labels.count(pos_value) == 1
         assert all_labels.count(neg_value) == num_neg
+        if to_ndarray:
+            assert d.content_type == 'blob'
+        else:
+            assert d.content_type == 'text'
+        break
+
+
+@pytest.mark.parametrize('max_length', [1, 10, 100])
+def test_qa_sequence_same_length(max_length):
+    for s in qa_match_doc_generator(max_seq_len=max_length):
+        assert s.blob.shape[0] == max_length
+        for m in s.matches:
+            assert m.blob.shape[0] == max_length
