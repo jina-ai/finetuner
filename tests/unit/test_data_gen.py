@@ -5,9 +5,21 @@ from ..data_generator import (
     fashion_doc_generator,
     fashion_match_doc_generator,
     fashion_match_documentarray,
+    qa_data_generator,
+    qa_match_doc_generator,
+    qa_match_documentarray,
 )
 
+
 # import matplotlib.pyplot as plt
+
+
+def test_qa_data_generator():
+    for d in qa_data_generator():
+        assert d.tags['question']
+        assert d.tags['answer']
+        assert d.tags['wrong_answer']
+        break
 
 
 def test_train_test_generator():
@@ -63,3 +75,21 @@ def test_fashion_documentarray():
     da = fashion_match_documentarray(num_total=10, num_pos=2, num_neg=3)
     assert len(da) == 10
     assert len(da[0].matches) == 5
+
+
+def test_qa_documentarray():
+    da = qa_match_documentarray(num_total=10, num_neg=3)
+    assert len(da) == 10
+    assert len(da[0].matches) == 4
+
+
+@pytest.mark.parametrize('pos_value, neg_value', [(1, 0), (1, -1)])
+@pytest.mark.parametrize('num_neg', [1, 2, 10])
+def test_qa_match_doc_generator(pos_value, neg_value, num_neg):
+    for d in qa_match_doc_generator(
+        num_neg=num_neg, pos_value=pos_value, neg_value=neg_value
+    ):
+        assert len(d.matches) == 1 + num_neg
+        all_labels = [int(d.tags['trainer']['label']) for d in d.matches]
+        assert all_labels.count(pos_value) == 1
+        assert all_labels.count(neg_value) == num_neg
