@@ -57,14 +57,12 @@ def qa_match_doc_generator(
             text=d.tags['wrong_answer'], tags={'trainer': {'label': neg_value}}
         )
         if to_ndarray:
-            d.blob = np.array(
-                text_to_int_sequence(d.text, vocab, max_seq_len), np.int32
-            )
+            d.blob = np.array(text_to_int_sequence(d.text, vocab, max_seq_len), np.long)
             m_p.blob = np.array(
-                text_to_int_sequence(m_p.text, vocab, max_seq_len), np.int32
+                text_to_int_sequence(m_p.text, vocab, max_seq_len), np.long
             )
             m_n.blob = np.array(
-                text_to_int_sequence(m_n.text, vocab, max_seq_len), np.int32
+                text_to_int_sequence(m_n.text, vocab, max_seq_len), np.long
             )
 
         d.matches.append(m_p)
@@ -80,7 +78,7 @@ def qa_match_doc_generator(
                     if to_ndarray:
                         new_nd.blob = np.array(
                             text_to_int_sequence(new_nd.text, vocab, max_seq_len),
-                            np.int32,
+                            np.long,
                         )
                     d.matches.append(new_nd)
                     cur_num_neg += 1
