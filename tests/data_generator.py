@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 from jina import Document, DocumentArray
 from jina.logging.profile import ProgressBar
+from jina.types.document.generators import from_csv
 
 
 def fashion_match_documentarray(**kwargs):
@@ -18,6 +19,49 @@ def fashion_match_documentarray(**kwargs):
             da.append(d)
             t.update(0.001)
     return da
+
+
+def qa_match_documentarray(**kwargs):
+    da = DocumentArray()
+    with ProgressBar('build DA') as t:
+        for d in qa_match_doc_generator(**kwargs):
+            da.append(d)
+            t.update(0.001)
+    return da
+
+
+def qa_match_doc_generator(
+    num_total: int = 481, num_neg: int = 1, pos_value: int = 1, neg_value: int = -1
+):
+    num_doc = 0
+
+    all_docs = DocumentArray(qa_data_generator())
+
+    for d in all_docs:
+        d.text = d.tags['question']
+        m_p = Document(text=d.tags['answer'], tags={'trainer': {'label': pos_value}})
+        m_n = Document(
+            text=d.tags['wrong_answer'], tags={'trainer': {'label': neg_value}}
+        )
+        d.matches.append(m_p)
+        d.matches.append(m_n)
+        cur_num_neg = 1
+        if num_neg > 1:
+            sampled_docs = all_docs.sample(num_neg)
+            for n_d in sampled_docs:
+                if n_d.id != d.id:
+                    new_nd = Document(
+                        text=n_d.tags['answer'], tags={'trainer': {'label': neg_value}}
+                    )
+                    d.matches.append(new_nd)
+                    cur_num_neg += 1
+                    if cur_num_neg >= num_neg:
+                        break
+        num_doc += 1
+        yield d
+
+        if num_doc >= num_total:
+            break
 
 
 def fashion_match_doc_generator(
@@ -82,6 +126,35 @@ def fashion_match_doc_generator(
 
         if n_d >= num_total:
             break
+
+
+def qa_data_generator(download_proxy=None):
+    download_dir = './data'
+
+    targets = {
+        'covid-csv': {
+            'url': 'https://static.jina.ai/chatbot/dataset.csv',
+            'filename': os.path.join(download_dir, 'dataset.csv'),
+        }
+    }
+
+    opener = urllib.request.build_opener()
+    opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+    if download_proxy:
+        proxy = urllib.request.ProxyHandler(
+            {'http': download_proxy, 'https': download_proxy}
+        )
+        opener.add_handler(proxy)
+    urllib.request.install_opener(opener)
+    with ProgressBar('download chatbot data') as t:
+        for k, v in targets.items():
+            if not os.path.exists(v['filename']):
+                urllib.request.urlretrieve(
+                    v['url'], v['filename'], reporthook=lambda *x: t.update(0.01)
+                )
+
+        with open(targets['covid-csv']['filename']) as fp:
+            yield from from_csv(fp)
 
 
 def fashion_doc_generator(download_proxy=None, is_testset=False, **kwargs):
