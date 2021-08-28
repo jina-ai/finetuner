@@ -34,13 +34,13 @@ def qa_match_documentarray(**kwargs):
 
 def qa_match_doc_generator(
     num_total: int = 481,
-    num_neg: int = 1,
+    num_neg: int = 5,
     pos_value: int = 1,
     neg_value: int = -1,
     to_ndarray: bool = True,
+    max_seq_len: int = 100,
 ):
     num_doc = 0
-    max_seq_len = 100
 
     all_docs = DocumentArray(qa_data_generator())
     all_texts = (

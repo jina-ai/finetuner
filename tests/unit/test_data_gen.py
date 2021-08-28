@@ -98,3 +98,12 @@ def test_qa_match_doc_generator(pos_value, neg_value, num_neg, to_ndarray):
             assert d.content_type == 'blob'
         else:
             assert d.content_type == 'text'
+        break
+
+
+@pytest.mark.parametrize('max_length', [1, 10, 100])
+def test_qa_sequence_same_length(max_length):
+    for s in qa_match_doc_generator(max_seq_len=max_length):
+        assert s.blob.shape[0] == max_length
+        for m in s.matches:
+            assert m.blob.shape[0] == max_length

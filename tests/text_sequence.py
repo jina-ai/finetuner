@@ -37,5 +37,5 @@ def text_to_int_sequence(text, vocab, max_len=None):
         if len(vec) < max_len:
             vec = [0] * (max_len - len(vec)) + vec
         elif len(vec) > max_len:
-            vec = vec[(max_len - len(vec)) :]
+            vec = vec[-max_len:]
     return vec
