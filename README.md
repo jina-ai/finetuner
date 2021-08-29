@@ -39,60 +39,60 @@ finetuner.fit(...)
 
 ### Tune a simple MLP on Fashion-MNIST
 
-1. Write a base model.
+1. Write a base model. A base model can be written in Keras/Pytorch/Paddle. It can be either a new model or an existing model with pretrained weights. Below we construct a `784x128x32` MLP from scratch.
 
     - in Keras:
-    ```python
-    import tensorflow as tf
-    base_model = tf.keras.Sequential(
-            [
-                tf.keras.layers.Flatten(input_shape=(28, 28)),
-                tf.keras.layers.Dense(128, activation='relu'),
-                tf.keras.layers.Dense(32),
-            ])
-    ```
+        ```python
+        import tensorflow as tf
+        base_model = tf.keras.Sequential(
+                [
+                    tf.keras.layers.Flatten(input_shape=(28, 28)),
+                    tf.keras.layers.Dense(128, activation='relu'),
+                    tf.keras.layers.Dense(32),
+                ])
+        ```
 
     - in Pytorch:
-    ```python
-    import torch
-    base_model = torch.nn.Sequential(
-        torch.nn.Flatten(),
-        torch.nn.Linear(
-            in_features=28 * 28,
-            out_features=128,
-        ),
-        torch.nn.ReLU(),
-        torch.nn.Linear(in_features=128, out_features=32),
-    )
-    ```
+        ```python
+        import torch
+        base_model = torch.nn.Sequential(
+            torch.nn.Flatten(),
+            torch.nn.Linear(
+                in_features=28 * 28,
+                out_features=128,
+            ),
+            torch.nn.ReLU(),
+            torch.nn.Linear(in_features=128, out_features=32),
+        )
+        ```
 
     - in Paddle:
+        ```python
+        import paddle
+        base_model = paddle.nn.Sequential(
+            paddle.nn.Flatten(),
+            paddle.nn.Linear(
+                in_features=28 * 28,
+                out_features=128,
+            ),
+            paddle.nn.ReLU(),
+            paddle.nn.Linear(in_features=128, out_features=32),
+        )
+        ```
+
+2. Call `finetune.fit` on the base model and match data:
+
     ```python
-    import paddle
-    base_model = paddle.nn.Sequential(
-        paddle.nn.Flatten(),
-        paddle.nn.Linear(
-            in_features=28 * 28,
-            out_features=128,
-        ),
-        paddle.nn.ReLU(),
-        paddle.nn.Linear(in_features=128, out_features=32),
+    import finetuner
+    from tests.data_generator import fashion_match_doc_generator as mdg
+
+    finetuner.fit(
+        base_model,
+        head_layer='CosineLayer',
+        train_data=mdg,
+        eval_data=lambda: mdg(is_testset=True)
     )
     ```
-
-2. Call `finetune.fit`
-
-```python
-import finetuner
-from tests.data_generator import fashion_match_doc_generator as mdg
-
-finetuner.fit(
-    base_model,
-    head_layer='CosineLayer',
-    train_data=mdg,
-    eval_data=lambda: mdg(is_testset=True)
-)
-```
 
 ## Generate Synthetic Match Data
 
