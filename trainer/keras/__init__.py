@@ -1,6 +1,7 @@
 from typing import Optional
 
 import tensorflow as tf
+from jina.helper import cached_property
 from jina.logging.profile import ProgressBar
 from tensorflow import keras
 from tensorflow.keras import Model
@@ -8,7 +9,7 @@ from tensorflow.keras import Model
 from . import head_layers, datasets
 from .head_layers import HeadLayer
 from ..base import BaseTrainer, DocumentArrayLike
-from ..helper import get_dataset
+from ..dataset.helper import get_dataset
 
 
 class KerasTrainer(BaseTrainer):
@@ -19,7 +20,7 @@ class KerasTrainer(BaseTrainer):
         elif isinstance(self._head_layer, HeadLayer):
             return self._head_layer
 
-    @property
+    @cached_property
     def wrapped_model(self) -> Model:
         if self.base_model is None:
             raise ValueError(f'base_model is not set')
@@ -53,7 +54,7 @@ class KerasTrainer(BaseTrainer):
 
         return tf_data.batch(batch_size, drop_remainder=True)
 
-    def _train(self, data, model: Model, optimizer, pbar_description: str):
+    def _train(self, data, optimizer, description: str):
         head_layer = self.head_layer()
 
         losses = []
@@ -63,22 +64,24 @@ class KerasTrainer(BaseTrainer):
             lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
         )
 
-        with ProgressBar(pbar_description, message_on_done=get_desc_str) as p:
+        with ProgressBar(description, message_on_done=get_desc_str) as p:
             for inputs, label in data:
                 with tf.GradientTape() as tape:
-                    outputs = model(inputs, training=True)
+                    outputs = self.wrapped_model(inputs, training=True)
                     loss = head_layer.loss_fn(pred_val=outputs, target_val=label)
                     metric = head_layer.metric_fn(pred_val=outputs, target_val=label)
 
-                grads = tape.gradient(loss, model.trainable_weights)
-                optimizer.apply_gradients(zip(grads, model.trainable_weights))
+                grads = tape.gradient(loss, self.wrapped_model.trainable_weights)
+                optimizer.apply_gradients(
+                    zip(grads, self.wrapped_model.trainable_weights)
+                )
 
                 losses.append(loss.numpy())
                 metrics.append(metric.numpy())
 
                 p.update(message=get_desc_str())
 
-    def _eval(self, data, model: Model, pbar_description: str):
+    def _eval(self, data, description: str = 'Evaluating'):
         head_layer = self.head_layer()
 
         losses = []
@@ -88,9 +91,9 @@ class KerasTrainer(BaseTrainer):
             lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
         )
 
-        with ProgressBar(pbar_description, message_on_done=get_desc_str) as p:
+        with ProgressBar(description, message_on_done=get_desc_str) as p:
             for inputs, label in data:
-                outputs = model(inputs, training=False)
+                outputs = self.wrapped_model(inputs, training=False)
                 loss = head_layer.loss_fn(pred_val=outputs, target_val=label)
                 metric = head_layer.metric_fn(pred_val=outputs, target_val=label)
 
@@ -108,8 +111,6 @@ class KerasTrainer(BaseTrainer):
         **kwargs,
     ) -> None:
 
-        model = self.wrapped_model
-
         _train_data = self._get_data_loader(
             inputs=train_data, batch_size=batch_size, shuffle=False
         )
@@ -124,13 +125,12 @@ class KerasTrainer(BaseTrainer):
         for epoch in range(epochs):
             self._train(
                 _train_data,
-                model,
                 optimizer,
-                pbar_description=f'Epoch {epoch + 1}/{epochs}',
+                description=f'Epoch {epoch + 1}/{epochs}',
             )
 
             if eval_data:
-                self._eval(_eval_data, model, pbar_description='Evaluating')
+                self._eval(_eval_data)
 
     def save(self, *args, **kwargs):
         self.base_model.save(*args, **kwargs)
