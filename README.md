@@ -26,6 +26,114 @@ The codebase is enforced with Black style, please enable precommit hook.
 pre-commit install
 ```
 
+## Example 1: train Simple MLP with Fashion-MNIST
+
+1. Use synthetic pairwise data to train `user_model` in a siamese manner:
+
+   <details>
+   <summary>Using KerasTrainer</summary>
+
+   - build a simple dense network with bottleneck
+
+      ```python
+     import tensorflow as tf
+
+     user_model = tf.keras.Sequential(
+         [
+             tf.keras.layers.Flatten(input_shape=(28, 28)),
+             tf.keras.layers.Dense(128, activation='relu'),
+             tf.keras.layers.Dense(32),
+         ]
+     )
+     ```
+
+   - wrap the user model with our trainer
+      ```python
+      from trainer.keras import KerasTrainer
+
+      kt = KerasTrainer(user_model, head_layer='CosineLayer')
+      ```
+
+   - fit and save the checkpoint
+
+      ```python
+      from tests.data_generator import fashion_match_doc_generator as fmdg
+
+      kt.fit(fmdg, epochs=1)
+      kt.save('./examples/fashion/trained')
+      ```
+
+   </details>
+
+   <details>
+   <summary>Using PytorchTrainer</summary>
+
+   - build a simple dense network with bottleneck:
+       ```python
+       import torch.nn as nn
+
+       user_model = nn.Sequential(
+           nn.Flatten(),
+           nn.Linear(in_features=784, out_features=128),
+           nn.ReLU(),
+           nn.Linear(in_features=128, out_features=32)
+       )
+       ```
+
+   - wrap the user model with our trainer:
+       ```python
+       from trainer.pytorch import PytorchTrainer
+
+       pt = PytorchTrainer(user_model, head_layer='CosineLayer')
+       ```
+
+   - fit and save the checkpoint:
+
+       ```python
+       from tests.data_generator import fashion_match_documentarray as fmdg
+
+       pt.fit(fmdg(num_total=50), epochs=10)
+       pt.save('./examples/fashion/trained.pt')
+       ```
+
+   </details>
+
+   <details>
+   <summary>Using PaddleTrainer</summary>
+   
+    - build a simple dense network with bottleneck:
+   
+        ```python
+        from paddle import nn
+        user_model = nn.Sequential(
+            nn.Flatten(start_axis=1),
+            nn.Linear(in_features=784, out_features=128),
+            nn.ReLU(),
+            nn.Linear(in_features=128, out_features=32)
+        )
+        ```
+    - wrap the user model with our trainer
+   
+        ```python
+       from trainer.paddle import PaddleTrainer
+      
+       pt = PaddleTrainer(user_model, head_layer='CosineLayer')
+       ```
+      
+    - fit and save the checkpoint
+   
+        ```python
+       from tests.data_generator import fashion_match_documentarray as fmdg
+
+       pt.fit(fmdg(num_total=50), epochs=10)
+       
+       pt.save('examples/fashion/paddle_ckpt')
+       ```
+   </details>
+
+2. Observe the decreasing of training loss and increasing of the accuracy.
+
+
 ## Synthetic Matching Data
 
 We use Fashion-MNIST and Covid QA data for generating synthetic matching data, as these two datasets align with the first two `jina hello` demos.
@@ -124,121 +232,5 @@ from tests.data_generator import qa_match_documentarray as mda
 da = mda()  # slow, as it scans over all data
 ```
 
-
-## Example 1: train arbitrary DNN for `jina hello fashion`
-
-1. Use artificial pairwise data to train `user_model` in a siamese manner:
-
-   <details>
-   <summary>Using KerasTrainer</summary>
-
-   - build a simple dense network with bottleneck
-
-      ```python
-     import tensorflow as tf
-
-     user_model = tf.keras.Sequential(
-         [
-             tf.keras.layers.Flatten(input_shape=(28, 28)),
-             tf.keras.layers.Dense(128, activation='relu'),
-             tf.keras.layers.Dense(32),
-         ]
-     )
-     ```
-
-   - wrap the user model with our trainer
-      ```python
-      from trainer.keras import KerasTrainer
-
-      kt = KerasTrainer(user_model, head_layer='CosineLayer')
-      ```
-
-   - fit and save the checkpoint
-
-      ```python
-      from tests.data_generator import fashion_match_doc_generator as fmdg
-
-      kt.fit(fmdg, epochs=1)
-      kt.save('./examples/fashion/trained')
-      ```
-
-   </details>
-
-   <details>
-   <summary>Using PytorchTrainer</summary>
-
-   - build a simple dense network with bottleneck:
-       ```python
-       import torch.nn as nn
-
-       user_model = nn.Sequential(
-           nn.Flatten(),
-           nn.Linear(in_features=784, out_features=128),
-           nn.ReLU(),
-           nn.Linear(in_features=128, out_features=10)
-       )
-       ```
-
-   - wrap the user model with our trainer:
-       ```python
-       from trainer.pytorch import PytorchTrainer
-
-       pt = PytorchTrainer(user_model, head_layer='CosineLayer')
-       ```
-
-   - fit and save the checkpoint:
-
-       ```python
-       from tests.data_generator import fashion_match_documentarray as fmdg
-
-       pt.fit(fmdg(num_total=50), epochs=10)
-       pt.save('./examples/fashion/trained.pt')
-       ```
-
-   </details>
-
-   <details>
-   <summary>Using PaddleTrainer</summary>
-   
-    - build a simple dense network with bottleneck:
-   
-        ```python
-        from paddle import nn
-        user_model = nn.Sequential(
-            nn.Flatten(start_axis=1),
-            nn.Linear(in_features=784, out_features=128),
-            nn.ReLU(),
-            nn.Linear(in_features=128, out_features=32)
-        )
-        ```
-    - wrap the user model with our trainer
-   
-        ```python
-       from trainer.paddle import PaddleTrainer
-      
-       pt = PaddleTrainer(user_model, head_layer='CosineLayer')
-       ```
-      
-    - fit and save the checkpoint
-   
-        ```python
-       from tests.data_generator import fashion_match_documentarray as fmdg
-
-       pt.fit(fmdg(num_total=50), epochs=10)
-       
-       from paddle.static import InputSpec
-       x_spec = InputSpec(shape=[None, 28, 28], name='x')
-       pt.save('examples/fashion/paddle_ckpt', input_spec=[x_spec])
-       ```
-   </details>
-
-2. Observe the decreasing of training loss and increasing of the accuracy.
-
-3. Test `trained` model in the Jina `hello fashion` pipeline:
-    ```bash
-    python examples/fashion/app.py
-    ```
-
-4. Open the browser and check the results.
 
     
