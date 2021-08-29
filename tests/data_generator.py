@@ -40,15 +40,27 @@ def qa_match_doc_generator(
     to_ndarray: bool = True,
     max_seq_len: int = 100,
 ):
+    """Get a generator of QA data with synthetic negative matches.
+
+    :param num_total: the total number of documents to return
+    :param num_neg: the number of negative matches per document
+    :param pos_value: the label value of the positive matches
+    :param neg_value: the label value of the negative matches
+    :param to_ndarray: if set, then `text` is tokenized into a fixed length `ndarray`
+    :param max_seq_len: the maximum sequence length of each text.
+    :return:
+    """
     num_doc = 0
 
     all_docs = DocumentArray(qa_data_generator())
-    all_texts = (
-        all_docs.get_attributes('tags__question')
-        + all_docs.get_attributes('tags__answer')
-        + all_docs.get_attributes('tags__wrong_answer')
-    )
-    vocab = build_vocab(all_texts, min_freq=2)
+
+    if to_ndarray:
+        all_texts = (
+            all_docs.get_attributes('tags__question')
+            + all_docs.get_attributes('tags__answer')
+            + all_docs.get_attributes('tags__wrong_answer')
+        )
+        vocab = build_vocab(all_texts, min_freq=2)
 
     for d in all_docs:
         d.text = d.tags['question']

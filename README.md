@@ -26,44 +26,73 @@ The codebase is enforced with Black style, please enable precommit hook.
 pre-commit install
 ```
 
+## Synthetic Matching Data
 
-## Use Fashion-MNIST as synthetic matching data
+We use Fashion-MNIST and Covid QA data for generating synthetic matching data, as these two datasets align with the first two `jina hello` demos.
 
-Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. Each image is a single channel 28x28 grayscale image. To convert this dataset for fitting our experiments & tests, we provide a function `tests.data_generator.fashion_match_doc_generator()` to generate synthetic matches data for each document.
+- `tests.data_generator.fashion_match_doc_generator()`: the generator of Fashion-MNIST synthetic matching data.
+- `tests.data_generator.qa_match_doc_generator()`: the generator of Fashion-MNIST synthetic matching data.
 
-Specifically, each document contain the following info that are relevant to `trainer`.
+### Fashion-MNIST as synthetic matching data
+
+Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. Each image is a single channel 28x28 grayscale image. To convert this dataset into match data, we build each document to contain the following info that are relevant to `trainer`:
 
   - `.blob`: the image
   - `.matches`: the generated positive & negative matches Document
     - `.blob`: the matched Document's image 
-    - `.tags['trainer']['label']`: the match label, can be `1` or `-1` or user-defined, see below.
+    - `.tags['trainer']['label']`: the match label, can be `1` or `-1` or user-defined.
 
-Also, `fashion_match_doc_generator()` provides some interfaces for generating flexible synthetic data:
+Matches are built with the logic below:
+    - sample same-class documents as positive matches;
+    - sample other-class documents as negative matches.
+
+### Covid QA as synthetic matching data
+
+Covid QA data is a CSV that has 481 rows with columns `question`, `answer` & `wrong_answer`. To convert this dataset into match data, we build each document to contain the following info that are relevant to `trainer`:
+
+ - `.text`: the original `question` column
+ - `.blob`: when set `to_ndarray` to True, `text` is tokenized into a fixed length `ndarray`.
+ - `.matches`: the generated positive & negative matches Document
+   - `.text`: the original `answer`/`wrong_answer` column
+   - `.tags['trainer']['label']`: the match label, can be `1` or `-1` or user-defined.
+   - `.blob`: when set `to_ndarray` to True, `text` is tokenized into a fixed length `ndarray`.
+
+Matches are built with the logic below:
+    - only allows 1 positive match per Document, it is taken from the `answer` column.
+    - always include `wrong_answer` column as the negative match. Then sample other documents' answer as negative matches.
+
+
+### Generator API
+
+```python
+from tests.data_generator import fashion_match_doc_generator as mdg
+
+# or
+
+from tests.data_generator import qa_match_doc_generator as mdg
+```
 
 #### To get only first 10 documents
 
 ```python
-from tests.data_generator import fashion_match_doc_generator as fmdg
 
-for d in fmdg(num_total=10):
+for d in mdg(num_total=10):
     ...
 ```
 
 #### To set number of positive/negative samples per document
 
 ```python
-from tests.data_generator import fashion_match_doc_generator as fmdg
-
-for d in fmdg(num_pos=2, num_neg=7):
+for d in mdg(num_pos=2, num_neg=7):
     ...
 ```
+
+`qa_match_doc_generator` has a fixed number of positive matches `1`.
 
 #### To set the label value of positive & negative samples
 
 ```python
-from tests.data_generator import fashion_match_doc_generator as fmdg
-
-for d in fmdg(pos_value=1, neg_value=-1):
+for d in mdg(pos_value=1, neg_value=-1):
     ...
 ```
 
@@ -88,9 +117,11 @@ for d in fmdg(channels=3, upsampling=4):
 #### Use `DocumentArray` instead of Generator
 
 ```python
-from tests.data_generator import fashion_match_documentarray as fmda
+from tests.data_generator import fashion_match_documentarray as mda
 
-da = fmda()  # slow, as it scans over all data
+from tests.data_generator import qa_match_documentarray as mda
+
+da = mda()  # slow, as it scans over all data
 ```
 
 

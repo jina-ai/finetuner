@@ -21,7 +21,7 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
         nn.ReLU(),
         nn.Linear(in_features=params['feature_dim'], out_features=params['output_dim']),
     )
-    model_path = tmpdir / 'trained.pth'
+    model_path = os.path.join(tmpdir, 'trained.pth')
 
     pt = PytorchTrainer(user_model, head_layer=head_layer)
 
