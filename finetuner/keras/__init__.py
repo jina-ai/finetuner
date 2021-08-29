@@ -81,6 +81,8 @@ class KerasTuner(BaseTuner):
 
                 p.update(message=get_desc_str())
 
+        return losses, metrics
+
     def _eval(self, data, description: str = 'Evaluating'):
         head_layer = self.head_layer()
 
@@ -102,6 +104,8 @@ class KerasTuner(BaseTuner):
 
                 p.update(message=get_desc_str())
 
+        return losses, metrics
+
     def fit(
         self,
         train_data: DocumentArrayLike,
@@ -109,7 +113,7 @@ class KerasTuner(BaseTuner):
         epochs: int = 10,
         batch_size: int = 256,
         **kwargs,
-    ) -> None:
+    ):
 
         _train_data = self._get_data_loader(
             inputs=train_data, batch_size=batch_size, shuffle=False
@@ -122,15 +126,29 @@ class KerasTuner(BaseTuner):
 
         optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.01)
 
+        losses_train = []
+        metrics_train = []
+        losses_eval = []
+        metrics_eval = []
+
         for epoch in range(epochs):
-            self._train(
+            if eval_data:
+                le, me = self._eval(_eval_data)
+                losses_eval.extend(le)
+                metrics_eval.extend(me)
+
+            lt, mt = self._train(
                 _train_data,
                 optimizer,
                 description=f'Epoch {epoch + 1}/{epochs}',
             )
+            losses_train.extend(lt)
+            metrics_train.extend(mt)
 
-            if eval_data:
-                self._eval(_eval_data)
+        return {
+            'loss': {'train': losses_train, 'eval': losses_eval},
+            'metric': {'train': metrics_train, 'eval': metrics_eval},
+        }
 
     def save(self, *args, **kwargs):
         self.base_model.save(*args, **kwargs)
