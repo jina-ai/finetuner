@@ -43,35 +43,40 @@ finetuner.fit(...)
    model with pretrained weights. Below we construct a `784x128x32` MLP that transforms Fashion-MNIST images into 32-dim
    vectors.
 
-    - in Keras:
-        ```python
-        import tensorflow as tf
-        base_model = tf.keras.Sequential([
-                    tf.keras.layers.Flatten(input_shape=(28, 28)),
-                    tf.keras.layers.Dense(128, activation='relu'),
-                    tf.keras.layers.Dense(32)
-                ])
-        ```
+<details>
+<summary>see complete example</summary>
 
-    - in Pytorch:
-        ```python
-        import torch
-        base_model = torch.nn.Sequential(
-            torch.nn.Flatten(),
-            torch.nn.Linear(in_features=28 * 28, out_features=128),
-            torch.nn.ReLU(),
-            torch.nn.Linear(in_features=128, out_features=32))
-        ```
+- in Keras:
+    ```python
+    import tensorflow as tf
+    base_model = tf.keras.Sequential([
+                tf.keras.layers.Flatten(input_shape=(28, 28)),
+                tf.keras.layers.Dense(128, activation='relu'),
+                tf.keras.layers.Dense(32)
+            ])
+    ```
 
-    - in Paddle:
-        ```python
-        import paddle
-        base_model = paddle.nn.Sequential(
-            paddle.nn.Flatten(),
-            paddle.nn.Linear(in_features=28 * 28, out_features=128),
-            paddle.nn.ReLU(),
-            paddle.nn.Linear(in_features=128, out_features=32))
-        ```
+  - in Pytorch:
+      ```python
+      import torch
+      base_model = torch.nn.Sequential(
+          torch.nn.Flatten(),
+          torch.nn.Linear(in_features=28 * 28, out_features=128),
+          torch.nn.ReLU(),
+          torch.nn.Linear(in_features=128, out_features=32))
+      ```
+
+  - in Paddle:
+      ```python
+      import paddle
+      base_model = paddle.nn.Sequential(
+          paddle.nn.Flatten(),
+          paddle.nn.Linear(in_features=28 * 28, out_features=128),
+          paddle.nn.ReLU(),
+          paddle.nn.Linear(in_features=128, out_features=32))
+      ```
+  
+</details>
 
 2. Call `finetune.fit` on the base model and the match data:
 
@@ -90,8 +95,11 @@ finetuner.fit(...)
 ### NLP: Tune a bidirectional LSTM on Covid QA
 
 1. Write a base model. A base model can be written in Keras/Pytorch/Paddle. It can be either a new model or an existing
-   model with pretrained weights. Below we construct a `784x128x32` MLP that transforms Fashion-MNIST images into 32-dim
+   model with pretrained weights. Below we construct a bidirectional LSTM that transforms texts into 32-dim
    vectors.
+
+<details>
+<summary>see complete example</summary>
 
     - in Keras:
         ```python
@@ -131,6 +139,8 @@ finetuner.fit(...)
             LastCell(),
             paddle.nn.Linear(in_features=2 * 64, out_features=32))
         ```
+
+</details>
 
 2. Call `finetune.fit` on the base model and the match data:
 
