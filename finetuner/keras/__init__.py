@@ -1,5 +1,6 @@
 from typing import Optional
 
+import numpy as np
 import tensorflow as tf
 from jina.helper import cached_property
 from jina.logging.profile import ProgressBar
@@ -61,7 +62,7 @@ class KerasTuner(BaseTuner):
         metrics = []
 
         get_desc_str = (
-            lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+            lambda: f'Loss={np.mean(losses):.2f} Accuracy={np.mean(metrics):.2f}'
         )
 
         with ProgressBar(description, message_on_done=get_desc_str) as p:
@@ -90,7 +91,7 @@ class KerasTuner(BaseTuner):
         metrics = []
 
         get_desc_str = (
-            lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+            lambda: f'Loss={np.mean(losses):.2f} Accuracy={np.mean(metrics):.2f}'
         )
 
         with ProgressBar(description, message_on_done=get_desc_str) as p:

@@ -5,7 +5,7 @@ from jina.logging.profile import ProgressBar
 from paddle import nn
 from paddle.io import DataLoader
 from paddle.optimizer import Optimizer
-
+import numpy as np
 from . import head_layers, datasets
 from ..base import BaseTuner, BaseHead, BaseArityModel, DocumentArrayLike
 from ..dataset.helper import get_dataset
@@ -45,7 +45,7 @@ class PaddleTuner(BaseTuner):
         metrics = []
 
         get_desc_str = (
-            lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+            lambda: f'Loss={np.mean(losses):.2f} Accuracy={np.mean(metrics):.2f}'
         )
 
         with ProgressBar(description, message_on_done=get_desc_str) as p:
@@ -69,7 +69,7 @@ class PaddleTuner(BaseTuner):
         metrics = []
 
         get_desc_str = (
-            lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+            lambda: f'Loss={np.mean(losses):.2f} Accuracy={float(np.mean(metrics)):.2f}'
         )
 
         with ProgressBar(description, message_on_done=get_desc_str) as p:

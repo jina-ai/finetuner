@@ -1,5 +1,6 @@
 from typing import Optional
 
+import numpy as np
 import torch
 import torch.nn as nn
 from jina.helper import cached_property
@@ -46,7 +47,7 @@ class PytorchTuner(BaseTuner):
         metrics = []
 
         get_desc_str = (
-            lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+            lambda: f'Loss={np.mean(losses):.2f} Accuracy={np.mean(metrics):.2f}'
         )
 
         with ProgressBar(description, message_on_done=get_desc_str) as p:
@@ -70,7 +71,7 @@ class PytorchTuner(BaseTuner):
         metrics = []
 
         get_desc_str = (
-            lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+            lambda: f'Loss={np.mean(losses):.2f} Accuracy={np.mean(metrics):.2f}'
         )
 
         with ProgressBar(description, message_on_done=get_desc_str) as p:

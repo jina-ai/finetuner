@@ -42,7 +42,7 @@ def test_fit_all(tmpdir):
             result = finetuner.fit(
                 b,
                 head_layer=h,
-                train_data=mdg(num_total=300),
+                train_data=lambda: mdg(num_total=300),
                 eval_data=lambda: mdg(num_total=300, is_testset=True),
                 epochs=2,
             )
