@@ -7,8 +7,6 @@ import torch
 import finetuner
 from tests.data_generator import qa_match_doc_generator as mdg
 
-tf.enable_eager_execution()
-
 
 class LastCellPT(torch.nn.Module):
     def forward(self, x):
