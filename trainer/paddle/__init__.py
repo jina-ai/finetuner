@@ -5,6 +5,7 @@ from jina.logging.profile import ProgressBar
 from paddle import nn
 from paddle.io import DataLoader
 from paddle.optimizer import Optimizer
+import paddle.fluid as fluid
 
 from . import head_layers, datasets
 from ..base import BaseTrainer, BaseHead, BaseArityModel, DocumentArrayLike
@@ -122,6 +123,5 @@ class PaddleTrainer(BaseTrainer):
 
                 self._eval(_data, model, pbar_description='Evaluating')
 
-    def save(self, save_path: str, input_spec: Union[list, tuple] = None):
-        base_model = paddle.jit.to_static(self.base_model, input_spec=input_spec)
-        paddle.jit.save(base_model, save_path)
+    def save(self, *args, **kwargs):
+        paddle.save(self.base_model.state_dict(), *args, **kwargs)
