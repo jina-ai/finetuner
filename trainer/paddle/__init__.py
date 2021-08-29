@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Optional
 
 import paddle
 from jina.logging.profile import ProgressBar
@@ -122,6 +122,5 @@ class PaddleTrainer(BaseTrainer):
 
                 self._eval(_data, model, pbar_description='Evaluating')
 
-    def save(self, save_path: str, input_spec: Union[list, tuple] = None):
-        base_model = paddle.jit.to_static(self.base_model, input_spec=input_spec)
-        paddle.jit.save(base_model, save_path)
+    def save(self, *args, **kwargs):
+        paddle.save(self.base_model.state_dict(), *args, **kwargs)
