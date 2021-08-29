@@ -133,11 +133,6 @@ class KerasTuner(BaseTuner):
         metrics_eval = []
 
         for epoch in range(epochs):
-            if eval_data:
-                le, me = self._eval(_eval_data)
-                losses_eval.extend(le)
-                metrics_eval.extend(me)
-
             lt, mt = self._train(
                 _train_data,
                 optimizer,
@@ -145,6 +140,11 @@ class KerasTuner(BaseTuner):
             )
             losses_train.extend(lt)
             metrics_train.extend(mt)
+
+            if eval_data:
+                le, me = self._eval(_eval_data)
+                losses_eval.extend(le)
+                metrics_eval.extend(me)
 
         return {
             'loss': {'train': losses_train, 'eval': losses_eval},
