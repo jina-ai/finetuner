@@ -8,7 +8,7 @@ from torch.optim.optimizer import Optimizer
 from torch.utils.data.dataloader import DataLoader
 
 from . import head_layers, datasets
-from ..base import BaseTrainer, BaseHead, BaseArityModel, DocumentArrayLike
+from ..base import BaseTuner, BaseHead, BaseArityModel, DocumentArrayLike
 from ..dataset.helper import get_dataset
 
 
@@ -16,7 +16,7 @@ class _ArityModel(BaseArityModel, nn.Module):
     ...
 
 
-class PytorchTrainer(BaseTrainer):
+class PytorchTuner(BaseTuner):
     @property
     def head_layer(self) -> BaseHead:
         if isinstance(self._head_layer, str):

@@ -8,11 +8,11 @@ from tensorflow.keras import Model
 
 from . import head_layers, datasets
 from .head_layers import HeadLayer
-from ..base import BaseTrainer, DocumentArrayLike
+from ..base import BaseTuner, DocumentArrayLike
 from ..dataset.helper import get_dataset
 
 
-class KerasTrainer(BaseTrainer):
+class KerasTuner(BaseTuner):
     @property
     def head_layer(self) -> HeadLayer:
         if isinstance(self._head_layer, str):

@@ -6,7 +6,7 @@ from setuptools import setup
 if sys.version_info >= (3, 10, 0) or sys.version_info < (3, 7, 0):
     raise OSError(f'Jina requires Python 3.7/3.8/3.9, but yours is {sys.version}')
 
-pkg_name = 'trainer'
+pkg_name = 'finetuner'
 __version__ = '0.0.0'
 
 try:

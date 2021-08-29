@@ -7,7 +7,7 @@ from paddle.io import DataLoader
 from paddle.optimizer import Optimizer
 
 from . import head_layers, datasets
-from ..base import BaseTrainer, BaseHead, BaseArityModel, DocumentArrayLike
+from ..base import BaseTuner, BaseHead, BaseArityModel, DocumentArrayLike
 from ..dataset.helper import get_dataset
 
 
@@ -15,7 +15,7 @@ class _ArityModel(BaseArityModel, nn.Layer):
     ...
 
 
-class PaddleTrainer(BaseTrainer):
+class PaddleTuner(BaseTuner):
     @property
     def head_layer(self) -> BaseHead:
         if isinstance(self._head_layer, str):

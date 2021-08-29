@@ -1,14 +1,12 @@
 import abc
-from typing import Optional, TypeVar, Union, Callable, Iterator, Any, Sequence
+from typing import Optional, TypeVar, Union, Callable, Iterator, Sequence
 
 from jina import DocumentArray, Document
 from jina.logging.logger import JinaLogger
 from jina.types.arrays.memmap import DocumentArrayMemmap
 
 AnyDNN = TypeVar('AnyDNN')  #: Any implementation of a Deep Neural Network object
-AnyDataLoader = TypeVar(
-    'AnyDataLoader'
-)  #: Any implementation of a Deep Neural Network object
+AnyDataLoader = TypeVar('AnyDataLoader')  #: Any implementation of a data loader
 
 DocumentSequence = TypeVar(
     'DocumentSequence',
@@ -49,12 +47,12 @@ class BaseHead:
         ...
 
 
-class BaseTrainer(abc.ABC):
+class BaseTuner(abc.ABC):
     def __init__(
         self,
         base_model: Optional[AnyDNN] = None,
         head_layer: Union[AnyDNN, str, None] = None,
-        **kwargs
+        **kwargs,
     ):
         self._base_model = base_model
         self._head_layer = head_layer
@@ -98,7 +96,7 @@ class BaseTrainer(abc.ABC):
         epochs: int = 10,
         batch_size: int = 256,
         *args,
-        **kwargs
+        **kwargs,
     ) -> None:
         """Fit the :property:`base_model` on ``doc_array`` data.
 
@@ -152,3 +150,33 @@ class BaseArityModel:
 
     def forward(self, *args):
         return tuple(self._base_model(a) for a in args)
+
+
+def fit(
+    base_model: AnyDNN,
+    head_layer: str,
+    backend: str,
+    train_data: DocumentArrayLike,
+    eval_data: Optional[DocumentArrayLike] = None,
+    epochs: int = 10,
+    batch_size: int = 256,
+):
+    if backend == 'keras':
+        from .keras import KerasTuner
+
+        ft = KerasTuner
+    elif backend == 'pytorch':
+        from .pytorch import PytorchTuner
+
+        ft = PytorchTuner
+    elif backend == 'paddle':
+        from .paddle import PaddleTuner
+
+        ft = PaddleTuner
+    else:
+        raise ValueError(
+            f'backend must be one of [`keras`, `paddle`, `pytorch`], but receiving {backend}'
+        )
+
+    f = ft(base_model, head_layer)
+    f.fit(train_data, eval_data, epochs=epochs, batch_size=batch_size)
