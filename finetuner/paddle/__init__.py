@@ -110,15 +110,6 @@ class PaddleTuner(BaseTuner):
         metrics_eval = []
 
         for epoch in range(epochs):
-            if eval_data:
-                _data = self._get_data_loader(
-                    inputs=eval_data, batch_size=batch_size, shuffle=False
-                )
-
-                le, me = self._eval(_data)
-                losses_eval.extend(le)
-                metrics_eval.extend(me)
-
             _data = self._get_data_loader(
                 inputs=train_data, batch_size=batch_size, shuffle=False
             )
@@ -129,6 +120,15 @@ class PaddleTuner(BaseTuner):
             )
             losses_train.extend(lt)
             metrics_train.extend(mt)
+
+            if eval_data:
+                _data = self._get_data_loader(
+                    inputs=eval_data, batch_size=batch_size, shuffle=False
+                )
+
+                le, me = self._eval(_data)
+                losses_eval.extend(le)
+                metrics_eval.extend(me)
 
         return {
             'loss': {'train': losses_train, 'eval': losses_eval},

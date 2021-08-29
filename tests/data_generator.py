@@ -1,6 +1,7 @@
 # Downloading fashion mnist, copy from jina hello fashion
 # no surprise here
 import copy
+import csv
 import gzip
 import os
 import urllib.request
@@ -39,6 +40,7 @@ def qa_match_doc_generator(
     neg_value: int = -1,
     to_ndarray: bool = True,
     max_seq_len: int = 100,
+    is_testset: bool = False,
 ):
     """Get a generator of QA data with synthetic negative matches.
 
@@ -48,11 +50,12 @@ def qa_match_doc_generator(
     :param neg_value: the label value of the negative matches
     :param to_ndarray: if set, then `text` is tokenized into a fixed length `ndarray`
     :param max_seq_len: the maximum sequence length of each text.
+    :param is_testset: If to generate test data
     :return:
     """
     num_doc = 0
 
-    all_docs = DocumentArray(qa_data_generator())
+    all_docs = DocumentArray(qa_data_generator(is_testset=is_testset))
 
     if to_ndarray:
         all_texts = (
@@ -171,8 +174,9 @@ def fashion_match_doc_generator(
             break
 
 
-def qa_data_generator(download_proxy=None):
+def qa_data_generator(download_proxy=None, is_testset=False, **kwargs):
     download_dir = './data'
+    Path(download_dir).mkdir(parents=True, exist_ok=True)
 
     targets = {
         'covid-csv': {
@@ -197,17 +201,20 @@ def qa_data_generator(download_proxy=None):
                 )
 
         with open(targets['covid-csv']['filename']) as fp:
-            yield from from_csv(fp)
+            lines = csv.DictReader(fp)
+            for idx, value in enumerate(lines):
+                if is_testset:
+                    if idx % 2 == 0:
+                        yield Document(value)
+                else:
+                    if idx % 2 == 1:
+                        yield Document(value)
 
 
 def fashion_doc_generator(download_proxy=None, is_testset=False, **kwargs):
-    """
-    Download data.
-
-    :param download_proxy: download proxy (e.g. 'http', 'https')
-    """
 
     download_dir = './data'
+    Path(download_dir).mkdir(parents=True, exist_ok=True)
 
     targets = {
         'index-labels': {
@@ -227,8 +234,6 @@ def fashion_doc_generator(download_proxy=None, is_testset=False, **kwargs):
             'filename': os.path.join(download_dir, 'query-original'),
         },
     }
-
-    Path(download_dir).mkdir(parents=True, exist_ok=True)
 
     opener = urllib.request.build_opener()
     opener.addheaders = [('User-agent', 'Mozilla/5.0')]

@@ -10,14 +10,14 @@ from tests.data_generator import fashion_match_doc_generator as mdg
 
 def test_fit_all(tmpdir):
     base_models = {
-        'keras': tf.keras.Sequential(
+        'keras': lambda: tf.keras.Sequential(
             [
                 tf.keras.layers.Flatten(input_shape=(28, 28)),
                 tf.keras.layers.Dense(128, activation='relu'),
                 tf.keras.layers.Dense(32),
             ]
         ),
-        'pytorch': torch.nn.Sequential(
+        'pytorch': lambda: torch.nn.Sequential(
             torch.nn.Flatten(),
             torch.nn.Linear(
                 in_features=28 * 28,
@@ -26,7 +26,7 @@ def test_fit_all(tmpdir):
             torch.nn.ReLU(),
             torch.nn.Linear(in_features=128, out_features=32),
         ),
-        'paddle': paddle.nn.Sequential(
+        'paddle': lambda: paddle.nn.Sequential(
             paddle.nn.Flatten(),
             paddle.nn.Linear(
                 in_features=28 * 28,
@@ -40,7 +40,7 @@ def test_fit_all(tmpdir):
     for kb, b in base_models.items():
         for h in ['CosineLayer', 'TripletLayer']:
             result = finetuner.fit(
-                b,
+                b(),
                 head_layer=h,
                 train_data=lambda: mdg(num_total=300),
                 eval_data=lambda: mdg(num_total=300, is_testset=True),

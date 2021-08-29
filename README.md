@@ -92,6 +92,14 @@ finetuner.fit(...)
     )
     ```
 
+With `head_layer='CosineLayer'`
+
+![](.github/mlp.cosine.png)
+
+With `head_layer='TripletLayer'`
+
+![](.github/mlp.triplet.png)
+
 ### NLP: Tune a bidirectional LSTM on Covid QA
 
 1. Write a base model. A base model can be written in Keras/Pytorch/Paddle. It can be either a new model or an existing
@@ -155,6 +163,14 @@ finetuner.fit(...)
         eval_data=mdg
     )
     ```
+
+With `head_layer='CosineLayer'`
+
+![](.github/lstm.cosine.png)
+
+With `head_layer='TripletLayer'`
+
+![](.github/lstm.triplet.png)
 
 ## Generate Synthetic Match Data
 
