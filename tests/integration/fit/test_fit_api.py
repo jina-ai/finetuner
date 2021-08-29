@@ -8,7 +8,7 @@ import finetuner
 from tests.data_generator import fashion_match_doc_generator as mdg
 
 
-def test_fit_all():
+def test_fit_all(tmpdir):
     base_models = {
         'keras': tf.keras.Sequential(
             [
@@ -58,5 +58,5 @@ def test_fit_all():
                     'eval': [float(v) for v in result['metric']['eval']],
                 },
             }
-            with open(f'result-{kb}-{h}.json', 'w') as fp:
+            with open(tmpdir / f'result-{kb}-{h}.json', 'w') as fp:
                 json.dump(result, fp)
