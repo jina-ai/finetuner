@@ -5,7 +5,7 @@ from jina.logging.profile import ProgressBar
 from paddle import nn
 from paddle.io import DataLoader
 from paddle.optimizer import Optimizer
-
+import numpy as np
 from . import head_layers, datasets
 from ..base import BaseTuner, BaseHead, BaseArityModel, DocumentArrayLike
 from ..dataset.helper import get_dataset
@@ -45,7 +45,7 @@ class PaddleTuner(BaseTuner):
         metrics = []
 
         get_desc_str = (
-            lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+            lambda: f'Loss={np.mean(losses):.2f} Accuracy={np.mean(metrics):.2f}'
         )
 
         with ProgressBar(description, message_on_done=get_desc_str) as p:
@@ -59,6 +59,8 @@ class PaddleTuner(BaseTuner):
 
                 p.update(message=get_desc_str())
 
+        return losses, metrics
+
     def _train(self, data, optimizer: Optimizer, description: str):
 
         self.wrapped_model.train()
@@ -67,7 +69,7 @@ class PaddleTuner(BaseTuner):
         metrics = []
 
         get_desc_str = (
-            lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
+            lambda: f'Loss={np.mean(losses):.2f} Accuracy={float(np.mean(metrics)):.2f}'
         )
 
         with ProgressBar(description, message_on_done=get_desc_str) as p:
@@ -86,6 +88,7 @@ class PaddleTuner(BaseTuner):
                 metrics.append(metric.numpy())
 
                 p.update(message=get_desc_str())
+        return losses, metrics
 
     def fit(
         self,
@@ -101,23 +104,36 @@ class PaddleTuner(BaseTuner):
             learning_rate=0.01, parameters=model.parameters()
         )
 
+        losses_train = []
+        metrics_train = []
+        losses_eval = []
+        metrics_eval = []
+
         for epoch in range(epochs):
-            _data = self._get_data_loader(
-                inputs=train_data, batch_size=batch_size, shuffle=False
-            )
-
-            self._train(
-                _data,
-                optimizer,
-                description=f'Epoch {epoch + 1}/{epochs}',
-            )
-
             if eval_data:
                 _data = self._get_data_loader(
                     inputs=eval_data, batch_size=batch_size, shuffle=False
                 )
 
-                self._eval(_data)
+                le, me = self._eval(_data)
+                losses_eval.extend(le)
+                metrics_eval.extend(me)
+
+            _data = self._get_data_loader(
+                inputs=train_data, batch_size=batch_size, shuffle=False
+            )
+            lt, mt = self._train(
+                _data,
+                optimizer,
+                description=f'Epoch {epoch + 1}/{epochs}',
+            )
+            losses_train.extend(lt)
+            metrics_train.extend(mt)
+
+        return {
+            'loss': {'train': losses_train, 'eval': losses_eval},
+            'metric': {'train': metrics_train, 'eval': metrics_eval},
+        }
 
     def save(self, *args, **kwargs):
         paddle.save(self.base_model.state_dict(), *args, **kwargs)

@@ -1,5 +1,15 @@
 import abc
-from typing import Optional, TypeVar, Union, Callable, Iterator, Sequence
+from typing import (
+    Optional,
+    TypeVar,
+    Union,
+    Callable,
+    Iterator,
+    Sequence,
+    Tuple,
+    List,
+    Dict,
+)
 
 from jina import DocumentArray, Document
 from jina.logging.logger import JinaLogger
@@ -97,7 +107,7 @@ class BaseTuner(abc.ABC):
         batch_size: int = 256,
         *args,
         **kwargs,
-    ) -> None:
+    ) -> Dict:
         """Fit the :property:`base_model` on ``doc_array`` data.
 
         Note that fitting changes the weights in :property:`base_model` in-place. This allows one to consecutively
@@ -122,12 +132,16 @@ class BaseTuner(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def _train(self, data: AnyDataLoader, optimizer, description: str):
+    def _train(
+        self, data: AnyDataLoader, optimizer, description: str
+    ) -> Tuple[List, List]:
         """Train the model"""
         ...
 
     @abc.abstractmethod
-    def _eval(self, data: AnyDataLoader, description: str = 'Evaluating'):
+    def _eval(
+        self, data: AnyDataLoader, description: str = 'Evaluating'
+    ) -> Tuple[List, List]:
         """Evaluate the model"""
         ...
 
@@ -155,28 +169,28 @@ class BaseArityModel:
 def fit(
     base_model: AnyDNN,
     head_layer: str,
-    backend: str,
     train_data: DocumentArrayLike,
     eval_data: Optional[DocumentArrayLike] = None,
     epochs: int = 10,
     batch_size: int = 256,
 ):
-    if backend == 'keras':
+
+    if 'keras.' in base_model.__module__:
         from .keras import KerasTuner
 
         ft = KerasTuner
-    elif backend == 'pytorch':
+    elif 'torch.' in base_model.__module__:
         from .pytorch import PytorchTuner
 
         ft = PytorchTuner
-    elif backend == 'paddle':
+    elif 'paddle.' in base_model.__module__:
         from .paddle import PaddleTuner
 
         ft = PaddleTuner
     else:
         raise ValueError(
-            f'backend must be one of [`keras`, `paddle`, `pytorch`], but receiving {backend}'
+            f'can not determine the backend from base_model from {base_model.__module__}'
         )
 
     f = ft(base_model, head_layer)
-    f.fit(train_data, eval_data, epochs=epochs, batch_size=batch_size)
+    return f.fit(train_data, eval_data, epochs=epochs, batch_size=batch_size)
