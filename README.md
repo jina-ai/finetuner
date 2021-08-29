@@ -37,9 +37,9 @@ finetuner.fit(...)
 
 ## Examples
 
-### Tune a simple MLP on Fashion-MNIST
+### CV: Tune a simple MLP on Fashion-MNIST
 
-1. Write a base model. A base model can be written in Keras/Pytorch/Paddle. It can be either a new model or an existing model with pretrained weights. Below we construct a `784x128x32` MLP from scratch.
+1. Write a base model. A base model can be written in Keras/Pytorch/Paddle. It can be either a new model or an existing model with pretrained weights. Below we construct a `784x128x32` MLP that transforms Fashion-MNIST images into 32-dim vectors.
 
     - in Keras:
         ```python
@@ -56,10 +56,7 @@ finetuner.fit(...)
         import torch
         base_model = torch.nn.Sequential(
             torch.nn.Flatten(),
-            torch.nn.Linear(
-                in_features=28 * 28,
-                out_features=128,
-            ),
+            torch.nn.Linear(in_features=28 * 28, out_features=128),
             torch.nn.ReLU(),
             torch.nn.Linear(in_features=128, out_features=32))
         ```
@@ -69,15 +66,12 @@ finetuner.fit(...)
         import paddle
         base_model = paddle.nn.Sequential(
             paddle.nn.Flatten(),
-            paddle.nn.Linear(
-                in_features=28 * 28,
-                out_features=128,
-            ),
+            paddle.nn.Linear(in_features=28 * 28, out_features=128),
             paddle.nn.ReLU(),
             paddle.nn.Linear(in_features=128, out_features=32))
         ```
 
-2. Call `finetune.fit` on the base model and match data:
+2. Call `finetune.fit` on the base model and the match data:
 
     ```python
     import finetuner
