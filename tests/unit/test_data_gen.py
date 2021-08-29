@@ -31,6 +31,14 @@ def test_train_test_generator():
         break
 
 
+def test_train_test_qa_generator():
+    fmdg_train = qa_match_doc_generator(is_testset=True)
+    fmdg_test = qa_match_doc_generator(is_testset=False)
+    for d1, d2 in zip(fmdg_train, fmdg_test):
+        assert d1.id != d2.id
+        assert np.any(np.not_equal(d1.blob, d2.blob))
+
+
 def test_doc_generator():
     for d in fashion_doc_generator():
         assert d.tags['class']
