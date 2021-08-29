@@ -26,6 +26,14 @@ The codebase is enforced with Black style, please enable precommit hook.
 pre-commit install
 ```
 
+## Usage
+
+```python
+import finetuner
+
+finetuner.fit(...)
+```
+
 ## Examples
 
 TBA
