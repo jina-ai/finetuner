@@ -173,6 +173,7 @@ def fashion_match_doc_generator(
 
 def qa_data_generator(download_proxy=None):
     download_dir = './data'
+    Path(download_dir).mkdir(parents=True, exist_ok=True)
 
     targets = {
         'covid-csv': {
@@ -201,13 +202,9 @@ def qa_data_generator(download_proxy=None):
 
 
 def fashion_doc_generator(download_proxy=None, is_testset=False, **kwargs):
-    """
-    Download data.
-
-    :param download_proxy: download proxy (e.g. 'http', 'https')
-    """
 
     download_dir = './data'
+    Path(download_dir).mkdir(parents=True, exist_ok=True)
 
     targets = {
         'index-labels': {
@@ -227,8 +224,6 @@ def fashion_doc_generator(download_proxy=None, is_testset=False, **kwargs):
             'filename': os.path.join(download_dir, 'query-original'),
         },
     }
-
-    Path(download_dir).mkdir(parents=True, exist_ok=True)
 
     opener = urllib.request.build_opener()
     opener.addheaders = [('User-agent', 'Mozilla/5.0')]
