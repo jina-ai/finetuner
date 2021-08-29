@@ -2,13 +2,14 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
+from jina.helper import cached_property
 from jina.logging.profile import ProgressBar
 from torch.optim.optimizer import Optimizer
 from torch.utils.data.dataloader import DataLoader
 
 from . import head_layers, datasets
 from ..base import BaseTrainer, BaseHead, BaseArityModel, DocumentArrayLike
-from ..helper import get_dataset
+from ..dataset.helper import get_dataset
 
 
 class _ArityModel(BaseArityModel, nn.Module):
@@ -23,7 +24,7 @@ class PytorchTrainer(BaseTrainer):
         elif isinstance(self._head_layer, BaseHead):
             return self._head_layer
 
-    @property
+    @cached_property
     def wrapped_model(self) -> nn.Module:
         if self.base_model is None:
             raise ValueError(f'base_model is not set')
@@ -38,8 +39,8 @@ class PytorchTrainer(BaseTrainer):
             shuffle=shuffle,
         )
 
-    def _eval(self, data, model: nn.Module, pbar_description: str):
-        model.eval()
+    def _eval(self, data, description: str = 'Evaluating'):
+        self.wrapped_model.eval()
 
         losses = []
         metrics = []
@@ -48,22 +49,20 @@ class PytorchTrainer(BaseTrainer):
             lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
         )
 
-        with ProgressBar(pbar_description, message_on_done=get_desc_str) as p:
+        with ProgressBar(description, message_on_done=get_desc_str) as p:
             for inputs, label in data:
-                outputs = model(*inputs)
-                loss = model.loss_fn(outputs, label)
-                metric = model.metric_fn(outputs, label)
+                outputs = self.wrapped_model(*inputs)
+                loss = self.wrapped_model.loss_fn(outputs, label)
+                metric = self.wrapped_model.metric_fn(outputs, label)
 
                 losses.append(loss.item())
                 metrics.append(metric.numpy())
 
                 p.update(message=get_desc_str())
 
-    def _train(
-        self, data, model: nn.Module, optimizer: Optimizer, pbar_description: str
-    ):
+    def _train(self, data, optimizer: Optimizer, description: str):
 
-        model.train()
+        self.wrapped_model.train()
 
         losses = []
         metrics = []
@@ -72,12 +71,12 @@ class PytorchTrainer(BaseTrainer):
             lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
         )
 
-        with ProgressBar(pbar_description, message_on_done=get_desc_str) as p:
+        with ProgressBar(description, message_on_done=get_desc_str) as p:
             for inputs, label in data:
                 # forward step
-                outputs = model(*inputs)
-                loss = model.loss_fn(outputs, label)
-                metric = model.metric_fn(outputs, label)
+                outputs = self.wrapped_model(*inputs)
+                loss = self.wrapped_model.loss_fn(outputs, label)
+                metric = self.wrapped_model.metric_fn(outputs, label)
 
                 optimizer.zero_grad()
 
@@ -97,10 +96,8 @@ class PytorchTrainer(BaseTrainer):
         batch_size: int = 256,
         **kwargs,
     ):
-        model = self.wrapped_model
-
         optimizer = torch.optim.RMSprop(
-            params=model.parameters()
+            params=self.wrapped_model.parameters()
         )  # stay the same as keras
 
         for epoch in range(epochs):
@@ -110,9 +107,8 @@ class PytorchTrainer(BaseTrainer):
 
             self._train(
                 _data,
-                model,
                 optimizer,
-                pbar_description=f'Epoch {epoch + 1}/{epochs}',
+                description=f'Epoch {epoch + 1}/{epochs}',
             )
 
             if eval_data:
@@ -120,7 +116,7 @@ class PytorchTrainer(BaseTrainer):
                     inputs=eval_data, batch_size=batch_size, shuffle=False
                 )
 
-                self._eval(_data, model, pbar_description='Evaluating')
+                self._eval(_data)
 
     def save(self, *args, **kwargs):
         torch.save(self.base_model.state_dict(), *args, **kwargs)

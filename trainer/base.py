@@ -6,6 +6,9 @@ from jina.logging.logger import JinaLogger
 from jina.types.arrays.memmap import DocumentArrayMemmap
 
 AnyDNN = TypeVar('AnyDNN')  #: Any implementation of a Deep Neural Network object
+AnyDataLoader = TypeVar(
+    'AnyDataLoader'
+)  #: Any implementation of a Deep Neural Network object
 
 DocumentSequence = TypeVar(
     'DocumentSequence',
@@ -62,11 +65,6 @@ class BaseTrainer(abc.ABC):
         """Get the base model of this object."""
         return self._base_model
 
-    @base_model.setter
-    def base_model(self, val: AnyDNN):
-        """Set the base model of this object to a deep neural network object."""
-        self._base_model = val
-
     @property
     @abc.abstractmethod
     def wrapped_model(self) -> AnyDNN:
@@ -90,16 +88,6 @@ class BaseTrainer(abc.ABC):
     @abc.abstractmethod
     def head_layer(self) -> AnyDNN:
         """Get the head model of this object."""
-        ...
-
-    @head_layer.setter
-    @abc.abstractmethod
-    def head_layer(self, val: Union[str, AnyDNN]):
-        """Set the head model of this object to one of the predefined head model or a deep neural network object.
-
-        When set to a deep neural network object, this network must map ``[R^D x R^D x ...] -> R``, where the length
-        of left-hand-value depends on the value of :property:`arity`.
-        """
         ...
 
     @abc.abstractmethod
@@ -129,12 +117,19 @@ class BaseTrainer(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def _train(self, data, model, optimizer, pbar_description):
+    def _get_data_loader(
+        self, inputs: DocumentArrayLike, batch_size: int, shuffle: bool
+    ) -> AnyDataLoader:
+        """Get framework specific data loader from the input data. """
+        ...
+
+    @abc.abstractmethod
+    def _train(self, data: AnyDataLoader, optimizer, description: str):
         """Train the model"""
         ...
 
     @abc.abstractmethod
-    def _eval(self, data, model, pbar_description):
+    def _eval(self, data: AnyDataLoader, description: str = 'Evaluating'):
         """Evaluate the model"""
         ...
 

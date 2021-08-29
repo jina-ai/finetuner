@@ -8,7 +8,7 @@ from paddle.optimizer import Optimizer
 
 from . import head_layers, datasets
 from ..base import BaseTrainer, BaseHead, BaseArityModel, DocumentArrayLike
-from ..helper import get_dataset
+from ..dataset.helper import get_dataset
 
 
 class _ArityModel(BaseArityModel, nn.Layer):
@@ -38,8 +38,8 @@ class PaddleTrainer(BaseTrainer):
             shuffle=shuffle,
         )
 
-    def _eval(self, data, model: nn.Layer, pbar_description: str):
-        model.eval()
+    def _eval(self, data, description: str = 'Evaluating'):
+        self.wrapped_model.eval()
 
         losses = []
         metrics = []
@@ -48,22 +48,20 @@ class PaddleTrainer(BaseTrainer):
             lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
         )
 
-        with ProgressBar(pbar_description, message_on_done=get_desc_str) as p:
+        with ProgressBar(description, message_on_done=get_desc_str) as p:
             for inputs, label in data:
-                outputs = model(*inputs)
-                loss = model.loss_fn(outputs, label)
-                metric = model.metric_fn(outputs, label)
+                outputs = self.wrapped_model(*inputs)
+                loss = self.wrapped_model.loss_fn(outputs, label)
+                metric = self.wrapped_model.metric_fn(outputs, label)
 
                 losses.append(loss.item())
                 metrics.append(metric.numpy())
 
                 p.update(message=get_desc_str())
 
-    def _train(
-        self, data, model: nn.Layer, optimizer: Optimizer, pbar_description: str
-    ):
+    def _train(self, data, optimizer: Optimizer, description: str):
 
-        model.train()
+        self.wrapped_model.train()
 
         losses = []
         metrics = []
@@ -72,12 +70,12 @@ class PaddleTrainer(BaseTrainer):
             lambda: f'Loss={float(sum(losses) / len(losses)):.2f} Accuracy={float(sum(metrics) / len(metrics)):.2f}'
         )
 
-        with ProgressBar(pbar_description, message_on_done=get_desc_str) as p:
+        with ProgressBar(description, message_on_done=get_desc_str) as p:
             for inputs, label in data:
                 # forward step
-                outputs = model(*inputs)
-                loss = model.loss_fn(outputs, label)
-                metric = model.metric_fn(outputs, label)
+                outputs = self.wrapped_model(*inputs)
+                loss = self.wrapped_model.loss_fn(outputs, label)
+                metric = self.wrapped_model.metric_fn(outputs, label)
 
                 optimizer.clear_grad()
 
@@ -110,9 +108,8 @@ class PaddleTrainer(BaseTrainer):
 
             self._train(
                 _data,
-                model,
                 optimizer,
-                pbar_description=f'Epoch {epoch + 1}/{epochs}',
+                description=f'Epoch {epoch + 1}/{epochs}',
             )
 
             if eval_data:
@@ -120,7 +117,7 @@ class PaddleTrainer(BaseTrainer):
                     inputs=eval_data, batch_size=batch_size, shuffle=False
                 )
 
-                self._eval(_data, model, pbar_description='Evaluating')
+                self._eval(_data)
 
     def save(self, *args, **kwargs):
         paddle.save(self.base_model.state_dict(), *args, **kwargs)
