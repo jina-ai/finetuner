@@ -10,7 +10,7 @@ import numpy as np
 from jina import Document, DocumentArray
 from jina.logging.profile import ProgressBar
 from jina.types.document.generators import from_csv
-
+from finetuner import __default_tag_key__
 from tests.text_sequence import build_vocab, text_to_int_sequence
 
 
@@ -64,9 +64,12 @@ def qa_match_doc_generator(
 
     for d in all_docs:
         d.text = d.tags['question']
-        m_p = Document(text=d.tags['answer'], tags={'trainer': {'label': pos_value}})
+        m_p = Document(
+            text=d.tags['answer'], tags={__default_tag_key__: {'label': pos_value}}
+        )
         m_n = Document(
-            text=d.tags['wrong_answer'], tags={'trainer': {'label': neg_value}}
+            text=d.tags['wrong_answer'],
+            tags={__default_tag_key__: {'label': neg_value}},
         )
         if to_ndarray:
             d.blob = np.array(text_to_int_sequence(d.text, vocab, max_seq_len), np.long)
@@ -85,7 +88,8 @@ def qa_match_doc_generator(
             for n_d in sampled_docs:
                 if n_d.id != d.id:
                     new_nd = Document(
-                        text=n_d.tags['answer'], tags={'trainer': {'label': neg_value}}
+                        text=n_d.tags['answer'],
+                        tags={__default_tag_key__: {'label': neg_value}},
                     )
                     if to_ndarray:
                         new_nd.blob = np.array(
@@ -146,7 +150,7 @@ def fashion_match_doc_generator(
         pos_label = od.tags['class']
         pos_samples = rv[pos_label].sample(num_pos)
         for d in pos_samples:
-            d.tags['trainer'] = {'label': pos_value}
+            d.tags[__default_tag_key__] = {'label': pos_value}
 
         neg_samples = DocumentArray()
         while len(neg_samples) < num_neg:
@@ -156,7 +160,7 @@ def fashion_match_doc_generator(
         neg_samples = neg_samples[:num_neg]
 
         for d in neg_samples:
-            d.tags['trainer'] = {'label': neg_value}
+            d.tags[__default_tag_key__] = {'label': neg_value}
 
         od.matches.extend(pos_samples)
         od.matches.extend(neg_samples)

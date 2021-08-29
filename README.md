@@ -1,12 +1,12 @@
-# trainer
+# Finetuner
 
 ## Dev Install
 
-Trainer requires your local `jina` as the latest master. It is the best if you have `jina` installed via `pip install -e .`.
+Finetuner requires your local `jina` as the latest master. It is the best if you have `jina` installed via `pip install -e .`.
 
 ```bash
-git clone https://github.com/jina-ai/trainer.git
-cd trainer
+git clone https://github.com/jina-ai/finetuner.git
+cd finetuner
 # pip install -r requirements.txt (only required when you do not have jina locally) 
 pip install -e .
 ```
@@ -26,113 +26,7 @@ The codebase is enforced with Black style, please enable precommit hook.
 pre-commit install
 ```
 
-## Example 1: train Simple MLP with Fashion-MNIST
-
-1. Use synthetic pairwise data to train `user_model` in a siamese manner:
-
-   <details>
-   <summary>Using KerasTrainer</summary>
-
-   - build a simple dense network with bottleneck
-
-      ```python
-     import tensorflow as tf
-
-     user_model = tf.keras.Sequential(
-         [
-             tf.keras.layers.Flatten(input_shape=(28, 28)),
-             tf.keras.layers.Dense(128, activation='relu'),
-             tf.keras.layers.Dense(32),
-         ]
-     )
-     ```
-
-   - wrap the user model with our trainer
-      ```python
-      from trainer.keras import KerasTrainer
-
-      kt = KerasTrainer(user_model, head_layer='CosineLayer')
-      ```
-
-   - fit and save the checkpoint
-
-      ```python
-      from tests.data_generator import fashion_match_doc_generator as fmdg
-
-      kt.fit(fmdg, epochs=1)
-      kt.save('./examples/fashion/trained')
-      ```
-
-   </details>
-
-   <details>
-   <summary>Using PytorchTrainer</summary>
-
-   - build a simple dense network with bottleneck:
-       ```python
-       import torch.nn as nn
-
-       user_model = nn.Sequential(
-           nn.Flatten(),
-           nn.Linear(in_features=784, out_features=128),
-           nn.ReLU(),
-           nn.Linear(in_features=128, out_features=32)
-       )
-       ```
-
-   - wrap the user model with our trainer:
-       ```python
-       from trainer.pytorch import PytorchTrainer
-
-       pt = PytorchTrainer(user_model, head_layer='CosineLayer')
-       ```
-
-   - fit and save the checkpoint:
-
-       ```python
-       from tests.data_generator import fashion_match_documentarray as fmdg
-
-       pt.fit(fmdg(num_total=50), epochs=10)
-       pt.save('./examples/fashion/trained.pt')
-       ```
-
-   </details>
-
-   <details>
-   <summary>Using PaddleTrainer</summary>
-   
-    - build a simple dense network with bottleneck:
-   
-        ```python
-        from paddle import nn
-        user_model = nn.Sequential(
-            nn.Flatten(start_axis=1),
-            nn.Linear(in_features=784, out_features=128),
-            nn.ReLU(),
-            nn.Linear(in_features=128, out_features=32)
-        )
-        ```
-    - wrap the user model with our trainer
-   
-        ```python
-       from trainer.paddle import PaddleTrainer
-      
-       pt = PaddleTrainer(user_model, head_layer='CosineLayer')
-       ```
-      
-    - fit and save the checkpoint
-   
-        ```python
-       from tests.data_generator import fashion_match_documentarray as fmdg
-
-       pt.fit(fmdg(num_total=50), epochs=10)
-       
-       pt.save('examples/fashion/paddle_ckpt')
-       ```
-   </details>
-
-2. Observe the decreasing of training loss and increasing of the accuracy.
-
+## Examples
 
 ## Synthetic Matching Data
 
@@ -143,12 +37,12 @@ We use Fashion-MNIST and Covid QA data for generating synthetic matching data, a
 
 ### Fashion-MNIST as synthetic matching data
 
-Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. Each image is a single channel 28x28 grayscale image. To convert this dataset into match data, we build each document to contain the following info that are relevant to `trainer`:
+Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. Each image is a single channel 28x28 grayscale image. To convert this dataset into match data, we build each document to contain the following info that are relevant:
 
   - `.blob`: the image
   - `.matches`: the generated positive & negative matches Document
     - `.blob`: the matched Document's image 
-    - `.tags['trainer']['label']`: the match label, can be `1` or `-1` or user-defined.
+    - `.tags['finetuner']['label']`: the match label, can be `1` or `-1` or user-defined.
 
 Matches are built with the logic below:
     - sample same-class documents as positive matches;
@@ -156,13 +50,13 @@ Matches are built with the logic below:
 
 ### Covid QA as synthetic matching data
 
-Covid QA data is a CSV that has 481 rows with columns `question`, `answer` & `wrong_answer`. To convert this dataset into match data, we build each document to contain the following info that are relevant to `trainer`:
+Covid QA data is a CSV that has 481 rows with columns `question`, `answer` & `wrong_answer`. To convert this dataset into match data, we build each document to contain the following info that are relevant:
 
  - `.text`: the original `question` column
  - `.blob`: when set `to_ndarray` to True, `text` is tokenized into a fixed length `ndarray`.
  - `.matches`: the generated positive & negative matches Document
    - `.text`: the original `answer`/`wrong_answer` column
-   - `.tags['trainer']['label']`: the match label, can be `1` or `-1` or user-defined.
+   - `.tags['finetuner']['label']`: the match label, can be `1` or `-1` or user-defined.
    - `.blob`: when set `to_ndarray` to True, `text` is tokenized into a fixed length `ndarray`.
 
 Matches are built with the logic below:

@@ -1,5 +1,5 @@
 import itertools
-
+from .. import __default_tag_key__
 import numpy as np
 
 
@@ -8,7 +8,7 @@ class SiameseMixin:
         for d in self._inputs:
             d_blob = d.blob
             for m in d.matches:
-                yield (d_blob, m.blob), np.float32(m.tags['trainer']['label'])
+                yield (d_blob, m.blob), np.float32(m.tags[__default_tag_key__]['label'])
 
 
 class TripletMixin:
@@ -18,7 +18,7 @@ class TripletMixin:
             positives = []
             negatives = []
             for m in d.matches:
-                if m.tags['trainer']['label'] > 0:
+                if m.tags[__default_tag_key__]['label'] > 0:
                     positives.append(m.blob)
                 else:
                     negatives.append(m.blob)

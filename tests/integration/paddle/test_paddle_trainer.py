@@ -3,7 +3,7 @@ import paddle
 import pytest
 from paddle import nn
 
-from trainer.paddle import PaddleTrainer
+from finetuner.paddle import PaddleTuner
 from ...data_generator import fashion_match_doc_generator as fmdg
 from ...data_generator import qa_match_doc_generator as qmdg
 
@@ -20,7 +20,7 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
         nn.Linear(in_features=params['feature_dim'], out_features=params['output_dim']),
     )
 
-    pt = PaddleTrainer(user_model, head_layer=head_layer)
+    pt = PaddleTuner(user_model, head_layer=head_layer)
     model_path = tmpdir / 'trained.pd'
     # fit and save the checkpoint
     pt.fit(
@@ -64,7 +64,7 @@ def test_simple_lstm_model(tmpdir, params, head_layer):
     )
     model_path = tmpdir / 'trained.pd'
 
-    pt = PaddleTrainer(user_model, head_layer=head_layer)
+    pt = PaddleTuner(user_model, head_layer=head_layer)
 
     # fit and save the checkpoint
     pt.fit(

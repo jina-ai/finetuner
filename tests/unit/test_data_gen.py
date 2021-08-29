@@ -10,6 +10,7 @@ from ..data_generator import (
     qa_match_documentarray,
 )
 
+from finetuner import __default_tag_key__
 
 # import matplotlib.pyplot as plt
 
@@ -60,11 +61,11 @@ def test_fashion_matches_generator(num_pos, num_neg, pos_value, neg_value):
         num_pos=num_pos, num_neg=num_neg, pos_value=pos_value, neg_value=neg_value
     ):
         assert len(d.matches) == num_pos + num_neg
-        all_labels = [int(d.tags['trainer']['label']) for d in d.matches]
+        all_labels = [int(d.tags[__default_tag_key__]['label']) for d in d.matches]
         assert all_labels.count(pos_value) == num_pos
         assert all_labels.count(neg_value) == num_neg
         for m in d.matches:
-            if int(m.tags['trainer']['label']) == 1:
+            if int(m.tags[__default_tag_key__]['label']) == 1:
                 assert m.tags['class'] == d.tags['class']
             else:
                 assert m.tags['class'] != d.tags['class']
@@ -91,7 +92,7 @@ def test_qa_match_doc_generator(pos_value, neg_value, num_neg, to_ndarray):
         num_neg=num_neg, pos_value=pos_value, neg_value=neg_value, to_ndarray=to_ndarray
     ):
         assert len(d.matches) == 1 + num_neg
-        all_labels = [int(d.tags['trainer']['label']) for d in d.matches]
+        all_labels = [int(d.tags[__default_tag_key__]['label']) for d in d.matches]
         assert all_labels.count(pos_value) == 1
         assert all_labels.count(neg_value) == num_neg
         if to_ndarray:

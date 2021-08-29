@@ -3,7 +3,7 @@ import pytest
 import tensorflow as tf
 from tensorflow import keras
 
-from trainer.keras import KerasTrainer
+from finetuner.keras import KerasTuner
 from ...data_generator import fashion_match_doc_generator as fmdg
 from ...data_generator import qa_match_doc_generator as qmdg
 
@@ -22,7 +22,7 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
         ]
     )
 
-    kt = KerasTrainer(user_model, head_layer=head_layer)
+    kt = KerasTuner(user_model, head_layer=head_layer)
 
     # fit and save the checkpoint
     kt.fit(
@@ -52,7 +52,7 @@ def test_simple_lstm_model(tmpdir, params, head_layer):
         ]
     )
 
-    kt = KerasTrainer(user_model, head_layer=head_layer)
+    kt = KerasTuner(user_model, head_layer=head_layer)
 
     # fit and save the checkpoint
     kt.fit(

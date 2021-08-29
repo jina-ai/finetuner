@@ -5,7 +5,7 @@ import pytest
 import torch
 import torch.nn as nn
 
-from trainer.pytorch import PytorchTrainer
+from finetuner.pytorch import PytorchTuner
 from ...data_generator import fashion_match_doc_generator as fmdg
 from ...data_generator import qa_match_doc_generator as qmdg
 
@@ -23,7 +23,7 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
     )
     model_path = os.path.join(tmpdir, 'trained.pth')
 
-    pt = PytorchTrainer(user_model, head_layer=head_layer)
+    pt = PytorchTuner(user_model, head_layer=head_layer)
 
     # fit and save the checkpoint
     pt.fit(
@@ -68,7 +68,7 @@ def test_simple_lstm_model(tmpdir, params, head_layer):
     )
     model_path = os.path.join(tmpdir, 'trained.pth')
 
-    pt = PytorchTrainer(user_model, head_layer=head_layer)
+    pt = PytorchTuner(user_model, head_layer=head_layer)
 
     # fit and save the checkpoint
     pt.fit(
