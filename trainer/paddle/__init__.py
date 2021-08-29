@@ -1,11 +1,10 @@
-from typing import Union, Optional
+from typing import Optional
 
 import paddle
 from jina.logging.profile import ProgressBar
 from paddle import nn
 from paddle.io import DataLoader
 from paddle.optimizer import Optimizer
-import paddle.fluid as fluid
 
 from . import head_layers, datasets
 from ..base import BaseTrainer, BaseHead, BaseArityModel, DocumentArrayLike
