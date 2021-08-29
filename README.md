@@ -44,11 +44,10 @@ finetuner.fit(...)
     - in Keras:
         ```python
         import tensorflow as tf
-        base_model = tf.keras.Sequential(
-                [
+        base_model = tf.keras.Sequential([
                     tf.keras.layers.Flatten(input_shape=(28, 28)),
                     tf.keras.layers.Dense(128, activation='relu'),
-                    tf.keras.layers.Dense(32),
+                    tf.keras.layers.Dense(32)
                 ])
         ```
 
@@ -62,8 +61,7 @@ finetuner.fit(...)
                 out_features=128,
             ),
             torch.nn.ReLU(),
-            torch.nn.Linear(in_features=128, out_features=32),
-        )
+            torch.nn.Linear(in_features=128, out_features=32))
         ```
 
     - in Paddle:
@@ -76,8 +74,7 @@ finetuner.fit(...)
                 out_features=128,
             ),
             paddle.nn.ReLU(),
-            paddle.nn.Linear(in_features=128, out_features=32),
-        )
+            paddle.nn.Linear(in_features=128, out_features=32))
         ```
 
 2. Call `finetune.fit` on the base model and match data:
