@@ -28,7 +28,9 @@ pre-commit install
 
 ## Examples
 
-## Synthetic Matching Data
+TBA
+
+## Generate Synthetic Match Data
 
 We use Fashion-MNIST and Covid QA data for generating synthetic matching data, as these two datasets align with the first two `jina hello` demos.
 
