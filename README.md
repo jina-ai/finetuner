@@ -44,9 +44,9 @@ finetuner.fit(...)
    vectors.
 
 <details>
-<summary>see complete example</summary>
+<summary>see base model example</summary>
 
-- in Keras:
+  - in Keras:
     ```python
     import tensorflow as tf
     base_model = tf.keras.Sequential([
@@ -99,46 +99,46 @@ finetuner.fit(...)
    vectors.
 
 <details>
-<summary>see complete example</summary>
+<summary>see base model example</summary>
 
-    - in Keras:
-        ```python
-        import tensorflow as tf
-        base_model = tf.keras.Sequential([
-            tf.keras.layers.Embedding(input_dim=5000, output_dim=64),
-            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
-            tf.keras.layers.Dense(32)])
-        ```
+   - in Keras:
+      ```python
+      import tensorflow as tf
+      base_model = tf.keras.Sequential([
+         tf.keras.layers.Embedding(input_dim=5000, output_dim=64),
+         tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
+         tf.keras.layers.Dense(32)])
+      ```
 
-    - in Pytorch:
-        ```python
-        import torch
-        class LastCell(torch.nn.Module):
-            def forward(self, x):
-                out, _ = x
-                return out[:, -1, :]
+   - in Pytorch:
+      ```python
+      import torch
+      class LastCell(torch.nn.Module):
+         def forward(self, x):
+             out, _ = x
+             return out[:, -1, :]
 
-        base_model = torch.nn.Sequential(
-            torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
-            torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
-            LastCell(),
-            torch.nn.Linear(in_features=2 * 64, out_features=32))
-        ```
+      base_model = torch.nn.Sequential(
+         torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
+         torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
+         LastCell(),
+         torch.nn.Linear(in_features=2 * 64, out_features=32))
+      ```
 
-    - in Paddle:
-        ```python
-        import paddle
-        class LastCell(paddle.nn.Layer):
-            def forward(self, x):
-                out, _ = x
-                return out[:, -1, :]
+   - in Paddle:
+      ```python
+      import paddle
+      class LastCell(paddle.nn.Layer):
+         def forward(self, x):
+             out, _ = x
+             return out[:, -1, :]
 
-        base_model = paddle.nn.Sequential(
-            paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),
-            paddle.nn.LSTM(64, 64, direction='bidirectional'),
-            LastCell(),
-            paddle.nn.Linear(in_features=2 * 64, out_features=32))
-        ```
+      base_model = paddle.nn.Sequential(
+         paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),
+         paddle.nn.LSTM(64, 64, direction='bidirectional'),
+         LastCell(),
+         paddle.nn.Linear(in_features=2 * 64, out_features=32))
+      ```
 
 </details>
 
