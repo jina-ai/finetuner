@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Finetuner · Labeler</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <link href="main.css" rel="stylesheet">
+</head>
+<body>
+<main>
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <svg class="bi me-2" width="40" height="32">
+                <use xlink:href="#bootstrap"></use>
+            </svg>
+            <span class="fs-4">Finetuner</span>
+        </a>
+        <hr>
+        <section>
+            <h4>View</h4>
+            <div class="row my-1">
+                <label class="col-sm-6 col-form-label">Content</label>
+                <div class="col-sm-6">
+                    <select class="form-select" aria-label="Default select example">
+                        <option selected>uri</option>
+                        <option value="1">text</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row my-1">
+                <label class="col-sm-6 col-form-label">Style</label>
+                <div class="col-sm-6">
+                    <select class="form-select" aria-label="Default select example">
+                        <option selected>List</option>
+                        <option value="1">Pair</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row my-1">
+                <label class="col-sm-6 col-form-label">Examples/View</label>
+                <div class="col-sm-6">
+                    <input class="form-control" type="number" min="1" max="10" value="1">
+                </div>
+            </div>
+        </section>
+        <hr>
+        <section style="flex: 1;">
+            <h4>Progress</h4>
+            <div class="row my-1">
+                <label class="col-sm-6 col-form-label">This Session</label>
+                <div class="col-sm-6 text-end">
+                    0
+                </div>
+            </div>
+            <div class="row my-1">
+                <label class="col-sm-6 col-form-label">Total</label>
+                <div class="col-sm-6 text-end">
+                    0
+                </div>
+            </div>
+            <div class="row my-1">
+                <label class="col-sm-6 col-form-label">Positive</label>
+                <div class="col-sm-6 text-end">
+                    0
+                </div>
+            </div>
+            <div class="row my-1">
+                <label class="col-sm-6 col-form-label">Negative</label>
+                <div class="col-sm-6 text-end">
+                    0
+                </div>
+            </div>
+            <div class="row my-1">
+                <label class="col-sm-6 col-form-label">Ignore</label>
+                <div class="col-sm-6 text-end">
+                    0
+                </div>
+            </div>
+        </section>
+        <hr>
+        <section style="flex: 1;">
+            <h4>History</h4>
+        </section>
+        <hr>
+        <footer>
+            <a href="https://jina.ai" target="_blank">© 2020-2021 Jina AI</a>
+            <a href="https://github.com/jina-ai/finetuner" target="_blank">(<strong>Finetuner</strong> v0.1)</a>
+        </footer>
+    </div>
+    <div class="b-example-divider"></div>
+    <div class="d-flex flex-grow-1 p-5">
+        <div class="row" style="width: 100%;" data-masonry='{"percentPosition": true}'>
+            <div class="col-4 my-2">
+                <div class="card">
+                    <div class="card-header">
+                        Pair · Are they relevant?
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item">This is a wider card with supporting text below as a natural
+                                lead-in to
+                                additional content. This content is a little bit longer.
+                            </li>
+                            <li class="list-group-item">A second item</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+
+                        <button type="button" class="btn btn-success">Accept</button>
+                        <button type="button" class="btn btn-danger">Reject</button>
+                        <button type="button" class="btn btn-secondary">Ignore</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 my-2">
+                <div class="card">
+                    <div class="card-header">
+                        Pair · Are they relevant?
+                    </div>
+                    <div class="card-body">
+                        <div class="container">
+
+                            <div class="row">
+                                <div class="col">
+                                    <img src="https://via.placeholder.com/150x600" class="img-thumbnail img-fluid"
+                                         alt="...">
+                                </div>
+                                <div class="col">
+                                    <img src="https://via.placeholder.com/600" class="img-thumbnail img-fluid"
+                                         alt="...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-success">Accept</button>
+                        <button type="button" class="btn btn-danger">Reject</button>
+                        <button type="button" class="btn btn-secondary">Ignore</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 my-2">
+                <div class="card h-50">
+                    <div class="card-header text-dark">
+                        List · Label all relevant and irrelevant ones
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <input class="form-check-input me-1" type="checkbox">
+                                This is a wider card with supporting text below as a natural
+                                lead-in to
+                                additional content. This content is a little bit longer.
+                            </li>
+                            <li class="list-group-item">
+                                <input class="form-check-input me-1" type="checkbox">
+                                A second item
+                            </li>
+                            <li class="list-group-item">
+                                <input class="form-check-input me-1" type="checkbox">
+                                A second item
+                            </li>
+                            <li class="list-group-item">
+                                <input class="form-check-input me-1" type="checkbox">
+                                A second item
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <div class="btn-toolbar justify-content-between">
+                            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off"
+                                       checked>
+                                <label class="btn btn-outline-success" for="btnradio1">Relevant</label>
+                                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                                <label class="btn btn-outline-danger" for="btnradio2">Irrelevant</label>
+                            </div>
+                            <button type="button" class="btn btn-primary">Done</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 my-2">
+                <div class="card h-50">
+                    <div class="card-header text-dark">
+                        List · Label all relevant and irrelevant ones
+                    </div>
+                    <div class="card-body">
+                        <div class="row row-cols-3">
+                            <div class="col my-1">
+                                <img src="https://via.placeholder.com/600" class="img-thumbnail img-fluid"
+                                     alt="..."></div>
+                            <div class="col my-1"><img src="https://via.placeholder.com/600"
+                                                       class="img-thumbnail img-fluid"
+                                                       alt="..."></div>
+                            <div class="col my-1"><img src="https://via.placeholder.com/600"
+                                                       class="img-thumbnail img-fluid"
+                                                       alt="..."></div>
+                            <div class="col my-1"><img src="https://via.placeholder.com/600"
+                                                       class="img-thumbnail img-fluid"
+                                                       alt="..."></div>
+                            <div class="col my-1"><img src="https://via.placeholder.com/600"
+                                                       class="img-thumbnail img-fluid"
+                                                       alt="..."></div>
+                            <div class="col my-1"><img src="https://via.placeholder.com/600"
+                                                       class="img-thumbnail img-fluid"
+                                                       alt="..."></div>
+                            <div class="col my-1"><img src="https://via.placeholder.com/600"
+                                                       class="img-thumbnail img-fluid"
+                                                       alt="..."></div>
+                            <div class="col my-1"><img src="https://via.placeholder.com/600"
+                                                       class="img-thumbnail img-fluid"
+                                                       alt="..."></div>
+                            <div class="col my-1"><img src="https://via.placeholder.com/600"
+                                                       class="img-thumbnail img-fluid"
+                                                       alt="..."></div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="btn-toolbar justify-content-between">
+                            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                <input type="radio" class="btn-check" name="btnradio1" id="btnradio3" autocomplete="off"
+                                       checked>
+                                <label class="btn btn-outline-success" for="btnradio3">Relevant</label>
+                                <input type="radio" class="btn-check" name="btnradio1" id="btnradio4" autocomplete="off">
+                                <label class="btn btn-outline-danger" for="btnradio4">Irrelevant</label>
+                            </div>
+                            <button type="button" class="btn btn-primary">Done</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
+        integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous"
+        async></script>
+<script src="sidebar.js"></script>
+</body>
+
+</html>
