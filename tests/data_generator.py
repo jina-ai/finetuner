@@ -1,5 +1,6 @@
 # Downloading fashion mnist, copy from jina hello fashion
 # no surprise here
+import base64
 import copy
 import csv
 import gzip
@@ -10,7 +11,8 @@ from pathlib import Path
 import numpy as np
 from jina import Document, DocumentArray
 from jina.logging.profile import ProgressBar
-from jina.types.document.generators import from_csv
+from jina.types.document import png_to_buffer
+
 from finetuner import __default_tag_key__
 from tests.text_sequence import build_vocab, text_to_int_sequence
 
@@ -212,7 +214,6 @@ def qa_data_generator(download_proxy=None, is_testset=False, **kwargs):
 
 
 def fashion_doc_generator(download_proxy=None, is_testset=False, **kwargs):
-
     download_dir = './data'
     Path(download_dir).mkdir(parents=True, exist_ok=True)
 
@@ -262,8 +263,15 @@ def fashion_doc_generator(download_proxy=None, is_testset=False, **kwargs):
     for raw_img, lbl in zip(
         targets[partition]['data'], targets[f'{partition}-labels']['data']
     ):
+        png_bytes = png_to_buffer(
+            raw_img, width=28, height=28, resize_method='BILINEAR'
+        )
         yield Document(
-            content=(raw_img / 255.0).astype(np.float32), tags={'class': int(lbl)}
+            content=(raw_img / 255.0).astype(np.float32),
+            tags={
+                'class': int(lbl),
+                'uri': 'data:image/png;base64,' + base64.b64encode(png_bytes).decode(),
+            },
         )
 
 

@@ -12,7 +12,7 @@
     <link href="main.css" rel="stylesheet">
 </head>
 <body>
-<main>
+<main id="app">
     <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <svg class="bi me-2" width="40" height="32">
@@ -26,25 +26,27 @@
             <div class="row my-1">
                 <label class="col-sm-6 col-form-label">Content</label>
                 <div class="col-sm-6">
-                    <select class="form-select" aria-label="Default select example">
-                        <option selected>uri</option>
-                        <option value="1">text</option>
+                    <select class="form-select" v-model="labeler_config.content">
+                        <option v-for="option in view_template.content">
+                            {{ option }}
+                        </option>
                     </select>
                 </div>
             </div>
             <div class="row my-1">
                 <label class="col-sm-6 col-form-label">Style</label>
                 <div class="col-sm-6">
-                    <select class="form-select" aria-label="Default select example">
-                        <option selected>List</option>
-                        <option value="1">Pair</option>
+                    <select class="form-select" v-model="labeler_config.style">
+                        <option v-for="option in view_template.style">
+                            {{ option }}
+                        </option>
                     </select>
                 </div>
             </div>
             <div class="row my-1">
                 <label class="col-sm-6 col-form-label">Examples/View</label>
                 <div class="col-sm-6">
-                    <input class="form-control" type="number" min="1" max="10" value="1">
+                    <input class="form-control" type="number" min="1" max="10" v-model.number="labeler_config.example_per_view">
                 </div>
             </div>
         </section>
@@ -227,7 +229,8 @@
                                 <input type="radio" class="btn-check" name="btnradio1" id="btnradio3" autocomplete="off"
                                        checked>
                                 <label class="btn btn-outline-success" for="btnradio3">Relevant</label>
-                                <input type="radio" class="btn-check" name="btnradio1" id="btnradio4" autocomplete="off">
+                                <input type="radio" class="btn-check" name="btnradio1" id="btnradio4"
+                                       autocomplete="off">
                                 <label class="btn btn-outline-danger" for="btnradio4">Irrelevant</label>
                             </div>
                             <button type="button" class="btn btn-primary">Done</button>
@@ -245,7 +248,8 @@
 <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
         integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous"
         async></script>
-<script src="sidebar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="main.js"></script>
 </body>
 
 </html>
