@@ -117,3 +117,14 @@ h4 {
 .form-check-input[type=checkbox] {
     border-radius: .5em;
 }
+
+.img-relevant {
+  background: #52b91e;
+}
+
+.spinner-busy {
+  position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 50px;
+}

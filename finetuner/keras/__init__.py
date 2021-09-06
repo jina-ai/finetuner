@@ -53,7 +53,7 @@ class KerasTuner(BaseTuner):
         if shuffle:
             tf_data = tf_data.shuffle(buffer_size=4096)
 
-        return tf_data.batch(batch_size, drop_remainder=True)
+        return tf_data.batch(batch_size)
 
     def _train(self, data, optimizer, description: str):
         head_layer = self.head_layer()
