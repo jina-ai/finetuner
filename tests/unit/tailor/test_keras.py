@@ -52,6 +52,15 @@ def lstm_model():
     return model
 
 
-@pytest.mark.parametrize('model, expected', [(dense_model, 1)])
+@pytest.mark.parametrize(
+    'model, expected',
+    [
+        ('dense_model', 1),
+        ('simple_cnn_model', 1),
+        ('vgg16_cnn_model', 1),
+        ('lstm_model', 1),
+    ],
+    indirect=["model"],
+)
 def test_tail(model, expected):
-    pass
+    return True
