@@ -11,7 +11,7 @@ def trim(model, layer_idx: int, freeze=True):
     :param freeze: Freeze the weight of the base model without training.
     """
     candidate_layers = get_candidate_layers(model)
-    tailorable_indices = [item['layer_idx'] for item in candidate_layers]
+    tailorable_indices = {item['layer_idx'] for item in candidate_layers}
     if layer_idx not in tailorable_indices:
         msg = f'Layer index {layer_idx} is not a candidate layer, One of the index in {tailorable_indices} expected.'
         raise IndexError(msg)
