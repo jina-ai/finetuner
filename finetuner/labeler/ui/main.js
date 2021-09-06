@@ -47,6 +47,12 @@ const app = new Vue({
         fit_address: function () {
             return `${this.general_config.server_address}:${urlParams.get('port') ?? this.general_config.server_port}${this.general_config.fit_endpoint}`
         },
+        positive_rate: function () {
+            return this.progress_stats.positive.value / (this.progress_stats.positive.value + this.progress_stats.negative.value) * 100
+        },
+        negative_rate: function () {
+            return this.progress_stats.negative.value / (this.progress_stats.positive.value + this.progress_stats.negative.value) * 100
+        }
     },
     methods: {
         toggle_relevance: function (match) {
@@ -59,6 +65,7 @@ const app = new Vue({
         },
         submit_doc: function (doc_idx) {
             let doc = app.cur_batch[doc_idx]
+            app.cur_batch.splice(doc_idx, 1)
             doc.matches.forEach(function (match) {
                 match.tags.finetuner = {}
                 if (match.tags.finetuner_label) {
@@ -72,7 +79,6 @@ const app = new Vue({
             });
             app.progress_stats.total.value++
             app.fit_doc(doc)
-            app.cur_batch.splice(doc_idx, 1)
             app.next_batch()
         },
         fit_doc: function (doc) {
@@ -98,19 +104,21 @@ const app = new Vue({
             });
         },
         next_batch: function () {
-            app.is_busy = true
-            app.is_conn_broken = false
             let end_idx = app.labeler_config.start_idx + (app.labeler_config.example_per_view - app.cur_batch.length)
             if (end_idx === app.labeler_config.start_idx) {
                 return
             }
+            let start_idx = app.labeler_config.start_idx
+            app.labeler_config.start_idx = end_idx
+            app.is_busy = true
+            app.is_conn_broken = false
             $.ajax({
                 type: "POST",
                 url: app.next_address,
                 data: JSON.stringify({
                     data: [],
                     parameters: {
-                        'start': app.labeler_config.start_idx,
+                        'start': start_idx,
                         'end': end_idx,
                         'topk': app.labeler_config.topk_per_example,
                         'sample_size': app.advanced_config.sample_size.value
@@ -121,7 +129,6 @@ const app = new Vue({
             }).success(function (data, textStatus, jqXHR) {
                 app.cur_batch.push(...data['data'].docs)
                 app.is_busy = false
-                app.labeler_config.start_idx = end_idx
                 app.progress_stats.this_session.value = app.cur_batch.length
             }).fail(function () {
                 console.error("bad connection!")
@@ -131,3 +138,8 @@ const app = new Vue({
         }
     }
 });
+
+
+Vue.nextTick(function () {
+    app.next_batch()
+})
