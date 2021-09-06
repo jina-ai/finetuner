@@ -59,9 +59,18 @@ def model(request):
     return request.getfixturevalue(request.param)
 
 
-def test_tail_fail_with_unexpected_layer_idx(dense_model):
+@pytest.mark.parametrize(
+    'model, layer_idx',
+    [
+        ('dense_model', 10),  # 10 is not a layer for dense model
+        ('simple_cnn_model', 2),  # 2nd layer is a convolutional layer
+        ('vgg16_cnn_model', 4),  # 4th layer is a convolutional layer
+    ],
+    indirect=['model'],
+)
+def test_tail_fail_with_unexpected_layer_idx(model, layer_idx):
     with pytest.raises(IndexError):
-        tail(dense_model, layer_idx=10)
+        tail(model, layer_idx=layer_idx)
 
 
 @pytest.mark.parametrize('freeze', [True, False])
@@ -69,9 +78,8 @@ def test_tail_fail_with_unexpected_layer_idx(dense_model):
     'model, layer_idx, expected_output_shape',
     [
         ('dense_model', 1, (None, 64)),
-        # ('simple_cnn_model', 1),
-        # ('vgg16_cnn_model', 1),
-        # ('lstm_model', 1),
+        ('simple_cnn_model', 4, (None, 1600)),
+        ('vgg16_cnn_model', 20, (None, 4096)),
     ],
     indirect=['model'],
 )
