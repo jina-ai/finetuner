@@ -11,7 +11,7 @@ def dense_model():
     model.add(tf.keras.layers.Dense(32, activation='relu'))
     model.add(tf.keras.layers.Dense(32, activation='relu'))
     model.add(tf.keras.layers.Dense(32, activation='relu'))
-    model.add(tf.keras.layers.Dense(10), activation='softmax')
+    model.add(tf.keras.layers.Dense(10, activation='softmax'))
     return model
 
 
@@ -52,15 +52,29 @@ def lstm_model():
     return model
 
 
+@pytest.fixture(
+    params=['dense_model', 'simple_cnn_model', 'vgg16_cnn_model', 'lstm_model']
+)
+def model(request):
+    return request.getfixturevalue(request.param)
+
+
+def test_tail_fail_with_unexpected_layer_idx(dense_model):
+    with pytest.raises(IndexError):
+        tail(dense_model, layer_idx=10)
+
+
 @pytest.mark.parametrize(
     'model, expected',
     [
         ('dense_model', 1),
-        ('simple_cnn_model', 1),
-        ('vgg16_cnn_model', 1),
-        ('lstm_model', 1),
+        # ('simple_cnn_model', 1),
+        # ('vgg16_cnn_model', 1),
+        # ('lstm_model', 1),
     ],
-    indirect=["model"],
+    indirect=['model'],
 )
 def test_tail(model, expected):
-    return True
+    print(model)
+    print(type(model))
+    tail(model=model, layer_idx=1, freeze=True)
