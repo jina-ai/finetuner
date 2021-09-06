@@ -1,7 +1,7 @@
 import pytest
 import tensorflow as tf
 
-from finetuner.tailor.keras import tail
+from finetuner.tailor.keras import trim
 
 
 @pytest.fixture
@@ -70,7 +70,7 @@ def model(request):
 )
 def test_tail_fail_given_unexpected_layer_idx(model, layer_idx):
     with pytest.raises(IndexError):
-        tail(model, layer_idx=layer_idx)
+        trim(model, layer_idx=layer_idx)
 
 
 @pytest.mark.parametrize('freeze', [True, False])
@@ -85,7 +85,7 @@ def test_tail_fail_given_unexpected_layer_idx(model, layer_idx):
     indirect=['model'],
 )
 def test_tail(model, layer_idx, expected_output_shape, freeze):
-    model = tail(model=model, layer_idx=layer_idx, freeze=freeze)
+    model = trim(model=model, layer_idx=layer_idx, freeze=freeze)
     assert model.output_shape == expected_output_shape
     if freeze:
         for layer in model.layers:
