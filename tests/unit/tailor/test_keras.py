@@ -45,8 +45,7 @@ def vgg16_cnn_model():
 @pytest.fixture
 def lstm_model():
     model = tf.keras.models.Sequential()
-    model.add(tf.keras.layers.Embedding(1000, 128, 300))
-    model.add(tf.keras.layers.LSTM(64, return_sequence=True))
+    model.add(tf.keras.layers.Embedding(1000, 128, input_length=64))
     model.add(tf.keras.layers.LSTM(64))
     model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
     return model
@@ -62,13 +61,14 @@ def model(request):
 @pytest.mark.parametrize(
     'model, layer_idx',
     [
-        ('dense_model', 10),  # 10 is not a layer for dense model
+        ('dense_model', 10),  # 10th layer does not exist
         ('simple_cnn_model', 2),  # 2nd layer is a convolutional layer
         ('vgg16_cnn_model', 4),  # 4th layer is a convolutional layer
+        ('lstm_model', 10),  # 10th layer does not exist
     ],
     indirect=['model'],
 )
-def test_tail_fail_with_unexpected_layer_idx(model, layer_idx):
+def test_tail_fail_given_unexpected_layer_idx(model, layer_idx):
     with pytest.raises(IndexError):
         tail(model, layer_idx=layer_idx)
 
@@ -80,6 +80,7 @@ def test_tail_fail_with_unexpected_layer_idx(model, layer_idx):
         ('dense_model', 1, (None, 64)),
         ('simple_cnn_model', 4, (None, 1600)),
         ('vgg16_cnn_model', 20, (None, 4096)),
+        ('lstm_model', 1, (None, 64)),
     ],
     indirect=['model'],
 )
