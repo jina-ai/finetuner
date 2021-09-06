@@ -68,7 +68,7 @@ def model(request):
     ],
     indirect=['model'],
 )
-def test_tail_fail_given_unexpected_layer_idx(model, layer_idx):
+def test_trim_fail_given_unexpected_layer_idx(model, layer_idx):
     with pytest.raises(IndexError):
         trim(model, layer_idx=layer_idx)
 
@@ -84,7 +84,7 @@ def test_tail_fail_given_unexpected_layer_idx(model, layer_idx):
     ],
     indirect=['model'],
 )
-def test_tail(model, layer_idx, expected_output_shape, freeze):
+def test_trim(model, layer_idx, expected_output_shape, freeze):
     model = trim(model=model, layer_idx=layer_idx, freeze=freeze)
     assert model.output_shape == expected_output_shape
     if freeze:
