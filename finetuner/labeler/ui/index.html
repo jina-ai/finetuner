@@ -13,10 +13,11 @@
 </head>
 <body>
 <main id="app">
-    <div class="spinner-border text-success spinner-busy" role="status" v-show="progress_stats.is_busy">
-        <span class="visually-hidden">Loading...</span>
+    <div class="alert alert-danger position-absolute top-0 start-50 translate-middle-x" role="alert"
+         v-if="is_conn_broken">
+        Can not connect to the server! Please check your connection.
     </div>
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; overflow: scroll">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <svg class="bi me-2" width="40" height="32">
                 <use xlink:href="#bootstrap"></use>
@@ -70,12 +71,20 @@
         <hr>
         <section>
             <h4>Progress
+                <div class="spinner-border text-light spinner-border-sm align-middle" role="status" v-show="is_busy">
+                <span class="visually-hidden">Loading...</span>
+            </div>
             </h4>
+
             <div class="row my-1" v-for="option in progress_stats">
                 <label class="col-sm-6 col-form-label">{{ option.text }}</label>
                 <div class="col-sm-6 text-end">
                     {{ option.value }}
                 </div>
+            </div>
+            <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" style="width: 30%"></div>
+                <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"></div>
             </div>
         </section>
         <hr>
@@ -97,7 +106,7 @@
     </div>
     <div class="b-example-divider"></div>
     <div class="d-flex flex-grow-1 p-5" style="overflow: scroll">
-        <div class="row row-cols-1 row-cols-md-3 row-cols-xxl-5 g-4" style="width: 100%;">
+        <div class="row row-cols-md-1 row-cols-lg-3 row-cols-xxl-5  g-4" style="width: 100%;">
             <div class="col my-2" v-if="labeler_config.style=='pair-image'">
                 <div class="card">
                     <div class="card-header">
@@ -191,13 +200,13 @@
             <div class="col" v-if="labeler_config.style=='list'" v-for="(doc, doc_idx) in cur_batch">
                 <div class="card">
                     <div class="card-header text-dark">
-                        List · Label all relevant ones
+                        List · Image
                     </div>
                     <div class="card-body">
                         <img v-bind:src="doc.tags.uri" class="img-thumbnail img-fluid my-2" style="width: 100%">
                         <hr>
                         <div class="row row-cols-3">
-                            <div class="col" v-for="match in doc.matches">
+                            <div class="col compact-img" v-for="match in doc.matches">
                                 <img v-bind:src="match.tags.uri" class="img-thumbnail img-fluid"
                                      v-bind:class="{ 'img-relevant': match.tags.finetuner_label }" style="width: 100%"
                                      v-on:click="toggle_relevance(match)">
@@ -205,7 +214,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <div class="btn-toolbar justify-content-between">
+                        <div class="btn-toolbar justify-content-between g-2">
                             <button type="button" class="btn btn-outline-success" v-on:click="select_all(doc.matches)">
                                 Invert
                             </button>

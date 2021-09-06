@@ -128,3 +128,13 @@ h4 {
     right: 0;
     margin: 50px;
 }
+
+.alert-loss-connect {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.compact-img {
+  padding: 3px;
+}

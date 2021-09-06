@@ -2,6 +2,8 @@ const urlParams = new URLSearchParams(window.location.search);
 const app = new Vue({
     el: '#app',
     data: {
+        is_busy: false,
+        is_conn_broken: false,
         view_template: {
             content: [{text: '.uri', value: 'uri'},
                 {text: '.text', value: 'text'},
@@ -23,7 +25,6 @@ const app = new Vue({
             positive: {text: 'Positive', value: 0},
             negative: {text: 'Negative', value: 0},
             ignore: {text: 'Ignore', value: 0},
-            is_busy: false
         },
         general_config: {
             server_port: 65123,
@@ -75,7 +76,8 @@ const app = new Vue({
             app.next_batch()
         },
         fit_doc: function (doc) {
-            app.progress_stats.is_busy = true
+            app.is_busy = true
+            app.is_conn_broken = false
             $.ajax({
                 type: "POST",
                 url: app.fit_address,
@@ -88,13 +90,16 @@ const app = new Vue({
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
             }).success(function (data, textStatus, jqXHR) {
-                app.progress_stats.is_busy = false
+                app.is_busy = false
             }).fail(function () {
                 console.error("bad connection!")
+                app.is_conn_broken = true
+                app.is_busy = false
             });
         },
         next_batch: function () {
-            app.progress_stats.is_busy = true
+            app.is_busy = true
+            app.is_conn_broken = false
             let end_idx = app.labeler_config.start_idx + (app.labeler_config.example_per_view - app.cur_batch.length)
             if (end_idx === app.labeler_config.start_idx) {
                 return
@@ -115,11 +120,13 @@ const app = new Vue({
                 dataType: "json",
             }).success(function (data, textStatus, jqXHR) {
                 app.cur_batch.push(...data['data'].docs)
-                app.progress_stats.is_busy = false
+                app.is_busy = false
                 app.labeler_config.start_idx = end_idx
                 app.progress_stats.this_session.value = app.cur_batch.length
             }).fail(function () {
                 console.error("bad connection!")
+                app.is_conn_broken = true
+                app.is_busy = false
             });
         }
     }
