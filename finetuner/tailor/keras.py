@@ -1,3 +1,5 @@
+from keras.models import Model
+
 from ..keras.parser import get_candidate_layers
 
 
@@ -14,3 +16,8 @@ def tail(model, layer_idx: int, freeze=True):
         msg = f'Layer index {layer_idx} is not a candidate layer.'
         msg += f'One of the index in {tailorable_indices} expected.'
         raise IndexError(msg)
+    model = Model(model.input, model.layers[layer_idx].output)
+    if freeze:
+        for layer in model.layers:
+            layer.trainable = False
+    return model

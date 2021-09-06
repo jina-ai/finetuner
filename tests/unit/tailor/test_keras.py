@@ -8,8 +8,8 @@ from finetuner.tailor.keras import tail
 def dense_model():
     model = tf.keras.models.Sequential()
     model.add(tf.keras.Input(shape=(16,)))
-    model.add(tf.keras.layers.Dense(32, activation='relu'))
-    model.add(tf.keras.layers.Dense(32, activation='relu'))
+    model.add(tf.keras.layers.Dense(128, activation='relu'))
+    model.add(tf.keras.layers.Dense(64, activation='relu'))
     model.add(tf.keras.layers.Dense(32, activation='relu'))
     model.add(tf.keras.layers.Dense(10, activation='softmax'))
     return model
@@ -64,17 +64,20 @@ def test_tail_fail_with_unexpected_layer_idx(dense_model):
         tail(dense_model, layer_idx=10)
 
 
+@pytest.mark.parametrize('freeze', [True, False])
 @pytest.mark.parametrize(
-    'model, expected',
+    'model, layer_idx, expected_output_shape',
     [
-        ('dense_model', 1),
+        ('dense_model', 1, (None, 64)),
         # ('simple_cnn_model', 1),
         # ('vgg16_cnn_model', 1),
         # ('lstm_model', 1),
     ],
     indirect=['model'],
 )
-def test_tail(model, expected):
-    print(model)
-    print(type(model))
-    tail(model=model, layer_idx=1, freeze=True)
+def test_tail(model, layer_idx, expected_output_shape, freeze):
+    model = tail(model=model, layer_idx=layer_idx, freeze=freeze)
+    assert model.output_shape == expected_output_shape
+    if freeze:
+        for layer in model.layers:
+            assert layer.trainable is False
