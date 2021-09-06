@@ -8,4 +8,5 @@ def tail(model, layer_idx: int, freeze=True):
     :param layer_idx: The layer index to cut from, it should be one of the candidate layers.
     :param freeze: Freeze the weight of the base model without training.
     """
-    pass
+    candidate_layers = get_candidate_layers(model)
+    print(candidate_layers)
