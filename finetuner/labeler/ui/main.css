@@ -138,3 +138,7 @@ h4 {
 .compact-img {
   padding: 3px;
 }
+
+[v-cloak] {
+  display: none;
+}

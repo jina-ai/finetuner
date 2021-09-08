@@ -41,11 +41,14 @@ const app = new Vue({
         cur_batch: []
     },
     computed: {
+        host_address: function () {
+            return `${this.general_config.server_address}:${urlParams.get('port') ?? this.general_config.server_port}`
+        },
         next_address: function () {
-            return `${this.general_config.server_address}:${urlParams.get('port') ?? this.general_config.server_port}${this.general_config.next_endpoint}`
+            return `${this.host_address}${this.general_config.next_endpoint}`
         },
         fit_address: function () {
-            return `${this.general_config.server_address}:${urlParams.get('port') ?? this.general_config.server_port}${this.general_config.fit_endpoint}`
+            return `${this.host_address}${this.general_config.fit_endpoint}`
         },
         positive_rate: function () {
             return this.progress_stats.positive.value / (this.progress_stats.positive.value + this.progress_stats.negative.value) * 100
@@ -102,6 +105,15 @@ const app = new Vue({
                 app.is_conn_broken = true
                 app.is_busy = false
             });
+        },
+        get_content: function (doc) {
+            if (app.labeler_config.content === 'uri') {
+                return doc.uri
+            } else if (app.labeler_config.content === 'text') {
+                return doc.text
+            } else if (app.labeler_config.content === 'tags') {
+                return doc.tags[app.labeler_config.tags]
+            }
         },
         next_batch: function () {
             let end_idx = app.labeler_config.start_idx + (app.labeler_config.example_per_view - app.cur_batch.length)

@@ -270,8 +270,8 @@ def fashion_doc_generator(download_proxy=None, is_testset=False, **kwargs):
             content=(raw_img / 255.0).astype(np.float32),
             tags={
                 'class': int(lbl),
-                'uri': 'data:image/png;base64,' + base64.b64encode(png_bytes).decode(),
             },
+            uri='data:image/png;base64,' + base64.b64encode(png_bytes).decode(),
         )
 
 

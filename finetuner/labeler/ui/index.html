@@ -12,10 +12,10 @@
     <link href="main.css" rel="stylesheet">
 </head>
 <body>
-<main id="app">
+<main id="app" v-cloak>
     <div class="alert alert-danger position-absolute top-0 start-50 translate-middle-x" role="alert"
          v-if="is_conn_broken">
-        Can not connect to the server! Please check your connection.
+        Can not connect to the server on {{host_address}} Please check your connection.
     </div>
     <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; overflow: scroll">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
@@ -40,7 +40,7 @@
             <div class="row my-1" v-if="labeler_config.content == 'tags'">
                 <label class="col-sm-6 col-form-label">Tags Key</label>
                 <div class="col-sm-6">
-                    <input class="form-control" type="text" v-model.number="labeler_config.tags">
+                    <input class="form-control" type="text" v-model.number="labeler_config.tags" required>
                 </div>
             </div>
             <div class="row my-1">
@@ -203,11 +203,11 @@
                         List · Image
                     </div>
                     <div class="card-body">
-                        <img v-bind:src="doc.tags.uri" class="img-thumbnail img-fluid my-2" style="width: 100%">
+                        <img v-bind:src="get_content(doc)" class="img-thumbnail img-fluid my-2" style="width: 100%">
                         <hr>
                         <div class="row row-cols-3">
                             <div class="col compact-img" v-for="match in doc.matches">
-                                <img v-bind:src="match.tags.uri" class="img-thumbnail img-fluid"
+                                <img v-bind:src="get_content(match)" class="img-thumbnail img-fluid"
                                      v-bind:class="{ 'img-relevant': match.tags.finetuner_label }" style="width: 100%"
                                      v-on:click="toggle_relevance(match)">
                             </div>
