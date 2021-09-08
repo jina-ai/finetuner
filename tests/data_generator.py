@@ -263,15 +263,11 @@ def fashion_doc_generator(download_proxy=None, is_testset=False, **kwargs):
     for raw_img, lbl in zip(
         targets[partition]['data'], targets[f'{partition}-labels']['data']
     ):
-        png_bytes = png_to_buffer(
-            raw_img, width=28, height=28, resize_method='BILINEAR'
-        )
         yield Document(
             content=(raw_img / 255.0).astype(np.float32),
             tags={
                 'class': int(lbl),
             },
-            uri='data:image/png;base64,' + base64.b64encode(png_bytes).decode(),
         )
 
 
