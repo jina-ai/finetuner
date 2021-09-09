@@ -3,8 +3,8 @@ import pytest
 import tensorflow as tf
 import torch
 
-from finetuner.paddle.parser import get_candidate_layers as gcl_p
-from finetuner.pytorch.parser import get_candidate_layers as gcl_t
+from finetuner.tuner.paddle.parser import get_candidate_layers as gcl_p
+from finetuner.tuner.pytorch.parser import get_candidate_layers as gcl_t
 
 
 @pytest.mark.parametrize(
