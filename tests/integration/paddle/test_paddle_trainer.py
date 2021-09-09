@@ -3,7 +3,7 @@ import paddle
 import pytest
 from paddle import nn
 
-from finetuner.paddle import PaddleTuner
+from finetuner.tuner.paddle import PaddleTuner
 from ...data_generator import fashion_match_doc_generator as fmdg
 from ...data_generator import qa_match_doc_generator as qmdg
 

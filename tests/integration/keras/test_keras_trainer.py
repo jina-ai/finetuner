@@ -3,7 +3,7 @@ import pytest
 import tensorflow as tf
 from tensorflow import keras
 
-from finetuner.keras import KerasTuner
+from finetuner.tuner.keras import KerasTuner
 from ...data_generator import fashion_match_doc_generator as fmdg
 from ...data_generator import qa_match_doc_generator as qmdg
 

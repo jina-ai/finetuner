@@ -60,18 +60,18 @@ class BaseHead:
 class BaseTuner(abc.ABC):
     def __init__(
         self,
-        base_model: Optional[AnyDNN] = None,
+        embed_model: Optional[AnyDNN] = None,
         head_layer: Union[AnyDNN, str, None] = None,
         **kwargs,
     ):
-        self._base_model = base_model
+        self._embed_model = embed_model
         self._head_layer = head_layer
         self.logger = JinaLogger(self.__class__.__name__)
 
     @property
-    def base_model(self) -> AnyDNN:
+    def embed_model(self) -> AnyDNN:
         """Get the base model of this object."""
-        return self._base_model
+        return self._embed_model
 
     @property
     @abc.abstractmethod
@@ -108,19 +108,19 @@ class BaseTuner(abc.ABC):
         *args,
         **kwargs,
     ) -> Dict:
-        """Fit the :property:`base_model` on ``doc_array`` data.
+        """Fit the :property:`embed_model` on ``doc_array`` data.
 
-        Note that fitting changes the weights in :property:`base_model` in-place. This allows one to consecutively
+        Note that fitting changes the weights in :property:`embed_model` in-place. This allows one to consecutively
         call :func:`fit` multiple times with different configs or data to get better models.
         """
         ...
 
     @abc.abstractmethod
     def save(self, *args, **kwargs):
-        """Save the weights of the ``base_model``.
+        """Save the weights of the ``embed_model``.
 
         Note that, the ``head_layer`` and ``wrapped_model`` do not need to be stored, as they are auxiliary layers
-        for tuning ``base_model``.
+        for tuning ``embed_model``.
         """
         ...
 
@@ -158,16 +158,16 @@ class BaseDataset:
 class BaseArityModel:
     """The helper class to copy the network for multi-inputs."""
 
-    def __init__(self, base_model: AnyDNN):
+    def __init__(self, embed_model: AnyDNN):
         super().__init__()
-        self._base_model = base_model
+        self._embed_model = embed_model
 
     def forward(self, *args):
-        return tuple(self._base_model(a) for a in args)
+        return tuple(self._embed_model(a) for a in args)
 
 
 def fit(
-    base_model: AnyDNN,
+    embed_model: AnyDNN,
     head_layer: str,
     train_data: DocumentArrayLike,
     eval_data: Optional[DocumentArrayLike] = None,
@@ -175,22 +175,22 @@ def fit(
     batch_size: int = 256,
 ):
 
-    if 'keras.' in base_model.__module__:
-        from .keras import KerasTuner
+    if 'keras.' in embed_model.__module__:
+        from .tuner.keras import KerasTuner
 
         ft = KerasTuner
-    elif 'torch.' in base_model.__module__:
-        from .pytorch import PytorchTuner
+    elif 'torch.' in embed_model.__module__:
+        from .tuner.pytorch import PytorchTuner
 
         ft = PytorchTuner
-    elif 'paddle.' in base_model.__module__:
-        from .paddle import PaddleTuner
+    elif 'paddle.' in embed_model.__module__:
+        from .tuner.paddle import PaddleTuner
 
         ft = PaddleTuner
     else:
         raise ValueError(
-            f'can not determine the backend from base_model from {base_model.__module__}'
+            f'can not determine the backend from embed_model from {embed_model.__module__}'
         )
 
-    f = ft(base_model, head_layer)
+    f = ft(embed_model, head_layer)
     return f.fit(train_data, eval_data, epochs=epochs, batch_size=batch_size)

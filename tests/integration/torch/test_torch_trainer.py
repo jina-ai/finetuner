@@ -5,7 +5,7 @@ import pytest
 import torch
 import torch.nn as nn
 
-from finetuner.pytorch import PytorchTuner
+from finetuner.tuner.pytorch import PytorchTuner
 from ...data_generator import fashion_match_doc_generator as fmdg
 from ...data_generator import qa_match_doc_generator as qmdg
 
