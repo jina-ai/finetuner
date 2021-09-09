@@ -69,10 +69,14 @@ def test_simple_lstm_model(tmpdir, params, head_layer):
     # fit and save the checkpoint
     pt.fit(
         train_data=lambda: qmdg(
-            num_total=params['num_train'], max_seq_len=params['max_seq_len']
+            num_total=params['num_train'],
+            max_seq_len=params['max_seq_len'],
+            is_testset=False,
         ),
         eval_data=lambda: qmdg(
-            num_total=params['num_eval'], max_seq_len=params['max_seq_len']
+            num_total=params['num_eval'],
+            max_seq_len=params['max_seq_len'],
+            is_testset=True,
         ),
         epochs=params['epochs'],
         batch_size=params['batch_size'],

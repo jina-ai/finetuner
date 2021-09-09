@@ -106,102 +106,36 @@
     </div>
     <div class="b-example-divider"></div>
     <div class="d-flex flex-grow-1 p-5" style="overflow: scroll">
-        <div class="row row-cols-md-1 row-cols-lg-3 row-cols-xxl-5  g-4" style="width: 100%;">
-            <div class="col my-2" v-if="labeler_config.style=='pair-image'">
+        <div class="row row-cols-md-1 row-cols-lg-3 row-cols-xxl-4  g-4" style="width: 100%;">
+            <div class="col" v-if="labeler_config.style=='text'" v-for="(doc, doc_idx) in cur_batch">
                 <div class="card">
-                    <div class="card-header">
-                        Pair · Are they relevant?
-                    </div>
                     <div class="card-body">
+                        {{get_content(doc)}}
+                        <hr>
                         <ul class="list-group">
-                            <li class="list-group-item">This is a wider card with supporting text below as a natural
-                                lead-in to
-                                additional content. This content is a little bit longer.
-                            </li>
-                            <li class="list-group-item">A second item</li>
-                        </ul>
-                    </div>
-                    <div class="card-footer">
-
-                        <button type="button" class="btn btn-success">Accept</button>
-                        <button type="button" class="btn btn-danger">Reject</button>
-                        <button type="button" class="btn btn-secondary">Ignore</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col my-2" v-if="labeler_config.style=='pair-text'">
-                <div class="card">
-                    <div class="card-header">
-                        Pair · Are they relevant?
-                    </div>
-                    <div class="card-body">
-                        <div class="container">
-
-                            <div class="row">
-                                <div class="col">
-                                    <img src="https://via.placeholder.com/150x600" class="img-thumbnail img-fluid"
-                                         alt="...">
+                            <li class="list-group-item" v-for="match in doc.matches">
+                                <div v-bind:class="{ 'img-relevant': match.tags.finetuner_label }" style="width: 100%"
+                                     v-on:click="toggle_relevance(match)">
+                                {{get_content(match)}}
                                 </div>
-                                <div class="col">
-                                    <img src="https://via.placeholder.com/600" class="img-thumbnail img-fluid"
-                                         alt="...">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <button type="button" class="btn btn-success">Accept</button>
-                        <button type="button" class="btn btn-danger">Reject</button>
-                        <button type="button" class="btn btn-secondary">Ignore</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col my-2" v-if="labeler_config.style=='list-text'">
-                <div class="card">
-                    <div class="card-header text-dark">
-                        List · Label all relevant and irrelevant ones
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                <input class="form-check-input me-1" type="checkbox">
-                                This is a wider card with supporting text below as a natural
-                                lead-in to
-                                additional content. This content is a little bit longer.
-                            </li>
-                            <li class="list-group-item">
-                                <input class="form-check-input me-1" type="checkbox">
-                                A second item
-                            </li>
-                            <li class="list-group-item">
-                                <input class="form-check-input me-1" type="checkbox">
-                                A second item
-                            </li>
-                            <li class="list-group-item">
-                                <input class="form-check-input me-1" type="checkbox">
-                                A second item
+
                             </li>
                         </ul>
                     </div>
                     <div class="card-footer">
-                        <div class="btn-toolbar justify-content-between">
-                            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off"
-                                       checked>
-                                <label class="btn btn-outline-success" for="btnradio1">Relevant</label>
-                                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-                                <label class="btn btn-outline-danger" for="btnradio2">Irrelevant</label>
-                            </div>
-                            <button type="button" class="btn btn-primary">Done</button>
+                        <div class="btn-toolbar justify-content-between g-2">
+                            <button type="button" class="btn btn-outline-success" v-on:click="select_all(doc.matches)">
+                                Invert
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" v-on:click="submit_doc(doc_idx)">
+                                Done
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col" v-if="labeler_config.style=='list'" v-for="(doc, doc_idx) in cur_batch">
+            <div class="col" v-if="labeler_config.style=='image'" v-for="(doc, doc_idx) in cur_batch">
                 <div class="card">
-                    <div class="card-header text-dark">
-                        List · Image
-                    </div>
                     <div class="card-body">
                         <img v-bind:src="get_content(doc)" class="img-thumbnail img-fluid my-2" style="width: 100%">
                         <hr>

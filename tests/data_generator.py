@@ -1,17 +1,14 @@
-# Downloading fashion mnist, copy from jina hello fashion
-# no surprise here
-import base64
 import copy
 import csv
 import gzip
 import os
 import urllib.request
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 from jina import Document, DocumentArray
 from jina.logging.profile import ProgressBar
-from jina.types.document import png_to_buffer
 
 from finetuner import __default_tag_key__
 from tests.text_sequence import build_vocab, text_to_int_sequence
@@ -35,6 +32,23 @@ def qa_match_documentarray(**kwargs):
     return da
 
 
+def qa_blob_doc_generator(max_seq_len: int = 100, **kwargs):
+    all_docs = DocumentArray(qa_data_generator(**kwargs))
+
+    all_texts = (
+        all_docs.get_attributes('tags__question')
+        + all_docs.get_attributes('tags__answer')
+        + all_docs.get_attributes('tags__wrong_answer')
+    )
+    vocab = build_vocab(all_texts, min_freq=2)
+
+    for d in all_docs:
+        d.blob = np.array(
+            text_to_int_sequence(d.tags['question'], vocab, max_seq_len), np.long
+        )
+        yield d
+
+
 def qa_match_doc_generator(
     num_total: int = 481,
     num_neg: int = 5,
@@ -42,7 +56,7 @@ def qa_match_doc_generator(
     neg_value: int = -1,
     to_ndarray: bool = True,
     max_seq_len: int = 100,
-    is_testset: bool = False,
+    is_testset: Optional[bool] = None,
 ):
     """Get a generator of QA data with synthetic negative matches.
 
@@ -52,7 +66,7 @@ def qa_match_doc_generator(
     :param neg_value: the label value of the negative matches
     :param to_ndarray: if set, then `text` is tokenized into a fixed length `ndarray`
     :param max_seq_len: the maximum sequence length of each text.
-    :param is_testset: If to generate test data
+    :param is_testset: If to generate test data, if set to None, will all data return
     :return:
     """
     num_doc = 0
@@ -176,7 +190,9 @@ def fashion_match_doc_generator(
             break
 
 
-def qa_data_generator(download_proxy=None, is_testset=False, **kwargs):
+def qa_data_generator(
+    download_proxy=None, is_testset: Optional[bool] = False, **kwargs
+):
     download_dir = './data'
     Path(download_dir).mkdir(parents=True, exist_ok=True)
 
@@ -205,7 +221,9 @@ def qa_data_generator(download_proxy=None, is_testset=False, **kwargs):
         with open(targets['covid-csv']['filename']) as fp:
             lines = csv.DictReader(fp)
             for idx, value in enumerate(lines):
-                if is_testset:
+                if is_testset is None:
+                    yield Document(value)
+                elif is_testset:
                     if idx % 2 == 0:
                         yield Document(value)
                 else:
