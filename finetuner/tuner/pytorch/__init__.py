@@ -10,7 +10,7 @@ from torch.utils.data.dataloader import DataLoader
 
 from . import head_layers, datasets
 from ..base import BaseTuner, BaseHead, BaseArityModel, DocumentArrayLike
-from ...dataset.helper import get_dataset
+from ..dataset.helper import get_dataset
 
 
 class _ArityModel(BaseArityModel, nn.Module):
