@@ -42,7 +42,7 @@ const app = new Vue({
     },
     computed: {
         host_address: function () {
-            return `${this.general_config.server_address}:${urlParams.get('port') ?? this.general_config.server_port}`
+            return `${this.general_config.server_address}:${location.port ?? this.general_config.server_port}`
         },
         next_address: function () {
             return `${this.host_address}${this.general_config.next_endpoint}`

@@ -4,7 +4,7 @@ from typing import Dict
 from jina import Executor, DocumentArray, requests, DocumentArrayMemmap
 from jina.helper import cached_property
 
-import finetuner as jft
+import finetuner.tuner.fit as jft
 
 
 class FTExecutor(Executor):
