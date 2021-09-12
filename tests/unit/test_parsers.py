@@ -64,7 +64,7 @@ def test_keras_model_parser():
         ]
     )
 
-    from finetuner.keras.parser import get_candidate_layers
+    from finetuner.tailor.keras.parser import get_candidate_layers
 
     r = get_candidate_layers(user_model)
     assert len(r) == 3

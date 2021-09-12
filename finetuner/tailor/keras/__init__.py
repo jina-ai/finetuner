@@ -1,6 +1,6 @@
 from keras.models import Model
 
-from ..keras.parser import get_candidate_layers
+from .parser import get_candidate_layers
 
 
 def trim(model, layer_idx: int, freeze=True):
