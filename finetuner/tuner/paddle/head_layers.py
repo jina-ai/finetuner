@@ -2,7 +2,7 @@ import paddle
 import paddle.nn.functional as F
 from paddle import nn
 
-from ...base import BaseHead
+from ..base import BaseHead
 
 
 class CosineLayer(BaseHead, nn.Layer):

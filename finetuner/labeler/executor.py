@@ -3,15 +3,22 @@ from typing import Dict
 
 from jina import Executor, DocumentArray, requests, DocumentArrayMemmap
 from jina.helper import cached_property
-from jina.logging.profile import TimeContext
 
 import finetuner as jft
 
 
 class FTExecutor(Executor):
-    def __init__(self, dam_path: str, **kwargs):
+    def __init__(
+        self,
+        dam_path: str,
+        metric: str = 'cosine',
+        head_layer: str = 'CosineLayer',
+        **kwargs
+    ):
         super().__init__(**kwargs)
         self._all_data = DocumentArrayMemmap(dam_path)
+        self._metric = metric
+        self._head_layer = head_layer
 
     @abc.abstractmethod
     def get_embed_model(self):
@@ -30,7 +37,7 @@ class FTExecutor(Executor):
 
         docs.match(
             da,
-            metric='cosine',
+            metric=self._metric,
             limit=int(parameters.get('topk', 10)),
             exclude_self=True,
         )
@@ -41,7 +48,7 @@ class FTExecutor(Executor):
     def fit(self, docs, parameters: Dict, **kwargs):
         jft.fit(
             self._embed_model,
-            'CosineLayer',
+            self._head_layer,
             docs,
             epochs=int(parameters.get('epochs', 10)),
         )
@@ -52,21 +59,20 @@ class DataIterator(Executor):
         self,
         dam_path: str,
         labeled_dam_path: str,
-        clear_labeled_on_start: bool = False,
+        clear_labels_on_start: bool = False,
         **kwargs
     ):
         super().__init__(**kwargs)
         self._all_data = DocumentArrayMemmap(dam_path)
         self._labeled_dam = DocumentArrayMemmap(labeled_dam_path)
-        if clear_labeled_on_start:
+        if clear_labels_on_start:
             self._labeled_dam.clear()
 
     @requests(on='/next')
     def take_batch(self, parameters: Dict, **kwargs):
-        with TimeContext('get'):
-            st = int(parameters.get('start', 0))
-            ed = int(parameters.get('end', 1))
-            return self._all_data[st:ed]
+        st = int(parameters.get('start', 0))
+        ed = int(parameters.get('end', 1))
+        return self._all_data[st:ed]
 
     @requests(on='/fit')
     def add_fit_data(self, docs: DocumentArray, **kwargs):

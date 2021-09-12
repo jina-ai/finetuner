@@ -1,6 +1,6 @@
 from paddle.io import IterableDataset
 
-from ...base import BaseDataset
+from ..base import BaseDataset
 from ...dataset import SiameseMixin, TripletMixin
 
 
