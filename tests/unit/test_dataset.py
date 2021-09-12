@@ -3,7 +3,7 @@ import pytest
 
 from tests.data_generator import fashion_match_doc_generator as fmdg
 from tests.data_generator import fashion_match_documentarray as fmda
-from finetuner.dataset import SiameseMixin, TripletMixin
+from finetuner.tuner.dataset import SiameseMixin, TripletMixin
 from finetuner.tuner.base import BaseDataset
 
 
