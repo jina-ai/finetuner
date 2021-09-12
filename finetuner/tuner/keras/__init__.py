@@ -9,7 +9,7 @@ from tensorflow.keras import Model
 
 from . import head_layers, datasets
 from .head_layers import HeadLayer
-from ...base import BaseTuner, DocumentArrayLike
+from ..base import BaseTuner, DocumentArrayLike
 from ...dataset.helper import get_dataset
 
 

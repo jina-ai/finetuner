@@ -7,7 +7,7 @@ from paddle.io import DataLoader
 from paddle.optimizer import Optimizer
 import numpy as np
 from . import head_layers, datasets
-from ...base import BaseTuner, BaseHead, BaseArityModel, DocumentArrayLike
+from ..base import BaseTuner, BaseHead, BaseArityModel, DocumentArrayLike
 from ...dataset.helper import get_dataset
 
 

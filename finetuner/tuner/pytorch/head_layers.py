@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ...base import BaseHead
+from ..base import BaseHead
 
 
 class CosineLayer(BaseHead, nn.Module):

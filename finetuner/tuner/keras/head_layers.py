@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Layer
 
-from ...base import BaseHead
+from ..base import BaseHead
 
 
 class HeadLayer(BaseHead, Layer):
