@@ -49,7 +49,7 @@ finetuner.fit(...)
   - in Keras:
     ```python
     import tensorflow as tf
-    base_model = tf.keras.Sequential([
+    embed_model = tf.keras.Sequential([
                 tf.keras.layers.Flatten(input_shape=(28, 28)),
                 tf.keras.layers.Dense(128, activation='relu'),
                 tf.keras.layers.Dense(32)
@@ -59,7 +59,7 @@ finetuner.fit(...)
   - in Pytorch:
       ```python
       import torch
-      base_model = torch.nn.Sequential(
+      embed_model = torch.nn.Sequential(
           torch.nn.Flatten(),
           torch.nn.Linear(in_features=28 * 28, out_features=128),
           torch.nn.ReLU(),
@@ -69,7 +69,7 @@ finetuner.fit(...)
   - in Paddle:
       ```python
       import paddle
-      base_model = paddle.nn.Sequential(
+      embed_model = paddle.nn.Sequential(
           paddle.nn.Flatten(),
           paddle.nn.Linear(in_features=28 * 28, out_features=128),
           paddle.nn.ReLU(),
@@ -85,7 +85,7 @@ finetuner.fit(...)
     from tests.data_generator import fashion_match_doc_generator as mdg
 
     finetuner.fit(
-        base_model,
+        embed_model,
         head_layer='CosineLayer',
         train_data=mdg,
         eval_data=lambda: mdg(is_testset=True)
@@ -112,7 +112,7 @@ With `head_layer='TripletLayer'`
    - in Keras:
       ```python
       import tensorflow as tf
-      base_model = tf.keras.Sequential([
+      embed_model = tf.keras.Sequential([
          tf.keras.layers.Embedding(input_dim=5000, output_dim=64),
          tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
          tf.keras.layers.Dense(32)])
@@ -126,7 +126,7 @@ With `head_layer='TripletLayer'`
              out, _ = x
              return out[:, -1, :]
 
-      base_model = torch.nn.Sequential(
+      embed_model = torch.nn.Sequential(
          torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
          torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
          LastCell(),
@@ -141,7 +141,7 @@ With `head_layer='TripletLayer'`
              out, _ = x
              return out[:, -1, :]
 
-      base_model = paddle.nn.Sequential(
+      embed_model = paddle.nn.Sequential(
          paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),
          paddle.nn.LSTM(64, 64, direction='bidirectional'),
          LastCell(),
@@ -157,7 +157,7 @@ With `head_layer='TripletLayer'`
     from tests.data_generator import qa_match_doc_generator as mdg
 
     finetuner.fit(
-        base_model,
+        embed_model,
         head_layer='CosineLayer',
         train_data=mdg,
         eval_data=mdg

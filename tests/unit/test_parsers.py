@@ -3,8 +3,8 @@ import pytest
 import tensorflow as tf
 import torch
 
-from finetuner.paddle.parser import get_candidate_layers as gcl_p
-from finetuner.pytorch.parser import get_candidate_layers as gcl_t
+from finetuner.tailor.paddle.parser import get_candidate_layers as gcl_p
+from finetuner.tailor.pytorch.parser import get_candidate_layers as gcl_t
 
 
 @pytest.mark.parametrize(
@@ -64,7 +64,7 @@ def test_keras_model_parser():
         ]
     )
 
-    from finetuner.keras.parser import get_candidate_layers
+    from finetuner.tailor.keras.parser import get_candidate_layers
 
     r = get_candidate_layers(user_model)
     assert len(r) == 3

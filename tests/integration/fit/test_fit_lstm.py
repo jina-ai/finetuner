@@ -21,7 +21,7 @@ class LastCellPD(paddle.nn.Layer):
 
 
 def test_fit_all(tmpdir):
-    base_models = {
+    embed_models = {
         'keras': lambda: tf.keras.Sequential(
             [
                 tf.keras.layers.Embedding(input_dim=5000, output_dim=64),
@@ -43,7 +43,7 @@ def test_fit_all(tmpdir):
         ),
     }
 
-    for kb, b in base_models.items():
+    for kb, b in embed_models.items():
         for h in ['CosineLayer', 'TripletLayer']:
             result = finetuner.fit(
                 b(),

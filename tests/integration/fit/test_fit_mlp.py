@@ -9,7 +9,7 @@ from tests.data_generator import fashion_match_doc_generator as mdg
 
 
 def test_fit_all(tmpdir):
-    base_models = {
+    embed_models = {
         'keras': lambda: tf.keras.Sequential(
             [
                 tf.keras.layers.Flatten(input_shape=(28, 28)),
@@ -37,7 +37,7 @@ def test_fit_all(tmpdir):
         ),
     }
 
-    for kb, b in base_models.items():
+    for kb, b in embed_models.items():
         for h in ['CosineLayer', 'TripletLayer']:
             result = finetuner.fit(
                 b(),

@@ -1,36 +1,34 @@
 from typing import Optional
 
-import numpy as np
-import torch
-import torch.nn as nn
-from jina.helper import cached_property
+import paddle
 from jina.logging.profile import ProgressBar
-from torch.optim.optimizer import Optimizer
-from torch.utils.data.dataloader import DataLoader
-
+from paddle import nn
+from paddle.io import DataLoader
+from paddle.optimizer import Optimizer
+import numpy as np
 from . import head_layers, datasets
-from ..base import BaseTuner, BaseHead, BaseArityModel, DocumentArrayLike
-from ..dataset.helper import get_dataset
+from ...base import BaseTuner, BaseHead, BaseArityModel, DocumentArrayLike
+from ...dataset.helper import get_dataset
 
 
-class _ArityModel(BaseArityModel, nn.Module):
+class _ArityModel(BaseArityModel, nn.Layer):
     ...
 
 
-class PytorchTuner(BaseTuner):
+class PaddleTuner(BaseTuner):
     @property
     def head_layer(self) -> BaseHead:
         if isinstance(self._head_layer, str):
             return getattr(head_layers, self._head_layer)
-        elif isinstance(self._head_layer, BaseHead):
+        elif isinstance(self._head_layer, nn.Layer):
             return self._head_layer
 
-    @cached_property
-    def wrapped_model(self) -> nn.Module:
-        if self.base_model is None:
-            raise ValueError(f'base_model is not set')
+    @property
+    def wrapped_model(self) -> nn.Layer:
+        if self.embed_model is None:
+            raise ValueError(f'embed_model is not set')
 
-        return self.head_layer(_ArityModel(self.base_model))  # wrap with head layer
+        return self.head_layer(_ArityModel(self.embed_model))  # wrap with head layer
 
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
         ds = get_dataset(datasets, self.arity)
@@ -71,7 +69,7 @@ class PytorchTuner(BaseTuner):
         metrics = []
 
         get_desc_str = (
-            lambda: f'Loss={np.mean(losses):.2f} Accuracy={np.mean(metrics):.2f}'
+            lambda: f'Loss={np.mean(losses):.2f} Accuracy={float(np.mean(metrics)):.2f}'
         )
 
         with ProgressBar(description, message_on_done=get_desc_str) as p:
@@ -81,7 +79,7 @@ class PytorchTuner(BaseTuner):
                 loss = self.wrapped_model.loss_fn(outputs, label)
                 metric = self.wrapped_model.metric_fn(outputs, label)
 
-                optimizer.zero_grad()
+                optimizer.clear_grad()
 
                 loss.backward()
                 optimizer.step()
@@ -100,9 +98,11 @@ class PytorchTuner(BaseTuner):
         batch_size: int = 256,
         **kwargs,
     ):
-        optimizer = torch.optim.RMSprop(
-            params=self.wrapped_model.parameters()
-        )  # stay the same as keras
+        model = self.wrapped_model
+
+        optimizer = paddle.optimizer.RMSProp(
+            learning_rate=0.01, parameters=model.parameters()
+        )
 
         losses_train = []
         metrics_train = []
@@ -136,4 +136,4 @@ class PytorchTuner(BaseTuner):
         }
 
     def save(self, *args, **kwargs):
-        torch.save(self.base_model.state_dict(), *args, **kwargs)
+        paddle.save(self.embed_model.state_dict(), *args, **kwargs)

@@ -3,7 +3,7 @@ import pytest
 import tensorflow as tf
 from tensorflow import keras
 
-from finetuner.keras import KerasTuner
+from finetuner.tuner.keras import KerasTuner
 from ...data_generator import fashion_match_doc_generator as fmdg
 from ...data_generator import qa_match_doc_generator as qmdg
 
@@ -57,10 +57,14 @@ def test_simple_lstm_model(tmpdir, params, head_layer):
     # fit and save the checkpoint
     kt.fit(
         train_data=lambda: qmdg(
-            num_total=params['num_train'], max_seq_len=params['max_seq_len']
+            num_total=params['num_train'],
+            max_seq_len=params['max_seq_len'],
+            is_testset=False,
         ),
         eval_data=lambda: qmdg(
-            num_total=params['num_eval'], max_seq_len=params['max_seq_len']
+            num_total=params['num_eval'],
+            max_seq_len=params['max_seq_len'],
+            is_testset=True,
         ),
         epochs=params['epochs'],
         batch_size=params['batch_size'],

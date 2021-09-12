@@ -9,8 +9,8 @@ from tensorflow.keras import Model
 
 from . import head_layers, datasets
 from .head_layers import HeadLayer
-from ..base import BaseTuner, DocumentArrayLike
-from ..dataset.helper import get_dataset
+from ...base import BaseTuner, DocumentArrayLike
+from ...dataset.helper import get_dataset
 
 
 class KerasTuner(BaseTuner):
@@ -23,13 +23,13 @@ class KerasTuner(BaseTuner):
 
     @cached_property
     def wrapped_model(self) -> Model:
-        if self.base_model is None:
-            raise ValueError(f'base_model is not set')
+        if self.embed_model is None:
+            raise ValueError(f'embed_model is not set')
 
-        input_shape = self.base_model.input_shape[1:]
+        input_shape = self.embed_model.input_shape[1:]
         input_values = [keras.Input(shape=input_shape) for _ in range(self.arity)]
         head_layer = self.head_layer()
-        head_values = head_layer(*(self.base_model(v) for v in input_values))
+        head_values = head_layer(*(self.embed_model(v) for v in input_values))
         wrapped_model = Model(inputs=input_values, outputs=head_values)
 
         return wrapped_model
@@ -37,7 +37,7 @@ class KerasTuner(BaseTuner):
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
 
         ds = get_dataset(datasets, self.arity)
-        input_shape = self.base_model.input_shape[1:]
+        input_shape = self.embed_model.input_shape[1:]
 
         tf_data = tf.data.Dataset.from_generator(
             lambda: ds(inputs),
@@ -53,7 +53,7 @@ class KerasTuner(BaseTuner):
         if shuffle:
             tf_data = tf_data.shuffle(buffer_size=4096)
 
-        return tf_data.batch(batch_size, drop_remainder=True)
+        return tf_data.batch(batch_size)
 
     def _train(self, data, optimizer, description: str):
         head_layer = self.head_layer()
@@ -152,4 +152,4 @@ class KerasTuner(BaseTuner):
         }
 
     def save(self, *args, **kwargs):
-        self.base_model.save(*args, **kwargs)
+        self.embed_model.save(*args, **kwargs)
