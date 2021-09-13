@@ -1,6 +1,6 @@
 from typing import Optional
 
-from .tuner.base import AnyDNN, DocumentArrayLike
+from .base import AnyDNN, DocumentArrayLike
 
 
 def fit(
@@ -13,15 +13,15 @@ def fit(
 ):
 
     if 'keras.' in embed_model.__module__:
-        from .tuner.keras import KerasTuner
+        from .keras import KerasTuner
 
         ft = KerasTuner
     elif 'torch.' in embed_model.__module__:
-        from .tuner.pytorch import PytorchTuner
+        from .pytorch import PytorchTuner
 
         ft = PytorchTuner
     elif 'paddle.' in embed_model.__module__:
-        from .tuner.paddle import PaddleTuner
+        from .paddle import PaddleTuner
 
         ft = PaddleTuner
     else:
