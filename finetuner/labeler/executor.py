@@ -35,14 +35,14 @@ class FTExecutor(Executor):
             min(len(self._all_data), int(parameters.get('sample_size', 1000)))
         )
 
-        f = get_framework(self._embed_model)
+        f_type = get_framework(self._embed_model)
 
-        if f == 'keras':
+        if f_type == 'keras':
             da_input = da.blobs
             docs_input = docs.blobs
             da.embeddings = self._embed_model(da_input).numpy()
             docs.embeddings = self._embed_model(docs_input).numpy()
-        elif f == 'torch':
+        elif f_type == 'torch':
             import torch
 
             self._embed_model.eval()
@@ -50,7 +50,7 @@ class FTExecutor(Executor):
             docs_input = torch.from_numpy(docs.blobs)
             da.embeddings = self._embed_model(da_input).detach().numpy()
             docs.embeddings = self._embed_model(docs_input).detach().numpy()
-        elif f == 'paddle':
+        elif f_type == 'paddle':
             import paddle
 
             self._embed_model.eval()

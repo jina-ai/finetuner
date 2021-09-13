@@ -12,7 +12,6 @@ def fit(
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
     interactive: bool = True,
-    **kwargs,
 ):
     ...
 
@@ -25,13 +24,13 @@ def fit(
     eval_data: Optional[DocumentArrayLike] = None,
     epochs: int = 10,
     batch_size: int = 256,
-    **kwargs,
 ):
     ...
 
 
 def fit(*args, **kwargs):
     if kwargs.get('interactive', False):
+        kwargs.pop('interactive')
         from .labeler.fit import fit
 
         fit(*args, **kwargs)

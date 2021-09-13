@@ -10,22 +10,22 @@ def fit(
     eval_data: Optional[DocumentArrayLike] = None,
     epochs: int = 10,
     batch_size: int = 256,
-    **kwargs
 ):
-    f = get_framework(embed_model)
+    f_type = get_framework(embed_model)
 
-    if f == 'keras':
+    if f_type == 'keras':
         from .keras import KerasTuner
 
         ft = KerasTuner
-    elif f == 'torch':
+    elif f_type == 'torch':
         from .pytorch import PytorchTuner
 
         ft = PytorchTuner
-    elif f == 'paddle':
+    elif f_type == 'paddle':
         from .paddle import PaddleTuner
 
         ft = PaddleTuner
 
-    f = ft(embed_model, head_layer)
-    return f.fit(train_data, eval_data, epochs=epochs, batch_size=batch_size)
+    return ft(embed_model, head_layer).fit(
+        train_data, eval_data, epochs=epochs, batch_size=batch_size
+    )
