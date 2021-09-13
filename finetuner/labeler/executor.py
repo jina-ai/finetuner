@@ -5,7 +5,7 @@ from jina import Executor, DocumentArray, requests, DocumentArrayMemmap
 from jina.helper import cached_property
 
 import finetuner.tuner.fit as jft
-from finetuner.helper import get_framework
+from ..helper import get_framework
 
 
 class FTExecutor(Executor):

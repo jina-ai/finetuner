@@ -9,7 +9,7 @@ from jina import Flow, DocumentArray, DocumentArrayMemmap
 from jina.logging.predefined import default_logger
 
 from .executor import FTExecutor, DataIterator
-from ..tuner.base import DocumentArrayLike, AnyDNN
+from ..helper import AnyDNN, DocumentArrayLike
 
 
 def fit(
