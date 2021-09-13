@@ -4,7 +4,7 @@ import paddle
 import tensorflow as tf
 import torch
 
-import finetuner
+import finetuner.tuner.fit as jft
 from tests.data_generator import qa_match_doc_generator as mdg
 
 
@@ -45,7 +45,7 @@ def test_fit_all(tmpdir):
 
     for kb, b in embed_models.items():
         for h in ['CosineLayer', 'TripletLayer']:
-            result = finetuner.fit(
+            result = jft.fit(
                 b(),
                 head_layer=h,
                 train_data=lambda: mdg(num_total=300, max_seq_len=10),
