@@ -19,7 +19,6 @@ def fit(
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
-    **kwargs,
 ):
     if callable(unlabeled_data):
         unlabeled_data = unlabeled_data()
@@ -51,6 +50,7 @@ def fit(
                 'dam_path': dam_path,
                 'clear_labels_on_start': clear_labels_on_start,
             },
+            runtime_backend=runtime_backend,
         )
         .add(
             uses=MyExecutor,
