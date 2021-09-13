@@ -1,0 +1,41 @@
+from typing import Optional, overload
+
+from .helper import AnyDNN, DocumentArrayLike
+
+
+@overload
+def fit(
+    embed_model: AnyDNN,
+    head_layer: str,
+    unlabeled_data: DocumentArrayLike,
+    clear_labels_on_start: bool = False,
+    port_expose: Optional[int] = None,
+    runtime_backend: str = 'thread',
+    interactive: bool = True,
+    **kwargs,
+):
+    ...
+
+
+@overload
+def fit(
+    embed_model: AnyDNN,
+    head_layer: str,
+    train_data: DocumentArrayLike,
+    eval_data: Optional[DocumentArrayLike] = None,
+    epochs: int = 10,
+    batch_size: int = 256,
+    **kwargs,
+):
+    ...
+
+
+def fit(*args, **kwargs):
+    if kwargs.get('interactive', False):
+        from .labeler.fit import fit
+
+        fit(*args, **kwargs)
+    else:
+        from .labeler.fit import fit
+
+        fit(*args, **kwargs)

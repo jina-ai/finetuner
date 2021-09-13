@@ -1,7 +1,6 @@
 from typing import Optional
 
-from .base import AnyDNN, DocumentArrayLike
-from ..helper import get_framework
+from ..helper import get_framework, AnyDNN, DocumentArrayLike
 
 
 def fit(
@@ -11,6 +10,7 @@ def fit(
     eval_data: Optional[DocumentArrayLike] = None,
     epochs: int = 10,
     batch_size: int = 256,
+    **kwargs
 ):
     f = get_framework(embed_model)
 
