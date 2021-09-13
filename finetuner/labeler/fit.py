@@ -18,6 +18,7 @@ def fit(
     unlabeled_data: DocumentArrayLike,
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
+    runtime_backend: str = 'thread',
 ):
     if callable(unlabeled_data):
         unlabeled_data = unlabeled_data()
@@ -37,8 +38,6 @@ def fit(
     else:
         raise TypeError(f'{unlabeled_data} is not supported')
 
-    labeled_dam_path = f'{dam_path}/labeled'
-
     class MyExecutor(FTExecutor):
         def get_embed_model(self):
             return embed_model
@@ -49,7 +48,6 @@ def fit(
             uses=DataIterator,
             uses_with={
                 'dam_path': dam_path,
-                'labeled_dam_path': labeled_dam_path,
                 'clear_labels_on_start': clear_labels_on_start,
             },
         )
@@ -59,6 +57,7 @@ def fit(
                 'dam_path': dam_path,
                 'head_layer': head_layer,
             },
+            runtime_backend=runtime_backend,  # eager-mode tf2 (M1-compiled) can not be run under `process` mode
         )
     )
 
@@ -75,15 +74,11 @@ def fit(
     jina.helper.extend_rest_interface = extend_rest_function
 
     with f:
-        f.logger.info('finetuner labeler is available at')
         url_html_path = f'http://localhost:{f.port_expose}/finetuner'
         try:
             webbrowser.open(url_html_path, new=2)
         except:
             pass  # intentional pass, browser support isn't cross-platform
         finally:
-            default_logger.info(
-                f'You should see a webpage opened in your browser, '
-                f'if not you may open `{url_html_path}` manually.'
-            )
+            default_logger.info(f'Finetuner is available at {url_html_path}')
         f.block()
