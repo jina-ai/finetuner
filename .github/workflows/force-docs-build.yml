@@ -18,7 +18,7 @@ jobs:
       - run: echo "success!"
         if: "${{ github.event.inputs.release_token }} == ${{ env.release_token }}"
         env:
-          release_token: ${{ secrets.JINA_CORE_RELEASE_TOKEN }}
+          release_token: ${{ secrets.FINETUNER_RELEASE_TOKEN }}
 
   regular-release:
     needs: token-check
