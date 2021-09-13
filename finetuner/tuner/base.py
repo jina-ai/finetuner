@@ -1,35 +1,15 @@
 import abc
 from typing import (
     Optional,
-    TypeVar,
     Union,
-    Callable,
-    Iterator,
-    Sequence,
     Tuple,
     List,
     Dict,
 )
 
-from jina import DocumentArray, Document
 from jina.logging.logger import JinaLogger
-from jina.types.arrays.memmap import DocumentArrayMemmap
 
-AnyDNN = TypeVar('AnyDNN')  #: Any implementation of a Deep Neural Network object
-AnyDataLoader = TypeVar('AnyDataLoader')  #: Any implementation of a data loader
-
-DocumentSequence = TypeVar(
-    'DocumentSequence',
-    Sequence[Document],
-    DocumentArray,
-    DocumentArrayMemmap,
-    Iterator[Document],
-)
-
-DocumentArrayLike = Union[
-    DocumentSequence,
-    Callable[..., DocumentSequence],
-]
+from ..helper import AnyDNN, AnyDataLoader, DocumentArrayLike
 
 
 class BaseHead:

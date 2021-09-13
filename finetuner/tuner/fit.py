@@ -1,7 +1,6 @@
 from typing import Optional
 
-from .base import AnyDNN, DocumentArrayLike
-from ..helper import get_framework
+from ..helper import get_framework, AnyDNN, DocumentArrayLike
 
 
 def fit(

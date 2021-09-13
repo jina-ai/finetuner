@@ -9,7 +9,8 @@ from torch.optim.optimizer import Optimizer
 from torch.utils.data.dataloader import DataLoader
 
 from . import head_layers, datasets
-from ..base import BaseTuner, BaseHead, BaseArityModel, DocumentArrayLike
+from ..base import BaseTuner, BaseHead, BaseArityModel
+from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
 
 
