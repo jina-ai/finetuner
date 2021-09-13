@@ -19,6 +19,7 @@ def fit(
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
+    **kwargs,
 ):
     if callable(unlabeled_data):
         unlabeled_data = unlabeled_data()
@@ -43,7 +44,7 @@ def fit(
             return embed_model
 
     f = (
-        Flow(protocol='http', port_expose=port_expose, cors=True)
+        Flow(protocol='http', port_expose=port_expose)
         .add(
             uses=DataIterator,
             uses_with={

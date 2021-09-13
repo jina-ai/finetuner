@@ -10,6 +10,7 @@ def fit(
     eval_data: Optional[DocumentArrayLike] = None,
     epochs: int = 10,
     batch_size: int = 256,
+    **kwargs
 ):
     f = get_framework(embed_model)
 
