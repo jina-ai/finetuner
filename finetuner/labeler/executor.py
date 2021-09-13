@@ -1,10 +1,11 @@
 import abc
-from typing import Dict
+from typing import Dict, Optional
 
 from jina import Executor, DocumentArray, requests, DocumentArrayMemmap
 from jina.helper import cached_property
 
 import finetuner.tuner.fit as jft
+from finetuner.helper import get_framework
 
 
 class FTExecutor(Executor):
@@ -30,10 +31,33 @@ class FTExecutor(Executor):
 
     @requests(on='/next')
     def embed(self, docs: DocumentArray, parameters: Dict, **kwargs):
-        da = self._all_data.sample(int(parameters.get('sample_size', 1000)))
+        da = self._all_data.sample(
+            min(len(self._all_data), int(parameters.get('sample_size', 1000)))
+        )
 
-        da.embeddings = self._embed_model(da.blobs).numpy()
-        docs.embeddings = self._embed_model(docs.blobs).numpy()
+        f = get_framework(self._embed_model)
+
+        if f == 'keras':
+            da_input = da.blobs
+            docs_input = docs.blobs
+            da.embeddings = self._embed_model(da_input).numpy()
+            docs.embeddings = self._embed_model(docs_input).numpy()
+        elif f == 'torch':
+            import torch
+
+            self._embed_model.eval()
+            da_input = torch.from_numpy(da.blobs)
+            docs_input = torch.from_numpy(docs.blobs)
+            da.embeddings = self._embed_model(da_input).detach().numpy()
+            docs.embeddings = self._embed_model(docs_input).detach().numpy()
+        elif f == 'paddle':
+            import paddle
+
+            self._embed_model.eval()
+            da_input = paddle.to_tensor(da.blobs)
+            docs_input = paddle.to_tensor(docs.blobs)
+            da.embeddings = self._embed_model(da_input).detach().numpy()
+            docs.embeddings = self._embed_model(docs_input).detach().numpy()
 
         docs.match(
             da,
@@ -58,12 +82,14 @@ class DataIterator(Executor):
     def __init__(
         self,
         dam_path: str,
-        labeled_dam_path: str,
+        labeled_dam_path: Optional[str] = None,
         clear_labels_on_start: bool = False,
         **kwargs
     ):
         super().__init__(**kwargs)
         self._all_data = DocumentArrayMemmap(dam_path)
+        if not labeled_dam_path:
+            labeled_dam_path = dam_path + '/labeled'
         self._labeled_dam = DocumentArrayMemmap(labeled_dam_path)
         if clear_labels_on_start:
             self._labeled_dam.clear()
