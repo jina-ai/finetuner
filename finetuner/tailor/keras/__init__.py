@@ -12,8 +12,9 @@ def trim(model: Model, layer_idx: int = -1, freeze: bool = False) -> Model:
     """
     candidate_layers = get_candidate_layers(model)
 
-    if layer_idx not in {l['layer_idx'] for l in candidate_layers}:
-        raise IndexError(f'Layer index {layer_idx} is not one of {tailorable_indices}.')
+    indx = {l['layer_idx'] for l in candidate_layers}
+    if layer_idx not in indx:
+        raise IndexError(f'Layer index {layer_idx} is not one of {indx}.')
     model = Model(model.input, model.layers[layer_idx].output)
 
     if freeze:
