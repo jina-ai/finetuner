@@ -15,8 +15,8 @@ pip install -e .
 #### Install tests requirements
 
 ```bash
-pip install -r ./github/requirements-test.txt
-pip install -r ./github/requirements-cicd.txt
+pip install -r .github/requirements-test.txt
+pip install -r .github/requirements-cicd.txt
 ```
 
 #### Enable precommit hook
