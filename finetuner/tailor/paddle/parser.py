@@ -1,12 +1,17 @@
 from collections import OrderedDict
+from typing import Tuple
 
 import numpy as np
 import paddle
 from paddle import nn
 
+from finetuner.tailor.helper import is_list_int
 
-def get_candidate_layers(model, input_size):
-    dtypes = ['float32'] * len(input_size)
+
+def get_candidate_layers(
+    model: nn.Layer, input_size: Tuple[int, ...], input_dtype: str = 'float32'
+):
+    dtypes = [input_dtype] * len(input_size)
 
     depth = len(list(model.sublayers()))
 
@@ -27,7 +32,7 @@ def get_candidate_layers(model, input_size):
             except:
                 layer_idx = len(summary)
 
-            m_key = f'{class_name}-{layer_idx+1}'
+            m_key = f'{class_name}-{layer_idx + 1}'
 
             summary[m_key] = OrderedDict()
             summary[m_key]['cls_name'] = layer.__class__.__name__
@@ -81,7 +86,7 @@ def get_candidate_layers(model, input_size):
     results = []
     for idx, layer in enumerate(summary):
         output_shape = summary[layer]['output_shape']
-        if len(output_shape) != 2:
+        if not output_shape or len(output_shape) != 2 or not is_list_int(output_shape):
             continue
 
         results.append(

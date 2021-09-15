@@ -1,18 +1,23 @@
 from collections import OrderedDict
+from typing import Tuple
 
 import numpy as np
 import torch
 from torch import nn
 
+from finetuner.tailor.helper import is_list_int
 
-def get_candidate_layers(model, input_size):
-    dtypes = [torch.FloatTensor] * len(input_size)
+
+def get_candidate_layers(
+    model: nn.Module, input_size: Tuple[int, ...], input_dtype: str = 'float32'
+):
+    dtypes = [getattr(torch, input_dtype)] * len(input_size)
 
     def _get_output_shape(output):
         if isinstance(output, (list, tuple)):
-            output_shape = [[-1] + list(o.size())[1:] for o in output]
+            output_shape = [_get_output_shape(o) for o in output]
         else:
-            output_shape = list(output.size())
+            output_shape = list(output.shape)
         return output_shape
 
     def register_hook(module):
@@ -44,10 +49,7 @@ def get_candidate_layers(model, input_size):
         input_size = [input_size]
 
     # batch_size of 2 for batchnorm
-    x = [
-        torch.rand(2, *in_size).type(dtype)
-        for in_size, dtype in zip(input_size, dtypes)
-    ]
+    x = [torch.rand(2, *in_size).type(dt) for in_size, dt in zip(input_size, dtypes)]
 
     # create properties
     summary = OrderedDict()
@@ -67,7 +69,7 @@ def get_candidate_layers(model, input_size):
     results = []
     for idx, layer in enumerate(summary):
         output_shape = summary[layer]['output_shape']
-        if len(output_shape) != 2:
+        if not output_shape or len(output_shape) != 2 or not is_list_int(output_shape):
             continue
 
         results.append(
