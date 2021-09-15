@@ -3,19 +3,19 @@ from keras.models import Model
 from .parser import get_candidate_layers
 
 
-def trim(model, layer_idx: int, freeze=True):
-    """The method trim the model based on the user input for feature extraction.
+def trim(model: Model, layer_idx: int = -1, freeze: bool = False) -> Model:
+    """Trim an arbitary Keras model to a Keras embedding model
 
-    :param model: The base model served as feature extractor.
-    :param layer_idx: The layer index to cut from, it should be one of the candidate layers.
-    :param freeze: Freeze the weight of the base model without training.
+    :param model: an arbitary DNN model in Keras
+    :param layer_idx: the index of the bottleneck layer for embedding output.
+    :param freeze: if set, the remaining layers of the model will be freezed.
     """
     candidate_layers = get_candidate_layers(model)
-    tailorable_indices = {item['layer_idx'] for item in candidate_layers}
-    if layer_idx not in tailorable_indices:
-        msg = f'Layer index {layer_idx} is not a candidate layer, One of the index in {tailorable_indices} expected.'
-        raise IndexError(msg)
+
+    if layer_idx not in {l['layer_idx'] for l in candidate_layers}:
+        raise IndexError(f'Layer index {layer_idx} is not one of {tailorable_indices}.')
     model = Model(model.input, model.layers[layer_idx].output)
+
     if freeze:
         for layer in model.layers:
             layer.trainable = False
