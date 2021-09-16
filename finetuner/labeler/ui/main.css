@@ -129,23 +129,38 @@ footer a {
 }
 
 .form-check-input:checked {
-    background-color: #198754;
-    border-color: #198754;
+  background-color: #198754;
+  border-color: #198754;
 }
 
 .form-check-input[type=checkbox] {
-    border-radius: .5em;
+  border-radius: .5em;
 }
 
-.img-relevant {
-  background: #52b91e;
+.list-group-item {
+  padding: 0;
+  border: none;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.match-item {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: 0.1px;
+  padding: 1rem;
+}
+
+.positive-match {
+  background: #E6F5F5;
+  color: #009191;
 }
 
 .spinner-busy {
   position: absolute;
-    bottom: 0;
-    right: 0;
-    margin: 50px;
+  bottom: 0;
+  right: 0;
+  margin: 50px;
 }
 
 .alert-loss-connect {
@@ -160,4 +175,16 @@ footer a {
 
 [v-cloak] {
   display: none;
+}
+
+.card-header {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: 0.1px;
+  color: #000000;
+}
+
+.card-body {
+  padding: 0;
 }

@@ -102,12 +102,13 @@
         <div class="row row-cols-md-1 row-cols-lg-3 row-cols-xxl-4  g-4" style="width: 100%;">
             <div class="col" v-if="labeler_config.style=='text'" v-for="(doc, doc_idx) in cur_batch">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header">
                         {{get_content(doc)}}
-                        <hr>
+                    </div>
+                    <div class="card-body">
                         <ul class="list-group">
                             <li class="list-group-item" v-for="match in doc.matches">
-                                <div v-bind:class="{ 'img-relevant': match.tags.finetuner_label }" style="width: 100%"
+                                <div class="match-item" :class="{ 'positive-match': match.tags.finetuner_label }" style="width: 100%"
                                      v-on:click="toggle_relevance(match)">
                                 {{get_content(match)}}
                                 </div>
