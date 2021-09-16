@@ -8,7 +8,7 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap" rel="stylesheet">
     <link href="main.css" rel="stylesheet">
 </head>
 <body>
@@ -17,16 +17,12 @@
          v-if="is_conn_broken">
         Can not connect to the server on {{host_address}} Please check your connection.
     </div>
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; overflow: scroll">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <svg class="bi me-2" width="40" height="32">
-                <use xlink:href="#bootstrap"></use>
-            </svg>
-            <span class="fs-4">Finetuner</span>
+    <div class="d-flex flex-column flex-shrink-0 p-3 " style="width: 280px; overflow: scroll">
+        <a href="/" class="d-flex align-items-center mb-3 mx-md-auto text-decoration-none">
+            <span class="app-title">Finetuner</span>
         </a>
-        <hr>
-        <section>
-            <h4>View</h4>
+        <section class="mt-4">
+            <h4 class="options-title">View</h4>
             <div class="row my-1">
                 <label class="col-sm-6 col-form-label">Content</label>
                 <div class="col-sm-6">
@@ -68,9 +64,8 @@
                 </div>
             </div>
         </section>
-        <hr>
-        <section>
-            <h4>Progress
+        <section class="mt-4">
+            <h4 class="options-title">Progress
                 <div class="spinner-border text-light spinner-border-sm align-middle" role="status" v-show="is_busy">
                 <span class="visually-hidden">Loading...</span>
             </div>
@@ -87,9 +82,8 @@
                 <div class="progress-bar bg-danger" role="progressbar" :style="{width: negative_rate+'%' }"></div>
             </div>
         </section>
-        <hr>
-        <section>
-            <h4>Advanced</h4>
+        <section class="mt-4">
+            <h4 class="options-title">Advanced</h4>
             <div class="row my-1" v-for="option in advanced_config">
                 <label class="col-sm-6 col-form-label">{{ option.text }}</label>
                 <div class="col-sm-6 text-end">
@@ -98,7 +92,6 @@
                 </div>
             </div>
         </section>
-        <hr>
         <footer>
             <a href="https://jina.ai" target="_blank">© 2020-2021 Jina AI</a>
             <a href="https://github.com/jina-ai/finetuner" target="_blank">(<strong>Finetuner</strong> v0.1)</a>

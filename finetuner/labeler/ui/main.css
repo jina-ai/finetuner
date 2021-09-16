@@ -20,6 +20,13 @@ main {
   background: #f6f6f6;
 }
 
+.app-title {
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 0.1px;
+  color: #009191;
+}
+
 .b-example-divider {
   flex-shrink: 0;
   width: 1.5rem;
@@ -93,11 +100,11 @@ footer a {
   font-size: 11px;
 }
 
-h4 {
-  font-weight: 600;
+.options-title {
+  font-weight: 700;
   text-transform: uppercase;
+  font-size: 14px;
 }
-
 
 .text-end {
   align-self: center;
@@ -105,8 +112,20 @@ h4 {
 
 .col-form-label {
   text-transform: uppercase;
-  color: #b9b9b9;
-  font-weight: 600;
+  color: #00000077;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-control,.form-select {
+  border: 1px solid #F2F2F2;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: 0.1px;
+  color:rgba(0, 0, 0, .85)
 }
 
 .form-check-input:checked {
