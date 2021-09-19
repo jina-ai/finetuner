@@ -1,4 +1,5 @@
 const urlParams = new URLSearchParams(window.location.search);
+Vue.use(VueAwesomeSwiper)
 const app = new Vue({
     el: '#app',
     data: {
@@ -14,7 +15,7 @@ const app = new Vue({
         labeler_config: {
             content: 'uri',
             style: 'image',
-            example_per_view: 3,
+            example_per_view: 5,
             topk_per_example: 9,
             tags: '',
             start_idx: 0,
@@ -38,7 +39,27 @@ const app = new Vue({
             epochs: {text: 'Epochs', value: 10},
             sample_size: {text: 'Match pool', value: 1000}
         },
-        cur_batch: []
+        cur_batch: [],
+        swiperOptions: {
+            effect: 'coverflow',
+            grabCursor: true,
+            centeredSlides: true,
+            slidesPerView: 3,
+            coverflowEffect: {
+                rotate: 50,
+                stretch: 0,
+                depth: 100,
+                modifier: 1,
+                slideShadows : true
+            },
+            pagination: {
+              el: '.swiper-pagination'
+            },
+            navigation: {
+              nextEl: '.swiper-button-next',
+              prevEl: '.swiper-button-prev'
+            }
+          }
     },
     computed: {
         host_address: function () {
@@ -147,8 +168,20 @@ const app = new Vue({
                 app.is_conn_broken = true
                 app.is_busy = false
             });
-        }
-    }
+        },
+        onSetTranslate() {
+            console.log('onSetTranslate')
+          },
+          onSwiperSlideChangeTransitionStart() {
+            console.log('onSwiperSlideChangeTransitionStart')
+          },
+          onSwiperClickSlide(index, reallyIndex) {
+            console.log('Swiper click slide!', reallyIndex)
+          }
+    },
+    mounted() {
+        console.log('Swiper instances:', this.$refs.swiperComponent.$swiper, this.swiper)
+      }
 });
 
 

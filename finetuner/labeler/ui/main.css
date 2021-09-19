@@ -94,10 +94,15 @@ main {
 .fw-semibold { font-weight: 600; }
 .lh-tight { line-height: 1.25; }
 
+footer {
+  align-self: center;
+  margin-top: auto;
+}
+
 footer a {
-  color: #fff;
+  color: #009191;
   text-decoration: none;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .options-title {
@@ -187,4 +192,19 @@ footer a {
 
 .card-body {
   padding: 0;
+}
+
+/* Swiper don't swipe */
+.swiper-container {
+  width: 100%;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-container-3d .swiper-slide-shadow-right, .swiper-container-3d .swiper-slide-shadow-left {
+  background: unset;
 }
