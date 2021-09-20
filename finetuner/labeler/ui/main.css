@@ -197,6 +197,7 @@ footer a {
 /* Swiper don't swipe */
 .swiper-container {
   width: 100%;
+  height: 100%;
 }
 
 .swiper-slide {

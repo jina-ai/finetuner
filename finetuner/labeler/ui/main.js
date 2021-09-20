@@ -45,6 +45,9 @@ const app = new Vue({
             grabCursor: true,
             centeredSlides: true,
             slidesPerView: 3,
+            keyboard: {
+                enabled: true,
+            },
             coverflowEffect: {
                 rotate: 50,
                 stretch: 0,
@@ -169,6 +172,18 @@ const app = new Vue({
                 app.is_busy = false
             });
         },
+        handleKeyPress(event) {
+            let key = event.key
+            let {activeIndex} = this.$refs.swiperComponent.$swiper
+            let currentDoc = this.cur_batch[activeIndex]
+            if(/\d/.test(key)) {
+                app.toggle_relevance(currentDoc.matches[parseInt(key, 10)])
+            } else if (key === ' ') {
+                app.submit_doc(activeIndex)
+            } else if (key === 'i') {
+                app.select_all(currentDoc.matches)
+            }
+        },
         onSetTranslate() {
             console.log('onSetTranslate')
           },
@@ -179,9 +194,6 @@ const app = new Vue({
             console.log('Swiper click slide!', reallyIndex)
           }
     },
-    mounted() {
-        console.log('Swiper instances:', this.$refs.swiperComponent.$swiper, this.swiper)
-      }
 });
 
 
