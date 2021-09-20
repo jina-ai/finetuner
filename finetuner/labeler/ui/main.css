@@ -159,8 +159,18 @@ footer a {
   width: 100%;
 }
 
+.btn {
+  display: flex;
+  align-items: center;
+}
+
+.kbc-button {
+  margin-left: .8rem;
+}
+
 kbd {
-  
+  margin-left: .25rem;
+  align-self: center;
 }
 
 .positive-match {
