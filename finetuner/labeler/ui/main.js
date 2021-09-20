@@ -174,6 +174,7 @@ const app = new Vue({
         },
         handleKeyPress(event) {
             let key = event.key
+            console.log(event.target)
             let {activeIndex} = this.$refs.swiperComponent.$swiper
             let currentDoc = this.cur_batch[activeIndex]
             if(/\d/.test(key)) {
@@ -184,15 +185,12 @@ const app = new Vue({
                 app.select_all(currentDoc.matches)
             }
         },
-        onSetTranslate() {
-            console.log('onSetTranslate')
-          },
-          onSwiperSlideChangeTransitionStart() {
-            console.log('onSwiperSlideChangeTransitionStart')
-          },
-          onSwiperClickSlide(index, reallyIndex) {
-            console.log('Swiper click slide!', reallyIndex)
-          }
+    },
+    created() {
+        window.addEventListener("keydown", this.handleKeyPress);
+    },
+    destroyed() {
+        window.removeEventListener("keydown", this.handleKeyPress);
     },
 });
 

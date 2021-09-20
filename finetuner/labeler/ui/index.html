@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/swiper@5.3.6/css/swiper.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/keyboard-css@1.2.4/dist/css/main.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap" rel="stylesheet">
@@ -113,10 +114,10 @@
                     </div>
                     <div class="card-body">
                         <ul class="list-group">
-                            <li class="list-group-item" v-for="match in doc.matches">
+                            <li class="list-group-item" v-for="(match, matchIndex) in doc.matches">
                                 <div class="match-item" :class="{ 'positive-match': match.tags.finetuner_label }" style="width: 100%"
                                      v-on:click="toggle_relevance(match)">
-                                {{get_content(match)}}
+                                {{get_content(match)}} <kbd class="kbc-button">{{matchIndex}}</kbd>
                                 </div>
 
                             </li>
@@ -125,10 +126,10 @@
                     <div class="card-footer">
                         <div class="btn-toolbar justify-content-between g-2">
                             <button type="button" class="btn btn-outline-success" v-on:click="select_all(doc.matches)">
-                                Invert
+                                Invert <kbd class="kbc-button">i</kbd>
                             </button>
                             <button type="button" class="btn btn-outline-primary" v-on:click="submit_doc(doc_idx)">
-                                Done
+                                Done <kdb>space</kdb>
                             </button>
                         </div>
                     </div>
@@ -140,20 +141,21 @@
                         <img v-bind:src="get_content(doc)" class="img-thumbnail img-fluid my-2" style="width: 100%">
                         <hr>
                         <div class="row row-cols-3">
-                            <div class="col compact-img" v-for="match in doc.matches">
+                            <div class="col compact-img" v-for="(match, matchIndex) in doc.matches">
                                 <img v-bind:src="get_content(match)" class="img-thumbnail img-fluid"
                                      v-bind:class="{ 'img-relevant': match.tags.finetuner_label }" style="width: 100%"
                                      v-on:click="toggle_relevance(match)">
+                                <kbd class="kbc-button">{{matchIndex}}</kbd>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer">
                         <div class="btn-toolbar justify-content-between g-2">
                             <button type="button" class="btn btn-outline-success" v-on:click="select_all(doc.matches)">
-                                Invert
+                                Invert <kbd class="kbc-button">i</kbd>
                             </button>
                             <button type="button" class="btn btn-outline-primary" v-on:click="submit_doc(doc_idx)">
-                                Done
+                                Done <kbd class="kbc-button">space</kbd>
                             </button>
                         </div>
                     </div>

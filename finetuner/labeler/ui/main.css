@@ -149,11 +149,18 @@ footer a {
 }
 
 .match-item {
+  display: flex;
+  justify-content: space-between;
   font-weight: 500;
   font-size: 14px;
   line-height: 21px;
   letter-spacing: 0.1px;
   padding: 1rem;
+  width: 100%;
+}
+
+kbd {
+  
 }
 
 .positive-match {
