@@ -21,7 +21,7 @@
             v-if="is_conn_broken">
             Can not connect to the server on {{host_address}} Please check your connection.
         </div>
-        <div class="d-flex flex-column flex-shrink-0 p-3 " style="width: 280px; overflow: scroll">
+        <div class="d-flex flex-column flex-shrink-0 p-3 sidebar">
             <a href="/" class="d-flex align-items-center mb-3 mx-md-auto text-decoration-none">
                 <span class="app-title">Finetuner</span>
             </a>
@@ -84,7 +84,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
                         <button class="accordion-button options-title" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                            data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
                             aria-controls="panelsStayOpen-collapseTwo">
                             Progress
                             <div class="spinner-border text-light spinner-border-sm align-middle" role="status"
@@ -102,9 +102,9 @@
                                 </div>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar bg-success" role="progressbar"
+                                <div class="progress-bar progress-positive" role="progressbar"
                                     :style="{width: positive_rate+'%' }"></div>
-                                <div class="progress-bar bg-danger" role="progressbar"
+                                <div class="progress-bar progress-negative" role="progressbar"
                                     :style="{width: negative_rate+'%' }"></div>
                             </div>
                         </div>

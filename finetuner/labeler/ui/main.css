@@ -94,6 +94,12 @@ main {
 .fw-semibold { font-weight: 600; }
 .lh-tight { line-height: 1.25; }
 
+.sidebar {
+  width: 20rem;
+  background: #FBFCFD;
+  border: 1px solid #E5E5E5;
+}
+
 footer {
   align-self: center;
   margin-top: auto;
@@ -142,6 +148,20 @@ accordion-button:focus {
 
 .accordion-body {
   padding: 0;
+}
+
+.progress {
+  border-radius: 0;
+  width: 20rem;
+  margin-left: -1.1rem;
+}
+
+.progress-positive {
+  background: #009191;
+}
+
+.progress-negative {
+  background: #F24E1E;
 }
 
 .text-end {
