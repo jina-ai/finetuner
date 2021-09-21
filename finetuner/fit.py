@@ -11,6 +11,7 @@ def fit(
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
     interactive: bool = True,
+    head_layer: str = 'CosineLayer',
 ):
     ...
 
