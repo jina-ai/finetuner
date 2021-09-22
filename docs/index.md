@@ -1,6 +1,6 @@
 # Welcome to Finetuner!
 
-Finetuner allows one to finetune any deep Neural Network for better embedding on search tasks. It accompanies [Jina](https://github.com/jina-ai/jina) to deliver the last mile of performance-tuning for neural search applications.
+Finetuner allows one to finetune any deep neural network for better embedding on search tasks. It accompanies [Jina](https://github.com/jina-ai/jina) to deliver the last mile of performance-tuning for neural search applications.
 
 Finetuner supports [Pytorch](https://pytorch.org/), [Keras](https://keras.io/) and [PaddlePaddle](https://github.com/PaddlePaddle/Paddle) as the deep learning backend.  
 
