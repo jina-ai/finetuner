@@ -1,3 +1,4 @@
+(design-philo)=
 # Design Philosophy
 
 ```{caution}
