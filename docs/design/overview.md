@@ -19,13 +19,10 @@ Unlike Jina that aims at flexibility, Finetuner provides users a **managed**, **
 
 ```{tip}
 What this implies is:
-- Developers of Finetuner should not argue about flexibility, it is not the design;
+- Developers of Finetuner should not argue about flexibility, it is not part of the design;
 - Finetuner is not a general training framework for training model from scratch;
 - Finetuner must share the same data interface with Jina core;
 ```
-
-For Finetuner, flexibility is an _execuse_ when you don't know what's the best strategy for something.
-
 
 ## One-liner interface
 
@@ -41,6 +38,7 @@ ft.fit(...)
 
 Finetuner supports Keras, Pytorch and Paddle as the deep learning backend; with the same look, feel and behave on the high-level API. Users can stick to their most comfortable framework and they will enjoy a consistent experience when using Finetuner.  
 
+(three-pillars)=
 ## Three pillars
 
 Finetuner project is composed of three components:
