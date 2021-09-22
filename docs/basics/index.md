@@ -1,7 +1,7 @@
 ```{toctree}
 :hidden:
 
-data-format
+data
 tuner
 tailor
 labeler
