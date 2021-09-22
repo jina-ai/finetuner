@@ -14,29 +14,29 @@ from ..helper import AnyDNN, DocumentArrayLike
 
 def fit(
     embed_model: AnyDNN,
-    head_layer: str,
-    unlabeled_data: DocumentArrayLike,
+    train_data: DocumentArrayLike,
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
+    head_layer: str = 'CosineLayer',
 ):
-    if callable(unlabeled_data):
-        unlabeled_data = unlabeled_data()
+    if callable(train_data):
+        train_data = train_data()
 
-    if isinstance(unlabeled_data, DocumentArray):
+    if isinstance(train_data, DocumentArray):
         dam_path = tempfile.mkdtemp()
         dam = DocumentArrayMemmap(dam_path)
-        dam.extend(unlabeled_data)
-    elif isinstance(unlabeled_data, DocumentArrayMemmap):
-        dam_path = unlabeled_data._path
-    elif isinstance(unlabeled_data, str):
-        dam_path = unlabeled_data
-    elif isinstance(unlabeled_data, Iterable):
+        dam.extend(train_data)
+    elif isinstance(train_data, DocumentArrayMemmap):
+        dam_path = train_data._path
+    elif isinstance(train_data, str):
+        dam_path = train_data
+    elif isinstance(train_data, Iterable):
         dam_path = tempfile.mkdtemp()
         dam = DocumentArrayMemmap(dam_path)
-        dam.extend(unlabeled_data)
+        dam.extend(train_data)
     else:
-        raise TypeError(f'{unlabeled_data} is not supported')
+        raise TypeError(f'{train_data} is not supported')
 
     class MyExecutor(FTExecutor):
         def get_embed_model(self):
@@ -62,10 +62,11 @@ def fit(
         )
     )
 
-    f.expose_endpoint('/next')
-    f.expose_endpoint('/fit')
+    f.expose_endpoint('/next')  #: for allowing client to fetch for the next batch
+    f.expose_endpoint('/fit')  #: for signaling the backend to fit on the labeled data
 
     def extend_rest_function(app):
+        """Allow FastAPI frontend to serve finetuner UI as a static webpage"""
         from fastapi.staticfiles import StaticFiles
 
         p = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ui')

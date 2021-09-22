@@ -5,9 +5,9 @@ from ..helper import get_framework, AnyDNN, DocumentArrayLike
 
 def fit(
     embed_model: AnyDNN,
-    head_layer: str,
     train_data: DocumentArrayLike,
     eval_data: Optional[DocumentArrayLike] = None,
+    head_layer: str = 'CosineLayer',
     epochs: int = 10,
     batch_size: int = 256,
 ):

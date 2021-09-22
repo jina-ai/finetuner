@@ -49,8 +49,8 @@ def _run(framework_name, head_layer, port_expose):
 
     fit(
         embed_models[framework_name](),
-        head_layer,
         fdg,
+        head_layer=head_layer,
         interactive=True,
         port_expose=port_expose,
     )

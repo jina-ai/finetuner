@@ -72,9 +72,9 @@ class FTExecutor(Executor):
     def fit(self, docs, parameters: Dict, **kwargs):
         jft.fit(
             self._embed_model,
-            self._head_layer,
             docs,
             epochs=int(parameters.get('epochs', 10)),
+            head_layer=self._head_layer,
         )
 
 
