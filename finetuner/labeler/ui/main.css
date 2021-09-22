@@ -20,6 +20,13 @@ main {
   background: #f6f6f6;
 }
 
+.app-title {
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 0.1px;
+  color: #009191;
+}
+
 .b-example-divider {
   flex-shrink: 0;
   width: 1.5rem;
@@ -87,17 +94,75 @@ main {
 .fw-semibold { font-weight: 600; }
 .lh-tight { line-height: 1.25; }
 
+.sidebar {
+  width: 20rem;
+  background: #FBFCFD;
+  border: 1px solid #E5E5E5;
+}
+
+footer {
+  align-self: center;
+  margin-top: auto;
+}
+
 footer a {
-  color: #fff;
+  color: #009191;
   text-decoration: none;
-  font-size: 11px;
+  font-size: 12px;
 }
 
-h4 {
-  font-weight: 600;
+.options-title {
+  font-weight: 700;
   text-transform: uppercase;
+  font-size: 14px;
 }
 
+.accordion-item {
+  background: unset;
+  border: unset;
+  margin-top: 2rem;
+}
+
+.accordion-button {
+  padding: 0;
+  background: transparent;
+}
+
+accordion-button:focus {
+  z-index: 3;
+  border-color: unset;
+  outline: 0;
+  box-shadow: none;
+}
+
+.accordion-button:not(.collapsed) {
+  color: black;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.accordion-button:not(.collapsed)::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  transform: rotate( -180deg);
+}
+
+.accordion-body {
+  padding: 0;
+}
+
+.progress {
+  border-radius: 0;
+  width: 20rem;
+  margin-left: -1.1rem;
+}
+
+.progress-positive {
+  background: #009191;
+}
+
+.progress-negative {
+  background: #F24E1E;
+}
 
 .text-end {
   align-self: center;
@@ -105,28 +170,74 @@ h4 {
 
 .col-form-label {
   text-transform: uppercase;
-  color: #b9b9b9;
-  font-weight: 600;
+  color: #00000077;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-control,.form-select {
+  border: 1px solid #F2F2F2;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: 0.1px;
+  color:rgba(0, 0, 0, .85)
 }
 
 .form-check-input:checked {
-    background-color: #198754;
-    border-color: #198754;
+  background-color: #198754;
+  border-color: #198754;
 }
 
 .form-check-input[type=checkbox] {
-    border-radius: .5em;
+  border-radius: .5em;
 }
 
-.img-relevant {
-  background: #52b91e;
+.list-group-item {
+  padding: 0;
+  border: none;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.match-item {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: 0.1px;
+  padding: 1rem;
+  width: 100%;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+}
+
+.kbc-button {
+  margin-left: .8rem;
+  line-height: 0.8rem;
+  padding-top: 0.4rem;
+}
+
+kbd {
+  margin-left: .25rem;
+  align-self: center;
+}
+
+.positive-match {
+  background: #E6F5F5;
+  color: #009191;
 }
 
 .spinner-busy {
   position: absolute;
-    bottom: 0;
-    right: 0;
-    margin: 50px;
+  bottom: 0;
+  right: 0;
+  margin: 50px;
 }
 
 .alert-loss-connect {
@@ -141,4 +252,64 @@ h4 {
 
 [v-cloak] {
   display: none;
+}
+
+.card-header {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: 0.1px;
+  color: #000000;
+}
+
+.card-body {
+  padding: 0;
+}
+
+.image-card .positive-match {
+  background: #009191;
+}
+
+.image-card .card-header {
+  display: flex;
+  justify-content: center;
+}
+
+.image-card .card-body .row {
+  width: 100%;
+}
+
+.image-card .card-body .compact-img {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.image-card .card-header .img-thumbnail {
+  width: 33.33%;
+}
+
+.image-card .card-body .img-thumbnail {
+  width: 50%;
+}
+
+/* Swiper don't swipe */
+.swiper-container {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-container-3d .swiper-slide-shadow-right, .swiper-container-3d .swiper-slide-shadow-left {
+  background: unset;
+}
+
+.swiper-slide-prev > .card, .swiper-slide-next > .card {
+  opacity: .5;
+  filter: blur(2px);
 }
