@@ -21,10 +21,8 @@ main {
 }
 
 .app-title {
-  font-weight: 700;
-  font-size: 1.5rem;
-  letter-spacing: 0.1px;
-  color: #009191;
+  display: flex;
+  justify-content: center;
 }
 
 .b-example-divider {

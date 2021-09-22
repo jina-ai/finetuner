@@ -23,7 +23,9 @@
         </div>
         <div class="d-flex flex-column flex-shrink-0 p-3 sidebar">
             <a href="/" class="d-flex align-items-center mb-3 mx-md-auto text-decoration-none">
-                <span class="app-title">Finetuner</span>
+                <span class="app-title">
+                    <img src="img/logo-light.svg" width="40%" alt="Finetuner logo: Finetuner allows one to finetune any deep Neural Network for better embedding on search tasks.">
+                </span>
             </a>
             <div class="accordion" id="accordionPanelsStayOpenExample">
                 <div class="accordion-item">
@@ -67,14 +69,14 @@
                             <div class="row my-1">
                                 <label class="col-sm-6 col-form-label">Examples/View</label>
                                 <div class="col-sm-6">
-                                    <input class="form-control" type="number" min="1" max="10"
+                                    <input class="form-control" type="number" min="1" max="9"
                                         v-model.number="labeler_config.example_per_view">
                                 </div>
                             </div>
                             <div class="row my-1">
                                 <label class="col-sm-6 col-form-label">TopK/Example</label>
                                 <div class="col-sm-6">
-                                    <input class="form-control" type="number" min="1" max="10"
+                                    <input class="form-control" type="number" min="1" max="9"
                                         v-model.number="labeler_config.topk_per_example">
                                 </div>
                             </div>
@@ -87,9 +89,10 @@
                             data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
                             aria-controls="panelsStayOpen-collapseTwo">
                             Progress
-                            <div class="spinner-border text-light spinner-border-sm align-middle" role="status"
+                            <div class="spinner-border spinner-border-sm align-middle" role="status"
                                 v-show="is_busy">
                                 <span class="visually-hidden">Loading...</span>
+                            </div>
                         </button>
                     </h2>
                     <div id="panelsStayOpen-collapseTwo" class="accordion-collapse"
