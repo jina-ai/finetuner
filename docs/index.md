@@ -10,7 +10,7 @@ Finetuner supports [Pytorch](https://pytorch.org/), [Keras](https://keras.io/) a
    pip install https://github.com/jina-ai/finetuner.git@master
    ```
 3. In this example, we want to tune the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST data. Let's write a model with any of the following framework:
-   ````{tab} Pytorch
+   ````{tab} PyTorch
    
    ```python
    import torch
@@ -56,26 +56,48 @@ Finetuner supports [Pytorch](https://pytorch.org/), [Keras](https://keras.io/) a
    
    finetuner.fit(
        embed_model,
-       head_layer='CosineLayer',
-       unlabeled_data=fashion_doc_generator,  # from finetuner.helloworld.data import fashion_doc_generator
+       fashion_doc_generator,  # from finetuner.helloworld.data import fashion_doc_generator
        interactive=True)
    ```
 
 5. You can now label the data in an interactive way. The model will get finetuned and improved as you are labeling.
-
+   
+   ````{tab} Frontend
    ```{figure} img/labeler-on-fashion-mnist.gif
    :align: center
    ```
-
+   ````
+   
+   ````{tab} Backend
+   ```{figure} img/labeler-backend-on-fashion-mnist.gif
+   :align: center
+   ```
+   ````
 
 Now that you’re set up, let’s dive into more of how Finetuner works and can improve the performance of your neural search apps.
+
+
+```{toctree}
+:caption: Get Started
+:hidden:
+
+get-started/fashion-mnist
+get-started/covid-qa
+```
 
 
 ```{toctree}
 :caption: Design
 :hidden:
 
-design/index.md
+design/index
+```
+
+```{toctree}
+:caption: Basics
+:hidden:
+
+basics/index
 ```
 
 

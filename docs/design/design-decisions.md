@@ -1,5 +1,5 @@
 (design-decision)=
-# Design Decisions
+# Decisions
 
 ```{caution}
 This section is not meant to be public. It is a collection of my thoughts on the high-level design & positioning of the Finetuner project in the Jina AI landscape. Please do not share any content below.
@@ -60,7 +60,7 @@ All other arguments are considered as optional and their default values should b
 Unlike Jina that aims at flexibility, Finetuner provides users a **managed**, **finetuning** experience **inside Jina ecosystem**. For Finetuner, "flexibility" means having more `kwargs` in `finetuner.fit`.   
 
 
-
+(embedding-model)=
 ## Three pillars design
 
 
