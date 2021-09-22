@@ -4,7 +4,7 @@
 
 
 <p align="center">
-<b>Easily finetune any deep neural network for better embedding on neural search tasks</b>
+<b>Finetuning any deep neural network for better embedding on neural search tasks</b>
 </p>
 
 
