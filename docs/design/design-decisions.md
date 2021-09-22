@@ -27,7 +27,7 @@ ft.fit(embed_model,
 ```
 ````
 
-````{tab} Use Tunner with Tailor
+````{tab} Use Tuner with Tailor
 
 ```{code-block} python
 ---
@@ -42,7 +42,7 @@ ft.fit(general_model,
 ```
 ````
 
-````{tab} Use Tunner
+````{tab} Use Tuner
 
 ```{code-block} python
 ---
@@ -79,9 +79,9 @@ In my previous slides/talks, I sometimes called the embedding model as bottlenec
 
 In a Jina pipeline, the embedding model is the important component for getting the representation. The quality of this representation often directly determines the search quality. On contrary, the general model is nothing interesting to Jina.
 
-That is, tuning the performance of the search equals to tuning the embedding model. {ref}`This is exactly the definition of Tunner<three-pillars>`.
+That is, tuning the performance of the search equals to tuning the embedding model. {ref}`This is exactly the definition of Tuner<three-pillars>`.
 
-The actual training of Finetuner happens inside the Tunner.
+The actual training of Finetuner happens inside the Tuner.
 
 ### Tailor 
 
@@ -89,15 +89,15 @@ But where does this embedding model come from? As I said, general models widely 
 - building from scratch;
 - converting a general model to a embedding model.
 
-In [my blog post on the new AI supply chain](https://hanxiao.io/2019/07/29/Generic-Neural-Elastic-Search-From-bert-as-service-and-Go-Way-Beyond/?highlight=body%20%3E%20div.wrap%20%3E%20main%20%3E%20div%20%3E%20article%20%3E%20div.post-content%20%3E%20img:nth-child(26)), I already said less & less people will build new model from scratch. Most people will simply use pretrained or preachitectured models. Hence there is a strong & common requirement of "converting" arbitrary general DNN model into embedding model that Tunner could handle. That's what tailor responsible for.
+In [my blog post on the new AI supply chain](https://hanxiao.io/2019/07/29/Generic-Neural-Elastic-Search-From-bert-as-service-and-Go-Way-Beyond/?highlight=body%20%3E%20div.wrap%20%3E%20main%20%3E%20div%20%3E%20article%20%3E%20div.post-content%20%3E%20img:nth-child(26)), I already said less & less people will build new model from scratch. Most people will simply use pretrained or preachitectured models. Hence there is a strong & common requirement of "converting" arbitrary general DNN model into embedding model that Tuner could handle. That's what tailor responsible for.
 
-Given a general model (from your colleague or Pytorch/Keras/Huggingface model zoo), tailor trims, cuts and does micro-operations on its architecture and outputs an embedding model for the Tuner.
+Given a general model (from your colleague or Pytorch/Keras/Huggingface model zoo), Tailor trims, cuts and does micro-operations on its architecture and outputs an embedding model for the Tuner.
 
 Tailor can be considered as a funnel, which enlarges our model landscape and speeds up the adoption of the Finetuner project. 
 
 ### Labeler
 
-I have talked about models and tuning. To conduct training we also need labeled data. That's the job of the labeler: to allow human to interactively label search results. Labeler delivers more than a simple annotation UI, it is also responsible for invoking Tuner to do [active learning](https://en.wikipedia.org/wiki/Active_learning_(machine_learning)), so that the next to-be-labeled data is selected according to the latest tunned embedding model.
+I have talked about models and tuning. To conduct training we also need labeled data. That's the job of the labeler: to allow human to interactively label search results. Labeler delivers more than a simple annotation UI, it is also responsible for invoking Tuner to do [active learning](https://en.wikipedia.org/wiki/Active_learning_(machine_learning)), so that the next to-be-labeled data is selected according to the latest tuned embedding model.
 
 ### Summary
 
