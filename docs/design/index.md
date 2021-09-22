@@ -2,7 +2,7 @@
 :caption: Basics
 :hidden:
 
-design-overview
+overview
 design-philo
 design-decisions
 ```

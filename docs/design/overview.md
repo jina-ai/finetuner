@@ -1,6 +1,6 @@
 # Design Overview
 
-Finetuner solves the last mile delivery problem when developing a neural search app, by allowing one to easily tune the model in an interactive 
+By allowing anyone to easily tune any embedding model in an interactive manner, Finetuner solves the **last mile delivery** when developing a neural search app. 
 
 ## One-liner Interface
 
