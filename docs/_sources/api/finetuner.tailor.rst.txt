@@ -11,6 +11,14 @@ Subpackages
    finetuner.tailor.paddle
    finetuner.tailor.pytorch
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   finetuner.tailor.helper
+
 Module contents
 ---------------
 
