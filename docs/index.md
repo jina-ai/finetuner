@@ -72,10 +72,10 @@ Now that you’re set up, let’s dive into more of how Finetuner works and can 
 
 
 ```{toctree}
-:caption: Basics
+:caption: Design
 :hidden:
 
-basics/index.md
+design/index.md
 ```
 
 
