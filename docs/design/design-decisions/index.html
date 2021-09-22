@@ -4,12 +4,12 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta property="og:title" content="Design Decisions" />
+  <meta property="og:title" content="Decisions" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/design/design-decisions.html" />
   <meta property="og:site_name" content="Jina Documentation" />
-  <meta property="og:description" content="Single API with minimum mandatory arguments: Finetuner exposes only a single API: finetuner.fit. At its minimum form, it requires only two arguments: the model and the data. Tuner, Labeler, Tailor share this single API. All other arguments are considered as optional and their default values shoul..." />
-  <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
+  <meta property="og:description" content="Single API with minimum arguments: Finetuner exposes only one public API as the entrypoint: finetuner.fit. At its minimum form, it requires only two arguments: the model and the data. The interface of Tuner, Tailor and Labeler must comply with this single API: Use Labeler import finetuner as ft f..." />
+  <meta property="og:image" content="../../_images/poster.gif" />
   <meta property="og:image:alt" content="Jina Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -19,10 +19,10 @@
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-48ZDWC8GT6"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner package" href="../../api/finetuner/" /><link rel="prev" title="Design Philosophy" href="../design-philo/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="&lt;no title&gt;" href="../../basics/" /><link rel="prev" title="Philosophy" href="../design-philo/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.09.22"/>
-        <title>Design Decisions - Jina Documentation</title>
+        <title>Decisions - Jina Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=150e365fa939648e89c22f6d7d13c72a1657915a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -183,11 +183,23 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Design</span></p>
+  <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/fashion-mnist/">Finetuning MLP on Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/covid-qa/">Finetuning Bi-LSTM on Text</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Design</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../overview/">Design Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../design-philo/">Design Philosophy</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design-philo/">Philosophy</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Decisions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/data/">Data Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/tuner/">Tuner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/tailor/">Tailor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/labeler/">Labeler</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -279,21 +291,134 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <section class="tex2jax_ignore mathjax_ignore" id="design-decisions">
-<span id="design-decision"></span><h1>Design Decisions<a class="headerlink" href="#design-decisions" title="Permalink to this headline">¶</a></h1>
+        <section class="tex2jax_ignore mathjax_ignore" id="decisions">
+<span id="design-decision"></span><h1>Decisions<a class="headerlink" href="#decisions" title="Permalink to this headline">¶</a></h1>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
 <p>This section is not meant to be public. It is a collection of my thoughts on the high-level design &amp; positioning of the Finetuner project in the Jina AI landscape. Please do not share any content below.</p>
 <p>Some of the paragraph may be published later after my revision.</p>
 </div>
-<section id="single-api-with-minimum-mandatory-arguments">
-<h2>Single API with minimum mandatory arguments<a class="headerlink" href="#single-api-with-minimum-mandatory-arguments" title="Permalink to this headline">¶</a></h2>
-<p>Finetuner exposes only a single API: <code class="docutils literal notranslate"><span class="pre">finetuner.fit</span></code>. At its minimum form, it requires only two arguments: the model and the data.</p>
-<p><code class="docutils literal notranslate"><span class="pre">Tuner</span></code>, <code class="docutils literal notranslate"><span class="pre">Labeler</span></code>, <code class="docutils literal notranslate"><span class="pre">Tailor</span></code> share this single API.</p>
+<section id="single-api-with-minimum-arguments">
+<h2>Single API with minimum arguments<a class="headerlink" href="#single-api-with-minimum-arguments" title="Permalink to this headline">¶</a></h2>
+<p>Finetuner exposes only one public API as the entrypoint: <code class="docutils literal notranslate"><span class="pre">finetuner.fit</span></code>. At its minimum form, it requires only two arguments: the model and the data.</p>
+<p>The interface of <code class="docutils literal notranslate"><span class="pre">Tuner</span></code>,  <code class="docutils literal notranslate"><span class="pre">Tailor</span></code> and <code class="docutils literal notranslate"><span class="pre">Labeler</span></code> must comply with this single API:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Use Labeler</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span> <span class="k">as</span> <span class="nn">ft</span>
+
+<span class="n">ft</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">embed_model</span><span class="p">,</span>
+       <span class="n">trained_data</span>
+<span class="hll">       <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">Use Tunner with Tailor</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span> <span class="k">as</span> <span class="nn">ft</span>
+
+<span class="hll"><span class="n">ft</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">general_model</span><span class="p">,</span>
+</span>       <span class="n">trained_data</span><span class="p">,</span>
+<span class="hll">       <span class="n">freeze_layer</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+</span><span class="hll">       <span class="n">output_dim</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--3">Use Tunner</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span> <span class="k">as</span> <span class="nn">ft</span>
+
+<span class="hll"><span class="n">ft</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">embed_model</span><span class="p">,</span>
+</span>       <span class="n">trained_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 <p>All other arguments are considered as optional and their default values should be carefully chosen by us (i.e. the developer of Finetuner).</p>
+<p>Unlike Jina that aims at flexibility, Finetuner provides users a <strong>managed</strong>, <strong>finetuning</strong> experience <strong>inside Jina ecosystem</strong>. For Finetuner, “flexibility” means having more <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> in <code class="docutils literal notranslate"><span class="pre">finetuner.fit</span></code>.</p>
 </section>
-<section id="three-pillars">
-<h2>Three pillars<a class="headerlink" href="#three-pillars" title="Permalink to this headline">¶</a></h2>
+<section id="three-pillars-design">
+<span id="embedding-model"></span><h2>Three pillars design<a class="headerlink" href="#three-pillars-design" title="Permalink to this headline">¶</a></h2>
+<p>To understand why <code class="docutils literal notranslate"><span class="pre">Tuner</span></code>, <code class="docutils literal notranslate"><span class="pre">Labeler</span></code>, <code class="docutils literal notranslate"><span class="pre">Tailor</span></code> three pillars exist, let me first clarify the two concepts:</p>
+<ul class="simple">
+<li><p><strong>Embedding model</strong>: a DNN takes an arbitary <code class="docutils literal notranslate"><span class="pre">ndarray</span></code> input (image/text/sequence) with size <code class="docutils literal notranslate"><span class="pre">[B</span> <span class="pre">x</span> <span class="pre">...</span> <span class="pre">x</span> <span class="pre">...</span> <span class="pre">x</span> <span class="pre">...]</span></code> and output a <code class="docutils literal notranslate"><span class="pre">ndarray</span></code> with size <code class="docutils literal notranslate"><span class="pre">[B</span> <span class="pre">x</span> <span class="pre">D]</span></code>, where <code class="docutils literal notranslate"><span class="pre">B</span></code> is the batch size and the embedded vector is in <span class="math notranslate nohighlight">\(R^D\)</span>.</p></li>
+<li><p><strong>General model</strong>: a DNN model that does not output <code class="docutils literal notranslate"><span class="pre">[B</span> <span class="pre">x</span> <span class="pre">D]</span></code>. For example, classification model, objective detection model, next token prediction model, regression model are not embedding model as their output is not a batch of <span class="math notranslate nohighlight">\(R^D\)</span> vectors.</p></li>
+</ul>
+<p>Despite the difference on the model architecture, the weights also differs. The weights of a general model is often trained end-to-endly for a specific task. The weights of an embedding model is often initialized from a general model, but then truncated and tuned for a new downstream task.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>In my previous slides/talks, I sometimes called the embedding model as bottleneck model, or a model with a bottleneck layer.</p>
+</div>
+<section id="tuner">
+<h3>Tuner<a class="headerlink" href="#tuner" title="Permalink to this headline">¶</a></h3>
+<p>In a Jina pipeline, the embedding model is the important component for getting the representation. The quality of this representation often directly determines the search quality. On contrary, the general model is nothing interesting to Jina.</p>
+<p>That is, tuning the performance of the search equals to tuning the embedding model. <a class="reference internal" href="../overview/#three-pillars"><span class="std std-ref">This is exactly the definition of Tunner</span></a>.</p>
+<p>The actual training of Finetuner happens inside the Tunner.</p>
+</section>
+<section id="tailor">
+<h3>Tailor<a class="headerlink" href="#tailor" title="Permalink to this headline">¶</a></h3>
+<p>But where does this embedding model come from? As I said, general models widely exist, and only few of them can be directly used as embedding models. So how can one get a embedding model? There are two ways:</p>
+<ul class="simple">
+<li><p>building from scratch;</p></li>
+<li><p>converting a general model to a embedding model.</p></li>
+</ul>
+<p>In <a class="reference external" href="https://hanxiao.io/2019/07/29/Generic-Neural-Elastic-Search-From-bert-as-service-and-Go-Way-Beyond/?highlight=body%20%3E%20div.wrap%20%3E%20main%20%3E%20div%20%3E%20article%20%3E%20div.post-content%20%3E%20img:nth-child(26)">my blog post on the new AI supply chain</a>, I already said less &amp; less people will build new model from scratch. Most people will simply use pretrained or preachitectured models. Hence there is a strong &amp; common requirement of “converting” arbitrary general DNN model into embedding model that Tunner could handle. That’s what tailor responsible for.</p>
+<p>Given a general model (from your colleague or Pytorch/Keras/Huggingface model zoo), tailor trims, cuts and does micro-operations on its architecture and outputs an embedding model for the Tuner.</p>
+<p>Tailor can be considered as a funnel, which enlarges our model landscape and speeds up the adoption of the Finetuner project.</p>
+</section>
+<section id="labeler">
+<h3>Labeler<a class="headerlink" href="#labeler" title="Permalink to this headline">¶</a></h3>
+<p>I have talked about models and tuning. To conduct training we also need labeled data. That’s the job of the labeler: to allow human to interactively label search results. Labeler delivers more than a simple annotation UI, it is also responsible for invoking Tuner to do <a class="reference external" href="https://en.wikipedia.org/wiki/Active_learning_(machine_learning)">active learning</a>, so that the next to-be-labeled data is selected according to the latest tunned embedding model.</p>
+</section>
+<section id="summary">
+<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Tuner</strong>: to tune any embedding model for better embedding on labeled data;</p></li>
+<li><p><strong>Tailor</strong>: to trim any deep neural network into an embedding model;</p></li>
+<li><p><strong>Labeler</strong>: a UI for interactive labeling and conduct <a class="reference external" href="https://en.wikipedia.org/wiki/Active_learning_(machine_learning)">active learning</a> via Tuner.</p></li>
+</ul>
+<p>Let’s summarize all user entrypoints here</p>
+<div class="table-wrapper"><table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>User</p></th>
+<th class="head"><p>Entrypoint</p></th>
+<th class="head"><p>Est. Quantity</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Users that have no labeled data</p></td>
+<td><p>Labeler (calls Tuner and Tailor in the back)</p></td>
+<td><p>Majority</p></td>
+</tr>
+<tr class="row-odd"><td><p>Users that have no labeled data but have embedding model</p></td>
+<td><p>Labeler (calls Tuner in the back)</p></td>
+<td><p>Majority</p></td>
+</tr>
+<tr class="row-even"><td><p>Users that have labeled data</p></td>
+<td><p>Tuner (calls Tailor in the back)</p></td>
+<td><p>Minority</p></td>
+</tr>
+<tr class="row-odd"><td><p>Users that have labeled data and an embedding model</p></td>
+<td><p>Tuner</p></td>
+<td><p>Minority</p></td>
+</tr>
+</tbody>
+</table></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The term <code class="docutils literal notranslate"><span class="pre">Tuner</span></code>, <code class="docutils literal notranslate"><span class="pre">Tailor</span></code>, <code class="docutils literal notranslate"><span class="pre">Labeler</span></code> are partially inspired by the movie “Tinker Tailor Soldier Spy”.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../../_images/poster.gif"><img alt="../../_images/poster.gif" src="../../_images/poster.gif" style="height: 200px;"/></a>
+</figure>
+</div>
+</section>
+</section>
+<section id="relationship-with-jina">
+<h2>Relationship with Jina<a class="headerlink" href="#relationship-with-jina" title="Permalink to this headline">¶</a></h2>
+<p>Finetuner is not designed to be a general finetuning framework, it fills the gap of the last mile delivery <strong>for Jina users</strong>.</p>
+<p>Finetuner is not an independent project. It has one mandatory upstream dependency: Jina.</p>
+<p>In particular, Finetuner is implemented as follows to maximize the compatability with Jina:</p>
+<ul class="simple">
+<li><p>The data exchange format of Tuner &amp; Labeler is <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> or <code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>, where each sample data is a <code class="docutils literal notranslate"><span class="pre">Document</span></code>. The rich structure of <code class="docutils literal notranslate"><span class="pre">Document</span></code> gets fully leveraged by Finetuner.</p></li>
+<li><p>Labeler leverages Jina <code class="docutils literal notranslate"><span class="pre">Flow</span></code> as the backend to train the model on-the-fly.</p></li>
+</ul>
 </section>
 </section>
 
@@ -301,12 +426,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../../api/finetuner/">
+          <a class="next-page" href="../../basics/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">finetuner package</div>
+                <div class="title">&lt;no title&gt;</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -317,7 +442,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Design Philosophy</div>
+                <div class="title">Philosophy</div>
                 
               </div>
             </a>
@@ -343,9 +468,16 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Design Decisions</a><ul>
-<li><a class="reference internal" href="#single-api-with-minimum-mandatory-arguments">Single API with minimum mandatory arguments</a></li>
-<li><a class="reference internal" href="#three-pillars">Three pillars</a></li>
+<li><a class="reference internal" href="#">Decisions</a><ul>
+<li><a class="reference internal" href="#single-api-with-minimum-arguments">Single API with minimum arguments</a></li>
+<li><a class="reference internal" href="#three-pillars-design">Three pillars design</a><ul>
+<li><a class="reference internal" href="#tuner">Tuner</a></li>
+<li><a class="reference internal" href="#tailor">Tailor</a></li>
+<li><a class="reference internal" href="#labeler">Labeler</a></li>
+<li><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#relationship-with-jina">Relationship with Jina</a></li>
 </ul>
 </li>
 </ul>
@@ -366,5 +498,7 @@
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/tabs.js"></script>
     <script src="../../_static/design-tabs.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     </body>
 </html>

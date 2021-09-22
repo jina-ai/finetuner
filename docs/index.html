@@ -19,7 +19,7 @@
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-48ZDWC8GT6"></script>
-    <link rel="index" title="Index" href="genindex/" /><link rel="search" title="Search" href="search/" /><link rel="next" title="&lt;no title&gt;" href="design/" />
+    <link rel="index" title="Index" href="genindex/" /><link rel="search" title="Search" href="search/" /><link rel="next" title="Finetuning MLP on Image" href="get-started/fashion-mnist/" />
 
     <link rel="shortcut icon" href="_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.09.22"/>
         <title>Jina Documentation</title>
@@ -183,11 +183,23 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Design</span></p>
+  <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="design/overview/">Design Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design/design-philo/">Design Philosophy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design/design-decisions/">Design Decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get-started/fashion-mnist/">Finetuning MLP on Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get-started/covid-qa/">Finetuning Bi-LSTM on Text</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Design</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="design/overview/">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design/design-philo/">Philosophy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design/design-decisions/">Decisions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basics/data/">Data Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics/tuner/">Tuner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics/tailor/">Tailor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics/labeler/">Labeler</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -292,7 +304,7 @@
 </li>
 <li><p>In this example, we want to tune the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST data. Let’s write a model with any of the following framework:</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Pytorch</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 
 <span class="n">embed_model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
@@ -337,19 +349,31 @@
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">embed_model</span><span class="p">,</span>
-    <span class="n">head_layer</span><span class="o">=</span><span class="s1">'CosineLayer'</span><span class="p">,</span>
-    <span class="n">unlabeled_data</span><span class="o">=</span><span class="n">fashion_doc_generator</span><span class="p">,</span>  <span class="c1"># from finetuner.helloworld.data import fashion_doc_generator</span>
+    <span class="n">fashion_doc_generator</span><span class="p">,</span>  <span class="c1"># from finetuner.helloworld.data import fashion_doc_generator</span>
     <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
 <li><p>You can now label the data in an interactive way. The model will get finetuned and improved as you are labeling.</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">Frontend</label><div class="tab-content docutils">
 <figure class="align-center">
 <img alt="_images/labeler-on-fashion-mnist.gif" src="_images/labeler-on-fashion-mnist.gif"/>
 </figure>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--2">Backend</label><div class="tab-content docutils">
+<figure class="align-center">
+<img alt="_images/labeler-backend-on-fashion-mnist.gif" src="_images/labeler-backend-on-fashion-mnist.gif"/>
+</figure>
+</div>
+</div>
 </li>
 </ol>
 <p>Now that you’re set up, let’s dive into more of how Finetuner works and can improve the performance of your neural search apps.</p>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
@@ -364,12 +388,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="design/">
+          <a class="next-page" href="get-started/fashion-mnist/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">&lt;no title&gt;</div>
+                <div class="title">Finetuning MLP on Image</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>

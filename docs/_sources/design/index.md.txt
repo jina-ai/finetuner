@@ -1,5 +1,4 @@
 ```{toctree}
-:caption: Basics
 :hidden:
 
 overview

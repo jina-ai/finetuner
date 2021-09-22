@@ -1,5 +1,5 @@
 (design-philo)=
-# Design Philosophy
+# Philosophy
 
 ```{caution}
 This section is not meant to be public. It is a collection of my thoughts on the high-level design & positioning of the Finetuner project in the Jina AI landscape. Please do not share any content below.

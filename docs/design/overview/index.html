@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta property="og:title" content="Design Overview" />
+  <meta property="og:title" content="Overview" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/design/overview.html" />
   <meta property="og:site_name" content="Jina Documentation" />
@@ -19,10 +19,10 @@
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-48ZDWC8GT6"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Design Philosophy" href="../design-philo/" /><link rel="prev" title="&lt;no title&gt;" href="../" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Philosophy" href="../design-philo/" /><link rel="prev" title="&lt;no title&gt;" href="../" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.09.22"/>
-        <title>Design Overview - Jina Documentation</title>
+        <title>Overview - Jina Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=150e365fa939648e89c22f6d7d13c72a1657915a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -183,11 +183,23 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Design</span></p>
+  <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/fashion-mnist/">Finetuning MLP on Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/covid-qa/">Finetuning Bi-LSTM on Text</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Design</span></p>
 <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Design Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../design-philo/">Design Philosophy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../design-decisions/">Design Decisions</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design-philo/">Philosophy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design-decisions/">Decisions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/data/">Data Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/tuner/">Tuner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/tailor/">Tailor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/labeler/">Labeler</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -279,8 +291,8 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <section class="tex2jax_ignore mathjax_ignore" id="design-overview">
-<h1>Design Overview<a class="headerlink" href="#design-overview" title="Permalink to this headline">¶</a></h1>
+        <section class="tex2jax_ignore mathjax_ignore" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
 <p>This section is not meant to be public. It is a collection of my thoughts on the high-level design &amp; positioning of the Finetuner project in the Jina AI landscape. Please do not share any content below.</p>
@@ -288,7 +300,7 @@
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>This chapter gives an overview about the Finetuner design. To understand how do I reach here, please read <a class="reference internal" href="../design-philo/#design-philo"><span class="std std-ref">Design Philosophy</span></a> and <a class="reference internal" href="../design-decisions/#design-decision"><span class="std std-ref">Design Decisions</span></a>.</p>
+<p>This chapter gives an overview about the Finetuner design. To understand how do I reach here, please read <a class="reference internal" href="../design-philo/#design-philo"><span class="std std-ref">Philosophy</span></a> and <a class="reference internal" href="../design-decisions/#design-decision"><span class="std std-ref">Decisions</span></a>.</p>
 </div>
 <p>By allowing anyone to easily tune any embedding model in an interactive manner, Finetuner solves the <strong>last mile delivery</strong> when developing a neural search app.</p>
 <section id="minimum-flexibility-but-managed-experience">
@@ -298,12 +310,11 @@
 <p class="admonition-title">Tip</p>
 <p>What this implies is:</p>
 <ul class="simple">
-<li><p>Developers of Finetuner should not argue about flexibility, it is not the design;</p></li>
+<li><p>Developers of Finetuner should not argue about flexibility, it is not part of the design;</p></li>
 <li><p>Finetuner is not a general training framework for training model from scratch;</p></li>
 <li><p>Finetuner must share the same data interface with Jina core;</p></li>
 </ul>
 </div>
-<p>For Finetuner, flexibility is an <em>execuse</em> when you don’t know what’s the best strategy for something.</p>
 </section>
 <section id="one-liner-interface">
 <h2>One-liner interface<a class="headerlink" href="#one-liner-interface" title="Permalink to this headline">¶</a></h2>
@@ -319,11 +330,11 @@
 <p>Finetuner supports Keras, Pytorch and Paddle as the deep learning backend; with the same look, feel and behave on the high-level API. Users can stick to their most comfortable framework and they will enjoy a consistent experience when using Finetuner.</p>
 </section>
 <section id="three-pillars">
-<h2>Three pillars<a class="headerlink" href="#three-pillars" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>Three pillars<a class="headerlink" href="#three-pillars" title="Permalink to this headline">¶</a></h2>
 <p>Finetuner project is composed of three components:</p>
 <ul class="simple">
-<li><p><strong>Tuner</strong>: to tune any embedding model for on labeled data</p></li>
-<li><p><strong>Tailor</strong>: to trim any deep neural network into an embedding model</p></li>
+<li><p><strong>Tuner</strong>: to tune any embedding model for better embedding on labeled data;</p></li>
+<li><p><strong>Tailor</strong>: to trim any deep neural network into an embedding model;</p></li>
 <li><p><strong>Labeler</strong>: a UI for interactive labeling and conduct <a class="reference external" href="https://en.wikipedia.org/wiki/Active_learning_(machine_learning)">active learning</a> via Tuner.</p></li>
 </ul>
 </section>
@@ -338,7 +349,7 @@
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Design Philosophy</div>
+                <div class="title">Philosophy</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -375,7 +386,7 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Design Overview</a><ul>
+<li><a class="reference internal" href="#">Overview</a><ul>
 <li><a class="reference internal" href="#minimum-flexibility-but-managed-experience">Minimum flexibility, but managed experience</a></li>
 <li><a class="reference internal" href="#one-liner-interface">One-liner interface</a></li>
 <li><a class="reference internal" href="#framework-agnostic">Framework-agnostic</a></li>
