@@ -101,8 +101,8 @@ I have talked about models and tuning. To conduct training we also need labeled 
 
 ### Summary
 
-- **Tuner**: to tune any embedding model for on labeled data
-- **Tailor**: to trim any deep neural network into an embedding model
+- **Tuner**: to tune any embedding model for better embedding on labeled data;
+- **Tailor**: to trim any deep neural network into an embedding model;
 - **Labeler**: a UI for interactive labeling and conduct [active learning](https://en.wikipedia.org/wiki/Active_learning_(machine_learning)) via Tuner.
 
 Let's summarize all user entrypoints here

@@ -14,7 +14,7 @@
 
 --- 
 
-# Legacy README (will be removed)
+# Legacy README (serves as internal reference only, will be removed!)
 
 ## Dev Install
 
