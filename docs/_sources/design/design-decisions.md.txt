@@ -135,3 +135,12 @@ In particular, Finetuner is implemented as follows to maximize the compatability
 - The data exchange format of Tuner & Labeler is `DocumentArray` or `DocumentArrayMemmap`, where each sample data is a `Document`. The rich structure of `Document` gets fully leveraged by Finetuner.
 - Labeler leverages Jina `Flow` as the backend to train the model on-the-fly.
 
+## DL backend support
+
+The decision on supporting Pytorch, Keras and Paddle as deep learning backend is fixed. We shall try our best effort to maintain a consistent behavior across these three backends. This will make the Finetuner project framework-agnostic, and serve better our diversified community.
+
+This decision mostly affect the implementation and design of `Tuner` and `Tailor`. In particular, `Tuner` is a good example to show such requirement can be done beautifully. Please read the source code behind Tuner and observe the unified interface there.
+
+On the high-level API, PyTorch and Paddle look and feel extremely similar. This reduces 1/3 our development effort. Paddle is also popular in China. By working with Baidu on promoting Finetuner (scheduled a big press release from them in Nov. 2021), this gives us good exposure to Paddle community.
+
+This decision does not affect the implementation of `Labeler`, as it can be seen as UI + `Flow` + `Tuner` + `Tailor`, where the first two components are framework-irrelevant.
