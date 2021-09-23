@@ -15,7 +15,9 @@ def get_candidate_layers(
     dtypes = [getattr(torch, input_dtype)] * len(input_size)
     names = []
     for name, module in model.named_modules():
-        if not module._modules:  # module do  not have sub modules.
+        if (
+            not module._modules or name == ''
+        ):  # module do  not have sub modules, or module is model itself
             names.append(name)
 
     def _get_output_shape(output):
@@ -44,10 +46,8 @@ def get_candidate_layers(
                 params += np.prod(list(module.bias.size()))
             summary[m_key]['nb_params'] = params
 
-        if (
-            not isinstance(module, nn.Sequential)
-            and not isinstance(module, nn.ModuleList)
-            and module.__class__.__name__ not in torchvision.models.__dict__.keys()
+        if not isinstance(module, nn.Sequential) and not isinstance(
+            module, nn.ModuleList
         ):
             hooks.append(module.register_forward_hook(hook))
 

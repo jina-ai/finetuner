@@ -10,6 +10,7 @@ def trim(
     layer_idx: int = -1,
     freeze: bool = False,
     input_size: Tuple = (128,),
+    input_dtype: str = 'float32',
 ) -> nn.Module:
     """Trim an arbitary Keras model to a Pytorch embedding model
 
@@ -17,12 +18,15 @@ def trim(
     :param layer_idx: the index of the bottleneck layer for embedding output.
     :param freeze: if set, the remaining layers of the model will be freezed.
     :param input_size: the input shape to the DNN model.
+    :param input_dtype: data type of the input.
 
     ..note::
         The trim method can only trim model of depth 2, e.g. 2 level of nested nn.Module.
     """
-    candidate_layers = get_candidate_layers(model, input_size=input_size)
-
+    candidate_layers = get_candidate_layers(
+        model, input_size=input_size, input_dtype=input_dtype
+    )
+    print(candidate_layers)
     indx = {l['layer_idx'] for l in candidate_layers}
     if layer_idx not in indx:
         raise IndexError(f'Layer index {layer_idx} is not one of {indx}.')

@@ -17,20 +17,24 @@ def dense_model():
     )
 
 
-# @pytest.fixture
-# def simple_cnn_model():
-#     model = tf.keras.models.Sequential()
-#     model.add(tf.keras.Input(shape=(28, 28, 1)))
-#     model.add(tf.keras.layers.Conv2D(32, kernel_size=(3, 3), activation="relu"))
-#     model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
-#     model.add(tf.keras.layers.Conv2D(64, kernel_size=(3, 3), activation="relu"))
-#     model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
-#     model.add(tf.keras.layers.Flatten())
-#     model.add(tf.keras.layers.Dropout(0.2))
-#     model.add(tf.keras.layers.Dense(10, activation="softmax"))
-#     return model
-#
-#
+@pytest.fixture
+def simple_cnn_model():
+    return torch.nn.Sequential(
+        nn.Conv2d(1, 4, kernel_size=3, stride=1, padding=1),
+        nn.BatchNorm2d(4),
+        nn.ReLU(),
+        nn.MaxPool2d(kernel_size=2, stride=2),
+        nn.Conv2d(4, 4, kernel_size=3, stride=1, padding=1),
+        nn.BatchNorm2d(4),
+        nn.ReLU(inplace=True),
+        nn.MaxPool2d(kernel_size=2, stride=2),
+        nn.Dropout(0.2),
+        nn.Flatten(),
+        nn.Linear(in_features=196, out_features=10),
+        nn.Softmax(),
+    )
+
+
 @pytest.fixture
 def vgg16_cnn_model():
     import torchvision.models as models
@@ -40,13 +44,28 @@ def vgg16_cnn_model():
 
 #
 #
-# @pytest.fixture
-# def lstm_model():
-#     model = tf.keras.models.Sequential()
-#     model.add(tf.keras.layers.Embedding(1000, 128, input_length=64))
-#     model.add(tf.keras.layers.LSTM(64))
-#     model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
-#     return model
+@pytest.fixture
+def lstm_model():
+    class Encoder(nn.Module):
+        def __init__(self, seq_len=128, no_features=128, embedding_size=1024):
+            super().__init__()
+            self.seq_len = seq_len
+            self.no_features = no_features
+            self.embedding_size = embedding_size
+            self.hidden_size = 2 * embedding_size
+            self.lstm = nn.LSTM(
+                input_size=self.no_features,
+                hidden_size=embedding_size,
+                num_layers=1,
+                batch_first=True,
+            )
+
+        def forward(self, x):
+            x, (hidden_state, cell_state) = self.lstm(x)
+            last_lstm_layer_hidden_state = hidden_state[-1, :, :]
+            return last_lstm_layer_hidden_state
+
+    return Encoder()
 
 
 @pytest.fixture(params=['dense_model'])
@@ -55,18 +74,18 @@ def model(request):
 
 
 @pytest.mark.parametrize(
-    'model, layer_idx',
+    'model, layer_idx, input_size',
     [
-        ('dense_model', 10),  # 10th layer does not exist
-        # ('simple_cnn_model', 2),  # 2nd layer is a convolutional layer
-        ('vgg16_cnn_model', 4),  # 4th layer is a convolutional layer
-        # ('lstm_model', 10),  # 10th layer does not exist
+        ('dense_model', 10, (128,)),  # 10th layer does not exist
+        ('simple_cnn_model', 2, (1, 28, 28)),  # 2nd layer is a convolutional layer
+        ('vgg16_cnn_model', 4, (3, 224, 224)),  # 4th layer is a convolutional layer
+        ('lstm_model', 10, (1, 128)),  # 10th layer does not exist
     ],
     indirect=['model'],
 )
-def test_trim_fail_given_unexpected_layer_idx(model, layer_idx):
+def test_trim_fail_given_unexpected_layer_idx(model, layer_idx, input_size):
     with pytest.raises(IndexError):
-        trim(model, layer_idx=layer_idx)
+        trim(model, layer_idx=layer_idx, input_size=input_size)
 
 
 @pytest.mark.parametrize('freeze', [True, False])
@@ -74,9 +93,9 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx):
     'model, layer_idx, input_size, expected_output_shape',
     [
         ('dense_model', 3, (128,), 32),
-        # ('simple_cnn_model', 4, (None, 1600)),
+        ('simple_cnn_model', 10, (1, 28, 28), (None, 1600)),
         ('vgg16_cnn_model', 33, (3, 224, 224), (None, 4096)),
-        # ('lstm_model', 1, (None, 64)),
+        ('lstm_model', 1, (1, 128), 128),
     ],
     indirect=['model'],
 )
