@@ -4,6 +4,7 @@ from typing import Tuple
 import numpy as np
 import torch
 from torch import nn
+import torchvision
 
 from finetuner.tailor.helper import is_list_int
 
@@ -12,6 +13,10 @@ def get_candidate_layers(
     model: nn.Module, input_size: Tuple[int, ...], input_dtype: str = 'float32'
 ):
     dtypes = [getattr(torch, input_dtype)] * len(input_size)
+    names = []
+    for name, module in model.named_modules():
+        if not module._modules:  # module do  not have sub modules.
+            names.append(name)
 
     def _get_output_shape(output):
         if isinstance(output, (list, tuple)):
@@ -39,8 +44,10 @@ def get_candidate_layers(
                 params += np.prod(list(module.bias.size()))
             summary[m_key]['nb_params'] = params
 
-        if not isinstance(module, nn.Sequential) and not isinstance(
-            module, nn.ModuleList
+        if (
+            not isinstance(module, nn.Sequential)
+            and not isinstance(module, nn.ModuleList)
+            and module.__class__.__name__ not in torchvision.models.__dict__.keys()
         ):
             hooks.append(module.register_forward_hook(hook))
 
@@ -79,6 +86,7 @@ def get_candidate_layers(
                 'output_features': output_shape[-1],
                 'params': summary[layer]['nb_params'],
                 'layer_idx': idx,
+                'module_name': names[idx],
             }
         )
 
