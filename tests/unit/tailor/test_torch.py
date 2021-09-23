@@ -31,17 +31,13 @@ def dense_model():
 #     return model
 #
 #
-# @pytest.fixture
-# def vgg16_cnn_model():
-#     return tf.keras.applications.vgg16.VGG16(
-#         include_top=True,
-#         weights='imagenet',
-#         input_tensor=None,
-#         input_shape=None,
-#         pooling=None,
-#         classes=1000,
-#         classifier_activation='softmax',
-#     )
+@pytest.fixture
+def vgg16_cnn_model():
+    import torchvision.models as models
+
+    return models.vgg16(pretrained=False)
+
+
 #
 #
 # @pytest.fixture
@@ -73,20 +69,16 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx):
         trim(model, layer_idx=layer_idx)
 
 
-# @pytest.mark.parametrize('freeze', [True, False])
-# @pytest.mark.parametrize(
-#     'model, layer_idx, expected_output_shape',
-#     [
-#         ('dense_model', 1, (None, 64)),
-#         ('simple_cnn_model', 4, (None, 1600)),
-#         ('vgg16_cnn_model', 20, (None, 4096)),
-#         ('lstm_model', 1, (None, 64)),
-#     ],
-#     indirect=['model'],
-# )
-# def test_trim(model, layer_idx, expected_output_shape, freeze):
-#     model = trim(model=model, layer_idx=layer_idx, freeze=freeze)
-#     assert model.output_shape == expected_output_shape
-#     if freeze:
-#         for layer in model.layers:
-#             assert layer.trainable is False
+@pytest.mark.parametrize('freeze', [True, False])
+@pytest.mark.parametrize(
+    'model, layer_idx, input_size, expected_output_shape',
+    [
+        ('dense_model', 1, (128,), (None, 64)),
+        # ('simple_cnn_model', 4, (None, 1600)),
+        ('vgg16_cnn_model', 32, (3, 224, 224), (None, 4096)),
+        # ('lstm_model', 1, (None, 64)),
+    ],
+    indirect=['model'],
+)
+def test_trim(model, layer_idx, input_size, expected_output_shape, freeze):
+    model = trim(model=model, layer_idx=layer_idx, freeze=freeze, input_size=input_size)
