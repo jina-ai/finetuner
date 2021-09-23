@@ -89,7 +89,7 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx, input_size):
         trim(model, layer_idx=layer_idx, input_size=input_size)
 
 
-@pytest.mark.parametrize('freeze', [True])
+@pytest.mark.parametrize('freeze', [True, False])
 @pytest.mark.parametrize(
     'model, layer_idx, input_size, input_, expected_output_shape',
     [
