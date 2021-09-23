@@ -24,4 +24,10 @@ def trim(
     if layer_idx not in indx:
         raise IndexError(f'Layer index {layer_idx} is not one of {indx}.')
 
-    print(candidate_layers)
+    for idx, module in enumerate(model[layer_idx + 1 :]):
+        model[layer_idx + idx + 1] = nn.Identity()
+
+    if freeze:
+        for param in model.parameters():
+            param.requires_grad = False
+    return model
