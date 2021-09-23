@@ -57,13 +57,14 @@ def lstm_model():
                 input_size=self.no_features,
                 hidden_size=embedding_size,
                 num_layers=1,
-                batch_first=True,
             )
+            self.fc = nn.Linear(1024, 10)
 
         def forward(self, x):
             x, (hidden_state, cell_state) = self.lstm(x)
             last_lstm_layer_hidden_state = hidden_state[-1, :, :]
-            return last_lstm_layer_hidden_state
+            pred = self.fc(last_lstm_layer_hidden_state)
+            return pred
 
     return Encoder()
 
@@ -88,20 +89,21 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx, input_size):
         trim(model, layer_idx=layer_idx, input_size=input_size)
 
 
-@pytest.mark.parametrize('freeze', [True, False])
+@pytest.mark.parametrize('freeze', [True])
 @pytest.mark.parametrize(
-    'model, layer_idx, input_size, expected_output_shape',
+    'model, layer_idx, input_size, input_, expected_output_shape',
     [
-        ('dense_model', 3, (128,), 32),
-        ('simple_cnn_model', 10, (1, 28, 28), (None, 1600)),
-        ('vgg16_cnn_model', 33, (3, 224, 224), (None, 4096)),
-        ('lstm_model', 1, (1, 128), 128),
+        ('dense_model', 4, (128,), (1, 128), [1, 32]),
+        ('simple_cnn_model', 11, (1, 28, 28), (1, 1, 28, 28), [1, 4 * 7 * 7]),
+        ('vgg16_cnn_model', 35, (3, 224, 224), (1, 3, 224, 224), [1, 4096]),
+        ('lstm_model', 2, (1, 128), (1, 1, 128), [1, 1024]),
     ],
     indirect=['model'],
 )
-def test_trim(model, layer_idx, input_size, expected_output_shape, freeze):
+def test_trim(model, layer_idx, input_size, input_, expected_output_shape, freeze):
     model = trim(model=model, layer_idx=layer_idx, freeze=freeze, input_size=input_size)
-    print(model)
+    out = model(torch.rand(input_))
+    assert list(out.shape) == expected_output_shape
     if freeze:
         for param in model.parameters():
             assert param.requires_grad is False

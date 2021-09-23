@@ -16,7 +16,7 @@ def get_candidate_layers(
     for name, module in model.named_modules():
         if (
             not module._modules or name == ''
-        ):  # module do  not have sub modules, or module is model itself
+        ):  # module do not have sub modules, or module is model itself
             names.append(name)
 
     def _get_output_shape(output):
