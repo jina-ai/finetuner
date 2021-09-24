@@ -129,12 +129,7 @@ autoclass_content = 'both'
 set_type_checking_flag = False
 html_last_updated_fmt = ''
 nitpicky = True
-nitpick_ignore = [
-    ('py:class', 'type'),
-    ('py:class', 'paddle.nn.Layer'),
-    ('py:obj', 'paddle.io'),
-    ('py:obj', 'paddle.nn'),
-]
+nitpick_ignore = [('py:class', 'type')]
 linkcheck_ignore = [
     # Avoid link check on local uri
     'http://0.0.0.0:*',
