@@ -17,6 +17,7 @@ def trim(
     :param layer_idx: the index of the bottleneck layer for embedding output.
     :param input_size: the input shape to the DNN model.
     :param input_dtype: data type of the input.
+    :return: The trimmed model where all layers greater than `layer_idx` been replaced with :class:`nn.Identity`.
 
     ..note::
         The trim method can only trim model of depth 2, e.g. 2 level of nested nn.Module.
