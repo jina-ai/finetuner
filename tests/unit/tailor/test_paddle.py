@@ -60,6 +60,16 @@ def test_freeze(model):
         assert not param.trainable
 
 
-def test_trim(vgg16_cnn_model):
-    model = trim(vgg16_cnn_model, layer_idx=33, input_size=(3, 224, 224))
-    print(model)
+@pytest.mark.parametrize(
+    'model, layer_idx, input_size, input_, expected_output_shape',
+    [
+        ('dense_model', 4, (128,), (1, 128), [1, 32]),
+        ('simple_cnn_model', 11, (1, 28, 28), (1, 1, 28, 28), [1, 10]),
+        ('vgg16_cnn_model', 35, (3, 224, 224), (1, 3, 224, 224), [1, 4096]),
+    ],
+    indirect=['model'],
+)
+def test_trim(model, layer_idx, input_size, input_, expected_output_shape):
+    model = trim(model=model, layer_idx=layer_idx, input_size=input_size)
+    out = model(paddle.rand(input_))
+    assert list(out.shape) == expected_output_shape

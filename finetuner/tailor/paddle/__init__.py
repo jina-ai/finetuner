@@ -12,11 +12,13 @@ def trim(
     input_size: Tuple = (128,),
     input_dtype: str = 'float32',
 ) -> nn.Layer:
-    """Trim an arbitrary model to a Paddle embedding model.
-        :param model: an arbitrary DNN model in Paddle.
-        :param layer_idx: the index of the bottleneck layer for embedding output.
-        :param input_size: the input shape to the DNN model.
-        :param input_dtype: data type of the input.
+    """
+    Trim an arbitrary model to a Paddle embedding model.
+
+    :param model: an arbitrary DNN model in Paddle.
+    :param layer_idx: the index of the bottleneck layer for embedding output.
+    :param input_size: the input shape to the DNN model.
+    :param input_dtype: data type of the input.
     :return: The trimmed model where all layers greater than `layer_idx` been replaced with :class:`nn.Identity`.
     """
     candidate_layers = get_candidate_layers(
