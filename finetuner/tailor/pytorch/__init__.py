@@ -12,7 +12,7 @@ def trim(
     input_size: Tuple = (128,),
     input_dtype: str = 'float32',
 ) -> nn.Module:
-    """Trim an arbitary Keras model to a Pytorch embedding model
+    """Trim an arbitary model to a Pytorch embedding model
 
     :param model: an arbitary DNN model in Pytorch
     :param layer_idx: the index of the bottleneck layer for embedding output.
