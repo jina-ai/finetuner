@@ -2,6 +2,8 @@ import pytest
 
 import paddle
 
+from finetuner.tailor.paddle import trim, freeze
+
 
 @pytest.fixture
 def vgg16_cnn_model():
@@ -20,4 +22,7 @@ def model(request):
 )
 def test_freeze(model):
     for param in model.parameters():
-        assert param.trainable == False
+        assert param.trainable
+    model = freeze(model)
+    for param in model.parameters():
+        assert not param.trainable
