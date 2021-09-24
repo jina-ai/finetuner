@@ -8,15 +8,13 @@ from .parser import get_candidate_layers
 def trim(
     model: nn.Module,
     layer_idx: int = -1,
-    freeze: bool = False,
     input_size: Tuple = (128,),
     input_dtype: str = 'float32',
 ) -> nn.Module:
-    """Trim an arbitary model to a Pytorch embedding model
+    """Trim an arbitrary model to a Pytorch embedding model.
 
-    :param model: an arbitary DNN model in Pytorch
+    :param model: an arbitrary DNN model in Pytorch.
     :param layer_idx: the index of the bottleneck layer for embedding output.
-    :param freeze: if set, the remaining layers of the model will be freezed.
     :param input_size: the input shape to the DNN model.
     :param input_dtype: data type of the input.
 
@@ -49,7 +47,15 @@ def trim(
             else:
                 setattr(model, name, nn.Identity())
 
-    if freeze:
-        for param in model.parameters():
-            param.requires_grad = False
+    return model
+
+
+def freeze(model: nn.Module):
+    """Freeze an arbitrary model to make layers not trainable.
+
+    :param model: an arbitrary DNN model in Pytorch.
+    :return: A new model with all layers weights freezed.
+    """
+    for param in model.parameters():
+        param.requires_grad = False
     return model

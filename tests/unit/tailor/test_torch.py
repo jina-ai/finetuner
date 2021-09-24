@@ -89,7 +89,6 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx, input_size):
         trim(model, layer_idx=layer_idx, input_size=input_size)
 
 
-@pytest.mark.parametrize('freeze', [True, False])
 @pytest.mark.parametrize(
     'model, layer_idx, input_size, input_, expected_output_shape',
     [
@@ -100,10 +99,17 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx, input_size):
     ],
     indirect=['model'],
 )
-def test_trim(model, layer_idx, input_size, input_, expected_output_shape, freeze):
-    model = trim(model=model, layer_idx=layer_idx, freeze=freeze, input_size=input_size)
+def test_trim(model, layer_idx, input_size, input_, expected_output_shape):
+    model = trim(model=model, layer_idx=layer_idx, input_size=input_size)
     out = model(torch.rand(input_))
     assert list(out.shape) == expected_output_shape
-    if freeze:
-        for param in model.parameters():
-            assert param.requires_grad is False
+
+
+@pytest.mark.parametrize(
+    'model',
+    ['dense_model', 'simple_cnn_model', 'vgg16_cnn_model', 'lstm_model'],
+    indirect=['model'],
+)
+def test_freeze(model):
+    for param in model.parameters():
+        assert param.requires_grad is True
