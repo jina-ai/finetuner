@@ -1,6 +1,7 @@
 from typing import Tuple
 
 import paddle.nn as nn
+from paddle import Tensor
 
 from .parser import get_candidate_layers
 
@@ -12,16 +13,39 @@ def trim(
     input_dtype: str = 'float32',
 ) -> nn.Layer:
     """Trim an arbitrary model to a Paddle embedding model.
-    :param model: an arbitrary DNN model in Paddle.
-    :param layer_idx: the index of the bottleneck layer for embedding output.
-    :param input_size: the input shape to the DNN model.
-    :param input_dtype: data type of the input.
-    :return: Trimmed model.
+        :param model: an arbitrary DNN model in Paddle.
+        :param layer_idx: the index of the bottleneck layer for embedding output.
+        :param input_size: the input shape to the DNN model.
+        :param input_dtype: data type of the input.
+    :return: The trimmed model where all layers greater than `layer_idx` been replaced with :class:`nn.Identity`.
     """
     candidate_layers = get_candidate_layers(
         model, input_size=input_size, input_dtype=input_dtype
     )
-    pass
+    print(candidate_layers)
+    indx = {l['layer_idx'] for l in candidate_layers}
+    if layer_idx not in indx:
+        raise IndexError(f'Layer index {layer_idx} is not one of {indx}.')
+
+    module_name = None
+    for candidate_layer in candidate_layers:
+        if candidate_layer['layer_idx'] == layer_idx:
+            module_name = candidate_layer['module_name']
+            break
+
+    flag = False
+    for name, module in model.named_sublayers():
+        if name == module_name:
+            flag = True
+        if flag:
+            if (
+                '.' in name
+            ):  # Note: in paddle.vision, nested layer names are named with '.' e.g. classifier.0
+                nested_module, layer = name.split('.')
+                setattr(getattr(model, nested_module), layer, Identity())
+            else:
+                setattr(model, name, Identity())
+    return model
 
 
 def freeze(model: nn.Layer) -> nn.Layer:
@@ -32,3 +56,10 @@ def freeze(model: nn.Layer) -> nn.Layer:
     for param in model.parameters():
         param.trainable = False
     return model
+
+
+class Identity(nn.Layer):
+    """A placeholder identity operator that is argument-insensitive."""
+
+    def forward(self, input_: Tensor) -> Tensor:
+        return input_

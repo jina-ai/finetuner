@@ -12,8 +12,12 @@ def get_candidate_layers(
     model: nn.Layer, input_size: Tuple[int, ...], input_dtype: str = 'float32'
 ):
     dtypes = [input_dtype] * len(input_size)
-
     depth = len(list(model.sublayers()))
+    names = [
+        name
+        for name, layer in model.named_sublayers()
+        if len(list(layer.sublayers())) == 0
+    ]
 
     def _get_output_shape(output):
         if isinstance(output, (list, tuple)):
@@ -84,7 +88,7 @@ def get_candidate_layers(
         h.remove()
 
     results = []
-    for idx, layer in enumerate(summary):
+    for idx, (layer, name) in enumerate(zip(summary, names)):
         output_shape = summary[layer]['output_shape']
         if not output_shape or len(output_shape) != 2 or not is_list_int(output_shape):
             continue
@@ -96,7 +100,7 @@ def get_candidate_layers(
                 'output_features': output_shape[-1],
                 'params': summary[layer]['nb_params'],
                 'layer_idx': idx,
-                'module_name': layer.name,
+                'module_name': name,
             }
         )
 

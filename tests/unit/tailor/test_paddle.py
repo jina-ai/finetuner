@@ -58,3 +58,8 @@ def test_freeze(model):
     model = freeze(model)
     for param in model.parameters():
         assert not param.trainable
+
+
+def test_trim(vgg16_cnn_model):
+    model = trim(vgg16_cnn_model, layer_idx=33, input_size=(3, 224, 224))
+    print(model)
