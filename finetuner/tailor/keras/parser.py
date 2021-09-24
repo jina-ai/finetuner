@@ -25,6 +25,7 @@ def get_candidate_layers(model):
                     'output_features': output_shape[-1],
                     'params': params,
                     'layer_idx': idx,
+                    'module_name': layer.name,  # duplicate as `name` to make different backends consistent
                 }
             )
     return results

@@ -12,6 +12,12 @@ def get_candidate_layers(
     model: nn.Module, input_size: Tuple[int, ...], input_dtype: str = 'float32'
 ):
     dtypes = [getattr(torch, input_dtype)] * len(input_size)
+    names = []
+    for name, module in model.named_modules():
+        if (
+            not module._modules or name == ''
+        ):  # module do not have sub modules, or module is model itself
+            names.append(name)
 
     def _get_output_shape(output):
         if isinstance(output, (list, tuple)):
@@ -79,6 +85,7 @@ def get_candidate_layers(
                 'output_features': output_shape[-1],
                 'params': summary[layer]['nb_params'],
                 'layer_idx': idx,
+                'module_name': names[idx],
             }
         )
 
