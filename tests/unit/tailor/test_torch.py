@@ -42,8 +42,6 @@ def vgg16_cnn_model():
     return models.vgg16(pretrained=False)
 
 
-#
-#
 @pytest.fixture
 def lstm_model():
     class Encoder(nn.Module):
