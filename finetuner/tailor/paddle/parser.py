@@ -96,6 +96,7 @@ def get_candidate_layers(
                 'output_features': output_shape[-1],
                 'params': summary[layer]['nb_params'],
                 'layer_idx': idx,
+                'module_name': layer.name,
             }
         )
 
