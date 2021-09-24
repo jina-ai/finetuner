@@ -1,7 +1,7 @@
 import pytest
 import tensorflow as tf
 
-from finetuner.tailor.keras import trim
+from finetuner.tailor.keras import trim, freeze
 
 
 @pytest.fixture
@@ -96,3 +96,6 @@ def test_trim(model, layer_idx, expected_output_shape):
 def test_freeze(model):
     for layer in model.layers:
         assert layer.trainable
+    model = freeze(model)
+    for layer in model.layers:
+        assert not layer.trainable

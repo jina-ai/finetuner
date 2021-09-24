@@ -2,7 +2,7 @@ import pytest
 import torch
 import torch.nn as nn
 
-from finetuner.tailor.pytorch import trim
+from finetuner.tailor.pytorch import trim, freeze
 
 
 @pytest.fixture
@@ -67,7 +67,9 @@ def lstm_model():
     return Encoder()
 
 
-@pytest.fixture(params=['dense_model'])
+@pytest.fixture(
+    params=['dense_model', 'simple_cnn_model', 'vgg16_cnn_model', 'lstm_model']
+)
 def model(request):
     return request.getfixturevalue(request.param)
 
@@ -111,3 +113,6 @@ def test_trim(model, layer_idx, input_size, input_, expected_output_shape):
 def test_freeze(model):
     for param in model.parameters():
         assert param.requires_grad
+    model = freeze(model)
+    for param in model.parameters():
+        assert not param.requires_grad
