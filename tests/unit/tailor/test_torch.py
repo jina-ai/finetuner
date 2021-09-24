@@ -112,4 +112,4 @@ def test_trim(model, layer_idx, input_size, input_, expected_output_shape):
 )
 def test_freeze(model):
     for param in model.parameters():
-        assert param.requires_grad is True
+        assert param.requires_grad
