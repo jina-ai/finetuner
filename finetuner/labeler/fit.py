@@ -28,7 +28,7 @@ def fit(
         dam = DocumentArrayMemmap(dam_path)
         dam.extend(train_data)
     elif isinstance(train_data, DocumentArrayMemmap):
-        dam_path = train_data._path
+        dam_path = train_data.path
     elif isinstance(train_data, str):
         dam_path = train_data
     elif isinstance(train_data, Iterable):
