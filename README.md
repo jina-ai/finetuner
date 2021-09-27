@@ -16,33 +16,6 @@
 
 # Legacy README (serves as internal reference only, will be removed!)
 
-## Dev Install
-
-Finetuner requires your local `jina` as the latest master. It is the best if you have `jina` installed
-via `pip install -e .`.
-
-```bash
-git clone https://github.com/jina-ai/finetuner.git
-cd finetuner
-# pip install -r requirements.txt (only required when you do not have jina locally) 
-pip install -e .
-```
-
-#### Install tests requirements
-
-```bash
-pip install -r .github/requirements-test.txt
-pip install -r .github/requirements-cicd.txt
-```
-
-#### Enable precommit hook
-
-The codebase is enforced with Black style, please enable precommit hook.
-
-```bash
-pre-commit install
-```
-
 
 ## Examples
 
@@ -181,73 +154,3 @@ With `head_layer='TripletLayer'`
 
 ![](.github/lstm.triplet.png)
 
-## Generate Synthetic Match Data
-
-We use Fashion-MNIST and Covid QA data for generating synthetic matching data, as these two datasets align with the
-first two `jina hello` demos.
-
-- `tests.data_generator.fashion_match_doc_generator()`: the generator of Fashion-MNIST synthetic matching data.
-- `tests.data_generator.qa_match_doc_generator()`: the generator of Fashion-MNIST synthetic matching data.
-
-
-### Generator API
-
-```python
-from tests.data_generator import fashion_match_doc_generator as mdg
-
-# or
-
-from tests.data_generator import qa_match_doc_generator as mdg
-```
-
-#### To get only first 10 documents
-
-```python
-
-for d in mdg(num_total=10):
-    ...
-```
-
-#### To set number of positive/negative samples per document
-
-```python
-for d in mdg(num_pos=2, num_neg=7):
-    ...
-```
-
-`qa_match_doc_generator` has a fixed number of positive matches `1`.
-
-#### To set the label value of positive & negative samples
-
-```python
-for d in mdg(pos_value=1, neg_value=-1):
-    ...
-```
-
-#### To make image as 3-channel pseudo RGB image
-
-```python
-from tests.data_generator import fashion_match_doc_generator as fmdg
-
-for d in fmdg(channels=3):
-    ...
-```
-
-#### To upsample image as 112x112 3-channel pseudo RGB image
-
-```python
-from tests.data_generator import fashion_match_doc_generator as fmdg
-
-for d in fmdg(channels=3, upsampling=4):
-    ...
-```
-
-#### Use `DocumentArray` instead of Generator
-
-```python
-from tests.data_generator import fashion_match_documentarray as mda
-
-from tests.data_generator import qa_match_documentarray as mda
-
-da = mda()  # slow, as it scans over all data
-```
