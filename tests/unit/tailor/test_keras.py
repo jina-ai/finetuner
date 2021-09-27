@@ -46,9 +46,12 @@ def vgg16_cnn_model():
 @pytest.fixture
 def lstm_model():
     model = tf.keras.models.Sequential()
-    model.add(tf.keras.layers.Embedding(1000, 128, input_length=64))
-    model.add(tf.keras.layers.LSTM(64))
-    model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
+    model.add(tf.keras.layers.Embedding(1000, 1024, input_length=128))
+    model.add(tf.keras.layers.LSTM(256, return_sequences=True))
+    model.add(tf.keras.layers.LSTM(256, return_sequences=True))
+    model.add(tf.keras.layers.LSTM(256, return_sequences=True))
+    model.add(tf.keras.layers.Dense(256, activation='relu'))
+    model.add(tf.keras.layers.Dense(5, activation='softmax'))
     return model
 
 
@@ -80,7 +83,7 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx):
         ('dense_model', 3, (None, 32)),
         ('simple_cnn_model', 5, (None, 9216)),
         ('vgg16_cnn_model', 21, (None, 4096)),
-        ('lstm_model', 2, (None, 64)),
+        ('lstm_model', 2, (None, 256)),
     ],
     indirect=['model'],
 )
