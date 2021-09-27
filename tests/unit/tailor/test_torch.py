@@ -95,9 +95,9 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx, input_size):
     'model, layer_idx, input_size, input_, expected_output_shape',
     [
         ('dense_model', 5, (128,), (1, 128), [1, 32]),
-        ('simple_cnn_model', 11, (1, 28, 28), (1, 1, 28, 28), [1, 4 * 7 * 7]),
+        ('simple_cnn_model', 11, (1, 28, 28), (1, 1, 28, 28), [1, 10]),
         ('vgg16_cnn_model', 35, (3, 224, 224), (1, 3, 224, 224), [1, 4096]),
-        ('lstm_model', 2, (1, 128), (1, 1, 128), [1, 1024]),
+        ('lstm_model', 1, (1, 128), (1, 1, 128), [1, 1024]),
     ],
     indirect=['model'],
 )

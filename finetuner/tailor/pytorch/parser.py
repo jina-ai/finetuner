@@ -14,9 +14,7 @@ def get_candidate_layers(
     dtypes = [getattr(torch, input_dtype)] * len(input_size)
     names = []
     for name, module in model.named_modules():
-        if (
-            not module._modules or name == ''
-        ):  # module do not have sub modules, or module is model itself
+        if not module._modules:  # module do not have sub modules
             names.append(name)
 
     def _get_output_shape(output):
@@ -73,7 +71,7 @@ def get_candidate_layers(
         h.remove()
 
     results = []
-    for idx, layer in enumerate(summary):
+    for idx, (layer, name) in enumerate(zip(summary, names)):
         output_shape = summary[layer]['output_shape']
         if not output_shape or len(output_shape) != 2 or not is_list_int(output_shape):
             continue
@@ -85,7 +83,7 @@ def get_candidate_layers(
                 'output_features': output_shape[-1],
                 'params': summary[layer]['nb_params'],
                 'layer_idx': idx,
-                'module_name': names[idx],
+                'module_name': name,
             }
         )
 
