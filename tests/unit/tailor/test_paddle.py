@@ -9,6 +9,8 @@ from finetuner.tailor.paddle import trim, freeze
 @pytest.fixture
 def dense_model():
     return nn.Sequential(
+        nn.Linear(in_features=128, out_features=128),
+        nn.ReLU(),
         nn.Linear(in_features=128, out_features=64),
         nn.ReLU(),
         nn.Linear(in_features=64, out_features=32),
@@ -90,7 +92,7 @@ def test_freeze(model):
 @pytest.mark.parametrize(
     'model, layer_idx, input_size, input_, expected_output_shape',
     [
-        ('dense_model', 4, (128,), (1, 128), [1, 32]),
+        ('dense_model', 5, (128,), (1, 128), [1, 32]),
         ('simple_cnn_model', 11, (1, 28, 28), (1, 1, 28, 28), [1, 10]),
         ('vgg16_cnn_model', 35, (3, 224, 224), (1, 3, 224, 224), [1, 4096]),
         ('lstm_model', 1, (1, 128), (1, 1, 128), [1, 1024]),
@@ -100,4 +102,4 @@ def test_freeze(model):
 def test_trim(model, layer_idx, input_size, input_, expected_output_shape):
     model = trim(model=model, layer_idx=layer_idx, input_size=input_size)
     out = model(paddle.rand(input_))
-    assert list(out.shape) == expected_output_shape
+    assert list(out.shape) == expected_output_shape  # 4th layer Linear

@@ -8,13 +8,16 @@ def trim(model: Model, layer_idx: int = -1) -> Model:
 
     :param model: an arbitary DNN model in Keras
     :param layer_idx: the index of the bottleneck layer for embedding output.
+
+    ..Note::
+        The argument `layer_idx` means that all layers before (not include) the index will be
+        preserved.
     """
     candidate_layers = get_candidate_layers(model)
-
-    indx = {l['layer_idx'] for l in candidate_layers}
+    indx = {l['layer_idx'] for l in candidate_layers if l['layer_idx'] != 0}
     if layer_idx not in indx:
         raise IndexError(f'Layer index {layer_idx} is not one of {indx}.')
-    return Model(model.input, model.layers[layer_idx].output)
+    return Model(model.input, model.layers[layer_idx - 1].output)
 
 
 def freeze(model: Model):

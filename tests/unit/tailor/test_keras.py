@@ -7,11 +7,11 @@ from finetuner.tailor.keras import trim, freeze
 @pytest.fixture
 def dense_model():
     model = tf.keras.models.Sequential()
-    model.add(tf.keras.Input(shape=(16,)))
-    model.add(tf.keras.layers.Dense(128, activation='relu'))
-    model.add(tf.keras.layers.Dense(64, activation='relu'))
-    model.add(tf.keras.layers.Dense(32, activation='relu'))
-    model.add(tf.keras.layers.Dense(10, activation='softmax'))
+    model.add(tf.keras.layers.InputLayer(input_shape=(128,)))  # (None, 128)
+    model.add(tf.keras.layers.Dense(128, activation='relu'))  # (None, 128)
+    model.add(tf.keras.layers.Dense(64, activation='relu'))  # (None, 64)
+    model.add(tf.keras.layers.Dense(32, activation='relu'))  # (None, 32)
+    model.add(tf.keras.layers.Dense(10, activation='softmax'))  # (None, 10)
     return model
 
 
@@ -76,7 +76,7 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx):
 @pytest.mark.parametrize(
     'model, layer_idx, expected_output_shape',
     [
-        ('dense_model', 1, (None, 64)),
+        ('dense_model', 0, (None, 64)),
         ('simple_cnn_model', 4, (None, 1600)),
         ('vgg16_cnn_model', 20, (None, 4096)),
         ('lstm_model', 1, (None, 64)),
