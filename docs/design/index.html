@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex/" /><link rel="search" title="Search" href="../search/" /><link rel="next" title="Overview" href="overview/" /><link rel="prev" title="Finetuning Bi-LSTM on Text" href="../get-started/covid-qa/" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.09.22"/>
-        <title>&lt;no title&gt; - Jina Documentation</title>
+        <title>&lt;no title&gt; - Finetuner 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=150e365fa939648e89c22f6d7d13c72a1657915a" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -29,6 +29,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/design-style.d53ab927f7bad3eaa42da95908504b10.min.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=16fb25fabf47304eee183a5e9af80b1ba98259b1" />
     <link rel="stylesheet" type="text/css" href="../_static/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
     
     
 
@@ -131,44 +132,60 @@
 <input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
 <input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
 <label class="overlay sidebar-overlay" for="__navigation">
-  <div class="visually-hidden">Hide navigation sidebar</div>
+    <div class="visually-hidden">Hide navigation sidebar</div>
 </label>
 <label class="overlay toc-overlay" for="__toc">
-  <div class="visually-hidden">Hide table of contents sidebar</div>
+    <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
 
 
 <div class="page">
-  <header class="mobile-header">
-    <div class="header-left">
-      <label class="nav-overlay-icon" for="__navigation">
-        <div class="visually-hidden">Toggle site navigation sidebar</div>
-        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
-      </label>
-    </div>
-    <div class="header-center">
-      <a href="../"><div class="brand">Jina Documentation</div></a>
-    </div>
-    <div class="header-right">
-      <div class="theme-toggle-container theme-toggle-header">
-        <button class="theme-toggle">
-          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
-          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
-          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
-        </button>
-      </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
-        <div class="visually-hidden">Toggle table of contents sidebar</div>
-        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
-      </label>
-    </div>
-  </header>
-  <aside class="sidebar-drawer">
-    <div class="sidebar-container">
-      
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="../">
+    <header class="mobile-header">
+        <div class="header-left">
+            <label class="nav-overlay-icon" for="__navigation">
+                <div class="visually-hidden">Toggle site navigation sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-menu"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+        <div class="header-center">
+            <a href="../">
+                <div class="brand">Finetuner 0.1.0 documentation</div>
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="theme-toggle-container theme-toggle-header">
+                <button class="theme-toggle">
+                    <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                    <svg class="theme-icon-when-auto">
+                        <use href="#svg-sun-half"></use>
+                    </svg>
+                    <svg class="theme-icon-when-dark">
+                        <use href="#svg-moon"></use>
+                    </svg>
+                    <svg class="theme-icon-when-light">
+                        <use href="#svg-sun"></use>
+                    </svg>
+                </button>
+            </div>
+            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+                <div class="visually-hidden">Toggle table of contents sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-toc"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+    </header>
+    <aside class="sidebar-drawer">
+        <div class="sidebar-container">
+            
+            <div class="sidebar-sticky"><a class="sidebar-brand" href="../">
   
   <div class="sidebar-logo-container">
     <img class="sidebar-logo only-light" src="../_static/logo-light.svg" alt="Light Logo"/>
@@ -257,82 +274,104 @@
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Support</span></p>
+<p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/finetuner/issues">Issue tracker</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://slack.jina.ai">Slack community</a></li>
-<li class="toctree-l1"><a class="reference external" href="http://youtube.com/c/jina-ai">Youtube</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://twitter.com/JinaAI_">Twitter @JinaAI_</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://www.linkedin.com/company/jinaai/">LinkedIn</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://jina.ai">Jina AI Company</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jina">Jina</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">Jina Hub</a></li>
 </ul>
 
 </div>
 </div>
-      </div>
-      
-    </div>
-  </aside>
-  <div class="main">
-    <div class="content">
-      <article role="main">
-        <div class="content-icon-container">
-          <div class="theme-toggle-container theme-toggle-content">
-            <button class="theme-toggle">
-              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
-              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
-              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
-            </button>
-          </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
-            <div class="visually-hidden">Toggle table of contents sidebar</div>
-            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
-          </label>
+            </div>
+            
         </div>
-        <div class="toctree-wrapper compound">
+    </aside>
+    <div class="main">
+        <div class="content">
+            <article role="main">
+                <div class="content-icon-container">
+                    <div class="theme-toggle-container theme-toggle-content">
+                        <button class="theme-toggle">
+                            <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                            <svg class="theme-icon-when-auto">
+                                <use href="#svg-sun-half"></use>
+                            </svg>
+                            <svg class="theme-icon-when-dark">
+                                <use href="#svg-moon"></use>
+                            </svg>
+                            <svg class="theme-icon-when-light">
+                                <use href="#svg-sun"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <label class="toc-overlay-icon toc-content-icon"
+                           for="__toc">
+                        <div class="visually-hidden">Toggle table of contents sidebar</div>
+                        <i class="icon">
+                            <svg>
+                                <use href="#svg-toc"></use>
+                            </svg>
+                        </i>
+                    </label>
+                </div>
+                <div class="toctree-wrapper compound">
 </div>
 
-      </article>
-      <footer>
-        
-        <div class="related-pages">
-          <a class="next-page" href="overview/">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">Overview</div>
-              </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="../get-started/covid-qa/">
-              <svg><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
+            </article>
+            <footer>
                 
-                <div class="title">Finetuning Bi-LSTM on Text</div>
-                
-              </div>
-            </a>
-        </div>
+                <div class="related-pages">
+                    <a class="next-page" href="overview/">
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Next</span>
+                            </div>
+                            <div class="title">Overview</div>
+                        </div>
+                        <svg>
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                    </a>
+                    <a class="prev-page" href="../get-started/covid-qa/">
+                        <svg>
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Previous</span>
+                            </div>
+                            
+                            <div class="title">Finetuning Bi-LSTM on Text</div>
+                            
+                        </div>
+                    </a>
+                </div>
 
-        <div class="related-information">
-              Copyright &#169; Jina AI Limited. All rights reserved.
-            |
-            Last updated on Sep 22, 2021.
+                <div class="related-information sd-d-inline-flex">
+                    <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
+                    Last updated on Sep 27, 2021.
+                    <div class="social-btns">
+                    <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
+                    <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
+                    <a class='social-btn' href="https://youtube.com/c/jina-ai" target="_blank"> <i class="fab fa-youtube"></i></a>
+                    <a class='social-btn' href="https://twitter.com/JinaAI_" target="_blank"> <i class="fab fa-twitter"></i></a>
+                    <a class='social-btn' href="https://www.linkedin.com/company/jinaai/" target="_blank"> <i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+            </footer>
         </div>
-        
-      </footer>
+        <aside class="toc-drawer">
+            
+
+            <div class="toc-sticky toc-scroll">
+                
+            </div>
+
+            
+        </aside>
+
     </div>
-    <aside class="toc-drawer no-toc">
-      
-      
-      
-    </aside>
-  </div>
 </div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>

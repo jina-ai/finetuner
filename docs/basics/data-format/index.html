@@ -8,7 +8,8 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/basics/data-format.html" />
   <meta property="og:site_name" content="Jina Documentation" />
-  <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
+  <meta property="og:description" content="Finetuner uses Jina Document as the primitive data type. In particular, DocumentArray and DocumentArrayMemap are the input data type for Tailor and Tuner. This means, your training dataset and evaluation dataset should be stored in DocumentArray or DocumentArrayMemap, where each training or evalu..." />
+  <meta property="og:image" content="../../_images/fashion-mnist-sprite.png" />
   <meta property="og:image:alt" content="Jina Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -21,7 +22,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Tuner" href="../tuner/" /><link rel="prev" title="&lt;no title&gt;" href="../" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.09.22"/>
-        <title>Data Format - Jina Documentation</title>
+        <title>Data Format - Finetuner 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=150e365fa939648e89c22f6d7d13c72a1657915a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -29,6 +30,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.d53ab927f7bad3eaa42da95908504b10.min.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=16fb25fabf47304eee183a5e9af80b1ba98259b1" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
     
     
 
@@ -131,44 +133,60 @@
 <input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
 <input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
 <label class="overlay sidebar-overlay" for="__navigation">
-  <div class="visually-hidden">Hide navigation sidebar</div>
+    <div class="visually-hidden">Hide navigation sidebar</div>
 </label>
 <label class="overlay toc-overlay" for="__toc">
-  <div class="visually-hidden">Hide table of contents sidebar</div>
+    <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
 
 
 <div class="page">
-  <header class="mobile-header">
-    <div class="header-left">
-      <label class="nav-overlay-icon" for="__navigation">
-        <div class="visually-hidden">Toggle site navigation sidebar</div>
-        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
-      </label>
-    </div>
-    <div class="header-center">
-      <a href="../../"><div class="brand">Jina Documentation</div></a>
-    </div>
-    <div class="header-right">
-      <div class="theme-toggle-container theme-toggle-header">
-        <button class="theme-toggle">
-          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
-          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
-          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
-        </button>
-      </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
-        <div class="visually-hidden">Toggle table of contents sidebar</div>
-        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
-      </label>
-    </div>
-  </header>
-  <aside class="sidebar-drawer">
-    <div class="sidebar-container">
-      
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../">
+    <header class="mobile-header">
+        <div class="header-left">
+            <label class="nav-overlay-icon" for="__navigation">
+                <div class="visually-hidden">Toggle site navigation sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-menu"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+        <div class="header-center">
+            <a href="../../">
+                <div class="brand">Finetuner 0.1.0 documentation</div>
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="theme-toggle-container theme-toggle-header">
+                <button class="theme-toggle">
+                    <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                    <svg class="theme-icon-when-auto">
+                        <use href="#svg-sun-half"></use>
+                    </svg>
+                    <svg class="theme-icon-when-dark">
+                        <use href="#svg-moon"></use>
+                    </svg>
+                    <svg class="theme-icon-when-light">
+                        <use href="#svg-sun"></use>
+                    </svg>
+                </button>
+            </div>
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
+                <div class="visually-hidden">Toggle table of contents sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-toc"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+    </header>
+    <aside class="sidebar-drawer">
+        <div class="sidebar-container">
+            
+            <div class="sidebar-sticky"><a class="sidebar-brand" href="../../">
   
   <div class="sidebar-logo-container">
     <img class="sidebar-logo only-light" src="../../_static/logo-light.svg" alt="Light Logo"/>
@@ -257,83 +275,298 @@
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Support</span></p>
+<p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/finetuner/issues">Issue tracker</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://slack.jina.ai">Slack community</a></li>
-<li class="toctree-l1"><a class="reference external" href="http://youtube.com/c/jina-ai">Youtube</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://twitter.com/JinaAI_">Twitter @JinaAI_</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://www.linkedin.com/company/jinaai/">LinkedIn</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://jina.ai">Jina AI Company</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jina">Jina</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">Jina Hub</a></li>
 </ul>
 
 </div>
 </div>
-      </div>
-      
-    </div>
-  </aside>
-  <div class="main">
-    <div class="content">
-      <article role="main">
-        <div class="content-icon-container">
-          <div class="theme-toggle-container theme-toggle-content">
-            <button class="theme-toggle">
-              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
-              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
-              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
-            </button>
-          </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
-            <div class="visually-hidden">Toggle table of contents sidebar</div>
-            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
-          </label>
+            </div>
+            
         </div>
-        <section class="tex2jax_ignore mathjax_ignore" id="data-format">
+    </aside>
+    <div class="main">
+        <div class="content">
+            <article role="main">
+                <div class="content-icon-container">
+                    <div class="theme-toggle-container theme-toggle-content">
+                        <button class="theme-toggle">
+                            <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                            <svg class="theme-icon-when-auto">
+                                <use href="#svg-sun-half"></use>
+                            </svg>
+                            <svg class="theme-icon-when-dark">
+                                <use href="#svg-moon"></use>
+                            </svg>
+                            <svg class="theme-icon-when-light">
+                                <use href="#svg-sun"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <label class="toc-overlay-icon toc-content-icon"
+                           for="__toc">
+                        <div class="visually-hidden">Toggle table of contents sidebar</div>
+                        <i class="icon">
+                            <svg>
+                                <use href="#svg-toc"></use>
+                            </svg>
+                        </i>
+                    </label>
+                </div>
+                <section class="tex2jax_ignore mathjax_ignore" id="data-format">
 <h1>Data Format<a class="headerlink" href="#data-format" title="Permalink to this headline">¶</a></h1>
+<p>Finetuner uses Jina <a class="reference external" href="https://docs.jina.ai/fundamentals/document/"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a> as the primitive data type. In
+particular, <a class="reference external" href="https://docs.jina.ai/fundamentals/document/documentarray-api/"><code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>
+and <a class="reference external" href="https://docs.jina.ai/fundamentals/document/documentarraymemmap-api/"><code class="docutils literal notranslate"><span class="pre">DocumentArrayMemap</span></code></a> are the input data type
+for Tailor and Tuner. This means, your training dataset and evaluation dataset should be stored in <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>
+or <code class="docutils literal notranslate"><span class="pre">DocumentArrayMemap</span></code>, where each training or evaluation instance is a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object.</p>
+<p>This chapter introduces how to construct a <code class="docutils literal notranslate"><span class="pre">Document</span></code> in a way that Finetuner will accept.</p>
+<section id="required-fields">
+<h2>Required fields<a class="headerlink" href="#required-fields" title="Permalink to this headline">¶</a></h2>
+<p>For Finetuner, a valid <code class="docutils literal notranslate"><span class="pre">Document</span></code> object needs to contain:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.jina.ai/fundamentals/document/document-api/#document-content"><code class="docutils literal notranslate"><span class="pre">.content</span></code></a>: can be <code class="docutils literal notranslate"><span class="pre">.blob</span></code>, <code class="docutils literal notranslate"><span class="pre">.text</span></code>
+or <code class="docutils literal notranslate"><span class="pre">.buffer</span></code>;</p></li>
+<li><p>at least one <code class="docutils literal notranslate"><span class="pre">Document</span></code>
+in <a class="reference external" href="https://docs.jina.ai/fundamentals/document/document-api/#recursive-nested-document"><code class="docutils literal notranslate"><span class="pre">.matches</span></code></a>, and
+each <code class="docutils literal notranslate"><span class="pre">Document</span></code> in <code class="docutils literal notranslate"><span class="pre">.matches</span></code> needs to contain</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">.content</span></code>: it should be the same data type as its parent <code class="docutils literal notranslate"><span class="pre">Document</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.tags['finetuner']['label']</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+<section id="matches">
+<h3>Matches<a class="headerlink" href="#matches" title="Permalink to this headline">¶</a></h3>
+<p>Finetuner relies on matching data in <code class="docutils literal notranslate"><span class="pre">.matches</span></code>. To manually add a match to a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object, one can do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello, world!'</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hallo, welt!'</span><span class="p">)</span>
+
+<span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{'id': '67432a92-1f9f-11ec-ac8a-1e008a366d49', 'matches': [{'id': '67432cd6-1f9f-11ec-ac8a-1e008a366d49', 'mime_type': 'text/plain', 'text': 'hallo, welt!', 'adjacency': 1}], 'mime_type': 'text/plain', 'text': 'hello, world!'}
+</pre></div>
+</div>
+<p>Note that the match <code class="docutils literal notranslate"><span class="pre">Document</span></code> should share the same content type as its parent <code class="docutils literal notranslate"><span class="pre">Document</span></code>. The following combinations
+are not valid to Finetuner:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello, world!'</span><span class="p">)</span>
+<span class="n">m1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">buffer</span><span class="o">=</span><span class="sa">b</span><span class="s1">'h236cf4'</span><span class="p">)</span>
+<span class="n">m2</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">blob</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+
+<span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>If you have two <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> each of which is filled with <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code>, then you can simply call <code class="docutils literal notranslate"><span class="pre">.match()</span></code> function
+to build matches for every Document in one-shot:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">da1</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello, world!'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])),</span>
+                     <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'goodbye, world!'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]))])</span>
+
+<span class="n">da2</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hallo, welt!'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">])),</span>
+                     <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'auf wiedersehen, welt!'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">]))])</span>
+
+<span class="n">da1</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">da2</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">da1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>DocumentArray has 2 items:
+{'id': 'a5dd3158-1f9f-11ec-9a49-1e008a366d49', 'matches': [{'id': 'a5dd3b94-1f9f-11ec-9a49-1e008a366d49', 'mime_type': 'text/plain', 'text': 'hallo, welt!', 'embedding': {'dense': {'buffer': 'AAAAAAAA+D8AAAAAAAAEQAAAAAAAAAxA', 'shape': [3], 'dtype': '&lt;f8'}}, 'adjacency': 1, 'scores': {'cosine': {'value': 0.002585097}}}, {'id': 'a5dd3d74-1f9f-11ec-9a49-1e008a366d49', 'mime_type': 'text/plain', 'text': 'auf wiedersehen, welt!', 'embedding': {'dense': {'buffer': 'AAAAAAAAEkAAAAAAAAAWQAAAAAAAABpA', 'shape': [3], 'dtype': '&lt;f8'}}, 'adjacency': 1, 'scores': {'cosine': {'value': 0.028714137}}}], 'mime_type': 'text/plain', 'text': 'hello, world!', 'embedding': {'dense': {'buffer': 'AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAA', 'shape': [3], 'dtype': '&lt;i8'}}},
+{'id': 'a5dd3784-1f9f-11ec-9a49-1e008a366d49', 'matches': [{'id': 'a5dd3d74-1f9f-11ec-9a49-1e008a366d49', 'mime_type': 'text/plain', 'text': 'auf wiedersehen, welt!', 'embedding': {'dense': {'buffer': 'AAAAAAAAEkAAAAAAAAAWQAAAAAAAABpA', 'shape': [3], 'dtype': '&lt;f8'}}, 'adjacency': 1, 'scores': {'cosine': {'value': 0.00010502179}}}, {'id': 'a5dd3b94-1f9f-11ec-9a49-1e008a366d49', 'mime_type': 'text/plain', 'text': 'hallo, welt!', 'embedding': {'dense': {'buffer': 'AAAAAAAA+D8AAAAAAAAEQAAAAAAAAAxA', 'shape': [3], 'dtype': '&lt;f8'}}, 'adjacency': 1, 'scores': {'cosine': {'value': 0.011804931}}}], 'mime_type': 'text/plain', 'text': 'goodbye, world!', 'embedding': {'dense': {'buffer': 'BAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAA', 'shape': [3], 'dtype': '&lt;i8'}}}
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The field <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> is not required by Finetuner.</p>
+</div>
+</section>
+<section id="labels">
+<h3>Labels<a class="headerlink" href="#labels" title="Permalink to this headline">¶</a></h3>
+<p>The label represents how related a <code class="docutils literal notranslate"><span class="pre">match</span></code> is to the <code class="docutils literal notranslate"><span class="pre">Document</span></code>. It is stored in <code class="docutils literal notranslate"><span class="pre">.tags['finetuner']['label']</span></code>.</p>
+<p>In Finetuner, float number <code class="docutils literal notranslate"><span class="pre">1</span></code> is considered as a positive relation between <code class="docutils literal notranslate"><span class="pre">match</span></code> and <code class="docutils literal notranslate"><span class="pre">Document</span></code>; whereas float
+number <code class="docutils literal notranslate"><span class="pre">-1</span></code> is considered as no relation between <code class="docutils literal notranslate"><span class="pre">match</span></code> and <code class="docutils literal notranslate"><span class="pre">Document</span></code>.</p>
+<p>For example, we have four sentences:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>hello, world!
+hallo, welt!
+Bonjour, monde!
+goodbye, world!
+</pre></div>
+</div>
+<p>Now to construct the matches of <code class="docutils literal notranslate"><span class="pre">Document(text='hello,</span> <span class="pre">world!')</span></code> for expressing that texts in different languages are
+more related to this Document than <code class="docutils literal notranslate"><span class="pre">goodbye,</span> <span class="pre">world</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello, world!'</span><span class="p">)</span>
+<span class="n">m1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hallo, welt!'</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}})</span>
+<span class="n">m2</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'Bonjour, monde!'</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}})</span>
+<span class="n">m3</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'goodbye, world!'</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}})</span>
+
+<span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">,</span> <span class="n">m3</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{'id': '0e7ec5aa-1faa-11ec-a46a-1e008a366d49', 'matches': [{'id': '0e7ec7c6-1faa-11ec-a46a-1e008a366d49', 'mime_type': 'text/plain', 'tags': {'finetuner': {'label': 1.0}}, 'text': 'hallo, welt!', 'adjacency': 1}, {'id': '0e7ecd52-1faa-11ec-a46a-1e008a366d49', 'mime_type': 'text/plain', 'tags': {'finetuner': {'label': 1.0}}, 'text': 'Bonjour, monde!', 'adjacency': 1}, {'id': '0e7ece7e-1faa-11ec-a46a-1e008a366d49', 'mime_type': 'text/plain', 'tags': {'finetuner': {'label': -1.0}}, 'text': 'goodbye, world!', 'adjacency': 1}], 'mime_type': 'text/plain', 'text': 'hello, world!'}
+</pre></div>
+</div>
+</section>
+</section>
+<section id="data-source">
+<h2>Data source<a class="headerlink" href="#data-source" title="Permalink to this headline">¶</a></h2>
+<p>After organizing the labeled <code class="docutils literal notranslate"><span class="pre">Document</span></code> into <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> or <code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>, you can feed them
+into <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code>.</p>
+<p>But where are the labels come from? You can use Labeler, which allows one interactively label data and tune the model at
+the same time.</p>
+<p>Otherwise, you will need to prepare labeled data on your own.</p>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>Here are some examples for generating synthetic matching data for Finetuner. You can learn how the constructions are
+made here.</p>
+<section id="fashion-mnist">
+<h3>Fashion-MNIST<a class="headerlink" href="#fashion-mnist" title="Permalink to this headline">¶</a></h3>
+<p>Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. Each image is a single channel 28x28
+grayscale image.</p>
+<figure class="align-center">
+<img alt="../../_images/fashion-mnist-sprite.png" src="../../_images/fashion-mnist-sprite.png"/>
+</figure>
+<p>To convert this dataset into match data, we build each document to contain the following info that are
+relevant:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.blob</span></code>: the image;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.matches</span></code>: the generated positive &amp; negative matches Document;</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">.blob</span></code>: the matched Document’s image;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.tags['finetuner']['label']</span></code>: the match label: <code class="docutils literal notranslate"><span class="pre">1</span></code> or <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+<p>Matches are built with the logic below:</p>
+<ul class="simple">
+<li><p>randomly sample same-class Documents as positive matches, i.e. labeled with <code class="docutils literal notranslate"><span class="pre">1</span></code>;</p></li>
+<li><p>randomly sample other-class Documents as negative matches, i.e. labeled with <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p></li>
+</ul>
+</section>
+<section id="covid-qa">
+<h3>Covid QA<a class="headerlink" href="#covid-qa" title="Permalink to this headline">¶</a></h3>
+<p>Covid QA data is a CSV that has 481 rows with columns <code class="docutils literal notranslate"><span class="pre">question</span></code>, <code class="docutils literal notranslate"><span class="pre">answer</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">wrong_answer</span></code>.</p>
+<figure class="align-center">
+<img alt="../../_images/covid-qa-data.png" src="../../_images/covid-qa-data.png"/>
+</figure>
+<p>To convert this dataset
+into match data, we build each document to contain the following info that are relevant:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.text</span></code>: the original <code class="docutils literal notranslate"><span class="pre">question</span></code> column</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.blob</span></code>: a fixed length <code class="docutils literal notranslate"><span class="pre">ndarray</span></code> tokenized from <code class="docutils literal notranslate"><span class="pre">.text</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.matches</span></code>: the generated positive &amp; negative matches Document</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">.text</span></code>: the original <code class="docutils literal notranslate"><span class="pre">answer</span></code>/<code class="docutils literal notranslate"><span class="pre">wrong_answer</span></code> column</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.blob</span></code>: a fixed length <code class="docutils literal notranslate"><span class="pre">ndarray</span></code> tokenized from <code class="docutils literal notranslate"><span class="pre">.text</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.tags['finetuner']['label']</span></code>: the match label: <code class="docutils literal notranslate"><span class="pre">1</span></code> or <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+<p>Matches are built with the logic below:</p>
+<ul class="simple">
+<li><p>only allows 1 positive match per Document, it is taken from the <code class="docutils literal notranslate"><span class="pre">answer</span></code> column;</p></li>
+<li><p>always include <code class="docutils literal notranslate"><span class="pre">wrong_answer</span></code> column as the negative match. Then sample other documents’ answer as negative matches.</p></li>
+</ul>
+</section>
+</section>
 </section>
 
-      </article>
-      <footer>
-        
-        <div class="related-pages">
-          <a class="next-page" href="../tuner/">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">Tuner</div>
-              </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="../">
-              <svg><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
+            </article>
+            <footer>
                 
-                <div class="title">&lt;no title&gt;</div>
-                
-              </div>
-            </a>
-        </div>
+                <div class="related-pages">
+                    <a class="next-page" href="../tuner/">
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Next</span>
+                            </div>
+                            <div class="title">Tuner</div>
+                        </div>
+                        <svg>
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                    </a>
+                    <a class="prev-page" href="../">
+                        <svg>
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Previous</span>
+                            </div>
+                            
+                            <div class="title">&lt;no title&gt;</div>
+                            
+                        </div>
+                    </a>
+                </div>
 
-        <div class="related-information">
-              Copyright &#169; Jina AI Limited. All rights reserved.
-            |
-            Last updated on Sep 22, 2021.
+                <div class="related-information sd-d-inline-flex">
+                    <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
+                    Last updated on Sep 27, 2021.
+                    <div class="social-btns">
+                    <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
+                    <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
+                    <a class='social-btn' href="https://youtube.com/c/jina-ai" target="_blank"> <i class="fab fa-youtube"></i></a>
+                    <a class='social-btn' href="https://twitter.com/JinaAI_" target="_blank"> <i class="fab fa-twitter"></i></a>
+                    <a class='social-btn' href="https://www.linkedin.com/company/jinaai/" target="_blank"> <i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+            </footer>
         </div>
-        
-      </footer>
+        <aside class="toc-drawer">
+            
+
+            <div class="toc-sticky toc-scroll">
+                
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">Data Format</a><ul>
+<li><a class="reference internal" href="#required-fields">Required fields</a><ul>
+<li><a class="reference internal" href="#matches">Matches</a></li>
+<li><a class="reference internal" href="#labels">Labels</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#data-source">Data source</a></li>
+<li><a class="reference internal" href="#examples">Examples</a><ul>
+<li><a class="reference internal" href="#fashion-mnist">Fashion-MNIST</a></li>
+<li><a class="reference internal" href="#covid-qa">Covid QA</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+                
+            </div>
+
+            
+        </aside>
+
     </div>
-    <aside class="toc-drawer no-toc">
-      
-      
-      
-    </aside>
-  </div>
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
