@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/jina-ai/finetuner/blob/main/docs/_static/logo-light.svg?raw=true" alt="Finetuner logo: Finetuner allows one to finetune any deep Neural Network for better embedding on search tasks. It accompanies Jina to deliver the last mile of performance-tuning for neural search applications." width="200px">
+<img src="https://github.com/jina-ai/finetuner/blob/main/docs/_static/logo-light.svg?raw=true" alt="Finetuner logo: Finetuner allows one to finetune any deep Neural Network for better embedding on search tasks. It accompanies Jina to deliver the last mile of performance-tuning for neural search applications." width="150px">
 </p>
 
 
@@ -189,37 +189,6 @@ first two `jina hello` demos.
 - `tests.data_generator.fashion_match_doc_generator()`: the generator of Fashion-MNIST synthetic matching data.
 - `tests.data_generator.qa_match_doc_generator()`: the generator of Fashion-MNIST synthetic matching data.
 
-### Fashion-MNIST as synthetic matching data
-
-Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. Each image is a single channel 28x28
-grayscale image. To convert this dataset into match data, we build each document to contain the following info that are
-relevant:
-
-- `.blob`: the image
-- `.matches`: the generated positive & negative matches Document
-    - `.blob`: the matched Document's image
-    - `.tags['finetuner']['label']`: the match label, can be `1` or `-1` or user-defined.
-
-Matches are built with the logic below:
-
-- sample same-class documents as positive matches; - sample other-class documents as negative matches.
-
-### Covid QA as synthetic matching data
-
-Covid QA data is a CSV that has 481 rows with columns `question`, `answer` & `wrong_answer`. To convert this dataset
-into match data, we build each document to contain the following info that are relevant:
-
-- `.text`: the original `question` column
-- `.blob`: when set `to_ndarray` to True, `text` is tokenized into a fixed length `ndarray`.
-- `.matches`: the generated positive & negative matches Document
-    - `.text`: the original `answer`/`wrong_answer` column
-    - `.tags['finetuner']['label']`: the match label, can be `1` or `-1` or user-defined.
-    - `.blob`: when set `to_ndarray` to True, `text` is tokenized into a fixed length `ndarray`.
-
-Matches are built with the logic below:
-
-- only allows 1 positive match per Document, it is taken from the `answer` column. - always include `wrong_answer`
-  column as the negative match. Then sample other documents' answer as negative matches.
 
 ### Generator API
 

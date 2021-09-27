@@ -16,7 +16,7 @@ repo_dir = '../'
 
 try:
     if 'JINA_VERSION' not in os.environ:
-        pkg_name = 'jina'
+        pkg_name = 'finetuner'
         libinfo_py = path.join(repo_dir, pkg_name, '__init__.py')
         libinfo_content = open(libinfo_py, 'r').readlines()
         version_line = [

@@ -111,7 +111,7 @@ api/finetuner
 
 
 ```{toctree}
-:caption: Link
+:caption: Ecosystem
 :hidden:
 
 Jina <https://github.com/jina-ai/jina>
