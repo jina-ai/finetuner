@@ -76,10 +76,10 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx):
 @pytest.mark.parametrize(
     'model, layer_idx, expected_output_shape',
     [
-        ('dense_model', 0, (None, 64)),
-        ('simple_cnn_model', 4, (None, 1600)),
-        ('vgg16_cnn_model', 20, (None, 4096)),
-        ('lstm_model', 1, (None, 64)),
+        ('dense_model', 3, (None, 32)),
+        ('simple_cnn_model', 5, (None, 1600)),
+        ('vgg16_cnn_model', 21, (None, 4096)),
+        ('lstm_model', 2, (None, 64)),
     ],
     indirect=['model'],
 )
