@@ -481,7 +481,67 @@ into match data, we build each document to contain the following info that are r
 <li><p>only allows 1 positive match per Document, it is taken from the <code class="docutils literal notranslate"><span class="pre">answer</span></code> column;</p></li>
 <li><p>always include <code class="docutils literal notranslate"><span class="pre">wrong_answer</span></code> column as the negative match. Then sample other documents’ answer as negative matches.</p></li>
 </ul>
-</section>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+Devloper-only: synthetic data generator for these two datasets<div class="sd-summary-down docutils">
+<svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-down" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z" fill-rule="evenodd"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-up" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z" fill-rule="evenodd"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Finetuner codebase contains two synthetic matching data generator for testing purpose:</p>
+<ul class="simple">
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">tests.data_generator.fashion_match_doc_generator()</span></code>: the generator of Fashion-MNIST synthetic matching data.</p></li>
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">tests.data_generator.qa_match_doc_generator()</span></code>: the generator of Fashion-MNIST synthetic matching data.</p></li>
+</ul>
+<p class="sd-card-text">Generator API:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tests.data_generator</span> <span class="kn">import</span> <span class="n">fashion_match_doc_generator</span> <span class="k">as</span> <span class="n">mdg</span>
+
+<span class="c1"># or</span>
+
+<span class="kn">from</span> <span class="nn">tests.data_generator</span> <span class="kn">import</span> <span class="n">qa_match_doc_generator</span> <span class="k">as</span> <span class="n">mdg</span>
+</pre></div>
+</div>
+<p class="sd-card-text">To get only first 10 documents:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">mdg</span><span class="p">(</span><span class="n">num_total</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p class="sd-card-text">To set number of positive/negative samples per document:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">mdg</span><span class="p">(</span><span class="n">num_pos</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">num_neg</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">qa_match_doc_generator</span></code> has a fixed number of positive matches <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+<p class="sd-card-text">To set the label value of positive &amp; negative samples:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">mdg</span><span class="p">(</span><span class="n">pos_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">neg_value</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p class="sd-card-text">To make image as 3-channel pseudo RGB image:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tests.data_generator</span> <span class="kn">import</span> <span class="n">fashion_match_doc_generator</span> <span class="k">as</span> <span class="n">fmdg</span>
+
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">fmdg</span><span class="p">(</span><span class="n">channels</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p class="sd-card-text">To upsample image as 112x112 3-channel pseudo RGB image:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tests.data_generator</span> <span class="kn">import</span> <span class="n">fashion_match_doc_generator</span> <span class="k">as</span> <span class="n">fmdg</span>
+
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">fmdg</span><span class="p">(</span><span class="n">channels</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">upsampling</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p class="sd-card-text">Use <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> instead of Generator:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tests.data_generator</span> <span class="kn">import</span> <span class="n">fashion_match_documentarray</span> <span class="k">as</span> <span class="n">mda</span>
+
+<span class="kn">from</span> <span class="nn">tests.data_generator</span> <span class="kn">import</span> <span class="n">qa_match_documentarray</span> <span class="k">as</span> <span class="n">mda</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">mda</span><span class="p">()</span>  <span class="c1"># slow, as it scans over all data</span>
+</pre></div>
+</div>
+</div>
+</details></section>
 </section>
 </section>
 
