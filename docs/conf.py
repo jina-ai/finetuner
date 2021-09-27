@@ -65,10 +65,12 @@ html_theme_options = {
 
 html_static_path = ['_static']
 html_extra_path = ['html_extra']
-html_css_files = ['main.css']
+html_css_files = [
+    'main.css',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css',
+]
 htmlhelp_basename = slug
 html_show_sourcelink = False
-html_title = 'Jina Documentation'
 html_favicon = '_static/favicon.png'
 
 latex_documents = [(master_doc, f'{slug}.tex', project, author, 'manual')]
@@ -124,7 +126,16 @@ apidoc_excluded_paths = ['tests', 'legacy', 'hub', 'toy*', 'setup.py']
 apidoc_separate_modules = True
 apidoc_extra_args = ['-t', 'template/']
 autodoc_member_order = 'bysource'
-autodoc_mock_imports = ['argparse', 'numpy', 'np', 'tensorflow', 'torch', 'scipy', 'keras', 'paddle']
+autodoc_mock_imports = [
+    'argparse',
+    'numpy',
+    'np',
+    'tensorflow',
+    'torch',
+    'scipy',
+    'keras',
+    'paddle',
+]
 autoclass_content = 'both'
 set_type_checking_flag = False
 html_last_updated_fmt = ''
@@ -164,8 +175,9 @@ ogp_custom_meta_tags = [
     '''
     <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-48ZDWC8GT6"></script>
-    '''
+    ''',
 ]
+
 
 def setup(app):
     from sphinx.domains.python import PyField
