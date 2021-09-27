@@ -18,14 +18,15 @@ def dense_model():
 @pytest.fixture
 def simple_cnn_model():
     model = tf.keras.models.Sequential()
-    model.add(tf.keras.Input(shape=(28, 28, 1)))
-    model.add(tf.keras.layers.Conv2D(32, kernel_size=(3, 3), activation="relu"))
-    model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
-    model.add(tf.keras.layers.Conv2D(64, kernel_size=(3, 3), activation="relu"))
-    model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(tf.keras.layers.InputLayer(input_shape=(28, 28, 1)))
+    model.add(tf.keras.layers.Conv2D(32, 3, (1, 1), activation='relu'))
+    model.add(tf.keras.layers.Conv2D(64, 3, (1, 1), activation='relu'))
+    model.add(tf.keras.layers.MaxPool2D(2))
+    model.add(tf.keras.layers.Dropout(0.25))
     model.add(tf.keras.layers.Flatten())
-    model.add(tf.keras.layers.Dropout(0.2))
-    model.add(tf.keras.layers.Dense(10, activation="softmax"))
+    model.add(tf.keras.layers.Dense(128))
+    model.add(tf.keras.layers.Dropout(0.25))
+    model.add(tf.keras.layers.Dense(10, activation='softmax'))
     return model
 
 
@@ -77,7 +78,7 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx):
     'model, layer_idx, expected_output_shape',
     [
         ('dense_model', 3, (None, 32)),
-        ('simple_cnn_model', 5, (None, 1600)),
+        ('simple_cnn_model', 5, (None, 9216)),
         ('vgg16_cnn_model', 21, (None, 4096)),
         ('lstm_model', 2, (None, 64)),
     ],

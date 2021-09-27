@@ -22,17 +22,16 @@ def dense_model():
 @pytest.fixture
 def simple_cnn_model():
     return torch.nn.Sequential(
-        nn.Conv2d(1, 4, kernel_size=3, stride=1, padding=1),
-        nn.BatchNorm2d(4),
+        nn.Conv2d(1, 32, 3, 1),
         nn.ReLU(),
-        nn.MaxPool2d(kernel_size=2, stride=2),
-        nn.Conv2d(4, 4, kernel_size=3, stride=1, padding=1),
-        nn.BatchNorm2d(4),
-        nn.ReLU(inplace=True),
-        nn.MaxPool2d(kernel_size=2, stride=2),
-        nn.Dropout(0.2),
+        nn.Conv2d(32, 64, 3, 1),
+        nn.ReLU(),
+        nn.MaxPool2d(2),
+        nn.Dropout(0.25),
         nn.Flatten(),
-        nn.Linear(in_features=196, out_features=10),
+        nn.Linear(9216, 128),
+        nn.Dropout(0.25),
+        nn.Linear(128, 10),
         nn.Softmax(),
     )
 
@@ -95,7 +94,7 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx, input_size):
     'model, layer_idx, input_size, input_, expected_output_shape',
     [
         ('dense_model', 5, (128,), (1, 128), [1, 32]),
-        ('simple_cnn_model', 11, (1, 28, 28), (1, 1, 28, 28), [1, 10]),
+        ('simple_cnn_model', 8, (1, 28, 28), (1, 1, 28, 28), [1, 128]),
         ('vgg16_cnn_model', 36, (3, 224, 224), (1, 3, 224, 224), [1, 4096]),
         ('lstm_model', 1, (1, 128), (1, 1, 128), [1, 1024]),
     ],
