@@ -21,7 +21,7 @@ def trim(
 
     ..note::
         The trim method can only trim model of depth 2, e.g. 2 level of nested nn.Module.
-    ..Note::
+    ..note::
         The argument `layer_idx` means that all layers before (not include) the index will be
         preserved.
     """

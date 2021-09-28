@@ -9,7 +9,7 @@ def trim(model: Model, layer_idx: int = -1) -> Model:
     :param model: an arbitary DNN model in Keras
     :param layer_idx: the index of the bottleneck layer for embedding output.
 
-    ..Note::
+    ..note::
         The argument `layer_idx` means that all layers before (not include) the index will be
         preserved.
     """
