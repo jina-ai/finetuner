@@ -78,9 +78,7 @@ def bidirectional_lstm():
     class LastCell(torch.nn.Module):
         def forward(self, x):
             out, _ = x
-            out = out[:, -1, :]
-            print(f"\n\n{out.size()}\n\n")
-            return out
+            return out[:, -1, :]
 
     return torch.nn.Sequential(
         torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
