@@ -30,7 +30,6 @@ def trim(
     candidate_layers = get_candidate_layers(
         model, input_size=input_size, input_dtype=input_dtype
     )
-    print(candidate_layers)
     indx = {l['layer_idx'] for l in candidate_layers if l['layer_idx'] != 0}
     if layer_idx not in indx:
         raise IndexError(f'Layer index {layer_idx} is not one of {indx}.')

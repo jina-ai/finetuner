@@ -63,7 +63,6 @@ def get_candidate_layers(
     model.apply(register_hook)
 
     # make a forward pass
-    # print(x.shape)
     model(*x)
 
     # remove these hooks
