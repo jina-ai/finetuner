@@ -47,9 +47,13 @@ def vgg16_cnn_model():
 def lstm_model():
     model = tf.keras.models.Sequential()
     model.add(tf.keras.layers.Embedding(1000, 1024, input_length=128))
+    model.add(
+        tf.keras.layers.LSTM(256, return_sequences=True)
+    )  # this layer will not considered as candidate layer
     model.add(tf.keras.layers.LSTM(256, return_sequences=True))
-    model.add(tf.keras.layers.LSTM(256, return_sequences=True))
-    model.add(tf.keras.layers.LSTM(256, return_sequences=True))
+    model.add(
+        tf.keras.layers.LSTM(256, return_sequences=False)
+    )  # this layer will be considered as candidate layer
     model.add(tf.keras.layers.Dense(256, activation='relu'))
     model.add(tf.keras.layers.Dense(5, activation='softmax'))
     return model
@@ -83,7 +87,7 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx):
         ('dense_model', 3, (None, 32)),
         ('simple_cnn_model', 5, (None, 9216)),
         ('vgg16_cnn_model', 21, (None, 4096)),
-        ('lstm_model', 2, (None, 256)),
+        ('lstm_model', 4, (None, 256)),
     ],
     indirect=['model'],
 )
