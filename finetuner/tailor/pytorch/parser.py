@@ -14,7 +14,7 @@ def get_candidate_layers(
     dtypes = [getattr(torch, input_dtype)] * len(input_size)
     names = []
     for name, module in model.named_modules():
-        if not module._modules:  # module do not have sub modules
+        if len(list(module.children())) == 0:  # module do not have sub modules
             names.append(name)
 
     def _get_output_shape(output):
