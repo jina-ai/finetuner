@@ -44,7 +44,7 @@ def vgg16_cnn_model():
 
 
 @pytest.fixture
-def lstm_model():
+def stacked_lstm():
     class LSTMClassifier(nn.Module):
         """A simple LSTM for text classification."""
 
@@ -73,47 +73,95 @@ def lstm_model():
     return LSTMClassifier(1024, 256, 1000, 5)
 
 
+@pytest.fixture
+def bidirectional_lstm():
+    class LastCell(torch.nn.Module):
+        def forward(self, x):
+            out, _ = x
+            out = out[:, -1, :]
+            print(f"\n\n{out.size()}\n\n")
+            return out
+
+    return torch.nn.Sequential(
+        torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
+        torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
+        LastCell(),
+        torch.nn.Linear(in_features=2 * 64, out_features=32),
+    )
+
+
 @pytest.fixture(
-    params=['dense_model', 'simple_cnn_model', 'vgg16_cnn_model', 'lstm_model']
+    params=[
+        'dense_model',
+        'simple_cnn_model',
+        'vgg16_cnn_model',
+        'stacked_lstm',
+        'bidirectional_lstm',
+    ]
 )
 def model(request):
     return request.getfixturevalue(request.param)
 
 
 @pytest.mark.parametrize(
-    'model, layer_idx, input_size',
+    'model, layer_idx, input_size, input_dtype',
     [
-        ('dense_model', 10, (128,)),  # 10th layer does not exist
-        ('simple_cnn_model', 2, (1, 28, 28)),  # 2nd layer is a convolutional layer
-        ('vgg16_cnn_model', 4, (3, 224, 224)),  # 4th layer is a convolutional layer
-        ('lstm_model', 10, (128,)),  # 10th layer does not exist
+        ('dense_model', 10, (128,), 'float32'),  # 10th layer does not exist
+        (
+            'simple_cnn_model',
+            2,
+            (1, 28, 28),
+            'float32',
+        ),  # 2nd layer is a convolutional layer
+        (
+            'vgg16_cnn_model',
+            4,
+            (3, 224, 224),
+            'float32',
+        ),  # 4th layer is a convolutional layer
+        ('stacked_lstm', 10, (128,), 'int64'),  # 10th layer does not exist
+        ('bidirectional_lstm', 5, (128,), 'int64'),  # 5th layer does not exist
     ],
     indirect=['model'],
 )
-def test_trim_fail_given_unexpected_layer_idx(model, layer_idx, input_size):
+def test_trim_fail_given_unexpected_layer_idx(
+    model, layer_idx, input_size, input_dtype
+):
     with pytest.raises(IndexError):
-        trim(model, layer_idx=layer_idx, input_size=input_size)
+        trim(model, layer_idx=layer_idx, input_size=input_size, input_dtype=input_dtype)
 
 
 @pytest.mark.parametrize(
-    'model, layer_idx, input_size, input_, expected_output_shape',
+    'model, layer_idx, input_size, input_, input_dtype, expected_output_shape',
     [
-        ('dense_model', 5, (128,), (1, 128), [1, 32]),
-        ('simple_cnn_model', 8, (1, 28, 28), (1, 1, 28, 28), [1, 128]),
-        ('vgg16_cnn_model', 36, (3, 224, 224), (1, 3, 224, 224), [1, 4096]),
-        ('lstm_model', 2, (128,), (1, 128), [1, 256]),
+        ('dense_model', 5, (128,), (1, 128), 'float32', [1, 32]),
+        ('simple_cnn_model', 8, (1, 28, 28), (1, 1, 28, 28), 'float32', [1, 128]),
+        ('vgg16_cnn_model', 36, (3, 224, 224), (1, 3, 224, 224), 'float32', [1, 4096]),
+        ('stacked_lstm', 2, (128,), (1, 128), 'int32', [1, 256]),
+        ('bidirectional_lstm', 3, (128,), (1, 128), 'int32', [1, 128]),
     ],
     indirect=['model'],
 )
-def test_trim(model, layer_idx, input_size, input_, expected_output_shape):
-    model = trim(model=model, layer_idx=layer_idx, input_size=input_size)
-    out = model(torch.rand(input_))
-    assert list(out.shape) == expected_output_shape
+def test_trim(model, layer_idx, input_size, input_, input_dtype, expected_output_shape):
+    model = trim(
+        model=model, layer_idx=layer_idx, input_size=input_size, input_dtype=input_dtype
+    )
+    input_ = torch.rand(input_)
+    if input_dtype == 'int32':
+        input_ = input_.type(torch.IntTensor)
+    out = model(input_)
+    assert list(out.size()) == expected_output_shape  # 4th layer Linear
 
 
 @pytest.mark.parametrize(
     'model',
-    ['dense_model', 'simple_cnn_model', 'vgg16_cnn_model', 'lstm_model'],
+    [
+        'dense_model',
+        'simple_cnn_model',
+        'vgg16_cnn_model',
+        'stacked_lstm',
+        'bidirectional_lstm',
+    ],
     indirect=['model'],
 )
 def test_freeze(model):

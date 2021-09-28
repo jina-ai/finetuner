@@ -43,7 +43,7 @@ def vgg16_cnn_model():
 
 
 @pytest.fixture
-def lstm_model():
+def stacked_lstm():
     class LSTMClassifier(nn.Layer):
         """A simple LSTM for text classification."""
 
@@ -58,7 +58,7 @@ def lstm_model():
             self.classification_layer = nn.Softmax(1)
 
         def forward(self, input_):
-            embedding = self.embedding_layer(paddle.cast(input_, dtype='int64'))
+            embedding = self.embedding_layer(input_)
             lstm_out, _ = self.lstm_layer(embedding)
             # lstm_out -> (batch_size * seq_len * hidden_dim)
             last_lstm_out = lstm_out[:, -1, :]
@@ -72,31 +72,71 @@ def lstm_model():
     return LSTMClassifier(1024, 256, 1000, 5)
 
 
+@pytest.fixture
+def bidirectional_lstm():
+    class LastCell(nn.Layer):
+        def forward(self, x):
+            out, _ = x
+            return out[:, -1, :]
+
+    return nn.Sequential(
+        nn.Embedding(num_embeddings=5000, embedding_dim=64),
+        nn.LSTM(64, 64, direction='bidirectional'),
+        LastCell(),
+        nn.Linear(in_features=2 * 64, out_features=32),
+    )
+
+
 @pytest.fixture(
-    params=['dense_model', 'simple_cnn_model', 'vgg16_cnn_model', 'lstm_model']
+    params=[
+        'dense_model',
+        'simple_cnn_model',
+        'vgg16_cnn_model',
+        'stacked_lstm',
+        'bidirectional_lstm',
+    ]
 )
 def model(request):
     return request.getfixturevalue(request.param)
 
 
 @pytest.mark.parametrize(
-    'model, layer_idx, input_size',
+    'model, layer_idx, input_size, input_dtype',
     [
-        ('dense_model', 10, (128,)),  # 10th layer does not exist
-        ('simple_cnn_model', 2, (1, 28, 28)),  # 2nd layer is a convolutional layer
-        ('vgg16_cnn_model', 4, (3, 224, 224)),  # 4th layer is a convolutional layer
-        ('lstm_model', 10, (128,)),  # 10th layer does not exist
+        ('dense_model', 10, (128,), 'float32'),  # 10th layer does not exist
+        (
+            'simple_cnn_model',
+            2,
+            (1, 28, 28),
+            'float32',
+        ),  # 2nd layer is a convolutional layer
+        (
+            'vgg16_cnn_model',
+            4,
+            (3, 224, 224),
+            'float32',
+        ),  # 4th layer is a convolutional layer
+        ('stacked_lstm', 10, (128,), 'int64'),  # 10th layer does not exist
+        ('bidirectional_lstm', 5, (128,), 'int64'),  # 5th layer does not exist
     ],
     indirect=['model'],
 )
-def test_trim_fail_given_unexpected_layer_idx(model, layer_idx, input_size):
+def test_trim_fail_given_unexpected_layer_idx(
+    model, layer_idx, input_size, input_dtype
+):
     with pytest.raises(IndexError):
-        trim(model, layer_idx=layer_idx, input_size=input_size)
+        trim(model, layer_idx=layer_idx, input_size=input_size, input_dtype=input_dtype)
 
 
 @pytest.mark.parametrize(
     'model',
-    ['dense_model', 'simple_cnn_model', 'vgg16_cnn_model', 'lstm_model'],
+    [
+        'dense_model',
+        'simple_cnn_model',
+        'vgg16_cnn_model',
+        'stacked_lstm',
+        'bidirectional_lstm',
+    ],
     indirect=['model'],
 )
 def test_freeze(model):
@@ -109,16 +149,19 @@ def test_freeze(model):
 
 
 @pytest.mark.parametrize(
-    'model, layer_idx, input_size, input_, expected_output_shape',
+    'model, layer_idx, input_size, input_, input_dtype, expected_output_shape',
     [
-        ('dense_model', 5, (128,), (1, 128), [1, 32]),
-        ('simple_cnn_model', 8, (1, 28, 28), (1, 1, 28, 28), [1, 128]),
-        ('vgg16_cnn_model', 36, (3, 224, 224), (1, 3, 224, 224), [1, 4096]),
-        ('lstm_model', 2, (128,), (1, 128), [1, 256]),
+        ('dense_model', 5, (128,), (1, 128), 'float32', [1, 32]),
+        ('simple_cnn_model', 8, (1, 28, 28), (1, 1, 28, 28), 'float32', [1, 128]),
+        ('vgg16_cnn_model', 36, (3, 224, 224), (1, 3, 224, 224), 'float32', [1, 4096]),
+        ('stacked_lstm', 2, (128,), (1, 128), 'int64', [1, 256]),
+        ('bidirectional_lstm', 3, (128,), (1, 128), 'int64', [1, 128]),
     ],
     indirect=['model'],
 )
-def test_trim(model, layer_idx, input_size, input_, expected_output_shape):
-    model = trim(model=model, layer_idx=layer_idx, input_size=input_size)
-    out = model(paddle.rand(input_))
+def test_trim(model, layer_idx, input_size, input_, input_dtype, expected_output_shape):
+    model = trim(
+        model=model, layer_idx=layer_idx, input_size=input_size, input_dtype=input_dtype
+    )
+    out = model(paddle.cast(paddle.rand(input_), input_dtype))
     assert list(out.shape) == expected_output_shape  # 4th layer Linear
