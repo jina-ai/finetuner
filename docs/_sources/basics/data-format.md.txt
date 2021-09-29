@@ -128,7 +128,7 @@ d.matches.extend([m1, m2, m3])
 ```
 
 ```{admonition} Is it okay to have all matches as 1, or all as -1?
-:class:hint
+:class: hint
 
 Yes. Labels should reflect the groundtruth as-is. If a Document contains only postive matches or only negative matches, then so be it.
 
