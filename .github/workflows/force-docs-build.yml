@@ -20,7 +20,7 @@ jobs:
         env:
           release_token: ${{ secrets.FINETUNER_RELEASE_TOKEN }}
 
-  regular-release:
+  release-docs:
     needs: token-check
     runs-on: ubuntu-latest
     steps:

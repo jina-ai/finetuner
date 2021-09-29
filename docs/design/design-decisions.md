@@ -22,7 +22,7 @@ emphasize-lines: 5
 import finetuner as ft
 
 ft.fit(embed_model,
-       trained_data
+       train_data
        interactive=True)
 ```
 ````
@@ -36,7 +36,7 @@ emphasize-lines: 3, 5, 6
 import finetuner as ft
 
 ft.fit(general_model,
-       trained_data,
+       train_data,
        freeze_layer=-1,
        output_dim=128)
 ```
@@ -51,7 +51,7 @@ emphasize-lines: 3
 import finetuner as ft
 
 ft.fit(embed_model,
-       trained_data)
+       train_data)
 ```
 ````
 

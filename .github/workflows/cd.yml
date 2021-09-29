@@ -1,0 +1,21 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-doc:
+    if: |
+      !startsWith(github.event.head_commit.message, 'chore') &&
+      !startsWith(github.event.head_commit.message, 'build: hotfix') &&
+      !endsWith(github.event.head_commit.message, 'reformatted by jina-dev-bot')
+    steps:
+      - uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Manual Docs Build
+          inputs: '{ "release_token": "${{ env.release_token }}", "triggered_by": "CD"}'
+          token: ${{ secrets.JINA_DEV_BOT }}
+        env:
+          release_token: ${{ secrets.FINETUNER_RELEASE_TOKEN }}
