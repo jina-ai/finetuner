@@ -175,6 +175,7 @@ Matches are built with the logic below:
 - randomly sample same-class Documents as positive matches, i.e. labeled with `1`;
 - randomly sample other-class Documents as negative matches, i.e. labeled with `-1`.
 
+(build-qa-data)=
 ### Covid QA
 
 
