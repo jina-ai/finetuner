@@ -14,16 +14,8 @@ def get_candidate_layers(
 ):
     dtypes = [input_dtype] * len(input_size)
     depth = len(list(model.sublayers()))
-    rnn_classes = tuple(x[1] for x in inspect.getmembers(nn.layer.rnn, inspect.isclass))
-    rnn_classes_except_lstm = tuple(
-        x for x in rnn_classes if not isinstance(x, nn.layer.rnn.LSTM)
-    )
-    names = []
     for name, layer in model.named_sublayers():
-        if isinstance(layer, nn.layer.rnn.LSTM):
-            names.append(name)
-        elif len(layer.sublayers()) == 0 and type(layer) not in rnn_classes_except_lstm:
-            names.append(name)
+        layer.name = name
 
     def _get_output_shape(output):
         if isinstance(output, (list, tuple)):
@@ -48,6 +40,7 @@ def get_candidate_layers(
             summary[m_key]['cls_name'] = layer.__class__.__name__
             summary[m_key]['name'] = layer._full_name
             summary[m_key]['output_shape'] = _get_output_shape(output)
+            summary[m_key]['module_name'] = layer.name
 
             params = 0
             if paddle.in_dynamic_mode():
@@ -94,7 +87,7 @@ def get_candidate_layers(
         h.remove()
 
     results = []
-    for idx, (layer, name) in enumerate(zip(summary, names)):
+    for idx, layer in enumerate(summary):
         output_shape = summary[layer]['output_shape']
         if not output_shape or len(output_shape) != 2 or not is_list_int(output_shape):
             continue
@@ -106,7 +99,7 @@ def get_candidate_layers(
                 'output_features': output_shape[-1],
                 'params': summary[layer]['nb_params'],
                 'layer_idx': idx,
-                'module_name': name,
+                'module_name': summary[layer]['module_name'],
             }
         )
 
