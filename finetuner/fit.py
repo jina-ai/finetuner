@@ -31,10 +31,10 @@ def fit(
 def fit(*args, **kwargs):
     if kwargs.get('interactive', False):
         kwargs.pop('interactive')
-        from .tuner.fit import fit
+        from .labeler.fit import fit
 
         fit(*args, **kwargs)
     else:
-        from .labeler.fit import fit
+        from .tuner.fit import fit
 
         fit(*args, **kwargs)
