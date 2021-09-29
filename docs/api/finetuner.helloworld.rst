@@ -1,5 +1,5 @@
-finetuner.labeler package
-=========================
+finetuner.helloworld package
+============================
 
 Submodules
 ----------
@@ -7,13 +7,12 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   finetuner.labeler.executor
-   finetuner.labeler.fit
+   finetuner.helloworld.data
 
 Module contents
 ---------------
 
-.. automodule:: finetuner.labeler
+.. automodule:: finetuner.helloworld
    :members:
    :undoc-members:
    :show-inheritance:

@@ -14,7 +14,7 @@ Labeled data
     A `DocumentArray`-like object, filling with `Document` with `.content` and `.matches`; where each `match` contains `.content` and `.tags['finetuner']['label']`.
 
 Tuner
-    A component in Finetuner. Given an {term}`embedding model` and {term}`Labeled data`, train the model to fit the data.
+    A component in Finetuner. Given an {term}`embedding model` and {term}`labeled data`, train the model to fit the data.
 
 Tailor
     A component in Finetuner. Convert any {term}`general model` into an {term}`embedding model`;

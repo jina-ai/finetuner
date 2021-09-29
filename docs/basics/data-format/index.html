@@ -333,7 +333,7 @@ or <code class="docutils literal notranslate"><span class="pre">DocumentArrayMem
 <section id="required-fields">
 <h2>Required fields<a class="headerlink" href="#required-fields" title="Permalink to this headline">¶</a></h2>
 <p>When using <code class="docutils literal notranslate"><span class="pre">finetuner.fit(...,</span> <span class="pre">interactive=True)</span></code>, you only need to provide a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>-like object where each <code class="docutils literal notranslate"><span class="pre">Document</span></code> object contains <code class="docutils literal notranslate"><span class="pre">.content</span></code>. This is because Finetuner will start a web frontend for interactive labeling. Hence, the supervision comes directly from you.</p>
-<p>When using <code class="docutils literal notranslate"><span class="pre">finetuner.fit(...,</span> <span class="pre">interactive=False)</span></code>, your <code class="docutils literal notranslate"><span class="pre">Document</span></code> object needs to contain:</p>
+<p id="construct-labeled-data">When using <code class="docutils literal notranslate"><span class="pre">finetuner.fit(...,</span> <span class="pre">interactive=False)</span></code>, your <code class="docutils literal notranslate"><span class="pre">Document</span></code> object needs to contain:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://docs.jina.ai/fundamentals/document/document-api/#document-content"><code class="docutils literal notranslate"><span class="pre">.content</span></code></a>: can be <code class="docutils literal notranslate"><span class="pre">.blob</span></code>, <code class="docutils literal notranslate"><span class="pre">.text</span></code>
 or <code class="docutils literal notranslate"><span class="pre">.buffer</span></code>;</p></li>
@@ -448,7 +448,7 @@ the same time.</p>
 <p>Here are some examples for generating synthetic matching data for Finetuner. You can learn how the constructions are
 made here.</p>
 <section id="fashion-mnist">
-<h3>Fashion-MNIST<a class="headerlink" href="#fashion-mnist" title="Permalink to this headline">¶</a></h3>
+<span id="build-mnist-data"></span><h3>Fashion-MNIST<a class="headerlink" href="#fashion-mnist" title="Permalink to this headline">¶</a></h3>
 <p>Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. Each image is a single channel 28x28
 grayscale image.</p>
 <figure class="align-center">
@@ -472,7 +472,7 @@ relevant:</p>
 </ul>
 </section>
 <section id="covid-qa">
-<h3>Covid QA<a class="headerlink" href="#covid-qa" title="Permalink to this headline">¶</a></h3>
+<span id="build-qa-data"></span><h3>Covid QA<a class="headerlink" href="#covid-qa" title="Permalink to this headline">¶</a></h3>
 <p>Covid QA data is a CSV that has 481 rows with columns <code class="docutils literal notranslate"><span class="pre">question</span></code>, <code class="docutils literal notranslate"><span class="pre">answer</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">wrong_answer</span></code>.</p>
 <figure class="align-center">
 <img alt="../../_images/covid-qa-data.png" src="../../_images/covid-qa-data.png"/>

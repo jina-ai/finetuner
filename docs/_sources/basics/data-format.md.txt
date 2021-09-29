@@ -20,6 +20,7 @@ Finetuner tunes a deep neural network on search tasks. In this context, the supe
 
 When using `finetuner.fit(..., interactive=True)`, you only need to provide a `DocumentArray`-like object where each `Document` object contains `.content`. This is because Finetuner will start a web frontend for interactive labeling. Hence, the supervision comes directly from you.
 
+(construct-labeled-data)=
 When using `finetuner.fit(..., interactive=False)`, your `Document` object needs to contain:
 
 - [`.content`](https://docs.jina.ai/fundamentals/document/document-api/#document-content): can be `.blob`, `.text`
@@ -150,6 +151,7 @@ Otherwise, you will need to prepare labeled data on your own.
 Here are some examples for generating synthetic matching data for Finetuner. You can learn how the constructions are
 made here.
 
+(build-mnist-data)=
 ### Fashion-MNIST
 
 Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. Each image is a single channel 28x28
@@ -173,6 +175,7 @@ Matches are built with the logic below:
 - randomly sample same-class Documents as positive matches, i.e. labeled with `1`;
 - randomly sample other-class Documents as negative matches, i.e. labeled with `-1`.
 
+(build-qa-data)=
 ### Covid QA
 
 

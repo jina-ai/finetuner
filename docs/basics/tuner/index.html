@@ -8,7 +8,8 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/basics/tuner.html" />
   <meta property="og:site_name" content="Jina Documentation" />
-  <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
+  <meta property="og:description" content="Tuner is one of the three key components of Finetuner. Given an embedding model and labeled data, Tuner trains the model to fit the data. Labeled data can be constructed by following this. Fit method: Tuner can be called via finetuner.fit(): import finetuner finetuner.fit( embed_model, train_data..." />
+  <meta property="og:image" content="../../_images/mlp.cosine.png" />
   <meta property="og:image:alt" content="Jina Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -172,7 +173,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -317,6 +318,192 @@
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="tuner">
 <h1>Tuner<a class="headerlink" href="#tuner" title="Permalink to this headline">¶</a></h1>
+<p>Tuner is one of the three key components of Finetuner. Given an <a class="reference internal" href="../glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a> and <a class="reference internal" href="../glossary/#term-Labeled-data"><span class="xref std std-term">labeled data</span></a>, Tuner
+trains the model to fit the data.</p>
+<p>Labeled data can be constructed <a class="reference internal" href="../data-format/#construct-labeled-data"><span class="std std-ref">by following this</span></a>.</p>
+<section id="fit-method">
+<h2>Fit method<a class="headerlink" href="#fit-method" title="Permalink to this headline">¶</a></h2>
+<p>Tuner can be called via <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
+
+<span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">embed_model</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>   
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>It accepts the following <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>:</p>
+<div class="table-wrapper"><table border="1" class="docutils">
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eval_data</code></td>
+<td>the evaluation data (same format as <code>train_data</code>) to be used on every epoch</td>
+</tr>
+<tr>
+<td><code>batch_size</code></td>
+<td>the number of <code>Document</code> in each batch</td>
+</tr>
+<tr>
+<td><code>epochs</code></td>
+<td>the number of epochs for training</td>
+</tr>
+</tbody>
+</table></div>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<section id="tune-a-simple-mlp-on-fashion-mnist">
+<h3>Tune a simple MLP on Fashion-MNIST<a class="headerlink" href="#tune-a-simple-mlp-on-fashion-mnist" title="Permalink to this headline">¶</a></h3>
+<ol>
+<li><p>Write an embedding model. An embedding model can be written in Keras/PyTorch/Paddle. It can be either a new model or
+an existing model with pretrained weights. Below we construct a <code class="docutils literal notranslate"><span class="pre">784x128x32</span></code> MLP that transforms Fashion-MNIST images
+into 32-dim vectors.</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">PyTorch</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="n">embed_model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+      <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+      <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">128</span><span class="p">),</span>
+      <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+      <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">Keras</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="n">embed_model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)),</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'relu'</span><span class="p">),</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+        <span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--3">Paddle</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">paddle</span>
+<span class="n">embed_model</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+      <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+      <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">128</span><span class="p">),</span>
+      <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+      <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</li>
+<li><p>Build labeled match data <a class="reference internal" href="../data-format/#build-mnist-data"><span class="std std-ref">according to the steps in here</span></a>. One can refer
+to <code class="docutils literal notranslate"><span class="pre">tests.data_generator.fashion_match_doc_generator</span></code> for an implementation.</p></li>
+<li><p>Feed labeled data and the embedding model into Finetuner:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
+<span class="kn">from</span> <span class="nn">tests.data_generator</span> <span class="kn">import</span> <span class="n">fashion_match_doc_generator</span> <span class="k">as</span> <span class="n">mdg</span>
+
+<span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">embed_model</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="n">mdg</span><span class="p">,</span>
+    <span class="n">eval_data</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">mdg</span><span class="p">(</span><span class="n">is_testset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">head_layer</span></code> is set to <code class="docutils literal notranslate"><span class="pre">CosineLayer</span></code>, one can also use <code class="docutils literal notranslate"><span class="pre">TripletLayer</span></code>:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">CosineLayer</label><div class="tab-content docutils">
+<figure class="align-center">
+<img alt="../../_images/mlp.cosine.png" src="../../_images/mlp.cosine.png"/>
+</figure>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--2">TripletLayer</label><div class="tab-content docutils">
+<figure class="align-center">
+<img alt="../../_images/mlp.triplet.png" src="../../_images/mlp.triplet.png"/>
+</figure>
+</div>
+</div>
+</section>
+<section id="tune-a-bidirectional-lstm-on-covid-qa">
+<h3>Tune a bidirectional LSTM on Covid QA<a class="headerlink" href="#tune-a-bidirectional-lstm-on-covid-qa" title="Permalink to this headline">¶</a></h3>
+<ol class="simple">
+<li><p>Write an embedding model.</p></li>
+</ol>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"/><label class="tab-label" for="tab-set--2-input--1">Keras</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="n">embed_model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+       <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
+       <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Bidirectional</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">64</span><span class="p">)),</span>
+       <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">)])</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"/><label class="tab-label" for="tab-set--2-input--2">PyTorch</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="k">class</span> <span class="nc">LastCell</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="n">out</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="k">return</span> <span class="n">out</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+
+<span class="n">embed_model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+  <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_embeddings</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
+  <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+  <span class="n">LastCell</span><span class="p">(),</span>
+  <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="mi">64</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--2-input--3" name="tab-set--2" type="radio"/><label class="tab-label" for="tab-set--2-input--3">Paddle</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">paddle</span>
+<span class="k">class</span> <span class="nc">LastCell</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
+   <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+       <span class="n">out</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x</span>
+       <span class="k">return</span> <span class="n">out</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+
+<span class="n">embed_model</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+   <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_embeddings</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
+   <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">'bidirectional'</span><span class="p">),</span>
+   <span class="n">LastCell</span><span class="p">(),</span>
+   <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="mi">64</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ol>
+<li><p>Build labeled match data <a class="reference internal" href="../data-format/#build-qa-data"><span class="std std-ref">according to the steps in here</span></a>. One can refer
+to <code class="docutils literal notranslate"><span class="pre">tests.data_generator.qa_match_doc_generator</span></code> for an implementation.</p></li>
+<li><p>Feed labeled data and the embedding model into Finetuner:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
+<span class="kn">from</span> <span class="nn">tests.data_generator</span> <span class="kn">import</span> <span class="n">qa_match_doc_generator</span> <span class="k">as</span> <span class="n">mdg</span>
+
+<span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">embed_model</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="n">mdg</span><span class="p">,</span>
+    <span class="n">eval_data</span><span class="o">=</span><span class="n">mdg</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">head_layer</span></code> is set to <code class="docutils literal notranslate"><span class="pre">CosineLayer</span></code>, one can also use <code class="docutils literal notranslate"><span class="pre">TripletLayer</span></code>:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--3-input--1" name="tab-set--3" type="radio"/><label class="tab-label" for="tab-set--3-input--1">CosineLayer</label><div class="tab-content docutils">
+<figure class="align-center">
+<img alt="../../_images/lstm.cosine.png" src="../../_images/lstm.cosine.png"/>
+</figure>
+</div>
+<input class="tab-input" id="tab-set--3-input--2" name="tab-set--3" type="radio"/><label class="tab-label" for="tab-set--3-input--2">TripletLayer</label><div class="tab-content docutils">
+<figure class="align-center">
+<img alt="../../_images/lstm.triplet.png" src="../../_images/lstm.triplet.png"/>
+</figure>
+</div>
+</div>
+</section>
+</section>
 </section>
 
             </article>
@@ -367,6 +554,28 @@
             
 
             <div class="toc-sticky toc-scroll">
+                
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">Tuner</a><ul>
+<li><a class="reference internal" href="#fit-method">Fit method</a></li>
+<li><a class="reference internal" href="#examples">Examples</a><ul>
+<li><a class="reference internal" href="#tune-a-simple-mlp-on-fashion-mnist">Tune a simple MLP on Fashion-MNIST</a></li>
+<li><a class="reference internal" href="#tune-a-bidirectional-lstm-on-covid-qa">Tune a bidirectional LSTM on Covid QA</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
                 
             </div>
 
