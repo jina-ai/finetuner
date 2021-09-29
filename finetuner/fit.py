@@ -35,6 +35,6 @@ def fit(*args, **kwargs):
 
         fit(*args, **kwargs)
     else:
-        from .labeler.fit import fit
+        from .tuner.fit import fit
 
         fit(*args, **kwargs)
