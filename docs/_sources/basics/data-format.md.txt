@@ -8,9 +8,19 @@ or `DocumentArrayMemap`, where each training or evaluation instance is a `Docume
 
 This chapter introduces how to construct a `Document` in a way that Finetuner will accept.
 
+## Understand supervision
+
+Finetuner tunes a deep neural network on search tasks. In this context, the supervision comes from if the nearest-neighbour matches are good or bad, where matches are often computed on model's embeddings. You have to label those good matches and bad matches, so Finetuner can learn about your feedback and improve the model. The following graph illustrates the process.
+
+```{figure} tuner-journey.svg
+:align: center
+```
+
 ## Required fields
 
-For Finetuner, a valid `Document` object needs to contain:
+When using `finetuner.fit(..., interactive=True)`, you only need to provide a `DocumentArray`-like object where each `Document` object contains `.content`. This is because Finetuner will start a web frontend for interactive labeling. Hence, the supervision comes directly from you.
+
+When using `finetuner.fit(..., interactive=False)`, your `Document` object needs to contain:
 
 - [`.content`](https://docs.jina.ai/fundamentals/document/document-api/#document-content): can be `.blob`, `.text`
   or `.buffer`;
@@ -19,6 +29,8 @@ For Finetuner, a valid `Document` object needs to contain:
   each `Document` in `.matches` needs to contain
     - `.content`: it should be the same data type as its parent `Document`;
     - `.tags['finetuner']['label']`.
+
+In summary, you either label the matches on-the-fly or prepare the labeled data in advance.
 
 ### Matches
 

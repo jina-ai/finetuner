@@ -9,7 +9,7 @@
   <meta property="og:url" content="https://finetuner.jina.ai/basics/data-format.html" />
   <meta property="og:site_name" content="Jina Documentation" />
   <meta property="og:description" content="Finetuner uses Jina Document as the primitive data type. In particular, DocumentArray and DocumentArrayMemap are the input data type for Tailor and Tuner. This means, your training dataset and evaluation dataset should be stored in DocumentArray or DocumentArrayMemap, where each training or evalu..." />
-  <meta property="og:image" content="../../_images/fashion-mnist-sprite.png" />
+  <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Jina Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -323,9 +323,16 @@ and <a class="reference external" href="https://docs.jina.ai/fundamentals/docume
 for Tailor and Tuner. This means, your training dataset and evaluation dataset should be stored in <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>
 or <code class="docutils literal notranslate"><span class="pre">DocumentArrayMemap</span></code>, where each training or evaluation instance is a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object.</p>
 <p>This chapter introduces how to construct a <code class="docutils literal notranslate"><span class="pre">Document</span></code> in a way that Finetuner will accept.</p>
+<section id="understand-supervision">
+<h2>Understand supervision<a class="headerlink" href="#understand-supervision" title="Permalink to this headline">¶</a></h2>
+<p>Finetuner tunes a deep neural network on search tasks. In this context, the supervision comes from if the nearest-neighbour matches are good or bad, where matches are often computed on model’s embeddings. You have to label those good matches and bad matches, so Finetuner can learn about your feedback and improve the model. The following graph illustrates the process.</p>
+<figure class="align-center">
+<img alt="../../_images/tuner-journey.svg" src="../../_images/tuner-journey.svg"/></figure>
+</section>
 <section id="required-fields">
 <h2>Required fields<a class="headerlink" href="#required-fields" title="Permalink to this headline">¶</a></h2>
-<p>For Finetuner, a valid <code class="docutils literal notranslate"><span class="pre">Document</span></code> object needs to contain:</p>
+<p>When using <code class="docutils literal notranslate"><span class="pre">finetuner.fit(...,</span> <span class="pre">interactive=True)</span></code>, you only need to provide a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>-like object where each <code class="docutils literal notranslate"><span class="pre">Document</span></code> object contains <code class="docutils literal notranslate"><span class="pre">.content</span></code>. This is because Finetuner will start a web frontend for interactive labeling. Hence, the supervision comes directly from you.</p>
+<p>When using <code class="docutils literal notranslate"><span class="pre">finetuner.fit(...,</span> <span class="pre">interactive=False)</span></code>, your <code class="docutils literal notranslate"><span class="pre">Document</span></code> object needs to contain:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://docs.jina.ai/fundamentals/document/document-api/#document-content"><code class="docutils literal notranslate"><span class="pre">.content</span></code></a>: can be <code class="docutils literal notranslate"><span class="pre">.blob</span></code>, <code class="docutils literal notranslate"><span class="pre">.text</span></code>
 or <code class="docutils literal notranslate"><span class="pre">.buffer</span></code>;</p></li>
@@ -338,6 +345,7 @@ each <code class="docutils literal notranslate"><span class="pre">Document</span
 </ul>
 </li>
 </ul>
+<p>In summary, you either label the matches on-the-fly or prepare the labeled data in advance.</p>
 <section id="matches">
 <h3>Matches<a class="headerlink" href="#matches" title="Permalink to this headline">¶</a></h3>
 <p>Finetuner relies on matching data in <code class="docutils literal notranslate"><span class="pre">.matches</span></code>. To manually add a match to a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object, one can do:</p>
@@ -577,7 +585,7 @@ Devloper-only: synthetic data generator for these two datasets<div class="sd-sum
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Sep 27, 2021.
+                    Last updated on Sep 29, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
@@ -603,6 +611,7 @@ Devloper-only: synthetic data generator for these two datasets<div class="sd-sum
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">Data Format</a><ul>
+<li><a class="reference internal" href="#understand-supervision">Understand supervision</a></li>
 <li><a class="reference internal" href="#required-fields">Required fields</a><ul>
 <li><a class="reference internal" href="#matches">Matches</a></li>
 <li><a class="reference internal" href="#labels">Labels</a></li>
