@@ -12,10 +12,10 @@ def get_candidate_layers(
     model: nn.Module, input_size: Tuple[int, ...], input_dtype: str = 'float32'
 ):
     dtypes = [getattr(torch, input_dtype)] * len(input_size)
-    names = []
+
+    # assign name to each module from named_module
     for name, module in model.named_modules():
-        if len(list(module.children())) == 0:  # module do not have sub modules
-            names.append(name)
+        module.name = name
 
     def _get_output_shape(output):
         if isinstance(output, (list, tuple)):
@@ -34,6 +34,7 @@ def get_candidate_layers(
             summary[m_key]['cls_name'] = module.__class__.__name__
             summary[m_key]['name'] = m_key
             summary[m_key]['output_shape'] = _get_output_shape(output)
+            summary[m_key]['module_name'] = module.name
 
             params = 0
             if hasattr(module, 'weight') and hasattr(module.weight, 'size'):
@@ -70,7 +71,7 @@ def get_candidate_layers(
         h.remove()
 
     results = []
-    for idx, (layer, name) in enumerate(zip(summary, names)):
+    for idx, layer in enumerate(summary):
         output_shape = summary[layer]['output_shape']
         if not output_shape or len(output_shape) != 2 or not is_list_int(output_shape):
             continue
@@ -82,7 +83,7 @@ def get_candidate_layers(
                 'output_features': output_shape[-1],
                 'params': summary[layer]['nb_params'],
                 'layer_idx': idx,
-                'module_name': name,
+                'module_name': summary[layer]['module_name'],
             }
         )
 
