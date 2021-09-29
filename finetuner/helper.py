@@ -6,7 +6,7 @@ from jina import Document, DocumentArray, DocumentArrayMemmap
 def get_framework(embed_model) -> str:
     if 'keras.' in embed_model.__module__:
         return 'keras'
-    elif 'torch.' in embed_model.__module__:
+    elif 'torch.' or 'torchvision.' in embed_model.__module__:
         return 'torch'
     elif 'paddle.' in embed_model.__module__:
         return 'paddle'
