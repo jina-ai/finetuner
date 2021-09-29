@@ -20,11 +20,17 @@ def trim(
     :param input_size: the input shape to the DNN model.
     :param input_dtype: data type of the input.
     :return: The trimmed model where all layers greater than `layer_idx` been replaced with :class:`nn.Identity`.
+
+    ..note::
+        The trim method can only trim model of depth 2, e.g. 2 level of nested nn.Module.
+    ..note::
+        The argument `layer_idx` means that all layers before (not include) the index will be
+        preserved.
     """
     candidate_layers = get_candidate_layers(
         model, input_size=input_size, input_dtype=input_dtype
     )
-    indx = {l['layer_idx'] for l in candidate_layers}
+    indx = {l['layer_idx'] for l in candidate_layers if l['layer_idx'] != 0}
     if layer_idx not in indx:
         raise IndexError(f'Layer index {layer_idx} is not one of {indx}.')
 

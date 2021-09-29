@@ -1,3 +1,4 @@
+import inspect
 from collections import OrderedDict
 from typing import Tuple
 
@@ -13,11 +14,16 @@ def get_candidate_layers(
 ):
     dtypes = [input_dtype] * len(input_size)
     depth = len(list(model.sublayers()))
-    names = [
-        name
-        for name, layer in model.named_sublayers()
-        if len(list(layer.sublayers())) == 0
-    ]
+    rnn_classes = tuple(x[1] for x in inspect.getmembers(nn.layer.rnn, inspect.isclass))
+    rnn_classes_except_lstm = tuple(
+        x for x in rnn_classes if not isinstance(x, nn.layer.rnn.LSTM)
+    )
+    names = []
+    for name, layer in model.named_sublayers():
+        if isinstance(layer, nn.layer.rnn.LSTM):
+            names.append(name)
+        elif len(layer.sublayers()) == 0 and type(layer) not in rnn_classes_except_lstm:
+            names.append(name)
 
     def _get_output_shape(output):
         if isinstance(output, (list, tuple)):

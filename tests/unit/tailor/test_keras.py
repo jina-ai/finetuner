@@ -7,25 +7,26 @@ from finetuner.tailor.keras import trim, freeze
 @pytest.fixture
 def dense_model():
     model = tf.keras.models.Sequential()
-    model.add(tf.keras.Input(shape=(16,)))
-    model.add(tf.keras.layers.Dense(128, activation='relu'))
-    model.add(tf.keras.layers.Dense(64, activation='relu'))
-    model.add(tf.keras.layers.Dense(32, activation='relu'))
-    model.add(tf.keras.layers.Dense(10, activation='softmax'))
+    model.add(tf.keras.layers.InputLayer(input_shape=(128,)))  # (None, 128)
+    model.add(tf.keras.layers.Dense(128, activation='relu'))  # (None, 128)
+    model.add(tf.keras.layers.Dense(64, activation='relu'))  # (None, 64)
+    model.add(tf.keras.layers.Dense(32, activation='relu'))  # (None, 32)
+    model.add(tf.keras.layers.Dense(10, activation='softmax'))  # (None, 10)
     return model
 
 
 @pytest.fixture
 def simple_cnn_model():
     model = tf.keras.models.Sequential()
-    model.add(tf.keras.Input(shape=(28, 28, 1)))
-    model.add(tf.keras.layers.Conv2D(32, kernel_size=(3, 3), activation="relu"))
-    model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
-    model.add(tf.keras.layers.Conv2D(64, kernel_size=(3, 3), activation="relu"))
-    model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(tf.keras.layers.InputLayer(input_shape=(28, 28, 1)))
+    model.add(tf.keras.layers.Conv2D(32, 3, (1, 1), activation='relu'))
+    model.add(tf.keras.layers.Conv2D(64, 3, (1, 1), activation='relu'))
+    model.add(tf.keras.layers.MaxPool2D(2))
+    model.add(tf.keras.layers.Dropout(0.25))
     model.add(tf.keras.layers.Flatten())
-    model.add(tf.keras.layers.Dropout(0.2))
-    model.add(tf.keras.layers.Dense(10, activation="softmax"))
+    model.add(tf.keras.layers.Dense(128))
+    model.add(tf.keras.layers.Dropout(0.25))
+    model.add(tf.keras.layers.Dense(10, activation='softmax'))
     return model
 
 
@@ -43,16 +44,40 @@ def vgg16_cnn_model():
 
 
 @pytest.fixture
-def lstm_model():
+def stacked_lstm():
     model = tf.keras.models.Sequential()
-    model.add(tf.keras.layers.Embedding(1000, 128, input_length=64))
-    model.add(tf.keras.layers.LSTM(64))
-    model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
+    model.add(tf.keras.layers.Embedding(1000, 1024, input_length=128))
+    model.add(
+        tf.keras.layers.LSTM(256, return_sequences=True)
+    )  # this layer will not considered as candidate layer
+    model.add(tf.keras.layers.LSTM(256, return_sequences=True))
+    model.add(
+        tf.keras.layers.LSTM(256, return_sequences=False)
+    )  # this layer will be considered as candidate layer
+    model.add(tf.keras.layers.Dense(256, activation='relu'))
+    model.add(tf.keras.layers.Dense(5, activation='softmax'))
     return model
 
 
+@pytest.fixture
+def bidirectional_lstm():
+    return tf.keras.Sequential(
+        [
+            tf.keras.layers.Embedding(input_dim=5000, output_dim=64),
+            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
+            tf.keras.layers.Dense(32),
+        ]
+    )
+
+
 @pytest.fixture(
-    params=['dense_model', 'simple_cnn_model', 'vgg16_cnn_model', 'lstm_model']
+    params=[
+        'dense_model',
+        'simple_cnn_model',
+        'vgg16_cnn_model',
+        'stacked_lstm',
+        'bidirectional_lstm',
+    ]
 )
 def model(request):
     return request.getfixturevalue(request.param)
@@ -64,7 +89,8 @@ def model(request):
         ('dense_model', 10),  # 10th layer does not exist
         ('simple_cnn_model', 2),  # 2nd layer is a convolutional layer
         ('vgg16_cnn_model', 4),  # 4th layer is a convolutional layer
-        ('lstm_model', 10),  # 10th layer does not exist
+        ('stacked_lstm', 10),  # 10th layer does not exist
+        ('bidirectional_lstm', 5),  # 5th layer does not exist
     ],
     indirect=['model'],
 )
@@ -76,10 +102,11 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx):
 @pytest.mark.parametrize(
     'model, layer_idx, expected_output_shape',
     [
-        ('dense_model', 1, (None, 64)),
-        ('simple_cnn_model', 4, (None, 1600)),
-        ('vgg16_cnn_model', 20, (None, 4096)),
-        ('lstm_model', 1, (None, 64)),
+        ('dense_model', 3, (None, 32)),
+        ('simple_cnn_model', 5, (None, 9216)),
+        ('vgg16_cnn_model', 21, (None, 4096)),
+        ('stacked_lstm', 4, (None, 256)),
+        ('bidirectional_lstm', 2, (None, 64 * 2)),  # bi-directional
     ],
     indirect=['model'],
 )
@@ -90,7 +117,13 @@ def test_trim(model, layer_idx, expected_output_shape):
 
 @pytest.mark.parametrize(
     'model',
-    ['dense_model', 'simple_cnn_model', 'vgg16_cnn_model', 'lstm_model'],
+    [
+        'dense_model',
+        'simple_cnn_model',
+        'vgg16_cnn_model',
+        'stacked_lstm',
+        'bidirectional_lstm',
+    ],
     indirect=['model'],
 )
 def test_freeze(model):
