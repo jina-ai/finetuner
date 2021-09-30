@@ -215,15 +215,18 @@ accordion-button:focus {
   align-items: center;
 }
 
-.kbc-button {
+kbd {
+  position: absolute;
+  top: 0;
+  right: 0;
   margin-left: .8rem;
   line-height: 0.8rem;
   padding-top: 0.4rem;
-}
-
-kbd {
-  margin-left: .25rem;
-  align-self: center;
+  color: #000000;
+  background-color: #fff;
+  border-radius: 1px;
+  box-shadow: 0px 3px 2px 0px rgb(73 80 87 / 80%), inset -2px -2px 3px 0px #131313;
+  cursor: pointer;
 }
 
 .positive-match {
@@ -284,11 +287,13 @@ kbd {
 }
 
 .image-card .card-header .img-thumbnail {
-  width: 33.33%;
+  width: 50%;
+  padding: 0;
 }
 
 .image-card .card-body .img-thumbnail {
-  width: 50%;
+  width: 100%;
+  padding: 0;
 }
 
 /* Swiper don't swipe */
@@ -309,5 +314,6 @@ kbd {
 
 .swiper-slide-prev > .card, .swiper-slide-next > .card {
   opacity: .5;
-  filter: blur(2px);
+  filter: blur(2px) grayscale(1);
+  pointer-events: none;
 }
