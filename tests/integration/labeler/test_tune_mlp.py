@@ -7,7 +7,8 @@ import pytest
 import requests
 from jina.helper import random_port
 
-from tests.data_generator import fashion_doc_generator as fdg
+from finetuner.toydata import generate_fashion_match as fdg
+
 
 os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
 

@@ -11,7 +11,7 @@ os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
 import paddle
 import torch
 
-from tests.data_generator import generate_qa_doc as qdg
+from finetuner.toydata import generate_qa_match as qdg
 
 
 class LastCellPT(torch.nn.Module):

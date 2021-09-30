@@ -4,8 +4,8 @@ import tensorflow as tf
 from tensorflow import keras
 
 from finetuner.tuner.keras import KerasTuner
-from ...data_generator import generate_fashion_doc_match as fmdg
-from ...data_generator import generate_qa_doc_match as qmdg
+from finetuner.toydata import generate_fashion_match as fmdg
+from finetuner.toydata import generate_qa_match as qmdg
 
 
 @pytest.mark.parametrize('head_layer', ['CosineLayer', 'TripletLayer'])
