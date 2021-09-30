@@ -6,8 +6,8 @@ import torch
 import torch.nn as nn
 
 from finetuner.tuner.pytorch import PytorchTuner
-from ...data_generator import fashion_match_doc_generator as fmdg
-from ...data_generator import qa_match_doc_generator as qmdg
+from ...data_generator import generate_fashion_doc_match as fmdg
+from ...data_generator import generate_qa_doc_match as qmdg
 
 
 @pytest.mark.parametrize('head_layer', ['CosineLayer', 'TripletLayer'])

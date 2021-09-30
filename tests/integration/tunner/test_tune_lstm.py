@@ -11,7 +11,7 @@ os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
 import paddle
 import torch
 
-from tests.data_generator import qa_blob_doc_generator as qdg
+from tests.data_generator import generate_qa_doc as qdg
 
 
 class LastCellPT(torch.nn.Module):

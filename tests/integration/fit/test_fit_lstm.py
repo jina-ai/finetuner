@@ -4,8 +4,8 @@ import paddle
 import tensorflow as tf
 import torch
 
-import finetuner.tuner.fit as jft
-from tests.data_generator import qa_match_doc_generator as mdg
+import finetuner as jft
+from finetuner.toydata import generate_qa_match as mdg
 
 
 class LastCellPT(torch.nn.Module):

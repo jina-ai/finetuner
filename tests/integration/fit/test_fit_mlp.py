@@ -4,8 +4,8 @@ import paddle
 import tensorflow as tf
 import torch
 
-import finetuner.tuner.fit as jft
-from tests.data_generator import fashion_match_doc_generator as mdg
+import finetuner as jft
+from finetuner.toydata import generate_fashion_match as mdg
 
 
 def test_fit_all(tmpdir):

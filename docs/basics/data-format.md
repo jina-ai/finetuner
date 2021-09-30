@@ -205,18 +205,18 @@ Matches are built with the logic below:
 
 Finetuner codebase contains two synthetic matching data generator for testing purpose:
 
-- `tests.data_generator.fashion_match_doc_generator()`: the generator of Fashion-MNIST synthetic matching data.
-- `tests.data_generator.qa_match_doc_generator()`: the generator of Fashion-MNIST synthetic matching data.
+- `tests.data_generator.generate_fashion_doc_match()`: the generator of Fashion-MNIST synthetic matching data.
+- `tests.data_generator.generate_qa_doc_match()`: the generator of Fashion-MNIST synthetic matching data.
 
 
 Generator API:
 
 ```python
-from tests.data_generator import fashion_match_doc_generator as mdg
+from tests.data_generator import generate_fashion_doc_match as mdg
 
 # or
 
-from tests.data_generator import qa_match_doc_generator as mdg
+from tests.data_generator import generate_qa_doc_match as mdg
 ```
 
 To get only first 10 documents:
@@ -234,7 +234,7 @@ for d in mdg(num_pos=2, num_neg=7):
     ...
 ```
 
-`qa_match_doc_generator` has a fixed number of positive matches `1`.
+`generate_qa_doc_match` has a fixed number of positive matches `1`.
 
 To set the label value of positive & negative samples:
 
@@ -246,7 +246,7 @@ for d in mdg(pos_value=1, neg_value=-1):
 To make image as 3-channel pseudo RGB image:
 
 ```python
-from tests.data_generator import fashion_match_doc_generator as fmdg
+from tests.data_generator import generate_fashion_doc_match as fmdg
 
 for d in fmdg(channels=3):
     ...
@@ -255,7 +255,7 @@ for d in fmdg(channels=3):
 To upsample image as 112x112 3-channel pseudo RGB image:
 
 ```python
-from tests.data_generator import fashion_match_doc_generator as fmdg
+from tests.data_generator import generate_fashion_doc_match as fmdg
 
 for d in fmdg(channels=3, upsampling=4):
     ...
@@ -264,7 +264,7 @@ for d in fmdg(channels=3, upsampling=4):
 Use `DocumentArray` instead of Generator:
 
 ```python
-from tests.data_generator import fashion_match_documentarray as mda
+from tests.data_generator import get_match_da_fashion as mda
 
 from tests.data_generator import qa_match_documentarray as mda
 

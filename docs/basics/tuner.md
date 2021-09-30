@@ -69,12 +69,12 @@ It accepts the following `**kwargs`:
     ````
 
 2. Build labeled match data {ref}`according to the steps in here<build-mnist-data>`. One can refer
-   to `tests.data_generator.fashion_match_doc_generator` for an implementation.
+   to `tests.data_generator.generate_fashion_doc_match` for an implementation.
 
 3. Feed labeled data and the embedding model into Finetuner:
     ```python
     import finetuner
-    from tests.data_generator import fashion_match_doc_generator as mdg
+    from tests.data_generator import generate_fashion_doc_match as mdg
 
     finetuner.fit(
         embed_model,
@@ -148,13 +148,13 @@ By default, `head_layer` is set to `CosineLayer`, one can also use `TripletLayer
   ````
 
 2. Build labeled match data {ref}`according to the steps in here<build-qa-data>`. One can refer
-   to `tests.data_generator.qa_match_doc_generator` for an implementation.
+   to `tests.data_generator.generate_qa_doc_match` for an implementation.
 
 3. Feed labeled data and the embedding model into Finetuner:
 
     ```python
     import finetuner
-    from tests.data_generator import qa_match_doc_generator as mdg
+    from tests.data_generator import generate_qa_doc_match as mdg
 
     finetuner.fit(
         embed_model,
