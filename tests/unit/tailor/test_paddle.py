@@ -3,7 +3,7 @@ import pytest
 import paddle
 import paddle.nn as nn
 
-from finetuner.tailor.paddle import trim, freeze
+from finetuner.tailor.paddle.parser import _trim, _freeze
 
 
 @pytest.fixture
@@ -125,7 +125,9 @@ def test_trim_fail_given_unexpected_layer_idx(
     model, layer_idx, input_size, input_dtype
 ):
     with pytest.raises(IndexError):
-        trim(model, layer_idx=layer_idx, input_size=input_size, input_dtype=input_dtype)
+        _trim(
+            model, layer_idx=layer_idx, input_size=input_size, input_dtype=input_dtype
+        )
 
 
 @pytest.mark.parametrize(
@@ -143,7 +145,7 @@ def test_freeze(model):
     for param in model.parameters():
         if not param.stop_gradient:
             assert param.trainable
-    model = freeze(model)
+    model = _freeze(model)
     for param in model.parameters():
         assert not param.trainable
 
@@ -160,7 +162,7 @@ def test_freeze(model):
     indirect=['model'],
 )
 def test_trim(model, layer_idx, input_size, input_, input_dtype, expected_output_shape):
-    model = trim(
+    model = _trim(
         model=model, layer_idx=layer_idx, input_size=input_size, input_dtype=input_dtype
     )
     out = model(paddle.cast(paddle.rand(input_), input_dtype))

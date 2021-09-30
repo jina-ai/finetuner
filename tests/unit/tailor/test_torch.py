@@ -2,7 +2,7 @@ import pytest
 import torch
 import torch.nn as nn
 
-from finetuner.tailor.pytorch import trim, freeze
+from finetuner.tailor.pytorch.parser import _trim, _freeze
 
 
 @pytest.fixture
@@ -126,7 +126,9 @@ def test_trim_fail_given_unexpected_layer_idx(
     model, layer_idx, input_size, input_dtype
 ):
     with pytest.raises(IndexError):
-        trim(model, layer_idx=layer_idx, input_size=input_size, input_dtype=input_dtype)
+        _trim(
+            model, layer_idx=layer_idx, input_size=input_size, input_dtype=input_dtype
+        )
 
 
 @pytest.mark.parametrize(
@@ -141,7 +143,7 @@ def test_trim_fail_given_unexpected_layer_idx(
     indirect=['model'],
 )
 def test_trim(model, layer_idx, input_size, input_, input_dtype, expected_output_shape):
-    model = trim(
+    model = _trim(
         model=model, layer_idx=layer_idx, input_size=input_size, input_dtype=input_dtype
     )
     input_ = torch.rand(input_)
@@ -165,6 +167,6 @@ def test_trim(model, layer_idx, input_size, input_, input_dtype, expected_output
 def test_freeze(model):
     for param in model.parameters():
         assert param.requires_grad
-    model = freeze(model)
+    model = _freeze(model)
     for param in model.parameters():
         assert not param.requires_grad

@@ -3,8 +3,8 @@ import pytest
 import tensorflow as tf
 import torch
 
-from finetuner.tailor.paddle.parser import get_candidate_layers as gcl_p
-from finetuner.tailor.pytorch.parser import get_candidate_layers as gcl_t
+from finetuner.tailor.paddle.parser import _get_candidate_layers as gcl_p
+from finetuner.tailor.pytorch.parser import _get_candidate_layers as gcl_t
 
 
 class LastCellPT(torch.nn.Module):
@@ -111,9 +111,9 @@ def test_keras_model_parser():
         ]
     )
 
-    from finetuner.tailor.keras.parser import get_candidate_layers
+    from finetuner.tailor.keras.parser import _get_candidate_layers
 
-    r = get_candidate_layers(user_model)
+    r = _get_candidate_layers(user_model)
     assert len(r) == 3
     assert r[0]['name'] == 'l1'
     assert r[1]['name'] == 'l2'

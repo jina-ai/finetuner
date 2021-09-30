@@ -1,4 +1,10 @@
-def get_candidate_layers(model):
+from tensorflow.keras import Model
+
+from ..helper import CandidateLayerInfo
+
+
+def _get_candidate_layers(model: Model) -> CandidateLayerInfo:
+    """Get all dense layers that can be used as embedding layer from the given model. """
     results = []
     for idx, layer in enumerate(model.layers):
         try:
@@ -29,3 +35,31 @@ def get_candidate_layers(model):
                 }
             )
     return results
+
+
+def _trim(model: Model, layer_idx: int = -1) -> Model:
+    """Trim an arbitrary Keras model to a Keras embedding model
+
+    :param model: an arbitary DNN model in Keras
+    :param layer_idx: the index of the bottleneck layer for embedding output.
+
+    ..note::
+        The argument `layer_idx` means that all layers before (not include) the index will be
+        preserved.
+    """
+    candidate_layers = _get_candidate_layers(model)
+    indx = {l['layer_idx'] for l in candidate_layers if l['layer_idx'] != 0}
+    if layer_idx not in indx:
+        raise IndexError(f'Layer index {layer_idx} is not one of {indx}.')
+    return Model(model.input, model.layers[layer_idx - 1].output)
+
+
+def _freeze(model: Model) -> Model:
+    """Freeze an arbitrary model to make layers not trainable.
+
+    :param model: an arbitrary DNN model in Keras.
+    :return: A new model with all layers weights freezed.
+    """
+    for layer in model.layers:
+        layer.trainable = False
+    return model

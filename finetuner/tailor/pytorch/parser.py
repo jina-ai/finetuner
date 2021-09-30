@@ -5,12 +5,13 @@ import numpy as np
 import torch
 from torch import nn
 
-from finetuner.tailor.helper import is_list_int
+from ..helper import _is_list_int, CandidateLayerInfo
 
 
-def get_candidate_layers(
+def _get_candidate_layers(
     model: nn.Module, input_size: Tuple[int, ...], input_dtype: str = 'float32'
-):
+) -> CandidateLayerInfo:
+    """Get all dense layers that can be used as embedding layer from the given model. """
     dtypes = [getattr(torch, input_dtype)] * len(input_size)
 
     # assign name to each module from named_module
@@ -73,7 +74,7 @@ def get_candidate_layers(
     results = []
     for idx, layer in enumerate(summary):
         output_shape = summary[layer]['output_shape']
-        if not output_shape or len(output_shape) != 2 or not is_list_int(output_shape):
+        if not output_shape or len(output_shape) != 2 or not _is_list_int(output_shape):
             continue
 
         results.append(
@@ -88,3 +89,63 @@ def get_candidate_layers(
         )
 
     return results
+
+
+def _trim(
+    model: nn.Module,
+    layer_idx: int = -1,
+    input_size: Tuple = (128,),
+    input_dtype: str = 'float32',
+) -> nn.Module:
+    """Trim an arbitrary model to a Pytorch embedding model.
+
+    :param model: an arbitrary DNN model in Pytorch.
+    :param layer_idx: the index of the bottleneck layer for embedding output.
+    :param input_size: the input shape to the DNN model.
+    :param input_dtype: data type of the input.
+    :return: The trimmed model where all layers greater than `layer_idx` been replaced with :class:`nn.Identity`.
+
+    ..note::
+        The trim method can only trim model of depth 2, e.g. 2 level of nested nn.Module.
+    ..note::
+        The argument `layer_idx` means that all layers before (not include) the index will be
+        preserved.
+    """
+    candidate_layers = _get_candidate_layers(
+        model, input_size=input_size, input_dtype=input_dtype
+    )
+    indx = {l['layer_idx'] for l in candidate_layers if l['layer_idx'] != 0}
+    if layer_idx not in indx:
+        raise IndexError(f'Layer index {layer_idx} is not one of {indx}.')
+
+    module_name = None
+    for candidate_layer in candidate_layers:
+        if candidate_layer['layer_idx'] == layer_idx:
+            module_name = candidate_layer['module_name']
+            break
+
+    flag = False
+    for name, module in model.named_modules():
+        if name == module_name:
+            flag = True
+        if flag:
+            if (
+                '.' in name
+            ):  # Note: in torchvision, nested layer names are named with '.' e.g. classifier.0
+                nested_module, layer = name.split('.')
+                setattr(getattr(model, nested_module), layer, nn.Identity())
+            else:
+                setattr(model, name, nn.Identity())
+
+    return model
+
+
+def _freeze(model: nn.Module) -> nn.Module:
+    """Freeze an arbitrary model to make layers not trainable.
+
+    :param model: an arbitrary DNN model in Pytorch.
+    :return: A new model with all layers weights freezed.
+    """
+    for param in model.parameters():
+        param.requires_grad = False
+    return model
