@@ -7,6 +7,7 @@ from typing import Optional
 import jina.helper
 from jina import Flow, DocumentArray, DocumentArrayMemmap
 from jina.logging.predefined import default_logger
+from jina.logging.profile import TimeContext
 
 from .executor import FTExecutor, DataIterator
 from ..helper import AnyDNN, DocumentArrayLike
@@ -20,23 +21,25 @@ def fit(
     runtime_backend: str = 'thread',
     head_layer: str = 'CosineLayer',
 ) -> None:
-    if callable(train_data):
-        train_data = train_data()
 
-    if isinstance(train_data, DocumentArray):
-        dam_path = tempfile.mkdtemp()
-        dam = DocumentArrayMemmap(dam_path)
-        dam.extend(train_data)
-    elif isinstance(train_data, DocumentArrayMemmap):
-        dam_path = train_data.path
-    elif isinstance(train_data, str):
-        dam_path = train_data
-    elif isinstance(train_data, Iterable):
-        dam_path = tempfile.mkdtemp()
-        dam = DocumentArrayMemmap(dam_path)
-        dam.extend(train_data)
-    else:
-        raise TypeError(f'{train_data} is not supported')
+    with TimeContext('preparing data'):
+        if callable(train_data):
+            train_data = train_data()
+
+        if isinstance(train_data, DocumentArray):
+            dam_path = tempfile.mkdtemp()
+            dam = DocumentArrayMemmap(dam_path)
+            dam.extend(train_data)
+        elif isinstance(train_data, DocumentArrayMemmap):
+            dam_path = train_data.path
+        elif isinstance(train_data, str):
+            dam_path = train_data
+        elif isinstance(train_data, Iterable):
+            dam_path = tempfile.mkdtemp()
+            dam = DocumentArrayMemmap(dam_path)
+            dam.extend(train_data)
+        else:
+            raise TypeError(f'{train_data} is not supported')
 
     class MyExecutor(FTExecutor):
         def get_embed_model(self):
