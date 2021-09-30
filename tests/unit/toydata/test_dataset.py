@@ -1,15 +1,17 @@
 import numpy as np
 import pytest
 
-from tests.data_generator import fashion_match_doc_generator as fmdg
-from tests.data_generator import fashion_match_documentarray as fmda
-from finetuner.tuner.dataset import SiameseMixin, TripletMixin
+from finetuner.toydata import generate_fashion_match
 from finetuner.tuner.base import BaseDataset
+from finetuner.tuner.dataset import SiameseMixin, TripletMixin
 
 
 @pytest.mark.parametrize(
     'data_src',
-    [fmdg(num_total=100), fmda(num_total=100), fmdg, lambda: fmda(num_total=100)],
+    [
+        generate_fashion_match(num_pos=10, num_neg=10, num_total=100),
+        lambda: generate_fashion_match(num_pos=10, num_neg=10, num_total=100),
+    ],
 )
 def test_siamese_dataset(data_src):
     class SD(SiameseMixin, BaseDataset):
@@ -27,7 +29,10 @@ def test_siamese_dataset(data_src):
 
 @pytest.mark.parametrize(
     'data_src',
-    [fmdg(num_total=100), fmda(num_total=100), fmdg, lambda: fmda(num_total=100)],
+    [
+        generate_fashion_match(num_pos=10, num_neg=10, num_total=100),
+        lambda: generate_fashion_match(num_pos=10, num_neg=10, num_total=100),
+    ],
 )
 def test_triplet_dataset(data_src):
     class SD(TripletMixin, BaseDataset):

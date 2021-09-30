@@ -53,10 +53,11 @@ Finetuner supports [Pytorch](https://pytorch.org/), [Keras](https://keras.io/) a
 4. Now feed the model and Fashion-MNIST data into the finetuner.
    ```python
    import finetuner
+   from finetuner.toydata import generate_fashion_match
    
    finetuner.fit(
        embed_model,
-       fashion_doc_generator,  # from finetuner.helloworld.data import fashion_doc_generator
+       generate_fashion_match(num_pos=0, num_neg=0),  #: no synthetic positive & negative examples 
        interactive=True)
    ```
 
@@ -87,7 +88,7 @@ get-started/covid-qa
 
 
 ```{toctree}
-:caption: Design
+:caption: Design (INTERNAL ONLY)
 :hidden:
 
 design/index

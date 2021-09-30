@@ -69,17 +69,17 @@ It accepts the following `**kwargs`:
     ````
 
 2. Build labeled match data {ref}`according to the steps in here<build-mnist-data>`. One can refer
-   to `tests.data_generator.fashion_match_doc_generator` for an implementation.
+   to `finetuner.toydata.generate_fashion_match` for an implementation. In this example, for each `Document` we generate 10 positive matches and 10 negative matches.
 
 3. Feed labeled data and the embedding model into Finetuner:
     ```python
     import finetuner
-    from tests.data_generator import fashion_match_doc_generator as mdg
+    from finetuner.toydata import generate_fashion_match
 
     finetuner.fit(
         embed_model,
-        train_data=mdg,
-        eval_data=lambda: mdg(is_testset=True)
+        train_data=lambda: generate_fashion_match(num_pos=10, num_neg=10),
+        eval_data=lambda: generate_fashion_match(num_pos=10, num_neg=10, is_testset=True)
     )
     ```
 
@@ -148,18 +148,18 @@ By default, `head_layer` is set to `CosineLayer`, one can also use `TripletLayer
   ````
 
 2. Build labeled match data {ref}`according to the steps in here<build-qa-data>`. One can refer
-   to `tests.data_generator.qa_match_doc_generator` for an implementation.
+   to `finetuner.toydata.generate_qa_match` for an implementation.
 
 3. Feed labeled data and the embedding model into Finetuner:
 
     ```python
     import finetuner
-    from tests.data_generator import qa_match_doc_generator as mdg
+    from finetuner.toydata import generate_qa_match
 
     finetuner.fit(
         embed_model,
-        train_data=mdg,
-        eval_data=mdg
+        train_data=lambda: generate_qa_match(num_neg=5),
+        eval_data=lambda: generate_qa_match(num_neg=5)
     )
     ```
 

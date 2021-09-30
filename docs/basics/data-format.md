@@ -201,74 +201,11 @@ Matches are built with the logic below:
 - always include `wrong_answer` column as the negative match. Then sample other documents' answer as negative matches.
 
 
-````{dropdown} Devloper-only: synthetic data generator for these two datasets
+```{tip}
 
-Finetuner codebase contains two synthetic matching data generator for testing purpose:
+Finetuner codebase contains two synthetic matching data generator for demo and debugging purpose:
 
-- `tests.data_generator.fashion_match_doc_generator()`: the generator of Fashion-MNIST synthetic matching data.
-- `tests.data_generator.qa_match_doc_generator()`: the generator of Fashion-MNIST synthetic matching data.
+- `finetuner.toydata.generate_fashion_match()`: the generator of Fashion-MNIST matching data.
+- `finetuner.toydata.generate_qa_match()`: the generator of Covid QA matching data.
 
-
-Generator API:
-
-```python
-from tests.data_generator import fashion_match_doc_generator as mdg
-
-# or
-
-from tests.data_generator import qa_match_doc_generator as mdg
 ```
-
-To get only first 10 documents:
-
-```python
-
-for d in mdg(num_total=10):
-    ...
-```
-
-To set number of positive/negative samples per document:
-
-```python
-for d in mdg(num_pos=2, num_neg=7):
-    ...
-```
-
-`qa_match_doc_generator` has a fixed number of positive matches `1`.
-
-To set the label value of positive & negative samples:
-
-```python
-for d in mdg(pos_value=1, neg_value=-1):
-    ...
-```
-
-To make image as 3-channel pseudo RGB image:
-
-```python
-from tests.data_generator import fashion_match_doc_generator as fmdg
-
-for d in fmdg(channels=3):
-    ...
-```
-
-To upsample image as 112x112 3-channel pseudo RGB image:
-
-```python
-from tests.data_generator import fashion_match_doc_generator as fmdg
-
-for d in fmdg(channels=3, upsampling=4):
-    ...
-```
-
-Use `DocumentArray` instead of Generator:
-
-```python
-from tests.data_generator import fashion_match_documentarray as mda
-
-from tests.data_generator import qa_match_documentarray as mda
-
-da = mda()  # slow, as it scans over all data
-```
-
-````

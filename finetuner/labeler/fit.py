@@ -7,6 +7,7 @@ from typing import Optional
 import jina.helper
 from jina import Flow, DocumentArray, DocumentArrayMemmap
 from jina.logging.predefined import default_logger
+from jina.logging.profile import TimeContext
 
 from .executor import FTExecutor, DataIterator
 from ..helper import AnyDNN, DocumentArrayLike
@@ -19,7 +20,8 @@ def fit(
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
     head_layer: str = 'CosineLayer',
-):
+) -> None:
+
     if callable(train_data):
         train_data = train_data()
 
