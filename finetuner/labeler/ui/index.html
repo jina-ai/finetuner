@@ -51,8 +51,11 @@
                             <div class="row my-1" v-if="labeler_config.content == 'tags'">
                                 <label class="col-sm-6 col-form-label">Tags Key</label>
                                 <div class="col-sm-6">
-                                    <input class="form-control" type="text" v-model.number="labeler_config.tags"
-                                        required>
+                                    <select class="form-select" v-model="labeler_config.tags">
+                                        <option v-for="option in tags" v-bind:value="option">
+                                            {{ option }}
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="row my-1">

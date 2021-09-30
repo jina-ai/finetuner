@@ -40,6 +40,7 @@ const app = new Vue({
             sample_size: {text: 'Match pool', value: 1000}
         },
         cur_batch: [],
+        tags: [],
         swiperOptions: {
             effect: 'coverflow',
             grabCursor: true,
@@ -164,6 +165,7 @@ const app = new Vue({
                 dataType: "json",
             }).success(function (data, textStatus, jqXHR) {
                 app.cur_batch.push(...data['data'].docs)
+                app.tags = Object.keys(data.data.docs[0].tags)
                 app.is_busy = false
                 app.progress_stats.this_session.value = app.cur_batch.length
             }).fail(function () {
