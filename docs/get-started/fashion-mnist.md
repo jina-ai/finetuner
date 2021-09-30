@@ -62,7 +62,7 @@ Now prepare Fashion-MNIST data for the Finetuner. Note that Finetuner accepts Ji
 from finetuner.toydata import generate_fashion_match
 ```
 
-`fashion_doc_generator` is a generator that yields every image as a `Document` object.
+`generate_fashion_match` is a generator that yields every image as a `Document` object.
 
 ```bash
 <jina.types.document.Document id=b9557788-1bab-11ec-a207-1e008a366d49 uri=data:image/png;base64,iVBORw0K... tags={'class': 9.0} blob={'dense': {'buffer': 'AAAAAAAAAAAAAA...==', 'shape': [28, 28], 'dtype': '<f4'}} at 5716974480>

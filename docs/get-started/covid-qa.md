@@ -70,7 +70,7 @@ Now prepare CovidQA data for the Finetuner. Note that Finetuner accepts Jina `Do
 from finetuner.toydata import generate_qa_match
 ```
 
-`generate_qa_doc` is a generator that yields every question as a `Document` object. 
+`generate_qa_match` is a generator that yields every question as a `Document` object. 
 It also codes and pads the question into a 100-dimensional array, which is stored in `blob`.
 
 ```bash
