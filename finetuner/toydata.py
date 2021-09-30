@@ -289,12 +289,10 @@ def _download_fashion_doc(
                 v['data'] = _load_labels(v['filename'])
             if k == 'index' or k == 'query':
                 v['data'] = _load_mnist(v['filename'], **kwargs)
-
     if is_testset:
         partition = 'query'
     else:
         partition = 'index'
-
     for raw_img, lbl in zip(
         targets[partition]['data'], targets[f'{partition}-labels']['data']
     ):
@@ -311,7 +309,6 @@ def _download_fashion_doc(
                 raw_img, width=28, height=28, resize_method='BILINEAR'
             )
             _d.uri = 'data:image/png;base64,' + base64.b64encode(png_bytes).decode()
-
         yield _d
 
 

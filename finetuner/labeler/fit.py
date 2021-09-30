@@ -1,13 +1,11 @@
 import os
 import tempfile
 import webbrowser
-from collections import Iterable
 from typing import Optional
 
 import jina.helper
-from jina import Flow, DocumentArray, DocumentArrayMemmap
+from jina import Flow
 from jina.logging.predefined import default_logger
-from jina.logging.profile import TimeContext
 
 from .executor import FTExecutor, DataIterator
 from ..helper import AnyDNN, DocumentArrayLike
@@ -21,24 +19,7 @@ def fit(
     runtime_backend: str = 'thread',
     head_layer: str = 'CosineLayer',
 ) -> None:
-
-    if callable(train_data):
-        train_data = train_data()
-
-    if isinstance(train_data, DocumentArray):
-        dam_path = tempfile.mkdtemp()
-        dam = DocumentArrayMemmap(dam_path)
-        dam.extend(train_data)
-    elif isinstance(train_data, DocumentArrayMemmap):
-        dam_path = train_data.path
-    elif isinstance(train_data, str):
-        dam_path = train_data
-    elif isinstance(train_data, Iterable):
-        dam_path = tempfile.mkdtemp()
-        dam = DocumentArrayMemmap(dam_path)
-        dam.extend(train_data)
-    else:
-        raise TypeError(f'{train_data} is not supported')
+    dam_path = tempfile.mkdtemp()
 
     class MyExecutor(FTExecutor):
         def get_embed_model(self):
@@ -66,6 +47,7 @@ def fit(
 
     f.expose_endpoint('/next')  #: for allowing client to fetch for the next batch
     f.expose_endpoint('/fit')  #: for signaling the backend to fit on the labeled data
+    f.expose_endpoint('/feed')  #: for signaling the backend to fit on the labeled data
 
     def extend_rest_function(app):
         """Allow FastAPI frontend to serve finetuner UI as a static webpage"""
@@ -85,4 +67,7 @@ def fit(
             pass  # intentional pass, browser support isn't cross-platform
         finally:
             default_logger.info(f'Finetuner is available at {url_html_path}')
+
+        # feed train data into the labeler flow
+        f.post('/feed', train_data, request_size=10, show_progress=True)
         f.block()
