@@ -59,7 +59,7 @@ embed_model = paddle.nn.Sequential(
 Now prepare Fashion-MNIST data for the Finetuner. Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we first convert them into this format.
 
 ```python
-from finetuner.helloworld.data import fashion_doc_generator
+from finetuner.toydata import generate_fashion_match
 ```
 
 `fashion_doc_generator` is a generator that yields every image as a `Document` object.
@@ -77,7 +77,7 @@ import finetuner
 
 finetuner.fit(
    embed_model,
-   train_data=fashion_doc_generator,
+   train_data=generate_fashion_match,
    interactive=True)
 ```
 

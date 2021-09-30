@@ -87,7 +87,7 @@ get-started/covid-qa
 
 
 ```{toctree}
-:caption: Design
+:caption: Design (INTERNAL ONLY)
 :hidden:
 
 design/index
