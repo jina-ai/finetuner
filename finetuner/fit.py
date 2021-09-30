@@ -1,6 +1,7 @@
 from typing import Optional, overload
 
 from .helper import AnyDNN, DocumentArrayLike
+from .tuner.fit import TunerReturnType
 
 
 @overload
@@ -12,7 +13,7 @@ def fit(
     runtime_backend: str = 'thread',
     interactive: bool = True,
     head_layer: str = 'CosineLayer',
-):
+) -> None:
     ...
 
 
@@ -21,20 +22,20 @@ def fit(
     embed_model: AnyDNN,
     train_data: DocumentArrayLike,
     eval_data: Optional[DocumentArrayLike] = None,
-    head_layer: str = 'CosineLayer',
     epochs: int = 10,
     batch_size: int = 256,
-):
+    head_layer: str = 'CosineLayer',
+) -> TunerReturnType:
     ...
 
 
-def fit(*args, **kwargs):
+def fit(*args, **kwargs) -> Optional[TunerReturnType]:
     if kwargs.get('interactive', False):
         kwargs.pop('interactive')
         from .labeler.fit import fit
 
-        fit(*args, **kwargs)
+        return fit(*args, **kwargs)
     else:
         from .tuner.fit import fit
 
-        fit(*args, **kwargs)
+        return fit(*args, **kwargs)

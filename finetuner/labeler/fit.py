@@ -19,7 +19,7 @@ def fit(
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
     head_layer: str = 'CosineLayer',
-):
+) -> None:
     if callable(train_data):
         train_data = train_data()
 
