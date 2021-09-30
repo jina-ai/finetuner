@@ -4,8 +4,8 @@ import pytest
 from paddle import nn
 
 from finetuner.tuner.paddle import PaddleTuner
-from finetuner.toydata import generate_fashion_match as fmdg
-from finetuner.toydata import generate_qa_match as qmdg
+from finetuner.toydata import generate_fashion_match
+from finetuner.toydata import generate_qa_match
 
 
 @pytest.mark.parametrize('head_layer', ['CosineLayer', 'TripletLayer'])
@@ -24,8 +24,12 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
     model_path = tmpdir / 'trained.pd'
     # fit and save the checkpoint
     pt.fit(
-        train_data=lambda: fmdg(num_total=params['num_train']),
-        eval_data=lambda: fmdg(num_total=params['num_eval'], is_testset=True),
+        train_data=lambda: generate_fashion_match(
+            num_pos=10, num_neg=10, num_total=params['num_train']
+        ),
+        eval_data=lambda: generate_fashion_match(
+            num_pos=10, num_neg=10, num_total=params['num_eval'], is_testset=True
+        ),
         epochs=params['epochs'],
         batch_size=params['batch_size'],
     )
@@ -68,14 +72,16 @@ def test_simple_lstm_model(tmpdir, params, head_layer):
 
     # fit and save the checkpoint
     pt.fit(
-        train_data=lambda: qmdg(
+        train_data=lambda: generate_qa_match(
             num_total=params['num_train'],
             max_seq_len=params['max_seq_len'],
+            num_neg=5,
             is_testset=False,
         ),
-        eval_data=lambda: qmdg(
+        eval_data=lambda: generate_qa_match(
             num_total=params['num_eval'],
             max_seq_len=params['max_seq_len'],
+            num_neg=5,
             is_testset=True,
         ),
         epochs=params['epochs'],

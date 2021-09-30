@@ -13,10 +13,7 @@ for changed_file in $CHANGED_FILES; do
     tests/* | \
     .github/* | \
     scripts/* | \
-    jina/helloworld/* | \
-    jina/proto/jina_pb2.py | \
-    jina/proto/jina_pb2_grpc.py | \
-    jina/resources/* | \
+    finetuner/resources/* | \
     docs/* | \
     setup.py | \
     fastentrypoints.py)

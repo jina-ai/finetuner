@@ -5,7 +5,7 @@ import tensorflow as tf
 import torch
 
 import finetuner as jft
-from finetuner.toydata import generate_fashion_match as mdg
+from finetuner.toydata import generate_fashion_match
 
 
 def test_fit_all(tmpdir):
@@ -42,8 +42,12 @@ def test_fit_all(tmpdir):
             result = jft.fit(
                 b(),
                 head_layer=h,
-                train_data=lambda: mdg(num_total=300),
-                eval_data=lambda: mdg(num_total=300, is_testset=True),
+                train_data=lambda: generate_fashion_match(
+                    num_neg=10, num_pos=10, num_total=300
+                ),
+                eval_data=lambda: generate_fashion_match(
+                    num_neg=10, num_pos=10, num_total=300, is_testset=True
+                ),
                 epochs=2,
             )
 

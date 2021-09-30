@@ -58,7 +58,7 @@ def _text_to_int_sequence(text, vocab, max_len=None):
 
 def generate_qa_match(
     num_total: int = 481,
-    num_neg: int = 5,
+    num_neg: int = 0,
     pos_value: int = 1,
     neg_value: int = -1,
     to_ndarray: bool = True,
@@ -77,7 +77,6 @@ def generate_qa_match(
     :return:
     """
     num_doc = 0
-
     all_docs = DocumentArray(_download_qa_data(is_testset=is_testset))
 
     if to_ndarray:
@@ -108,26 +107,27 @@ def generate_qa_match(
                 _text_to_int_sequence(m_n.text, vocab, max_seq_len), np.long
             )
 
-        d.matches.append(m_p)
-        d.matches.append(m_n)
-        cur_num_neg = 1
-        if num_neg > 1:
-            sampled_docs = all_docs.sample(num_neg)
-            for n_d in sampled_docs:
-                if n_d.id != d.id:
-                    new_nd = Document(
-                        text=n_d.tags['answer'],
-                        tags={__default_tag_key__: {'label': neg_value}},
-                    )
-                    if to_ndarray:
-                        new_nd.blob = np.array(
-                            _text_to_int_sequence(new_nd.text, vocab, max_seq_len),
-                            np.long,
+        if num_neg > 0:
+            d.matches.append(m_p)
+            d.matches.append(m_n)
+            cur_num_neg = 1
+            if num_neg > 1:
+                sampled_docs = all_docs.sample(num_neg)
+                for n_d in sampled_docs:
+                    if n_d.id != d.id:
+                        new_nd = Document(
+                            text=n_d.tags['answer'],
+                            tags={__default_tag_key__: {'label': neg_value}},
                         )
-                    d.matches.append(new_nd)
-                    cur_num_neg += 1
-                    if cur_num_neg >= num_neg:
-                        break
+                        if to_ndarray:
+                            new_nd.blob = np.array(
+                                _text_to_int_sequence(new_nd.text, vocab, max_seq_len),
+                                np.long,
+                            )
+                        d.matches.append(new_nd)
+                        cur_num_neg += 1
+                        if cur_num_neg >= num_neg:
+                            break
         num_doc += 1
         yield d
 
@@ -137,8 +137,8 @@ def generate_qa_match(
 
 def generate_fashion_match(
     num_total: int = 60000,
-    num_pos: int = 10,
-    num_neg: int = 10,
+    num_pos: int = 0,
+    num_neg: int = 0,
     pos_value: int = 1,
     neg_value: int = -1,
     upsampling: int = 1,
@@ -161,42 +161,48 @@ def generate_fashion_match(
     :param is_testset: If to generate test data
     :return:
     """
-    all_docs = DocumentArray(
-        _download_fashion_doc(
-            upsampling=upsampling,
-            channels=channels,
-            channel_axis=channel_axis,
-            is_testset=is_testset,
-        )
+    _orginal_fashion_doc = _download_fashion_doc(
+        upsampling=upsampling,
+        channels=channels,
+        channel_axis=channel_axis,
+        is_testset=is_testset,
     )
 
-    copy_all_docs = copy.deepcopy(all_docs)
-    rv = copy_all_docs.split('class')
+    if num_pos > 0 or num_neg > 0:
+        # need to build synthetic matches
+        all_docs = DocumentArray(_orginal_fashion_doc)
 
-    n_d = 0
-    for od in all_docs:
-        pos_label = od.tags['class']
-        pos_samples = rv[pos_label].sample(num_pos)
-        for d in pos_samples:
-            d.tags[__default_tag_key__] = {'label': pos_value}
+        copy_all_docs = copy.deepcopy(all_docs)
+        rv = copy_all_docs.split('class')
 
-        neg_samples = DocumentArray()
-        while len(neg_samples) < num_neg:
-            neg_samples.extend(
-                d for d in copy_all_docs.sample(num_neg) if d.tags['class'] != pos_label
-            )
-        neg_samples = neg_samples[:num_neg]
+        n_d = 0
+        for od in all_docs:
+            pos_label = od.tags['class']
+            pos_samples = rv[pos_label].sample(num_pos)
+            for d in pos_samples:
+                d.tags[__default_tag_key__] = {'label': pos_value}
 
-        for d in neg_samples:
-            d.tags[__default_tag_key__] = {'label': neg_value}
+            neg_samples = DocumentArray()
+            while len(neg_samples) < num_neg:
+                neg_samples.extend(
+                    d
+                    for d in copy_all_docs.sample(num_neg)
+                    if d.tags['class'] != pos_label
+                )
+            neg_samples = neg_samples[:num_neg]
 
-        od.matches.extend(pos_samples)
-        od.matches.extend(neg_samples)
-        n_d += 1
-        yield od
+            for d in neg_samples:
+                d.tags[__default_tag_key__] = {'label': neg_value}
 
-        if n_d >= num_total:
-            break
+            od.matches.extend(pos_samples)
+            od.matches.extend(neg_samples)
+            n_d += 1
+            yield od
+
+            if n_d >= num_total:
+                break
+    else:
+        yield from _orginal_fashion_doc
 
 
 def _download_qa_data(
@@ -293,19 +299,20 @@ def _download_fashion_doc(
         targets[partition]['data'], targets[f'{partition}-labels']['data']
     ):
 
-        if kwargs['channels'] in {0, 3}:
-            png_bytes = png_to_buffer(
-                raw_img, width=28, height=28, resize_method='BILINEAR'
-            )
-        else:
-            png_bytes = b''
-        yield Document(
+        _d = Document(
             content=(raw_img / 255.0).astype(np.float32),
             tags={
                 'class': int(lbl),
             },
-            uri='data:image/png;base64,' + base64.b64encode(png_bytes).decode(),
         )
+
+        if kwargs['channels'] == 0:
+            png_bytes = png_to_buffer(
+                raw_img, width=28, height=28, resize_method='BILINEAR'
+            )
+            _d.uri = 'data:image/png;base64,' + base64.b64encode(png_bytes).decode()
+
+        yield _d
 
 
 def _load_mnist(path, upsampling: int = 1, channels: int = 0, channel_axis=-1):

@@ -104,7 +104,9 @@ def test_generate_qa_doc_match(pos_value, neg_value, num_neg, to_ndarray):
 
 @pytest.mark.parametrize('max_length', [1, 10, 100])
 def test_qa_sequence_same_length(max_length):
-    for s in generate_qa_match(max_seq_len=max_length):
+    num_neg = 5
+    for s in generate_qa_match(num_neg=num_neg, max_seq_len=max_length):
         assert s.blob.shape[0] == max_length
+        assert len(s.matches) == num_neg + 1
         for m in s.matches:
             assert m.blob.shape[0] == max_length

@@ -7,7 +7,7 @@ import torch.nn as nn
 
 from finetuner.tuner.pytorch import PytorchTuner
 from finetuner.toydata import generate_fashion_match as fmdg
-from finetuner.toydata import generate_qa_match as qmdg
+from finetuner.toydata import generate_qa_match
 
 
 @pytest.mark.parametrize('head_layer', ['CosineLayer', 'TripletLayer'])
@@ -72,14 +72,16 @@ def test_simple_lstm_model(tmpdir, params, head_layer):
 
     # fit and save the checkpoint
     pt.fit(
-        train_data=lambda: qmdg(
+        train_data=lambda: generate_qa_match(
             num_total=params['num_train'],
             max_seq_len=params['max_seq_len'],
+            num_neg=5,
             is_testset=False,
         ),
-        eval_data=lambda: qmdg(
+        eval_data=lambda: generate_qa_match(
             num_total=params['num_eval'],
             max_seq_len=params['max_seq_len'],
+            num_neg=5,
             is_testset=True,
         ),
         epochs=params['epochs'],

@@ -5,7 +5,7 @@ import tensorflow as tf
 import torch
 
 import finetuner as jft
-from finetuner.toydata import generate_qa_match as mdg
+from finetuner.toydata import generate_qa_match
 
 
 class LastCellPT(torch.nn.Module):
@@ -48,8 +48,12 @@ def test_fit_all(tmpdir):
             result = jft.fit(
                 b(),
                 head_layer=h,
-                train_data=lambda: mdg(num_total=300, max_seq_len=10),
-                eval_data=lambda: mdg(num_total=300, max_seq_len=10),
+                train_data=lambda: generate_qa_match(
+                    num_total=300, num_neg=5, max_seq_len=10
+                ),
+                eval_data=lambda: generate_qa_match(
+                    num_total=300, num_neg=5, max_seq_len=10
+                ),
                 epochs=2,
             )
 
