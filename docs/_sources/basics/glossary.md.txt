@@ -6,7 +6,7 @@ General model
 
 Embedding model
     A DNN with any shape input (image/text/sequence) and an output `ndarray` in the shape `[B x D]`, where `B` is the batch size same as the input, and `D` is the dimension of the embedding.
-    
+
 Unlabeled data
     A `DocumentArray`-like object, filling with `Document` with `.content`.
 

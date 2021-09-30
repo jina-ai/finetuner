@@ -1,5 +1,5 @@
-finetuner.helloworld package
-============================
+finetuner.tailor.pytorch package
+================================
 
 Submodules
 ----------
@@ -7,12 +7,12 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   finetuner.helloworld.data
+   finetuner.tailor.pytorch.parser
 
 Module contents
 ---------------
 
-.. automodule:: finetuner.helloworld
+.. automodule:: finetuner.tailor.pytorch
    :members:
    :undoc-members:
    :show-inheritance:
