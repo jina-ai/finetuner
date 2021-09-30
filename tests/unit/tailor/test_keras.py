@@ -1,7 +1,7 @@
 import pytest
 import tensorflow as tf
 
-from finetuner.tailor.keras import trim, freeze
+from finetuner.tailor.keras.parser import _trim, _freeze
 
 
 @pytest.fixture
@@ -96,7 +96,7 @@ def model(request):
 )
 def test_trim_fail_given_unexpected_layer_idx(model, layer_idx):
     with pytest.raises(IndexError):
-        trim(model, layer_idx=layer_idx)
+        _trim(model, layer_idx=layer_idx)
 
 
 @pytest.mark.parametrize(
@@ -111,7 +111,7 @@ def test_trim_fail_given_unexpected_layer_idx(model, layer_idx):
     indirect=['model'],
 )
 def test_trim(model, layer_idx, expected_output_shape):
-    model = trim(model=model, layer_idx=layer_idx)
+    model = _trim(model=model, layer_idx=layer_idx)
     assert model.output_shape == expected_output_shape
 
 
@@ -129,6 +129,6 @@ def test_trim(model, layer_idx, expected_output_shape):
 def test_freeze(model):
     for layer in model.layers:
         assert layer.trainable
-    model = freeze(model)
+    model = _freeze(model)
     for layer in model.layers:
         assert not layer.trainable
