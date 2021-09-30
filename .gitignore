@@ -114,14 +114,14 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .idea/
-toy*.py
+/toy*.py
 .DS_Store
 post/
-toy*.ipynb
+/toy*.ipynb
 data/
 *.c
 .nes_cache
-toy*.yml
+/toy*.yml
 *.tmp
 
 shell/jina-wizard.sh
