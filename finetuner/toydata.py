@@ -168,6 +168,7 @@ def generate_fashion_match(
         is_testset=is_testset,
     )
 
+    n_d = 0
     if num_pos > 0 or num_neg > 0:
         # need to build synthetic matches
         all_docs = DocumentArray(_orginal_fashion_doc)
@@ -175,7 +176,6 @@ def generate_fashion_match(
         copy_all_docs = copy.deepcopy(all_docs)
         rv = copy_all_docs.split('class')
 
-        n_d = 0
         for od in all_docs:
             pos_label = od.tags['class']
             pos_samples = rv[pos_label].sample(num_pos)
@@ -198,11 +198,14 @@ def generate_fashion_match(
             od.matches.extend(neg_samples)
             n_d += 1
             yield od
-
             if n_d >= num_total:
                 break
     else:
-        yield from _orginal_fashion_doc
+        for d in _orginal_fashion_doc:
+            n_d += 1
+            yield d
+            if n_d >= num_total:
+                break
 
 
 def _download_qa_data(
@@ -289,12 +292,10 @@ def _download_fashion_doc(
                 v['data'] = _load_labels(v['filename'])
             if k == 'index' or k == 'query':
                 v['data'] = _load_mnist(v['filename'], **kwargs)
-
     if is_testset:
         partition = 'query'
     else:
         partition = 'index'
-
     for raw_img, lbl in zip(
         targets[partition]['data'], targets[f'{partition}-labels']['data']
     ):
@@ -311,7 +312,6 @@ def _download_fashion_doc(
                 raw_img, width=28, height=28, resize_method='BILINEAR'
             )
             _d.uri = 'data:image/png;base64,' + base64.b64encode(png_bytes).decode()
-
         yield _d
 
 

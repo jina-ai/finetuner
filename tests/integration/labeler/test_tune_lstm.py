@@ -57,7 +57,7 @@ def _run(framework_name, head_layer, port_expose):
 
     fit(
         embed_models[framework_name](),
-        generate_qa_match(num_neg=0),
+        generate_qa_match(num_total=10, num_neg=0),
         head_layer=head_layer,
         interactive=True,
         port_expose=port_expose,
@@ -80,8 +80,28 @@ def test_all_frameworks(framework, head_layer):
         ),
     )
     p.start()
-    time.sleep(10)
     try:
+        while True:
+            try:
+                req = requests.post(
+                    f'http://localhost:{port}/next',
+                    json={
+                        'data': [],
+                        'parameters': {
+                            'start': 0,
+                            'end': 1,
+                            'topk': 5,
+                            'sample_size': 10,
+                        },
+                    },
+                )
+                assert req.status_code == 200
+                assert req.json()['data']['docs']
+                break
+            except:
+                print('wait for ready...')
+                time.sleep(2)
+
         # mimic next page
         req = requests.post(
             f'http://localhost:{port}/next',

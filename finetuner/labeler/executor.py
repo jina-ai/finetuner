@@ -31,6 +31,9 @@ class FTExecutor(Executor):
 
     @requests(on='/next')
     def embed(self, docs: DocumentArray, parameters: Dict, **kwargs):
+        if not docs:
+            return
+        self._all_data.reload()
         da = self._all_data.sample(
             min(len(self._all_data), int(parameters.get('sample_size', 1000)))
         )
@@ -94,10 +97,16 @@ class DataIterator(Executor):
         if clear_labels_on_start:
             self._labeled_dam.clear()
 
+    @requests(on='/feed')
+    def store_data(self, docs: DocumentArray, **kwargs):
+        self._all_data.extend(docs)
+
     @requests(on='/next')
     def take_batch(self, parameters: Dict, **kwargs):
         st = int(parameters.get('start', 0))
         ed = int(parameters.get('end', 1))
+
+        self._all_data.reload()
         return self._all_data[st:ed]
 
     @requests(on='/fit')
