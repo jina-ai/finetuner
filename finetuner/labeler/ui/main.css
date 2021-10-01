@@ -231,6 +231,11 @@ kbd {
   cursor: pointer;
 }
 
+.btn kbd {
+  position: relative;
+  
+}
+
 .positive-match {
   background: #E6F5F5;
   color: #009191;
@@ -254,11 +259,12 @@ kbd {
 }
 
 .card-header {
-  font-weight: 500;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 12px;
   line-height: 21px;
   letter-spacing: 0.1px;
-  color: #000000;
+  color: #fff;
+  background: #009191;
 }
 
 .image-matches-container {
@@ -304,6 +310,8 @@ kbd {
 .image-card .card-header {
   display: flex;
   justify-content: center;
+  align-items: center;
+  padding: .5rem;
 }
 
 .image-card .card-body .row {
@@ -317,7 +325,8 @@ kbd {
 }
 
 .image-card .card-header .img-thumbnail {
-  width: 50%;
+  margin-left: .25rem;
+  min-width: 30%;
   padding: 0;
 }
 

@@ -177,6 +177,7 @@
                 <swiper-slide v-if="labeler_config.style=='image'" v-for="(doc, doc_idx) in cur_batch" :key="doc_idx">
                     <div class="card image-card">
                         <div class="card-header">
+                            <h2>Select all images similar to the image on left</h2>
                             <img v-bind:src="get_content(doc)" class="img-thumbnail img-fluid my-2">
                         </div>
                         <div class="card-body">
