@@ -82,6 +82,14 @@ const app = new Vue({
             return this.progress_stats.negative.value / (this.progress_stats.positive.value + this.progress_stats.negative.value) * 100
         }
     },
+    watch: {
+        'labeler_config.content': (newContent) => {
+          if (newContent === 'text' || newContent === 'tags')  {
+              app.labeler_config.style = 'text'
+              app.labeler_config.tags = app.tags.length > 0 ? app.tags[0] : ''
+          } else if (newContent === 'uri') app.labeler_config.style = 'image'
+        } 
+    },
     methods: {
         toggle_relevance: function (match) {
             Vue.set(match.tags, 'finetuner_label', !match.tags.finetuner_label)

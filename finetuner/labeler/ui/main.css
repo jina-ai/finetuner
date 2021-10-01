@@ -202,6 +202,7 @@ accordion-button:focus {
 .match-item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-weight: 500;
   font-size: 14px;
   line-height: 21px;
@@ -215,13 +216,13 @@ accordion-button:focus {
   align-items: center;
 }
 
-kbd {
+.kbd {
   position: absolute;
   top: 0;
   right: 0;
   margin-left: .8rem;
   line-height: 0.8rem;
-  padding: .4rem .3rem 0 .3rem;
+  padding: .2rem .4rem;
   color: #000000;
   background-color: #fff;
   border-radius: 1px;
@@ -231,9 +232,12 @@ kbd {
   cursor: pointer;
 }
 
-.btn kbd {
+.btn .kbd {
   position: relative;
-  
+}
+
+.text-card .kbd {
+  position: relative;
 }
 
 .positive-match {

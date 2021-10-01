@@ -146,16 +146,17 @@
             <swiper ref="swiperComponent" :options="swiperOptions" @click-slide="onSwiperClickSlide"
                 @set-translate="onSetTranslate">
                 <swiper-slide v-if="labeler_config.style=='text'" v-for="(doc, doc_idx) in cur_batch" :key="doc_idx">
-                    <div class="card">
+                    <div class="card text-card">
                         <div class="card-header">
-                            {{get_content(doc)}}
+                            <p class="fs-6 mb-2">Select texts similar to:</p>
+                            <h3>{{get_content(doc)}}</h3>
                         </div>
                         <div class="card-body">
                             <ul class="list-group">
                                 <li class="list-group-item" v-for="(match, matchIndex) in doc.matches">
                                     <div class="match-item" :class="{ 'positive-match': match.tags.finetuner_label }"
                                         style="width: 100%" v-on:click="toggle_relevance(match)">
-                                        {{get_content(match)}} <kbd>{{matchIndex}}</kbd>
+                                        {{get_content(match)}} <div class="kbd">{{matchIndex}}</div>
                                     </div>
 
                                 </li>
@@ -165,10 +166,10 @@
                             <div class="btn-toolbar justify-content-between g-2">
                                 <button type="button" class="btn btn-outline-success"
                                     v-on:click="select_all(doc.matches)">
-                                    Invert <kbd>i</kbd>
+                                    Invert <div class="kbd">i</div>
                                 </button>
                                 <button type="button" class="btn btn-outline-primary" v-on:click="submit_doc(doc_idx)">
-                                    Done <kdb>space</kdb>
+                                    Done <div class="kbd">space</div>
                                 </button>
                             </div>
                         </div>
@@ -187,7 +188,7 @@
                                         <img v-bind:src="get_content(match)" class="img-thumbnail img-fluid"
                                             v-on:click="toggle_relevance(match)">
                                     </div>
-                                    <kbd>{{matchIndex}}</kbd>
+                                    <div class="kbd">{{matchIndex}}</div>
                                 </div>
                             </div>
                         </div>
@@ -195,10 +196,10 @@
                             <div class="btn-toolbar justify-content-between g-2">
                                 <button type="button" class="btn btn-outline-success"
                                     v-on:click="select_all(doc.matches)">
-                                    Invert <kbd>i</kbd>
+                                    Invert <div class="kbd">i</div>
                                 </button>
                                 <button type="button" class="btn btn-outline-primary" v-on:click="submit_doc(doc_idx)">
-                                    Done <kbd>space</kbd>
+                                    Done <div class="kbd">space</div>
                                 </button>
                             </div>
                         </div>
