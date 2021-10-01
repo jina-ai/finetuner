@@ -240,6 +240,10 @@ accordion-button:focus {
   position: relative;
 }
 
+.text-card .positive-match::before {
+  display: none;
+}
+
 .positive-match {
   background: #E6F5F5;
   color: #009191;
