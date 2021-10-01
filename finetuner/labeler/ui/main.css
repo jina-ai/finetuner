@@ -221,11 +221,13 @@ kbd {
   right: 0;
   margin-left: .8rem;
   line-height: 0.8rem;
-  padding-top: 0.4rem;
+  padding: .4rem .3rem 0 .3rem;
   color: #000000;
   background-color: #fff;
   border-radius: 1px;
-  box-shadow: 0px 3px 2px 0px rgb(73 80 87 / 80%), inset -2px -2px 3px 0px #131313;
+  box-shadow: 0 0 0 4px #d9d9d9,
+              2px 2.5px 4px #adb5bd,
+              0 -1px 2.5px #adb5bd;
   cursor: pointer;
 }
 
@@ -247,10 +249,6 @@ kbd {
   margin-right: auto;
 }
 
-.compact-img {
-  padding: 3px;
-}
-
 [v-cloak] {
   display: none;
 }
@@ -263,12 +261,44 @@ kbd {
   color: #000000;
 }
 
+.image-matches-container {
+  display: grid;
+  gap: .25rem;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(100px, auto);
+}
+
+.card {
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
 .card-body {
   padding: 0;
 }
 
-.image-card .positive-match {
-  background: #009191;
+.image-card .card-body {
+  padding: .25rem;
+}
+
+.image-card .card-body .positive-match .img-thumbnail {
+  background: transparent;
+  padding: .75rem;
+  border: none;
+}
+
+.image-matches-container .positive-match {
+  background: transparent;
+}
+
+.positive-match:before {
+  background: url(./img/check.svg);
+  content: '';
+  position: absolute;
+  height: 1.5rem;
+  width: 1.5rem;
+  padding: .5rem;
 }
 
 .image-card .card-header {
