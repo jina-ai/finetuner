@@ -59,15 +59,30 @@ def fit(
 
     jina.helper.extend_rest_interface = extend_rest_function
 
+    global is_frontend_open
+    is_frontend_open = False
+
     with f:
-        url_html_path = f'http://localhost:{f.port_expose}/finetuner'
-        try:
-            webbrowser.open(url_html_path, new=2)
-        except:
-            pass  # intentional pass, browser support isn't cross-platform
-        finally:
-            default_logger.info(f'Finetuner is available at {url_html_path}')
+
+        def open_frontend_in_browser(req):
+            global is_frontend_open
+            if is_frontend_open:
+                return
+            url_html_path = f'http://localhost:{f.port_expose}/finetuner'
+            try:
+                webbrowser.open(url_html_path, new=2)
+            except:
+                pass  # intentional pass, browser support isn't cross-platform
+            finally:
+                default_logger.info(f'Finetuner is available at {url_html_path}')
+                is_frontend_open = True
 
         # feed train data into the labeler flow
-        f.post('/feed', train_data, request_size=10, show_progress=True)
+        f.post(
+            '/feed',
+            train_data,
+            request_size=10,
+            show_progress=True,
+            on_done=open_frontend_in_browser,
+        )
         f.block()

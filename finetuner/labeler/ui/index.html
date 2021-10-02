@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Finetuner · Labeler</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/swiper@5.3.6/css/swiper.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,214 +15,220 @@
 </head>
 
 <body>
-    <main id="app" v-cloak>
-        <div class="alert alert-danger position-absolute top-0 start-50 translate-middle-x" role="alert"
-            v-if="is_conn_broken">
-            Can not connect to the server on {{host_address}} Please check your connection.
-        </div>
-        <div class="d-flex flex-column flex-shrink-0 p-3 sidebar">
-            <a href="/" class="d-flex align-items-center mb-3 mx-md-auto text-decoration-none">
+<main id="app" v-cloak>
+    <div class="alert alert-danger position-absolute top-0 start-50 translate-middle-x" role="alert"
+         v-if="is_conn_broken">
+        Can not connect to the server on {{host_address}} Please check your connection.
+    </div>
+    <div class="d-flex flex-column flex-shrink-0 p-3 sidebar">
+        <a href="/" class="d-flex align-items-center mb-3 mx-md-auto text-decoration-none">
                 <span class="app-title">
-                    <img src="img/logo-light.svg" width="40%" alt="Finetuner logo: Finetuner allows one to finetune any deep Neural Network for better embedding on search tasks.">
+                    <img src="img/logo-light.svg" width="40%"
+                         alt="Finetuner logo: Finetuner allows one to finetune any deep Neural Network for better embedding on search tasks.">
                 </span>
-            </a>
-            <div class="accordion" id="accordionPanelsStayOpenExample">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                        <button class="accordion-button options-title" type="button" data-bs-toggle="collapse"
+        </a>
+        <div class="accordion" id="accordionPanelsStayOpenExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                    <button class="accordion-button options-title" type="button" data-bs-toggle="collapse"
                             data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
                             aria-controls="panelsStayOpen-collapseOne">
-                            View
-                        </button>
-                    </h2>
-                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
-                        aria-labelledby="panelsStayOpen-headingOne">
-                        <div class="accordion-body">
-                            <div class="row my-1">
-                                <label class="col-sm-6 col-form-label">Content</label>
-                                <div class="col-sm-6">
-                                    <select class="form-select" v-model="labeler_config.content">
-                                        <option v-for="option in view_template.content" v-bind:value="option.value">
-                                            {{ option.text }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row my-1" v-if="labeler_config.content == 'tags'">
-                                <label class="col-sm-6 col-form-label">Tags Key</label>
-                                <div class="col-sm-6">
-                                    <select class="form-select" v-model="labeler_config.tags">
-                                        <option v-for="option in tags" v-bind:value="option">
-                                            {{ option }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row my-1">
-                                <label class="col-sm-6 col-form-label">Layout</label>
-                                <div class="col-sm-6">
-                                    <select class="form-select" v-model="labeler_config.style">
-                                        <option v-for="option in view_template.style" v-bind:value="option.value">
-                                            {{ option.text }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row my-1">
-                                <label class="col-sm-6 col-form-label">Examples/View</label>
-                                <div class="col-sm-6">
-                                    <input class="form-control" type="number" min="1" max="9"
-                                        v-model.number="labeler_config.example_per_view">
-                                </div>
-                            </div>
-                            <div class="row my-1">
-                                <label class="col-sm-6 col-form-label">TopK/Example</label>
-                                <div class="col-sm-6">
-                                    <input class="form-control" type="number" min="1" max="9"
-                                        v-model.number="labeler_config.topk_per_example">
-                                </div>
+                        View
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
+                     aria-labelledby="panelsStayOpen-headingOne">
+                    <div class="accordion-body">
+                        <div class="row my-1">
+                            <label class="col-sm-6 col-form-label">Content</label>
+                            <div class="col-sm-6">
+                                <select class="form-select" v-model="labeler_config.content">
+                                    <option v-for="option in view_template.content" v-bind:value="option.value">
+                                        {{ option.text }}
+                                    </option>
+                                </select>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-                        <button class="accordion-button options-title" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
-                            aria-controls="panelsStayOpen-collapseTwo">
-                            Progress
-                            <div class="spinner-border spinner-border-sm align-middle" role="status"
-                                v-show="is_busy">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                        </button>
-                    </h2>
-                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show"
-                        aria-labelledby="panelsStayOpen-headingTwo">
-                        <div class="accordion-body">
-                            <div class="row my-1" v-for="option in progress_stats">
-                                <label class="col-sm-6 col-form-label">{{ option.text }}</label>
-                                <div class="col-sm-6 text-end">
-                                    {{ option.value }}
-                                </div>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar progress-positive" role="progressbar"
-                                    :style="{width: positive_rate+'%' }"></div>
-                                <div class="progress-bar progress-negative" role="progressbar"
-                                    :style="{width: negative_rate+'%' }"></div>
+                        <div class="row my-1" v-if="labeler_config.content == 'tags'">
+                            <label class="col-sm-6 col-form-label">Tags Key</label>
+                            <div class="col-sm-6">
+                                <select class="form-select" v-model="labeler_config.tags">
+                                    <option v-for="option in tags" v-bind:value="option">
+                                        {{ option }}
+                                    </option>
+                                </select>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="panelsStayOpen-headingThree">
-                        <button class="accordion-button options-title collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
-                            aria-controls="panelsStayOpen-collapseThree">
-                            Advanced
-                        </button>
-                    </h2>
-                    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
-                        aria-labelledby="panelsStayOpen-headingThree">
-                        <div class="accordion-body">
-                            <div class="row my-1" v-for="option in advanced_config">
-                                <label class="col-sm-6 col-form-label">{{ option.text }}</label>
-                                <div class="col-sm-6 text-end">
-                                    <input class="form-control" type="number" v-model.number="option.value">
-                                </div>
+                        <div class="row my-1">
+                            <label class="col-sm-6 col-form-label">Layout</label>
+                            <div class="col-sm-6">
+                                <select class="form-select" v-model="labeler_config.style">
+                                    <option v-for="option in view_template.style" v-bind:value="option.value">
+                                        {{ option.text }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <label class="col-sm-6 col-form-label">Examples/View</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="number" min="1" max="9"
+                                       v-model.number="labeler_config.example_per_view">
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <label class="col-sm-6 col-form-label">TopK/Example</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="number" min="1" max="9"
+                                       v-model.number="labeler_config.topk_per_example">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <footer>
-                <a href="https://jina.ai" target="_blank">© 2020-2021 Jina AI</a>
-                <a href="https://github.com/jina-ai/finetuner" target="_blank">(<strong>Finetuner</strong> v0.1)</a>
-            </footer>
-        </div>
-        <div class="b-example-divider"></div>
-        <div class="flex-grow-1 p-5 overflow-hidden">
-            <swiper ref="swiperComponent" :options="swiperOptions" @click-slide="onSwiperClickSlide"
-                @set-translate="onSetTranslate">
-                <swiper-slide v-if="labeler_config.style=='text'" v-for="(doc, doc_idx) in cur_batch" :key="doc_idx">
-                    <div class="card text-card">
-                        <div class="card-header">
-                            <p class="fs-6 mb-2">Select texts similar to:</p>
-                            <h3>{{get_content(doc)}}</h3>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                    <button class="accordion-button options-title" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
+                            aria-controls="panelsStayOpen-collapseTwo">
+                        Progress
+                        <div class="spinner-border spinner-border-sm align-middle" role="status"
+                             v-show="is_busy">
+                            <span class="visually-hidden">Loading...</span>
                         </div>
-                        <div class="card-body">
-                            <ul class="list-group">
-                                <li class="list-group-item" v-for="(match, matchIndex) in doc.matches">
-                                    <div class="match-item" :class="{ 'positive-match': match.tags.finetuner_label }"
-                                        style="width: 100%" v-on:click="toggle_relevance(match)">
-                                        {{get_content(match)}} <div class="kbd">{{matchIndex}}</div>
-                                    </div>
-
-                                </li>
-                            </ul>
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show"
+                     aria-labelledby="panelsStayOpen-headingTwo">
+                    <div class="accordion-body">
+                        <div class="row my-1" v-for="option in progress_stats">
+                            <label class="col-sm-6 col-form-label">{{ option.text }}</label>
+                            <div class="col-sm-6 text-end">
+                                {{ option.value }}
+                            </div>
                         </div>
-                        <div class="card-footer">
-                            <div class="btn-toolbar justify-content-between g-2">
-                                <button type="button" class="btn btn-outline-success"
-                                    v-on:click="select_all(doc.matches)">
-                                    Invert <div class="kbd">i</div>
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" v-on:click="submit_doc(doc_idx)">
-                                    Done <div class="kbd">space</div>
-                                </button>
+                        <div class="progress">
+                            <div class="progress-bar progress-positive" role="progressbar"
+                                 :style="{width: positive_rate+'%' }"></div>
+                            <div class="progress-bar progress-negative" role="progressbar"
+                                 :style="{width: negative_rate+'%' }"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                    <button class="accordion-button options-title collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                            aria-controls="panelsStayOpen-collapseThree">
+                        Advanced
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
+                     aria-labelledby="panelsStayOpen-headingThree">
+                    <div class="accordion-body">
+                        <div class="row my-1" v-for="option in advanced_config">
+                            <label class="col-sm-6 col-form-label">{{ option.text }}</label>
+                            <div class="col-sm-6 text-end">
+                                <input class="form-control" type="number" v-model.number="option.value">
                             </div>
                         </div>
                     </div>
-                </swiper-slide>
-                <swiper-slide v-if="labeler_config.style=='image'" v-for="(doc, doc_idx) in cur_batch" :key="doc_idx">
-                    <div class="card image-card">
-                        <div class="card-header">
-                            <h2>Select all images similar to the image on left</h2>
-                            <img v-bind:src="get_content(doc)" class="img-thumbnail img-fluid my-2">
-                        </div>
-                        <div class="card-body">
-                            <div class="image-matches-container">
-                                <div class="col compact-img" v-for="(match, matchIndex) in doc.matches">
-                                    <div class="w-100" v-bind:class="{ 'positive-match': match.tags.finetuner_label }">
-                                        <img v-bind:src="get_content(match)" class="img-thumbnail img-fluid"
-                                            v-on:click="toggle_relevance(match)">
-                                    </div>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <a href="https://jina.ai" target="_blank">© 2020-2021 Jina AI</a>
+            <a href="https://github.com/jina-ai/finetuner" target="_blank">(<strong>Finetuner</strong> v0.1)</a>
+        </footer>
+    </div>
+    <div class="b-example-divider"></div>
+    <div class="flex-grow-1 p-5 overflow-hidden">
+        <swiper ref="swiperComponent" :options="swiperOptions" @click-slide="onSwiperClickSlide"
+                @set-translate="onSetTranslate">
+            <swiper-slide v-if="labeler_config.style=='text'" v-for="(doc, doc_idx) in cur_batch" :key="doc_idx">
+                <div class="card text-card">
+                    <div class="card-header">
+                        <p class="fs-6 fw-light mb-2">Select all texts similar to:</p>
+                        <h3>{{get_content(doc)}}</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item" v-for="(match, matchIndex) in doc.matches">
+                                <div class="match-item" :class="{ 'positive-match': match.tags.finetuner_label }"
+                                     style="width: 100%" v-on:click="toggle_relevance(match)">
+                                    {{get_content(match)}}
                                     <div class="kbd">{{matchIndex}}</div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <div class="btn-toolbar justify-content-between g-2">
-                                <button type="button" class="btn btn-outline-success"
+
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <div class="btn-toolbar justify-content-between g-2">
+                            <button type="button" class="btn btn-outline-success"
                                     v-on:click="select_all(doc.matches)">
-                                    Invert <div class="kbd">i</div>
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" v-on:click="submit_doc(doc_idx)">
-                                    Done <div class="kbd">space</div>
-                                </button>
+                                Invert
+                                <div class="kbd">i</div>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" v-on:click="submit_doc(doc_idx)">
+                                Done
+                                <div class="kbd">space</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </swiper-slide>
+            <swiper-slide v-if="labeler_config.style=='image'" v-for="(doc, doc_idx) in cur_batch" :key="doc_idx">
+                <div class="card image-card">
+                    <div class="card-header">
+                        <p class="fs-6 fw-light mb-2">Select all images similar to the image on left</p>
+                        <img v-bind:src="get_content(doc)" class="img-thumbnail img-fluid my-2">
+                    </div>
+                    <div class="card-body">
+                        <div class="image-matches-container">
+                            <div class="col compact-img" v-for="(match, matchIndex) in doc.matches">
+                                <div class="w-100" v-bind:class="{ 'positive-match': match.tags.finetuner_label }">
+                                    <img v-bind:src="get_content(match)" class="img-thumbnail img-fluid"
+                                         v-on:click="toggle_relevance(match)">
+                                </div>
+                                <div class="kbd">{{matchIndex}}</div>
                             </div>
                         </div>
                     </div>
-                </swiper-slide>
-                <div class="swiper-pagination" slot="pagination"></div>
-                <div class="swiper-button-prev" slot="button-prev"></div>
-                <div class="swiper-button-next" slot="button-next"></div>
-            </swiper>
-        </div>
-    </main>
+                    <div class="card-footer">
+                        <div class="btn-toolbar justify-content-between g-2">
+                            <button type="button" class="btn btn-outline-success"
+                                    v-on:click="select_all(doc.matches)">
+                                Invert
+                                <div class="kbd">i</div>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" v-on:click="submit_doc(doc_idx)">
+                                Done
+                                <div class="kbd">space</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </swiper-slide>
+            <div class="swiper-pagination" slot="pagination"></div>
+            <div class="swiper-button-prev" slot="button-prev"></div>
+            <div class="swiper-button-next" slot="button-next"></div>
+        </swiper>
+    </div>
+</main>
 
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
+<script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
         integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous"
         async></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@5.3.6/js/swiper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-awesome-swiper"></script>
-    <script src="main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@5.3.6/js/swiper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-awesome-swiper"></script>
+<script src="main.js"></script>
 </body>
 
 </html>
