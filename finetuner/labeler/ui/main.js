@@ -40,6 +40,7 @@ const app = new Vue({
             sample_size: {text: 'Match pool', value: 1000}
         },
         cur_batch: [],
+        tags: [],
         swiperOptions: {
             effect: 'coverflow',
             grabCursor: true,
@@ -80,6 +81,14 @@ const app = new Vue({
         negative_rate: function () {
             return this.progress_stats.negative.value / (this.progress_stats.positive.value + this.progress_stats.negative.value) * 100
         }
+    },
+    watch: {
+        'labeler_config.content': (newContent) => {
+          if (newContent === 'text' || newContent === 'tags')  {
+              app.labeler_config.style = 'text'
+              app.labeler_config.tags = app.tags.length > 0 ? app.tags[0] : ''
+          } else if (newContent === 'uri') app.labeler_config.style = 'image'
+        } 
     },
     methods: {
         toggle_relevance: function (match) {
@@ -164,6 +173,7 @@ const app = new Vue({
                 dataType: "json",
             }).success(function (data, textStatus, jqXHR) {
                 app.cur_batch.push(...data['data'].docs)
+                app.tags = Object.keys(data.data.docs[0].tags)
                 app.is_busy = false
                 app.progress_stats.this_session.value = app.cur_batch.length
             }).fail(function () {

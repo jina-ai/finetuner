@@ -202,6 +202,7 @@ accordion-button:focus {
 .match-item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-weight: 500;
   font-size: 14px;
   line-height: 21px;
@@ -215,15 +216,32 @@ accordion-button:focus {
   align-items: center;
 }
 
-.kbc-button {
+.kbd {
+  position: absolute;
+  top: 0;
+  right: 0;
   margin-left: .8rem;
   line-height: 0.8rem;
-  padding-top: 0.4rem;
+  padding: .2rem .4rem;
+  color: #000000;
+  background-color: #fff;
+  border-radius: 1px;
+  box-shadow: 0 0 0 4px #d9d9d9,
+              2px 2.5px 4px #adb5bd,
+              0 -1px 2.5px #adb5bd;
+  cursor: pointer;
 }
 
-kbd {
-  margin-left: .25rem;
-  align-self: center;
+.btn .kbd {
+  position: relative;
+}
+
+.text-card .kbd {
+  position: relative;
+}
+
+.text-card .positive-match::before {
+  display: none;
 }
 
 .positive-match {
@@ -244,33 +262,64 @@ kbd {
   margin-right: auto;
 }
 
-.compact-img {
-  padding: 3px;
-}
-
 [v-cloak] {
   display: none;
 }
 
 .card-header {
-  font-weight: 500;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 12px;
   line-height: 21px;
   letter-spacing: 0.1px;
-  color: #000000;
+  color: #fff;
+  background: #009191;
+}
+
+.image-matches-container {
+  display: grid;
+  gap: .25rem;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(100px, auto);
+}
+
+.card {
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 .card-body {
   padding: 0;
 }
 
-.image-card .positive-match {
-  background: #009191;
+.image-card .card-body {
+  padding: .25rem;
+}
+
+.image-card .card-body .positive-match .img-thumbnail {
+  background: transparent;
+  padding: .75rem;
+  border: none;
+}
+
+.image-matches-container .positive-match {
+  background: transparent;
+}
+
+.positive-match:before {
+  background: url(./img/check.svg);
+  content: '';
+  position: absolute;
+  height: 1.5rem;
+  width: 1.5rem;
+  padding: .5rem;
 }
 
 .image-card .card-header {
   display: flex;
   justify-content: center;
+  align-items: center;
+  padding: .5rem;
 }
 
 .image-card .card-body .row {
@@ -284,11 +333,14 @@ kbd {
 }
 
 .image-card .card-header .img-thumbnail {
-  width: 33.33%;
+  margin-left: .25rem;
+  min-width: 30%;
+  padding: 0;
 }
 
 .image-card .card-body .img-thumbnail {
-  width: 50%;
+  width: 100%;
+  padding: 0;
 }
 
 /* Swiper don't swipe */
@@ -309,5 +361,6 @@ kbd {
 
 .swiper-slide-prev > .card, .swiper-slide-next > .card {
   opacity: .5;
-  filter: blur(2px);
+  filter: blur(2px) grayscale(1);
+  pointer-events: none;
 }
