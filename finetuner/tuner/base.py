@@ -59,7 +59,7 @@ class BaseTuner(abc.ABC):
         """Get the wrapped model of this object.
 
         A wrapped model is an :py:attr:`.embed_model` replicated by :py:attr:`.arity` times
-         with a ``head_layer`` that fuses all.
+        with a ``head_layer`` that fuses all.
         """
         ...
 

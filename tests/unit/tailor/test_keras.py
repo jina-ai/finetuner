@@ -148,7 +148,7 @@ def test_keras_model_parser():
 
     keras_tailor = KerasTailor(user_model)
 
-    r = keras_tailor.candidate_layers
+    r = keras_tailor.embedding_layers
     assert len(r) == 3
     assert r[0]['name'] == 'l1'
     assert r[1]['name'] == 'l2'

@@ -192,7 +192,7 @@ def test_paddle_torch_lstm_model_parser():
         paddle.nn.Linear(in_features=2 * 64, out_features=32),
     )
     paddle_tailor = PaddleTailor(user_model, input_size=(5000,), input_dtype='int64')
-    r = paddle_tailor.candidate_layers
+    r = paddle_tailor.embedding_layers
     assert len(r) == 2
 
     # flat layer can be a nonparametric candidate
@@ -214,7 +214,7 @@ def test_paddle_torch_mlp_model_parser():
         paddle.nn.Linear(in_features=128, out_features=32),
     )
     paddle_tailor = PaddleTailor(user_model, input_size=(28, 28))
-    r = paddle_tailor.candidate_layers
+    r = paddle_tailor.embedding_layers
     assert len(r) == 4
 
     # flat layer can be a nonparametric candidate
