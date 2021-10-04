@@ -24,12 +24,12 @@ class BaseTailor(abc.ABC):
         self._logger = JinaLogger(self.__class__.__name__)
 
     @abc.abstractmethod
-    def _freeze_weights(self) -> AnyDNN:
+    def _freeze_weights(self):
         """Freeze the weights of the DNN model."""
         ...
 
     @abc.abstractmethod
-    def _trim(self) -> AnyDNN:
+    def _trim(self):
         """Trim an arbitrary Keras model to a embedding model."""
         ...
 

@@ -130,7 +130,7 @@ class PaddleTailor(BaseTailor):
 
         return results
 
-    def _trim(self) -> nn.Layer:
+    def _trim(self):
         """Trim an arbitrary Keras model to a Paddle embedding model.
 
         ..note::
@@ -161,7 +161,7 @@ class PaddleTailor(BaseTailor):
                 else:
                     setattr(self._model, name, _Identity())
 
-    def _freeze_weights(self) -> nn.Layer:
+    def _freeze_weights(self):
         """Freeze an arbitrary model to make layers not trainable."""
         for param in self._model.parameters():
             param.trainable = False

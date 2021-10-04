@@ -53,7 +53,7 @@ class KerasTailor(BaseTailor):
                 )
         return results
 
-    def _trim(self) -> Model:
+    def _trim(self):
         """Trim an arbitrary Keras model to a Keras embedding model
 
         ..note::
@@ -67,7 +67,7 @@ class KerasTailor(BaseTailor):
             self._model.input, self._model.layers[self._layer_idx - 1].output
         )
 
-    def _freeze_weights(self) -> Model:
+    def _freeze_weights(self):
         """Freeze an arbitrary model to make layers not trainable."""
         for layer in self._model.layers:
             layer.trainable = False

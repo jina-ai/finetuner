@@ -118,7 +118,7 @@ class PytorchTailor(BaseTailor):
 
         return results
 
-    def _trim(self) -> nn.Module:
+    def _trim(self):
         """Trim an arbitrary Keras model to a Pytorch embedding model.
 
         ..note::
@@ -148,7 +148,7 @@ class PytorchTailor(BaseTailor):
                 else:
                     setattr(self._model, name, nn.Identity())
 
-    def _freeze_weights(self) -> nn.Module:
+    def _freeze_weights(self):
         """Freeze an arbitrary model to make layers not trainable."""
         for param in self._model.parameters():
             param.requires_grad = False
