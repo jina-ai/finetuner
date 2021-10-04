@@ -7,7 +7,7 @@ Finetuner supports [Pytorch](https://pytorch.org/), [Keras](https://keras.io/) a
 1. Make sure that you have Python 3.7+ installed on Linux/MacOS. You have one of Pytorch, Keras or PaddlePaddle installed.
 2. Install Finetuner
    ```bash
-   pip install https://github.com/jina-ai/finetuner.git@master
+   pip install https://github.com/jina-ai/finetuner.git@main
    ```
 3. In this example, we want to tune the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST data. Let's write a model with any of the following framework:
    ````{tab} PyTorch
