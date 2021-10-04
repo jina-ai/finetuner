@@ -18,7 +18,18 @@ class PytorchTailor(BaseTailor):
         *args,
         **kwargs,
     ):
+        """Tailor class for PyTorch DNN models
+
+        :param input_size: a sequence of integers defining the shape of the input tensor. Note, batch size is *not* part
+            of ``input_size``.
+        :param input_dtype: the data type of the input tensor.
+        """
         super().__init__(*args, **kwargs)
+
+        # multiple inputs to the network
+        if isinstance(input_size, tuple):
+            input_size = [input_size]
+
         self._input_size = input_size
         self._input_dtype = input_dtype
 
@@ -66,10 +77,6 @@ class PytorchTailor(BaseTailor):
                 module, nn.ModuleList
             ):
                 hooks.append(module.register_forward_hook(hook))
-
-        # multiple inputs to the network
-        if isinstance(self._input_size, tuple):
-            self._input_size = [self._input_size]
 
         # batch_size of 2 for batchnorm
         x = [

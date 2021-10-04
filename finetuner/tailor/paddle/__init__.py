@@ -18,7 +18,18 @@ class PaddleTailor(BaseTailor):
         *args,
         **kwargs,
     ):
+        """Tailor class for Paddle DNN models
+
+        :param input_size: a sequence of integers defining the shape of the input tensor. Note, batch size is *not* part
+            of ``input_size``.
+        :param input_dtype: the data type of the input tensor.
+        """
         super().__init__(*args, **kwargs)
+
+        # multiple inputs to the network
+        if isinstance(input_size, tuple):
+            input_size = [input_size]
+
         self._input_size = input_size
         self._input_dtype = input_dtype
 
@@ -80,9 +91,6 @@ class PaddleTailor(BaseTailor):
             # For rnn, gru and lstm layer
             elif hasattr(layer, 'could_use_cudnn') and layer.could_use_cudnn:
                 hooks.append(layer.register_forward_post_hook(hook))
-
-        if isinstance(self._input_size, tuple):
-            self._input_size = [self._input_size]
 
         x = [
             paddle.cast(paddle.rand([2, *in_size]), dtype)
