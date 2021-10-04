@@ -7,17 +7,24 @@
   <meta property="og:title" content="finetuner.toydata module" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.toydata.html" />
-  <meta property="og:site_name" content="Jina Documentation" />
+  <meta property="og:site_name" content="Finetuner Documentation" />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
-  <meta property="og:image:alt" content="Jina Documentation" />
+  <meta property="og:image:alt" content="Finetuner Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
-<meta name="description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
-<meta property="og:description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta name="description" content="Finetuner allows one to finetune any deep neural network for better embedding on search tasks.">
+<meta property="og:description" content="Finetuner allows one to finetune any deep neural network for better embedding on search tasks.">
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-48ZDWC8GT6"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1ESRNDCK35"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1ESRNDCK35');
+</script>
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="prev" title="finetuner.helper module" href="../finetuner.helper/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.09.22"/>
@@ -312,8 +319,60 @@
                         </i>
                     </label>
                 </div>
-                <section id="finetuner-toydata-module">
-<h1>finetuner.toydata module<a class="headerlink" href="#finetuner-toydata-module" title="Permalink to this headline">¶</a></h1>
+                <section id="module-finetuner.toydata">
+<span id="finetuner-toydata-module"></span><h1>finetuner.toydata module<a class="headerlink" href="#module-finetuner.toydata" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="finetuner.toydata.generate_qa_match">
+<span class="sig-prename descclassname"><span class="pre">finetuner.toydata.</span></span><span class="sig-name descname"><span class="pre">generate_qa_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_total</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">481</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_neg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ndarray</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_seq_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_testset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/toydata/#generate_qa_match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.toydata.generate_qa_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a generator of QA data with synthetic negative matches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_total</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the total number of documents to return</p></li>
+<li><p><strong>num_neg</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the number of negative matches per document</p></li>
+<li><p><strong>pos_value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the label value of the positive matches</p></li>
+<li><p><strong>neg_value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the label value of the negative matches</p></li>
+<li><p><strong>to_ndarray</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if set, then <cite>text</cite> is tokenized into a fixed length <cite>ndarray</cite></p></li>
+<li><p><strong>max_seq_len</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the maximum sequence length of each text.</p></li>
+<li><p><strong>is_testset</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – If to generate test data, if set to None, will all data return</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="finetuner.toydata.generate_fashion_match">
+<span class="sig-prename descclassname"><span class="pre">finetuner.toydata.</span></span><span class="sig-name descname"><span class="pre">generate_fashion_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_total</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_neg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upsampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_testset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/toydata/#generate_fashion_match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.toydata.generate_fashion_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a Generator of fashion-mnist Documents with synthetic matches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_total</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the total number of documents to return</p></li>
+<li><p><strong>num_pos</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the number of positive matches per document</p></li>
+<li><p><strong>num_neg</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the number of negative matches per document</p></li>
+<li><p><strong>pos_value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the label value of the positive matches</p></li>
+<li><p><strong>neg_value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the label value of the negative matches</p></li>
+<li><p><strong>upsampling</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the rescale factor, must be integer and &gt;=1. It rescales the image into a bigger image.
+For example, <cite>upsampling=2</cite> gives 56 x 56 images.</p></li>
+<li><p><strong>channels</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – fashion-mnist data is gray-scale data, it does not have channel.
+One can set channel to 1 or 3 to simulate real grayscale or rgb imaga</p></li>
+<li><p><strong>channel_axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The axis for channels, e.g. for pytorch we expect B*C*W*H, channel axis should be 1.</p></li>
+<li><p><strong>is_testset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If to generate test data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
 </section>
 
             </article>
@@ -338,7 +397,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 02, 2021.
+                    Last updated on Oct 04, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
