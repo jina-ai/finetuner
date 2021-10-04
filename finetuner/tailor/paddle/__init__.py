@@ -33,7 +33,7 @@ class PaddleTailor(BaseTailor):
         :return: Candidate layers info as list of dictionary.
         """
         user_model = deepcopy(self._model)
-        dtypes = [self._input_dtype] * len(self._input_dtype)
+        dtypes = [self._input_dtype] * len(self._input_size)
         depth = len(list(user_model.sublayers()))
         for name, layer in user_model.named_sublayers():
             layer.name = name

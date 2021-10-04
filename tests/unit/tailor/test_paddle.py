@@ -186,10 +186,10 @@ def test_trim(model, layer_idx, input_size, input_, input_dtype, expected_output
 
 def test_paddle_torch_lstm_model_parser():
     user_model = paddle.nn.Sequential(
-            paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),
-            paddle.nn.LSTM(64, 64, direction='bidirectional'),
-            LastCellPD(),
-            paddle.nn.Linear(in_features=2 * 64, out_features=32),
+        paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),
+        paddle.nn.LSTM(64, 64, direction='bidirectional'),
+        LastCellPD(),
+        paddle.nn.Linear(in_features=2 * 64, out_features=32),
     )
     paddle_tailor = PaddleTailor(user_model, input_size=(5000,), input_dtype='int64')
     r = paddle_tailor.candidate_layers

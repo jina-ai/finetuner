@@ -2,7 +2,13 @@ import pytest
 import torch
 import torch.nn as nn
 
-from finetuner.tailor.pytorch.parser import _trim, _freeze
+from finetuner.tailor.pytorch import PytorchTailor
+
+
+class LastCellPT(torch.nn.Module):
+    def forward(self, x):
+        out, _ = x
+        return out[:, -1, :]
 
 
 @pytest.fixture
@@ -126,9 +132,8 @@ def test_trim_fail_given_unexpected_layer_idx(
     model, layer_idx, input_size, input_dtype
 ):
     with pytest.raises(IndexError):
-        _trim(
-            model, layer_idx=layer_idx, input_size=input_size, input_dtype=input_dtype
-        )
+        pytorch_tailor = PytorchTailor(model, input_size, layer_idx, False, input_dtype)
+        pytorch_tailor._trim()
 
 
 @pytest.mark.parametrize(
@@ -143,30 +148,88 @@ def test_trim_fail_given_unexpected_layer_idx(
     indirect=['model'],
 )
 def test_trim(model, layer_idx, input_size, input_, input_dtype, expected_output_shape):
-    model = _trim(
-        model=model, layer_idx=layer_idx, input_size=input_size, input_dtype=input_dtype
-    )
+    pytorch_tailor = PytorchTailor(model, input_size, layer_idx, False, input_dtype)
+    pytorch_tailor._trim()
     input_ = torch.rand(input_)
     if input_dtype == 'int32':
         input_ = input_.type(torch.IntTensor)
-    out = model(input_)
+    out = pytorch_tailor.model(input_)
     assert list(out.size()) == expected_output_shape  # 4th layer Linear
 
 
 @pytest.mark.parametrize(
-    'model',
+    'model, layer_idx, input_size, input_dtype',
     [
-        'dense_model',
-        'simple_cnn_model',
-        'vgg16_cnn_model',
-        'stacked_lstm',
-        'bidirectional_lstm',
+        ('dense_model', 10, (128,), 'float32'),  # 10th layer does not exist
+        (
+            'simple_cnn_model',
+            2,
+            (1, 28, 28),
+            'float32',
+        ),  # 2nd layer is a convolutional layer
+        (
+            'vgg16_cnn_model',
+            4,
+            (3, 224, 224),
+            'float32',
+        ),  # 4th layer is a convolutional layer
+        ('stacked_lstm', 10, (128,), 'int64'),  # 10th layer does not exist
+        ('bidirectional_lstm', 5, (128,), 'int64'),  # 5th layer does not exist
     ],
     indirect=['model'],
 )
-def test_freeze(model):
-    for param in model.parameters():
+def test_freeze(model, layer_idx, input_size, input_dtype):
+    pytorch_tailor = PytorchTailor(model, input_size, layer_idx, True, input_dtype)
+    for param in pytorch_tailor.model.parameters():
         assert param.requires_grad
-    model = _freeze(model)
-    for param in model.parameters():
+    pytorch_tailor._freeze_weights()
+    for param in pytorch_tailor.model.parameters():
         assert not param.requires_grad
+
+
+def test_paddle_torch_lstm_model_parser():
+    user_model = torch.nn.Sequential(
+        torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
+        torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
+        LastCellPT(),
+        torch.nn.Linear(in_features=2 * 64, out_features=32),
+    )
+    paddle_tailor = PytorchTailor(user_model, input_size=(5000,), input_dtype='int64')
+    r = paddle_tailor.candidate_layers
+    assert len(r) == 2
+
+    # flat layer can be a nonparametric candidate
+    assert r[0]['output_features'] == 128
+    assert r[0]['params'] == 0
+
+    assert r[1]['output_features'] == 32
+    assert r[1]['params'] == 4128
+
+
+def test_paddle_torch_mlp_model_parser():
+    user_model = torch.nn.Sequential(
+        torch.nn.Flatten(),
+        torch.nn.Linear(
+            in_features=28 * 28,
+            out_features=128,
+        ),
+        torch.nn.ReLU(),
+        torch.nn.Linear(in_features=128, out_features=32),
+    )
+    paddle_tailor = PytorchTailor(user_model, input_size=(28, 28))
+    r = paddle_tailor.candidate_layers
+    assert len(r) == 4
+
+    # flat layer can be a nonparametric candidate
+    assert r[0]['output_features'] == 784
+    assert r[0]['params'] == 0
+
+    assert r[1]['output_features'] == 128
+    assert r[1]['params'] == 100480
+
+    # relu layer is a nonparametric candidate
+    assert r[2]['output_features'] == 128
+    assert r[2]['params'] == 0
+
+    assert r[3]['output_features'] == 32
+    assert r[3]['params'] == 4128
