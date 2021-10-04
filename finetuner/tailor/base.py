@@ -25,15 +25,28 @@ class BaseTailor(abc.ABC):
 
     @abc.abstractmethod
     def _freeze_weights(self) -> AnyDNN:
+        """Freeze the weights of the DNN model.
+
+        :return: if :attr:`self._freeze`, return a new model with all layers weights freezed.
+        """
         ...
 
     @abc.abstractmethod
     def _trim(self) -> AnyDNN:
+        """Trim an arbitrary Keras model to a embedding model.
+
+        :return: A trimmed model based on the :attr:`self._layer_idx`. All layers
+          include & after :attr:`self._layer_idx`will be chop-off.
+        """
         ...
 
     @property
     @abc.abstractmethod
     def candidate_layers(self) -> CandidateLayerInfo:
+        """Get all dense layers that can be used as embedding layer from the given model.
+
+        :return: Candidate layers info as list of dictionary.
+        """
         ...
 
     def __call__(self, *args, **kwargs):
