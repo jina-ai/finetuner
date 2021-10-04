@@ -4,9 +4,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta property="og:title" content="finetuner.tailor.keras.parser module" />
+  <meta property="og:title" content="finetuner.tailor.base module" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.tailor.keras.parser.html" />
+  <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.tailor.base.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner Documentation" />
@@ -25,10 +25,10 @@
 
   gtag('config', 'G-1ESRNDCK35');
 </script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tailor.paddle package" href="../finetuner.tailor.paddle/" /><link rel="prev" title="finetuner.tailor.keras package" href="../finetuner.tailor.keras/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tailor.helper module" href="../finetuner.tailor.helper/" /><link rel="prev" title="finetuner.tailor.pytorch package" href="../finetuner.tailor.pytorch/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.09.22"/>
-        <title>finetuner.tailor.keras.parser module - Finetuner 0.1.0 documentation</title>
+        <title>finetuner.tailor.base module - Finetuner 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=150e365fa939648e89c22f6d7d13c72a1657915a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -234,37 +234,29 @@
 </ul>
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="../finetuner.tailor/">finetuner.tailor package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3 current has-children"><a class="reference internal" href="../finetuner.tailor.keras/">finetuner.tailor.keras package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">finetuner.tailor.keras.parser module</a></li>
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tailor.paddle/">finetuner.tailor.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../finetuner.tailor.paddle.parser/">finetuner.tailor.paddle.parser module</a></li>
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tailor.pytorch/">finetuner.tailor.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../finetuner.tailor.pytorch.parser/">finetuner.tailor.pytorch.parser module</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="../finetuner.tailor.keras/">finetuner.tailor.keras package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../finetuner.tailor.paddle/">finetuner.tailor.paddle package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../finetuner.tailor.pytorch/">finetuner.tailor.pytorch package</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">finetuner.tailor.base module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tailor.helper/">finetuner.tailor.helper module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../finetuner.tuner/">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../finetuner.tuner/">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.keras.datasets/">finetuner.tuner.keras.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.keras.head_layers/">finetuner.tuner.keras.head_layers module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.head_layers/">finetuner.tuner.paddle.head_layers module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.pytorch.datasets/">finetuner.tuner.pytorch.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.pytorch.head_layers/">finetuner.tuner.pytorch.head_layers module</a></li>
 </ul>
@@ -319,26 +311,57 @@
                         </i>
                     </label>
                 </div>
-                <section id="module-finetuner.tailor.keras.parser">
-<span id="finetuner-tailor-keras-parser-module"></span><h1>finetuner.tailor.keras.parser module<a class="headerlink" href="#module-finetuner.tailor.keras.parser" title="Permalink to this headline">¶</a></h1>
+                <section id="module-finetuner.tailor.base">
+<span id="finetuner-tailor-base-module"></span><h1>finetuner.tailor.base module<a class="headerlink" href="#module-finetuner.tailor.base" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.tailor.base.BaseTailor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tailor.base.</span></span><span class="sig-name descname"><span class="pre">BaseTailor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freeze</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tailor/base/#BaseTailor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tailor.base.BaseTailor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="finetuner.tailor.base.BaseTailor.candidate_layers">
+<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">candidate_layers</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#finetuner.tailor.base.BaseTailor.candidate_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all dense layers that can be used as embedding layer from the given model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Candidate layers info as list of dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="finetuner.tailor.base.BaseTailor.model">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="../finetuner.helper/#finetuner.helper.AnyDNN" title="finetuner.helper.AnyDNN"><span class="pre">finetuner.helper.AnyDNN</span></a></em><a class="headerlink" href="#finetuner.tailor.base.BaseTailor.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the DNN model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>~AnyDNN</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The parsed DNN model.</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
 </section>
 
             </article>
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../finetuner.tailor.paddle/">
+                    <a class="next-page" href="../finetuner.tailor.helper/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">finetuner.tailor.paddle package</div>
+                            <div class="title">finetuner.tailor.helper module</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../finetuner.tailor.keras/">
+                    <a class="prev-page" href="../finetuner.tailor.pytorch/">
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -347,7 +370,7 @@
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">finetuner.tailor.keras package</div>
+                            <div class="title">finetuner.tailor.pytorch package</div>
                             
                         </div>
                     </a>

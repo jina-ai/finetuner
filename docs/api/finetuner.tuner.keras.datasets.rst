@@ -1,7 +1,7 @@
-finetuner.tailor.paddle.parser module
+finetuner.tuner.keras.datasets module
 =====================================
 
-.. automodule:: finetuner.tailor.paddle.parser
+.. automodule:: finetuner.tuner.keras.datasets
    :members:
    :undoc-members:
    :show-inheritance:
