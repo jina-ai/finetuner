@@ -12,7 +12,7 @@ from .helper import CandidateLayerInfo
 class BaseTailor(abc.ABC):
     def __init__(
         self,
-        model: Optional[AnyDNN] = None,
+        model: AnyDNN,
         layer_idx: int = -1,
         freeze: bool = False,
         *args,
@@ -25,19 +25,12 @@ class BaseTailor(abc.ABC):
 
     @abc.abstractmethod
     def _freeze_weights(self) -> AnyDNN:
-        """Freeze the weights of the DNN model.
-
-        :return: if :attr:`self._freeze`, return a new model with all layers weights freezed.
-        """
+        """Freeze the weights of the DNN model."""
         ...
 
     @abc.abstractmethod
     def _trim(self) -> AnyDNN:
-        """Trim an arbitrary Keras model to a embedding model.
-
-        :return: A trimmed model based on the :attr:`self._layer_idx`. All layers
-          include & after :attr:`self._layer_idx`will be chop-off.
-        """
+        """Trim an arbitrary Keras model to a embedding model."""
         ...
 
     @property
