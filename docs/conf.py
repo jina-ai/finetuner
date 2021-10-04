@@ -114,7 +114,7 @@ notfound_context = {
 <p>Oops, we couldn't find that page. </p>
 <p>You can try using the search box or check our menu on the left hand side of this page.</p>
 
-<p>If neither of those options work, please create a Github issue ticket <a href="https://github.com/jina-ai/jina/">here</a>, and one of our team will respond.</p>
+<p>If neither of those options work, please create a Github issue ticket <a href="https://github.com/jina-ai/finetuner/">here</a>, and one of our team will respond.</p>
 
 ''',
 }
@@ -164,17 +164,24 @@ ogp_image = 'https://finetuner.jina.ai/_static/banner.png'
 ogp_use_first_image = True
 ogp_description_length = 300
 ogp_type = 'website'
-ogp_site_name = 'Jina Documentation'
+ogp_site_name = 'Finetuner Documentation'
 
 ogp_custom_meta_tags = [
     '<meta name="twitter:card" content="summary_large_image">',
     '<meta name="twitter:site" content="@JinaAI_">',
     '<meta name="twitter:creator" content="@JinaAI_">',
-    '<meta name="description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">',
-    '<meta property="og:description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">',
+    '<meta name="description" content="Finetuner allows one to finetune any deep neural network for better embedding on search tasks.">',
+    '<meta property="og:description" content="Finetuner allows one to finetune any deep neural network for better embedding on search tasks.">',
     '''
     <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-48ZDWC8GT6"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1ESRNDCK35"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1ESRNDCK35');
+</script>
     ''',
 ]
 

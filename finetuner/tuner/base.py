@@ -58,7 +58,8 @@ class BaseTuner(abc.ABC):
     def wrapped_model(self) -> AnyDNN:
         """Get the wrapped model of this object.
 
-        A wrapped model is an arity model with a head_layer on top of it.
+        A wrapped model is an :py:attr:`.embed_model` replicated by :py:attr:`.arity` times
+         with a ``head_layer`` that fuses all.
         """
         ...
 
@@ -67,15 +68,15 @@ class BaseTuner(abc.ABC):
         """Get the arity of this object.
 
         For example,
-            - `arity = 2` corresponds to the siamese network;
-            - `arity = 3` corresponds to the triplet network.
+            - ``arity = 2`` corresponds to the siamese network;
+            - ``arity = 3`` corresponds to the triplet network.
         """
         return self.head_layer.arity
 
     @property
     @abc.abstractmethod
     def head_layer(self) -> AnyDNN:
-        """Get the head model of this object."""
+        """Get the head layer of this object."""
         ...
 
     @abc.abstractmethod
@@ -88,19 +89,19 @@ class BaseTuner(abc.ABC):
         *args,
         **kwargs,
     ) -> Dict:
-        """Fit the :property:`embed_model` on ``doc_array`` data.
+        """Fit the :py:attr:`.embed_model` on labeled data.
 
-        Note that fitting changes the weights in :property:`embed_model` in-place. This allows one to consecutively
-        call :func:`fit` multiple times with different configs or data to get better models.
+        Note that fitting changes the weights in :py:attr:`.embed_model` in-place. This allows one to consecutively
+        call :py:func:`.fit` multiple times with different configs or data to get better models.
         """
         ...
 
     @abc.abstractmethod
     def save(self, *args, **kwargs):
-        """Save the weights of the ``embed_model``.
+        """Save the weights of the :py:attr:`.embed_model`.
 
-        Note that, the ``head_layer`` and ``wrapped_model`` do not need to be stored, as they are auxiliary layers
-        for tuning ``embed_model``.
+        Note that, the :py:attr:`.head_layer` and :py:attr:`.wrapped_model` do not need to be stored,
+        as they are auxiliary layers for tuning :py:attr:`.embed_model`.
         """
         ...
 
@@ -115,14 +116,14 @@ class BaseTuner(abc.ABC):
     def _train(
         self, data: AnyDataLoader, optimizer, description: str
     ) -> Tuple[List, List]:
-        """Train the model"""
+        """Train the model on given labeled data"""
         ...
 
     @abc.abstractmethod
     def _eval(
         self, data: AnyDataLoader, description: str = 'Evaluating'
     ) -> Tuple[List, List]:
-        """Evaluate the model"""
+        """Evaluate the model on given labeled data"""
         ...
 
 
