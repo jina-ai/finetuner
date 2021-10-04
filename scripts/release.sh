@@ -7,7 +7,7 @@
 
 set -ex
 
-INIT_FILE='jina/__init__.py'
+INIT_FILE='finetuner/__init__.py'
 VER_TAG='__version__ = '
 RELEASENOTE='./node_modules/.bin/git-release-notes'
 
@@ -35,7 +35,6 @@ function clean_build {
 function pub_pypi {
     # publish to pypi
     clean_build
-    cp extra-requirements.txt jina/resources/
     python setup.py sdist
     twine upload dist/*
     clean_build
@@ -45,7 +44,7 @@ function git_commit {
     git config --local user.email "dev-bot@jina.ai"
     git config --local user.name "Jina Dev Bot"
     git tag "v$RELEASE_VER" -m "$(cat ./CHANGELOG.tmp)"
-    git add $INIT_FILE ./CHANGELOG.md jina/resources/extra-requirements.txt
+    git add $INIT_FILE ./CHANGELOG.md
     git commit -m "chore(version): the next version will be $NEXT_VER" -m "build($RELEASE_ACTOR): $RELEASE_REASON"
 }
 
@@ -62,8 +61,8 @@ function make_release_note {
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-if [[ "$BRANCH" != "master" ]]; then
-  printf "You are not at master branch, exit\n";
+if [[ "$BRANCH" != "main" ]]; then
+  printf "You are not at main branch, exit\n";
   exit 1;
 fi
 

@@ -4,10 +4,18 @@ from setuptools import find_packages
 from setuptools import setup
 
 if sys.version_info >= (3, 10, 0) or sys.version_info < (3, 7, 0):
-    raise OSError(f'Jina requires Python 3.7/3.8/3.9, but yours is {sys.version}')
+    raise OSError(f'Finetuner requires Python 3.7/3.8/3.9, but yours is {sys.version}')
 
-pkg_name = 'finetuner'
-__version__ = '0.0.0'
+try:
+    pkg_name = 'finetuner'
+    libinfo_py = path.join(pkg_name, '__init__.py')
+    libinfo_content = open(libinfo_py, 'r', encoding='utf8').readlines()
+    version_line = [l.strip() for l in libinfo_content if l.startswith('__version__')][
+        0
+    ]
+    exec(version_line)  # gives __version__
+except FileNotFoundError:
+    __version__ = '0.0.0'
 
 try:
     with open('README.md', encoding='utf8') as fp:
@@ -20,12 +28,12 @@ setup(
     packages=find_packages(),
     version=__version__,
     include_package_data=True,
-    description='Jina is the cloud-native neural search framework for any kind of data',
+    description='Finetuner allows one to finetune any deep neural network for better embedding on search tasks',
     author='Jina AI',
     author_email='hello@jina.ai',
     license='Apache 2.0',
-    url='https://github.com/jina-ai/jina/',
-    download_url='https://github.com/jina-ai/jina/tags',
+    url='https://github.com/jina-ai/finetuner/',
+    download_url='https://github.com/jina-ai/finetuner/tags',
     long_description=_long_description,
     long_description_content_type='text/markdown',
     zip_safe=False,
@@ -54,9 +62,9 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     project_urls={
-        'Documentation': 'https://docs.jina.ai',
-        'Source': 'https://github.com/jina-ai/jina/',
-        'Tracker': 'https://github.com/jina-ai/jina/issues',
+        'Documentation': 'https://finetuner.jina.ai',
+        'Source': 'https://github.com/jina-ai/finetuner/',
+        'Tracker': 'https://github.com/jina-ai/finetuner/issues',
     },
     keywords='jina cloud-native neural-search query search index elastic neural-network encoding '
     'embedding serving docker container image video audio deep-learning',
