@@ -3,7 +3,13 @@ import pytest
 import paddle
 import paddle.nn as nn
 
-from finetuner.tailor.paddle.parser import _trim, _freeze
+from finetuner.tailor.paddle import PaddleTailor
+
+
+class LastCellPD(paddle.nn.Layer):
+    def forward(self, x):
+        out, _ = x
+        return out[:, -1, :]
 
 
 @pytest.fixture
@@ -125,28 +131,38 @@ def test_trim_fail_given_unexpected_layer_idx(
     model, layer_idx, input_size, input_dtype
 ):
     with pytest.raises(IndexError):
-        _trim(
-            model, layer_idx=layer_idx, input_size=input_size, input_dtype=input_dtype
-        )
+        paddle_tailor = PaddleTailor(model, input_size, layer_idx, False, input_dtype)
+        paddle_tailor._trim()
 
 
 @pytest.mark.parametrize(
-    'model',
+    'model, layer_idx, input_size, input_dtype',
     [
-        'dense_model',
-        'simple_cnn_model',
-        'vgg16_cnn_model',
-        'stacked_lstm',
-        'bidirectional_lstm',
+        ('dense_model', 10, (128,), 'float32'),  # 10th layer does not exist
+        (
+            'simple_cnn_model',
+            2,
+            (1, 28, 28),
+            'float32',
+        ),  # 2nd layer is a convolutional layer
+        (
+            'vgg16_cnn_model',
+            4,
+            (3, 224, 224),
+            'float32',
+        ),  # 4th layer is a convolutional layer
+        ('stacked_lstm', 10, (128,), 'int64'),  # 10th layer does not exist
+        ('bidirectional_lstm', 5, (128,), 'int64'),  # 5th layer does not exist
     ],
     indirect=['model'],
 )
-def test_freeze(model):
-    for param in model.parameters():
+def test_freeze(model, layer_idx, input_size, input_dtype):
+    paddle_tailor = PaddleTailor(model, input_size, layer_idx, True, input_dtype)
+    for param in paddle_tailor.model.parameters():
         if not param.stop_gradient:
             assert param.trainable
-    model = _freeze(model)
-    for param in model.parameters():
+    paddle_tailor._freeze_weights()
+    for param in paddle_tailor.model.parameters():
         assert not param.trainable
 
 
@@ -162,8 +178,55 @@ def test_freeze(model):
     indirect=['model'],
 )
 def test_trim(model, layer_idx, input_size, input_, input_dtype, expected_output_shape):
-    model = _trim(
-        model=model, layer_idx=layer_idx, input_size=input_size, input_dtype=input_dtype
-    )
-    out = model(paddle.cast(paddle.rand(input_), input_dtype))
+    paddle_tailor = PaddleTailor(model, input_size, layer_idx, True, input_dtype)
+    paddle_tailor._trim()
+    out = paddle_tailor.model(paddle.cast(paddle.rand(input_), input_dtype))
     assert list(out.shape) == expected_output_shape  # 4th layer Linear
+
+
+def test_paddle_torch_lstm_model_parser():
+    user_model = paddle.nn.Sequential(
+            paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),
+            paddle.nn.LSTM(64, 64, direction='bidirectional'),
+            LastCellPD(),
+            paddle.nn.Linear(in_features=2 * 64, out_features=32),
+    )
+    paddle_tailor = PaddleTailor(user_model, input_size=(5000,), input_dtype='int64')
+    r = paddle_tailor.candidate_layers
+    assert len(r) == 2
+
+    # flat layer can be a nonparametric candidate
+    assert r[0]['output_features'] == 128
+    assert r[0]['params'] == 0
+
+    assert r[1]['output_features'] == 32
+    assert r[1]['params'] == 4128
+
+
+def test_paddle_torch_mlp_model_parser():
+    user_model = paddle.nn.Sequential(
+        paddle.nn.Flatten(),
+        paddle.nn.Linear(
+            in_features=28 * 28,
+            out_features=128,
+        ),
+        paddle.nn.ReLU(),
+        paddle.nn.Linear(in_features=128, out_features=32),
+    )
+    paddle_tailor = PaddleTailor(user_model, input_size=(28, 28))
+    r = paddle_tailor.candidate_layers
+    assert len(r) == 4
+
+    # flat layer can be a nonparametric candidate
+    assert r[0]['output_features'] == 784
+    assert r[0]['params'] == 0
+
+    assert r[1]['output_features'] == 128
+    assert r[1]['params'] == 100480
+
+    # relu layer is a nonparametric candidate
+    assert r[2]['output_features'] == 128
+    assert r[2]['params'] == 0
+
+    assert r[3]['output_features'] == 32
+    assert r[3]['params'] == 4128
