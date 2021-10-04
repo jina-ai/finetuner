@@ -49,5 +49,14 @@ class BaseTailor(abc.ABC):
         """
         ...
 
+    @property
+    def model(self) -> AnyDNN:
+        """Get the DNN model.
+
+        :return: The parsed DNN model.
+        """
+        return self._model
+
+    @abc.abstractmethod
     def __call__(self, *args, **kwargs):
         ...
