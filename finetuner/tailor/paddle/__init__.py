@@ -23,7 +23,7 @@ class PaddleTailor(BaseTailor):
         :param input_size: a sequence of integers defining the shape of the input tensor. Note, batch size is *not* part
             of ``input_size``.
         :param input_dtype: the data type of the input tensor.
-        """''
+        """
         super().__init__(*args, **kwargs)
 
         # multiple inputs to the network
