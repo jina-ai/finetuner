@@ -9,8 +9,9 @@ __default_tag_key__ = 'finetuner'
 from typing import Optional, overload, TYPE_CHECKING
 
 
-from .helper import AnyDNN, DocumentArrayLike
-from .tuner.fit import TunerReturnType
+if TYPE_CHECKING:
+    from .helper import AnyDNN, DocumentArrayLike
+    from .tuner.fit import TunerReturnType
 
 # fit interface generated from Labeler + Tuner
 # overload_inject_fit_tailor_tuner_start
@@ -22,8 +23,8 @@ from .tuner.fit import TunerReturnType
 # overload_inject_fit_labeler_tuner_start
 @overload
 def fit(
-    embed_model: AnyDNN,
-    train_data: DocumentArrayLike,
+    embed_model: 'AnyDNN',
+    train_data: 'DocumentArrayLike',
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
@@ -40,20 +41,20 @@ def fit(
 # overload_inject_fit_tuner_start
 @overload
 def fit(
-    embed_model: AnyDNN,
-    train_data: DocumentArrayLike,
-    eval_data: Optional[DocumentArrayLike] = None,
+    embed_model: 'AnyDNN',
+    train_data: 'DocumentArrayLike',
+    eval_data: Optional['DocumentArrayLike'] = None,
     epochs: int = 10,
     batch_size: int = 256,
     head_layer: str = 'CosineLayer',
-) -> TunerReturnType:
+) -> 'TunerReturnType':
     ...
 
 
 # overload_inject_fit_tuner_end
 
 
-def fit(*args, **kwargs) -> Optional[TunerReturnType]:
+def fit(*args, **kwargs) -> Optional['TunerReturnType']:
     if kwargs.get('interactive', False):
         kwargs.pop('interactive')
         from .labeler.fit import fit
