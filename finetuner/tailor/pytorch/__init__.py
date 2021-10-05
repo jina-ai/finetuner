@@ -123,10 +123,15 @@ class PytorchTailor(BaseTailor):
 
     def _trim(self):
         if not self._embedding_layer_name:
-            module_name = self._embedding_layer_name[-1]['module_name']
+            module_name = self.embedding_layers[-1]['module_name']
         else:
             _embed_layers = {l['name']: l for l in self.embedding_layers}
-            module_name = _embed_layers[self._embedding_layer_name]['module_name']
+            try:
+                module_name = _embed_layers[self._embedding_layer_name]['module_name']
+            except KeyError:
+                raise KeyError(
+                    f'The emebdding layer name {self._embedding_layer_name} does not exist.'
+                )
 
         _is_after_embedding_layer = False
         for name, module in self._model.named_modules():

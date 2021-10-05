@@ -215,7 +215,7 @@ def test_trim(
     )
     paddle_tailor._trim()
     out = paddle_tailor.model(paddle.cast(paddle.rand(input_), input_dtype))
-    assert list(out.shape) == expected_output_shape  # 4th layer Linear
+    assert list(out.shape) == expected_output_shape
 
 
 def test_paddle_lstm_model_parser():
