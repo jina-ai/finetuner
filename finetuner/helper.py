@@ -28,7 +28,7 @@ def get_framework(dnn_model: AnyDNN) -> str:
     """
     if 'keras.' in dnn_model.__module__:
         return 'keras'
-    elif 'torch.' in dnn_model.__module__:
+    elif 'torch' in dnn_model.__module__:  # note: cover torch and torchvision
         return 'torch'
     elif 'paddle.' in dnn_model.__module__:
         return 'paddle'
