@@ -44,10 +44,15 @@ class KerasTailor(BaseTailor):
 
     def _trim(self):
         if not self._embedding_layer_name:
-            indx = self._embedding_layer_name[-1]['layer_idx']
+            indx = self.embedding_layers[-1]['layer_idx']
         else:
             _embed_layers = {l['name']: l for l in self.embedding_layers}
-            indx = _embed_layers[self._embedding_layer_name]['layer_idx']
+            try:
+                indx = _embed_layers[self._embedding_layer_name]['layer_idx']
+            except KeyError:
+                raise KeyError(
+                    f'The emebdding layer name {self._embedding_layer_name} does not exist.'
+                )
 
         self._model = Model(self._model.input, self._model.layers[indx].output)
 

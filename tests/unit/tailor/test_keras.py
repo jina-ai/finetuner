@@ -84,35 +84,35 @@ def model(request):
 
 
 @pytest.mark.parametrize(
-    'model, layer_idx',
+    'model, layer_name',
     [
-        ('dense_model', 10),  # 10th layer does not exist
-        ('simple_cnn_model', 2),  # 2nd layer is a convolutional layer
-        ('vgg16_cnn_model', 4),  # 4th layer is a convolutional layer
-        ('stacked_lstm', 10),  # 10th layer does not exist
-        ('bidirectional_lstm', 5),  # 5th layer does not exist
+        ('dense_model', 'random_name'),
+        ('simple_cnn_model', 'random_name'),
+        ('vgg16_cnn_model', 'random_name'),
+        ('stacked_lstm', 'random_name'),
+        ('bidirectional_lstm', 'random_name'),
     ],
     indirect=['model'],
 )
-def test_trim_fail_given_unexpected_layer_idx(model, layer_idx):
-    with pytest.raises(IndexError):
-        keras_tailor = KerasTailor(model, layer_idx)
+def test_trim_fail_given_unexpected_layer_name(model, layer_name):
+    with pytest.raises(KeyError):
+        keras_tailor = KerasTailor(model, True, layer_name)
         keras_tailor._trim()
 
 
 @pytest.mark.parametrize(
-    'model, layer_idx, expected_output_shape',
+    'model, layer_name, expected_output_shape',
     [
-        ('dense_model', 3, (None, 32)),
-        ('simple_cnn_model', 5, (None, 9216)),
-        ('vgg16_cnn_model', 21, (None, 4096)),
-        ('stacked_lstm', 4, (None, 256)),
-        ('bidirectional_lstm', 2, (None, 64 * 2)),  # bi-directional
+        ('dense_model', 'dense_11', (None, 32)),
+        ('simple_cnn_model', 'flatten_1', (None, 9216)),
+        ('vgg16_cnn_model', 'fc2', (None, 4096)),
+        ('stacked_lstm', 'lstm_6', (None, 256)),
+        ('bidirectional_lstm', 'bidirectional_1', (None, 128)),
     ],
     indirect=['model'],
 )
-def test_trim(model, layer_idx, expected_output_shape):
-    keras_tailor = KerasTailor(model, layer_idx)
+def test_trim(model, layer_name, expected_output_shape):
+    keras_tailor = KerasTailor(model, False, layer_name)
     keras_tailor._trim()
     assert keras_tailor.model.output_shape == expected_output_shape
 
