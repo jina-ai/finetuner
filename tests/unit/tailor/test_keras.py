@@ -4,6 +4,11 @@ import tensorflow as tf
 from finetuner.tailor.keras import KerasTailor
 
 
+@pytest.fixture(autouse=True)
+def clear_session():
+    tf.keras.backend.clear_session()
+
+
 @pytest.fixture
 def dense_model():
     model = tf.keras.models.Sequential()
@@ -103,16 +108,18 @@ def test_trim_fail_given_unexpected_layer_name(model, layer_name):
 @pytest.mark.parametrize(
     'model, layer_name, expected_output_shape',
     [
-        ('dense_model', 'dense_11', (None, 32)),
-        ('simple_cnn_model', 'flatten_1', (None, 9216)),
-        ('vgg16_cnn_model', 'fc2', (None, 4096)),
-        ('stacked_lstm', 'lstm_6', (None, 256)),
-        ('bidirectional_lstm', 'bidirectional_1', (None, 128)),
+        ('dense_model', 'dense_2', (None, 32)),
+        ('simple_cnn_model', 'flatten', (None, 9216)),
+        ('vgg16_cnn_model', 'fc1', (None, 4096)),
+        ('stacked_lstm', 'lstm_2', (None, 256)),
+        ('bidirectional_lstm', 'bidirectional', (None, 128)),
     ],
     indirect=['model'],
 )
 def test_trim(model, layer_name, expected_output_shape):
     keras_tailor = KerasTailor(model, False, layer_name)
+    print(model.summary())
+    print(keras_tailor.embedding_layers)
     keras_tailor._trim()
     assert keras_tailor.model.output_shape == expected_output_shape
 
