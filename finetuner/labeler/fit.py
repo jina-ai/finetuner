@@ -26,14 +26,18 @@ def fit(
             return embed_model
 
     f = (
-        Flow(protocol='http', port_expose=port_expose, prefetch=1)
+        Flow(
+            protocol='http',
+            port_expose=port_expose,
+            prefetch=1,
+            runtime_backend=runtime_backend,
+        )
         .add(
             uses=DataIterator,
             uses_with={
                 'dam_path': dam_path,
                 'clear_labels_on_start': clear_labels_on_start,
             },
-            runtime_backend=runtime_backend,
         )
         .add(
             uses=MyExecutor,
@@ -41,7 +45,6 @@ def fit(
                 'dam_path': dam_path,
                 'head_layer': head_layer,
             },
-            runtime_backend=runtime_backend,  # eager-mode tf2 (M1-compiled) can not be run under `process` mode
         )
     )
 
