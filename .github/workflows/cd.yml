@@ -25,9 +25,9 @@ jobs:
     needs: update-doc
     runs-on: ubuntu-latest
     steps:
-        - uses: actions/checkout@v2
-          with:
-            fetch-depth: 100
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - name: Pre-release (.devN)
         run: |
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
