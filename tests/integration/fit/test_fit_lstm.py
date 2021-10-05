@@ -4,7 +4,7 @@ import paddle
 import tensorflow as tf
 import torch
 
-import finetuner as jft
+from finetuner import fit
 from finetuner.toydata import generate_qa_match
 
 
@@ -45,7 +45,7 @@ def test_fit_all(tmpdir):
 
     for kb, b in embed_models.items():
         for h in ['CosineLayer', 'TripletLayer']:
-            result = jft.fit(
+            result = fit(
                 b(),
                 head_layer=h,
                 train_data=lambda: generate_qa_match(
