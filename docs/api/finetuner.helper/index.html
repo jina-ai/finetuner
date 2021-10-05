@@ -238,7 +238,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tailor.paddle/">finetuner.tailor.paddle package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tailor.pytorch/">finetuner.tailor.pytorch package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tailor.base/">finetuner.tailor.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../finetuner.tailor.helper/">finetuner.tailor.helper module</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../finetuner.tuner/">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -326,10 +325,27 @@
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="finetuner.helper.get_framework">
-<span class="sig-prename descclassname"><span class="pre">finetuner.helper.</span></span><span class="sig-name descname"><span class="pre">get_framework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/helper/#get_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.helper.get_framework" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<span class="sig-prename descclassname"><span class="pre">finetuner.helper.</span></span><span class="sig-name descname"><span class="pre">get_framework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dnn_model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/helper/#get_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.helper.get_framework" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the framework that enpowers a DNN model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dnn_model</strong> (<em>~AnyDNN</em>) – a DNN model</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><cite>keras</cite>, <cite>torch</cite>, <cite>paddle</cite> or ValueError</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="finetuner.helper.is_list_int">
+<span class="sig-prename descclassname"><span class="pre">finetuner.helper.</span></span><span class="sig-name descname"><span class="pre">is_list_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/helper/#is_list_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.helper.is_list_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the input is a list of integers.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>

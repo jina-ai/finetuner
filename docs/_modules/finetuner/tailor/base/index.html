@@ -215,7 +215,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tailor.paddle/">finetuner.tailor.paddle package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tailor.pytorch/">finetuner.tailor.pytorch package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tailor.base/">finetuner.tailor.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tailor.helper/">finetuner.tailor.helper module</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../api/finetuner.tuner/">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -295,48 +294,55 @@
 
 <span class="kn">from</span> <span class="nn">jina.logging.logger</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
 
-<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span>
-<span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">CandidateLayerInfo</span>
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">EmbeddingLayerInfo</span>
 
 
 <div class="viewcode-block" id="BaseTailor"><a class="viewcode-back" href="../../../../api/finetuner.tailor.base/#finetuner.tailor.base.BaseTailor">[docs]</a><span class="k">class</span> <span class="nc">BaseTailor</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span>
-        <span class="n">layer_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">embedding_layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
+        <span class="sd">"""Tailor converts a general DNN model into an embedding model.</span>
+
+<span class="sd">        :param model: a general DNN model</span>
+<span class="sd">        :param freeze: if set, then freeze the weights in :py:attr:`.model`</span>
+<span class="sd">        :param embedding_layer_name: the name of the layer that is used for output embeddings. All layers after that layer</span>
+<span class="sd">            will be removed. When not given, then the last layer listed in :py:attr:`.embedding_layers` will be used.</span>
+<span class="sd">        :param args:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_freeze</span> <span class="o">=</span> <span class="n">freeze</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layer_idx</span> <span class="o">=</span> <span class="n">layer_idx</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">JinaLogger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_embedding_layer_name</span> <span class="o">=</span> <span class="n">embedding_layer_name</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_freeze_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""Freeze the weights of the DNN model."""</span>
+        <span class="sd">"""Freeze the weights of :py:attr:`.model`."""</span>
         <span class="o">...</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_trim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""Trim an arbitrary Keras model to a embedding model."""</span>
+        <span class="sd">"""Trim :py:attr:`.model` to an embedding model."""</span>
         <span class="o">...</span>
 
     <span class="nd">@property</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">candidate_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CandidateLayerInfo</span><span class="p">:</span>
-        <span class="sd">"""Get all dense layers that can be used as embedding layer from the given model.</span>
+    <span class="k">def</span> <span class="nf">embedding_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EmbeddingLayerInfo</span><span class="p">:</span>
+        <span class="sd">"""Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.</span>
 
-<span class="sd">        :return: Candidate layers info as list of dictionary.</span>
+<span class="sd">        :return: layers info as :class:`list` of :class:`dict`.</span>
 <span class="sd">        """</span>
         <span class="o">...</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
-        <span class="sd">"""Get the DNN model.</span>
+        <span class="sd">"""Get the DNN model of this object.</span>
 
-<span class="sd">        :return: The parsed DNN model.</span>
+<span class="sd">        :return: The DNN model.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span>
 

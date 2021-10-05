@@ -215,7 +215,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tailor.paddle/">finetuner.tailor.paddle package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tailor.pytorch/">finetuner.tailor.pytorch package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tailor.base/">finetuner.tailor.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tailor.helper/">finetuner.tailor.helper module</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/finetuner.tuner/">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -288,7 +287,7 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.helper</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">DocumentArrayMemmap</span>
 
@@ -306,18 +305,31 @@
     <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">DocumentSequence</span><span class="p">],</span>
 <span class="p">]</span>
 
+<span class="n">EmbeddingLayerInfo</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
 
-<div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../../api/finetuner.helper/#finetuner.helper.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">embed_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">if</span> <span class="s1">'keras.'</span> <span class="ow">in</span> <span class="n">embed_model</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
+
+<div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../../api/finetuner.helper/#finetuner.helper.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">"""Return the framework that enpowers a DNN model</span>
+
+<span class="sd">    :param dnn_model: a DNN model</span>
+<span class="sd">    :return: `keras`, `torch`, `paddle` or ValueError</span>
+
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="s1">'keras.'</span> <span class="ow">in</span> <span class="n">dnn_model</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">'keras'</span>
-    <span class="k">elif</span> <span class="s1">'torch'</span> <span class="ow">in</span> <span class="n">embed_model</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="s1">'torch'</span> <span class="ow">in</span> <span class="n">dnn_model</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>  <span class="c1"># note: cover torch and torchvision</span>
         <span class="k">return</span> <span class="s1">'torch'</span>
-    <span class="k">elif</span> <span class="s1">'paddle.'</span> <span class="ow">in</span> <span class="n">embed_model</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="s1">'paddle.'</span> <span class="ow">in</span> <span class="n">dnn_model</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">'paddle'</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">'can not determine the backend from embed_model from </span><span class="si">{</span><span class="n">embed_model</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">'</span>
+            <span class="sa">f</span><span class="s1">'can not determine the backend from embed_model from </span><span class="si">{</span><span class="n">dnn_model</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">'</span>
         <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="is_list_int"><a class="viewcode-back" href="../../../api/finetuner.helper/#finetuner.helper.is_list_int">[docs]</a><span class="k">def</span> <span class="nf">is_list_int</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">"""Return True if the input is a list of integers."""</span>
+    <span class="k">return</span> <span class="n">tp</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tp</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">tp</span><span class="p">)</span></div>
 </pre></div>
             </article>
             <footer>

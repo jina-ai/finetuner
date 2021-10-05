@@ -18,7 +18,6 @@ Submodules
    :maxdepth: 4
 
    finetuner.tailor.base
-   finetuner.tailor.helper
 
 Module contents
 ---------------

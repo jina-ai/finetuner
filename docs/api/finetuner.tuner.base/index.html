@@ -238,7 +238,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tailor.paddle/">finetuner.tailor.paddle package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tailor.pytorch/">finetuner.tailor.pytorch package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tailor.base/">finetuner.tailor.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../finetuner.tailor.helper/">finetuner.tailor.helper module</a></li>
 </ul>
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="../finetuner.tuner/">finetuner.tuner package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -355,10 +354,8 @@
 <dt class="sig sig-object py" id="finetuner.tuner.base.BaseTuner.wrapped_model">
 <em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">wrapped_model</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="../finetuner.helper/#finetuner.helper.AnyDNN" title="finetuner.helper.AnyDNN"><span class="pre">finetuner.helper.AnyDNN</span></a></em><a class="headerlink" href="#finetuner.tuner.base.BaseTuner.wrapped_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the wrapped model of this object.</p>
-<dl class="simple">
-<dt>A wrapped model is an <a class="reference internal" href="#finetuner.tuner.base.BaseTuner.embed_model" title="finetuner.tuner.base.BaseTuner.embed_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embed_model</span></code></a> replicated by <a class="reference internal" href="#finetuner.tuner.base.BaseTuner.arity" title="finetuner.tuner.base.BaseTuner.arity"><code class="xref py py-attr docutils literal notranslate"><span class="pre">arity</span></code></a> times</dt><dd><p>with a <code class="docutils literal notranslate"><span class="pre">head_layer</span></code> that fuses all.</p>
-</dd>
-</dl>
+<p>A wrapped model is an <a class="reference internal" href="#finetuner.tuner.base.BaseTuner.embed_model" title="finetuner.tuner.base.BaseTuner.embed_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embed_model</span></code></a> replicated by <a class="reference internal" href="#finetuner.tuner.base.BaseTuner.arity" title="finetuner.tuner.base.BaseTuner.arity"><code class="xref py py-attr docutils literal notranslate"><span class="pre">arity</span></code></a> times
+with a <code class="docutils literal notranslate"><span class="pre">head_layer</span></code> that fuses all.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>~AnyDNN</p>

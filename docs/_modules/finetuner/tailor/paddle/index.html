@@ -215,7 +215,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tailor.paddle/">finetuner.tailor.paddle package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tailor.pytorch/">finetuner.tailor.pytorch package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tailor.base/">finetuner.tailor.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tailor.helper/">finetuner.tailor.helper module</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../api/finetuner.tuner/">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -297,30 +296,37 @@
 <span class="kn">from</span> <span class="nn">paddle</span> <span class="kn">import</span> <span class="n">nn</span><span class="p">,</span> <span class="n">Tensor</span>
 
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseTailor</span>
-<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span>
-<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">CandidateLayerInfo</span><span class="p">,</span> <span class="n">_is_list_int</span>
+<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">is_list_int</span><span class="p">,</span> <span class="n">EmbeddingLayerInfo</span>
 
 
 <div class="viewcode-block" id="PaddleTailor"><a class="viewcode-back" href="../../../../api/finetuner.tailor.paddle/#finetuner.tailor.paddle.PaddleTailor">[docs]</a><span class="k">class</span> <span class="nc">PaddleTailor</span><span class="p">(</span><span class="n">BaseTailor</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span>
         <span class="n">input_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
-        <span class="n">layer_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">input_dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'float32'</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">layer_idx</span><span class="p">,</span> <span class="n">freeze</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="sd">"""Tailor class for Paddle DNN models</span>
+
+<span class="sd">        :param input_size: a sequence of integers defining the shape of the input tensor. Note, batch size is *not* part</span>
+<span class="sd">            of ``input_size``.</span>
+<span class="sd">        :param input_dtype: the data type of the input tensor.</span>
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># multiple inputs to the network</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">input_size</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_size</span><span class="p">]</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span> <span class="o">=</span> <span class="n">input_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_dtype</span> <span class="o">=</span> <span class="n">input_dtype</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">candidate_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CandidateLayerInfo</span><span class="p">:</span>
-        <span class="sd">"""Get all dense layers that can be used as embedding layer from the given model.</span>
+    <span class="k">def</span> <span class="nf">embedding_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EmbeddingLayerInfo</span><span class="p">:</span>
+        <span class="sd">"""Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.</span>
 
-<span class="sd">        :return: Candidate layers info as list of dictionary.</span>
+<span class="sd">        :return: layers info as :class:`list` of :class:`dict`.</span>
 <span class="sd">        """</span>
         <span class="n">user_model</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">)</span>
         <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_dtype</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">)</span>
@@ -375,9 +381,6 @@
             <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s1">'could_use_cudnn'</span><span class="p">)</span> <span class="ow">and</span> <span class="n">layer</span><span class="o">.</span><span class="n">could_use_cudnn</span><span class="p">:</span>
                 <span class="n">hooks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">register_forward_post_hook</span><span class="p">(</span><span class="n">hook</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">]</span>
-
         <span class="n">x</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">paddle</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">rand</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="o">*</span><span class="n">in_size</span><span class="p">]),</span> <span class="n">dtype</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">in_size</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">,</span> <span class="n">dtypes</span><span class="p">)</span>
@@ -403,7 +406,7 @@
             <span class="k">if</span> <span class="p">(</span>
                 <span class="ow">not</span> <span class="n">output_shape</span>
                 <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span>
-                <span class="ow">or</span> <span class="ow">not</span> <span class="n">_is_list_int</span><span class="p">(</span><span class="n">output_shape</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_list_int</span><span class="p">(</span><span class="n">output_shape</span><span class="p">)</span>
             <span class="p">):</span>
                 <span class="k">continue</span>
 
@@ -421,28 +424,22 @@
         <span class="k">return</span> <span class="n">results</span>
 
     <span class="k">def</span> <span class="nf">_trim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""Trim an arbitrary Keras model to a Paddle embedding model.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embedding_layer_name</span><span class="p">:</span>
+            <span class="n">module_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">'module_name'</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_embed_layers</span> <span class="o">=</span> <span class="p">{</span><span class="n">l</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]:</span> <span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layers</span><span class="p">}</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">module_name</span> <span class="o">=</span> <span class="n">_embed_layers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_embedding_layer_name</span><span class="p">][</span><span class="s1">'module_name'</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">'The emebdding layer name </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_embedding_layer_name</span><span class="si">}</span><span class="s1"> does not exist.'</span>
+                <span class="p">)</span>
 
-<span class="sd">        ..note::</span>
-<span class="sd">            The argument `layer_idx` means that all layers before (not include) the index will be</span>
-<span class="sd">            preserved.</span>
-<span class="sd">        """</span>
-        <span class="n">candidate_layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">candidate_layers</span>
-        <span class="n">indx</span> <span class="o">=</span> <span class="p">{</span><span class="n">l</span><span class="p">[</span><span class="s1">'layer_idx'</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">candidate_layers</span> <span class="k">if</span> <span class="n">l</span><span class="p">[</span><span class="s1">'layer_idx'</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">}</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_idx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">indx</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Layer index </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_layer_idx</span><span class="si">}</span><span class="s1"> is not one of </span><span class="si">{</span><span class="n">indx</span><span class="si">}</span><span class="s1">.'</span><span class="p">)</span>
-
-        <span class="n">module_name</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">candidate_layer</span> <span class="ow">in</span> <span class="n">candidate_layers</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">candidate_layer</span><span class="p">[</span><span class="s1">'layer_idx'</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_idx</span><span class="p">:</span>
-                <span class="n">module_name</span> <span class="o">=</span> <span class="n">candidate_layer</span><span class="p">[</span><span class="s1">'module_name'</span><span class="p">]</span>
-                <span class="k">break</span>
-
-        <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">_is_after_embedding_layer</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">named_sublayers</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">module_name</span><span class="p">:</span>
-                <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+                <span class="n">_is_after_embedding_layer</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">_is_after_embedding_layer</span><span class="p">:</span>
                 <span class="k">if</span> <span class="p">(</span>
                     <span class="s1">'.'</span> <span class="ow">in</span> <span class="n">name</span>
                 <span class="p">):</span>  <span class="c1"># Note: in paddle.vision, nested layer names are named with '.' e.g. classifier.0</span>
@@ -458,7 +455,7 @@
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trim</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_freze</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_freeze</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_freeze_weights</span><span class="p">()</span></div>
 
 
