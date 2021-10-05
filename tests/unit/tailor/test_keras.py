@@ -113,6 +113,11 @@ def test_trim_fail_given_unexpected_layer_name(model, layer_name):
         ('vgg16_cnn_model', 'fc1', (None, 4096)),
         ('stacked_lstm', 'lstm_2', (None, 256)),
         ('bidirectional_lstm', 'bidirectional', (None, 128)),
+        ('dense_model', None, (None, 10)),
+        ('simple_cnn_model', None, (None, 10)),
+        ('vgg16_cnn_model', None, (None, 1000)),
+        ('stacked_lstm', None, (None, 5)),
+        ('bidirectional_lstm', None, (None, 32)),
     ],
     indirect=['model'],
 )
