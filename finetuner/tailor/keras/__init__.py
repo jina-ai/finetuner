@@ -1,26 +1,15 @@
 from tensorflow.keras import Model
 
 from ..base import BaseTailor
-from ...helper import AnyDNN
-from ..helper import CandidateLayerInfo
+from ...helper import AnyDNN, EmbeddingLayerInfo
 
 
 class KerasTailor(BaseTailor):
-    def __init__(
-        self,
-        model: AnyDNN,
-        layer_idx: int = -1,
-        freeze: bool = False,
-        *args,
-        **kwargs,
-    ):
-        super().__init__(model, layer_idx, freeze, *args, **kwargs)
-
     @property
-    def candidate_layers(self) -> CandidateLayerInfo:
-        """Get all dense layers that can be used as embedding layer from the given model.
+    def embedding_layers(self) -> EmbeddingLayerInfo:
+        """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
 
-        :return: Candidate layers info as list of dictionary.
+        :return: layers info as :class:`list` of :class:`dict`.
         """
         results = []
         for idx, layer in enumerate(self._model.layers):
@@ -54,18 +43,18 @@ class KerasTailor(BaseTailor):
         return results
 
     def _trim(self):
-        """Trim an arbitrary Keras model to a Keras embedding model
+        if not self._embedding_layer_name:
+            indx = self.embedding_layers[-1]['layer_idx']
+        else:
+            _embed_layers = {l['name']: l for l in self.embedding_layers}
+            try:
+                indx = _embed_layers[self._embedding_layer_name]['layer_idx']
+            except KeyError:
+                raise KeyError(
+                    f'The emebdding layer name {self._embedding_layer_name} does not exist.'
+                )
 
-        ..note::
-            The argument `layer_idx` means that all layers before (not include) the index will be
-            preserved.
-        """
-        indx = {l['layer_idx'] for l in self.candidate_layers if l['layer_idx'] != 0}
-        if self._layer_idx not in indx:
-            raise IndexError(f'Layer index {self._layer_idx} is not one of {indx}.')
-        self._model = Model(
-            self._model.input, self._model.layers[self._layer_idx - 1].output
-        )
+        self._model = Model(self._model.input, self._model.layers[indx].output)
 
     def _freeze_weights(self):
         """Freeze an arbitrary model to make layers not trainable."""
@@ -74,5 +63,5 @@ class KerasTailor(BaseTailor):
 
     def __call__(self, *args, **kwargs):
         self._trim()
-        if self._freze:
+        if self._freeze:
             self._freeze_weights()

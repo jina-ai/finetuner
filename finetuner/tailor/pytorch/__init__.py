@@ -7,30 +7,37 @@ import torch
 from torch import nn
 
 from ..base import BaseTailor
-from ...helper import AnyDNN
-from ..helper import CandidateLayerInfo, _is_list_int
+from ...helper import AnyDNN, is_list_int, EmbeddingLayerInfo
 
 
 class PytorchTailor(BaseTailor):
     def __init__(
         self,
-        model: AnyDNN,
         input_size: Tuple[int, ...],
-        layer_idx: int = -1,
-        freeze: bool = False,
         input_dtype: str = 'float32',
         *args,
         **kwargs,
     ):
-        super().__init__(model, layer_idx, freeze, *args, **kwargs)
+        """Tailor class for PyTorch DNN models
+
+        :param input_size: a sequence of integers defining the shape of the input tensor. Note, batch size is *not* part
+            of ``input_size``.
+        :param input_dtype: the data type of the input tensor.
+        """
+        super().__init__(*args, **kwargs)
+
+        # multiple inputs to the network
+        if isinstance(input_size, tuple):
+            input_size = [input_size]
+
         self._input_size = input_size
         self._input_dtype = input_dtype
 
     @property
-    def candidate_layers(self) -> CandidateLayerInfo:
-        """Get all dense layers that can be used as embedding layer from the given model.
+    def embedding_layers(self) -> EmbeddingLayerInfo:
+        """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
 
-        :return: Candidate layers info as list of dictionary.
+        :return: layers info as :class:`list` of :class:`dict`.
         """
         user_model = deepcopy(self._model)
         dtypes = [getattr(torch, self._input_dtype)] * len(self._input_size)
@@ -51,7 +58,7 @@ class PytorchTailor(BaseTailor):
                 class_name = str(module.__class__).split('.')[-1].split("'")[0]
                 module_idx = len(summary)
 
-                m_key = f'{class_name}-{module_idx + 1}'
+                m_key = f'{class_name.lower()}_{module_idx + 1}'
                 summary[m_key] = OrderedDict()
                 summary[m_key]['cls_name'] = module.__class__.__name__
                 summary[m_key]['name'] = m_key
@@ -70,10 +77,6 @@ class PytorchTailor(BaseTailor):
                 module, nn.ModuleList
             ):
                 hooks.append(module.register_forward_hook(hook))
-
-        # multiple inputs to the network
-        if isinstance(self._input_size, tuple):
-            self._input_size = [self._input_size]
 
         # batch_size of 2 for batchnorm
         x = [
@@ -101,7 +104,7 @@ class PytorchTailor(BaseTailor):
             if (
                 not output_shape
                 or len(output_shape) != 2
-                or not _is_list_int(output_shape)
+                or not is_list_int(output_shape)
             ):
                 continue
 
@@ -119,27 +122,22 @@ class PytorchTailor(BaseTailor):
         return results
 
     def _trim(self):
-        """Trim an arbitrary Keras model to a Pytorch embedding model.
+        if not self._embedding_layer_name:
+            module_name = self.embedding_layers[-1]['module_name']
+        else:
+            _embed_layers = {l['name']: l for l in self.embedding_layers}
+            try:
+                module_name = _embed_layers[self._embedding_layer_name]['module_name']
+            except KeyError:
+                raise KeyError(
+                    f'The emebdding layer name {self._embedding_layer_name} does not exist.'
+                )
 
-        ..note::
-            The argument `layer_idx` means that all layers before (not include) the index will be
-            preserved.
-        """
-        indx = {l['layer_idx'] for l in self.candidate_layers if l['layer_idx'] != 0}
-        if self._layer_idx not in indx:
-            raise IndexError(f'Layer index {self._layer_idx} is not one of {indx}.')
-
-        module_name = None
-        for candidate_layer in self.candidate_layers:
-            if candidate_layer['layer_idx'] == self._layer_idx:
-                module_name = candidate_layer['module_name']
-                break
-
-        flag = False
+        _is_after_embedding_layer = False
         for name, module in self._model.named_modules():
             if name == module_name:
-                flag = True
-            if flag:
+                _is_after_embedding_layer = True
+            if _is_after_embedding_layer:
                 if (
                     '.' in name
                 ):  # Note: in torchvision, nested layer names are named with '.' e.g. classifier.0
@@ -149,11 +147,10 @@ class PytorchTailor(BaseTailor):
                     setattr(self._model, name, nn.Identity())
 
     def _freeze_weights(self):
-        """Freeze an arbitrary model to make layers not trainable."""
         for param in self._model.parameters():
             param.requires_grad = False
 
     def __call__(self, *args, **kwargs):
         self._trim()
-        if self._freze:
+        if self._freeze:
             self._freeze_weights()

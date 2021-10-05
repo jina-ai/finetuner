@@ -7,30 +7,37 @@ import paddle
 from paddle import nn, Tensor
 
 from ..base import BaseTailor
-from ...helper import AnyDNN
-from ..helper import CandidateLayerInfo, _is_list_int
+from ...helper import is_list_int, EmbeddingLayerInfo
 
 
 class PaddleTailor(BaseTailor):
     def __init__(
         self,
-        model: AnyDNN,
         input_size: Tuple[int, ...],
-        layer_idx: int = -1,
-        freeze: bool = False,
         input_dtype: str = 'float32',
         *args,
         **kwargs,
     ):
-        super().__init__(model, layer_idx, freeze, *args, **kwargs)
+        """Tailor class for Paddle DNN models
+
+        :param input_size: a sequence of integers defining the shape of the input tensor. Note, batch size is *not* part
+            of ``input_size``.
+        :param input_dtype: the data type of the input tensor.
+        """
+        super().__init__(*args, **kwargs)
+
+        # multiple inputs to the network
+        if isinstance(input_size, tuple):
+            input_size = [input_size]
+
         self._input_size = input_size
         self._input_dtype = input_dtype
 
     @property
-    def candidate_layers(self) -> CandidateLayerInfo:
-        """Get all dense layers that can be used as embedding layer from the given model.
+    def embedding_layers(self) -> EmbeddingLayerInfo:
+        """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
 
-        :return: Candidate layers info as list of dictionary.
+        :return: layers info as :class:`list` of :class:`dict`.
         """
         user_model = deepcopy(self._model)
         dtypes = [self._input_dtype] * len(self._input_size)
@@ -85,9 +92,6 @@ class PaddleTailor(BaseTailor):
             elif hasattr(layer, 'could_use_cudnn') and layer.could_use_cudnn:
                 hooks.append(layer.register_forward_post_hook(hook))
 
-        if isinstance(self._input_size, tuple):
-            self._input_size = [self._input_size]
-
         x = [
             paddle.cast(paddle.rand([2, *in_size]), dtype)
             for in_size, dtype in zip(self._input_size, dtypes)
@@ -113,7 +117,7 @@ class PaddleTailor(BaseTailor):
             if (
                 not output_shape
                 or len(output_shape) != 2
-                or not _is_list_int(output_shape)
+                or not is_list_int(output_shape)
             ):
                 continue
 
@@ -131,28 +135,22 @@ class PaddleTailor(BaseTailor):
         return results
 
     def _trim(self):
-        """Trim an arbitrary Keras model to a Paddle embedding model.
+        if not self._embedding_layer_name:
+            module_name = self.embedding_layers[-1]['module_name']
+        else:
+            _embed_layers = {l['name']: l for l in self.embedding_layers}
+            try:
+                module_name = _embed_layers[self._embedding_layer_name]['module_name']
+            except KeyError:
+                raise KeyError(
+                    f'The emebdding layer name {self._embedding_layer_name} does not exist.'
+                )
 
-        ..note::
-            The argument `layer_idx` means that all layers before (not include) the index will be
-            preserved.
-        """
-        candidate_layers = self.candidate_layers
-        indx = {l['layer_idx'] for l in candidate_layers if l['layer_idx'] != 0}
-        if self._layer_idx not in indx:
-            raise IndexError(f'Layer index {self._layer_idx} is not one of {indx}.')
-
-        module_name = None
-        for candidate_layer in candidate_layers:
-            if candidate_layer['layer_idx'] == self._layer_idx:
-                module_name = candidate_layer['module_name']
-                break
-
-        flag = False
+        _is_after_embedding_layer = False
         for name, module in self._model.named_sublayers():
             if name == module_name:
-                flag = True
-            if flag:
+                _is_after_embedding_layer = True
+            if _is_after_embedding_layer:
                 if (
                     '.' in name
                 ):  # Note: in paddle.vision, nested layer names are named with '.' e.g. classifier.0
@@ -168,7 +166,7 @@ class PaddleTailor(BaseTailor):
 
     def __call__(self, *args, **kwargs):
         self._trim()
-        if self._freze:
+        if self._freeze:
             self._freeze_weights()
 
 

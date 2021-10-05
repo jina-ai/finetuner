@@ -1,4 +1,4 @@
-from typing import TypeVar, Sequence, Iterator, Union, Callable
+from typing import TypeVar, Sequence, Iterator, Union, Callable, List, Dict, Any
 
 from jina import Document, DocumentArray, DocumentArrayMemmap
 
@@ -16,15 +16,28 @@ DocumentArrayLike = Union[
     Callable[..., DocumentSequence],
 ]
 
+EmbeddingLayerInfo = List[Dict[str, Any]]
 
-def get_framework(embed_model: AnyDNN) -> str:
-    if 'keras.' in embed_model.__module__:
+
+def get_framework(dnn_model: AnyDNN) -> str:
+    """Return the framework that enpowers a DNN model
+
+    :param dnn_model: a DNN model
+    :return: `keras`, `torch`, `paddle` or ValueError
+
+    """
+    if 'keras.' in dnn_model.__module__:
         return 'keras'
-    elif 'torch' in embed_model.__module__:
+    elif 'torch' in dnn_model.__module__:  # note: cover torch and torchvision
         return 'torch'
-    elif 'paddle.' in embed_model.__module__:
+    elif 'paddle.' in dnn_model.__module__:
         return 'paddle'
     else:
         raise ValueError(
-            f'can not determine the backend from embed_model from {embed_model.__module__}'
+            f'can not determine the backend from embed_model from {dnn_model.__module__}'
         )
+
+
+def is_list_int(tp) -> bool:
+    """Return True if the input is a list of integers."""
+    return tp and isinstance(tp, Sequence) and all(isinstance(p, int) for p in tp)
