@@ -118,8 +118,6 @@ def test_trim_fail_given_unexpected_layer_name(model, layer_name):
 )
 def test_trim(model, layer_name, expected_output_shape):
     keras_tailor = KerasTailor(model, False, layer_name)
-    print(model.summary())
-    print(keras_tailor.embedding_layers)
     keras_tailor._trim()
     assert keras_tailor.model.output_shape == expected_output_shape
 

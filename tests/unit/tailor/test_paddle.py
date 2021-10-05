@@ -181,10 +181,10 @@ def test_freeze(model, layer_name, input_size, input_dtype):
 @pytest.mark.parametrize(
     'model, layer_name, input_size, input_, input_dtype, expected_output_shape',
     [
-        ('dense_model', 'linear_3', (128,), (1, 128), 'float32', [1, 32]),
+        ('dense_model', 'linear_27', (128,), (1, 128), 'float32', [1, 32]),
         (
             'simple_cnn_model',
-            'dropout_1',
+            'dropout_9',
             (1, 28, 28),
             (1, 1, 28, 28),
             'float32',
@@ -192,14 +192,14 @@ def test_freeze(model, layer_name, input_size, input_dtype):
         ),
         (
             'vgg16_cnn_model',
-            'linear_7',
+            'linear_31',
             (3, 224, 224),
             (1, 3, 224, 224),
             'float32',
             [1, 4096],
         ),
-        ('stacked_lstm', 'linear_9', (128,), (1, 128), 'int64', [1, 256]),
-        ('bidirectional_lstm', 'linear_11', (128,), (1, 128), 'int64', [1, 128]),
+        ('stacked_lstm', 'linear_33', (128,), (1, 128), 'int64', [1, 256]),
+        ('bidirectional_lstm', 'linear_35', (128,), (1, 128), 'int64', [1, 128]),
     ],
     indirect=['model'],
 )
