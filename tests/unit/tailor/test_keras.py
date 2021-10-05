@@ -164,7 +164,6 @@ def test_keras_model_parser():
     assert r[1]['name'] == 'l2'
     assert r[2]['name'] == 'l3'
 
-    # flat layer can be a nonparametric candidate
     assert r[0]['output_features'] == 784
     assert r[0]['params'] == 0
 
