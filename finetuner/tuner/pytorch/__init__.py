@@ -53,9 +53,10 @@ class PytorchTuner(BaseTuner):
 
         with ProgressBar(description, message_on_done=get_desc_str) as p:
             for inputs, label in data:
-                outputs = self.wrapped_model(*inputs)
-                loss = self.wrapped_model.loss_fn(outputs, label)
-                metric = self.wrapped_model.metric_fn(outputs, label)
+                with torch.inference_mode():
+                    outputs = self.wrapped_model(*inputs)
+                    loss = self.wrapped_model.loss_fn(outputs, label)
+                    metric = self.wrapped_model.metric_fn(outputs, label)
 
                 losses.append(loss.item())
                 metrics.append(metric.numpy())
