@@ -5,13 +5,6 @@ import torch.nn as nn
 from finetuner.tailor.pytorch import PytorchTailor
 
 
-@pytest.fixture(autouse=True)
-def clear_session():
-    import gc
-
-    gc.collect()
-
-
 class LastCellPT(torch.nn.Module):
     def forward(self, x):
         out, _ = x
