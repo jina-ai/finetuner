@@ -58,7 +58,7 @@ class PytorchTailor(BaseTailor):
                 class_name = str(module.__class__).split('.')[-1].split("'")[0]
                 module_idx = len(summary)
 
-                m_key = f'{class_name}-{module_idx + 1}'
+                m_key = f'{class_name.lower()}_{module_idx + 1}'
                 summary[m_key] = OrderedDict()
                 summary[m_key]['cls_name'] = module.__class__.__name__
                 summary[m_key]['name'] = m_key

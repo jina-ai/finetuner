@@ -5,6 +5,13 @@ import torch.nn as nn
 from finetuner.tailor.pytorch import PytorchTailor
 
 
+@pytest.fixture(autouse=True)
+def clear_session():
+    import gc
+
+    gc.collect()
+
+
 class LastCellPT(torch.nn.Module):
     def forward(self, x):
         out, _ = x
@@ -145,10 +152,10 @@ def test_trim_fail_given_unexpected_layer_idx(
 @pytest.mark.parametrize(
     'model, layer_name, input_size, input_, input_dtype, expected_output_shape',
     [
-        ('dense_model', 'ReLU-6', (128,), (1, 128), 'float32', [1, 32]),
+        ('dense_model', 'linear_7', (128,), (1, 128), 'float32', [1, 32]),
         (
             'simple_cnn_model',
-            'Dropout-9',
+            'dropout_9',
             (1, 28, 28),
             (1, 1, 28, 28),
             'float32',
@@ -156,14 +163,14 @@ def test_trim_fail_given_unexpected_layer_idx(
         ),
         (
             'vgg16_cnn_model',
-            'ReLU-34',
+            'linear_36',
             (3, 224, 224),
             (1, 3, 224, 224),
             'float32',
             [1, 4096],
         ),
-        ('stacked_lstm', 'Linear-3', (128,), (1, 128), 'int64', [1, 256]),
-        ('bidirectional_lstm', 'Linear-4', (128,), (1, 128), 'int64', [1, 128]),
+        ('stacked_lstm', 'linear_3', (128,), (1, 128), 'int64', [1, 256]),
+        ('bidirectional_lstm', 'linear_4', (128,), (1, 128), 'int64', [1, 128]),
     ],
     indirect=['model'],
 )

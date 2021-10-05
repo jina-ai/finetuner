@@ -7,7 +7,7 @@ import paddle
 from paddle import nn, Tensor
 
 from ..base import BaseTailor
-from ...helper import AnyDNN, is_list_int, EmbeddingLayerInfo
+from ...helper import is_list_int, EmbeddingLayerInfo
 
 
 class PaddleTailor(BaseTailor):

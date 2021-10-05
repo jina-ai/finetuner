@@ -89,7 +89,7 @@ def bidirectional_lstm():
         nn.Embedding(num_embeddings=5000, embedding_dim=64),
         nn.LSTM(64, 64, direction='bidirectional'),
         LastCell(),
-        nn.Linear(in_features=2 * 64, out_features=32),
+        nn.Linear(in_features=128, out_features=32),
     )
 
 
