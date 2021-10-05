@@ -26,7 +26,12 @@ def fit(
             return embed_model
 
     f = (
-        Flow(protocol='http', port_expose=port_expose, prefetch=1)
+        Flow(
+            protocol='http',
+            port_expose=port_expose,
+            prefetch=1,
+            runtime_backend=runtime_backend,
+        )
         .add(
             uses=DataIterator,
             uses_with={
