@@ -3,7 +3,7 @@ from typing import (
     Optional,
 )
 
-from ..helper import AnyDNN, EmbeddingLayerInfo
+from ..helper import AnyDNN, EmbeddingLayerInfoType
 
 
 class BaseTailor(abc.ABC):
@@ -40,7 +40,7 @@ class BaseTailor(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def embedding_layers(self) -> EmbeddingLayerInfo:
+    def embedding_layers(self) -> EmbeddingLayerInfoType:
         """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
 
         :return: layers info as :class:`list` of :class:`dict`.

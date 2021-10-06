@@ -1,12 +1,12 @@
 from tensorflow.keras import Model
 
 from ..base import BaseTailor
-from ...helper import EmbeddingLayerInfo
+from ...helper import EmbeddingLayerInfoType
 
 
 class KerasTailor(BaseTailor):
     @property
-    def embedding_layers(self) -> EmbeddingLayerInfo:
+    def embedding_layers(self) -> EmbeddingLayerInfoType:
         """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
 
         :return: layers info as :class:`list` of :class:`dict`.
