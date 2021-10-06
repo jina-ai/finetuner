@@ -65,13 +65,14 @@ class BaseTailor(abc.ABC):
         :raises KeyError: Raise when the given :py:attr:`embedding_layer_name` not exist in the model.
         """
         if not self._embedding_layer_name:
-            return self.embedding_layers[-1]['output_features']
+            index = self.embedding_layers[-1]['layer_idx']
         else:
             _embed_layers = {l['name']: l for l in self.embedding_layers}
             try:
-                return _embed_layers[self._embedding_layer_name]['output_features']
+                index = _embed_layers[self._embedding_layer_name]['layer_idx']
             except KeyError as e:
                 raise e
+        return self.embedding_layers[index - 1]['output_features']
 
     @property
     def output_dim(self) -> int:
@@ -79,7 +80,7 @@ class BaseTailor(abc.ABC):
 
         :return: Output dimension of the attached linear layer
         """
-        return self._output_dim
+        return self._output_dim or self._trimmed_output_dim
 
     @output_dim.setter
     def output_dim(self, dim: int):

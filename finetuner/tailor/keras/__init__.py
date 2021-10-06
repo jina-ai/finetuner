@@ -1,12 +1,13 @@
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Dense
+from jina.helper import cached_property
 
 from ..base import BaseTailor
 from ...helper import EmbeddingLayerInfo
 
 
 class KerasTailor(BaseTailor):
-    @property
+    @cached_property
     def embedding_layers(self) -> EmbeddingLayerInfo:
         """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
 
