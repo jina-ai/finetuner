@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 
 from finetuner.tuner.pytorch import PytorchTuner
-from finetuner.toydata import generate_fashion_match as fmdg
+from finetuner.toydata import generate_fashion_match
 from finetuner.toydata import generate_qa_match
 
 
@@ -27,8 +27,10 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
 
     # fit and save the checkpoint
     pt.fit(
-        train_data=lambda: fmdg(num_pos=10, num_neg=10, num_total=params['num_train']),
-        eval_data=lambda: fmdg(
+        train_data=lambda: generate_fashion_match(
+            num_pos=10, num_neg=10, num_total=params['num_train']
+        ),
+        eval_data=lambda: generate_fashion_match(
             num_pos=10, num_neg=10, num_total=params['num_eval'], is_testset=True
         ),
         epochs=params['epochs'],
