@@ -2,6 +2,11 @@ const urlParams = new URLSearchParams(window.location.search);
 Vue.use(VueAwesomeSwiper)
 const app = new Vue({
     el: '#app',
+    components: {
+        "sidebar": sidebar,
+        "image-match-card": imageMatchCard,
+        "text-match-card": textMatchCard,
+    },
     data: {
         is_busy: false,
         is_conn_broken: false,
