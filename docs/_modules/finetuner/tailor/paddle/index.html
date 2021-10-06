@@ -292,6 +292,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">paddle</span>
 <span class="kn">from</span> <span class="nn">paddle</span> <span class="kn">import</span> <span class="n">nn</span><span class="p">,</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">jina.helper</span> <span class="kn">import</span> <span class="n">cached_property</span>
 
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseTailor</span>
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">is_list_int</span><span class="p">,</span> <span class="n">EmbeddingLayerInfoType</span>
@@ -319,8 +320,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span> <span class="o">=</span> <span class="n">input_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_dtype</span> <span class="o">=</span> <span class="n">input_dtype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trimmed_output_dim</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">embedding_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EmbeddingLayerInfoType</span><span class="p">:</span>
         <span class="sd">"""Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.</span>
 
@@ -421,6 +423,27 @@
 
         <span class="k">return</span> <span class="n">results</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">output_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""Get the user-defined output dimensionality.</span>
+<span class="sd">        :return: Output dimension of the attached linear layer</span>
+<span class="sd">        .. note::</span>
+<span class="sd">           if user didn't specify :py:attr:`output_dim`, return model's last layer output dim.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_dim</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_dim</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpret_output_dim</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_interpret_output_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">input_size</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">input_size</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">)</span>
+        <span class="n">input_size</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># expand 1 dim to input.</span>
+        <span class="n">input_</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">input_size</span><span class="p">))</span>
+        <span class="n">input_</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_dtype</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">(</span><span class="n">input_</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">_trim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embedding_layer_name</span><span class="p">:</span>
             <span class="n">module_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">'module_name'</span><span class="p">]</span>
@@ -428,10 +451,8 @@
             <span class="n">_embed_layers</span> <span class="o">=</span> <span class="p">{</span><span class="n">l</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]:</span> <span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layers</span><span class="p">}</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">module_name</span> <span class="o">=</span> <span class="n">_embed_layers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_embedding_layer_name</span><span class="p">][</span><span class="s1">'module_name'</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">'The emebdding layer name </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_embedding_layer_name</span><span class="si">}</span><span class="s1"> does not exist.'</span>
-                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">e</span>
 
         <span class="n">_is_after_embedding_layer</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">named_sublayers</span><span class="p">():</span>
@@ -446,15 +467,30 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">_Identity</span><span class="p">())</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trimmed_output_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpret_output_dim</span><span class="p">()</span>
+
     <span class="k">def</span> <span class="nf">_freeze_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">"""Freeze an arbitrary model to make layers not trainable."""</span>
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
             <span class="n">param</span><span class="o">.</span><span class="n">trainable</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_trim</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_freeze</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_freeze_weights</span><span class="p">()</span></div>
+    <span class="k">def</span> <span class="nf">_attach_dense_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Attach a dense layer to the end of the parsed model.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">           The attached dense layer have the same shape as the last layer</span>
+<span class="sd">           in the parsed model.</span>
+<span class="sd">           The attached dense layer will ignore the :py:attr:`freeze`, this</span>
+<span class="sd">           layer always trainable.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">,</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
+                <span class="n">in_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_trimmed_output_dim</span><span class="p">,</span>
+                <span class="n">out_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dim</span><span class="p">,</span>
+                <span class="n">bias_attr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span></div>
 
 
 <span class="k">class</span> <span class="nc">_Identity</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>

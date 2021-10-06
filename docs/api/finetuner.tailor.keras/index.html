@@ -314,7 +314,7 @@
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-finetuner.tailor.keras" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.tailor.keras.KerasTailor">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tailor.keras.</span></span><span class="sig-name descname"><span class="pre">KerasTailor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freeze</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_layer_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tailor/keras/#KerasTailor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tailor.keras.KerasTailor" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tailor.keras.</span></span><span class="sig-name descname"><span class="pre">KerasTailor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freeze</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_layer_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tailor/keras/#KerasTailor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tailor.keras.KerasTailor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../finetuner.tailor.base/#finetuner.tailor.base.BaseTailor" title="finetuner.tailor.base.BaseTailor"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tailor.base.BaseTailor</span></code></a></p>
 <p>Tailor converts a general DNN model into an embedding model.</p>
 <dl class="field-list simple">
@@ -329,18 +329,27 @@ will be removed. When not given, then the last layer listed in <a class="referen
 </ul>
 </dd>
 </dl>
-<dl class="py property">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="finetuner.tailor.keras.KerasTailor.embedding_layers">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">embedding_layers</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#finetuner.tailor.keras.KerasTailor.embedding_layers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all dense layers that can be used as embedding layer from the <a class="reference internal" href="../finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.model" title="finetuner.tailor.base.BaseTailor.model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">model</span></code></a>.</p>
+<span class="sig-name descname"><span class="pre">embedding_layers</span></span><a class="headerlink" href="#finetuner.tailor.keras.KerasTailor.embedding_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>The decorator to cache property of a class.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="finetuner.tailor.keras.KerasTailor.output_dim">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">output_dim</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#finetuner.tailor.keras.KerasTailor.output_dim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the user-defined output dimensionality.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>layers info as <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>.</p>
+<dd class="field-even"><p>Output dimension of the attached linear layer</p>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>if user didn’t specify <a class="reference internal" href="#finetuner.tailor.keras.KerasTailor.output_dim" title="finetuner.tailor.keras.KerasTailor.output_dim"><code class="xref py py-attr docutils literal notranslate"><span class="pre">output_dim</span></code></a>, return model’s last layer output dim.</p>
+</div>
 </dd></dl>
 </dd></dl>
 </section>
