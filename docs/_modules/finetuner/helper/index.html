@@ -289,22 +289,30 @@
 
 <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">DocumentArrayMemmap</span>
 
-<span class="n">AnyDNN</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">'AnyDNN'</span><span class="p">)</span>  <span class="c1">#: Any implementation of a Deep Neural Network object</span>
-<span class="n">AnyDataLoader</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">'AnyDataLoader'</span><span class="p">)</span>  <span class="c1">#: Any implementation of a data loader</span>
+<span class="n">AnyDNN</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span>
+    <span class="s1">'AnyDNN'</span>
+<span class="p">)</span>  <span class="c1">#: The type of any implementation of a Deep Neural Network object</span>
+<span class="n">AnyDataLoader</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span>
+    <span class="s1">'AnyDataLoader'</span>
+<span class="p">)</span>  <span class="c1">#: The type of any implementation of a data loader</span>
 <span class="n">DocumentSequence</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span>
     <span class="s1">'DocumentSequence'</span><span class="p">,</span>
     <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span>
     <span class="n">DocumentArray</span><span class="p">,</span>
     <span class="n">DocumentArrayMemmap</span><span class="p">,</span>
     <span class="n">Iterator</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span>
-<span class="p">)</span>
+<span class="p">)</span>  <span class="c1">#: The type of any sequence of Document</span>
 <span class="n">DocumentArrayLike</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span>
     <span class="n">DocumentSequence</span><span class="p">,</span>
     <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">DocumentSequence</span><span class="p">],</span>
-<span class="p">]</span>
+<span class="p">]</span>  <span class="c1">#: The type :py:data:`DocumentSequence` or a function that gives :py:data:`DocumentSequence`</span>
 
-<span class="n">EmbeddingLayerInfoType</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
-<span class="n">TunerReturnType</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+<span class="n">EmbeddingLayerInfoType</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span>
+    <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+<span class="p">]</span>  <span class="c1">#: The type of embedding layer information used in Tailor</span>
+<span class="n">TunerReturnType</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span>
+    <span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+<span class="p">]</span>  <span class="c1">#: The type of loss, metric information Tuner returns</span>
 
 
 <div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../../api/finetuner.helper/#finetuner.helper.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
