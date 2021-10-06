@@ -1,5 +1,30 @@
-from .. import AnyDNN
-from ..helper import get_framework
+from typing import overload, Optional, Tuple
+
+from ..helper import get_framework, AnyDNN
+
+
+# Keras Tailor
+@overload
+def convert(
+    model: AnyDNN,
+    freeze: bool = False,
+    embedding_layer_name: Optional[str] = None,
+    output_dim: Optional[int] = None,
+) -> AnyDNN:
+    ...
+
+
+# Pytorch and Paddle Tailor
+@overload
+def convert(
+    model: AnyDNN,
+    input_size: Tuple[int, ...],
+    freeze: bool = False,
+    embedding_layer_name: Optional[str] = None,
+    output_dim: Optional[int] = None,
+    input_dtype: str = 'float32',
+) -> AnyDNN:
+    ...
 
 
 def convert(model: AnyDNN, **kwargs) -> AnyDNN:
@@ -18,5 +43,4 @@ def convert(model: AnyDNN, **kwargs) -> AnyDNN:
 
         ft = PaddleTailor
 
-    _ft = ft(model, **kwargs)
-    return _ft.model
+    return ft(model, **kwargs)().model
