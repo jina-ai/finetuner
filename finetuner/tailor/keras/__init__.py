@@ -51,21 +51,25 @@ class KerasTailor(BaseTailor):
 
         :return: The output shape of the parsed model.
         """
-        return self._model.output_shape
+        index = self._embedding_layer_name_to_index()
+        return self._model.layers[index].output_shape
 
     def _trim(self) -> 'KerasTailor':
+        index = self._embedding_layer_name_to_index()
+        self._model = Model(self._model.input, self._model.layers[index].output)
+
+    def _embedding_layer_name_to_index(self):  # cache it?
         if not self._embedding_layer_name:
-            indx = self.embedding_layers[-1]['layer_idx']
+            index = self.embedding_layers[-1]['layer_idx']
         else:
             _embed_layers = {l['name']: l for l in self.embedding_layers}
             try:
-                indx = _embed_layers[self._embedding_layer_name]['layer_idx']
+                index = _embed_layers[self._embedding_layer_name]['layer_idx']
             except KeyError:
                 raise KeyError(
                     f'The emebdding layer name {self._embedding_layer_name} does not exist.'
                 )
-
-        self._model = Model(self._model.input, self._model.layers[indx].output)
+        return index
 
     def _freeze_weights(self) -> 'KerasTailor':
         """Freeze an arbitrary model to make layers not trainable."""
