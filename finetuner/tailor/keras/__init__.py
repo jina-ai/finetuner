@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from tensorflow.keras import Model
 
 from ..base import BaseTailor
@@ -42,7 +44,15 @@ class KerasTailor(BaseTailor):
                 )
         return results
 
-    def _trim(self):
+    @property
+    def output_shape(self) -> Tuple:
+        """Get the output shape.
+
+        :return: The output shape of the parsed model.
+        """
+        return self._model.output_shape
+
+    def _trim(self) -> 'KerasTailor':
         if not self._embedding_layer_name:
             indx = self.embedding_layers[-1]['layer_idx']
         else:
@@ -56,12 +66,16 @@ class KerasTailor(BaseTailor):
 
         self._model = Model(self._model.input, self._model.layers[indx].output)
 
-    def _freeze_weights(self):
+    def _freeze_weights(self) -> 'KerasTailor':
         """Freeze an arbitrary model to make layers not trainable."""
         for layer in self._model.layers:
             layer.trainable = False
 
+    def _attach_dense_layer(self):
+        pass
+
     def __call__(self, *args, **kwargs):
-        self._trim()
         if self._freeze:
-            self._freeze_weights()
+            self._trim()._freeze_weights()._attach_dense_layer()
+        else:
+            self._trim()._attach_dense_layer()

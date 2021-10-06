@@ -30,12 +30,12 @@ class BaseTailor(abc.ABC):
         self._embedding_layer_name = embedding_layer_name
 
     @abc.abstractmethod
-    def _freeze_weights(self):
+    def _freeze_weights(self) -> 'BaseTailor':
         """Freeze the weights of :py:attr:`.model`."""
         ...
 
     @abc.abstractmethod
-    def _trim(self):
+    def _trim(self) -> 'BaseTailor':
         """Trim :py:attr:`.model` to an embedding model."""
         ...
 
