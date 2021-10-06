@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/index.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
-  <meta property="og:description" content="Finetuner allows one to finetune any deep neural network for better embedding on search tasks. It accompanies Jina to deliver the last mile of performance-tuning for neural search applications. Finetuner supports Pytorch, Keras and PaddlePaddle as the deep learning backend. Make sure that you hav..." />
+  <meta property="og:description" content="Finetuner allows one to tune the weights of any deep neural network for better embedding on search tasks. It accompanies Jina to deliver the last mile of performance-tuning for neural search applications. 🔱 Powerful yet intuitive: all you need is finetuner.fit(), a one-liner that unlocks rich fea..." />
   <meta property="og:image" content="_images/labeler-on-fashion-mnist.gif" />
   <meta property="og:image:alt" content="Finetuner Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -180,7 +180,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -310,12 +310,16 @@
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="welcome-to-finetuner">
 <h1>Welcome to Finetuner!<a class="headerlink" href="#welcome-to-finetuner" title="Permalink to this headline">¶</a></h1>
-<p>Finetuner allows one to finetune any deep neural network for better embedding on search tasks. It accompanies <a class="reference external" href="https://github.com/jina-ai/jina">Jina</a> to deliver the last mile of performance-tuning for neural search applications.</p>
-<p>Finetuner supports <a class="reference external" href="https://pytorch.org/">Pytorch</a>, <a class="reference external" href="https://keras.io/">Keras</a> and <a class="reference external" href="https://github.com/PaddlePaddle/Paddle">PaddlePaddle</a> as the deep learning backend.</p>
+<p>Finetuner allows one to tune the weights of any deep neural network for better embedding on search tasks. It accompanies <a class="reference external" href="https://github.com/jina-ai/jina">Jina</a> to deliver the last mile of performance-tuning for neural search applications.</p>
+<p>🔱 <strong>Powerful yet intuitive</strong>: all you need is <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code>, a one-liner that unlocks rich features such as siamese/triplet architecture, interactive labeling, weight freezing, dimensionality reduction.</p>
+<p>⚛️ <strong>Framework-agnostic</strong>: support <a class="reference external" href="https://pytorch.org/">Pytorch</a>, <a class="reference external" href="https://keras.io/">Keras</a> and <a class="reference external" href="https://github.com/PaddlePaddle/Paddle">PaddlePaddle</a> as deep learning backends with identical user experience.</p>
+<p>🧈 <strong>Jina integration</strong>: buttery smooth integration with Jina, reducing the cost of context-switch between experimenting and production.</p>
+<section id="quick-start">
+<h2>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
 <ol>
 <li><p>Make sure that you have Python 3.7+ installed on Linux/MacOS. You have one of Pytorch, Keras or PaddlePaddle installed.</p></li>
 <li><p>Install Finetuner</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install https://github.com/jina-ai/finetuner.git@main
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install finetuner
 </pre></div>
 </div>
 </li>
@@ -401,6 +405,7 @@
 <hr class="docutils"/>
 <p><a class="reference internal" href="genindex/"><span class="std std-ref">Index</span></a> <a class="reference internal" href="py-modindex/"><span class="std std-ref">Module Index</span></a></p>
 </section>
+</section>
 
             </article>
             <footer>
@@ -438,6 +443,25 @@
             
 
             <div class="toc-sticky toc-scroll">
+                
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">Welcome to Finetuner!</a><ul>
+<li><a class="reference internal" href="#quick-start">Quick start</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
                 
             </div>
 

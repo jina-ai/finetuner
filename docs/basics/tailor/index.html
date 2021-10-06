@@ -8,6 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/basics/tailor.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
+  <meta property="og:description" content="Tailor is a component of Finetuner. It converts any general model into an embedding model. Given a general model (written from scratch, or from Pytorch/Keras/Huggingface model zoo), Tailor does micro-operations on the model architecture and outputs an embedding model for the Tuner. Given a genera..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -179,7 +180,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -309,6 +310,39 @@
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="tailor">
 <h1>Tailor<a class="headerlink" href="#tailor" title="Permalink to this headline">¶</a></h1>
+<p>Tailor is a component of Finetuner. It converts any <a class="reference internal" href="../glossary/#term-General-model"><span class="xref std std-term">general model</span></a> into an <a class="reference internal" href="../glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>. Given a general model (written from scratch, or from Pytorch/Keras/Huggingface model zoo), Tailor does micro-operations on the model architecture and outputs an embedding model for the <a class="reference internal" href="../glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a>.</p>
+<p>Given a general model, Tailor does the following things:</p>
+<ul class="simple">
+<li><p>Finding all dense layers by iterating over layers;</p></li>
+<li><p>Removing all layers after a selected dense layer (including itself);</p></li>
+<li><p>(Optional) freezing the remaining layers;</p></li>
+<li><p>Add a new dense layer with the desired output dimensions as the last layer.</p></li>
+</ul>
+<section id="convert-method">
+<h2>Convert method<a class="headerlink" href="#convert-method" title="Permalink to this headline">¶</a></h2>
+<p>Tailor provides a high-level API <code class="docutils literal notranslate"><span class="pre">finetuner.tailor.convert()</span></code>, which can be used as following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.tailor</span> <span class="kn">import</span> <span class="n">convert</span>
+
+<span class="n">convert</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>In general, you do not need to call <code class="docutils literal notranslate"><span class="pre">convert</span></code> manually. It is called by <code class="docutils literal notranslate"><span class="pre">finetuner.fit</span></code>.</p>
+</div>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<section id="simple-mlp">
+<h3>Simple MLP<a class="headerlink" href="#simple-mlp" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="simple-bi-lstm">
+<h3>Simple Bi-LSTM<a class="headerlink" href="#simple-bi-lstm" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="vgg16">
+<h3>VGG16<a class="headerlink" href="#vgg16" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
 </section>
 
             </article>
@@ -359,6 +393,29 @@
             
 
             <div class="toc-sticky toc-scroll">
+                
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">Tailor</a><ul>
+<li><a class="reference internal" href="#convert-method">Convert method</a></li>
+<li><a class="reference internal" href="#examples">Examples</a><ul>
+<li><a class="reference internal" href="#simple-mlp">Simple MLP</a></li>
+<li><a class="reference internal" href="#simple-bi-lstm">Simple Bi-LSTM</a></li>
+<li><a class="reference internal" href="#vgg16">VGG16</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
                 
             </div>
 
