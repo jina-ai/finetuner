@@ -33,6 +33,7 @@ class PaddleTailor(BaseTailor):
 
         self._input_size = input_size
         self._input_dtype = input_dtype
+        self._trimmed_output_dim = None
 
     @cached_property
     def embedding_layers(self) -> EmbeddingLayerInfo:
@@ -138,13 +139,23 @@ class PaddleTailor(BaseTailor):
     @property
     def output_dim(self) -> int:
         """Get the user-defined output dimensionality.
-
         :return: Output dimension of the attached linear layer
-
         .. note::
            if user didn't specify :py:attr:`output_dim`, return model's last layer output dim.
         """
-        return self._output_dim
+        if self._output_dim:
+            return self._output_dim
+        return self._interpret_output_dim()
+
+    def _interpret_output_dim(self):
+        if isinstance(self._input_size, list):
+            input_size = list(self._input_size[0])
+        else:
+            input_size = list(self._input_size)
+        input_size.insert(0, 1)  # expand 1 dim to input.
+        input_ = paddle.rand(tuple(input_size))
+        input_ = paddle.cast(input_, self._input_dtype)
+        return list(self._model(input_).shape)[1]
 
     def _trim(self):
         if not self._embedding_layer_name:
@@ -169,6 +180,8 @@ class PaddleTailor(BaseTailor):
                 else:
                     setattr(self._model, name, _Identity())
 
+        self._trimmed_output_dim = self._interpret_output_dim()
+
     def _freeze_weights(self):
         """Freeze an arbitrary model to make layers not trainable."""
         for param in self._model.parameters():
@@ -186,7 +199,9 @@ class PaddleTailor(BaseTailor):
         self._model = nn.Sequential(
             self._model,
             nn.Linear(
-                in_features=self.output_dim, out_features=self.output_dim, bias=True
+                in_features=self._trimmed_output_dim,
+                out_features=self.output_dim,
+                bias_attr=True,
             ),
         )
 
