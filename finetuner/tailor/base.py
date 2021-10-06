@@ -77,6 +77,8 @@ class BaseTailor(abc.ABC):
         """
         ...
 
-    @abc.abstractmethod
     def __call__(self, *args, **kwargs):
-        ...
+        if self._freeze:
+            self._trim()._freeze_weights()._attach_dense_layer()
+        else:
+            self._trim()._attach_dense_layer()

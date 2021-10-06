@@ -88,9 +88,3 @@ class KerasTailor(BaseTailor):
         dense_layer = Dense(self.output_shape[1], activation=None, use_bias=True)
         output = dense_layer()(self._model.layers[-1].output)
         self._model = Model(self._model.input, output)
-
-    def __call__(self, *args, **kwargs):
-        if self._freeze:
-            self._trim()._freeze_weights()._attach_dense_layer()
-        else:
-            self._trim()._attach_dense_layer()
