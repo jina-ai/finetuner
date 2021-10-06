@@ -19,7 +19,7 @@ Finetuner allows one to tune the weights of any deep neural network for better e
 
 🔱 **Powerful yet intuitive**: all you need is `finetuner.fit()`, a one-liner that unlocks rich features such as siamese/triplet architecture, interactive labeling, weight freezing, dimensionality reduction.
 
-⚛️ **Framework-agnostic**: support [Pytorch](https://pytorch.org/), [Keras](https://keras.io/) and [PaddlePaddle](https://github.com/PaddlePaddle/Paddle) as deep learning backends with identical user experience. 
+⚛️ **Framework-agnostic**: promise an identical user experience on [Pytorch](https://pytorch.org/), [Keras](https://keras.io/) or [PaddlePaddle](https://github.com/PaddlePaddle/Paddle) deep learning backends. 
 
 🧈 **Jina integration**: buttery smooth integration with Jina, reducing the cost of context-switch between experimenting and production.
 
