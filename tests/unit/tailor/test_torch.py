@@ -164,6 +164,25 @@ def test_trim_fail_given_unexpected_layer_idx(
         ),
         ('stacked_lstm', 'linear_3', (128,), (1, 128), 'int64', [1, 256]),
         ('bidirectional_lstm', 'linear_4', (128,), (1, 128), 'int64', [1, 128]),
+        ('dense_model', None, (128,), (1, 128), 'float32', [1, 10]),
+        (
+            'simple_cnn_model',
+            None,
+            (1, 28, 28),
+            (1, 1, 28, 28),
+            'float32',
+            [1, 10],
+        ),
+        (
+            'vgg16_cnn_model',
+            None,
+            (3, 224, 224),
+            (1, 3, 224, 224),
+            'float32',
+            [1, 4096],
+        ),
+        ('stacked_lstm', None, (128,), (1, 128), 'int64', [1, 5]),
+        ('bidirectional_lstm', None, (128,), (1, 128), 'int64', [1, 128]),
     ],
     indirect=['model'],
 )
@@ -182,7 +201,7 @@ def test_trim(
     if input_dtype == 'int64':
         input_ = input_.type(torch.IntTensor)
     out = pytorch_tailor.model(input_)
-    assert list(out.size()) == expected_output_shape  # 4th layer Linear
+    assert list(out.size()) == expected_output_shape
 
 
 @pytest.mark.parametrize(
