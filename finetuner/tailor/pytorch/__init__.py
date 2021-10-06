@@ -151,7 +151,18 @@ class PytorchTailor(BaseTailor):
         for param in self._model.parameters():
             param.requires_grad = False
 
-    def __call__(self, *args, **kwargs):
-        self._trim()
-        if self._freeze:
-            self._freeze_weights()
+    def _attach_dense_layer(self):
+        """Attach a dense layer to the end of the parsed model.
+
+        .. note::
+           The attached dense layer have the same shape as the last layer
+           in the parsed model.
+           The attached dense layer will ignore the :py:attr:`freeze`, this
+           layer always trainable.
+        """
+        self._model = nn.Sequential(
+            self._model,
+            nn.Linear(
+                in_features=self.output_dim, out_features=self.output_dim, bias=True
+            ),
+        )
