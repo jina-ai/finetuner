@@ -70,7 +70,8 @@ class KerasTailor(BaseTailor):
            The attached dense layer will ignore the :py:attr:`freeze`, this
            layer always trainable.
         """
-        out = Dense(self.output_dim, activation=None, use_bias=True)(
-            self._model.layers[-1].output
-        )
-        self._model = Model(self._model.input, out)
+        if self._output_dim:
+            out = Dense(self._output_dim, activation=None, use_bias=True)(
+                self._model.layers[-1].output
+            )
+            self._model = Model(self._model.input, out)

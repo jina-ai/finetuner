@@ -12,6 +12,7 @@ class BaseTailor(abc.ABC):
         model: AnyDNN,
         freeze: bool = False,
         embedding_layer_name: Optional[str] = None,
+        output_dim: Optional[int] = None,
         *args,
         **kwargs,
     ):
@@ -27,6 +28,7 @@ class BaseTailor(abc.ABC):
         self._model = model
         self._freeze = freeze
         self._embedding_layer_name = embedding_layer_name
+        self._output_dim = output_dim
 
     @abc.abstractmethod
     def _freeze_weights(self) -> 'BaseTailor':
@@ -56,8 +58,8 @@ class BaseTailor(abc.ABC):
         return self._model
 
     @property
-    def output_dim(self) -> int:
-        """Get the output shape.
+    def _trimmed_output_dim(self) -> int:
+        """Get the output dimensionality of trimmed model.
 
         :return: The output shape of the parsed model.
         :raises KeyError: Raise when the given :py:attr:`embedding_layer_name` not exist in the model.
@@ -70,6 +72,23 @@ class BaseTailor(abc.ABC):
                 return _embed_layers[self._embedding_layer_name]['output_features']
             except KeyError as e:
                 raise e
+
+    @property
+    def output_dim(self) -> int:
+        """Get the user-defined output dimensionality.
+
+        :return: Output dimension of the attached linear layer
+        """
+        return self._output_dim
+
+    @output_dim.setter
+    def output_dim(self, dim: int):
+        """Set a new output dimension for the model.
+
+        if set, the :py:attr:`self.model`'s attached dense layer will have this dim.
+        :param dim: Dimensionality of the attached linear layer.
+        """
+        self._output_dim = dim
 
     @abc.abstractmethod
     def _attach_dense_layer(self):
