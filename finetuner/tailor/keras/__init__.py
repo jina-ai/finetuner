@@ -1,6 +1,7 @@
 from typing import Tuple
 
 from tensorflow.keras import Model
+from tensorflow.keras.layers import Dense
 
 from ..base import BaseTailor
 from ...helper import EmbeddingLayerInfo
@@ -72,7 +73,17 @@ class KerasTailor(BaseTailor):
             layer.trainable = False
 
     def _attach_dense_layer(self):
-        pass
+        """Attach a dense layer to the end of the parsed model.
+
+        .. note::
+           The attached dense layer have the same shape as the last layer
+           in the parsed model.
+           The attached dense layer will ignore the :py:attr:`freeze`, this
+           layer always trainable.
+        """
+        dense_layer = Dense(self.output_shape[1], activation=None, use_bias=True)
+        output = dense_layer()(self._model.layers[-1].output)
+        self._model = Model(self._model.input, output)
 
     def __call__(self, *args, **kwargs):
         if self._freeze:
