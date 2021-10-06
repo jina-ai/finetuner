@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Dense
 
@@ -46,20 +44,23 @@ class KerasTailor(BaseTailor):
         return results
 
     @property
-    def output_shape(self) -> Tuple:
+    def output_dim(self) -> int:
         """Get the output shape.
 
         :return: The output shape of the parsed model.
         """
-        index = self._embedding_layer_name_to_index()
-        return self._model.layers[index].output_shape
+        if not self._embedding_layer_name:
+            return self.embedding_layers[-1]['output_features']
+        else:
+            _embed_layers = {l['name']: l for l in self.embedding_layers}
+            try:
+                return _embed_layers[self._embedding_layer_name]['output_features']
+            except KeyError:
+                raise KeyError(
+                    f'The embedding layer name {self._embedding_layer_name} does not exist.'
+                )
 
     def _trim(self) -> 'KerasTailor':
-        index = self._embedding_layer_name_to_index()
-        self._model = Model(self._model.input, self._model.layers[index].output)
-        return self
-
-    def _embedding_layer_name_to_index(self):  # cache it?
         if not self._embedding_layer_name:
             index = self.embedding_layers[-1]['layer_idx']
         else:
@@ -68,9 +69,10 @@ class KerasTailor(BaseTailor):
                 index = _embed_layers[self._embedding_layer_name]['layer_idx']
             except KeyError:
                 raise KeyError(
-                    f'The emebdding layer name {self._embedding_layer_name} does not exist.'
+                    f'The embedding layer name {self._embedding_layer_name} does not exist.'
                 )
-        return index
+        self._model = Model(self._model.input, self._model.layers[index].output)
+        return self
 
     def _freeze_weights(self) -> 'KerasTailor':
         """Freeze an arbitrary model to make layers not trainable."""
@@ -87,7 +89,7 @@ class KerasTailor(BaseTailor):
            The attached dense layer will ignore the :py:attr:`freeze`, this
            layer always trainable.
         """
-        out = Dense(self.output_shape[1], activation=None, use_bias=True)(
+        out = Dense(self.output_dim, activation=None, use_bias=True)(
             self._model.layers[-1].output
         )
         self._model = Model(self._model.input, out)

@@ -1,7 +1,6 @@
 import abc
 from typing import (
     Optional,
-    Tuple,
 )
 
 from ..helper import AnyDNN, EmbeddingLayerInfo
@@ -58,10 +57,10 @@ class BaseTailor(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def output_shape(self) -> Tuple:
-        """Get the output shape.
+    def output_dim(self) -> int:
+        """Get the output dimensionality.
 
-        :return: The output shape of the parsed model.
+        :return: The output dimension of the parsed model.
         """
         ...
 

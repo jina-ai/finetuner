@@ -151,7 +151,7 @@ def test_attach_dense_layer(model, layer_name, expected_output_shape):
     assert len(keras_tailor.model.layers) - num_layers_before == 1
     assert isinstance(keras_tailor.model.layers[-1], tf.keras.layers.Dense)
     assert keras_tailor.model.output_shape == expected_output_shape
-    assert keras_tailor.output_shape == keras_tailor.model.output_shape
+    assert keras_tailor.output_dim == keras_tailor.model.output_shape[1]
     assert keras_tailor.model.layers[-1].trainable is True
 
 
