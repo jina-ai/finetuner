@@ -123,6 +123,27 @@ class PytorchTailor(BaseTailor):
 
         return results
 
+    @property
+    def output_dim(self) -> int:
+        """Get the user-defined output dimensionality.
+
+        :return: Output dimension of the attached linear layer
+
+        .. note::
+           if user didn't specify :py:attr:`output_dim`, return model's last layer output dim.
+        """
+        if self._output_dim:
+            return self._output_dim
+        if isinstance(self._input_size, list):
+            input_size = list(self._input_size[0])
+        else:
+            input_size = list(self._input_size)
+        input_size.insert(0, 1)  # expand 1 dim to input.
+        input_ = torch.rand(tuple(input_size))
+        if 'int' in self._input_dtype:
+            input_ = input_.type(torch.IntTensor)
+        return list(self._model(input_).shape)[1]
+
     def _trim(self):
         if not self._embedding_layer_name:
             module_name = self.embedding_layers[-1]['module_name']
@@ -159,9 +180,10 @@ class PytorchTailor(BaseTailor):
            The attached dense layer will ignore the :py:attr:`freeze`, this
            layer always trainable.
         """
-        self._model = nn.Sequential(
-            self._model,
-            nn.Linear(
-                in_features=self.output_dim, out_features=self.output_dim, bias=True
-            ),
-        )
+        if self._output_dim:
+            self._model = nn.Sequential(
+                self._model,
+                nn.Linear(
+                    in_features=self.output_dim, out_features=self.output_dim, bias=True
+                ),
+            )

@@ -49,6 +49,9 @@ class KerasTailor(BaseTailor):
         """Get the user-defined output dimensionality.
 
         :return: Output dimension of the attached linear layer
+
+        .. note::
+           if user didn't specify :py:attr:`output_dim`, return model's last layer output dim.
         """
         return self._output_dim or self._model.output_shape[1]
 

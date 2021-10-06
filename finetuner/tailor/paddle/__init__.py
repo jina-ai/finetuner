@@ -135,6 +135,17 @@ class PaddleTailor(BaseTailor):
 
         return results
 
+    @property
+    def output_dim(self) -> int:
+        """Get the user-defined output dimensionality.
+
+        :return: Output dimension of the attached linear layer
+
+        .. note::
+           if user didn't specify :py:attr:`output_dim`, return model's last layer output dim.
+        """
+        return self._output_dim
+
     def _trim(self):
         if not self._embedding_layer_name:
             module_name = self.embedding_layers[-1]['module_name']

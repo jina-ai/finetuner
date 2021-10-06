@@ -205,6 +205,87 @@ def test_trim(
 
 
 @pytest.mark.parametrize(
+    'model, layer_name, input_size, input_, input_dtype, output_dim, expected_output_shape',
+    [
+        ('dense_model', 'linear_7', (128,), (1, 128), 'float32', None, 32),
+        (
+            'simple_cnn_model',
+            'dropout_9',
+            (1, 28, 28),
+            (1, 1, 28, 28),
+            'float32',
+            None,
+            128,
+        ),
+        (
+            'vgg16_cnn_model',
+            'linear_36',
+            (3, 224, 224),
+            (1, 3, 224, 224),
+            'float32',
+            None,
+            4096,
+        ),
+        ('stacked_lstm', 'linear_3', (128,), (1, 128), 'int64', None, 256),
+        ('bidirectional_lstm', 'linear_4', (128,), (1, 128), 'int64', None, 128),
+        ('dense_model', None, (128,), (1, 128), 'float32', None, 10),
+        (
+            'simple_cnn_model',
+            None,
+            (1, 28, 28),
+            (1, 1, 28, 28),
+            'float32',
+            None,
+            10,
+        ),
+        (
+            'vgg16_cnn_model',
+            None,
+            (3, 224, 224),
+            (1, 3, 224, 224),
+            'float32',
+            None,
+            4096,
+        ),
+        ('stacked_lstm', None, (128,), (1, 128), 'int64', None, 5),
+        ('bidirectional_lstm', None, (128,), (1, 128), 'int64', None, 128),
+    ],
+    indirect=['model'],
+)
+def test_attach_dense_layer(
+    model,
+    layer_name,
+    input_size,
+    input_,
+    input_dtype,
+    output_dim,
+    expected_output_shape,
+):
+    pytorch_tailor = PytorchTailor(
+        model=model,
+        freeze=False,
+        embedding_layer_name=layer_name,
+        output_dim=output_dim,
+        input_size=input_size,
+        input_dtype=input_dtype,
+    )
+    pytorch_tailor._trim()
+    pytorch_tailor._freeze_weights()
+    num_layers_before = len(list(pytorch_tailor.model.modules()))
+    pytorch_tailor._attach_dense_layer()
+    num_layers_after = len(list(pytorch_tailor.model.modules()))
+    input_ = torch.rand(input_)
+    if input_dtype == 'int64':
+        input_ = input_.type(torch.IntTensor)
+    out = pytorch_tailor.model(input_)
+    if output_dim:
+        assert (
+            num_layers_after - num_layers_before == 2
+        )  # Note, Linear layer with wrapped Sequential
+    assert list(out.size())[1] == expected_output_shape == pytorch_tailor.output_dim
+
+
+@pytest.mark.parametrize(
     'model, layer_name, input_size, input_dtype',
     [
         ('dense_model', 10, (128,), 'float32'),
