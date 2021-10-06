@@ -33,6 +33,7 @@ class PytorchTailor(BaseTailor):
 
         self._input_size = input_size
         self._input_dtype = input_dtype
+        self._trimmed_output_dim = None
 
     @cached_property
     def embedding_layers(self) -> EmbeddingLayerInfo:
@@ -134,6 +135,9 @@ class PytorchTailor(BaseTailor):
         """
         if self._output_dim:
             return self._output_dim
+        return self._interpret_output_dim()
+
+    def _interpret_output_dim(self):
         if isinstance(self._input_size, list):
             input_size = list(self._input_size[0])
         else:
@@ -166,6 +170,7 @@ class PytorchTailor(BaseTailor):
                     setattr(getattr(self._model, nested_module), layer, nn.Identity())
                 else:
                     setattr(self._model, name, nn.Identity())
+        self._trimmed_output_dim = self._interpret_output_dim()
 
     def _freeze_weights(self):
         for param in self._model.parameters():
@@ -184,6 +189,8 @@ class PytorchTailor(BaseTailor):
             self._model = nn.Sequential(
                 self._model,
                 nn.Linear(
-                    in_features=self.output_dim, out_features=self.output_dim, bias=True
+                    in_features=self._trimmed_output_dim,
+                    out_features=self.output_dim,
+                    bias=True,
                 ),
             )

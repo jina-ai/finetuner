@@ -249,6 +249,27 @@ def test_trim(
         ),
         ('stacked_lstm', None, (128,), (1, 128), 'int64', None, 5),
         ('bidirectional_lstm', None, (128,), (1, 128), 'int64', None, 128),
+        ('dense_model', 'linear_7', (128,), (1, 128), 'float32', 16, 16),
+        (
+            'simple_cnn_model',
+            'dropout_9',
+            (1, 28, 28),
+            (1, 1, 28, 28),
+            'float32',
+            64,
+            64,
+        ),
+        (
+            'vgg16_cnn_model',
+            'linear_36',
+            (3, 224, 224),
+            (1, 3, 224, 224),
+            'float32',
+            1024,
+            1024,
+        ),
+        ('stacked_lstm', 'linear_3', (128,), (1, 128), 'int64', 128, 128),
+        ('bidirectional_lstm', 'linear_4', (128,), (1, 128), 'int64', 256, 256),
     ],
     indirect=['model'],
 )
@@ -282,6 +303,10 @@ def test_attach_dense_layer(
         assert (
             num_layers_after - num_layers_before == 2
         )  # Note, Linear layer with wrapped Sequential
+        trainables = [
+            param.requires_grad for param in pytorch_tailor.model.parameters()
+        ]
+        assert trainables[-1] is True
     assert list(out.size())[1] == expected_output_shape == pytorch_tailor.output_dim
 
 
