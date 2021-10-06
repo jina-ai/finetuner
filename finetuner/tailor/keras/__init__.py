@@ -43,24 +43,6 @@ class KerasTailor(BaseTailor):
                 )
         return results
 
-    @property
-    def output_dim(self) -> int:
-        """Get the output shape.
-
-        :return: The output shape of the parsed model.
-        :raises KeyError: Raise when the given :py:attr`embedding_layer_name` not exist in the model.
-        """
-        if not self._embedding_layer_name:
-            return self.embedding_layers[-1]['output_features']
-        else:
-            _embed_layers = {l['name']: l for l in self.embedding_layers}
-            try:
-                return _embed_layers[self._embedding_layer_name]['output_features']
-            except KeyError:
-                raise KeyError(
-                    f'The embedding layer name {self._embedding_layer_name} does not exist.'
-                )
-
     def _trim(self) -> 'KerasTailor':
         if not self._embedding_layer_name:
             index = self.embedding_layers[-1]['layer_idx']

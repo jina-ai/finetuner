@@ -56,13 +56,22 @@ class BaseTailor(abc.ABC):
         return self._model
 
     @property
-    @abc.abstractmethod
     def output_dim(self) -> int:
-        """Get the output dimensionality.
+        """Get the output shape.
 
-        :return: The output dimension of the parsed model.
+        :return: The output shape of the parsed model.
+        :raises KeyError: Raise when the given :py:attr:`embedding_layer_name` not exist in the model.
         """
-        ...
+        if not self._embedding_layer_name:
+            return self.embedding_layers[-1]['output_features']
+        else:
+            _embed_layers = {l['name']: l for l in self.embedding_layers}
+            try:
+                return _embed_layers[self._embedding_layer_name]['output_features']
+            except KeyError:
+                raise KeyError(
+                    f'The embedding layer name {self._embedding_layer_name} does not exist.'
+                )
 
     @abc.abstractmethod
     def _attach_dense_layer(self):
