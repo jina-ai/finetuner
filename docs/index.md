@@ -1,13 +1,16 @@
 # Welcome to Finetuner!
 
-Finetuner allows one to finetune any deep neural network for better embedding on search tasks. It accompanies [Jina](https://github.com/jina-ai/jina) to deliver the last mile of performance-tuning for neural search applications.
+```{include} ../README.md
+:start-after: <!-- start elevator-pitch -->
+:end-before: <!-- end elevator-pitch -->
+```
 
-Finetuner supports [Pytorch](https://pytorch.org/), [Keras](https://keras.io/) and [PaddlePaddle](https://github.com/PaddlePaddle/Paddle) as the deep learning backend.  
+## Quick start
 
 1. Make sure that you have Python 3.7+ installed on Linux/MacOS. You have one of Pytorch, Keras or PaddlePaddle installed.
 2. Install Finetuner
    ```bash
-   pip install https://github.com/jina-ai/finetuner.git@main
+   pip install finetuner
    ```
 3. In this example, we want to tune the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST data. Let's write a model with any of the following framework:
    ````{tab} PyTorch
