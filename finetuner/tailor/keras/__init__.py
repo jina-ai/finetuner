@@ -48,6 +48,7 @@ class KerasTailor(BaseTailor):
         """Get the output shape.
 
         :return: The output shape of the parsed model.
+        :raises KeyError: Raise when the given :py:attr`embedding_layer_name` not exist in the model.
         """
         if not self._embedding_layer_name:
             return self.embedding_layers[-1]['output_features']
