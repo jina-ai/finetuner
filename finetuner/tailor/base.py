@@ -12,6 +12,7 @@ class BaseTailor(abc.ABC):
         model: AnyDNN,
         freeze: bool = False,
         embedding_layer_name: Optional[str] = None,
+        output_dim: Optional[int] = None,
         *args,
         **kwargs,
     ):
@@ -27,14 +28,15 @@ class BaseTailor(abc.ABC):
         self._model = model
         self._freeze = freeze
         self._embedding_layer_name = embedding_layer_name
+        self._output_dim = output_dim
 
     @abc.abstractmethod
-    def _freeze_weights(self):
+    def _freeze_weights(self) -> 'BaseTailor':
         """Freeze the weights of :py:attr:`.model`."""
         ...
 
     @abc.abstractmethod
-    def _trim(self):
+    def _trim(self) -> 'BaseTailor':
         """Trim :py:attr:`.model` to an embedding model."""
         ...
 
@@ -55,6 +57,38 @@ class BaseTailor(abc.ABC):
         """
         return self._model
 
+    @property
     @abc.abstractmethod
-    def __call__(self, *args, **kwargs):
+    def output_dim(self) -> int:
+        """Get the user-defined output dimensionality.
+
+        :return: Output dimension of the attached linear layer
+        """
         ...
+
+    @output_dim.setter
+    def output_dim(self, dim: int):
+        """Set a new output dimension for the model.
+
+        if set, the :py:attr:`self.model`'s attached dense layer will have this dim.
+        :param dim: Dimensionality of the attached linear layer.
+        """
+        self._output_dim = dim
+
+    @abc.abstractmethod
+    def _attach_dense_layer(self):
+        """Attach a dense layer to the end of the parsed model.
+
+        .. note::
+           The attached dense layer have the same shape as the last layer
+           in the parsed model.
+           The attached dense layer will ignore the :py:attr:`freeze`, this
+           layer always trainable.
+        """
+        ...
+
+    def __call__(self, *args, **kwargs):
+        if self._freeze:
+            self._trim()._freeze_weights()._attach_dense_layer()
+        else:
+            self._trim()._attach_dense_layer()

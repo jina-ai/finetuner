@@ -237,6 +237,107 @@ def test_trim(
     assert list(out.shape) == expected_output_shape
 
 
+@pytest.mark.parametrize(
+    'model, layer_name, input_size, input_, input_dtype, output_dim, expected_output_shape',
+    [
+        ('dense_model', 'linear_51', (128,), (1, 128), 'float32', None, 32),
+        (
+            'simple_cnn_model',
+            'dropout_17',
+            (1, 28, 28),
+            (1, 1, 28, 28),
+            'float32',
+            None,
+            128,
+        ),
+        (
+            'vgg16_cnn_model',
+            'linear_57',
+            (3, 224, 224),
+            (1, 3, 224, 224),
+            'float32',
+            None,
+            4096,
+        ),
+        ('stacked_lstm', 'linear_60', (128,), (1, 128), 'int64', None, 256),
+        ('bidirectional_lstm', 'linear_63', (128,), (1, 128), 'int64', None, 128),
+        ('dense_model', None, (128,), (1, 128), 'float32', None, 10),
+        (
+            'simple_cnn_model',
+            None,
+            (1, 28, 28),
+            (1, 1, 28, 28),
+            'float32',
+            None,
+            10,
+        ),
+        (
+            'vgg16_cnn_model',
+            None,
+            (3, 224, 224),
+            (1, 3, 224, 224),
+            'float32',
+            None,
+            4096,
+        ),
+        ('stacked_lstm', None, (128,), (1, 128), 'int64', None, 5),
+        ('bidirectional_lstm', None, (128,), (1, 128), 'int64', None, 128),
+        ('dense_model', None, (128,), (1, 128), 'float32', 16, 16),
+        (
+            'simple_cnn_model',
+            None,
+            (1, 28, 28),
+            (1, 1, 28, 28),
+            'float32',
+            64,
+            64,
+        ),
+        (
+            'vgg16_cnn_model',
+            None,
+            (3, 224, 224),
+            (1, 3, 224, 224),
+            'float32',
+            1024,
+            1024,
+        ),
+        ('stacked_lstm', None, (128,), (1, 128), 'int64', 128, 128),
+        ('bidirectional_lstm', None, (128,), (1, 128), 'int64', 256, 256),
+    ],
+    indirect=['model'],
+)
+def test_attach_dense_layer(
+    model,
+    layer_name,
+    input_size,
+    input_,
+    input_dtype,
+    output_dim,
+    expected_output_shape,
+):
+    paddle_tailor = PaddleTailor(
+        model=model,
+        freeze=False,
+        embedding_layer_name=layer_name,
+        output_dim=output_dim,
+        input_size=input_size,
+        input_dtype=input_dtype,
+    )
+    paddle_tailor._trim()
+    paddle_tailor._freeze_weights()
+    num_layers_before = len(list(paddle_tailor.model.sublayers()))
+    paddle_tailor._attach_dense_layer()
+    num_layers_after = len(list(paddle_tailor.model.sublayers()))
+    out = paddle_tailor.model(paddle.cast(paddle.rand(input_), input_dtype))
+    if output_dim:
+        assert (
+            num_layers_after - num_layers_before == 2
+        )  # Note, Linear layer with wrapped Sequential
+        trainables = [param.trainable for param in paddle_tailor.model.parameters()]
+        assert trainables[-1] is True
+    assert list(out.shape)[1] == expected_output_shape == paddle_tailor.output_dim
+
+
 def test_paddle_lstm_model_parser():
     user_model = paddle.nn.Sequential(
         paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),

@@ -5,6 +5,7 @@ from typing import Tuple
 import numpy as np
 import torch
 from torch import nn
+from jina.helper import cached_property
 
 from ..base import BaseTailor
 from ...helper import is_list_int, EmbeddingLayerInfoType
@@ -32,8 +33,9 @@ class PytorchTailor(BaseTailor):
 
         self._input_size = input_size
         self._input_dtype = input_dtype
+        self._trimmed_output_dim = None
 
-    @property
+    @cached_property
     def embedding_layers(self) -> EmbeddingLayerInfoType:
         """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
 
@@ -122,6 +124,30 @@ class PytorchTailor(BaseTailor):
 
         return results
 
+    @property
+    def output_dim(self) -> int:
+        """Get the user-defined output dimensionality.
+
+        :return: Output dimension of the attached linear layer
+
+        .. note::
+           if user didn't specify :py:attr:`output_dim`, return model's last layer output dim.
+        """
+        if self._output_dim:
+            return self._output_dim
+        return self._interpret_output_dim()
+
+    def _interpret_output_dim(self):
+        if isinstance(self._input_size, list):
+            input_size = list(self._input_size[0])
+        else:
+            input_size = list(self._input_size)
+        input_size.insert(0, 1)  # expand 1 dim to input.
+        input_ = torch.rand(tuple(input_size))
+        if 'int' in self._input_dtype:
+            input_ = input_.type(torch.IntTensor)
+        return list(self._model(input_).shape)[1]
+
     def _trim(self):
         if not self._embedding_layer_name:
             module_name = self.embedding_layers[-1]['module_name']
@@ -129,10 +155,8 @@ class PytorchTailor(BaseTailor):
             _embed_layers = {l['name']: l for l in self.embedding_layers}
             try:
                 module_name = _embed_layers[self._embedding_layer_name]['module_name']
-            except KeyError:
-                raise KeyError(
-                    f'The emebdding layer name {self._embedding_layer_name} does not exist.'
-                )
+            except KeyError as e:
+                raise e
 
         _is_after_embedding_layer = False
         for name, module in self._model.named_modules():
@@ -146,12 +170,27 @@ class PytorchTailor(BaseTailor):
                     setattr(getattr(self._model, nested_module), layer, nn.Identity())
                 else:
                     setattr(self._model, name, nn.Identity())
+        self._trimmed_output_dim = self._interpret_output_dim()
 
     def _freeze_weights(self):
         for param in self._model.parameters():
             param.requires_grad = False
 
-    def __call__(self, *args, **kwargs):
-        self._trim()
-        if self._freeze:
-            self._freeze_weights()
+    def _attach_dense_layer(self):
+        """Attach a dense layer to the end of the parsed model.
+
+        .. note::
+           The attached dense layer have the same shape as the last layer
+           in the parsed model.
+           The attached dense layer will ignore the :py:attr:`freeze`, this
+           layer always trainable.
+        """
+        if self._output_dim:
+            self._model = nn.Sequential(
+                self._model,
+                nn.Linear(
+                    in_features=self._trimmed_output_dim,
+                    out_features=self.output_dim,
+                    bias=True,
+                ),
+            )

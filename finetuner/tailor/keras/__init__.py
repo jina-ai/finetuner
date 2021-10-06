@@ -1,11 +1,13 @@
 from tensorflow.keras import Model
+from tensorflow.keras.layers import Dense
+from jina.helper import cached_property
 
 from ..base import BaseTailor
 from ...helper import EmbeddingLayerInfoType
 
 
 class KerasTailor(BaseTailor):
-    @property
+    @cached_property
     def embedding_layers(self) -> EmbeddingLayerInfoType:
         """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
 
@@ -42,26 +44,46 @@ class KerasTailor(BaseTailor):
                 )
         return results
 
-    def _trim(self):
+    @property
+    def output_dim(self) -> int:
+        """Get the user-defined output dimensionality.
+
+        :return: Output dimension of the attached linear layer
+
+        .. note::
+           if user didn't specify :py:attr:`output_dim`, return model's last layer output dim.
+        """
+        return self._output_dim or self._model.output_shape[1]
+
+    def _trim(self) -> 'KerasTailor':
         if not self._embedding_layer_name:
-            indx = self.embedding_layers[-1]['layer_idx']
+            index = self.embedding_layers[-1]['layer_idx']
         else:
             _embed_layers = {l['name']: l for l in self.embedding_layers}
             try:
-                indx = _embed_layers[self._embedding_layer_name]['layer_idx']
-            except KeyError:
-                raise KeyError(
-                    f'The emebdding layer name {self._embedding_layer_name} does not exist.'
-                )
+                index = _embed_layers[self._embedding_layer_name]['layer_idx']
+            except KeyError as e:
+                raise e
+        self._model = Model(self._model.input, self._model.layers[index - 1].output)
+        return self
 
-        self._model = Model(self._model.input, self._model.layers[indx].output)
-
-    def _freeze_weights(self):
+    def _freeze_weights(self) -> 'KerasTailor':
         """Freeze an arbitrary model to make layers not trainable."""
         for layer in self._model.layers:
             layer.trainable = False
+        return self
 
-    def __call__(self, *args, **kwargs):
-        self._trim()
-        if self._freeze:
-            self._freeze_weights()
+    def _attach_dense_layer(self):
+        """Attach a dense layer to the end of the parsed model.
+
+        .. note::
+           The attached dense layer have the same shape as the last layer
+           in the parsed model.
+           The attached dense layer will ignore the :py:attr:`freeze`, this
+           layer always trainable.
+        """
+        if self._output_dim:
+            out = Dense(self._output_dim, activation=None, use_bias=True)(
+                self._model.layers[-1].output
+            )
+            self._model = Model(self._model.input, out)
