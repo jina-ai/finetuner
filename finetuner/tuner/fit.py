@@ -12,6 +12,7 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     head_layer: str = 'CosineLayer',
+    **kwargs
 ) -> TunerReturnType:
     f_type = get_framework(embed_model)
 

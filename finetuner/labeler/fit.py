@@ -18,6 +18,7 @@ def fit(
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
     head_layer: str = 'CosineLayer',
+    **kwargs,
 ) -> None:
     dam_path = tempfile.mkdtemp()
 

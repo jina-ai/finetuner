@@ -56,7 +56,6 @@ def fit(
 
 def fit(*args, **kwargs) -> Optional['TunerReturnType']:
     if kwargs.get('interactive', False):
-        kwargs.pop('interactive')
         from .labeler.fit import fit
 
         return fit(*args, **kwargs)
