@@ -16,7 +16,8 @@ DocumentArrayLike = Union[
     Callable[..., DocumentSequence],
 ]
 
-EmbeddingLayerInfo = List[Dict[str, Any]]
+EmbeddingLayerInfoType = List[Dict[str, Any]]
+TunerReturnType = Dict[str, Dict[str, Any]]
 
 
 def get_framework(dnn_model: AnyDNN) -> str:

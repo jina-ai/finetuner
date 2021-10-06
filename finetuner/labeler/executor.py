@@ -4,8 +4,8 @@ from typing import Dict, Optional
 from jina import Executor, DocumentArray, requests, DocumentArrayMemmap
 from jina.helper import cached_property
 
-import finetuner.tuner.fit as jft
 from ..helper import get_framework
+from ..tuner import fit
 
 
 class FTExecutor(Executor):
@@ -73,7 +73,7 @@ class FTExecutor(Executor):
 
     @requests(on='/fit')
     def fit(self, docs, parameters: Dict, **kwargs):
-        jft.fit(
+        fit(
             self._embed_model,
             docs,
             epochs=int(parameters.get('epochs', 10)),
