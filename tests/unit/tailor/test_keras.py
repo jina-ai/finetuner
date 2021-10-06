@@ -131,31 +131,37 @@ def test_trim(model, layer_name, expected_output_shape):
     'model, layer_name, output_dim, expected_output_shape',
     [
         ('dense_model', 'dense_3', None, (None, 32)),
-        # ('simple_cnn_model', 'dense', None, None, (None, 9216)),
-        # ('vgg16_cnn_model', 'fc2', None, None, (None, 4096)),
-        # ('stacked_lstm', 'dense', None, None, (None, 256)),
-        # ('bidirectional_lstm', 'dense', None, None, (None, 128)),
-        # ('dense_model', None, None, None, (None, 32)),
-        # ('simple_cnn_model', None, None, None, (None, 128)),
-        # ('vgg16_cnn_model', None, None, (None, 4096)),
-        # ('stacked_lstm', None, None, (None, 256)),
-        # ('bidirectional_lstm', None, None, (None, 128)),
+        ('simple_cnn_model', 'dense', None, (None, 9216)),
+        ('vgg16_cnn_model', 'fc2', None, (None, 4096)),
+        ('stacked_lstm', 'dense', None, (None, 256)),
+        ('bidirectional_lstm', 'dense', None, (None, 128)),
+        # no layer name no output dim
+        ('dense_model', None, None, (None, 32)),
+        ('simple_cnn_model', None, None, (None, 128)),
+        ('vgg16_cnn_model', None, None, (None, 4096)),
+        ('stacked_lstm', None, None, (None, 256)),
+        ('bidirectional_lstm', None, None, (None, 128)),
+        # with output dim
+        ('dense_model', 'dense_3', 16, (None, 16)),
+        ('simple_cnn_model', 'dense', 1024, (None, 1024)),
+        ('vgg16_cnn_model', 'fc2', 1024, (None, 1024)),
+        ('stacked_lstm', 'dense', 128, (None, 128)),
+        ('bidirectional_lstm', 'dense', 256, (None, 256)),
     ],
     indirect=['model'],
 )
 def test_attach_dense_layer(model, layer_name, output_dim, expected_output_shape):
-    print(model.summary())
     keras_tailor = KerasTailor(model, True, layer_name, output_dim)
     keras_tailor._trim()
     num_layers_before = len(keras_tailor.model.layers)
+    keras_tailor._freeze_weights()
     keras_tailor._attach_dense_layer()
-    print(keras_tailor.model.summary())
     if output_dim:
         assert len(keras_tailor.model.layers) - num_layers_before == 1
-    assert isinstance(keras_tailor.model.layers[-1], tf.keras.layers.Dense)
+        assert isinstance(keras_tailor.model.layers[-1], tf.keras.layers.Dense)
+        assert keras_tailor.model.layers[-1].trainable is True
     assert keras_tailor.model.output_shape == expected_output_shape
     assert keras_tailor.output_dim == keras_tailor.model.output_shape[1]
-    assert keras_tailor.model.layers[-1].trainable is True
 
 
 @pytest.mark.parametrize(

@@ -44,6 +44,14 @@ class KerasTailor(BaseTailor):
                 )
         return results
 
+    @property
+    def output_dim(self) -> int:
+        """Get the user-defined output dimensionality.
+
+        :return: Output dimension of the attached linear layer
+        """
+        return self._output_dim or self._model.output_shape[1]
+
     def _trim(self) -> 'KerasTailor':
         if not self._embedding_layer_name:
             index = self.embedding_layers[-1]['layer_idx']

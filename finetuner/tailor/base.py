@@ -58,29 +58,13 @@ class BaseTailor(abc.ABC):
         return self._model
 
     @property
-    def _trimmed_output_dim(self) -> int:
-        """Get the output dimensionality of trimmed model.
-
-        :return: The output shape of the parsed model.
-        :raises KeyError: Raise when the given :py:attr:`embedding_layer_name` not exist in the model.
-        """
-        if not self._embedding_layer_name:
-            index = self.embedding_layers[-1]['layer_idx']
-        else:
-            _embed_layers = {l['name']: l for l in self.embedding_layers}
-            try:
-                index = _embed_layers[self._embedding_layer_name]['layer_idx']
-            except KeyError as e:
-                raise e
-        return self.embedding_layers[index - 1]['output_features']
-
-    @property
+    @abc.abstractmethod
     def output_dim(self) -> int:
         """Get the user-defined output dimensionality.
 
         :return: Output dimension of the attached linear layer
         """
-        return self._output_dim or self._trimmed_output_dim
+        ...
 
     @output_dim.setter
     def output_dim(self, dim: int):
