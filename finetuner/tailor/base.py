@@ -58,7 +58,6 @@ class BaseTailor(abc.ABC):
         return self._model
 
     @property
-    @abc.abstractmethod
     def output_dim(self) -> int:
         """Get the user-defined output dimensionality.
 
@@ -66,29 +65,9 @@ class BaseTailor(abc.ABC):
         """
         ...
 
-    @output_dim.setter
-    def output_dim(self, dim: int):
-        """Set a new output dimension for the model.
-
-        if set, the :py:attr:`self.model`'s attached dense layer will have this dim.
-        :param dim: Dimensionality of the attached linear layer.
-        """
-        self._output_dim = dim
-
-    @abc.abstractmethod
-    def _attach_dense_layer(self):
-        """Attach a dense layer to the end of the parsed model.
-
-        .. note::
-           The attached dense layer have the same shape as the last layer
-           in the parsed model.
-           The attached dense layer will ignore the :py:attr:`freeze`, this
-           layer always trainable.
-        """
-        ...
-
     def __call__(self, *args, **kwargs):
         if self._freeze:
-            self._trim()._freeze_weights()._attach_dense_layer()
+            self._freeze_weights()._trim()
         else:
-            self._trim()._attach_dense_layer()
+            self._trim()
+        return self
