@@ -141,10 +141,8 @@ class PaddleTailor(BaseTailor):
             _embed_layers = {l['name']: l for l in self.embedding_layers}
             try:
                 module_name = _embed_layers[self._embedding_layer_name]['module_name']
-            except KeyError:
-                raise KeyError(
-                    f'The emebdding layer name {self._embedding_layer_name} does not exist.'
-                )
+            except KeyError as e:
+                raise e
 
         _is_after_embedding_layer = False
         for name, module in self._model.named_sublayers():

@@ -5,6 +5,7 @@ from typing import Tuple
 import numpy as np
 import torch
 from torch import nn
+from jina.helper import cached_property
 
 from ..base import BaseTailor
 from ...helper import is_list_int, EmbeddingLayerInfo
@@ -33,7 +34,7 @@ class PytorchTailor(BaseTailor):
         self._input_size = input_size
         self._input_dtype = input_dtype
 
-    @property
+    @cached_property
     def embedding_layers(self) -> EmbeddingLayerInfo:
         """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
 
@@ -129,10 +130,8 @@ class PytorchTailor(BaseTailor):
             _embed_layers = {l['name']: l for l in self.embedding_layers}
             try:
                 module_name = _embed_layers[self._embedding_layer_name]['module_name']
-            except KeyError:
-                raise KeyError(
-                    f'The emebdding layer name {self._embedding_layer_name} does not exist.'
-                )
+            except KeyError as e:
+                raise e
 
         _is_after_embedding_layer = False
         for name, module in self._model.named_modules():

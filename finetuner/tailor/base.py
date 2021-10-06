@@ -68,10 +68,8 @@ class BaseTailor(abc.ABC):
             _embed_layers = {l['name']: l for l in self.embedding_layers}
             try:
                 return _embed_layers[self._embedding_layer_name]['output_features']
-            except KeyError:
-                raise KeyError(
-                    f'The embedding layer name {self._embedding_layer_name} does not exist.'
-                )
+            except KeyError as e:
+                raise e
 
     @abc.abstractmethod
     def _attach_dense_layer(self):

@@ -50,11 +50,9 @@ class KerasTailor(BaseTailor):
             _embed_layers = {l['name']: l for l in self.embedding_layers}
             try:
                 index = _embed_layers[self._embedding_layer_name]['layer_idx']
-            except KeyError:
-                raise KeyError(
-                    f'The embedding layer name {self._embedding_layer_name} does not exist.'
-                )
-        self._model = Model(self._model.input, self._model.layers[index].output)
+            except KeyError as e:
+                raise e
+        self._model = Model(self._model.input, self._model.layers[index - 1].output)
         return self
 
     def _freeze_weights(self) -> 'KerasTailor':
