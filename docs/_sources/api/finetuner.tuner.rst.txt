@@ -19,7 +19,6 @@ Submodules
    :maxdepth: 4
 
    finetuner.tuner.base
-   finetuner.tuner.fit
 
 Module contents
 ---------------

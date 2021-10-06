@@ -207,7 +207,6 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/finetuner/">finetuner package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.labeler/">finetuner.labeler package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.labeler.executor/">finetuner.labeler.executor module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.labeler.fit/">finetuner.labeler.fit module</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.tailor/">finetuner.tailor package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -238,7 +237,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.fit/">finetuner.tuner.fit module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.helper/">finetuner.helper module</a></li>
@@ -299,8 +297,7 @@
 
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">DocumentArrayLike</span>
-    <span class="kn">from</span> <span class="nn">.tuner.fit</span> <span class="kn">import</span> <span class="n">TunerReturnType</span>
+    <span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">DocumentArrayLike</span><span class="p">,</span> <span class="n">TunerReturnType</span>
 
 <span class="c1"># fit interface generated from Labeler + Tuner</span>
 <span class="c1"># overload_inject_fit_tailor_tuner_start</span>
@@ -345,12 +342,11 @@
 
 <div class="viewcode-block" id="fit"><a class="viewcode-back" href="../../api/finetuner/#finetuner.fit">[docs]</a><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'TunerReturnType'</span><span class="p">]:</span>
     <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'interactive'</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'interactive'</span><span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">.labeler.fit</span> <span class="kn">import</span> <span class="n">fit</span>
+        <span class="kn">from</span> <span class="nn">.labeler</span> <span class="kn">import</span> <span class="n">fit</span>
 
         <span class="k">return</span> <span class="n">fit</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">.tuner.fit</span> <span class="kn">import</span> <span class="n">fit</span>
+        <span class="kn">from</span> <span class="nn">.tuner</span> <span class="kn">import</span> <span class="n">fit</span>
 
         <span class="k">return</span> <span class="n">fit</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>

@@ -207,7 +207,6 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../api/finetuner/">finetuner package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../api/finetuner.labeler/">finetuner.labeler package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.labeler.executor/">finetuner.labeler.executor module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.labeler.fit/">finetuner.labeler.fit module</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../api/finetuner.tailor/">finetuner.tailor package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -238,7 +237,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.fit/">finetuner.tuner.fit module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.helper/">finetuner.helper module</a></li>
@@ -293,8 +291,8 @@
 <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">requests</span><span class="p">,</span> <span class="n">DocumentArrayMemmap</span>
 <span class="kn">from</span> <span class="nn">jina.helper</span> <span class="kn">import</span> <span class="n">cached_property</span>
 
-<span class="kn">import</span> <span class="nn">finetuner.tuner.fit</span> <span class="k">as</span> <span class="nn">jft</span>
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">get_framework</span>
+<span class="kn">from</span> <span class="nn">..tuner</span> <span class="kn">import</span> <span class="n">fit</span>
 
 
 <div class="viewcode-block" id="FTExecutor"><a class="viewcode-back" href="../../../../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor">[docs]</a><span class="k">class</span> <span class="nc">FTExecutor</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
@@ -362,7 +360,7 @@
 
 <div class="viewcode-block" id="FTExecutor.fit"><a class="viewcode-back" href="../../../../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.fit">[docs]</a>    <span class="nd">@requests</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="s1">'/fit'</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">jft</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+        <span class="n">fit</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">,</span>
             <span class="n">docs</span><span class="p">,</span>
             <span class="n">epochs</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'epochs'</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>

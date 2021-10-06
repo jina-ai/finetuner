@@ -8,7 +8,6 @@ Submodules
    :maxdepth: 4
 
    finetuner.labeler.executor
-   finetuner.labeler.fit
 
 Module contents
 ---------------
