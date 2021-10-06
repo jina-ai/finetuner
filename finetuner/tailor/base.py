@@ -3,8 +3,6 @@ from typing import (
     Optional,
 )
 
-from jina.logging.logger import JinaLogger
-
 from ..helper import AnyDNN, EmbeddingLayerInfo
 
 

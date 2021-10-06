@@ -1,7 +1,7 @@
 from tensorflow.keras import Model
 
 from ..base import BaseTailor
-from ...helper import AnyDNN, EmbeddingLayerInfo
+from ...helper import EmbeddingLayerInfo
 
 
 class KerasTailor(BaseTailor):

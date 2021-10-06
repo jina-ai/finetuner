@@ -1,6 +1,6 @@
-from typing import Tuple
-from copy import deepcopy
 from collections import OrderedDict
+from copy import deepcopy
+from typing import Tuple
 
 import numpy as np
 import paddle

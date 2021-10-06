@@ -1,13 +1,13 @@
-from typing import Tuple
-from copy import deepcopy
 from collections import OrderedDict
+from copy import deepcopy
+from typing import Tuple
 
 import numpy as np
 import torch
 from torch import nn
 
 from ..base import BaseTailor
-from ...helper import AnyDNN, is_list_int, EmbeddingLayerInfo
+from ...helper import is_list_int, EmbeddingLayerInfo
 
 
 class PytorchTailor(BaseTailor):
