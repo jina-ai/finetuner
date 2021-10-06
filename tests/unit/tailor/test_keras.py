@@ -128,6 +128,32 @@ def test_trim(model, layer_name, expected_output_shape):
 
 
 @pytest.mark.parametrize(
+    'model, layer_name, expected_output_shape',
+    [
+        ('dense_model', 'dense_2', (None, 32)),
+        ('simple_cnn_model', 'flatten', (None, 9216)),
+        ('vgg16_cnn_model', 'fc1', (None, 4096)),
+        ('stacked_lstm', 'lstm_2', (None, 256)),
+        ('bidirectional_lstm', 'bidirectional', (None, 128)),
+        ('dense_model', None, (None, 10)),
+        ('simple_cnn_model', None, (None, 10)),
+        ('vgg16_cnn_model', None, (None, 1000)),
+        ('stacked_lstm', None, (None, 5)),
+        ('bidirectional_lstm', None, (None, 32)),
+    ],
+    indirect=['model'],
+)
+def test_attach_dense_layer(model, layer_name, expected_output_shape):
+    keras_tailor = KerasTailor(model, False, layer_name)
+    keras_tailor._trim()
+    num_layers_before = len(keras_tailor.model.layers)
+    keras_tailor._attach_dense_layer()
+    assert len(keras_tailor.model.layers) - num_layers_before == 1
+    assert isinstance(keras_tailor.model.layers[-1], tf.keras.layers.Dense)
+    assert keras_tailor.model.output_shape == expected_output_shape
+
+
+@pytest.mark.parametrize(
     'model',
     [
         'dense_model',

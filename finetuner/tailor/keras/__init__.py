@@ -57,6 +57,7 @@ class KerasTailor(BaseTailor):
     def _trim(self) -> 'KerasTailor':
         index = self._embedding_layer_name_to_index()
         self._model = Model(self._model.input, self._model.layers[index].output)
+        return self
 
     def _embedding_layer_name_to_index(self):  # cache it?
         if not self._embedding_layer_name:
@@ -75,6 +76,7 @@ class KerasTailor(BaseTailor):
         """Freeze an arbitrary model to make layers not trainable."""
         for layer in self._model.layers:
             layer.trainable = False
+        return self
 
     def _attach_dense_layer(self):
         """Attach a dense layer to the end of the parsed model.
@@ -85,6 +87,7 @@ class KerasTailor(BaseTailor):
            The attached dense layer will ignore the :py:attr:`freeze`, this
            layer always trainable.
         """
-        dense_layer = Dense(self.output_shape[1], activation=None, use_bias=True)
-        output = dense_layer()(self._model.layers[-1].output)
-        self._model = Model(self._model.input, output)
+        out = Dense(self.output_shape[1], activation=None, use_bias=True)(
+            self._model.layers[-1].output
+        )
+        self._model = Model(self._model.input, out)
