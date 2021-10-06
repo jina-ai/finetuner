@@ -8,7 +8,7 @@ from paddle import nn, Tensor
 from jina.helper import cached_property
 
 from ..base import BaseTailor
-from ...helper import is_list_int, EmbeddingLayerInfo
+from ...helper import is_list_int, EmbeddingLayerInfoType
 
 
 class PaddleTailor(BaseTailor):
@@ -36,7 +36,7 @@ class PaddleTailor(BaseTailor):
         self._trimmed_output_dim = None
 
     @cached_property
-    def embedding_layers(self) -> EmbeddingLayerInfo:
+    def embedding_layers(self) -> EmbeddingLayerInfoType:
         """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
 
         :return: layers info as :class:`list` of :class:`dict`.

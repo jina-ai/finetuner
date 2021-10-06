@@ -19,7 +19,11 @@ finetuner.fit(
 )
 ```
 
-It accepts the following `**kwargs`:
+
+Here, `embed_model` must be {term}`embedding model`; and `train_data` must be {term}`labeled data`.
+
+
+Besides, it accepts the following `**kwargs`:
 
 |Argument| Description |
 |---|---|

@@ -4,7 +4,7 @@ import paddle
 import tensorflow as tf
 import torch
 
-import finetuner as jft
+import finetuner
 from finetuner.toydata import generate_fashion_match
 
 
@@ -39,7 +39,7 @@ def test_fit_all(tmpdir):
 
     for kb, b in embed_models.items():
         for h in ['CosineLayer', 'TripletLayer']:
-            result = jft.fit(
+            result = finetuner.fit(
                 b(),
                 head_layer=h,
                 train_data=lambda: generate_fashion_match(

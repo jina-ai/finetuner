@@ -10,8 +10,7 @@ from typing import Optional, overload, TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from .helper import AnyDNN, DocumentArrayLike
-    from .tuner.fit import TunerReturnType
+    from .helper import AnyDNN, DocumentArrayLike, TunerReturnType
 
 # fit interface generated from Labeler + Tuner
 # overload_inject_fit_tailor_tuner_start
@@ -56,11 +55,10 @@ def fit(
 
 def fit(*args, **kwargs) -> Optional['TunerReturnType']:
     if kwargs.get('interactive', False):
-        kwargs.pop('interactive')
-        from .labeler.fit import fit
+        from .labeler import fit
 
         return fit(*args, **kwargs)
     else:
-        from .tuner.fit import fit
+        from .tuner import fit
 
         return fit(*args, **kwargs)
