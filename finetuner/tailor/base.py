@@ -1,6 +1,7 @@
 import abc
 from typing import (
     Optional,
+    Tuple,
 )
 
 from ..helper import AnyDNN, EmbeddingLayerInfo
@@ -54,6 +55,27 @@ class BaseTailor(abc.ABC):
         :return: The DNN model.
         """
         return self._model
+
+    @property
+    @abc.abstractmethod
+    def output_shape(self) -> Tuple:
+        """Get the output shape.
+
+        :return: The output shape of the parsed model.
+        """
+        ...
+
+    @abc.abstractmethod
+    def _attach_dense_layer(self):
+        """Attach a dense layer to the end of the parsed model.
+
+        .. note::
+           The attached dense layer have the same shape as the last layer
+           in the parsed model.
+           The attached dense layer will ignore the :py:attr:`freeze`, this
+           layer always trainable.
+        """
+        ...
 
     @abc.abstractmethod
     def __call__(self, *args, **kwargs):
