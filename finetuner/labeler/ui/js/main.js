@@ -6,6 +6,7 @@ const app = new Vue({
         "sidebar": sidebar,
         "image-match-card": imageMatchCard,
         "text-match-card": textMatchCard,
+        "mesh-match-card": meshMatchCard,
     },
     data: {
         is_busy: false,
@@ -15,7 +16,8 @@ const app = new Vue({
                 {text: '.text', value: 'text'},
                 {text: '.tags', value: 'tags'}],
             style: [{text: 'Image', value: 'image'},
-                {text: 'Text', value: 'text'}],
+                {text: 'Text', value: 'text'},
+                {text: '3D mesh', value: 'mesh'}],
         },
         labeler_config: {
             content: 'uri',
