@@ -139,7 +139,7 @@ def test_trim_fail_given_unexpected_layer_idx(
             input_size=input_size,
             input_dtype=input_dtype,
         )
-        paddle_tailor._trim()
+        paddle_tailor.convert()
 
 
 @pytest.mark.parametrize(
@@ -191,12 +191,13 @@ def test_trim(
 ):
     pytorch_tailor = PytorchTailor(
         model=model,
-        freeze=False,
-        embedding_layer_name=layer_name,
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    pytorch_tailor._trim()
+    pytorch_tailor.convert(
+        freeze=False,
+        embedding_layer_name=layer_name,
+    )
     input_ = torch.rand(input_)
     if input_dtype == 'int64':
         input_ = input_.type(torch.IntTensor)
@@ -284,28 +285,24 @@ def test_attach_dense_layer(
 ):
     pytorch_tailor = PytorchTailor(
         model=model,
-        freeze=False,
-        embedding_layer_name=layer_name,
-        output_dim=output_dim,
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    pytorch_tailor._trim()
-    pytorch_tailor._freeze_weights()
-    num_layers_before = len(list(pytorch_tailor.model.modules()))
-    pytorch_tailor._attach_dense_layer()
-    num_layers_after = len(list(pytorch_tailor.model.modules()))
+    model = pytorch_tailor.convert(
+        freeze=False, embedding_layer_name=layer_name, output_dim=output_dim
+    )
+
+    num_layers_before = len(list(model.modules()))
+    num_layers_after = len(list(model.modules()))
     input_ = torch.rand(input_)
     if input_dtype == 'int64':
         input_ = input_.type(torch.IntTensor)
-    out = pytorch_tailor.model(input_)
+    out = model(input_)
     if output_dim:
         assert (
             num_layers_after - num_layers_before == 2
         )  # Note, Linear layer with wrapped Sequential
-        trainables = [
-            param.requires_grad for param in pytorch_tailor.model.parameters()
-        ]
+        trainables = [param.requires_grad for param in model.parameters()]
         assert trainables[-1] is True
     assert list(out.size())[1] == expected_output_shape == pytorch_tailor.output_dim
 
@@ -331,19 +328,16 @@ def test_attach_dense_layer(
     ],
     indirect=['model'],
 )
-def test_freeze(model, layer_name, input_size, input_dtype):
+@pytest.mark.parametrize('freeze', [True, False])
+def test_freeze(model, layer_name, input_size, input_dtype, freeze):
     pytorch_tailor = PytorchTailor(
         model=model,
-        freeze=False,
-        embedding_layer_name=layer_name,
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    for param in pytorch_tailor.model.parameters():
-        assert param.requires_grad
-    pytorch_tailor._freeze_weights()
-    for param in pytorch_tailor.model.parameters():
-        assert not param.requires_grad
+    model = pytorch_tailor.convert(freeze=freeze)
+    for param in model.parameters():
+        assert param.requires_grad != freeze
 
 
 def test_torch_lstm_model_parser():
