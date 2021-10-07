@@ -133,12 +133,10 @@ def test_trim_fail_given_unexpected_layer_idx(
     with pytest.raises(KeyError):
         paddle_tailor = PaddleTailor(
             model=model,
-            freeze=False,
-            embedding_layer_name=layer_name,
             input_size=input_size,
             input_dtype=input_dtype,
         )
-        paddle_tailor._trim()
+        paddle_tailor.convert(freeze=False, embedding_layer_name=layer_name)
 
 
 @pytest.mark.parametrize(
@@ -165,15 +163,13 @@ def test_trim_fail_given_unexpected_layer_idx(
 def test_freeze(model, layer_name, input_size, input_dtype):
     paddle_tailor = PaddleTailor(
         model=model,
-        freeze=False,
-        embedding_layer_name=layer_name,
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    for param in paddle_tailor.model.parameters():
+    model = paddle_tailor.convert(freeze=False, embedding_layer_name=layer_name)
+    for param in model.parameters():
         if not param.stop_gradient:
             assert param.trainable
-    paddle_tailor._freeze_weights()
     for param in paddle_tailor.model.parameters():
         assert not param.trainable
 
@@ -227,12 +223,10 @@ def test_trim(
 ):
     paddle_tailor = PaddleTailor(
         model=model,
-        freeze=False,
-        embedding_layer_name=layer_name,
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    paddle_tailor._trim()
+    paddle_tailor.convert(freeze=False, embedding_layer_name=layer_name)
     out = paddle_tailor.model(paddle.cast(paddle.rand(input_), input_dtype))
     assert list(out.shape) == expected_output_shape
 
@@ -317,23 +311,23 @@ def test_attach_dense_layer(
 ):
     paddle_tailor = PaddleTailor(
         model=model,
-        freeze=False,
-        embedding_layer_name=layer_name,
-        output_dim=output_dim,
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    paddle_tailor._trim()
-    paddle_tailor._freeze_weights()
-    num_layers_before = len(list(paddle_tailor.model.sublayers()))
-    paddle_tailor._attach_dense_layer()
-    num_layers_after = len(list(paddle_tailor.model.sublayers()))
-    out = paddle_tailor.model(paddle.cast(paddle.rand(input_), input_dtype))
+    model = paddle_tailor.convert(
+        freeze=False,
+        embedding_layer_name=layer_name,
+        output_dim=output_dim,
+    )
+
+    num_layers_before = len(list(model.sublayers()))
+    num_layers_after = len(list(model.sublayers()))
+    out = model(paddle.cast(paddle.rand(input_), input_dtype))
     if output_dim:
         assert (
             num_layers_after - num_layers_before == 2
         )  # Note, Linear layer with wrapped Sequential
-        trainables = [param.trainable for param in paddle_tailor.model.parameters()]
+        trainables = [param.trainable for param in model.parameters()]
         assert trainables[-1] is True
     assert list(out.shape)[1] == expected_output_shape == paddle_tailor.output_dim
 
@@ -347,8 +341,6 @@ def test_paddle_lstm_model_parser():
     )
     paddle_tailor = PaddleTailor(
         model=user_model,
-        freeze=False,
-        embedding_layer_name='last_cell_pd_0',
         input_size=(5000,),
         input_dtype='int64',
     )
@@ -375,8 +367,6 @@ def test_paddle_mlp_model_parser():
     )
     paddle_tailor = PaddleTailor(
         model=user_model,
-        freeze=False,
-        embedding_layer_name='linear_1',
         input_size=(28, 28),
         input_dtype='float32',
     )

@@ -174,16 +174,20 @@ def test_attach_dense_layer(model, layer_name, output_dim, expected_output_shape
     ],
     indirect=['model'],
 )
-def test_freeze(model):
+@pytest.mark.parametrize('freeze', [True, False])
+def test_freeze(model, freeze):
     keras_tailor = KerasTailor(model)
     for layer in model.layers:
         assert layer.trainable
-    keras_tailor.convert(freeze=True)
+    model = keras_tailor.convert(freeze=freeze)
     for idx, layer in enumerate(model.layers):
-        if idx == len(model.layers) - 1:
-            assert layer.trainable
+        if freeze:
+            if idx == len(model.layers) - 1:
+                assert layer.trainable
+            else:
+                assert not layer.trainable
         else:
-            assert not layer.trainable
+            assert layer.trainable
 
 
 def test_keras_model_parser():
