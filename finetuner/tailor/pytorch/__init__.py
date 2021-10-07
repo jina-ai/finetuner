@@ -158,7 +158,7 @@ class PytorchTailor(BaseTailor):
             ):
                 if _relative_idx_to_embedding_layer == 1 and output_dim:
                     replaced_layer = nn.Linear(
-                        in_features=_embed_layer['output_shape'][-1],
+                        in_features=_embed_layer['output_features'],
                         out_features=output_dim,
                     )
                     _is_dense_layer_added = True
@@ -178,16 +178,16 @@ class PytorchTailor(BaseTailor):
 
         if output_dim and not _is_dense_layer_added:
             # the dense layer needs to be added after the last layer
-            model = LinearAtLast(
+            model = _LinearAtLast(
                 model,
-                in_features=_embed_layer['output_shape'][-1],
+                in_features=_embed_layer['output_features'],
                 out_features=output_dim,
             )
 
         return model
 
 
-class LinearAtLast(nn.Module):
+class _LinearAtLast(nn.Module):
     def __init__(self, model, *args, **kwargs):
         super().__init__()
         self._model = model

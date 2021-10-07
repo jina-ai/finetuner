@@ -30,9 +30,10 @@ class BaseTailor(abc.ABC):
     ) -> AnyDNN:
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
-        :param embedding_layer_name: the name of the layer that is used for output embeddings. All layers after that layer
-            will be removed. When not given, then the last layer listed in :py:attr:`.embedding_layers` will be used.
-        :param freeze: if set, then freeze the weights in :py:attr:`.model`
+        :param embedding_layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
+            will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
+        :param output_dim: the dimensionality of the embedding output.
+        :param freeze: if set, then freeze the weights in :py:attr:`.model`.
 
         """
         ...
