@@ -1,7 +1,6 @@
 import pytest
 import torch
 import torch.nn as nn
-from torchinfo import summary
 
 from finetuner.tailor.pytorch import PytorchTailor
 
