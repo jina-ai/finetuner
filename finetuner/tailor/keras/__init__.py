@@ -6,7 +6,7 @@ from tensorflow.keras import Model
 from tensorflow.keras.layers import Dense
 
 from ..base import BaseTailor
-from ...helper import EmbeddingLayerInfoType, is_list_int, AnyDNN
+from ...helper import EmbeddingLayerInfoType, AnyDNN
 
 
 class KerasTailor(BaseTailor):
@@ -29,7 +29,7 @@ class KerasTailor(BaseTailor):
             if (
                 not output_shape
                 or len(output_shape) != 2
-                or not is_list_int(output_shape)
+                or not isinstance(output_shape[-1], int)
             ):
                 continue
             else:
@@ -60,8 +60,6 @@ class KerasTailor(BaseTailor):
         freeze: bool = False,
     ) -> AnyDNN:
 
-        model = copy.deepcopy(self._model)
-
         if embedding_layer_name:
             _all_embed_layers = {l['name']: l for l in self.embedding_layers}
             try:
@@ -74,14 +72,19 @@ class KerasTailor(BaseTailor):
             # when not given, using the last layer
             _embed_layer = self.embedding_layers[-1]
 
+        index = _embed_layer['layer_idx']
+
+        if output_dim:
+            out = Dense(output_dim)(self._model.layers[index].output)
+        else:
+            out = self._model.layers[index].output
+
+        model = Model(self._model.input, out)
+
         if freeze:
             for layer in model.layers:
                 layer.trainable = False
 
-        index = _embed_layer['layer_idx']
-
-        if output_dim:
-            out = Dense(output_dim)(model.layers[index].output)
-        else:
-            out = model.layers[index].output
-        return Model(model.input, out)
+        # the last layer must be trainable
+        model.layers[-1].trainable = True
+        return model
