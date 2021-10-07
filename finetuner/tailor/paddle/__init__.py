@@ -1,4 +1,5 @@
 import copy
+import warnings
 from collections import OrderedDict
 from typing import Tuple, Optional
 
@@ -144,14 +145,14 @@ class PaddleTailor(BaseTailor):
                 _embed_layer = _all_embed_layers[embedding_layer_name]
             except KeyError as e:
                 raise KeyError(
-                    f'`embedding_layer_name` must be one of {_all_embed_layers.keys()}'
+                    f'`embedding_layer_name` must be one of {_all_embed_layers.keys()}, given {embedding_layer_name}'
                 ) from e
         else:
             # when not given, using the last layer
             _embed_layer = self.embedding_layers[-1]
 
         if freeze:
-            for param in self._model.parameters():
+            for param in model.parameters():
                 param.trainable = False
 
         _relative_idx_to_embedding_layer = None
@@ -159,6 +160,17 @@ class PaddleTailor(BaseTailor):
         for name, module in model.named_sublayers():
             if name == _embed_layer['module_name']:
                 _relative_idx_to_embedding_layer = 0
+
+                # corner-case
+                if not output_dim and not embedding_layer_name:
+                    for param in module.parameters():
+                        param.trainable = True
+                    else:
+                        warnings.warn(
+                            'The current configs results in a non-parametric model, '
+                            'which is no trainable. '
+                            'You may need to specify `output_dim` or `embedding_layer_name`.'
+                        )
 
             if (
                 _relative_idx_to_embedding_layer

@@ -137,7 +137,7 @@ class PytorchTailor(BaseTailor):
                 _embed_layer = _all_embed_layers[embedding_layer_name]
             except KeyError as e:
                 raise KeyError(
-                    f'`embedding_layer_name` must be one of {_all_embed_layers.keys()}'
+                    f'`embedding_layer_name` must be one of {_all_embed_layers.keys()}, given {embedding_layer_name}'
                 ) from e
         else:
             # when not given, using the last layer

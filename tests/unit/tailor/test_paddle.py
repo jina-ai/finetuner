@@ -159,24 +159,24 @@ def test_trim_fail_given_unexpected_layer_idx(
     ],
     indirect=['model'],
 )
-def test_freeze(model, layer_name, input_size, input_dtype):
+@pytest.mark.parametrize('freeze', [True, False])
+def test_freeze(model, layer_name, input_size, input_dtype, freeze):
     paddle_tailor = PaddleTailor(
         model=model,
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = paddle_tailor.convert(freeze=False, embedding_layer_name=layer_name)
-    for param in model.parameters():
-        if not param.stop_gradient:
-            assert param.trainable
-    for param in paddle_tailor.model.parameters():
-        assert not param.trainable
+    model = paddle_tailor.convert(freeze=freeze, output_dim=2)
+    if freeze:
+        assert len(set(param.trainable for param in model.parameters())) == 2
+    else:
+        assert set(param.trainable for param in model.parameters()) == {True}
 
 
 @pytest.mark.parametrize(
     'model, layer_name, input_size, input_, input_dtype, expected_output_shape',
     [
-        ('dense_model', 'linear_27', (128,), (1, 128), 'float32', [1, 32]),
+        ('dense_model', 'linear_7', (128,), (1, 128), 'float32', [1, 10]),
         (
             'simple_cnn_model',
             'dropout_9',
@@ -187,14 +187,14 @@ def test_freeze(model, layer_name, input_size, input_dtype):
         ),
         (
             'vgg16_cnn_model',
-            'linear_31',
+            'linear_36',
             (3, 224, 224),
             (1, 3, 224, 224),
             'float32',
             [1, 4096],
         ),
-        ('stacked_lstm', 'linear_33', (128,), (1, 128), 'int64', [1, 256]),
-        ('bidirectional_lstm', 'linear_35', (128,), (1, 128), 'int64', [1, 128]),
+        ('stacked_lstm', 'linear_3', (128,), (1, 128), 'int64', [1, 256]),
+        ('bidirectional_lstm', 'linear_4', (128,), (1, 128), 'int64', [1, 32]),
         ('dense_model', None, (128,), (1, 128), 'float32', [1, 10]),
         (
             'simple_cnn_model',
@@ -210,10 +210,10 @@ def test_freeze(model, layer_name, input_size, input_dtype):
             (3, 224, 224),
             (1, 3, 224, 224),
             'float32',
-            [1, 4096],
+            [1, 1000],
         ),
         ('stacked_lstm', None, (128,), (1, 128), 'int64', [1, 5]),
-        ('bidirectional_lstm', None, (128,), (1, 128), 'int64', [1, 128]),
+        ('bidirectional_lstm', None, (128,), (1, 128), 'int64', [1, 32]),
     ],
     indirect=['model'],
 )
