@@ -285,17 +285,18 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.tailor.paddle</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">paddle</span>
-<span class="kn">from</span> <span class="nn">paddle</span> <span class="kn">import</span> <span class="n">nn</span><span class="p">,</span> <span class="n">Tensor</span>
 <span class="kn">from</span> <span class="nn">jina.helper</span> <span class="kn">import</span> <span class="n">cached_property</span>
+<span class="kn">from</span> <span class="nn">paddle</span> <span class="kn">import</span> <span class="n">nn</span><span class="p">,</span> <span class="n">Tensor</span>
 
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseTailor</span>
-<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">is_list_int</span><span class="p">,</span> <span class="n">EmbeddingLayerInfoType</span>
+<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">is_list_int</span><span class="p">,</span> <span class="n">EmbeddingLayerInfoType</span><span class="p">,</span> <span class="n">AnyDNN</span>
 
 
 <div class="viewcode-block" id="PaddleTailor"><a class="viewcode-back" href="../../../../api/finetuner.tailor.paddle/#finetuner.tailor.paddle.PaddleTailor">[docs]</a><span class="k">class</span> <span class="nc">PaddleTailor</span><span class="p">(</span><span class="n">BaseTailor</span><span class="p">):</span>
@@ -320,7 +321,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span> <span class="o">=</span> <span class="n">input_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_dtype</span> <span class="o">=</span> <span class="n">input_dtype</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_trimmed_output_dim</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">embedding_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EmbeddingLayerInfoType</span><span class="p">:</span>
@@ -328,15 +328,15 @@
 
 <span class="sd">        :return: layers info as :class:`list` of :class:`dict`.</span>
 <span class="sd">        """</span>
-        <span class="n">user_model</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">)</span>
+        <span class="n">user_model</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">)</span>
         <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_dtype</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">)</span>
         <span class="n">depth</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">user_model</span><span class="o">.</span><span class="n">sublayers</span><span class="p">()))</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">user_model</span><span class="o">.</span><span class="n">named_sublayers</span><span class="p">():</span>
             <span class="n">layer</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
-        <span class="k">def</span> <span class="nf">_get_output_shape</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_get_shape</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-                <span class="n">output_shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">_get_output_shape</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">output</span><span class="p">]</span>
+                <span class="n">output_shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">_get_shape</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">output</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">output_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">output_shape</span>
@@ -344,19 +344,17 @@
         <span class="k">def</span> <span class="nf">register_hook</span><span class="p">(</span><span class="n">layer</span><span class="p">):</span>
             <span class="k">def</span> <span class="nf">hook</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
 
-                <span class="n">class_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"'"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">class_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"'"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">layer_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">_full_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'_'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-                <span class="k">except</span><span class="p">:</span>
-                    <span class="n">layer_idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span>
+                <span class="n">layer_idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span>
 
-                <span class="n">m_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">layer_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s1">'</span>
+                <span class="n">m_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">class_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">layer_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s1">'</span>
 
                 <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
                 <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">'cls_name'</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-                <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">_full_name</span>
-                <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">'output_shape'</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_output_shape</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+                <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_key</span>
+                <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">'input_shape'</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_shape</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+                <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">'output_shape'</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_shape</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
                 <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">'module_name'</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">name</span>
 
                 <span class="n">params</span> <span class="o">=</span> <span class="mi">0</span>
@@ -373,9 +371,8 @@
             <span class="k">if</span> <span class="p">(</span>
                 <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
                 <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerList</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="p">(</span><span class="n">layer</span> <span class="o">==</span> <span class="n">user_model</span><span class="p">)</span> <span class="ow">or</span> <span class="n">depth</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="n">layer</span> <span class="o">!=</span> <span class="n">user_model</span> <span class="ow">or</span> <span class="n">depth</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span>
             <span class="p">):</span>
-
                 <span class="n">hooks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">register_forward_post_hook</span><span class="p">(</span><span class="n">hook</span><span class="p">))</span>
             <span class="c1"># For rnn, gru and lstm layer</span>
             <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s1">'could_use_cudnn'</span><span class="p">)</span> <span class="ow">and</span> <span class="n">layer</span><span class="o">.</span><span class="n">could_use_cudnn</span><span class="p">:</span>
@@ -407,90 +404,94 @@
                 <span class="ow">not</span> <span class="n">output_shape</span>
                 <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span>
                 <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_list_int</span><span class="p">(</span><span class="n">output_shape</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">summary</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="s1">'cls_name'</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="p">):</span>
                 <span class="k">continue</span>
 
             <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="p">{</span>
-                    <span class="s1">'name'</span><span class="p">:</span> <span class="n">summary</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="s1">'name'</span><span class="p">],</span>
-                    <span class="s1">'cls_name'</span><span class="p">:</span> <span class="n">summary</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="s1">'cls_name'</span><span class="p">],</span>
+                    <span class="o">**</span><span class="n">summary</span><span class="p">[</span><span class="n">layer</span><span class="p">],</span>
                     <span class="s1">'output_features'</span><span class="p">:</span> <span class="n">output_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                    <span class="s1">'params'</span><span class="p">:</span> <span class="n">summary</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="s1">'nb_params'</span><span class="p">],</span>
                     <span class="s1">'layer_idx'</span><span class="p">:</span> <span class="n">idx</span><span class="p">,</span>
-                    <span class="s1">'module_name'</span><span class="p">:</span> <span class="n">summary</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="s1">'module_name'</span><span class="p">],</span>
                 <span class="p">}</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">results</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">output_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">"""Get the user-defined output dimensionality.</span>
-<span class="sd">        :return: Output dimension of the attached linear layer</span>
-<span class="sd">        .. note::</span>
-<span class="sd">           if user didn't specify :py:attr:`output_dim`, return model's last layer output dim.</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_dim</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_dim</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpret_output_dim</span><span class="p">()</span>
+<div class="viewcode-block" id="PaddleTailor.convert"><a class="viewcode-back" href="../../../../api/finetuner.tailor.paddle/#finetuner.tailor.paddle.PaddleTailor.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">embedding_layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_interpret_output_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">input_size</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">input_size</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">)</span>
-        <span class="n">input_size</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># expand 1 dim to input.</span>
-        <span class="n">input_</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">input_size</span><span class="p">))</span>
-        <span class="n">input_</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_dtype</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">(</span><span class="n">input_</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">_trim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embedding_layer_name</span><span class="p">:</span>
-            <span class="n">module_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">'module_name'</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">_embed_layers</span> <span class="o">=</span> <span class="p">{</span><span class="n">l</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]:</span> <span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layers</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">embedding_layer_name</span><span class="p">:</span>
+            <span class="n">_all_embed_layers</span> <span class="o">=</span> <span class="p">{</span><span class="n">l</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]:</span> <span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layers</span><span class="p">}</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">module_name</span> <span class="o">=</span> <span class="n">_embed_layers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_embedding_layer_name</span><span class="p">][</span><span class="s1">'module_name'</span><span class="p">]</span>
+                <span class="n">_embed_layer</span> <span class="o">=</span> <span class="n">_all_embed_layers</span><span class="p">[</span><span class="n">embedding_layer_name</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">e</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">'`embedding_layer_name` must be one of </span><span class="si">{</span><span class="n">_all_embed_layers</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s1">, given </span><span class="si">{</span><span class="n">embedding_layer_name</span><span class="si">}</span><span class="s1">'</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># when not given, using the last layer</span>
+            <span class="n">_embed_layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="n">_is_after_embedding_layer</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">named_sublayers</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">module_name</span><span class="p">:</span>
-                <span class="n">_is_after_embedding_layer</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">if</span> <span class="n">_is_after_embedding_layer</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">freeze</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+                <span class="n">param</span><span class="o">.</span><span class="n">trainable</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">_relative_idx_to_embedding_layer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">_is_dense_layer_added</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_sublayers</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">_embed_layer</span><span class="p">[</span><span class="s1">'module_name'</span><span class="p">]:</span>
+                <span class="n">_relative_idx_to_embedding_layer</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="c1"># corner-case</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">output_dim</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">embedding_layer_name</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+                        <span class="n">param</span><span class="o">.</span><span class="n">trainable</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                            <span class="s1">'The current configs results in a non-parametric model, '</span>
+                            <span class="s1">'which is no trainable. '</span>
+                            <span class="s1">'You may need to specify `output_dim` or `embedding_layer_name`.'</span>
+                        <span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">_relative_idx_to_embedding_layer</span>
+                <span class="ow">and</span> <span class="n">_relative_idx_to_embedding_layer</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="n">_relative_idx_to_embedding_layer</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">output_dim</span><span class="p">:</span>
+                    <span class="n">replaced_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
+                        <span class="n">in_features</span><span class="o">=</span><span class="n">_embed_layer</span><span class="p">[</span><span class="s1">'output_features'</span><span class="p">],</span>
+                        <span class="n">out_features</span><span class="o">=</span><span class="n">output_dim</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">_is_dense_layer_added</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">replaced_layer</span> <span class="o">=</span> <span class="n">_Identity</span><span class="p">()</span>
+
                 <span class="k">if</span> <span class="p">(</span>
                     <span class="s1">'.'</span> <span class="ow">in</span> <span class="n">name</span>
-                <span class="p">):</span>  <span class="c1"># Note: in paddle.vision, nested layer names are named with '.' e.g. classifier.0</span>
+                <span class="p">):</span>  <span class="c1"># Note: in torchvision, nested layer names are named with '.' e.g. classifier.0</span>
                     <span class="n">nested_module</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)</span>
-                    <span class="nb">setattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">,</span> <span class="n">nested_module</span><span class="p">),</span> <span class="n">layer</span><span class="p">,</span> <span class="n">_Identity</span><span class="p">())</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">nested_module</span><span class="p">),</span> <span class="n">layer</span><span class="p">,</span> <span class="n">replaced_layer</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">_Identity</span><span class="p">())</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">replaced_layer</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_trimmed_output_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpret_output_dim</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">_relative_idx_to_embedding_layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_relative_idx_to_embedding_layer</span> <span class="o">+=</span> <span class="mi">1</span>
 
-    <span class="k">def</span> <span class="nf">_freeze_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""Freeze an arbitrary model to make layers not trainable."""</span>
-        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
-            <span class="n">param</span><span class="o">.</span><span class="n">trainable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">output_dim</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_is_dense_layer_added</span><span class="p">:</span>
+            <span class="c1"># the dense layer needs to be added after the last layer</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">_LinearAtLast</span><span class="p">(</span>
+                <span class="n">model</span><span class="p">,</span>
+                <span class="n">in_features</span><span class="o">=</span><span class="n">_embed_layer</span><span class="p">[</span><span class="s1">'output_features'</span><span class="p">],</span>
+                <span class="n">out_features</span><span class="o">=</span><span class="n">output_dim</span><span class="p">,</span>
+            <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_attach_dense_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""Attach a dense layer to the end of the parsed model.</span>
-
-<span class="sd">        .. note::</span>
-<span class="sd">           The attached dense layer have the same shape as the last layer</span>
-<span class="sd">           in the parsed model.</span>
-<span class="sd">           The attached dense layer will ignore the :py:attr:`freeze`, this</span>
-<span class="sd">           layer always trainable.</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">,</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-                <span class="n">in_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_trimmed_output_dim</span><span class="p">,</span>
-                <span class="n">out_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dim</span><span class="p">,</span>
-                <span class="n">bias_attr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="p">),</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">model</span></div></div>
 
 
 <span class="k">class</span> <span class="nc">_Identity</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
@@ -498,6 +499,16 @@
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">input_</span>
+
+
+<span class="k">class</span> <span class="nc">_LinearAtLast</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">(</span><span class="nb">input</span><span class="p">))</span>
 </pre></div>
             </article>
             <footer>
@@ -509,7 +520,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 06, 2021.
+                    Last updated on Oct 07, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
