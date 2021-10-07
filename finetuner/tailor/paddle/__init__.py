@@ -58,12 +58,9 @@ class PaddleTailor(BaseTailor):
 
                 class_name = str(layer.__class__).split('.')[-1].split("'")[0]
 
-                try:
-                    layer_idx = int(layer._full_name.split('_')[-1])
-                except:
-                    layer_idx = len(summary)
+                layer_idx = len(summary)
 
-                m_key = f'{class_name.lower()}-{layer_idx + 1}'
+                m_key = f'{class_name.lower()}_{layer_idx + 1}'
 
                 summary[m_key] = OrderedDict()
                 summary[m_key]['cls_name'] = layer.__class__.__name__
