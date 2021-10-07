@@ -83,7 +83,7 @@ class PaddleTailor(BaseTailor):
             if (
                 not isinstance(layer, nn.Sequential)
                 and not isinstance(layer, nn.LayerList)
-                and (not (layer == user_model) or depth < 1)
+                and (layer != user_model or depth < 1)
             ):
                 hooks.append(layer.register_forward_post_hook(hook))
             # For rnn, gru and lstm layer
@@ -116,6 +116,7 @@ class PaddleTailor(BaseTailor):
                 not output_shape
                 or len(output_shape) != 2
                 or not is_list_int(output_shape)
+                or summary[layer]['cls_name'] in self._model.__class__.__name__
             ):
                 continue
 

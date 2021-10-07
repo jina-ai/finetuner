@@ -19,10 +19,10 @@ def convert(
 def convert(
     model: AnyDNN,
     input_size: Tuple[int, ...],
-    freeze: bool = False,
+    input_dtype: str = 'float32',
     embedding_layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
-    input_dtype: str = 'float32',
+    freeze: bool = False,
 ) -> AnyDNN:
     ...
 
@@ -43,4 +43,4 @@ def convert(model: AnyDNN, **kwargs) -> AnyDNN:
 
         ft = PaddleTailor
 
-    return ft(model, **kwargs)().model
+    return ft(model, **kwargs).convert(**kwargs)
