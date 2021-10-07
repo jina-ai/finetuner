@@ -1,4 +1,5 @@
 import copy
+import warnings
 from collections import OrderedDict
 from copy import deepcopy
 from typing import Tuple, Optional
@@ -151,6 +152,17 @@ class PytorchTailor(BaseTailor):
         for name, module in model.named_modules():
             if name == _embed_layer['module_name']:
                 _relative_idx_to_embedding_layer = 0
+
+                # corner-case
+                if not output_dim and not embedding_layer_name:
+                    for param in module.parameters():
+                        param.requires_grad = True
+                    else:
+                        warnings.warn(
+                            'The current configs results in a non-parametric model, '
+                            'which is no trainable. '
+                            'You may need to specify `output_dim` or `embedding_layer_name`.'
+                        )
 
             if (
                 _relative_idx_to_embedding_layer

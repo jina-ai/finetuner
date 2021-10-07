@@ -1,6 +1,7 @@
 import pytest
 import torch
 import torch.nn as nn
+from torchinfo import summary
 
 from finetuner.tailor.pytorch import PytorchTailor
 
@@ -134,18 +135,19 @@ def test_trim_fail_given_unexpected_layer_idx(
     with pytest.raises(KeyError):
         paddle_tailor = PytorchTailor(
             model=model,
-            freeze=False,
-            embedding_layer_name=layer_name,
             input_size=input_size,
             input_dtype=input_dtype,
         )
-        paddle_tailor.convert()
+        paddle_tailor.convert(
+            freeze=False,
+            embedding_layer_name=layer_name,
+        )
 
 
 @pytest.mark.parametrize(
     'model, layer_name, input_size, input_, input_dtype, expected_output_shape',
     [
-        ('dense_model', 'linear_7', (128,), (1, 128), 'float32', [1, 32]),
+        ('dense_model', 'linear_7', (128,), (1, 128), 'float32', [1, 10]),
         (
             'simple_cnn_model',
             'dropout_9',
@@ -163,7 +165,7 @@ def test_trim_fail_given_unexpected_layer_idx(
             [1, 4096],
         ),
         ('stacked_lstm', 'linear_3', (128,), (1, 128), 'int64', [1, 256]),
-        ('bidirectional_lstm', 'linear_4', (128,), (1, 128), 'int64', [1, 128]),
+        ('bidirectional_lstm', 'linear_4', (128,), (1, 128), 'int64', [1, 32]),
         ('dense_model', None, (128,), (1, 128), 'float32', [1, 10]),
         (
             'simple_cnn_model',
@@ -179,10 +181,10 @@ def test_trim_fail_given_unexpected_layer_idx(
             (3, 224, 224),
             (1, 3, 224, 224),
             'float32',
-            [1, 4096],
+            [1, 1000],
         ),
         ('stacked_lstm', None, (128,), (1, 128), 'int64', [1, 5]),
-        ('bidirectional_lstm', None, (128,), (1, 128), 'int64', [1, 128]),
+        ('bidirectional_lstm', None, (128,), (1, 128), 'int64', [1, 32]),
     ],
     indirect=['model'],
 )
@@ -194,117 +196,15 @@ def test_trim(
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    pytorch_tailor.convert(
+    model = pytorch_tailor.convert(
         freeze=False,
         embedding_layer_name=layer_name,
     )
     input_ = torch.rand(input_)
     if input_dtype == 'int64':
-        input_ = input_.type(torch.IntTensor)
-    out = pytorch_tailor.model(input_)
-    assert list(out.size()) == expected_output_shape
-
-
-@pytest.mark.parametrize(
-    'model, layer_name, input_size, input_, input_dtype, output_dim, expected_output_shape',
-    [
-        ('dense_model', 'linear_7', (128,), (1, 128), 'float32', None, 32),
-        (
-            'simple_cnn_model',
-            'dropout_9',
-            (1, 28, 28),
-            (1, 1, 28, 28),
-            'float32',
-            None,
-            128,
-        ),
-        (
-            'vgg16_cnn_model',
-            'linear_36',
-            (3, 224, 224),
-            (1, 3, 224, 224),
-            'float32',
-            None,
-            4096,
-        ),
-        ('stacked_lstm', 'linear_3', (128,), (1, 128), 'int64', None, 256),
-        ('bidirectional_lstm', 'linear_4', (128,), (1, 128), 'int64', None, 128),
-        ('dense_model', None, (128,), (1, 128), 'float32', None, 10),
-        (
-            'simple_cnn_model',
-            None,
-            (1, 28, 28),
-            (1, 1, 28, 28),
-            'float32',
-            None,
-            10,
-        ),
-        (
-            'vgg16_cnn_model',
-            None,
-            (3, 224, 224),
-            (1, 3, 224, 224),
-            'float32',
-            None,
-            4096,
-        ),
-        ('stacked_lstm', None, (128,), (1, 128), 'int64', None, 5),
-        ('bidirectional_lstm', None, (128,), (1, 128), 'int64', None, 128),
-        ('dense_model', 'linear_7', (128,), (1, 128), 'float32', 16, 16),
-        (
-            'simple_cnn_model',
-            'dropout_9',
-            (1, 28, 28),
-            (1, 1, 28, 28),
-            'float32',
-            64,
-            64,
-        ),
-        (
-            'vgg16_cnn_model',
-            'linear_36',
-            (3, 224, 224),
-            (1, 3, 224, 224),
-            'float32',
-            1024,
-            1024,
-        ),
-        ('stacked_lstm', 'linear_3', (128,), (1, 128), 'int64', 128, 128),
-        ('bidirectional_lstm', 'linear_4', (128,), (1, 128), 'int64', 256, 256),
-    ],
-    indirect=['model'],
-)
-def test_attach_dense_layer(
-    model,
-    layer_name,
-    input_size,
-    input_,
-    input_dtype,
-    output_dim,
-    expected_output_shape,
-):
-    pytorch_tailor = PytorchTailor(
-        model=model,
-        input_size=input_size,
-        input_dtype=input_dtype,
-    )
-    model = pytorch_tailor.convert(
-        freeze=False, embedding_layer_name=layer_name, output_dim=output_dim
-    )
-
-    num_layers_before = len(list(model.modules()))
-    num_layers_after = len(list(model.modules()))
-    input_ = torch.rand(input_)
-    if input_dtype == 'int64':
-        input_ = input_.type(torch.IntTensor)
+        input_ = input_.type(torch.LongTensor)
     out = model(input_)
-    if output_dim:
-        assert (
-            num_layers_after - num_layers_before == 2
-        )  # Note, Linear layer with wrapped Sequential
-        trainables = [param.requires_grad for param in model.parameters()]
-        assert trainables[-1] is True
-    assert list(out.size())[1] == expected_output_shape == pytorch_tailor.output_dim
+    assert list(out.size()) == expected_output_shape
 
 
 @pytest.mark.parametrize(
@@ -335,9 +235,11 @@ def test_freeze(model, layer_name, input_size, input_dtype, freeze):
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = pytorch_tailor.convert(freeze=freeze)
-    for param in model.parameters():
-        assert param.requires_grad != freeze
+    model = pytorch_tailor.convert(freeze=freeze, output_dim=2)
+    if freeze:
+        assert len(set(param.requires_grad for param in model.parameters())) == 2
+    else:
+        assert set(param.requires_grad for param in model.parameters()) == {True}
 
 
 def test_torch_lstm_model_parser():
@@ -359,10 +261,10 @@ def test_torch_lstm_model_parser():
 
     # flat layer can be a nonparametric candidate
     assert r[0]['output_features'] == 128
-    assert r[0]['params'] == 0
+    assert r[0]['nb_params'] == 0
 
     assert r[1]['output_features'] == 32
-    assert r[1]['params'] == 4128
+    assert r[1]['nb_params'] == 4128
 
 
 def test_torch_mlp_model_parser():
@@ -387,14 +289,14 @@ def test_torch_mlp_model_parser():
 
     # flat layer can be a nonparametric candidate
     assert r[0]['output_features'] == 784
-    assert r[0]['params'] == 0
+    assert r[0]['nb_params'] == 0
 
     assert r[1]['output_features'] == 128
-    assert r[1]['params'] == 100480
+    assert r[1]['nb_params'] == 100480
 
     # relu layer is a nonparametric candidate
     assert r[2]['output_features'] == 128
-    assert r[2]['params'] == 0
+    assert r[2]['nb_params'] == 0
 
     assert r[3]['output_features'] == 32
-    assert r[3]['params'] == 4128
+    assert r[3]['nb_params'] == 4128
