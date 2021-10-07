@@ -1,13 +1,14 @@
+import copy
 from collections import OrderedDict
 from copy import deepcopy
-from typing import Tuple
+from typing import Tuple, Optional
 
 import numpy as np
 import torch
 from torch import nn
 
 from ..base import BaseTailor
-from ...helper import is_list_int, EmbeddingLayerInfoType
+from ...helper import is_list_int, EmbeddingLayerInfoType, AnyDNN
 
 
 class PytorchTailor(BaseTailor):
@@ -120,16 +121,34 @@ class PytorchTailor(BaseTailor):
 
         return results
 
-    def _trim(self) -> 'PytorchTailor':
-        if not self._embedding_layer_name:
-            _embed_layer = self.embedding_layers[-1]
-        else:
+    def convert(
+        self,
+        embedding_layer_name: Optional[str] = None,
+        output_dim: Optional[int] = None,
+        freeze: bool = False,
+    ) -> AnyDNN:
+
+        model = copy.deepcopy(self._model)
+
+        if embedding_layer_name:
             _all_embed_layers = {l['name']: l for l in self.embedding_layers}
-            _embed_layer = _all_embed_layers[self._embedding_layer_name]
+            try:
+                _embed_layer = _all_embed_layers[embedding_layer_name]
+            except KeyError as e:
+                raise KeyError(
+                    f'`embedding_layer_name` must be one of {_all_embed_layers.keys()}'
+                ) from e
+        else:
+            # when not given, using the last layer
+            _embed_layer = self.embedding_layers[-1]
+
+        if freeze:
+            for param in model.parameters():
+                param.requires_grad = False
 
         _relative_idx_to_embedding_layer = None
         _is_dense_layer_added = False
-        for name, module in self._model.named_modules():
+        for name, module in model.named_modules():
             if name == _embed_layer['module_name']:
                 _relative_idx_to_embedding_layer = 0
 
@@ -137,10 +156,10 @@ class PytorchTailor(BaseTailor):
                 _relative_idx_to_embedding_layer
                 and _relative_idx_to_embedding_layer >= 1
             ):
-                if _relative_idx_to_embedding_layer == 1 and self._output_dim:
+                if _relative_idx_to_embedding_layer == 1 and output_dim:
                     replaced_layer = nn.Linear(
                         in_features=_embed_layer['output_shape'][-1],
-                        out_features=self._output_dim,
+                        out_features=output_dim,
                     )
                     _is_dense_layer_added = True
                 else:
@@ -150,30 +169,25 @@ class PytorchTailor(BaseTailor):
                     '.' in name
                 ):  # Note: in torchvision, nested layer names are named with '.' e.g. classifier.0
                     nested_module, layer = name.split('.')
-                    setattr(getattr(self._model, nested_module), layer, replaced_layer)
+                    setattr(getattr(model, nested_module), layer, replaced_layer)
                 else:
-                    setattr(self._model, name, replaced_layer)
+                    setattr(model, name, replaced_layer)
 
             if _relative_idx_to_embedding_layer is not None:
                 _relative_idx_to_embedding_layer += 1
 
-        if not _is_dense_layer_added and self._output_dim:
-            # the dense layer needs to be added at the last layer
-            self._model = _Linear(
-                self._model,
+        if output_dim and not _is_dense_layer_added:
+            # the dense layer needs to be added after the last layer
+            model = LinearAtLast(
+                model,
                 in_features=_embed_layer['output_shape'][-1],
-                out_features=self._output_dim,
+                out_features=output_dim,
             )
 
-        return self
-
-    def _freeze_weights(self) -> 'PytorchTailor':
-        for param in self._model.parameters():
-            param.requires_grad = False
-        return self
+        return model
 
 
-class _Linear(nn.Module):
+class LinearAtLast(nn.Module):
     def __init__(self, model, *args, **kwargs):
         super().__init__()
         self._model = model
