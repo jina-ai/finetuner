@@ -1,9 +1,12 @@
+import copy
+from typing import Optional
+
+from jina.helper import cached_property
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Dense
-from jina.helper import cached_property
 
 from ..base import BaseTailor
-from ...helper import EmbeddingLayerInfoType
+from ...helper import EmbeddingLayerInfoType, AnyDNN
 
 
 class KerasTailor(BaseTailor):
@@ -13,16 +16,21 @@ class KerasTailor(BaseTailor):
 
         :return: layers info as :class:`list` of :class:`dict`.
         """
+
+        def _get_shape(layer):
+            try:
+                return layer.output_shape
+            except:
+                pass  #: return none when
+
         results = []
         for idx, layer in enumerate(self._model.layers):
-            try:
-                output_shape = layer.output_shape
-            except AttributeError:
-                output_shape = 'multiple'
-            except RuntimeError:  # output_shape unknown in Eager mode.
-                output_shape = '?'
-
-            if len(output_shape) != 2:
+            output_shape = _get_shape(layer)
+            if (
+                not output_shape
+                or len(output_shape) != 2
+                or not isinstance(output_shape[-1], int)
+            ):
                 continue
             else:
                 if not layer.built and not getattr(layer, '_is_graph_network', False):
@@ -36,54 +44,47 @@ class KerasTailor(BaseTailor):
                     {
                         'name': layer.name,
                         'cls_name': layer.__class__.__name__,
+                        'output_shape': output_shape,
                         'output_features': output_shape[-1],
-                        'params': params,
+                        'nb_params': params,
                         'layer_idx': idx,
                         'module_name': layer.name,  # duplicate as `name` to make different backends consistent
                     }
                 )
         return results
 
-    @property
-    def output_dim(self) -> int:
-        """Get the user-defined output dimensionality.
+    def convert(
+        self,
+        embedding_layer_name: Optional[str] = None,
+        output_dim: Optional[int] = None,
+        freeze: bool = False,
+    ) -> AnyDNN:
 
-        :return: Output dimension of the attached linear layer
-
-        .. note::
-           if user didn't specify :py:attr:`output_dim`, return model's last layer output dim.
-        """
-        return self._output_dim or self._model.output_shape[1]
-
-    def _trim(self) -> 'KerasTailor':
-        if not self._embedding_layer_name:
-            index = self.embedding_layers[-1]['layer_idx']
-        else:
-            _embed_layers = {l['name']: l for l in self.embedding_layers}
+        if embedding_layer_name:
+            _all_embed_layers = {l['name']: l for l in self.embedding_layers}
             try:
-                index = _embed_layers[self._embedding_layer_name]['layer_idx']
+                _embed_layer = _all_embed_layers[embedding_layer_name]
             except KeyError as e:
-                raise e
-        self._model = Model(self._model.input, self._model.layers[index - 1].output)
-        return self
+                raise KeyError(
+                    f'`embedding_layer_name` must be one of {_all_embed_layers.keys()}, given {embedding_layer_name}'
+                ) from e
+        else:
+            # when not given, using the last layer
+            _embed_layer = self.embedding_layers[-1]
 
-    def _freeze_weights(self) -> 'KerasTailor':
-        """Freeze an arbitrary model to make layers not trainable."""
-        for layer in self._model.layers:
-            layer.trainable = False
-        return self
+        index = _embed_layer['layer_idx']
 
-    def _attach_dense_layer(self):
-        """Attach a dense layer to the end of the parsed model.
+        if output_dim:
+            out = Dense(output_dim)(self._model.layers[index].output)
+        else:
+            out = self._model.layers[index].output
 
-        .. note::
-           The attached dense layer have the same shape as the last layer
-           in the parsed model.
-           The attached dense layer will ignore the :py:attr:`freeze`, this
-           layer always trainable.
-        """
-        if self._output_dim:
-            out = Dense(self._output_dim, activation=None, use_bias=True)(
-                self._model.layers[-1].output
-            )
-            self._model = Model(self._model.input, out)
+        model = Model(self._model.input, out)
+
+        if freeze:
+            for layer in model.layers:
+                layer.trainable = False
+
+        # the last layer must be trainable
+        model.layers[-1].trainable = True
+        return model

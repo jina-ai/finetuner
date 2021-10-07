@@ -1,7 +1,6 @@
-import pytest
-
 import paddle
 import paddle.nn as nn
+import pytest
 
 from finetuner.tailor.paddle import PaddleTailor
 
@@ -133,12 +132,10 @@ def test_trim_fail_given_unexpected_layer_idx(
     with pytest.raises(KeyError):
         paddle_tailor = PaddleTailor(
             model=model,
-            freeze=False,
-            embedding_layer_name=layer_name,
             input_size=input_size,
             input_dtype=input_dtype,
         )
-        paddle_tailor._trim()
+        paddle_tailor.convert(freeze=False, embedding_layer_name=layer_name)
 
 
 @pytest.mark.parametrize(
@@ -162,26 +159,24 @@ def test_trim_fail_given_unexpected_layer_idx(
     ],
     indirect=['model'],
 )
-def test_freeze(model, layer_name, input_size, input_dtype):
+@pytest.mark.parametrize('freeze', [True, False])
+def test_freeze(model, layer_name, input_size, input_dtype, freeze):
     paddle_tailor = PaddleTailor(
         model=model,
-        freeze=False,
-        embedding_layer_name=layer_name,
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    for param in paddle_tailor.model.parameters():
-        if not param.stop_gradient:
-            assert param.trainable
-    paddle_tailor._freeze_weights()
-    for param in paddle_tailor.model.parameters():
-        assert not param.trainable
+    model = paddle_tailor.convert(freeze=freeze, output_dim=2)
+    if freeze:
+        assert len(set(param.trainable for param in model.parameters())) == 2
+    else:
+        assert set(param.trainable for param in model.parameters()) == {True}
 
 
 @pytest.mark.parametrize(
     'model, layer_name, input_size, input_, input_dtype, expected_output_shape',
     [
-        ('dense_model', 'linear_27', (128,), (1, 128), 'float32', [1, 32]),
+        ('dense_model', 'linear_7', (128,), (1, 128), 'float32', [1, 10]),
         (
             'simple_cnn_model',
             'dropout_9',
@@ -192,14 +187,14 @@ def test_freeze(model, layer_name, input_size, input_dtype):
         ),
         (
             'vgg16_cnn_model',
-            'linear_31',
+            'linear_36',
             (3, 224, 224),
             (1, 3, 224, 224),
             'float32',
             [1, 4096],
         ),
-        ('stacked_lstm', 'linear_33', (128,), (1, 128), 'int64', [1, 256]),
-        ('bidirectional_lstm', 'linear_35', (128,), (1, 128), 'int64', [1, 128]),
+        ('stacked_lstm', 'linear_3', (128,), (1, 128), 'int64', [1, 256]),
+        ('bidirectional_lstm', 'linear_4', (128,), (1, 128), 'int64', [1, 32]),
         ('dense_model', None, (128,), (1, 128), 'float32', [1, 10]),
         (
             'simple_cnn_model',
@@ -215,10 +210,10 @@ def test_freeze(model, layer_name, input_size, input_dtype):
             (3, 224, 224),
             (1, 3, 224, 224),
             'float32',
-            [1, 4096],
+            [1, 1000],
         ),
         ('stacked_lstm', None, (128,), (1, 128), 'int64', [1, 5]),
-        ('bidirectional_lstm', None, (128,), (1, 128), 'int64', [1, 128]),
+        ('bidirectional_lstm', None, (128,), (1, 128), 'int64', [1, 32]),
     ],
     indirect=['model'],
 )
@@ -227,115 +222,12 @@ def test_trim(
 ):
     paddle_tailor = PaddleTailor(
         model=model,
-        freeze=False,
-        embedding_layer_name=layer_name,
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    paddle_tailor._trim()
-    out = paddle_tailor.model(paddle.cast(paddle.rand(input_), input_dtype))
+    model = paddle_tailor.convert(freeze=False, embedding_layer_name=layer_name)
+    out = model(paddle.cast(paddle.rand(input_), input_dtype))
     assert list(out.shape) == expected_output_shape
-
-
-@pytest.mark.parametrize(
-    'model, layer_name, input_size, input_, input_dtype, output_dim, expected_output_shape',
-    [
-        ('dense_model', 'linear_51', (128,), (1, 128), 'float32', None, 32),
-        (
-            'simple_cnn_model',
-            'dropout_17',
-            (1, 28, 28),
-            (1, 1, 28, 28),
-            'float32',
-            None,
-            128,
-        ),
-        (
-            'vgg16_cnn_model',
-            'linear_57',
-            (3, 224, 224),
-            (1, 3, 224, 224),
-            'float32',
-            None,
-            4096,
-        ),
-        ('stacked_lstm', 'linear_60', (128,), (1, 128), 'int64', None, 256),
-        ('bidirectional_lstm', 'linear_63', (128,), (1, 128), 'int64', None, 128),
-        ('dense_model', None, (128,), (1, 128), 'float32', None, 10),
-        (
-            'simple_cnn_model',
-            None,
-            (1, 28, 28),
-            (1, 1, 28, 28),
-            'float32',
-            None,
-            10,
-        ),
-        (
-            'vgg16_cnn_model',
-            None,
-            (3, 224, 224),
-            (1, 3, 224, 224),
-            'float32',
-            None,
-            4096,
-        ),
-        ('stacked_lstm', None, (128,), (1, 128), 'int64', None, 5),
-        ('bidirectional_lstm', None, (128,), (1, 128), 'int64', None, 128),
-        ('dense_model', None, (128,), (1, 128), 'float32', 16, 16),
-        (
-            'simple_cnn_model',
-            None,
-            (1, 28, 28),
-            (1, 1, 28, 28),
-            'float32',
-            64,
-            64,
-        ),
-        (
-            'vgg16_cnn_model',
-            None,
-            (3, 224, 224),
-            (1, 3, 224, 224),
-            'float32',
-            1024,
-            1024,
-        ),
-        ('stacked_lstm', None, (128,), (1, 128), 'int64', 128, 128),
-        ('bidirectional_lstm', None, (128,), (1, 128), 'int64', 256, 256),
-    ],
-    indirect=['model'],
-)
-def test_attach_dense_layer(
-    model,
-    layer_name,
-    input_size,
-    input_,
-    input_dtype,
-    output_dim,
-    expected_output_shape,
-):
-    paddle_tailor = PaddleTailor(
-        model=model,
-        freeze=False,
-        embedding_layer_name=layer_name,
-        output_dim=output_dim,
-        input_size=input_size,
-        input_dtype=input_dtype,
-    )
-    paddle_tailor._trim()
-    paddle_tailor._freeze_weights()
-    num_layers_before = len(list(paddle_tailor.model.sublayers()))
-    paddle_tailor._attach_dense_layer()
-    num_layers_after = len(list(paddle_tailor.model.sublayers()))
-    out = paddle_tailor.model(paddle.cast(paddle.rand(input_), input_dtype))
-    if output_dim:
-        assert (
-            num_layers_after - num_layers_before == 2
-        )  # Note, Linear layer with wrapped Sequential
-        trainables = [param.trainable for param in paddle_tailor.model.parameters()]
-        assert trainables[-1] is True
-    assert list(out.shape)[1] == expected_output_shape == paddle_tailor.output_dim
 
 
 def test_paddle_lstm_model_parser():
@@ -347,8 +239,6 @@ def test_paddle_lstm_model_parser():
     )
     paddle_tailor = PaddleTailor(
         model=user_model,
-        freeze=False,
-        embedding_layer_name='last_cell_pd_0',
         input_size=(5000,),
         input_dtype='int64',
     )
@@ -357,10 +247,10 @@ def test_paddle_lstm_model_parser():
 
     # flat layer can be a nonparametric candidate
     assert r[0]['output_features'] == 128
-    assert r[0]['params'] == 0
+    assert r[0]['nb_params'] == 0
 
     assert r[1]['output_features'] == 32
-    assert r[1]['params'] == 4128
+    assert r[1]['nb_params'] == 4128
 
 
 def test_paddle_mlp_model_parser():
@@ -375,8 +265,6 @@ def test_paddle_mlp_model_parser():
     )
     paddle_tailor = PaddleTailor(
         model=user_model,
-        freeze=False,
-        embedding_layer_name='linear_1',
         input_size=(28, 28),
         input_dtype='float32',
     )
@@ -385,14 +273,14 @@ def test_paddle_mlp_model_parser():
 
     # flat layer can be a nonparametric candidate
     assert r[0]['output_features'] == 784
-    assert r[0]['params'] == 0
+    assert r[0]['nb_params'] == 0
 
     assert r[1]['output_features'] == 128
-    assert r[1]['params'] == 100480
+    assert r[1]['nb_params'] == 100480
 
     # relu layer is a nonparametric candidate
     assert r[2]['output_features'] == 128
-    assert r[2]['params'] == 0
+    assert r[2]['nb_params'] == 0
 
     assert r[3]['output_features'] == 32
-    assert r[3]['params'] == 4128
+    assert r[3]['nb_params'] == 4128

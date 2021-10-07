@@ -1,14 +1,15 @@
+import copy
+import warnings
 from collections import OrderedDict
-from copy import deepcopy
-from typing import Tuple
+from typing import Tuple, Optional
 
 import numpy as np
 import paddle
-from paddle import nn, Tensor
 from jina.helper import cached_property
+from paddle import nn, Tensor
 
 from ..base import BaseTailor
-from ...helper import is_list_int, EmbeddingLayerInfoType
+from ...helper import is_list_int, EmbeddingLayerInfoType, AnyDNN
 
 
 class PaddleTailor(BaseTailor):
@@ -33,7 +34,6 @@ class PaddleTailor(BaseTailor):
 
         self._input_size = input_size
         self._input_dtype = input_dtype
-        self._trimmed_output_dim = None
 
     @cached_property
     def embedding_layers(self) -> EmbeddingLayerInfoType:
@@ -41,15 +41,15 @@ class PaddleTailor(BaseTailor):
 
         :return: layers info as :class:`list` of :class:`dict`.
         """
-        user_model = deepcopy(self._model)
+        user_model = copy.deepcopy(self._model)
         dtypes = [self._input_dtype] * len(self._input_size)
         depth = len(list(user_model.sublayers()))
         for name, layer in user_model.named_sublayers():
             layer.name = name
 
-        def _get_output_shape(output):
+        def _get_shape(output):
             if isinstance(output, (list, tuple)):
-                output_shape = [_get_output_shape(o) for o in output]
+                output_shape = [_get_shape(o) for o in output]
             else:
                 output_shape = list(output.shape)
             return output_shape
@@ -57,19 +57,17 @@ class PaddleTailor(BaseTailor):
         def register_hook(layer):
             def hook(layer, input, output):
 
-                class_name = str(layer.__class__).split(".")[-1].split("'")[0]
+                class_name = str(layer.__class__).split('.')[-1].split("'")[0]
 
-                try:
-                    layer_idx = int(layer._full_name.split('_')[-1])
-                except:
-                    layer_idx = len(summary)
+                layer_idx = len(summary)
 
-                m_key = f'{class_name}-{layer_idx + 1}'
+                m_key = f'{class_name.lower()}_{layer_idx + 1}'
 
                 summary[m_key] = OrderedDict()
                 summary[m_key]['cls_name'] = layer.__class__.__name__
-                summary[m_key]['name'] = layer._full_name
-                summary[m_key]['output_shape'] = _get_output_shape(output)
+                summary[m_key]['name'] = m_key
+                summary[m_key]['input_shape'] = _get_shape(input)
+                summary[m_key]['output_shape'] = _get_shape(output)
                 summary[m_key]['module_name'] = layer.name
 
                 params = 0
@@ -86,9 +84,8 @@ class PaddleTailor(BaseTailor):
             if (
                 not isinstance(layer, nn.Sequential)
                 and not isinstance(layer, nn.LayerList)
-                and (not (layer == user_model) or depth < 1)
+                and (layer != user_model or depth < 1)
             ):
-
                 hooks.append(layer.register_forward_post_hook(hook))
             # For rnn, gru and lstm layer
             elif hasattr(layer, 'could_use_cudnn') and layer.could_use_cudnn:
@@ -120,90 +117,94 @@ class PaddleTailor(BaseTailor):
                 not output_shape
                 or len(output_shape) != 2
                 or not is_list_int(output_shape)
+                or summary[layer]['cls_name'] in self._model.__class__.__name__
             ):
                 continue
 
             results.append(
                 {
-                    'name': summary[layer]['name'],
-                    'cls_name': summary[layer]['cls_name'],
+                    **summary[layer],
                     'output_features': output_shape[-1],
-                    'params': summary[layer]['nb_params'],
                     'layer_idx': idx,
-                    'module_name': summary[layer]['module_name'],
                 }
             )
 
         return results
 
-    @property
-    def output_dim(self) -> int:
-        """Get the user-defined output dimensionality.
-        :return: Output dimension of the attached linear layer
-        .. note::
-           if user didn't specify :py:attr:`output_dim`, return model's last layer output dim.
-        """
-        if self._output_dim:
-            return self._output_dim
-        return self._interpret_output_dim()
+    def convert(
+        self,
+        embedding_layer_name: Optional[str] = None,
+        output_dim: Optional[int] = None,
+        freeze: bool = False,
+    ) -> AnyDNN:
+        model = copy.deepcopy(self._model)
 
-    def _interpret_output_dim(self):
-        if isinstance(self._input_size, list):
-            input_size = list(self._input_size[0])
-        else:
-            input_size = list(self._input_size)
-        input_size.insert(0, 1)  # expand 1 dim to input.
-        input_ = paddle.rand(tuple(input_size))
-        input_ = paddle.cast(input_, self._input_dtype)
-        return list(self._model(input_).shape)[1]
-
-    def _trim(self):
-        if not self._embedding_layer_name:
-            module_name = self.embedding_layers[-1]['module_name']
-        else:
-            _embed_layers = {l['name']: l for l in self.embedding_layers}
+        if embedding_layer_name:
+            _all_embed_layers = {l['name']: l for l in self.embedding_layers}
             try:
-                module_name = _embed_layers[self._embedding_layer_name]['module_name']
+                _embed_layer = _all_embed_layers[embedding_layer_name]
             except KeyError as e:
-                raise e
+                raise KeyError(
+                    f'`embedding_layer_name` must be one of {_all_embed_layers.keys()}, given {embedding_layer_name}'
+                ) from e
+        else:
+            # when not given, using the last layer
+            _embed_layer = self.embedding_layers[-1]
 
-        _is_after_embedding_layer = False
-        for name, module in self._model.named_sublayers():
-            if name == module_name:
-                _is_after_embedding_layer = True
-            if _is_after_embedding_layer:
+        if freeze:
+            for param in model.parameters():
+                param.trainable = False
+
+        _relative_idx_to_embedding_layer = None
+        _is_dense_layer_added = False
+        for name, module in model.named_sublayers():
+            if name == _embed_layer['module_name']:
+                _relative_idx_to_embedding_layer = 0
+
+                # corner-case
+                if not output_dim and not embedding_layer_name:
+                    for param in module.parameters():
+                        param.trainable = True
+                    else:
+                        warnings.warn(
+                            'The current configs results in a non-parametric model, '
+                            'which is no trainable. '
+                            'You may need to specify `output_dim` or `embedding_layer_name`.'
+                        )
+
+            if (
+                _relative_idx_to_embedding_layer
+                and _relative_idx_to_embedding_layer >= 1
+            ):
+                if _relative_idx_to_embedding_layer == 1 and output_dim:
+                    replaced_layer = nn.Linear(
+                        in_features=_embed_layer['output_features'],
+                        out_features=output_dim,
+                    )
+                    _is_dense_layer_added = True
+                else:
+                    replaced_layer = _Identity()
+
                 if (
                     '.' in name
-                ):  # Note: in paddle.vision, nested layer names are named with '.' e.g. classifier.0
+                ):  # Note: in torchvision, nested layer names are named with '.' e.g. classifier.0
                     nested_module, layer = name.split('.')
-                    setattr(getattr(self._model, nested_module), layer, _Identity())
+                    setattr(getattr(model, nested_module), layer, replaced_layer)
                 else:
-                    setattr(self._model, name, _Identity())
+                    setattr(model, name, replaced_layer)
 
-        self._trimmed_output_dim = self._interpret_output_dim()
+            if _relative_idx_to_embedding_layer is not None:
+                _relative_idx_to_embedding_layer += 1
 
-    def _freeze_weights(self):
-        """Freeze an arbitrary model to make layers not trainable."""
-        for param in self._model.parameters():
-            param.trainable = False
+        if output_dim and not _is_dense_layer_added:
+            # the dense layer needs to be added after the last layer
+            model = _LinearAtLast(
+                model,
+                in_features=_embed_layer['output_features'],
+                out_features=output_dim,
+            )
 
-    def _attach_dense_layer(self):
-        """Attach a dense layer to the end of the parsed model.
-
-        .. note::
-           The attached dense layer have the same shape as the last layer
-           in the parsed model.
-           The attached dense layer will ignore the :py:attr:`freeze`, this
-           layer always trainable.
-        """
-        self._model = nn.Sequential(
-            self._model,
-            nn.Linear(
-                in_features=self._trimmed_output_dim,
-                out_features=self.output_dim,
-                bias_attr=True,
-            ),
-        )
+        return model
 
 
 class _Identity(nn.Layer):
@@ -211,3 +212,13 @@ class _Identity(nn.Layer):
 
     def forward(self, input_: Tensor) -> Tensor:
         return input_
+
+
+class _LinearAtLast(nn.Layer):
+    def __init__(self, model, *args, **kwargs):
+        super().__init__()
+        self._model = model
+        self._linear = nn.Linear(*args, **kwargs)
+
+    def forward(self, input):
+        return self._linear(self._model(input))
