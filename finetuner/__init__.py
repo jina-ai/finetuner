@@ -6,7 +6,7 @@ __version__ = '0.0.3'
 __default_tag_key__ = 'finetuner'
 
 # define the high-level API: fit()
-from typing import Optional, overload, TYPE_CHECKING
+from typing import Optional, overload, TYPE_CHECKING, Tuple
 
 if TYPE_CHECKING:
     from .helper import AnyDNN, DocumentArrayLike, TunerReturnType
