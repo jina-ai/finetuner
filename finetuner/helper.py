@@ -35,11 +35,11 @@ def get_framework(dnn_model: AnyDNN) -> str:
     :return: `keras`, `torch`, `paddle` or ValueError
 
     """
-    if 'keras.' in dnn_model.__module__:
+    if 'keras' in dnn_model.__module__:
         return 'keras'
     elif 'torch' in dnn_model.__module__:  # note: cover torch and torchvision
         return 'torch'
-    elif 'paddle.' in dnn_model.__module__:
+    elif 'paddle' in dnn_model.__module__:
         return 'paddle'
     else:
         raise ValueError(

@@ -137,9 +137,9 @@ def test_trim_fail_given_unexpected_layer_idx(
             input_size=input_size,
             input_dtype=input_dtype,
         )
-        paddle_tailor.convert(
+        paddle_tailor.to_embedding_model(
             freeze=False,
-            embedding_layer_name=layer_name,
+            layer_name=layer_name,
         )
 
 
@@ -195,9 +195,9 @@ def test_trim(
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = pytorch_tailor.convert(
+    model = pytorch_tailor.to_embedding_model(
         freeze=False,
-        embedding_layer_name=layer_name,
+        layer_name=layer_name,
     )
     input_ = torch.rand(input_)
     if input_dtype == 'int64':
@@ -234,7 +234,7 @@ def test_freeze(model, layer_name, input_size, input_dtype, freeze):
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = pytorch_tailor.convert(freeze=freeze, output_dim=2)
+    model = pytorch_tailor.to_embedding_model(freeze=freeze, output_dim=2)
     if freeze:
         assert len(set(param.requires_grad for param in model.parameters())) == 2
     else:
@@ -250,8 +250,6 @@ def test_torch_lstm_model_parser():
     )
     pytorch_tailor = PytorchTailor(
         model=user_model,
-        freeze=False,
-        embedding_layer_name='last_cell_pd_0',
         input_size=(5000,),
         input_dtype='int64',
     )
@@ -278,8 +276,6 @@ def test_torch_mlp_model_parser():
     )
     pytorch_tailor = PytorchTailor(
         model=user_model,
-        freeze=False,
-        embedding_layer_name='linear_1',
         input_size=(28, 28),
         input_dtype='float32',
     )
