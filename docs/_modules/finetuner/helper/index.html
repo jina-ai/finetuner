@@ -339,8 +339,8 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="is_list_int"><a class="viewcode-back" href="../../../api/finetuner.helper/#finetuner.helper.is_list_int">[docs]</a><span class="k">def</span> <span class="nf">is_list_int</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">"""Return True if the input is a list of integers."""</span>
+<div class="viewcode-block" id="is_seq_int"><a class="viewcode-back" href="../../../api/finetuner.helper/#finetuner.helper.is_seq_int">[docs]</a><span class="k">def</span> <span class="nf">is_seq_int</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">"""Return True if the input is a sequence of integers."""</span>
     <span class="k">return</span> <span class="n">tp</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tp</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">tp</span><span class="p">)</span></div>
 </pre></div>
             </article>

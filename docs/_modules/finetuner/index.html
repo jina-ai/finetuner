@@ -293,41 +293,16 @@
 <span class="n">__default_tag_key__</span> <span class="o">=</span> <span class="s1">'finetuner'</span>
 
 <span class="c1"># define the high-level API: fit()</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">overload</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
-
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">overload</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">DocumentArrayLike</span><span class="p">,</span> <span class="n">TunerReturnType</span>
 
-<span class="c1"># fit interface generated from Labeler + Tuner</span>
-<span class="c1"># overload_inject_fit_tailor_tuner_start</span>
-
-<span class="c1"># overload_inject_fit_tailor_tuner_end</span>
-
-
-<span class="c1"># fit interface generated from Labeler + Tuner</span>
-<span class="c1"># overload_inject_fit_labeler_tuner_start</span>
-<span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
-    <span class="n">embed_model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentArrayLike'</span><span class="p">,</span>
-    <span class="n">clear_labels_on_start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">port_expose</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">runtime_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'thread'</span><span class="p">,</span>
-    <span class="n">interactive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">head_layer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'CosineLayer'</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="o">...</span>
-
-
-<span class="c1"># overload_inject_fit_labeler_tuner_end</span>
-
 
 <span class="c1"># fit interface generated from Tuner</span>
-<span class="c1"># overload_inject_fit_tuner_start</span>
 <span class="nd">@overload</span>
 <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
-    <span class="n">embed_model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>
+    <span class="n">model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>  <span class="c1">#: must be an embedding model</span>
     <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentArrayLike'</span><span class="p">,</span>
     <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentArrayLike'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
@@ -337,18 +312,75 @@
     <span class="o">...</span>
 
 
-<span class="c1"># overload_inject_fit_tuner_end</span>
+<span class="c1"># fit interface derived from Tailor + Tuner</span>
+<span class="nd">@overload</span>
+<span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentArrayLike'</span><span class="p">,</span>
+    <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentArrayLike'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+    <span class="n">head_layer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'CosineLayer'</span><span class="p">,</span>
+    <span class="n">to_embedding_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1">#: below are tailor args</span>
+    <span class="n">input_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">input_dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'float32'</span><span class="p">,</span>
+    <span class="n">layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'TunerReturnType'</span><span class="p">:</span>
+    <span class="o">...</span>
 
 
-<div class="viewcode-block" id="fit"><a class="viewcode-back" href="../../api/finetuner/#finetuner.fit">[docs]</a><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'TunerReturnType'</span><span class="p">]:</span>
+<span class="c1"># fit interface from Labeler + Tuner</span>
+<span class="nd">@overload</span>
+<span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>  <span class="c1">#: must be an embedding model</span>
+    <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentArrayLike'</span><span class="p">,</span>
+    <span class="n">interactive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1">#: below are labeler args</span>
+    <span class="n">clear_labels_on_start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">port_expose</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">runtime_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'thread'</span><span class="p">,</span>
+    <span class="n">head_layer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'CosineLayer'</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<span class="c1"># fit interface from Labeler + Tailor + Tuner</span>
+<span class="nd">@overload</span>
+<span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentArrayLike'</span><span class="p">,</span>
+    <span class="n">interactive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1">#: below are labeler args</span>
+    <span class="n">clear_labels_on_start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">port_expose</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">runtime_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'thread'</span><span class="p">,</span>
+    <span class="n">head_layer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'CosineLayer'</span><span class="p">,</span>
+    <span class="n">to_embedding_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1">#: below are tailor args</span>
+    <span class="n">input_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">input_dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'float32'</span><span class="p">,</span>
+    <span class="n">layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<div class="viewcode-block" id="fit"><a class="viewcode-back" href="../../api/finetuner/#finetuner.fit">[docs]</a><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span> <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentArrayLike'</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'TunerReturnType'</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'to_embedding_model'</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.tailor</span> <span class="kn">import</span> <span class="n">to_embedding_model</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">to_embedding_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'interactive'</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.labeler</span> <span class="kn">import</span> <span class="n">fit</span>
 
-        <span class="k">return</span> <span class="n">fit</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">.tuner</span> <span class="kn">import</span> <span class="n">fit</span>
 
-        <span class="k">return</span> <span class="n">fit</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
             </article>
             <footer>
