@@ -328,10 +328,18 @@ of <code class="docutils literal notranslate"><span class="pre">input_size</span
 </ul>
 </dd>
 </dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="finetuner.tailor.keras.KerasTailor.embedding_layers">
-<span class="sig-name descname"><span class="pre">embedding_layers</span></span><a class="headerlink" href="#finetuner.tailor.keras.KerasTailor.embedding_layers" title="Permalink to this definition">¶</a></dt>
-<dd><p>The decorator to cache property of a class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tailor.keras.KerasTailor.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tailor/keras/#KerasTailor.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tailor.keras.KerasTailor.summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>The summary of the model architecture. To list all possible embedding layers, use <a class="reference internal" href="../finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.embedding_layers" title="finetuner.tailor.base.BaseTailor.embedding_layers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding_layers</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>layers info as Dict.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tailor.keras.KerasTailor.to_embedding_model">
@@ -341,8 +349,8 @@ of <code class="docutils literal notranslate"><span class="pre">input_size</span
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>layer_name</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – the name of the layer that is used for output embeddings. All layers <em>after</em> that layer
-will be removed. When set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, then the last layer listed in <a class="reference internal" href="#finetuner.tailor.keras.KerasTailor.embedding_layers" title="finetuner.tailor.keras.KerasTailor.embedding_layers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding_layers</span></code></a> will be used.
-To see all available names you can check <code class="docutils literal notranslate"><span class="pre">name</span></code> field of <a class="reference internal" href="#finetuner.tailor.keras.KerasTailor.embedding_layers" title="finetuner.tailor.keras.KerasTailor.embedding_layers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding_layers</span></code></a>.</p></li>
+will be removed. When set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, then the last layer listed in <a class="reference internal" href="../finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.embedding_layers" title="finetuner.tailor.base.BaseTailor.embedding_layers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding_layers</span></code></a> will be used.
+To see all available names you can check <code class="docutils literal notranslate"><span class="pre">name</span></code> field of <a class="reference internal" href="../finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.embedding_layers" title="finetuner.tailor.base.BaseTailor.embedding_layers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding_layers</span></code></a>.</p></li>
 <li><p><strong>output_dim</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the dimensionality of the embedding output.</p></li>
 <li><p><strong>freeze</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if set, then freeze all weights of the original model.</p></li>
 </ul>

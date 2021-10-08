@@ -345,14 +345,37 @@ To see all available names you can check <code class="docutils literal notransla
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="finetuner.tailor.base.BaseTailor.embedding_layers">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">embedding_layers</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#finetuner.tailor.base.BaseTailor.embedding_layers" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">embedding_layers</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#finetuner.tailor.base.BaseTailor.embedding_layers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all dense layers that can be used as embedding layer from the <code class="xref py py-attr docutils literal notranslate"><span class="pre">model</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>layers info as <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>.</p>
+<dd class="field-even"><p>layers info as Dict.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tailor.base.BaseTailor.summary">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tailor/base/#BaseTailor.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tailor.base.BaseTailor.summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>The summary of the model architecture. To list all possible embedding layers, use <a class="reference internal" href="#finetuner.tailor.base.BaseTailor.embedding_layers" title="finetuner.tailor.base.BaseTailor.embedding_layers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding_layers</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>layers info as Dict.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tailor.base.BaseTailor.display">
+<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tailor/base/#BaseTailor.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tailor.base.BaseTailor.display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display the model architecture from <a class="reference internal" href="#finetuner.tailor.base.BaseTailor.summary" title="finetuner.tailor.base.BaseTailor.summary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">summary</span></code></a> in a table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>

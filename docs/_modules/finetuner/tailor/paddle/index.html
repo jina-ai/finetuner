@@ -288,15 +288,14 @@
 <span></span><span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">paddle</span>
-<span class="kn">from</span> <span class="nn">jina.helper</span> <span class="kn">import</span> <span class="n">cached_property</span>
 <span class="kn">from</span> <span class="nn">paddle</span> <span class="kn">import</span> <span class="n">nn</span><span class="p">,</span> <span class="n">Tensor</span>
 
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseTailor</span>
-<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">is_seq_int</span><span class="p">,</span> <span class="n">EmbeddingLayerInfoType</span><span class="p">,</span> <span class="n">AnyDNN</span>
+<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">is_seq_int</span><span class="p">,</span> <span class="n">LayerInfoType</span><span class="p">,</span> <span class="n">AnyDNN</span>
 
 
 <div class="viewcode-block" id="PaddleTailor"><a class="viewcode-back" href="../../../../api/finetuner.tailor.paddle/#finetuner.tailor.paddle.PaddleTailor">[docs]</a><span class="k">class</span> <span class="nc">PaddleTailor</span><span class="p">(</span><span class="n">BaseTailor</span><span class="p">):</span>
@@ -306,12 +305,7 @@
 <span class="sd">        To use this class, you need to set ``input_size`` and ``input_dtype`` in :py:meth:`.__init__`</span>
 <span class="sd">    """</span>
 
-    <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">embedding_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EmbeddingLayerInfoType</span><span class="p">:</span>
-        <span class="sd">"""Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.</span>
-
-<span class="sd">        :return: layers info as :class:`list` of :class:`dict`.</span>
-<span class="sd">        """</span>
+<div class="viewcode-block" id="PaddleTailor.summary"><a class="viewcode-back" href="../../../../api/finetuner.tailor.paddle/#finetuner.tailor.paddle.PaddleTailor.summary">[docs]</a>    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayerInfoType</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1"> requires a valid `input_size`, but receiving </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="si">}</span><span class="s1">'</span>
@@ -356,6 +350,9 @@
                     <span class="n">params</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
                 <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">'nb_params'</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span>
+                <span class="n">summary</span><span class="p">[</span><span class="n">m_key</span><span class="p">][</span><span class="s1">'trainable'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span>
+                    <span class="n">l</span><span class="o">.</span><span class="n">trainable</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">layer_state_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">)</span>
 
             <span class="k">if</span> <span class="p">(</span>
                 <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
@@ -389,23 +386,23 @@
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">summary</span><span class="p">):</span>
             <span class="n">output_shape</span> <span class="o">=</span> <span class="n">summary</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="s1">'output_shape'</span><span class="p">]</span>
-            <span class="k">if</span> <span class="p">(</span>
+            <span class="n">is_embedding_layer</span> <span class="o">=</span> <span class="ow">not</span> <span class="p">(</span>
                 <span class="ow">not</span> <span class="n">output_shape</span>
                 <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span>
                 <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_seq_int</span><span class="p">(</span><span class="n">output_shape</span><span class="p">)</span>
                 <span class="ow">or</span> <span class="n">summary</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="s1">'cls_name'</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-            <span class="p">):</span>
-                <span class="k">continue</span>
+            <span class="p">)</span>
 
             <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="p">{</span>
                     <span class="o">**</span><span class="n">summary</span><span class="p">[</span><span class="n">layer</span><span class="p">],</span>
                     <span class="s1">'output_features'</span><span class="p">:</span> <span class="n">output_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="s1">'output_shape_display'</span><span class="p">:</span> <span class="n">output_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
                     <span class="s1">'layer_idx'</span><span class="p">:</span> <span class="n">idx</span><span class="p">,</span>
+                    <span class="s1">'is_embedding_layer'</span><span class="p">:</span> <span class="n">is_embedding_layer</span><span class="p">,</span>
                 <span class="p">}</span>
             <span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">results</span>
+        <span class="k">return</span> <span class="n">results</span></div>
 
 <div class="viewcode-block" id="PaddleTailor.to_embedding_model"><a class="viewcode-back" href="../../../../api/finetuner.tailor.paddle/#finetuner.tailor.paddle.PaddleTailor.to_embedding_model">[docs]</a>    <span class="k">def</span> <span class="nf">to_embedding_model</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
