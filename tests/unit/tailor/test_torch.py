@@ -250,8 +250,6 @@ def test_torch_lstm_model_parser():
     )
     pytorch_tailor = PytorchTailor(
         model=user_model,
-        freeze=False,
-        embedding_layer_name='last_cell_pd_0',
         input_size=(5000,),
         input_dtype='int64',
     )
@@ -278,8 +276,6 @@ def test_torch_mlp_model_parser():
     )
     pytorch_tailor = PytorchTailor(
         model=user_model,
-        freeze=False,
-        embedding_layer_name='linear_1',
         input_size=(28, 28),
         input_dtype='float32',
     )
