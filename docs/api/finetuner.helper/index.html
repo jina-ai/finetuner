@@ -348,7 +348,13 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="finetuner.helper.get_framework">
 <span class="sig-prename descclassname"><span class="pre">finetuner.helper.</span></span><span class="sig-name descname"><span class="pre">get_framework</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dnn_model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/helper/#get_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.helper.get_framework" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the framework that enpowers a DNN model</p>
+<dd><p>Return the framework that enpowers a DNN model.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is not a solid implementation. It is based on <code class="docutils literal notranslate"><span class="pre">__module__</span></code> name,
+the key idea is to tell <code class="docutils literal notranslate"><span class="pre">dnn_model</span></code> without actually importing the
+framework.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>dnn_model</strong> (<em>~AnyDNN</em>) – a DNN model</p>

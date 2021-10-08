@@ -316,7 +316,12 @@
 
 
 <div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../../api/finetuner.helper/#finetuner.helper.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">"""Return the framework that enpowers a DNN model</span>
+    <span class="sd">"""Return the framework that enpowers a DNN model.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        This is not a solid implementation. It is based on ``__module__`` name,</span>
+<span class="sd">        the key idea is to tell ``dnn_model`` without actually importing the</span>
+<span class="sd">        framework.</span>
 
 <span class="sd">    :param dnn_model: a DNN model</span>
 <span class="sd">    :return: `keras`, `torch`, `paddle` or ValueError</span>
