@@ -29,7 +29,12 @@ TunerReturnType = Dict[
 
 
 def get_framework(dnn_model: AnyDNN) -> str:
-    """Return the framework that enpowers a DNN model
+    """Return the framework that enpowers a DNN model.
+
+    .. note::
+        This is not a solid implementation. It is based on ``__module__`` name,
+        the key idea is to tell ``dnn_model`` without actually importing the
+        framework.
 
     :param dnn_model: a DNN model
     :return: `keras`, `torch`, `paddle` or ValueError
