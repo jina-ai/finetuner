@@ -10,6 +10,7 @@ from . import head_layers, datasets
 from ..base import BaseTuner, BaseHead, BaseArityModel
 from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
+from ..logger import LogGenerator
 
 
 class _ArityModel(BaseArityModel, nn.Layer):
@@ -39,17 +40,15 @@ class PaddleTuner(BaseTuner):
             shuffle=shuffle,
         )
 
-    def _eval(self, data, description: str = 'Evaluating'):
+    def _eval(self, data, description: str = 'Evaluating', train_log: str = ''):
         self.wrapped_model.eval()
 
         losses = []
         metrics = []
 
-        get_desc_str = (
-            lambda: f'Loss={np.mean(losses):.2f} Accuracy={np.mean(metrics):.2f}'
-        )
+        log_generator = LogGenerator('E', losses, metrics, train_log)
 
-        with ProgressBar(description, message_on_done=get_desc_str) as p:
+        with ProgressBar(description, message_on_done=log_generator) as p:
             for inputs, label in data:
                 outputs = self.wrapped_model(*inputs)
                 loss = self.wrapped_model.loss_fn(outputs, label)
@@ -58,7 +57,7 @@ class PaddleTuner(BaseTuner):
                 losses.append(loss.item())
                 metrics.append(metric.numpy())
 
-                p.update(message=get_desc_str())
+                p.update(message=log_generator())
 
         return losses, metrics
 
@@ -69,11 +68,11 @@ class PaddleTuner(BaseTuner):
         losses = []
         metrics = []
 
-        get_desc_str = (
-            lambda: f'Loss={np.mean(losses):.2f} Accuracy={float(np.mean(metrics)):.2f}'
-        )
+        log_generator = LogGenerator('T', losses, metrics)
 
-        with ProgressBar(description, message_on_done=get_desc_str) as p:
+        with ProgressBar(
+            description, message_on_done=log_generator, final_line_feed=False
+        ) as p:
             for inputs, label in data:
                 # forward step
                 outputs = self.wrapped_model(*inputs)
@@ -88,7 +87,7 @@ class PaddleTuner(BaseTuner):
                 losses.append(loss.item())
                 metrics.append(metric.numpy())
 
-                p.update(message=get_desc_str())
+                p.update(message=log_generator())
         return losses, metrics
 
     def fit(
@@ -99,10 +98,8 @@ class PaddleTuner(BaseTuner):
         batch_size: int = 256,
         **kwargs,
     ):
-        model = self.wrapped_model
-
         optimizer = paddle.optimizer.RMSProp(
-            learning_rate=0.01, parameters=model.parameters()
+            learning_rate=0.01, parameters=self.wrapped_model.parameters()
         )
 
         losses_train = []
@@ -127,7 +124,7 @@ class PaddleTuner(BaseTuner):
                     inputs=eval_data, batch_size=batch_size, shuffle=False
                 )
 
-                le, me = self._eval(_data)
+                le, me = self._eval(_data, train_log=LogGenerator('T', lt, mt)())
                 losses_eval.extend(le)
                 metrics_eval.extend(me)
 
