@@ -1,4 +1,3 @@
-import copy
 from typing import Optional
 
 from jina.helper import cached_property
@@ -10,6 +9,8 @@ from ...helper import EmbeddingLayerInfoType, AnyDNN
 
 
 class KerasTailor(BaseTailor):
+    """Tailor class for Keras DNN models."""
+
     @cached_property
     def embedding_layers(self) -> EmbeddingLayerInfoType:
         """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
@@ -53,20 +54,20 @@ class KerasTailor(BaseTailor):
                 )
         return results
 
-    def convert(
+    def to_embedding_model(
         self,
-        embedding_layer_name: Optional[str] = None,
+        layer_name: Optional[str] = None,
         output_dim: Optional[int] = None,
         freeze: bool = False,
     ) -> AnyDNN:
 
-        if embedding_layer_name:
+        if layer_name:
             _all_embed_layers = {l['name']: l for l in self.embedding_layers}
             try:
-                _embed_layer = _all_embed_layers[embedding_layer_name]
+                _embed_layer = _all_embed_layers[layer_name]
             except KeyError as e:
                 raise KeyError(
-                    f'`embedding_layer_name` must be one of {_all_embed_layers.keys()}, given {embedding_layer_name}'
+                    f'`embedding_layer_name` must be one of {_all_embed_layers.keys()}, given {layer_name}'
                 ) from e
         else:
             # when not given, using the last layer

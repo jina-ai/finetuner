@@ -102,7 +102,7 @@ def model(request):
 def test_trim_fail_given_unexpected_layer_name(model, layer_name):
     with pytest.raises(KeyError):
         keras_tailor = KerasTailor(model)
-        keras_tailor.convert(embedding_layer_name=layer_name)
+        keras_tailor.to_embedding_model(layer_name=layer_name)
 
 
 @pytest.mark.parametrize(
@@ -123,7 +123,7 @@ def test_trim_fail_given_unexpected_layer_name(model, layer_name):
 )
 def test_trim(model, layer_name, expected_output_shape):
     keras_tailor = KerasTailor(model)
-    embed_model = keras_tailor.convert(embedding_layer_name=layer_name)
+    embed_model = keras_tailor.to_embedding_model(layer_name=layer_name)
     assert embed_model.output_shape == expected_output_shape
 
 
@@ -152,8 +152,8 @@ def test_trim(model, layer_name, expected_output_shape):
 )
 def test_attach_dense_layer(model, layer_name, output_dim, expected_output_shape):
     keras_tailor = KerasTailor(model)
-    model = keras_tailor.convert(
-        freeze=True, embedding_layer_name=layer_name, output_dim=output_dim
+    model = keras_tailor.to_embedding_model(
+        freeze=True, layer_name=layer_name, output_dim=output_dim
     )
     num_layers_before = len(model.layers)
     if output_dim:
@@ -179,7 +179,7 @@ def test_freeze(model, freeze):
     keras_tailor = KerasTailor(model)
     for layer in model.layers:
         assert layer.trainable
-    model = keras_tailor.convert(freeze=freeze)
+    model = keras_tailor.to_embedding_model(freeze=freeze)
     for idx, layer in enumerate(model.layers):
         if freeze:
             if idx == len(model.layers) - 1:

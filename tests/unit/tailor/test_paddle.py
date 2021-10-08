@@ -135,7 +135,7 @@ def test_trim_fail_given_unexpected_layer_idx(
             input_size=input_size,
             input_dtype=input_dtype,
         )
-        paddle_tailor.convert(freeze=False, embedding_layer_name=layer_name)
+        paddle_tailor.to_embedding_model(freeze=False, layer_name=layer_name)
 
 
 @pytest.mark.parametrize(
@@ -166,7 +166,7 @@ def test_freeze(model, layer_name, input_size, input_dtype, freeze):
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = paddle_tailor.convert(freeze=freeze, output_dim=2)
+    model = paddle_tailor.to_embedding_model(freeze=freeze, output_dim=2)
     if freeze:
         assert len(set(param.trainable for param in model.parameters())) == 2
     else:
@@ -225,7 +225,7 @@ def test_trim(
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = paddle_tailor.convert(freeze=False, embedding_layer_name=layer_name)
+    model = paddle_tailor.to_embedding_model(freeze=False, layer_name=layer_name)
     out = model(paddle.cast(paddle.rand(input_), input_dtype))
     assert list(out.shape) == expected_output_shape
 
