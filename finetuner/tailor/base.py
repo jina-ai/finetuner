@@ -4,7 +4,7 @@ from typing import (
     Tuple,
 )
 
-from ..helper import AnyDNN, EmbeddingLayerInfoType
+from ..helper import AnyDNN, LayerInfoType
 
 
 class BaseTailor(abc.ABC):
@@ -49,10 +49,39 @@ class BaseTailor(abc.ABC):
         ...
 
     @property
-    @abc.abstractmethod
-    def embedding_layers(self) -> EmbeddingLayerInfoType:
+    def embedding_layers(self) -> LayerInfoType:
         """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
 
-        :return: layers info as :class:`list` of :class:`dict`.
+        :return: layers info as Dict.
+        """
+        _layers = self.summary()
+        return [_l for _l in _layers if _l['is_embedding_layer']]
+
+    @abc.abstractmethod
+    def summary(self) -> LayerInfoType:
+        """The summary of the model architecture. To list all possible embedding layers, use :py:attr:`.embedding_layers`.
+
+        :return: layers info as Dict.
         """
         ...
+
+    def display(self) -> None:
+        """Display the model architecture from :py:attr:`.summary` in a table. """
+        from rich.table import Table
+        from rich import print, box
+
+        _summary = self.summary()
+        table = Table(box=box.SIMPLE)
+        cols = ['name', 'output_shape_display', 'nb_params', 'trainable']
+        for k in cols:
+            table.add_column(k)
+        for s in _summary:
+            style = None
+            if s['is_embedding_layer']:
+                style = 'green'
+            table.add_row(*map(str, (s[v] for v in cols)), style=style)
+        print(
+            table,
+            '[green]Green[/green] layers can be used as embedding layers, '
+            'whose [b]name[/b] can be used as [b]layer_name[/b] in to_embedding_model(...).',
+        )

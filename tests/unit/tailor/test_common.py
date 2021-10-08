@@ -4,7 +4,7 @@ import tensorflow as tf
 import torch
 
 from finetuner.helper import get_framework
-from finetuner.tailor import to_embedding_model
+from finetuner.tailor import to_embedding_model, display
 
 
 class LastCellPT(torch.nn.Module):
@@ -53,3 +53,9 @@ def test_to_embedding_fn(framework, output_dim, freeze):
     )
     assert m1
     assert get_framework(m1) == framework
+
+
+@pytest.mark.parametrize('framework', ['keras', 'paddle', 'torch'])
+def test_display(framework):
+    m = embed_models[framework]()
+    display(m, input_size=(5000,), input_dtype='int64')

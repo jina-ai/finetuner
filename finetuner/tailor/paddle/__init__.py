@@ -1,15 +1,14 @@
 import copy
 import warnings
 from collections import OrderedDict
-from typing import Tuple, Optional
+from typing import Optional
 
 import numpy as np
 import paddle
-from jina.helper import cached_property
 from paddle import nn, Tensor
 
 from ..base import BaseTailor
-from ...helper import is_seq_int, EmbeddingLayerInfoType, AnyDNN
+from ...helper import is_seq_int, LayerInfoType, AnyDNN
 
 
 class PaddleTailor(BaseTailor):
@@ -19,12 +18,7 @@ class PaddleTailor(BaseTailor):
         To use this class, you need to set ``input_size`` and ``input_dtype`` in :py:meth:`.__init__`
     """
 
-    @cached_property
-    def embedding_layers(self) -> EmbeddingLayerInfoType:
-        """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
-
-        :return: layers info as :class:`list` of :class:`dict`.
-        """
+    def summary(self) -> LayerInfoType:
         if not self._input_size:
             raise ValueError(
                 f'{self.__class__} requires a valid `input_size`, but receiving {self._input_size}'
@@ -69,6 +63,9 @@ class PaddleTailor(BaseTailor):
                     params += np.prod(v.shape)
 
                 summary[m_key]['nb_params'] = params
+                summary[m_key]['trainable'] = any(
+                    l.trainable for _, l in layer_state_dict.items()
+                )
 
             if (
                 not isinstance(layer, nn.Sequential)
@@ -102,22 +99,22 @@ class PaddleTailor(BaseTailor):
         results = []
         for idx, layer in enumerate(summary):
             output_shape = summary[layer]['output_shape']
-            if (
+            is_embedding_layer = not (
                 not output_shape
                 or len(output_shape) != 2
                 or not is_seq_int(output_shape)
                 or summary[layer]['cls_name'] in self._model.__class__.__name__
-            ):
-                continue
+            )
 
             results.append(
                 {
                     **summary[layer],
                     'output_features': output_shape[-1],
+                    'output_shape_display': output_shape[1:],
                     'layer_idx': idx,
+                    'is_embedding_layer': is_embedding_layer,
                 }
             )
-
         return results
 
     def to_embedding_model(

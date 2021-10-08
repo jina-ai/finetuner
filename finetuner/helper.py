@@ -20,7 +20,7 @@ DocumentArrayLike = Union[
     Callable[..., DocumentSequence],
 ]  #: The type :py:data:`DocumentSequence` or a function that gives :py:data:`DocumentSequence`
 
-EmbeddingLayerInfoType = List[
+LayerInfoType = List[
     Dict[str, Any]
 ]  #: The type of embedding layer information used in Tailor
 TunerReturnType = Dict[
