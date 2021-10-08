@@ -1,5 +1,6 @@
 import pytest
 import tensorflow as tf
+import numpy as np
 
 from finetuner.tailor.keras import KerasTailor
 
@@ -121,10 +122,15 @@ def test_trim_fail_given_unexpected_layer_name(model, layer_name):
     ],
     indirect=['model'],
 )
-def test_trim(model, layer_name, expected_output_shape):
+def test_to_embedding_model(model, layer_name, expected_output_shape):
+    weights = model.layers[1].get_weights()[
+        0
+    ]  # Note get weights for the 1st layer (0 is InputLayer in certain models.)
     keras_tailor = KerasTailor(model)
-    embed_model = keras_tailor.to_embedding_model(layer_name=layer_name)
-    assert embed_model.output_shape == expected_output_shape
+    model = keras_tailor.to_embedding_model(layer_name=layer_name)
+    weights_after_convert = model.layers[1].get_weights()[0]
+    np.testing.assert_array_equal(weights, weights_after_convert)
+    assert model.output_shape == expected_output_shape
 
 
 @pytest.mark.parametrize(
