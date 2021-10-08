@@ -72,7 +72,7 @@ class BaseTailor(abc.ABC):
 
         _summary = self.summary()
         table = Table(box=box.SIMPLE)
-        cols = ['name', 'output_features', 'nb_params', 'trainable']
+        cols = ['name', 'output_shape_display', 'nb_params', 'trainable']
         for k in cols:
             table.add_column(k)
         for s in _summary:
@@ -80,8 +80,8 @@ class BaseTailor(abc.ABC):
             if s['is_embedding_layer']:
                 style = 'green'
             table.add_row(*map(str, (s[v] for v in cols)), style=style)
-        print(table)
         print(
+            table,
             '[green]Green[/green] layers can be used as embedding layers, '
-            'whose [b]name[/b] can be used as [b]layer_name[/b] in to_embedding_model(...).'
+            'whose [b]name[/b] can be used as [b]layer_name[/b] in to_embedding_model(...).',
         )

@@ -38,7 +38,10 @@ class KerasTailor(BaseTailor):
                     'name': layer.name,
                     'cls_name': layer.__class__.__name__,
                     'output_shape': output_shape,
-                    'output_features': output_shape[-1],
+                    'output_shape_display': list(output_shape[1:]),
+                    'output_features': output_shape[
+                        -1
+                    ],  #: this only makes sense when is_embedding_layer is True
                     'nb_params': params,
                     'layer_idx': idx,
                     'module_name': layer.name,  # duplicate as `name` to make different backends consistent

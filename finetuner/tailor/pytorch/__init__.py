@@ -96,6 +96,7 @@ class PytorchTailor(BaseTailor):
                 {
                     **summary[layer],
                     'output_features': output_shape[-1],
+                    'output_shape_display': output_shape[1:],
                     'layer_idx': idx,
                     'is_embedding_layer': is_embedding_layer,
                 }
