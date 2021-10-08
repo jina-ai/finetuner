@@ -3,6 +3,7 @@ import pytest
 import tensorflow as tf
 import torch
 
+from finetuner.helper import get_framework
 from finetuner.tailor import to_embedding_model
 
 
@@ -26,7 +27,7 @@ embed_models = {
             tf.keras.layers.Dense(32),
         ]
     ),
-    'pytorch': lambda: torch.nn.Sequential(
+    'torch': lambda: torch.nn.Sequential(
         torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
         torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
         LastCellPT(),
@@ -41,7 +42,14 @@ embed_models = {
 }
 
 
-@pytest.mark.parametrize('framework', ['keras', 'pytorch', 'paddle'])
-def test_to_embedding_fn(framework):
+@pytest.mark.parametrize('framework', ['keras', 'paddle', 'torch'])
+@pytest.mark.parametrize('freeze', [True, False])
+@pytest.mark.parametrize('output_dim', [None, 2])
+def test_to_embedding_fn(framework, output_dim, freeze):
     m = embed_models[framework]()
-    m1 = to_embedding_model(m)
+    assert get_framework(m) == framework
+    m1 = to_embedding_model(
+        m, input_size=(5000,), input_dtype='int64', freeze=freeze, output_dim=output_dim
+    )
+    assert m1
+    assert get_framework(m1) == framework

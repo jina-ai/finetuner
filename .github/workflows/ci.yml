@@ -122,7 +122,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          pytest --suppress-no-test-exit-code --cov=finetuner --cov-report=xml -v -s "${{ matrix.test-path }}"
+          pytest --suppress-no-test-exit-code --cov=finetuner --cov-report=xml -v -s ${{ matrix.test-path }}
           echo "flag it as jina for codeoverage"
           echo "::set-output name=codecov_flag::finetuner"
         timeout-minutes: 20
