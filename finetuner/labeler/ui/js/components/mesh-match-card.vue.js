@@ -8,13 +8,13 @@ const meshMatchCard = {
       submitDoc: Function,
     },
     template: `
-        <div class="card image-card">
+        <div class="card mesh-card">
             <div class="card-header">
                 <p class="fs-6 fw-light mb-2">Select all images similar to the image on right</p>
                 <model-viewer
                     v-bind:src="getContent(doc)" 
                     v-on:click="toggleRelevance(match)"
-                    class="img-thumbnail img-fluid my-2"
+                    class="img-thumbnail img-fluid my-2 h-100"
                     alt="result mesh"
                     ar ar-modes="webxr scene-viewer quick-look"
                     environment-image="neutral"
@@ -34,7 +34,7 @@ const meshMatchCard = {
                             <model-viewer
                                 v-bind:src="getContent(match)" 
                                 v-on:click="toggleRelevance(match)"
-                                class="img-thumbnail img-fluid"
+                                class="img-thumbnail img-fluid h-100"
                                 alt="result mesh"
                                 ar ar-modes="webxr scene-viewer quick-look"
                                 environment-image="neutral"
