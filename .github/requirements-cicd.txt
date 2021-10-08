@@ -3,3 +3,4 @@ tensorflow
 paddlepaddle
 torch
 torchvision
+scipy
