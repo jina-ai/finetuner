@@ -1,33 +1,16 @@
-from typing import overload, Optional, Tuple
+from typing import Optional, Tuple
 
 from ..helper import get_framework, AnyDNN
 
 
-# Keras Tailor
-@overload
-def convert(
+def to_embedding_model(
     model: AnyDNN,
-    freeze: bool = False,
-    embedding_layer_name: Optional[str] = None,
-    output_dim: Optional[int] = None,
-) -> AnyDNN:
-    ...
-
-
-# Pytorch and Paddle Tailor
-@overload
-def convert(
-    model: AnyDNN,
-    input_size: Tuple[int, ...],
+    input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
-    embedding_layer_name: Optional[str] = None,
+    layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
 ) -> AnyDNN:
-    ...
-
-
-def convert(model: AnyDNN, **kwargs) -> AnyDNN:
     f_type = get_framework(model)
 
     if f_type == 'keras':
@@ -43,4 +26,6 @@ def convert(model: AnyDNN, **kwargs) -> AnyDNN:
 
         ft = PaddleTailor
 
-    return ft(model, **kwargs).convert(**kwargs)
+    return ft(model, input_size, input_dtype).to_embedding_model(
+        layer_name=layer_name, output_dim=output_dim, freeze=freeze
+    )

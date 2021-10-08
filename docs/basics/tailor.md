@@ -14,9 +14,9 @@ Given a general model, Tailor does the following things:
 Tailor provides a high-level API `finetuner.tailor.convert()`, which can be used as following:
 
 ```python
-from finetuner.tailor import convert
+from finetuner.tailor import to_embedding_model
 
-convert()
+to_embedding_model()
 ```
 
 ```{tip}

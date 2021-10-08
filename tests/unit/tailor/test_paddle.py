@@ -136,7 +136,7 @@ def test_trim_fail_given_unexpected_layer_idx(
             input_size=input_size,
             input_dtype=input_dtype,
         )
-        paddle_tailor.convert(freeze=False, embedding_layer_name=layer_name)
+        paddle_tailor.to_embedding_model(freeze=False, layer_name=layer_name)
 
 
 @pytest.mark.parametrize(
@@ -167,7 +167,7 @@ def test_freeze(model, layer_name, input_size, input_dtype, freeze):
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = paddle_tailor.convert(freeze=freeze, output_dim=2)
+    model = paddle_tailor.to_embedding_model(freeze=freeze, output_dim=2)
     if freeze:
         assert len(set(param.trainable for param in model.parameters())) == 2
     else:
@@ -218,7 +218,7 @@ def test_freeze(model, layer_name, input_size, input_dtype, freeze):
     ],
     indirect=['model'],
 )
-def test_convert(
+def test_to_embedding_model(
     model, layer_name, input_size, input_, input_dtype, expected_output_shape
 ):
     weight = model.parameters()[0].numpy()  # weight of the 0th layer
@@ -227,7 +227,7 @@ def test_convert(
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = paddle_tailor.convert(freeze=False, embedding_layer_name=layer_name)
+    model = paddle_tailor.to_embedding_model(freeze=False, layer_name=layer_name)
     weight_after_convert = model.parameters()[0].numpy()
     np.testing.assert_array_equal(weight, weight_after_convert)
     out = model(paddle.cast(paddle.rand(input_), input_dtype))

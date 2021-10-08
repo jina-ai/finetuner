@@ -13,27 +13,7 @@ from ...helper import is_list_int, EmbeddingLayerInfoType, AnyDNN
 
 
 class PytorchTailor(BaseTailor):
-    def __init__(
-        self,
-        input_size: Tuple[int, ...],
-        input_dtype: str = 'float32',
-        *args,
-        **kwargs,
-    ):
-        """Tailor class for PyTorch DNN models
-
-        :param input_size: a sequence of integers defining the shape of the input tensor. Note, batch size is *not* part
-            of ``input_size``.
-        :param input_dtype: the data type of the input tensor.
-        """
-        super().__init__(*args, **kwargs)
-
-        # multiple inputs to the network
-        if isinstance(input_size, tuple):
-            input_size = [input_size]
-
-        self._input_size = input_size
-        self._input_dtype = input_dtype
+    """Tailor class for PyTorch DNN models"""
 
     @property
     def embedding_layers(self) -> EmbeddingLayerInfoType:
@@ -41,6 +21,11 @@ class PytorchTailor(BaseTailor):
 
         :return: layers info as :class:`list` of :class:`dict`.
         """
+        if not self._input_size:
+            raise ValueError(
+                f'{self.__class__} requires a valid `input_size`, but receiving {self._input_size}'
+            )
+
         user_model = deepcopy(self._model)
         dtypes = [getattr(torch, self._input_dtype)] * len(self._input_size)
 
@@ -122,22 +107,22 @@ class PytorchTailor(BaseTailor):
 
         return results
 
-    def convert(
+    def to_embedding_model(
         self,
-        embedding_layer_name: Optional[str] = None,
+        layer_name: Optional[str] = None,
         output_dim: Optional[int] = None,
         freeze: bool = False,
     ) -> AnyDNN:
 
         model = copy.deepcopy(self._model)
 
-        if embedding_layer_name:
+        if layer_name:
             _all_embed_layers = {l['name']: l for l in self.embedding_layers}
             try:
-                _embed_layer = _all_embed_layers[embedding_layer_name]
+                _embed_layer = _all_embed_layers[layer_name]
             except KeyError as e:
                 raise KeyError(
-                    f'`embedding_layer_name` must be one of {_all_embed_layers.keys()}, given {embedding_layer_name}'
+                    f'`embedding_layer_name` must be one of {_all_embed_layers.keys()}, given {layer_name}'
                 ) from e
         else:
             # when not given, using the last layer
@@ -154,7 +139,7 @@ class PytorchTailor(BaseTailor):
                 _relative_idx_to_embedding_layer = 0
 
                 # corner-case
-                if not output_dim and not embedding_layer_name:
+                if not output_dim and not layer_name:
                     for param in module.parameters():
                         param.requires_grad = True
                     else:
