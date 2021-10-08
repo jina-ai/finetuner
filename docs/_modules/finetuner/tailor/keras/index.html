@@ -285,8 +285,7 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.tailor.keras</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">jina.helper</span> <span class="kn">import</span> <span class="n">cached_property</span>
 <span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">Model</span>
@@ -297,6 +296,8 @@
 
 
 <div class="viewcode-block" id="KerasTailor"><a class="viewcode-back" href="../../../../api/finetuner.tailor.keras/#finetuner.tailor.keras.KerasTailor">[docs]</a><span class="k">class</span> <span class="nc">KerasTailor</span><span class="p">(</span><span class="n">BaseTailor</span><span class="p">):</span>
+    <span class="sd">"""Tailor class for Keras DNN models."""</span>
+
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">embedding_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EmbeddingLayerInfoType</span><span class="p">:</span>
         <span class="sd">"""Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.</span>
@@ -340,20 +341,20 @@
                 <span class="p">)</span>
         <span class="k">return</span> <span class="n">results</span>
 
-<div class="viewcode-block" id="KerasTailor.convert"><a class="viewcode-back" href="../../../../api/finetuner.tailor.keras/#finetuner.tailor.keras.KerasTailor.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span>
+<div class="viewcode-block" id="KerasTailor.to_embedding_model"><a class="viewcode-back" href="../../../../api/finetuner.tailor.keras/#finetuner.tailor.keras.KerasTailor.to_embedding_model">[docs]</a>    <span class="k">def</span> <span class="nf">to_embedding_model</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">embedding_layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
 
-        <span class="k">if</span> <span class="n">embedding_layer_name</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">layer_name</span><span class="p">:</span>
             <span class="n">_all_embed_layers</span> <span class="o">=</span> <span class="p">{</span><span class="n">l</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]:</span> <span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layers</span><span class="p">}</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">_embed_layer</span> <span class="o">=</span> <span class="n">_all_embed_layers</span><span class="p">[</span><span class="n">embedding_layer_name</span><span class="p">]</span>
+                <span class="n">_embed_layer</span> <span class="o">=</span> <span class="n">_all_embed_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">'`embedding_layer_name` must be one of </span><span class="si">{</span><span class="n">_all_embed_layers</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s1">, given </span><span class="si">{</span><span class="n">embedding_layer_name</span><span class="si">}</span><span class="s1">'</span>
+                    <span class="sa">f</span><span class="s1">'`embedding_layer_name` must be one of </span><span class="si">{</span><span class="n">_all_embed_layers</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s1">, given </span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s1">'</span>
                 <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># when not given, using the last layer</span>
@@ -386,7 +387,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 07, 2021.
+                    Last updated on Oct 08, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

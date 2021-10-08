@@ -288,6 +288,7 @@
 <span></span><span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">EmbeddingLayerInfoType</span>
@@ -297,30 +298,39 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="n">input_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">input_dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'float32'</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">"""Tailor converts a general DNN model into an embedding model.</span>
 
 <span class="sd">        :param model: a general DNN model</span>
-<span class="sd">        :param args:</span>
-<span class="sd">        :param kwargs:</span>
+<span class="sd">        :param input_size: a sequence of integers defining the shape of the input tensor. Note, batch size is *not* part</span>
+<span class="sd">            of ``input_size``. It is required for :py:class:`PytorchTailor` and  :py:class:`PaddleTailor`, but not :py:class:`C`</span>
+<span class="sd">        :param input_dtype: the data type of the input tensor.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">model</span>
 
-<div class="viewcode-block" id="BaseTailor.convert"><a class="viewcode-back" href="../../../../api/finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.convert">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span>
+        <span class="c1"># multiple inputs to the network</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">input_size</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_size</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span> <span class="o">=</span> <span class="n">input_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_dtype</span> <span class="o">=</span> <span class="n">input_dtype</span>
+
+<div class="viewcode-block" id="BaseTailor.to_embedding_model"><a class="viewcode-back" href="../../../../api/finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.to_embedding_model">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">to_embedding_model</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">embedding_layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
         <span class="sd">"""Convert a general model from :py:attr:`.model` to an embedding model.</span>
 
-<span class="sd">        :param embedding_layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer</span>
+<span class="sd">        :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer</span>
 <span class="sd">            will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.</span>
+<span class="sd">            To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.</span>
 <span class="sd">        :param output_dim: the dimensionality of the embedding output.</span>
-<span class="sd">        :param freeze: if set, then freeze the weights in :py:attr:`.model`.</span>
+<span class="sd">        :param freeze: if set, then freeze all weights of the original model.</span>
 
 <span class="sd">        """</span>
         <span class="o">...</span></div>
@@ -344,7 +354,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 07, 2021.
+                    Last updated on Oct 08, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
