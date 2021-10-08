@@ -52,6 +52,6 @@ def get_framework(dnn_model: AnyDNN) -> str:
         )
 
 
-def is_list_int(tp) -> bool:
-    """Return True if the input is a list of integers."""
+def is_seq_int(tp) -> bool:
+    """Return True if the input is a sequence of integers."""
     return tp and isinstance(tp, Sequence) and all(isinstance(p, int) for p in tp)

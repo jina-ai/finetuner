@@ -10,6 +10,7 @@ def to_embedding_model(
     layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
+    **kwargs
 ) -> AnyDNN:
     f_type = get_framework(model)
 
