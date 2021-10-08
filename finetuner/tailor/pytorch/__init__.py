@@ -9,18 +9,13 @@ import torch
 from torch import nn
 
 from ..base import BaseTailor
-from ...helper import is_seq_int, EmbeddingLayerInfoType, AnyDNN
+from ...helper import is_seq_int, LayerInfoType, AnyDNN
 
 
 class PytorchTailor(BaseTailor):
     """Tailor class for PyTorch DNN models"""
 
-    @property
-    def embedding_layers(self) -> EmbeddingLayerInfoType:
-        """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
-
-        :return: layers info as :class:`list` of :class:`dict`.
-        """
+    def summary(self) -> LayerInfoType:
         if not self._input_size:
             raise ValueError(
                 f'{self.__class__} requires a valid `input_size`, but receiving {self._input_size}'
@@ -54,6 +49,7 @@ class PytorchTailor(BaseTailor):
                 summary[m_key]['module_name'] = module.name
 
                 params = 0
+                summary[m_key]['trainable'] = False
                 if hasattr(module, 'weight') and hasattr(module.weight, 'size'):
                     params += np.prod(list(module.weight.size()))
                     summary[m_key]['trainable'] = module.weight.requires_grad
@@ -89,19 +85,19 @@ class PytorchTailor(BaseTailor):
         results = []
         for idx, layer in enumerate(summary):
             output_shape = summary[layer]['output_shape']
-            if (
+            is_embedding_layer = not (
                 not output_shape
                 or len(output_shape) != 2
                 or not is_seq_int(output_shape)
                 or summary[layer]['cls_name'] in self._model.__class__.__name__
-            ):
-                continue
+            )
 
             results.append(
                 {
                     **summary[layer],
                     'output_features': output_shape[-1],
                     'layer_idx': idx,
+                    'is_embedding_layer': is_embedding_layer,
                 }
             )
 
