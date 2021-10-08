@@ -9,7 +9,7 @@ import torch
 from torch import nn
 
 from ..base import BaseTailor
-from ...helper import is_list_int, EmbeddingLayerInfoType, AnyDNN
+from ...helper import is_seq_int, EmbeddingLayerInfoType, AnyDNN
 
 
 class PytorchTailor(BaseTailor):
@@ -92,7 +92,7 @@ class PytorchTailor(BaseTailor):
             if (
                 not output_shape
                 or len(output_shape) != 2
-                or not is_list_int(output_shape)
+                or not is_seq_int(output_shape)
                 or summary[layer]['cls_name'] in self._model.__class__.__name__
             ):
                 continue
