@@ -343,6 +343,14 @@ accordion-button:focus {
   padding: 0;
 }
 
+.mesh-card .card-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: .5rem;
+  height: 10rem;
+}
+
 /* Swiper don't swipe */
 .swiper-container {
   width: 100%;
