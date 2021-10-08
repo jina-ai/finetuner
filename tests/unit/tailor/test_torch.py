@@ -1,6 +1,7 @@
 import pytest
 import torch
 import torch.nn as nn
+import numpy as np
 
 from finetuner.tailor.pytorch import PytorchTailor
 
@@ -187,9 +188,10 @@ def test_trim_fail_given_unexpected_layer_idx(
     ],
     indirect=['model'],
 )
-def test_trim(
+def test_to_embedding_model(
     model, layer_name, input_size, input_, input_dtype, expected_output_shape
 ):
+    weights = list(model.parameters())[0].detach().numpy()  # weights of the first layer
     pytorch_tailor = PytorchTailor(
         model=model,
         input_size=input_size,
@@ -199,6 +201,8 @@ def test_trim(
         freeze=False,
         layer_name=layer_name,
     )
+    weights_after_convert = list(model.parameters())[0].detach().numpy()
+    np.testing.assert_array_equal(weights, weights_after_convert)
     input_ = torch.rand(input_)
     if input_dtype == 'int64':
         input_ = input_.type(torch.LongTensor)

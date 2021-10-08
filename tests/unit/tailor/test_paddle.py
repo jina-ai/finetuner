@@ -1,6 +1,7 @@
 import paddle
 import paddle.nn as nn
 import pytest
+import numpy as np
 
 from finetuner.tailor.paddle import PaddleTailor
 
@@ -217,15 +218,18 @@ def test_freeze(model, layer_name, input_size, input_dtype, freeze):
     ],
     indirect=['model'],
 )
-def test_trim(
+def test_to_embedding_model(
     model, layer_name, input_size, input_, input_dtype, expected_output_shape
 ):
+    weight = model.parameters()[0].numpy()  # weight of the 0th layer
     paddle_tailor = PaddleTailor(
         model=model,
         input_size=input_size,
         input_dtype=input_dtype,
     )
     model = paddle_tailor.to_embedding_model(freeze=False, layer_name=layer_name)
+    weight_after_convert = model.parameters()[0].numpy()
+    np.testing.assert_array_equal(weight, weight_after_convert)
     out = model(paddle.cast(paddle.rand(input_), input_dtype))
     assert list(out.shape) == expected_output_shape
 
