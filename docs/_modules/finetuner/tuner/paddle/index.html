@@ -237,6 +237,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.helper/">finetuner.helper module</a></li>
@@ -297,6 +298,7 @@
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseTuner</span><span class="p">,</span> <span class="n">BaseHead</span><span class="p">,</span> <span class="n">BaseArityModel</span>
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">DocumentArrayLike</span>
 <span class="kn">from</span> <span class="nn">..dataset.helper</span> <span class="kn">import</span> <span class="n">get_dataset</span>
+<span class="kn">from</span> <span class="nn">..logger</span> <span class="kn">import</span> <span class="n">LogGenerator</span>
 
 
 <span class="k">class</span> <span class="nc">_ArityModel</span><span class="p">(</span><span class="n">BaseArityModel</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
@@ -326,17 +328,15 @@
             <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'Evaluating'</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'Evaluating'</span><span class="p">,</span> <span class="n">train_log</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 
         <span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">metrics</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="n">get_desc_str</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="k">lambda</span><span class="p">:</span> <span class="sa">f</span><span class="s1">'Loss=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> Accuracy=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">'</span>
-        <span class="p">)</span>
+        <span class="n">log_generator</span> <span class="o">=</span> <span class="n">LogGenerator</span><span class="p">(</span><span class="s1">'E'</span><span class="p">,</span> <span class="n">losses</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">train_log</span><span class="p">)</span>
 
-        <span class="k">with</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">message_on_done</span><span class="o">=</span><span class="n">get_desc_str</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">message_on_done</span><span class="o">=</span><span class="n">log_generator</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                 <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
                 <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="o">.</span><span class="n">loss_fn</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
@@ -345,7 +345,7 @@
                 <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
                 <span class="n">metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 
-                <span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">get_desc_str</span><span class="p">())</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">log_generator</span><span class="p">())</span>
 
         <span class="k">return</span> <span class="n">losses</span><span class="p">,</span> <span class="n">metrics</span>
 
@@ -356,11 +356,11 @@
         <span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">metrics</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="n">get_desc_str</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="k">lambda</span><span class="p">:</span> <span class="sa">f</span><span class="s1">'Loss=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> Accuracy=</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">metrics</span><span class="p">))</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">'</span>
-        <span class="p">)</span>
+        <span class="n">log_generator</span> <span class="o">=</span> <span class="n">LogGenerator</span><span class="p">(</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">losses</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span>
 
-        <span class="k">with</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">message_on_done</span><span class="o">=</span><span class="n">get_desc_str</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">ProgressBar</span><span class="p">(</span>
+            <span class="n">description</span><span class="p">,</span> <span class="n">message_on_done</span><span class="o">=</span><span class="n">log_generator</span><span class="p">,</span> <span class="n">final_line_feed</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                 <span class="c1"># forward step</span>
                 <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
@@ -375,7 +375,7 @@
                 <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
                 <span class="n">metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 
-                <span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">get_desc_str</span><span class="p">())</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">log_generator</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">losses</span><span class="p">,</span> <span class="n">metrics</span>
 
 <div class="viewcode-block" id="PaddleTuner.fit"><a class="viewcode-back" href="../../../../api/finetuner.tuner.paddle/#finetuner.tuner.paddle.PaddleTuner.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
@@ -386,10 +386,8 @@
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span>
-
         <span class="n">optimizer</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">RMSProp</span><span class="p">(</span>
-            <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span>
+            <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span>
         <span class="p">)</span>
 
         <span class="n">losses_train</span> <span class="o">=</span> <span class="p">[]</span>
@@ -414,7 +412,7 @@
                     <span class="n">inputs</span><span class="o">=</span><span class="n">eval_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
                 <span class="p">)</span>
 
-                <span class="n">le</span><span class="p">,</span> <span class="n">me</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval</span><span class="p">(</span><span class="n">_data</span><span class="p">)</span>
+                <span class="n">le</span><span class="p">,</span> <span class="n">me</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval</span><span class="p">(</span><span class="n">_data</span><span class="p">,</span> <span class="n">train_log</span><span class="o">=</span><span class="n">LogGenerator</span><span class="p">(</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">mt</span><span class="p">)())</span>
                 <span class="n">losses_eval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">le</span><span class="p">)</span>
                 <span class="n">metrics_eval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">me</span><span class="p">)</span>
 
