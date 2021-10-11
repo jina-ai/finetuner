@@ -34,13 +34,13 @@ def test_overfit_pytorch(
     data, vecs = create_easy_data(n_cls, dim, n_samples)
     embed_model = nn.Sequential(
         nn.Flatten(),
-        nn.Linear(in_features=dim, out_features=128),
+        nn.Linear(in_features=dim, out_features=64),
         nn.ReLU(),
-        nn.Linear(in_features=128, out_features=128),
+        nn.Linear(in_features=64, out_features=64),
         nn.ReLU(),
-        nn.Linear(in_features=128, out_features=128),
+        nn.Linear(in_features=64, out_features=64),
         nn.ReLU(),
-        nn.Linear(in_features=128, out_features=32),
+        nn.Linear(in_features=64, out_features=32),
     )
 
     # Train
