@@ -13,7 +13,7 @@ from finetuner.tuner.paddle import PaddleTuner
         (5, 10, 1000, 15, 256, 'CosineLayer'),  # Cosine needs more training to converge
     ],
 )
-def test_overfit_pytorch(
+def test_overfit_paddle(
     create_easy_data,
     n_cls: int,
     dim: int,
