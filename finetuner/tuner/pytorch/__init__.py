@@ -1,6 +1,5 @@
 from typing import Optional
 
-import numpy as np
 import torch
 import torch.nn as nn
 from jina.helper import cached_property
@@ -12,6 +11,7 @@ from . import head_layers, datasets
 from ..base import BaseTuner, BaseHead, BaseArityModel
 from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
+from ..logger import LogGenerator
 
 
 class _ArityModel(BaseArityModel, nn.Module):
@@ -41,17 +41,14 @@ class PytorchTuner(BaseTuner):
             shuffle=shuffle,
         )
 
-    def _eval(self, data, description: str = 'Evaluating'):
+    def _eval(self, data, description: str = 'Evaluating', train_log: str = ''):
         self.wrapped_model.eval()
 
         losses = []
         metrics = []
+        log_generator = LogGenerator('E', losses, metrics, train_log)
 
-        get_desc_str = (
-            lambda: f'Loss={np.mean(losses):.2f} Accuracy={np.mean(metrics):.2f}'
-        )
-
-        with ProgressBar(description, message_on_done=get_desc_str) as p:
+        with ProgressBar(description, message_on_done=log_generator) as p:
             for inputs, label in data:
                 with torch.inference_mode():
                     outputs = self.wrapped_model(*inputs)
@@ -61,7 +58,7 @@ class PytorchTuner(BaseTuner):
                 losses.append(loss.item())
                 metrics.append(metric.numpy())
 
-                p.update(message=get_desc_str())
+                p.update(message=log_generator())
 
         return losses, metrics
 
@@ -72,11 +69,11 @@ class PytorchTuner(BaseTuner):
         losses = []
         metrics = []
 
-        get_desc_str = (
-            lambda: f'Loss={np.mean(losses):.2f} Accuracy={np.mean(metrics):.2f}'
-        )
+        log_generator = LogGenerator('T', losses, metrics)
 
-        with ProgressBar(description, message_on_done=get_desc_str) as p:
+        with ProgressBar(
+            description, message_on_done=log_generator, final_line_feed=False
+        ) as p:
             for inputs, label in data:
                 # forward step
                 outputs = self.wrapped_model(*inputs)
@@ -91,7 +88,7 @@ class PytorchTuner(BaseTuner):
                 losses.append(loss.item())
                 metrics.append(metric.numpy())
 
-                p.update(message=get_desc_str())
+                p.update(message=log_generator())
         return losses, metrics
 
     def fit(
@@ -128,7 +125,7 @@ class PytorchTuner(BaseTuner):
                     inputs=eval_data, batch_size=batch_size, shuffle=False
                 )
 
-                le, me = self._eval(_data)
+                le, me = self._eval(_data, train_log=LogGenerator('T', lt, mt)())
                 losses_eval.extend(le)
                 metrics_eval.extend(me)
 

@@ -12,6 +12,7 @@ from .head_layers import HeadLayer
 from ..base import BaseTuner
 from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
+from ..logger import LogGenerator
 
 
 class KerasTuner(BaseTuner):
@@ -62,11 +63,12 @@ class KerasTuner(BaseTuner):
         losses = []
         metrics = []
 
-        get_desc_str = (
-            lambda: f'Loss={np.mean(losses):.2f} Accuracy={np.mean(metrics):.2f}'
-        )
+        log_generator = LogGenerator('T', losses, metrics)
 
-        with ProgressBar(description, message_on_done=get_desc_str) as p:
+        with ProgressBar(
+            description, message_on_done=log_generator, final_line_feed=False
+        ) as p:
+
             for inputs, label in data:
                 with tf.GradientTape() as tape:
                     outputs = self.wrapped_model(inputs, training=True)
@@ -81,21 +83,19 @@ class KerasTuner(BaseTuner):
                 losses.append(loss.numpy())
                 metrics.append(metric.numpy())
 
-                p.update(message=get_desc_str())
+                p.update(message=log_generator())
 
         return losses, metrics
 
-    def _eval(self, data, description: str = 'Evaluating'):
+    def _eval(self, data, description: str = 'Evaluating', train_log: str = ''):
         head_layer = self.head_layer()
 
         losses = []
         metrics = []
 
-        get_desc_str = (
-            lambda: f'Loss={np.mean(losses):.2f} Accuracy={np.mean(metrics):.2f}'
-        )
+        log_generator = LogGenerator('E', losses, metrics, train_log)
 
-        with ProgressBar(description, message_on_done=get_desc_str) as p:
+        with ProgressBar(description, message_on_done=log_generator) as p:
             for inputs, label in data:
                 outputs = self.wrapped_model(inputs, training=False)
                 loss = head_layer.loss_fn(pred_val=outputs, target_val=label)
@@ -104,7 +104,7 @@ class KerasTuner(BaseTuner):
                 losses.append(loss.numpy())
                 metrics.append(metric.numpy())
 
-                p.update(message=get_desc_str())
+                p.update(message=log_generator())
 
         return losses, metrics
 
@@ -143,7 +143,7 @@ class KerasTuner(BaseTuner):
             metrics_train.extend(mt)
 
             if eval_data:
-                le, me = self._eval(_eval_data)
+                le, me = self._eval(_eval_data, train_log=LogGenerator('T', lt, mt)())
                 losses_eval.extend(le)
                 metrics_eval.extend(me)
 
