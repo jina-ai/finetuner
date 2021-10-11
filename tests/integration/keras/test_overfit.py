@@ -12,7 +12,7 @@ from finetuner.tuner.keras import KerasTuner
         (5, 10, 1000, 15, 256, 'CosineLayer'),  # Cosine needs more training to converge
     ],
 )
-def test_overfit_pytorch(
+def test_overfit_keras(
     create_easy_data,
     n_cls: int,
     dim: int,
