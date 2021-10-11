@@ -5,7 +5,7 @@ from jina import Executor, DocumentArray, requests, DocumentArrayMemmap
 from jina.helper import cached_property
 
 from ..helper import get_framework
-from ..tuner import fit
+from ..tuner import fit, save
 
 
 class FTExecutor(Executor):
@@ -14,7 +14,7 @@ class FTExecutor(Executor):
         dam_path: str,
         metric: str = 'cosine',
         head_layer: str = 'CosineLayer',
-        **kwargs
+        **kwargs,
     ):
         super().__init__(**kwargs)
         self._all_data = DocumentArrayMemmap(dam_path)
@@ -80,6 +80,10 @@ class FTExecutor(Executor):
             head_layer=self._head_layer,
         )
 
+    @requests(on='/save')
+    def save(self, parameters, **kwargs):
+        save(self._embed_model, parameters.get('model_path', 'trained.model'))
+
 
 class DataIterator(Executor):
     def __init__(
@@ -87,7 +91,7 @@ class DataIterator(Executor):
         dam_path: str,
         labeled_dam_path: Optional[str] = None,
         clear_labels_on_start: bool = False,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(**kwargs)
         self._all_data = DocumentArrayMemmap(dam_path)
