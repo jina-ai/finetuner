@@ -38,7 +38,8 @@ const app = new Vue({
             server_port: 65123,
             server_address: `http://localhost`,
             next_endpoint: '/next',
-            fit_endpoint: '/fit'
+            fit_endpoint: '/fit',
+            saveEndpoint: '/save',
         },
         advanced_config: {
             pos_value: {text: 'Positive label', value: 1},
@@ -81,6 +82,9 @@ const app = new Vue({
         },
         fit_address: function () {
             return `${this.host_address}${this.general_config.fit_endpoint}`
+        },
+        saveAddress: function() {
+            return `${this.host_address}${this.general_config.saveEndpoint}`
         },
         positive_rate: function () {
             return this.progress_stats.positive.value / (this.progress_stats.positive.value + this.progress_stats.negative.value) * 100
@@ -188,6 +192,15 @@ const app = new Vue({
                 app.is_conn_broken = true
                 app.is_busy = false
             });
+        },
+        saveProgress: () => {
+            app.is_busy = true
+            fetch(app.saveAddress, {
+                method: 'POST',
+                body: JSON.stringify({})
+            })
+            .then((response) => {app.is_busy = false})
+            .catch((error) => {console.log("Error: ", error)})
         },
         handleKeyPress(event) {
             let key = event.key
