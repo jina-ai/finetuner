@@ -1,5 +1,6 @@
 from typing import Dict, Optional
 
+import numpy as np
 import torch
 import torch.nn as nn
 from jina.logging.profile import ProgressBar
@@ -11,6 +12,7 @@ from ..base import BaseTuner, BaseHead, BaseArityModel
 from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
+from ..evaluation import prepate_eval_docs, get_ndcg
 
 
 class _ArityModel(BaseArityModel, nn.Module):
@@ -181,10 +183,23 @@ class PytorchTuner(BaseTuner):
                 losses_eval.extend(le)
                 metrics_eval.extend(me)
 
+                print('-- NDCG --', self.get_evaluation(eval_data))
         return {
             'loss': {'train': losses_train, 'eval': losses_eval},
             'metric': {'train': metrics_train, 'eval': metrics_eval},
         }
+
+    def calc_embeddings(self, docs):
+        self.wrapped_model.eval()
+        with torch.inference_mode():
+            for doc in docs:
+                inputs = torch.from_numpy(np.array([doc.blob.astype(np.float32)]))
+                doc.embedding = self.embed_model(inputs).numpy()
+
+    def get_evaluation(self, data):
+        self.calc_embeddings(data)
+        to_be_scored_docs = prepate_eval_docs(data)
+        return get_ndcg(data, to_be_scored_docs)
 
     def save(self, *args, **kwargs):
         torch.save(self.embed_model.state_dict(), *args, **kwargs)
