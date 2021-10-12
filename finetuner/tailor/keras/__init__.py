@@ -77,6 +77,9 @@ class KerasTailor(BaseTailor):
             model = Model(self._model.input, out)
         elif _embed_layer != self._model.layers[-1]:
             out = self._model.layers[index].output
+            model = Model(self._model.input, out)
+        else:
+            model = self._model
 
         if freeze:
             for layer in model.layers:
