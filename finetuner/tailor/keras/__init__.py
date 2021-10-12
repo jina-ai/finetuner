@@ -46,7 +46,7 @@ class KerasTailor(BaseTailor):
                     'layer_idx': idx,
                     'module_name': layer.name,  # duplicate as `name` to make different backends consistent
                     'is_embedding_layer': is_embedding_layer,
-                    'trainable': layer.trainable,
+                    'trainable': layer.trainable if params else False,
                 }
             )
         return results
@@ -74,10 +74,9 @@ class KerasTailor(BaseTailor):
 
         if output_dim:
             out = Dense(output_dim)(self._model.layers[index].output)
-        else:
+            model = Model(self._model.input, out)
+        elif _embed_layer != self._model.layers[-1]:
             out = self._model.layers[index].output
-
-        model = Model(self._model.input, out)
 
         if freeze:
             for layer in model.layers:

@@ -23,8 +23,7 @@ class PytorchTailor(BaseTailor):
 
         user_model = deepcopy(self._model)
         dtypes = [getattr(torch, self._input_dtype)] * len(self._input_size)
-
-        # assign name to each module from named_module
+        depth = len(list(user_model.modules()))
         for name, module in user_model.named_modules():
             module.name = name
 
@@ -37,7 +36,9 @@ class PytorchTailor(BaseTailor):
 
         def register_hook(module):
             def hook(module, input, output):
+
                 class_name = str(module.__class__).split('.')[-1].split("'")[0]
+
                 module_idx = len(summary)
 
                 m_key = f'{class_name.lower()}_{module_idx + 1}'
@@ -57,8 +58,10 @@ class PytorchTailor(BaseTailor):
                     params += np.prod(list(module.bias.size()))
                 summary[m_key]['nb_params'] = params
 
-            if not isinstance(module, nn.Sequential) and not isinstance(
-                module, nn.ModuleList
+            if (
+                not isinstance(module, nn.Sequential)
+                and not isinstance(module, nn.ModuleList)
+                and (module != user_model or depth < 1)
             ):
                 hooks.append(module.register_forward_hook(hook))
 

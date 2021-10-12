@@ -5,11 +5,11 @@ from ..helper import get_framework, AnyDNN
 
 def to_embedding_model(
     model: AnyDNN,
-    input_size: Optional[Tuple[int, ...]] = None,
-    input_dtype: str = 'float32',
     layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
+    input_size: Optional[Tuple[int, ...]] = None,
+    input_dtype: str = 'float32',
     **kwargs
 ) -> AnyDNN:
     f_type = get_framework(model)
