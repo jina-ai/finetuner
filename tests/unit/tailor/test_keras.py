@@ -5,11 +5,6 @@ import numpy as np
 from finetuner.tailor.keras import KerasTailor
 
 
-@pytest.fixture(autouse=True)
-def clear_session():
-    tf.keras.backend.clear_session()
-
-
 @pytest.fixture
 def dense_model():
     model = tf.keras.models.Sequential()
