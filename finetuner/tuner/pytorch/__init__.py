@@ -2,7 +2,6 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
-from jina.helper import cached_property
 from jina.logging.profile import ProgressBar
 from torch.optim.optimizer import Optimizer
 from torch.utils.data.dataloader import DataLoader
@@ -26,13 +25,6 @@ class PytorchTuner(BaseTuner):
         elif isinstance(self._head_layer, BaseHead):
             return self._head_layer
 
-    @cached_property
-    def wrapped_model(self) -> nn.Module:
-        if self.embed_model is None:
-            raise ValueError(f'embed_model is not set')
-
-        return self.head_layer(_ArityModel(self.embed_model))  # wrap with head layer
-
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
         ds = get_dataset(datasets, self.arity)
         return DataLoader(
@@ -50,13 +42,15 @@ class PytorchTuner(BaseTuner):
 
         with ProgressBar(description, message_on_done=log_generator) as p:
             for inputs, label in data:
+                inputs, label = input.to(self.device), label.to(self.device)
+
                 with torch.inference_mode():
                     outputs = self.wrapped_model(*inputs)
                     loss = self.wrapped_model.loss_fn(outputs, label)
                     metric = self.wrapped_model.metric_fn(outputs, label)
 
                 losses.append(loss.item())
-                metrics.append(metric.numpy())
+                metrics.append(metric.cpu().numpy())
 
                 p.update(message=log_generator())
 
@@ -76,6 +70,8 @@ class PytorchTuner(BaseTuner):
         ) as p:
             for inputs, label in data:
                 # forward step
+                inputs, label = input.to(self.device), label.to(self.device)
+
                 outputs = self.wrapped_model(*inputs)
                 loss = self.wrapped_model.loss_fn(outputs, label)
                 metric = self.wrapped_model.metric_fn(outputs, label)
@@ -86,7 +82,7 @@ class PytorchTuner(BaseTuner):
                 optimizer.step()
 
                 losses.append(loss.item())
-                metrics.append(metric.numpy())
+                metrics.append(metric.cpu().numpy())
 
                 p.update(message=log_generator())
         return losses, metrics
@@ -97,11 +93,23 @@ class PytorchTuner(BaseTuner):
         eval_data: Optional[DocumentArrayLike] = None,
         epochs: int = 10,
         batch_size: int = 256,
+        device: str = 'cpu',
         **kwargs,
     ):
-        optimizer = torch.optim.RMSprop(
-            params=self.wrapped_model.parameters()
-        )  # stay the same as keras
+        if device == 'cpu':
+            self.device = torch.device('cpu')
+        elif device == 'cuda':
+            self.device = torch.device('cuda')
+        else:
+            raise ValueError(f'Device {device} not recognized')
+
+        if self.embed_model is None:
+            raise ValueError('embed_model is not set')
+
+        self.wrapped_model = self.head_layer(_ArityModel(self.embed_model))
+        self.wrapped_model = self.wrapped_model.to(self.device)
+
+        optimizer = torch.optim.RMSprop(params=self.wrapped_model.parameters())
 
         losses_train = []
         metrics_train = []
