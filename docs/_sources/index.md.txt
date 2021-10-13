@@ -104,7 +104,7 @@ Answer the questions below and quickly find out what you need to learn:
 </div>
 
 +++
-Know more about {term}`embedding model`.
+Learn more about {term}`embedding model`.
 
 :::
 :::{grid-item-card} Do you have labeled data?
@@ -121,7 +121,7 @@ Know more about {term}`embedding model`.
 </div>
 
 +++
-Know more about {term}`labeled data`.
+Learn more about {term}`labeled data`.
 
 
 :::
@@ -143,7 +143,7 @@ finetuner.fit(
 ```
 
 +++
-Know more about {term}`Tuner`.
+Learn more about {term}`Tuner`.
 :::
 
 </div>
@@ -164,7 +164,7 @@ finetuner.fit(
 ```
 
 +++
-Know more about {term}`Tuner` and {term}`Labeler`.
+Learn more about {term}`Tuner` and {term}`Labeler`.
 :::
 
 </div>
@@ -186,7 +186,7 @@ finetuner.fit(
 ```
 
 +++
-Know more about {term}`Tailor` and {term}`Tuner`.
+Learn more about {term}`Tailor` and {term}`Tuner`.
 :::
 
 </div>
@@ -209,7 +209,7 @@ finetuner.fit(
 ```
 
 +++
-Know more about {term}`Tailor`, {term}`Tuner` and {term}`Labeler`.
+Learn more about {term}`Tailor`, {term}`Tuner` and {term}`Labeler`.
 :::
 
 </div>
