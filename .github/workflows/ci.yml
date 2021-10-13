@@ -148,7 +148,7 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.7
       - name: Prepare enviroment
         run: |
           python -m pip install --upgrade pip
@@ -161,7 +161,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          pytest -s -v -m gpu
+          pytest -s -v -m
         timeout-minutes: 20
 
   # just for blocking the merge until all parallel core-test are successful
