@@ -359,24 +359,33 @@ To see all available names you can check <code class="docutils literal notransla
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tailor.base.BaseTailor.summary">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tailor/base/#BaseTailor.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tailor.base.BaseTailor.summary" title="Permalink to this definition">¶</a></dt>
-<dd><p>The summary of the model architecture. To list all possible embedding layers, use <a class="reference internal" href="#finetuner.tailor.base.BaseTailor.embedding_layers" title="finetuner.tailor.base.BaseTailor.embedding_layers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding_layers</span></code></a>.</p>
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_identity_layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tailor/base/#BaseTailor.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tailor.base.BaseTailor.summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>The summary of the model architecture. To list all potential embedding layers, use <a class="reference internal" href="#finetuner.tailor.base.BaseTailor.embedding_layers" title="finetuner.tailor.base.BaseTailor.embedding_layers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding_layers</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>include_identity_layer</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if set, then identity layers are included and returned.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>layers info as Dict.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>all layers info as Dict.</p>
 </dd>
 </dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tailor.base.BaseTailor.display">
-<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tailor/base/#BaseTailor.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tailor.base.BaseTailor.display" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tailor/base/#BaseTailor.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tailor.base.BaseTailor.display" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display the model architecture from <a class="reference internal" href="#finetuner.tailor.base.BaseTailor.summary" title="finetuner.tailor.base.BaseTailor.summary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">summary</span></code></a> in a table.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – args pass to <a class="reference internal" href="#finetuner.tailor.base.BaseTailor.summary" title="finetuner.tailor.base.BaseTailor.summary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">summary</span></code></a></p></li>
+<li><p><strong>kwargs</strong> – kwargs pass to <a class="reference internal" href="#finetuner.tailor.base.BaseTailor.summary" title="finetuner.tailor.base.BaseTailor.summary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">summary</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -415,7 +424,7 @@ To see all available names you can check <code class="docutils literal notransla
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 11, 2021.
+                    Last updated on Oct 13, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

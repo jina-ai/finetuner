@@ -346,19 +346,24 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">_l</span> <span class="k">for</span> <span class="n">_l</span> <span class="ow">in</span> <span class="n">_layers</span> <span class="k">if</span> <span class="n">_l</span><span class="p">[</span><span class="s1">'is_embedding_layer'</span><span class="p">]]</span>
 
 <div class="viewcode-block" id="BaseTailor.summary"><a class="viewcode-back" href="../../../../api/finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.summary">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayerInfoType</span><span class="p">:</span>
-        <span class="sd">"""The summary of the model architecture. To list all possible embedding layers, use :py:attr:`.embedding_layers`.</span>
+    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_identity_layer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayerInfoType</span><span class="p">:</span>
+        <span class="sd">"""The summary of the model architecture. To list all potential embedding layers, use :py:attr:`.embedding_layers`.</span>
 
-<span class="sd">        :return: layers info as Dict.</span>
+<span class="sd">        :param include_identity_layer: if set, then identity layers are included and returned.</span>
+<span class="sd">        :return: all layers info as Dict.</span>
 <span class="sd">        """</span>
         <span class="o">...</span></div>
 
-<div class="viewcode-block" id="BaseTailor.display"><a class="viewcode-back" href="../../../../api/finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">"""Display the model architecture from :py:attr:`.summary` in a table. """</span>
+<div class="viewcode-block" id="BaseTailor.display"><a class="viewcode-back" href="../../../../api/finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">"""Display the model architecture from :py:attr:`.summary` in a table.</span>
+
+<span class="sd">        :param args: args pass to :py:attr:`.summary`</span>
+<span class="sd">        :param kwargs: kwargs pass to :py:attr:`.summary`</span>
+<span class="sd">        """</span>
         <span class="kn">from</span> <span class="nn">rich.table</span> <span class="kn">import</span> <span class="n">Table</span>
         <span class="kn">from</span> <span class="nn">rich</span> <span class="kn">import</span> <span class="nb">print</span><span class="p">,</span> <span class="n">box</span>
 
-        <span class="n">_summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+        <span class="n">_summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">SIMPLE</span><span class="p">)</span>
         <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'output_shape_display'</span><span class="p">,</span> <span class="s1">'nb_params'</span><span class="p">,</span> <span class="s1">'trainable'</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">:</span>
@@ -384,7 +389,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 11, 2021.
+                    Last updated on Oct 13, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
