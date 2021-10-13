@@ -161,7 +161,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          pytest -s -v -m
+          pytest -s -v -m gpu
         timeout-minutes: 20
 
   # just for blocking the merge until all parallel core-test are successful
