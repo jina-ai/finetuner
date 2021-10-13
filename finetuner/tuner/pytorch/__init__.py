@@ -81,7 +81,7 @@ class PytorchTuner(BaseTuner):
         ) as p:
             for inputs, label in data:
                 # forward step
-                inputs, label = input.to(self.device), label.to(self.device)
+                inputs, label = inputs.to(self.device), label.to(self.device)
 
                 outputs = self.wrapped_model(*inputs)
                 loss = self.wrapped_model.loss_fn(outputs, label)
@@ -113,9 +113,6 @@ class PytorchTuner(BaseTuner):
             self.device = torch.device('cuda')
         else:
             raise ValueError(f'Device {device} not recognized')
-
-        if self.embed_model is None:
-            raise ValueError('embed_model is not set')
 
         # Place model on device
         self._wrapped_model = self.wrapped_model.to(self.device)
