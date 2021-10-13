@@ -21,6 +21,7 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     head_layer: str = 'CosineLayer',
+    device: str = 'cpu',
 ) -> 'TunerReturnType':
     ...
 
@@ -40,6 +41,7 @@ def fit(
     layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
+    device: str = 'cpu',
 ) -> 'TunerReturnType':
     ...
 
@@ -54,6 +56,7 @@ def fit(
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
     head_layer: str = 'CosineLayer',
+    device: str = 'cpu',
 ) -> None:
     ...
 
@@ -74,6 +77,7 @@ def fit(
     layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
+    device: str = 'cpu',
 ) -> None:
     ...
 

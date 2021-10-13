@@ -5,11 +5,6 @@ import numpy as np
 from finetuner.tailor.keras import KerasTailor
 
 
-@pytest.fixture(autouse=True)
-def clear_session():
-    tf.keras.backend.clear_session()
-
-
 @pytest.fixture
 def dense_model():
     model = tf.keras.models.Sequential()
@@ -38,15 +33,7 @@ def simple_cnn_model():
 
 @pytest.fixture
 def vgg16_cnn_model():
-    return tf.keras.applications.vgg16.VGG16(
-        include_top=True,
-        weights='imagenet',
-        input_tensor=None,
-        input_shape=None,
-        pooling=None,
-        classes=1000,
-        classifier_activation='softmax',
-    )
+    return tf.keras.applications.vgg16.VGG16()
 
 
 @pytest.fixture
