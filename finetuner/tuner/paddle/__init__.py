@@ -104,8 +104,10 @@ class PaddleTuner(BaseTuner):
 
         if device == 'cuda' and 'gpu' in paddle.get_device():
             paddle.set_device('gpu:0')
-        else:
+        elif device == 'cpu':
             paddle.set_device('cpu')
+        else:
+            raise ValueError(f'Device {device} not recognized')
 
         losses_train = []
         metrics_train = []

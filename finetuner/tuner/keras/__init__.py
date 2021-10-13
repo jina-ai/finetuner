@@ -130,8 +130,10 @@ class KerasTuner(BaseTuner):
 
         if device == 'cuda' and tf.config.list_physical_devices('GPU'):
             device = '/GPU:0'
-        else:
+        elif device == 'cpu':
             device = '/CPU:0'
+        else:
+            raise ValueError(f'Device {device} not recognized')
         device = tf.device(device)
 
         losses_train = []
