@@ -18,7 +18,7 @@ class PaddleTailor(BaseTailor):
         To use this class, you need to set ``input_size`` and ``input_dtype`` in :py:meth:`.__init__`
     """
 
-    def summary(self, include_identity_layer: bool = False) -> LayerInfoType:
+    def summary(self, skip_identity_layer: bool = False) -> LayerInfoType:
         if not self._input_size:
             raise ValueError(
                 f'{self.__class__} requires a valid `input_size`, but receiving {self._input_size}'
@@ -110,7 +110,7 @@ class PaddleTailor(BaseTailor):
             )
 
             if (
-                not include_identity_layer
+                skip_identity_layer
                 and output_shape == input_shape
                 and not summary[layer]['nb_params']
             ):

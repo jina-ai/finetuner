@@ -41,6 +41,7 @@ def get_mlp_display(framework):
  ────────────────────────────────────────────────────────── 
   flatten_1   [784]                  0           False      
   linear_2    [128]                  100480      True       
+  relu_3      [128]                  0           False      
   linear_4    [32]                   4128        True       
     '''
     elif framework == 'paddle':
@@ -49,6 +50,7 @@ def get_mlp_display(framework):
  ────────────────────────────────────────────────────────── 
   flatten_1   [784]                  0           False      
   linear_2    [128]                  100480      True       
+  relu_3      [128]                  0           False      
   linear_4    [32]                   4128        True       
        '''
     elif framework == 'keras':
@@ -155,60 +157,97 @@ def get_vgg(framework):
 def get_vgg_display(framework):
     if framework == 'pytorch':
         return '''
-  name           output_shape_display   nb_params   trainable  
- ───────────────────────────────────────────────────────────── 
-  conv2d_1       [64, 224, 224]         1792        True       
-  conv2d_3       [64, 224, 224]         36928       True       
-  maxpool2d_5    [64, 112, 112]         0           False      
-  conv2d_6       [128, 112, 112]        73856       True       
-  conv2d_8       [128, 112, 112]        147584      True       
-  maxpool2d_10   [128, 56, 56]          0           False      
-  conv2d_11      [256, 56, 56]          295168      True       
-  conv2d_13      [256, 56, 56]          590080      True       
-  conv2d_15      [256, 56, 56]          590080      True       
-  maxpool2d_17   [256, 28, 28]          0           False      
-  conv2d_18      [512, 28, 28]          1180160     True       
-  conv2d_20      [512, 28, 28]          2359808     True       
-  conv2d_22      [512, 28, 28]          2359808     True       
-  maxpool2d_24   [512, 14, 14]          0           False      
-  conv2d_25      [512, 14, 14]          2359808     True       
-  conv2d_27      [512, 14, 14]          2359808     True       
-  conv2d_29      [512, 14, 14]          2359808     True       
-  maxpool2d_31   [512, 7, 7]            0           False      
-  linear_33      [4096]                 102764544   True       
-  linear_36      [4096]                 16781312    True       
-  linear_39      [1000]                 4097000     True      
+  name                   output_shape_display   nb_params   trainable  
+ ───────────────────────────────────────────────────────────────────── 
+  conv2d_1               [64, 224, 224]         1792        True       
+  relu_2                 [64, 224, 224]         0           False      
+  conv2d_3               [64, 224, 224]         36928       True       
+  relu_4                 [64, 224, 224]         0           False      
+  maxpool2d_5            [64, 112, 112]         0           False      
+  conv2d_6               [128, 112, 112]        73856       True       
+  relu_7                 [128, 112, 112]        0           False      
+  conv2d_8               [128, 112, 112]        147584      True       
+  relu_9                 [128, 112, 112]        0           False      
+  maxpool2d_10           [128, 56, 56]          0           False      
+  conv2d_11              [256, 56, 56]          295168      True       
+  relu_12                [256, 56, 56]          0           False      
+  conv2d_13              [256, 56, 56]          590080      True       
+  relu_14                [256, 56, 56]          0           False      
+  conv2d_15              [256, 56, 56]          590080      True       
+  relu_16                [256, 56, 56]          0           False      
+  maxpool2d_17           [256, 28, 28]          0           False      
+  conv2d_18              [512, 28, 28]          1180160     True       
+  relu_19                [512, 28, 28]          0           False      
+  conv2d_20              [512, 28, 28]          2359808     True       
+  relu_21                [512, 28, 28]          0           False      
+  conv2d_22              [512, 28, 28]          2359808     True       
+  relu_23                [512, 28, 28]          0           False      
+  maxpool2d_24           [512, 14, 14]          0           False      
+  conv2d_25              [512, 14, 14]          2359808     True       
+  relu_26                [512, 14, 14]          0           False      
+  conv2d_27              [512, 14, 14]          2359808     True       
+  relu_28                [512, 14, 14]          0           False      
+  conv2d_29              [512, 14, 14]          2359808     True       
+  relu_30                [512, 14, 14]          0           False      
+  maxpool2d_31           [512, 7, 7]            0           False      
+  adaptiveavgpool2d_32   [512, 7, 7]            0           False      
+  linear_33              [4096]                 102764544   True       
+  relu_34                [4096]                 0           False      
+  dropout_35             [4096]                 0           False      
+  linear_36              [4096]                 16781312    True       
+  relu_37                [4096]                 0           False      
+  dropout_38             [4096]                 0           False      
+  linear_39              [1000]                 4097000     True       
        '''
     elif framework == 'paddle':
         return '''
-  name           output_shape_display   nb_params   trainable  
- ───────────────────────────────────────────────────────────── 
-  conv2d_1       [64, 224, 224]         1792        True       
-  conv2d_3       [64, 224, 224]         36928       True       
-  maxpool2d_5    [64, 112, 112]         0           False      
-  conv2d_6       [128, 112, 112]        73856       True       
-  conv2d_8       [128, 112, 112]        147584      True       
-  maxpool2d_10   [128, 56, 56]          0           False      
-  conv2d_11      [256, 56, 56]          295168      True       
-  conv2d_13      [256, 56, 56]          590080      True       
-  conv2d_15      [256, 56, 56]          590080      True       
-  maxpool2d_17   [256, 28, 28]          0           False      
-  conv2d_18      [512, 28, 28]          1180160     True       
-  conv2d_20      [512, 28, 28]          2359808     True       
-  conv2d_22      [512, 28, 28]          2359808     True       
-  maxpool2d_24   [512, 14, 14]          0           False      
-  conv2d_25      [512, 14, 14]          2359808     True       
-  conv2d_27      [512, 14, 14]          2359808     True       
-  conv2d_29      [512, 14, 14]          2359808     True       
-  maxpool2d_31   [512, 7, 7]            0           False      
-  linear_33      [4096]                 102764544   True       
-  linear_36      [4096]                 16781312    True       
-  linear_39      [1000]                 4097000     True       
+  name                   output_shape_display   nb_params   trainable  
+ ───────────────────────────────────────────────────────────────────── 
+  conv2d_1               [64, 224, 224]         1792        True       
+  relu_2                 [64, 224, 224]         0           False      
+  conv2d_3               [64, 224, 224]         36928       True       
+  relu_4                 [64, 224, 224]         0           False      
+  maxpool2d_5            [64, 112, 112]         0           False      
+  conv2d_6               [128, 112, 112]        73856       True       
+  relu_7                 [128, 112, 112]        0           False      
+  conv2d_8               [128, 112, 112]        147584      True       
+  relu_9                 [128, 112, 112]        0           False      
+  maxpool2d_10           [128, 56, 56]          0           False      
+  conv2d_11              [256, 56, 56]          295168      True       
+  relu_12                [256, 56, 56]          0           False      
+  conv2d_13              [256, 56, 56]          590080      True       
+  relu_14                [256, 56, 56]          0           False      
+  conv2d_15              [256, 56, 56]          590080      True       
+  relu_16                [256, 56, 56]          0           False      
+  maxpool2d_17           [256, 28, 28]          0           False      
+  conv2d_18              [512, 28, 28]          1180160     True       
+  relu_19                [512, 28, 28]          0           False      
+  conv2d_20              [512, 28, 28]          2359808     True       
+  relu_21                [512, 28, 28]          0           False      
+  conv2d_22              [512, 28, 28]          2359808     True       
+  relu_23                [512, 28, 28]          0           False      
+  maxpool2d_24           [512, 14, 14]          0           False      
+  conv2d_25              [512, 14, 14]          2359808     True       
+  relu_26                [512, 14, 14]          0           False      
+  conv2d_27              [512, 14, 14]          2359808     True       
+  relu_28                [512, 14, 14]          0           False      
+  conv2d_29              [512, 14, 14]          2359808     True       
+  relu_30                [512, 14, 14]          0           False      
+  maxpool2d_31           [512, 7, 7]            0           False      
+  adaptiveavgpool2d_32   [512, 7, 7]            0           False      
+  linear_33              [4096]                 102764544   True       
+  relu_34                [4096]                 0           False      
+  dropout_35             [4096]                 0           False      
+  linear_36              [4096]                 16781312    True       
+  relu_37                [4096]                 0           False      
+  dropout_38             [4096]                 0           False      
+  linear_39              [1000]                 4097000     True       
           '''
     elif framework == 'keras':
         return '''
   name           output_shape_display   nb_params   trainable  
  ───────────────────────────────────────────────────────────── 
+  input_1        []                     0           False      
   block1_conv1   [224, 224, 64]         1792        True       
   block1_conv2   [224, 224, 64]         36928       True       
   block1_pool    [112, 112, 64]         0           False      
@@ -230,7 +269,7 @@ def get_vgg_display(framework):
   flatten        [25088]                0           False      
   fc1            [4096]                 102764544   True       
   fc2            [4096]                 16781312    True       
-  predictions    [1000]                 4097000     True       
+  predictions    [1000]                 4097000     True        
               '''
 
 

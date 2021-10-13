@@ -15,7 +15,7 @@ from ...helper import is_seq_int, LayerInfoType, AnyDNN
 class PytorchTailor(BaseTailor):
     """Tailor class for PyTorch DNN models"""
 
-    def summary(self, include_identity_layer: bool = False) -> LayerInfoType:
+    def summary(self, skip_identity_layer: bool = False) -> LayerInfoType:
         if not self._input_size:
             raise ValueError(
                 f'{self.__class__} requires a valid `input_size`, but receiving {self._input_size}'
@@ -104,7 +104,7 @@ class PytorchTailor(BaseTailor):
             )
 
             if (
-                not include_identity_layer
+                skip_identity_layer
                 and output_shape == input_shape
                 and not summary[layer]['nb_params']
             ):

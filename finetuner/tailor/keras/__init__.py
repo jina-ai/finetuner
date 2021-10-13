@@ -10,7 +10,7 @@ from ...helper import LayerInfoType, AnyDNN
 class KerasTailor(BaseTailor):
     """Tailor class for Keras DNN models."""
 
-    def summary(self, include_identity_layer: bool = False) -> LayerInfoType:
+    def summary(self, skip_identity_layer: bool = False) -> LayerInfoType:
         def _get_output_shape(layer):
             try:
                 return layer.output_shape
@@ -40,11 +40,7 @@ class KerasTailor(BaseTailor):
             else:
                 params = layer.count_params()
 
-            if (
-                not include_identity_layer
-                and output_shape == input_shape
-                and not params
-            ):
+            if skip_identity_layer and output_shape == input_shape and not params:
                 # not an effective layer, often a wrapper/identity layer
                 continue
 
