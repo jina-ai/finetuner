@@ -10,16 +10,23 @@ from ...helper import LayerInfoType, AnyDNN
 class KerasTailor(BaseTailor):
     """Tailor class for Keras DNN models."""
 
-    def summary(self) -> LayerInfoType:
-        def _get_shape(layer):
+    def summary(self, skip_identity_layer: bool = False) -> LayerInfoType:
+        def _get_output_shape(layer):
             try:
                 return layer.output_shape
             except:
                 pass  #: return none when
 
+        def _get_input_shape(layer):
+            try:
+                return layer.input_shape
+            except:
+                pass  #: return none when
+
         results = []
         for idx, layer in enumerate(self._model.layers):
-            output_shape = _get_shape(layer)
+            output_shape = _get_output_shape(layer)
+            input_shape = _get_input_shape(layer)
             is_embedding_layer = not (
                 not output_shape
                 or len(output_shape) != 2
@@ -33,10 +40,15 @@ class KerasTailor(BaseTailor):
             else:
                 params = layer.count_params()
 
+            if skip_identity_layer and output_shape == input_shape and not params:
+                # not an effective layer, often a wrapper/identity layer
+                continue
+
             results.append(
                 {
                     'name': layer.name,
                     'cls_name': layer.__class__.__name__,
+                    'input_shape': input_shape,
                     'output_shape': output_shape,
                     'output_shape_display': list(output_shape[1:]),
                     'output_features': output_shape[
@@ -46,7 +58,7 @@ class KerasTailor(BaseTailor):
                     'layer_idx': idx,
                     'module_name': layer.name,  # duplicate as `name` to make different backends consistent
                     'is_embedding_layer': is_embedding_layer,
-                    'trainable': layer.trainable,
+                    'trainable': layer.trainable if params else False,
                 }
             )
         return results
@@ -74,10 +86,12 @@ class KerasTailor(BaseTailor):
 
         if output_dim:
             out = Dense(output_dim)(self._model.layers[index].output)
-        else:
+            model = Model(self._model.input, out)
+        elif _embed_layer != self._model.layers[-1]:
             out = self._model.layers[index].output
-
-        model = Model(self._model.input, out)
+            model = Model(self._model.input, out)
+        else:
+            model = self._model
 
         if freeze:
             for layer in model.layers:

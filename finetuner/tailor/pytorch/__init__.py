@@ -15,7 +15,7 @@ from ...helper import is_seq_int, LayerInfoType, AnyDNN
 class PytorchTailor(BaseTailor):
     """Tailor class for PyTorch DNN models"""
 
-    def summary(self) -> LayerInfoType:
+    def summary(self, skip_identity_layer: bool = False) -> LayerInfoType:
         if not self._input_size:
             raise ValueError(
                 f'{self.__class__} requires a valid `input_size`, but receiving {self._input_size}'
@@ -23,21 +23,24 @@ class PytorchTailor(BaseTailor):
 
         user_model = deepcopy(self._model)
         dtypes = [getattr(torch, self._input_dtype)] * len(self._input_size)
-
-        # assign name to each module from named_module
+        depth = len(list(user_model.modules()))
         for name, module in user_model.named_modules():
             module.name = name
 
         def _get_shape(output):
             if isinstance(output, (list, tuple)):
                 output_shape = [_get_shape(o) for o in output]
+                if len(output) == 1:
+                    output_shape = output_shape[0]
             else:
                 output_shape = list(output.shape)
             return output_shape
 
         def register_hook(module):
             def hook(module, input, output):
+
                 class_name = str(module.__class__).split('.')[-1].split("'")[0]
+
                 module_idx = len(summary)
 
                 m_key = f'{class_name.lower()}_{module_idx + 1}'
@@ -55,10 +58,17 @@ class PytorchTailor(BaseTailor):
                     summary[m_key]['trainable'] = module.weight.requires_grad
                 if hasattr(module, 'bias') and hasattr(module.bias, 'size'):
                     params += np.prod(list(module.bias.size()))
+                if hasattr(module, 'all_weights'):
+                    params += sum(
+                        np.prod(ww.size()) for w in module.all_weights for ww in w
+                    )
+
                 summary[m_key]['nb_params'] = params
 
-            if not isinstance(module, nn.Sequential) and not isinstance(
-                module, nn.ModuleList
+            if (
+                not isinstance(module, nn.Sequential)
+                and not isinstance(module, nn.ModuleList)
+                and (module != user_model or depth < 1)
             ):
                 hooks.append(module.register_forward_hook(hook))
 
@@ -85,12 +95,21 @@ class PytorchTailor(BaseTailor):
         results = []
         for idx, layer in enumerate(summary):
             output_shape = summary[layer]['output_shape']
+            input_shape = summary[layer]['input_shape']
             is_embedding_layer = not (
                 not output_shape
                 or len(output_shape) != 2
                 or not is_seq_int(output_shape)
                 or summary[layer]['cls_name'] in self._model.__class__.__name__
             )
+
+            if (
+                skip_identity_layer
+                and output_shape == input_shape
+                and not summary[layer]['nb_params']
+            ):
+                # not an effective layer, often a wrapper/identity layer
+                continue
 
             results.append(
                 {
