@@ -10,6 +10,7 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     head_layer: str = 'CosineLayer',
+    device: str = 'cpu',
     **kwargs
 ) -> TunerReturnType:
     f_type = get_framework(embed_model)
@@ -28,5 +29,5 @@ def fit(
         ft = PaddleTuner
 
     return ft(embed_model, head_layer=head_layer).fit(
-        train_data, eval_data, epochs=epochs, batch_size=batch_size
+        train_data, eval_data, epochs=epochs, batch_size=batch_size, device=device
     )
