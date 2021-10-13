@@ -5,20 +5,17 @@ from finetuner.tuner.paddle import PaddleTuner
 
 
 @pytest.mark.gpu
-def test_gpu(create_easy_data):
-    data, vecs = create_easy_data(10, 64, 100)
+@pytest.mark.parametrize('head_layer', ['TripletLayer', 'CosineLayer'])
+def test_gpu_pytorch(generate_random_triplets, head_layer):
+
+    data = generate_random_triplets(4, 4)
     embed_model = nn.Sequential(
-        nn.Flatten(),
-        nn.Linear(in_features=64, out_features=64),
-        nn.ReLU(),
-        nn.Linear(in_features=64, out_features=64),
-        nn.ReLU(),
-        nn.Linear(in_features=64, out_features=64),
-        nn.ReLU(),
-        nn.Linear(in_features=64, out_features=32),
+        nn.Linear(in_features=4, out_features=4),
     )
-    # Train
-    pt = PaddleTuner(embed_model, head_layer='CosineLayer')
-    pt.fit(embed_model=embed_model, train_data=data, epochs=5, batch_size=32)
-    for param in pt.embed_model.parameters():
+
+    tuner = PaddleTuner(embed_model, head_layer)
+
+    tuner.fit(data, data, epochs=2, batch_size=4, device='cuda')
+
+    for param in tuner.embed_model.parameters():
         assert str(param.place) == 'GPUPlace'
