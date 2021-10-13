@@ -53,7 +53,8 @@ class PytorchTuner(BaseTuner):
 
         with ProgressBar(description, message_on_done=log_generator) as p:
             for inputs, label in data:
-                inputs, label = input.to(self.device), label.to(self.device)
+                inputs = [inpt.to(self.device) for inpt in inputs]
+                label = label.to(self.device)
 
                 with torch.inference_mode():
                     outputs = self.wrapped_model(*inputs)
@@ -81,7 +82,8 @@ class PytorchTuner(BaseTuner):
         ) as p:
             for inputs, label in data:
                 # forward step
-                inputs, label = inputs.to(self.device), label.to(self.device)
+                inputs = [inpt.to(self.device) for inpt in inputs]
+                label = label.to(self.device)
 
                 outputs = self.wrapped_model(*inputs)
                 loss = self.wrapped_model.loss_fn(outputs, label)
