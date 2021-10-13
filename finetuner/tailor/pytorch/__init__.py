@@ -15,7 +15,7 @@ from ...helper import is_seq_int, LayerInfoType, AnyDNN
 class PytorchTailor(BaseTailor):
     """Tailor class for PyTorch DNN models"""
 
-    def summary(self) -> LayerInfoType:
+    def summary(self, include_identity_layer: bool = False) -> LayerInfoType:
         if not self._input_size:
             raise ValueError(
                 f'{self.__class__} requires a valid `input_size`, but receiving {self._input_size}'
@@ -30,6 +30,8 @@ class PytorchTailor(BaseTailor):
         def _get_shape(output):
             if isinstance(output, (list, tuple)):
                 output_shape = [_get_shape(o) for o in output]
+                if len(output) == 1:
+                    output_shape = output_shape[0]
             else:
                 output_shape = list(output.shape)
             return output_shape
@@ -93,12 +95,21 @@ class PytorchTailor(BaseTailor):
         results = []
         for idx, layer in enumerate(summary):
             output_shape = summary[layer]['output_shape']
+            input_shape = summary[layer]['input_shape']
             is_embedding_layer = not (
                 not output_shape
                 or len(output_shape) != 2
                 or not is_seq_int(output_shape)
                 or summary[layer]['cls_name'] in self._model.__class__.__name__
             )
+
+            if (
+                not include_identity_layer
+                and output_shape == input_shape
+                and not summary[layer]['nb_params']
+            ):
+                # not an effective layer, often a wrapper/identity layer
+                continue
 
             results.append(
                 {
