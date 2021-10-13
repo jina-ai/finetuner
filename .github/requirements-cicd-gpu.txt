@@ -1,0 +1,6 @@
+numpy
+tensorflow
+paddlepaddle-gpu
+torch
+torchvision
+scipy
