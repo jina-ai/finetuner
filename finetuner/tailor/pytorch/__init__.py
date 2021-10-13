@@ -56,6 +56,11 @@ class PytorchTailor(BaseTailor):
                     summary[m_key]['trainable'] = module.weight.requires_grad
                 if hasattr(module, 'bias') and hasattr(module.bias, 'size'):
                     params += np.prod(list(module.bias.size()))
+                if hasattr(module, 'all_weights'):
+                    params += sum(
+                        np.prod(ww.size()) for w in module.all_weights for ww in w
+                    )
+
                 summary[m_key]['nb_params'] = params
 
             if (

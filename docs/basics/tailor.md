@@ -178,10 +178,163 @@ Let's see how to use them in action.
      linear_5    [100]                  3300        True       
    ```      
    ````
-   One can see that Tailor adds an additional linear layer at the end.
+   One can see that Tailor adds an additional linear layer with 100-dimensional output at the end.
    
 ### Simple Bi-LSTM
 
+1. Let's first build a simple Bi-directional LSTM with Pytorch/Keras/Paddle.
+     ````{tab} PyTorch
+     ```python
+     import torch
+   
+     class LastCell(torch.nn.Module):
+       def forward(self, x):
+         out, _ = x
+         return out[:, -1, :]
+   
+     model = torch.nn.Sequential(
+       torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
+       torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
+       LastCell(),
+       torch.nn.Linear(in_features=2 * 64, out_features=32))
+     ```
+     ````
+     ````{tab} Keras
+     ```python
+     import tensorflow as tf
+   
+     model = tf.keras.Sequential([
+            tf.keras.layers.Embedding(input_dim=5000, output_dim=64),
+            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
+            tf.keras.layers.Dense(32)])
+     ```
+     ````
+     ````{tab} Paddle
+     ```python
+     import paddle
+   
+     class LastCell(paddle.nn.Layer):
+        def forward(self, x):
+            out, _ = x
+            return out[:, -1, :]
+   
+     embed_model = paddle.nn.Sequential(
+        paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),
+        paddle.nn.LSTM(64, 64, direction='bidirectional'),
+        LastCell(),
+        paddle.nn.Linear(in_features=2 * 64, out_features=32))
+     ```
+     ````
+
+2. Let's use `display` to look at the layer information.
+   ````{tab} Pytorch
+   ```python
+   from finetuner.tailor import display
+    
+   display(model, input_size=(100, ), input_dtype='int64')
+   ```
+   
+   ```console
+     name          output_shape_display         nb_params   trainable  
+    ────────────────────────────────────────────────────────────────── 
+     embedding_1   [100, 64]                    320000      True       
+     lstm_2        [[[2, 2, 64], [2, 2, 64]]]   66560       False      
+     lastcell_3    [128]                        0           False      
+     linear_4      [32]                         4128        True       
+   ```
+   ````
+   ````{tab} Keras
+    ```python
+    from finetuner.tailor import display
+    
+    display(model)
+    ```
+   
+   ```console
+     name            output_shape_display   nb_params   trainable  
+    ────────────────────────────────────────────────────────────── 
+     embedding       [None, 64]             320000      True       
+     bidirectional   [128]                  66048       True       
+     dense           [32]                   4128        True       
+   ```   
+   
+   ````
+   ````{tab} Paddle
+   ```python
+   from finetuner.tailor import display
+    
+   display(model, input_size=(100, ), input_dtype='int64')
+   ```
+   
+   ```console
+     name          output_shape_display         nb_params   trainable  
+    ────────────────────────────────────────────────────────────────── 
+     embedding_1   [100, 64]                    320000      True       
+     lstm_2        [[[2, 2, 64], [2, 2, 64]]]   66560       True       
+     lastcell_3    [128]                        0           False      
+     linear_4      [32]                         4128        True       
+   ```      
+   ````
+3. Say we want to get an embedding model that outputs 100-dimensional embeddings. But this time, we want to directly concat this layer after LSTM, and freeze all previous layers. One can use `layer_name` and `freeze` to solve this problem:
+   ````{tab} Pytorch
+   
+   ```python
+   from finetuner.tailor import to_embedding_model
+    
+   embed_model = to_embedding_model(model,
+                                 layer_name='lastcell_3',
+                                 freeze=True,
+                                 output_dim=100,
+                                 input_size=(100,), input_dtype='int64')
+   ```
+   
+   ```console
+     name          output_shape_display         nb_params   trainable  
+    ────────────────────────────────────────────────────────────────── 
+     embedding_1   [100, 64]                    320000      False      
+     lstm_2        [[[2, 2, 64], [2, 2, 64]]]   66560       False      
+     lastcell_3    [128]                        0           False      
+     linear_4      [100]                        12900       True       
+   ```
+   ````
+   ````{tab} Keras
+   ```python
+   from finetuner.tailor import to_embedding_model
+
+   embed_model = to_embedding_model(model,
+                                    layer_name='bidirectional',
+                                    freeze=True,
+                                    output_dim=100)
+   ```
+   
+   ```console
+     name            output_shape_display   nb_params   trainable  
+    ────────────────────────────────────────────────────────────── 
+     embedding       [None, 64]             320000      False      
+     bidirectional   [128]                  66048       False      
+     dense_1         [100]                  12900       True       
+   ```   
+   
+   ````
+   ````{tab} Paddle
+   ```python
+   from finetuner.tailor import to_embedding_model
+    
+   embed_model = to_embedding_model(model,
+                                 layer_name='lastcell_3',
+                                 freeze=True,
+                                 output_dim=100,
+                                 input_size=(100,), input_dtype='int64')
+   ```
+   ```console
+     name          output_shape_display         nb_params   trainable  
+    ────────────────────────────────────────────────────────────────── 
+     embedding_1   [100, 64]                    320000      False      
+     lstm_2        [[[2, 2, 64], [2, 2, 64]]]   66560       False      
+     lastcell_3    [128]                        0           False      
+     linear_4      [100]                        12900       True       
+   ```      
+   ```` 
 
 
 ### VGG16
