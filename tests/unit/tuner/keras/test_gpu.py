@@ -6,7 +6,7 @@ from finetuner.tuner.keras import KerasTuner
 
 @pytest.mark.gpu
 @pytest.mark.parametrize('head_layer', ['TripletLayer'])
-def test_gpu_paddle(generate_random_triplets, head_layer, caplog):
+def test_gpu_keras(generate_random_triplets, head_layer, caplog):
     tf.debugging.set_log_device_placement(True)
     data = generate_random_triplets(4, 4)
     embed_model = tf.keras.models.Sequential()
