@@ -3,6 +3,7 @@ from typing import Optional
 import paddle
 from jina.logging.profile import ProgressBar
 from paddle import nn
+import paddle.fluid as fluid
 from paddle.io import DataLoader
 from paddle.optimizer import Optimizer
 from . import head_layers, datasets
@@ -103,7 +104,9 @@ class PaddleTuner(BaseTuner):
         )
 
         if device == 'gpu' and 'gpu' in paddle.get_device():
-            paddle.device.set_device('gpu')
+            paddle.set_device('gpu:0')
+        else:
+            paddle.set_device('cpu')
 
         losses_train = []
         metrics_train = []
