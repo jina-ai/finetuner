@@ -18,4 +18,4 @@ def test_gpu_paddle(generate_random_triplets, head_layer):
     tuner.fit(data, data, epochs=2, batch_size=4, device='cuda')
 
     for param in tuner.embed_model.parameters():
-        assert str(param.place) == 'GPUPlace'
+        assert str(param.place) == 'CUDAPlace(0)'
