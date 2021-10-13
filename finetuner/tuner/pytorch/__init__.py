@@ -25,6 +25,17 @@ class PytorchTuner(BaseTuner):
         elif isinstance(self._head_layer, BaseHead):
             return self._head_layer
 
+    @property
+    def wrapped_model(self) -> nn.Module:
+        if self.embed_model is None:
+            raise ValueError('embed_model is not set')
+
+        if getattr(self, '_wrapped_model', None) is not None:
+            return self._wrapped_model
+
+        self._wrapped_model = self.head_layer(_ArityModel(self.embed_model))
+        return self._wrapped_model
+
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
         ds = get_dataset(datasets, self.arity)
         return DataLoader(
@@ -106,8 +117,8 @@ class PytorchTuner(BaseTuner):
         if self.embed_model is None:
             raise ValueError('embed_model is not set')
 
-        self.wrapped_model = self.head_layer(_ArityModel(self.embed_model))
-        self.wrapped_model = self.wrapped_model.to(self.device)
+        # Place model on device
+        self._wrapped_model = self.wrapped_model.to(self.device)
 
         optimizer = torch.optim.RMSprop(params=self.wrapped_model.parameters())
 
