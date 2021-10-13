@@ -102,7 +102,7 @@ class PaddleTuner(BaseTuner):
             learning_rate=0.01, parameters=self.wrapped_model.parameters()
         )
 
-        if device == 'cuda' and 'gpu' in paddle.get_device():
+        if device == 'cuda':
             paddle.set_device('gpu:0')
         elif device == 'cpu':
             paddle.set_device('cpu')
