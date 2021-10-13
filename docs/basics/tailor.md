@@ -8,6 +8,10 @@ Given a general model with weights, Tailor *preserves its weights* and does (som
 - freezing the weights on the remaining layers;
 - adding a new dense layer with the desired output dimensions as the last layer.
 
+```{figure} tailor-feature.svg
+:align: center
+```
+
 In the end, Tailor outputs an embedding model that can be fine-tuned in Tuner.
 
 ## `to_embedding_model` method
