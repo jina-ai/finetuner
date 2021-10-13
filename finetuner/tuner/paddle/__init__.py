@@ -3,7 +3,6 @@ from typing import Optional
 import paddle
 from jina.logging.profile import ProgressBar
 from paddle import nn
-import paddle.fluid as fluid
 from paddle.io import DataLoader
 from paddle.optimizer import Optimizer
 from . import head_layers, datasets
