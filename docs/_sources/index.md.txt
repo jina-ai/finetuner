@@ -53,18 +53,18 @@
        paddle.nn.Linear(in_features=128, out_features=32))
    ```
    ````
-4. Now feed the model and Fashion-MNIST data into the finetuner.
+4. Now feed the model and Fashion-MNIST data into Finetuner.
    ```python
    import finetuner
    from finetuner.toydata import generate_fashion_match
    
    finetuner.fit(
        embed_model,
-       generate_fashion_match(num_pos=0, num_neg=0),  #: no synthetic positive & negative examples 
+       generate_fashion_match, 
        interactive=True)
    ```
 
-5. You can now label the data in an interactive way. The model will get finetuned and improved as you are labeling.
+5. You can now label the data in an interactive way. The model will get tuned and improved as you are labeling.
    
    ````{tab} Frontend
    ```{figure} img/labeler-on-fashion-mnist.gif
@@ -80,6 +80,155 @@
 
 Now that you’re set up, let’s dive into more of how Finetuner works and can improve the performance of your neural search apps.
 
+
+## Next step
+
+Finetuner is extremely easy to learn: all you need is `finetuner.fit()`!
+
+Answer the questions below and quickly find out what you need to learn:
+
+::::{grid} 2
+:gutter: 3
+
+:::{grid-item-card} Do you have an embedding model?
+
+<div>
+  <input type="radio" id="embed_model_yes" name="embed_model" value="0"
+         checked>
+  <label for="embed_model_yes">Yes</label>
+</div>
+
+<div>
+  <input type="radio" id="embed_model_no" name="embed_model" value="1">
+  <label for="embed_model_no">No</label>
+</div>
+
++++
+Know more about {term}`embedding model`.
+
+:::
+:::{grid-item-card} Do you have labeled data?
+
+<div>
+  <input type="radio" id="labeled_yes" name="labeled" value="0"
+         checked>
+  <label for="labeled_yes">Yes</label>
+</div>
+
+<div>
+  <input type="radio" id="labeled_no" name="labeled" value="1">
+  <label for="labeled_no">No</label>
+</div>
+
++++
+Know more about {term}`labeled data`.
+
+
+:::
+::::
+
+<div class="usage-card" id="usage-00" style="display: block">
+
+:::{card} Finetuner usage
+
+Perfect! Now `embed_model` and `train_data` are given by you already, simply do:
+
+```python
+import finetuner
+
+finetuner.fit(
+    embed_model,
+    train_data=train_data
+)
+```
+
++++
+Know more about {term}`Tuner`.
+:::
+
+</div>
+<div class="usage-card" id="usage-01">
+
+:::{card} Finetuner usage
+
+Perfect! Now `embed_model` and `unlabeled_data` are given by you, you can use Finetuner to interactive label data and train `embed_model` as below:
+
+```python
+import finetuner
+
+finetuner.fit(
+    embed_model,
+    train_data=unlabeled_data,
+    interactive=True
+)
+```
+
++++
+Know more about {term}`Tuner` and {term}`Labeler`.
+:::
+
+</div>
+<div class="usage-card" id="usage-10">
+
+:::{card} Finetuner usage
+
+You have a `general_model` but it is not yet for embedding. Luckily you provide some `labeled_data` for training, so simply do: 
+
+```python
+import finetuner
+
+finetuner.fit(
+    general_model,
+    train_data=labeled_data,
+    to_embedding_model=True,
+    output_dim=100
+)
+```
+
++++
+Know more about {term}`Tailor` and {term}`Tuner`.
+:::
+
+</div>
+<div class="usage-card" id="usage-11">
+
+:::{card} Finetuner usage
+
+You have a `general_model` but it is not yet for embedding. You only have unlabeled data which is not ready for training. But no worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly: 
+
+```python
+import finetuner
+
+finetuner.fit(
+    general_model,
+    train_data=labeled_data,
+    interactive=True,
+    to_embedding_model=True,
+    output_dim=100
+)
+```
+
++++
+Know more about {term}`Tailor`, {term}`Tuner` and {term}`Labeler`.
+:::
+
+</div>
+
+<script>
+    function myfunction(event) {
+        const answer = document.querySelector('input[name="embed_model"]:checked').value +document.querySelector('input[name="labeled"]:checked').value;
+         document.querySelectorAll(".usage-card").forEach((input) => {
+                 input.style.display= 'None'
+             });
+        document.getElementById("usage-"+answer).style.display = 'block'
+    }
+    document.querySelectorAll("input[name='embed_model']").forEach((input) => {
+        input.addEventListener('change', myfunction);
+    });
+    document.querySelectorAll("input[name='labeled']").forEach((input) => {
+        input.addEventListener('change', myfunction);
+    });
+</script>
 
 ```{toctree}
 :caption: Get Started
