@@ -113,7 +113,7 @@ class KerasTuner(BaseTuner):
         eval_data: Optional[DocumentArrayLike] = None,
         epochs: int = 10,
         batch_size: int = 256,
-        device: str = '/CPU:0',
+        device: str = 'cpu',
         **kwargs,
     ):
 
@@ -128,15 +128,10 @@ class KerasTuner(BaseTuner):
 
         optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.01)
 
-        if 'GPU' in device and 'GPU' in tf.config.experimental.list_physical_devices(
-            device_type='GPU'
-        ):
-            gpu_index = 0 if 'GPU:' not in device else int(device.split(':')[-1])
-            if (
-                len(tf.config.experimental.list_physical_devices(device_type='GPU'))
-                < gpu_index + 1
-            ):
-                raise RuntimeError(f'Device {device} not found on your system!')
+        if device == 'gpu' and tf.config.list_physical_devices('GPU'):
+            device = '/GPU:0'
+        else:
+            device = '/CPU:0'
         device = tf.device(device)
 
         losses_train = []
