@@ -83,7 +83,9 @@ Now that you’re set up, let’s dive into more of how Finetuner works and can 
 
 ## Next step
 
-Answer the questions below and quickly find what you need to learn:
+Finetuner is extremely easy to learn: all you need is `finetuner.fit()`!
+
+Answer the questions below and quickly find out what you need to learn:
 
 ::::{grid} 2
 :gutter: 3
