@@ -8,11 +8,10 @@
 ## Quick start
 
 1. Make sure that you have Python 3.7+ installed on Linux/MacOS. You have one of Pytorch, Keras or PaddlePaddle installed.
-2. Install Finetuner
    ```bash
    pip install finetuner
    ```
-3. In this example, we want to tune the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST data. Let's write a model with any of the following framework:
+2. In this example, we want to tune the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST data. Let's write a model with any of the following framework:
    ````{tab} PyTorch
    
    ```python
@@ -53,7 +52,7 @@
        paddle.nn.Linear(in_features=128, out_features=32))
    ```
    ````
-4. Now feed the model and Fashion-MNIST data into Finetuner.
+3. Now feed the model and Fashion-MNIST data into Finetuner.
    ```python
    import finetuner
    from finetuner.toydata import generate_fashion_match
@@ -64,7 +63,7 @@
        interactive=True)
    ```
 
-5. You can now label the data in an interactive way. The model will get tuned and improved as you are labeling.
+4. You can now label the data in an interactive way. The model will get tuned and improved as you are labeling.
    
    ````{tab} Frontend
    ```{figure} img/labeler-on-fashion-mnist.gif
@@ -247,13 +246,6 @@ get-started/fashion-mnist
 get-started/covid-qa
 ```
 
-
-```{toctree}
-:caption: Design (INTERNAL ONLY)
-:hidden:
-
-design/index
-```
 
 ```{toctree}
 :caption: Basics
