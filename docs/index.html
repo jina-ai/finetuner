@@ -444,7 +444,7 @@ Do you have labeled data?</div>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
-Finetuner usage</div>
+Finetuner usage 1</div>
 <p class="sd-card-text">Perfect! Now <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> and <code class="docutils literal notranslate"><span class="pre">train_data</span></code> are given by you already, simply do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
@@ -464,15 +464,15 @@ Finetuner usage</div>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
-Finetuner usage</div>
+Finetuner usage 2</div>
 <p class="sd-card-text">Perfect! Now <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> and <code class="docutils literal notranslate"><span class="pre">unlabeled_data</span></code> are given by you, you can use Finetuner to interactive label data and train <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> as below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">embed_model</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="n">unlabeled_data</span><span class="p">,</span>
-    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
+<span class="hll">    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span>
+</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -485,16 +485,16 @@ Finetuner usage</div>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
-Finetuner usage</div>
+Finetuner usage 3</div>
 <p class="sd-card-text">You have a <code class="docutils literal notranslate"><span class="pre">general_model</span></code> but it is not yet for embedding. Luckily you provide some <code class="docutils literal notranslate"><span class="pre">labeled_data</span></code> for training, so simply do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">general_model</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="n">labeled_data</span><span class="p">,</span>
-    <span class="n">to_embedding_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">output_dim</span><span class="o">=</span><span class="mi">100</span>
-<span class="p">)</span>
+<span class="hll">    <span class="n">to_embedding_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span class="hll">    <span class="n">output_dim</span><span class="o">=</span><span class="mi">100</span>
+</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -507,16 +507,16 @@ Finetuner usage</div>
 <div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
-Finetuner usage</div>
+Finetuner usage 4</div>
 <p class="sd-card-text">You have a <code class="docutils literal notranslate"><span class="pre">general_model</span></code> but it is not yet for embedding. You only have unlabeled data which is not ready for training. But no worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">general_model</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="n">labeled_data</span><span class="p">,</span>
-    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">to_embedding_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">output_dim</span><span class="o">=</span><span class="mi">100</span>
+<span class="hll">    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span class="hll">    <span class="n">to_embedding_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span>    <span class="n">output_dim</span><span class="o">=</span><span class="mi">100</span>
 <span class="p">)</span>
 </pre></div>
 </div>
