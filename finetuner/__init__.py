@@ -82,7 +82,7 @@ def fit(
     head_layer: str = 'CosineLayer',
     learning_rate: float = 0.01,
     optimizer: str = 'adam',
-    optimizer_kwargs: Optional[Dict] = None,    
+    optimizer_kwargs: Optional[Dict] = None,
     to_embedding_model: bool = True,  #: below are tailor args
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
