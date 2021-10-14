@@ -129,9 +129,9 @@ class KerasTuner(BaseTuner):
         optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.01)
 
         if device == 'cuda':
-            device = '/device:/GPU:0'
+            device = '/GPU:0'
         elif device == 'cpu':
-            device = '/device:/CPU:0'
+            device = '/CPU:0'
         else:
             raise ValueError(f'Device {device} not recognized')
         device = tf.device(device)

@@ -18,8 +18,8 @@ def tf_gpu_config():
 def test_gpu_keras(generate_random_triplets, head_layer, caplog):
     data = generate_random_triplets(4, 4)
     embed_model = tf.keras.models.Sequential()
-    embed_model.add(tf.keras.layers.InputLayer(input_shape=(4,)))  # (None, 128)
-    embed_model.add(tf.keras.layers.Dense(4))  # (None, 128)
+    embed_model.add(tf.keras.layers.InputLayer(input_shape=(4,)))
+    embed_model.add(tf.keras.layers.Dense(4))
 
     tuner = KerasTuner(embed_model, head_layer)
 
