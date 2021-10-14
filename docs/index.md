@@ -150,7 +150,7 @@ Learn more about {term}`Tuner`.
 
 :::{card} Finetuner usage 2
 
-Perfect! Now `embed_model` and `unlabeled_data` are given by you, you can use Finetuner to interactive label data and train `embed_model` as below:
+You have an `embed_model` to use, but no labeled data for finetuning this model. No worry, you can use Finetuner to interactive label data and train `embed_model` as below:
 
 ```{code-block} python
 ---
@@ -174,7 +174,7 @@ Learn more about {term}`Tuner` and {term}`Labeler`.
 
 :::{card} Finetuner usage 3
 
-You have a `general_model` but it is not yet for embedding. Luckily you provide some `labeled_data` for training, so simply do: 
+You have a `general_model` but it does not output embeddings. Luckily you provide some `labeled_data` for training. No worry, Finetuner can convert your model into an embedding model and train it via: 
 
 ```{code-block} python
 ---
@@ -199,7 +199,7 @@ Learn more about {term}`Tailor` and {term}`Tuner`.
 
 :::{card} Finetuner usage 4
 
-You have a `general_model` but it is not yet for embedding. You only have unlabeled data which is not ready for training. But no worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly: 
+You have a `general_model` which is not for embeddings. Meanwhile, you don't have labeled data for training. But no worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly: 
 
 ```{code-block} python
 ---

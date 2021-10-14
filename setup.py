@@ -29,7 +29,7 @@ setup(
     packages=find_packages(),
     version=__version__,
     include_package_data=True,
-    description='Finetuner allows one to finetune any deep neural network for better embedding on search tasks',
+    description='Finetuner allows one to tune the weights of any deep neural network for better embedding on search tasks.',
     author='Jina AI',
     author_email='hello@jina.ai',
     license='Apache 2.0',
@@ -39,6 +39,7 @@ setup(
     long_description_content_type='text/markdown',
     zip_safe=False,
     setup_requires=['setuptools>=18.0', 'wheel'],
+    install_requires=['jina'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
