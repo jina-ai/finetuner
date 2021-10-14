@@ -129,7 +129,7 @@ Learn more about {term}`labeled data`.
 
 <div class="usage-card" id="usage-00" style="display: block">
 
-:::{card} Finetuner usage
+:::{card} Finetuner usage 1
 
 Perfect! Now `embed_model` and `train_data` are given by you already, simply do:
 
@@ -149,11 +149,14 @@ Learn more about {term}`Tuner`.
 </div>
 <div class="usage-card" id="usage-01">
 
-:::{card} Finetuner usage
+:::{card} Finetuner usage 2
 
 Perfect! Now `embed_model` and `unlabeled_data` are given by you, you can use Finetuner to interactive label data and train `embed_model` as below:
 
-```python
+```{code-block} python
+---
+emphasize-lines: 6
+---
 import finetuner
 
 finetuner.fit(
@@ -170,11 +173,14 @@ Learn more about {term}`Tuner` and {term}`Labeler`.
 </div>
 <div class="usage-card" id="usage-10">
 
-:::{card} Finetuner usage
+:::{card} Finetuner usage 3
 
 You have a `general_model` but it is not yet for embedding. Luckily you provide some `labeled_data` for training, so simply do: 
 
-```python
+```{code-block} python
+---
+emphasize-lines: 6, 7
+---
 import finetuner
 
 finetuner.fit(
@@ -192,11 +198,14 @@ Learn more about {term}`Tailor` and {term}`Tuner`.
 </div>
 <div class="usage-card" id="usage-11">
 
-:::{card} Finetuner usage
+:::{card} Finetuner usage 4
 
 You have a `general_model` but it is not yet for embedding. You only have unlabeled data which is not ready for training. But no worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly: 
 
-```python
+```{code-block} python
+---
+emphasize-lines: 6, 7
+---
 import finetuner
 
 finetuner.fit(
