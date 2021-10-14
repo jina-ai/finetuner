@@ -19,16 +19,23 @@ Finetuner allows one to tune the weights of any deep neural network for better e
 accompanies [Jina](https://github.com/jina-ai/jina) to deliver the last mile of performance-tuning for neural search
 applications.
 
-🔱 **Powerful yet intuitive**: all you need is `finetuner.fit()`, a one-liner that unlocks rich features such as
+🎛 **Designed for finetuning**: a machine learning-powered human-in-the-loop tool for leveling up your pretrained models in neural search applications.
+
+🔱 **Powerful yet intuitive**: all you need is `finetuner.fit()` - a one-liner that unlocks rich features such as
 siamese/triplet network, interactive labeling, layer trimming, weights freezing, dimensionality reduction.
 
-⚛️ **Framework-agnostic**: promise an identical user experience on [Pytorch](https://pytorch.org/)
+⚛️ **Framework-agnostic**: promise an identical API experience on [Pytorch](https://pytorch.org/)
 , [Keras](https://keras.io/) or [PaddlePaddle](https://github.com/PaddlePaddle/Paddle) deep learning backends.
 
 🧈 **Jina integration**: buttery smooth integration with Jina, reducing the cost of context-switch between experimenting
 and production.
 
 <!-- end elevator-pitch -->
+
+## How does it work
+
+![](docs/img/finetuner-journey.svg)
+
 
 ## Install
 
@@ -40,9 +47,7 @@ pip install finetuner
 
 ## [Documentation](https://finetuner.jina.ai)
 
-## How does it work
-
-![](docs/img/finetuner-journey.svg)
+## Usage
 
 <table>
 <thead>
