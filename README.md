@@ -40,7 +40,9 @@ pip install finetuner
 
 ## [Documentation](https://finetuner.jina.ai)
 
-## Usage
+## How does it work
+
+![](docs/img/finetuner-journey.svg)
 
 <table>
 <thead>
