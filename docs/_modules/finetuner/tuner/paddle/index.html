@@ -293,7 +293,6 @@
 <span class="kn">from</span> <span class="nn">paddle</span> <span class="kn">import</span> <span class="n">nn</span>
 <span class="kn">from</span> <span class="nn">paddle.io</span> <span class="kn">import</span> <span class="n">DataLoader</span>
 <span class="kn">from</span> <span class="nn">paddle.optimizer</span> <span class="kn">import</span> <span class="n">Optimizer</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">head_layers</span><span class="p">,</span> <span class="n">datasets</span>
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseTuner</span><span class="p">,</span> <span class="n">BaseHead</span><span class="p">,</span> <span class="n">BaseArityModel</span>
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">DocumentArrayLike</span>
@@ -384,11 +383,19 @@
         <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DocumentArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">optimizer</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">RMSProp</span><span class="p">(</span>
             <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span>
         <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">'cuda'</span><span class="p">:</span>
+            <span class="n">paddle</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="s1">'gpu:0'</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">'cpu'</span><span class="p">:</span>
+            <span class="n">paddle</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="s1">'cpu'</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Device </span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s1"> not recognized'</span><span class="p">)</span>
 
         <span class="n">losses_train</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">metrics_train</span> <span class="o">=</span> <span class="p">[]</span>

@@ -288,7 +288,6 @@
                 <h1>Source code for finetuner.tuner.keras</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 <span class="kn">from</span> <span class="nn">jina.helper</span> <span class="kn">import</span> <span class="n">cached_property</span>
 <span class="kn">from</span> <span class="nn">jina.logging.profile</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
@@ -402,6 +401,7 @@
         <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DocumentArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 
@@ -416,24 +416,35 @@
 
         <span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">RMSprop</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">'cuda'</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="s1">'/GPU:0'</span>
+        <span class="k">elif</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">'cpu'</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="s1">'/CPU:0'</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Device </span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s1"> not recognized'</span><span class="p">)</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
         <span class="n">losses_train</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">metrics_train</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">losses_eval</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">metrics_eval</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-            <span class="n">lt</span><span class="p">,</span> <span class="n">mt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_train</span><span class="p">(</span>
-                <span class="n">_train_data</span><span class="p">,</span>
-                <span class="n">optimizer</span><span class="p">,</span>
-                <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">'Epoch </span><span class="si">{</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">epochs</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">losses_train</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">lt</span><span class="p">)</span>
-            <span class="n">metrics_train</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mt</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">device</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+                <span class="n">lt</span><span class="p">,</span> <span class="n">mt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_train</span><span class="p">(</span>
+                    <span class="n">_train_data</span><span class="p">,</span>
+                    <span class="n">optimizer</span><span class="p">,</span>
+                    <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">'Epoch </span><span class="si">{</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">epochs</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">losses_train</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">lt</span><span class="p">)</span>
+                <span class="n">metrics_train</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mt</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">eval_data</span><span class="p">:</span>
-                <span class="n">le</span><span class="p">,</span> <span class="n">me</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval</span><span class="p">(</span><span class="n">_eval_data</span><span class="p">,</span> <span class="n">train_log</span><span class="o">=</span><span class="n">LogGenerator</span><span class="p">(</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">mt</span><span class="p">)())</span>
-                <span class="n">losses_eval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">le</span><span class="p">)</span>
-                <span class="n">metrics_eval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">me</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">eval_data</span><span class="p">:</span>
+                    <span class="n">le</span><span class="p">,</span> <span class="n">me</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval</span><span class="p">(</span>
+                        <span class="n">_eval_data</span><span class="p">,</span> <span class="n">train_log</span><span class="o">=</span><span class="n">LogGenerator</span><span class="p">(</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">mt</span><span class="p">)()</span>
+                    <span class="p">)</span>
+                    <span class="n">losses_eval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">le</span><span class="p">)</span>
+                    <span class="n">metrics_eval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">me</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">'loss'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'train'</span><span class="p">:</span> <span class="n">losses_train</span><span class="p">,</span> <span class="s1">'eval'</span><span class="p">:</span> <span class="n">losses_eval</span><span class="p">},</span>
