@@ -1,6 +1,5 @@
 from typing import Optional
 
-import numpy as np
 import tensorflow as tf
 from jina.helper import cached_property
 from jina.logging.profile import ProgressBar
@@ -114,6 +113,7 @@ class KerasTuner(BaseTuner):
         eval_data: Optional[DocumentArrayLike] = None,
         epochs: int = 10,
         batch_size: int = 256,
+        device: str = 'cpu',
         **kwargs,
     ):
 
@@ -128,24 +128,35 @@ class KerasTuner(BaseTuner):
 
         optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.01)
 
+        if device == 'cuda':
+            device = '/GPU:0'
+        elif device == 'cpu':
+            device = '/CPU:0'
+        else:
+            raise ValueError(f'Device {device} not recognized')
+        device = tf.device(device)
+
         losses_train = []
         metrics_train = []
         losses_eval = []
         metrics_eval = []
 
-        for epoch in range(epochs):
-            lt, mt = self._train(
-                _train_data,
-                optimizer,
-                description=f'Epoch {epoch + 1}/{epochs}',
-            )
-            losses_train.extend(lt)
-            metrics_train.extend(mt)
+        with device:
+            for epoch in range(epochs):
+                lt, mt = self._train(
+                    _train_data,
+                    optimizer,
+                    description=f'Epoch {epoch + 1}/{epochs}',
+                )
+                losses_train.extend(lt)
+                metrics_train.extend(mt)
 
-            if eval_data:
-                le, me = self._eval(_eval_data, train_log=LogGenerator('T', lt, mt)())
-                losses_eval.extend(le)
-                metrics_eval.extend(me)
+                if eval_data:
+                    le, me = self._eval(
+                        _eval_data, train_log=LogGenerator('T', lt, mt)()
+                    )
+                    losses_eval.extend(le)
+                    metrics_eval.extend(me)
 
         return {
             'loss': {'train': losses_train, 'eval': losses_eval},
