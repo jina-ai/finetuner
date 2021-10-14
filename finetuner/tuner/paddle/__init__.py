@@ -168,6 +168,9 @@ class PaddleTuner(BaseTuner):
                 losses_eval.extend(le)
                 metrics_eval.extend(me)
 
+                self.log_evaluation(train_data, 'TRAIN')
+                self.log_evaluation(eval_data, 'EVAL')
+
         return {
             'loss': {'train': losses_train, 'eval': losses_eval},
             'metric': {'train': metrics_train, 'eval': metrics_eval},

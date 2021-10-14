@@ -7,9 +7,12 @@ from typing import (
     Dict,
 )
 
+import numpy as np
+import logging
 from jina.logging.logger import JinaLogger
 
 from ..helper import AnyDNN, AnyDataLoader, AnyOptimizer, DocumentArrayLike
+from . import evaluation
 
 
 class BaseHead:
@@ -46,6 +49,7 @@ class BaseTuner(abc.ABC):
     ):
         self._embed_model = embed_model
         self._head_layer = head_layer
+        self._catalogs = {}
         self.logger = JinaLogger(self.__class__.__name__)
 
     def _get_optimizer_kwargs(self, optimizer: str, custom_kwargs: Optional[Dict]):
@@ -167,6 +171,32 @@ class BaseTuner(abc.ABC):
     ) -> Tuple[List, List]:
         """Evaluate the model on given labeled data"""
         ...
+
+    def log_evaluation(self, docs, label):
+        if self.logger.logger.isEnabledFor(logging.DEBUG):
+            if label not in self._catalogs:
+                self._catalogs[label] = evaluation.extract_catalog(docs)
+            catalog = self._catalogs[label]
+
+            scores = self._get_evaluation(docs, catalog)
+            for name, value in scores.items():
+                self.logger.debug(f'{label} {name}: {value}')
+
+    def _get_evaluation(self, docs, catalog):
+        self._calc_embeddings(docs)
+        self._calc_embeddings(catalog)
+        catalog.prune()
+        to_be_scored_docs = evaluation.prepare_eval_docs(docs, catalog, limit=10)
+        return {
+            'hits': evaluation.get_hits_at_n(to_be_scored_docs),
+            'ndcg': evaluation.get_ndcg_at_n(to_be_scored_docs),
+        }
+
+    def _calc_embeddings(self, docs):
+        blobs = docs.blobs
+        embeddings = self.embed_model(blobs)
+        for doc, embed in zip(docs, embeddings):
+            doc.embedding = np.array(embed)
 
 
 class BaseDataset:

@@ -1,10 +1,23 @@
 import numpy as np
-from jina import Document, DocumentArray
+from jina import Document, DocumentArray, DocumentArrayMemmap
 from .. import __default_tag_key__
+from tempfile import mkdtemp
 
 
-def prepate_eval_docs(data, limit=100, sample_size=100, seed=42):
-    sampled_docs = data.sample(sample_size, seed)
+def extract_catalog(docs):
+    catalog_folder = mkdtemp()
+
+    catalog = DocumentArrayMemmap(catalog_folder)
+    for doc in docs:
+        for match in doc.matches:
+            if match.id not in catalog:
+                catalog.append(match)
+
+    return catalog
+
+
+def prepare_eval_docs(docs, catalog, limit=10, sample_size=100, seed=42):
+    sampled_docs = docs.sample(sample_size, seed)
     to_be_scored_docs = DocumentArray()
     for doc in sampled_docs:
         d = Document(
@@ -18,23 +31,31 @@ def prepate_eval_docs(data, limit=100, sample_size=100, seed=42):
                 ]
             },
         )
-        print(d.embedding)
-        DocumentArray([d]).match(data, limit=limit)
         to_be_scored_docs.append(d)
+    to_be_scored_docs.match(catalog, limit=limit)
     return to_be_scored_docs
 
 
-def get_ndcg(data, to_be_scored_docs, limit=100):
+def get_hits_at_n(to_be_scored_docs, n=-1):
+    hits = 0
+    for doc in to_be_scored_docs:
+        positive_ids = doc.tags['positive_ids']
+        for match in doc.matches[:n]:
+            if match.id in positive_ids:
+                hits += 1
+    return hits
+
+
+def get_ndcg_at_n(to_be_scored_docs, n=-1):
     ndcg = 0
     for doc in to_be_scored_docs:
         dcg = 0
         positive_ids = doc.tags['positive_ids']
         pos_counter = 0
-        for position, match in enumerate(doc.matches):
+        for position, match in enumerate(doc.matches[:n]):
             if match.id in positive_ids:
                 dcg += 1 / np.log(position + 2)
                 pos_counter += 1
-
         idcg = max(_get_idcg(pos_counter), 1e-10)
         ndcg += dcg / idcg
     return ndcg
