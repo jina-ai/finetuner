@@ -55,11 +55,11 @@ pip install finetuner
     <td rowspan="2"><b>Do you have labeled data?</b></td>
     <td><b>Yes</b></td>
     <td align="center">1️⃣</td>
-    <td align="center">2️⃣</td>
+    <td align="center">3️⃣</td>
   </tr>
   <tr>
     <td><b>No</b></td>
-    <td align="center">3️⃣</td>
+    <td align="center">2️⃣</td>
     <td align="center">4️⃣</td>
   </tr>
 </tbody>
