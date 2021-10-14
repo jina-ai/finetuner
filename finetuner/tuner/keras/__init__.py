@@ -1,13 +1,14 @@
-from typing import Optional
+from typing import Dict, Optional
 
 import tensorflow as tf
-from jina.helper import cached_property
 from jina.logging.profile import ProgressBar
 from tensorflow import keras
 from tensorflow.keras import Model
+from tensorflow.keras.optimizers import Optimizer
 
 from . import head_layers, datasets
 from .head_layers import HeadLayer
+from .. import _get_optimizer_kwargs
 from ..base import BaseTuner
 from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
@@ -22,18 +23,21 @@ class KerasTuner(BaseTuner):
         elif isinstance(self._head_layer, HeadLayer):
             return self._head_layer
 
-    @cached_property
+    @property
     def wrapped_model(self) -> Model:
         if self.embed_model is None:
-            raise ValueError(f'embed_model is not set')
+            raise ValueError('embed_model is not set')
+
+        if getattr(self, '_wrapped_model', None) is not None:
+            return self._wrapped_model
 
         input_shape = self.embed_model.input_shape[1:]
         input_values = [keras.Input(shape=input_shape) for _ in range(self.arity)]
         head_layer = self.head_layer()
         head_values = head_layer(*(self.embed_model(v) for v in input_values))
-        wrapped_model = Model(inputs=input_values, outputs=head_values)
+        self._wrapped_model = Model(inputs=input_values, outputs=head_values)
 
-        return wrapped_model
+        return self._wrapped_model
 
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
 
@@ -55,6 +59,33 @@ class KerasTuner(BaseTuner):
             tf_data = tf_data.shuffle(buffer_size=4096)
 
         return tf_data.batch(batch_size)
+
+    def _get_optimizer(
+        self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
+    ) -> Optimizer:
+        optimizer_kwargs = _get_optimizer_kwargs(optimizer, optimizer_kwargs)
+
+        if optimizer == 'adam':
+            return keras.optimizers.Adam(
+                learning_rate=learning_rate,
+                beta_1=optimizer_kwargs['beta_1'],
+                beta_2=optimizer_kwargs['beta_2'],
+                epsilon=optimizer_kwargs['epsilon'],
+            )
+        elif optimizer == 'rmsprop':
+            return keras.optimizers.RMSprop(
+                learning_rate=learning_rate,
+                rho=optimizer_kwargs['rho'],
+                centered=optimizer_kwargs['centered'],
+                epsilon=optimizer_kwargs['epsilon'],
+                momentum=optimizer_kwargs['momentum'],
+            )
+        elif optimizer == 'sgd':
+            return keras.optimizers.SGD(
+                learning_rate=learning_rate,
+                momentum=optimizer_kwargs['momentum'],
+                nesterov=optimizer_kwargs['nesterov'],
+            )
 
     def _train(self, data, optimizer, description: str):
         head_layer = self.head_layer()
@@ -113,6 +144,9 @@ class KerasTuner(BaseTuner):
         eval_data: Optional[DocumentArrayLike] = None,
         epochs: int = 10,
         batch_size: int = 256,
+        learning_rate: float = 1e-3,
+        optimizer: str = 'adam',
+        optimizer_kwargs: Optional[Dict] = None,
         device: str = 'cpu',
         **kwargs,
     ):
@@ -126,8 +160,6 @@ class KerasTuner(BaseTuner):
                 inputs=eval_data, batch_size=batch_size, shuffle=False
             )
 
-        optimizer = tf.keras.optimizers.RMSprop(learning_rate=0.01)
-
         if device == 'cuda':
             device = '/GPU:0'
         elif device == 'cpu':
@@ -135,6 +167,8 @@ class KerasTuner(BaseTuner):
         else:
             raise ValueError(f'Device {device} not recognized')
         device = tf.device(device)
+
+        _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
         losses_train = []
         metrics_train = []
@@ -145,7 +179,7 @@ class KerasTuner(BaseTuner):
             for epoch in range(epochs):
                 lt, mt = self._train(
                     _train_data,
-                    optimizer,
+                    _optimizer,
                     description=f'Epoch {epoch + 1}/{epochs}',
                 )
                 losses_train.extend(lt)
