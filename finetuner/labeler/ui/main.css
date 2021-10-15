@@ -137,7 +137,7 @@ footer a {
   background: transparent;
 }
 
-accordion-button:focus {
+.accordion-button:focus {
   z-index: 3;
   border-color: unset;
   outline: 0;
