@@ -157,7 +157,7 @@ class PytorchTuner(BaseTuner):
                     inputs=eval_data, batch_size=batch_size, shuffle=False
                 )
 
-                le = self._eval(_data, train_log=LogGenerator('T', lt, mt)())
+                le = self._eval(_data, train_log=LogGenerator('T', lt)())
                 losses_eval.extend(le)
 
         return {

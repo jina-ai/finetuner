@@ -2,9 +2,8 @@ import numpy as np
 
 
 class LogGenerator:
-    def __init__(self, name, losses, metrics, prefix: str = ''):
+    def __init__(self, name, losses, prefix: str = ''):
         self._losses = losses
-        self._metrics = metrics
         self._prefix = prefix
         self._name = name
 
