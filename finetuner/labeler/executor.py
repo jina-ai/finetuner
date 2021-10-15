@@ -14,7 +14,7 @@ class FTExecutor(Executor):
         dam_path: str,
         metric: str = 'cosine',
         loss: str = 'CosineSiameseLoss',
-        **kwargs
+        **kwargs,
     ):
         super().__init__(**kwargs)
         self._all_data = DocumentArrayMemmap(dam_path)
