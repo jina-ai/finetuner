@@ -1,15 +1,16 @@
 const sidebar = {
-  props: {
-    labelerConfig : Object,
-    viewTemplate: Object,
-    tags: Array,
-    isBusy: Boolean,
-    progressStats: Object,
-    positiveRate: Number,
-    negativeRate: Number,
-    advancedConfig: Object,
-  },
-  template: `
+    props: {
+        labelerConfig: Object,
+        viewTemplate: Object,
+        tags: Array,
+        isBusy: Boolean,
+        progressStats: Object,
+        positiveRate: Number,
+        negativeRate: Number,
+        advancedConfig: Object,
+        saveProgress: Function,
+    },
+    template: `
     <div class="d-flex flex-column flex-shrink-0 p-3 sidebar">
         <a href="/" class="d-flex align-items-center mb-3 mx-md-auto text-decoration-none">
                 <span class="app-title">
@@ -31,7 +32,7 @@ const sidebar = {
                     aria-labelledby="panelsStayOpen-headingOne">
                     <div class="accordion-body">
                         <div class="row my-1">
-                            <label class="col-sm-6 col-form-label">Content</label>
+                            <label class="col-sm-6 col-form-label">Field</label>
                             <div class="col-sm-6">
                                 <select class="form-select" v-model="labelerConfig.content">
                                     <option v-for="option in viewTemplate.content" v-bind:value="option.value">
@@ -51,7 +52,7 @@ const sidebar = {
                             </div>
                         </div>
                         <div class="row my-1">
-                            <label class="col-sm-6 col-form-label">Layout</label>
+                            <label class="col-sm-6 col-form-label">Content Type</label>
                             <div class="col-sm-6">
                                 <select class="form-select" v-model="labelerConfig.style">
                                     <option v-for="option in viewTemplate.style" v-bind:value="option.value">
@@ -83,7 +84,7 @@ const sidebar = {
                             data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
                             aria-controls="panelsStayOpen-collapseTwo">
                         Progress
-                        <div class="spinner-border spinner-border-sm align-middle" role="status"
+                        <div class="mx-2 spinner-border spinner-border-sm align-middle" role="status"
                                 v-show="isBusy">
                             <span class="visually-hidden">Loading...</span>
                         </div>
@@ -105,6 +106,12 @@ const sidebar = {
                                     :style="{width: negativeRate+'%' }"></div>
                         </div>
                     </div>
+                    <div class="my-3 d-flex justify-content-center">
+                      <button class="btn btn btn-outline-primary"
+                          v-on:click="saveProgress()">
+                          Save progress
+                      </button>
+                    </div>
                 </div>
             </div>
             <div class="accordion-item">
@@ -121,7 +128,7 @@ const sidebar = {
                         <div class="row my-1" v-for="option in advancedConfig">
                             <label class="col-sm-6 col-form-label">{{ option.text }}</label>
                             <div class="col-sm-6 text-end">
-                                <input class="form-control" type="number" v-model.number="option.value">
+                                <input class="form-control" type="{{ option.type }}" v-model.number="option.value">
                             </div>
                         </div>
                     </div>
@@ -135,7 +142,7 @@ const sidebar = {
         </footer>
     </div>
   `,
-  mounted() {
-    console.log("sidebar is loaded")
-  }
+    mounted() {
+        console.log("sidebar is loaded")
+    }
 }

@@ -69,7 +69,7 @@ def _run(framework_name, head_layer, port_expose):
 # TODO: add keras backend back to the test
 @pytest.mark.parametrize('framework', ['pytorch', 'paddle'])
 @pytest.mark.parametrize('head_layer', ['CosineLayer', 'TripletLayer'])
-def test_all_frameworks(framework, head_layer):
+def test_all_frameworks(framework, head_layer, tmpdir):
     port = random_port()
     p = multiprocessing.Process(
         target=_run,
@@ -125,6 +125,18 @@ def test_all_frameworks(framework, head_layer):
             json={'data': rj['data']['docs'], 'parameters': {'epochs': 10}},
         )
         assert req.status_code == 200
+
+        model_path = os.path.join(tmpdir, 'model.train')
+        req = requests.post(
+            f'http://localhost:{port}/save',
+            json={
+                'data': [],
+                'parameters': {'model_path': model_path},
+            },
+        )
+        assert req.status_code == 200
+        assert os.path.isfile(model_path)
+
     except:
         raise
     finally:
