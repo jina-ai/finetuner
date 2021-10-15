@@ -23,4 +23,4 @@ def fit(
 def save(embed_model: AnyDNN, model_path: str, *args, **kwargs) -> None:
     ft = get_tuner_class(embed_model)
 
-    ft(embed_model).save(model_path * args, **kwargs)
+    ft(embed_model).save(model_path, *args, **kwargs)
