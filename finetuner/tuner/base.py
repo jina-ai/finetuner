@@ -172,7 +172,7 @@ class BaseTuner(abc.ABC):
         """Evaluate the model on given labeled data"""
         ...
 
-    def log_evaluation(self, docs, label):
+    def log_evaluation(self, docs: DocumentArrayLike, label: str):
         if self.logger.logger.isEnabledFor(logging.DEBUG):
             if label not in self._catalogs:
                 self._catalogs[label] = evaluation.extract_catalog(docs)
@@ -183,8 +183,8 @@ class BaseTuner(abc.ABC):
                 self.logger.debug(f'{label} {name}: {value}')
 
     def _get_evaluation(self, docs, catalog):
-        self._calc_embeddings(docs)
-        self._calc_embeddings(catalog)
+        self.get_embeddings(docs)
+        self.get_embeddings(catalog)
         catalog.prune()
         to_be_scored_docs = evaluation.prepare_eval_docs(docs, catalog, limit=10)
         return {
@@ -192,11 +192,9 @@ class BaseTuner(abc.ABC):
             'ndcg': evaluation.get_ndcg_at_n(to_be_scored_docs),
         }
 
-    def _calc_embeddings(self, docs):
-        blobs = docs.blobs
-        embeddings = self.embed_model(blobs)
-        for doc, embed in zip(docs, embeddings):
-            doc.embedding = np.array(embed)
+    @abc.abstractmethod
+    def get_embeddings(self, docs: DocumentArrayLike):
+        """Calculates and adds the embeddings for the given Documents."""
 
 
 class BaseDataset:

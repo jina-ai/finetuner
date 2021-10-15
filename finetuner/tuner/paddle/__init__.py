@@ -1,5 +1,6 @@
 from typing import Dict, Optional
 
+import numpy as np
 import paddle
 from jina.logging.profile import ProgressBar
 from paddle import nn
@@ -175,6 +176,12 @@ class PaddleTuner(BaseTuner):
             'loss': {'train': losses_train, 'eval': losses_eval},
             'metric': {'train': metrics_train, 'eval': metrics_eval},
         }
+
+    def get_embeddings(self, data: DocumentArrayLike):
+        blobs = data.blobs
+        embeddings = self.embed_model(paddle.Tensor(blobs))
+        for doc, embed in zip(data, embeddings):
+            doc.embedding = np.array(embed)
 
     def save(self, *args, **kwargs):
         paddle.save(self.embed_model.state_dict(), *args, **kwargs)
