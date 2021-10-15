@@ -30,7 +30,7 @@ class KerasTuner(BaseTuner):
         if getattr(self, '_wrapped_model', None) is not None:
             return self._wrapped_model
 
-        input_shape = self.embed_model.input_shape[1:]
+        input_shape = self.embed_modBaseTunerel.input_shape[1:]
         input_values = [keras.Input(shape=input_shape) for _ in range(self.arity)]
         head_layer = self.head_layer()
         head_values = head_layer(*(self.embed_model(v) for v in input_values))
@@ -66,25 +66,14 @@ class KerasTuner(BaseTuner):
 
         if optimizer == 'adam':
             return keras.optimizers.Adam(
-                learning_rate=learning_rate,
-                beta_1=optimizer_kwargs['beta_1'],
-                beta_2=optimizer_kwargs['beta_2'],
-                epsilon=optimizer_kwargs['epsilon'],
+                learning_rate=learning_rate, **optimizer_kwargs
             )
         elif optimizer == 'rmsprop':
             return keras.optimizers.RMSprop(
-                learning_rate=learning_rate,
-                rho=optimizer_kwargs['rho'],
-                centered=optimizer_kwargs['centered'],
-                epsilon=optimizer_kwargs['epsilon'],
-                momentum=optimizer_kwargs['momentum'],
+                learning_rate=learning_rate, **optimizer_kwargs
             )
         elif optimizer == 'sgd':
-            return keras.optimizers.SGD(
-                learning_rate=learning_rate,
-                momentum=optimizer_kwargs['momentum'],
-                nesterov=optimizer_kwargs['nesterov'],
-            )
+            return keras.optimizers.SGD(learning_rate=learning_rate, **optimizer_kwargs)
 
     def _train(self, data, optimizer, description: str):
         head_layer = self.head_layer()

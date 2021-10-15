@@ -60,12 +60,7 @@ class PaddleTuner(BaseTuner):
             )
         elif optimizer == 'rmsprop':
             return paddle.optimizer.RMSProp(
-                parameters=params,
-                learning_rate=learning_rate,
-                rho=optimizer_kwargs['rho'],
-                centered=optimizer_kwargs['centered'],
-                epsilon=optimizer_kwargs['epsilon'],
-                momentum=optimizer_kwargs['momentum'],
+                parameters=params, learning_rate=learning_rate, **optimizer_kwargs
             )
         elif optimizer == 'sgd':
             return paddle.optimizer.Momentum(
