@@ -314,8 +314,49 @@
 </ul>
 </div>
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<section id="module-finetuner.tuner.pytorch">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-finetuner.tuner.pytorch" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.tuner.pytorch.PytorchTuner">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.pytorch.</span></span><span class="sig-name descname"><span class="pre">PytorchTuner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/#PytorchTuner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.PytorchTuner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseTuner" title="finetuner.tuner.base.BaseTuner"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseTuner</span></code></a></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="finetuner.tuner.pytorch.PytorchTuner.head_layer">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">head_layer</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseHead" title="finetuner.tuner.base.BaseHead"><span class="pre">finetuner.tuner.base.BaseHead</span></a></em><a class="headerlink" href="#finetuner.tuner.pytorch.PytorchTuner.head_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the head layer of this object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseHead" title="finetuner.tuner.base.BaseHead"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseHead</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="finetuner.tuner.pytorch.PytorchTuner.wrapped_model">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">wrapped_model</span></span><em class="property"><span class="pre">:</span> <span class="pre">torch.nn.Module</span></em><a class="headerlink" href="#finetuner.tuner.pytorch.PytorchTuner.wrapped_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the wrapped model of this object.</p>
+<p>A wrapped model is an <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.embed_model" title="finetuner.tuner.base.BaseTuner.embed_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embed_model</span></code></a> replicated by <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseHead.arity" title="finetuner.tuner.base.BaseHead.arity"><code class="xref py py-attr docutils literal notranslate"><span class="pre">arity</span></code></a> times
+with a <code class="docutils literal notranslate"><span class="pre">head_layer</span></code> that fuses all.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.pytorch.PytorchTuner.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'adam'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/#PytorchTuner.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.PytorchTuner.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.embed_model" title="finetuner.tuner.base.BaseTuner.embed_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embed_model</span></code></a> on labeled data.</p>
+<p>Note that fitting changes the weights in <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.embed_model" title="finetuner.tuner.base.BaseTuner.embed_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embed_model</span></code></a> in-place. This allows one to consecutively
+call <a class="reference internal" href="../finetuner/#finetuner.fit" title="finetuner.fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">fit()</span></code></a> multiple times with different configs or data to get better models.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.pytorch.PytorchTuner.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/#PytorchTuner.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.PytorchTuner.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the weights of the <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.embed_model" title="finetuner.tuner.base.BaseTuner.embed_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embed_model</span></code></a>.</p>
+<p>Note that, the <a class="reference internal" href="#finetuner.tuner.pytorch.PytorchTuner.head_layer" title="finetuner.tuner.pytorch.PytorchTuner.head_layer"><code class="xref py py-attr docutils literal notranslate"><span class="pre">head_layer</span></code></a> and <a class="reference internal" href="#finetuner.tuner.pytorch.PytorchTuner.wrapped_model" title="finetuner.tuner.pytorch.PytorchTuner.wrapped_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">wrapped_model</span></code></a> do not need to be stored,
+as they are auxiliary layers for tuning <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.embed_model" title="finetuner.tuner.base.BaseTuner.embed_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embed_model</span></code></a>.</p>
+</dd></dl>
+</dd></dl>
 </section>
 </section>
 
@@ -378,7 +419,7 @@
                         <ul>
 <li><a class="reference internal" href="#">finetuner.tuner.pytorch package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-finetuner.tuner.pytorch">Module contents</a></li>
 </ul>
 </li>
 </ul>

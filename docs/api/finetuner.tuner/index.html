@@ -314,7 +314,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../finetuner.tuner.dataset/#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.tuner.dataset/#module-finetuner.tuner.dataset">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../finetuner.tuner.keras/">finetuner.tuner.keras package</a><ul>
@@ -323,7 +323,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.keras.head_layers/">finetuner.tuner.keras.head_layers module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../finetuner.tuner.keras/#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.tuner.keras/#module-finetuner.tuner.keras">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><ul>
@@ -332,7 +332,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.paddle.head_layers/">finetuner.tuner.paddle.head_layers module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../finetuner.tuner.paddle/#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.tuner.paddle/#module-finetuner.tuner.paddle">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><ul>
@@ -341,7 +341,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.pytorch.head_layers/">finetuner.tuner.pytorch.head_layers module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../finetuner.tuner.pytorch/#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.tuner.pytorch/#module-finetuner.tuner.pytorch">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -356,8 +356,35 @@
 </ul>
 </div>
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<section id="module-finetuner.tuner">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-finetuner.tuner" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="finetuner.tuner.get_tuner_class">
+<span class="sig-prename descclassname"><span class="pre">finetuner.tuner.</span></span><span class="sig-name descname"><span class="pre">get_tuner_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dnn_model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/#get_tuner_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.get_tuner_class" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="finetuner.tuner.fit">
+<span class="sig-prename descclassname"><span class="pre">finetuner.tuner.</span></span><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CosineLayer'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'adam'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/#fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.fit" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="finetuner.tuner.save">
+<span class="sig-prename descclassname"><span class="pre">finetuner.tuner.</span></span><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/#save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.save" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
 </section>
 </section>
 
@@ -421,7 +448,7 @@
 <li><a class="reference internal" href="#">finetuner.tuner package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-finetuner.tuner">Module contents</a></li>
 </ul>
 </li>
 </ul>

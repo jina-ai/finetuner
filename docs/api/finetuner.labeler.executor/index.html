@@ -302,8 +302,76 @@
                         </i>
                     </label>
                 </div>
-                <section id="finetuner-labeler-executor-module">
-<h1>finetuner.labeler.executor module<a class="headerlink" href="#finetuner-labeler-executor-module" title="Permalink to this headline">¶</a></h1>
+                <section id="module-finetuner.labeler.executor">
+<span id="finetuner-labeler-executor-module"></span><h1>finetuner.labeler.executor module<a class="headerlink" href="#module-finetuner.labeler.executor" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.labeler.executor.FTExecutor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.labeler.executor.</span></span><span class="sig-name descname"><span class="pre">FTExecutor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dam_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CosineLayer'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#FTExecutor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.FTExecutor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></p>
+<p><cite>metas</cite> and <cite>requests</cite> are always auto-filled with values from YAML config.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metas</strong> – a dict of metas fields</p></li>
+<li><p><strong>requests</strong> – a dict of endpoint-function mapping</p></li>
+<li><p><strong>runtime_args</strong> – a dict of arguments injected from <code class="xref py py-class docutils literal notranslate"><span class="pre">Runtime</span></code> during runtime</p></li>
+<li><p><strong>kwargs</strong> – additional extra keyword arguments to avoid failing when extra params ara passed that are not expected</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.labeler.executor.FTExecutor.get_embed_model">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">get_embed_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#FTExecutor.get_embed_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.FTExecutor.get_embed_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.labeler.executor.FTExecutor.embed">
+<span class="sig-name descname"><span class="pre">embed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#FTExecutor.embed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.FTExecutor.embed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.labeler.executor.FTExecutor.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#FTExecutor.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.FTExecutor.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.labeler.executor.FTExecutor.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#FTExecutor.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.FTExecutor.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finetuner.labeler.executor.FTExecutor.requests">
+<span class="sig-name descname"><span class="pre">requests</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{'/fit':</span> <span class="pre">&lt;function</span> <span class="pre">FTExecutor.fit&gt;,</span> <span class="pre">'/next':</span> <span class="pre">&lt;function</span> <span class="pre">FTExecutor.embed&gt;,</span> <span class="pre">'/save':</span> <span class="pre">&lt;function</span> <span class="pre">FTExecutor.save&gt;}</span></em><a class="headerlink" href="#finetuner.labeler.executor.FTExecutor.requests" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.labeler.executor.DataIterator">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.labeler.executor.</span></span><span class="sig-name descname"><span class="pre">DataIterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dam_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labeled_dam_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clear_labels_on_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#DataIterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.DataIterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></p>
+<p><cite>metas</cite> and <cite>requests</cite> are always auto-filled with values from YAML config.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metas</strong> – a dict of metas fields</p></li>
+<li><p><strong>requests</strong> – a dict of endpoint-function mapping</p></li>
+<li><p><strong>runtime_args</strong> – a dict of arguments injected from <code class="xref py py-class docutils literal notranslate"><span class="pre">Runtime</span></code> during runtime</p></li>
+<li><p><strong>kwargs</strong> – additional extra keyword arguments to avoid failing when extra params ara passed that are not expected</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.labeler.executor.DataIterator.store_data">
+<span class="sig-name descname"><span class="pre">store_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#DataIterator.store_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.DataIterator.store_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.labeler.executor.DataIterator.take_batch">
+<span class="sig-name descname"><span class="pre">take_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#DataIterator.take_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.DataIterator.take_batch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.labeler.executor.DataIterator.add_fit_data">
+<span class="sig-name descname"><span class="pre">add_fit_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#DataIterator.add_fit_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.DataIterator.add_fit_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finetuner.labeler.executor.DataIterator.requests">
+<span class="sig-name descname"><span class="pre">requests</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{'/feed':</span> <span class="pre">&lt;function</span> <span class="pre">DataIterator.store_data&gt;,</span> <span class="pre">'/fit':</span> <span class="pre">&lt;function</span> <span class="pre">DataIterator.add_fit_data&gt;,</span> <span class="pre">'/next':</span> <span class="pre">&lt;function</span> <span class="pre">DataIterator.take_batch&gt;}</span></em><a class="headerlink" href="#finetuner.labeler.executor.DataIterator.requests" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
 </section>
 
             </article>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
-        <title>finetuner.tailor - Finetuner 0.0.3 documentation</title>
+        <title>finetuner.labeler - Finetuner 0.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -279,56 +279,102 @@
                         </i>
                     </label>
                 </div>
-                <h1>Source code for finetuner.tailor</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Type</span>
+                <h1>Source code for finetuner.labeler</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">webbrowser</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
-<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">get_framework</span><span class="p">,</span> <span class="n">AnyDNN</span>
+<span class="kn">import</span> <span class="nn">jina.helper</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+<span class="kn">from</span> <span class="nn">jina.logging.predefined</span> <span class="kn">import</span> <span class="n">default_logger</span>
 
-<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseTailor</span>
-
-
-<div class="viewcode-block" id="get_tailor_class"><a class="viewcode-back" href="../../../api/finetuner.tailor/#finetuner.tailor.get_tailor_class">[docs]</a><span class="k">def</span> <span class="nf">get_tailor_class</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'BaseTailor'</span><span class="p">]:</span>
-    <span class="n">f_type</span> <span class="o">=</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">f_type</span> <span class="o">==</span> <span class="s1">'keras'</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">.keras</span> <span class="kn">import</span> <span class="n">KerasTailor</span>
-
-        <span class="k">return</span> <span class="n">KerasTailor</span>
-    <span class="k">elif</span> <span class="n">f_type</span> <span class="o">==</span> <span class="s1">'torch'</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">.pytorch</span> <span class="kn">import</span> <span class="n">PytorchTailor</span>
-
-        <span class="k">return</span> <span class="n">PytorchTailor</span>
-    <span class="k">elif</span> <span class="n">f_type</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">.paddle</span> <span class="kn">import</span> <span class="n">PaddleTailor</span>
-
-        <span class="k">return</span> <span class="n">PaddleTailor</span></div>
+<span class="kn">from</span> <span class="nn">.executor</span> <span class="kn">import</span> <span class="n">FTExecutor</span><span class="p">,</span> <span class="n">DataIterator</span>
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">DocumentArrayLike</span>
 
 
-<div class="viewcode-block" id="to_embedding_model"><a class="viewcode-back" href="../../../api/finetuner.tailor/#finetuner.tailor.to_embedding_model">[docs]</a><span class="k">def</span> <span class="nf">to_embedding_model</span><span class="p">(</span>
-    <span class="n">model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span>
-    <span class="n">layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">input_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">input_dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'float32'</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
-    <span class="n">ft</span> <span class="o">=</span> <span class="n">get_tailor_class</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<div class="viewcode-block" id="fit"><a class="viewcode-back" href="../../../api/finetuner.labeler/#finetuner.labeler.fit">[docs]</a><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+    <span class="n">embed_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="p">:</span> <span class="n">DocumentArrayLike</span><span class="p">,</span>
+    <span class="n">clear_labels_on_start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">port_expose</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">runtime_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'thread'</span><span class="p">,</span>
+    <span class="n">head_layer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'CosineLayer'</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">dam_path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">ft</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">input_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">to_embedding_model</span><span class="p">(</span>
-        <span class="n">layer_name</span><span class="o">=</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><span class="n">output_dim</span><span class="p">,</span> <span class="n">freeze</span><span class="o">=</span><span class="n">freeze</span>
-    <span class="p">)</span></div>
+    <span class="k">class</span> <span class="nc">MyExecutor</span><span class="p">(</span><span class="n">FTExecutor</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">get_embed_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">embed_model</span>
 
+    <span class="n">f</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Flow</span><span class="p">(</span>
+            <span class="n">protocol</span><span class="o">=</span><span class="s1">'http'</span><span class="p">,</span>
+            <span class="n">port_expose</span><span class="o">=</span><span class="n">port_expose</span><span class="p">,</span>
+            <span class="n">prefetch</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">runtime_backend</span><span class="o">=</span><span class="n">runtime_backend</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">uses</span><span class="o">=</span><span class="n">DataIterator</span><span class="p">,</span>
+            <span class="n">uses_with</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">'dam_path'</span><span class="p">:</span> <span class="n">dam_path</span><span class="p">,</span>
+                <span class="s1">'clear_labels_on_start'</span><span class="p">:</span> <span class="n">clear_labels_on_start</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">uses</span><span class="o">=</span><span class="n">MyExecutor</span><span class="p">,</span>
+            <span class="n">uses_with</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">'dam_path'</span><span class="p">:</span> <span class="n">dam_path</span><span class="p">,</span>
+                <span class="s1">'head_layer'</span><span class="p">:</span> <span class="n">head_layer</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
 
-<div class="viewcode-block" id="display"><a class="viewcode-back" href="../../../api/finetuner.tailor/#finetuner.tailor.display">[docs]</a><span class="k">def</span> <span class="nf">display</span><span class="p">(</span>
-    <span class="n">model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span>
-    <span class="n">input_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">input_dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'float32'</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
-    <span class="n">ft</span> <span class="o">=</span> <span class="n">get_tailor_class</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">expose_endpoint</span><span class="p">(</span><span class="s1">'/next'</span><span class="p">)</span>  <span class="c1">#: for allowing client to fetch for the next batch</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">expose_endpoint</span><span class="p">(</span><span class="s1">'/fit'</span><span class="p">)</span>  <span class="c1">#: for signaling the backend to fit on the labeled data</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">expose_endpoint</span><span class="p">(</span><span class="s1">'/feed'</span><span class="p">)</span>  <span class="c1">#: for signaling the backend to fit on the labeled data</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">expose_endpoint</span><span class="p">(</span>
+        <span class="s1">'/save'</span>
+    <span class="p">)</span>  <span class="c1">#: for signaling the backend to save the current state of the model</span>
 
-    <span class="k">return</span> <span class="n">ft</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">input_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">display</span><span class="p">()</span></div>
+    <span class="k">def</span> <span class="nf">extend_rest_function</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+        <span class="sd">"""Allow FastAPI frontend to serve finetuner UI as a static webpage"""</span>
+        <span class="kn">from</span> <span class="nn">fastapi.staticfiles</span> <span class="kn">import</span> <span class="n">StaticFiles</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">'ui'</span><span class="p">)</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s1">'/finetuner'</span><span class="p">,</span> <span class="n">StaticFiles</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">'static2'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">app</span>
+
+    <span class="n">jina</span><span class="o">.</span><span class="n">helper</span><span class="o">.</span><span class="n">extend_rest_interface</span> <span class="o">=</span> <span class="n">extend_rest_function</span>
+
+    <span class="k">global</span> <span class="n">is_frontend_open</span>
+    <span class="n">is_frontend_open</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+
+        <span class="k">def</span> <span class="nf">open_frontend_in_browser</span><span class="p">(</span><span class="n">req</span><span class="p">):</span>
+            <span class="k">global</span> <span class="n">is_frontend_open</span>
+            <span class="k">if</span> <span class="n">is_frontend_open</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="n">url_html_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'http://localhost:</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">port_expose</span><span class="si">}</span><span class="s1">/finetuner'</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url_html_path</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>  <span class="c1"># intentional pass, browser support isn't cross-platform</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">default_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Finetuner is available at </span><span class="si">{</span><span class="n">url_html_path</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+                <span class="n">is_frontend_open</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># feed train data into the labeler flow</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="s1">'/feed'</span><span class="p">,</span>
+            <span class="n">train_data</span><span class="p">,</span>
+            <span class="n">request_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">on_done</span><span class="o">=</span><span class="n">open_frontend_in_browser</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">()</span></div>
 </pre></div>
             </article>
             <footer>
