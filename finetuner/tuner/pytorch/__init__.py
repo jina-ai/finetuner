@@ -63,7 +63,7 @@ class PytorchTuner(BaseTuner):
 
         losses = []
         metrics = []
-        log_generator = LogGenerator('E', losses, metrics, train_log)
+        log_generator = LogGenerator('E', losses, train_log)
 
         with ProgressBar(description, message_on_done=log_generator) as p:
             for inputs, label in data:
@@ -88,7 +88,7 @@ class PytorchTuner(BaseTuner):
         losses = []
         metrics = []
 
-        log_generator = LogGenerator('T', losses, metrics)
+        log_generator = LogGenerator('T', losses)
 
         with ProgressBar(
             description, message_on_done=log_generator, final_line_feed=False
