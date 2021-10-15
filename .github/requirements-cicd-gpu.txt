@@ -1,5 +1,5 @@
 tensorflow
-paddlepaddle
+paddlepaddle-gpu
 torch
 torchvision
 scipy

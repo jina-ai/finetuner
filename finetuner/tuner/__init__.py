@@ -3,6 +3,7 @@ from typing import Optional, Dict
 from ..helper import AnyDNN, DocumentArrayLike, get_framework, TunerReturnType
 
 
+
 def _get_tuner_class(embed_model):
     f_type = get_framework(embed_model)
 
@@ -29,12 +30,13 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     head_layer: str = 'CosineLayer',
-    **kwargs,
+    device: str = 'cpu',
+    **kwargs
 ) -> TunerReturnType:
     ft = _get_tuner_class(embed_model)
 
     return ft(embed_model, head_layer=head_layer).fit(
-        train_data, eval_data, epochs=epochs, batch_size=batch_size
+        train_data, eval_data, epochs=epochs, batch_size=batch_size, device=device
     )
 
 

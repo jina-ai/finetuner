@@ -122,7 +122,8 @@ jobs:
       - name: Test
         id: test
         run: |
-          pytest --suppress-no-test-exit-code --cov=finetuner --cov-report=xml -v -s ${{ matrix.test-path }}
+          pytest --suppress-no-test-exit-code --cov=finetuner --cov-report=xml \
+            -v -s -m "not gpu" ${{ matrix.test-path }}
           echo "flag it as jina for codeoverage"
           echo "::set-output name=codecov_flag::finetuner"
         timeout-minutes: 20
@@ -139,6 +140,29 @@ jobs:
           name: ${{ matrix.test-path }}-codecov
           flags: ${{ steps.test.outputs.codecov_flag }}
           fail_ci_if_error: false
+  
+  test-gpu:
+    runs-on: [self-hosted, gpu]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Prepare enviroment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install wheel
+          pip install -r .github/requirements-test.txt
+          pip install -r .github/requirements-cicd-gpu.txt
+          pip install -r requirements.txt
+          pip install --no-cache-dir .
+          export JINA_LOG_LEVEL="ERROR"
+      - name: Test
+        id: test
+        run: |
+          pytest -s -v -m gpu
+        timeout-minutes: 20
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:

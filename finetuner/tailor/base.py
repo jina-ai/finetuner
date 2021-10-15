@@ -58,19 +58,24 @@ class BaseTailor(abc.ABC):
         return [_l for _l in _layers if _l['is_embedding_layer']]
 
     @abc.abstractmethod
-    def summary(self) -> LayerInfoType:
-        """The summary of the model architecture. To list all possible embedding layers, use :py:attr:`.embedding_layers`.
+    def summary(self, include_identity_layer: bool = False) -> LayerInfoType:
+        """The summary of the model architecture. To list all potential embedding layers, use :py:attr:`.embedding_layers`.
 
-        :return: layers info as Dict.
+        :param include_identity_layer: if set, then identity layers are included and returned.
+        :return: all layers info as Dict.
         """
         ...
 
-    def display(self) -> None:
-        """Display the model architecture from :py:attr:`.summary` in a table. """
+    def display(self, *args, **kwargs) -> None:
+        """Display the model architecture from :py:attr:`.summary` in a table.
+
+        :param args: args pass to :py:attr:`.summary`
+        :param kwargs: kwargs pass to :py:attr:`.summary`
+        """
         from rich.table import Table
         from rich import print, box
 
-        _summary = self.summary()
+        _summary = self.summary(*args, **kwargs)
         table = Table(box=box.SIMPLE)
         cols = ['name', 'output_shape_display', 'nb_params', 'trainable']
         for k in cols:
