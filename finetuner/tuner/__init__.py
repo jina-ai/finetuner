@@ -3,7 +3,6 @@ from typing import Optional, Dict
 from ..helper import AnyDNN, DocumentArrayLike, get_framework, TunerReturnType
 
 
-
 def _get_tuner_class(embed_model):
     f_type = get_framework(embed_model)
 
