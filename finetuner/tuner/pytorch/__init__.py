@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Dict, Optional, Union
 
 import torch
 import torch.nn as nn
@@ -27,6 +27,36 @@ class PytorchTuner(BaseTuner):
             batch_size=batch_size,
             shuffle=shuffle,
         )
+
+    def _get_optimizer(
+        self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
+    ) -> Optimizer:
+        params = self.wrapped_model.parameters()
+        optimizer_kwargs = self._get_optimizer_kwargs(optimizer, optimizer_kwargs)
+
+        if optimizer == 'adam':
+            return torch.optim.Adam(
+                params,
+                lr=learning_rate,
+                betas=(optimizer_kwargs['beta_1'], optimizer_kwargs['beta_2']),
+                eps=optimizer_kwargs['epsilon'],
+            )
+        elif optimizer == 'rmsprop':
+            return torch.optim.RMSprop(
+                params,
+                lr=learning_rate,
+                alpha=optimizer_kwargs['rho'],
+                centered=optimizer_kwargs['centered'],
+                eps=optimizer_kwargs['epsilon'],
+                momentum=optimizer_kwargs['momentum'],
+            )
+        elif optimizer == 'sgd':
+            return torch.optim.SGD(
+                params,
+                lr=learning_rate,
+                momentum=optimizer_kwargs['momentum'],
+                nesterov=optimizer_kwargs['nesterov'],
+            )
 
     def _eval(self, data, description: str = 'Evaluating', train_log: str = ''):
         self.wrapped_model.eval()
@@ -87,6 +117,9 @@ class PytorchTuner(BaseTuner):
         eval_data: Optional[DocumentArrayLike] = None,
         epochs: int = 10,
         batch_size: int = 256,
+        learning_rate: float = 1e-3,
+        optimizer: str = 'adam',
+        optimizer_kwargs: Optional[Dict] = None,
         device: str = 'cpu',
         **kwargs,
     ):
@@ -100,7 +133,8 @@ class PytorchTuner(BaseTuner):
         # Place model on device
         self._embed_model = self._embed_model.to(self.device)
 
-        optimizer = torch.optim.RMSprop(params=self._embed_model.parameters())
+        # Get optimizer
+        _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
         losses_train = []
         metrics_train = []
@@ -113,7 +147,7 @@ class PytorchTuner(BaseTuner):
             )
             lt, mt = self._train(
                 _data,
-                optimizer,
+                _optimizer,
                 description=f'Epoch {epoch + 1}/{epochs}',
             )
             losses_train.extend(lt)

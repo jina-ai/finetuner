@@ -8,11 +8,10 @@
 ## Quick start
 
 1. Make sure that you have Python 3.7+ installed on Linux/MacOS. You have one of Pytorch, Keras or PaddlePaddle installed.
-2. Install Finetuner
    ```bash
    pip install finetuner
    ```
-3. In this example, we want to tune the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST data. Let's write a model with any of the following framework:
+2. In this example, we want to tune the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST data. Let's write a model with any of the following framework:
    ````{tab} PyTorch
    
    ```python
@@ -53,7 +52,7 @@
        paddle.nn.Linear(in_features=128, out_features=32))
    ```
    ````
-4. Now feed the model and Fashion-MNIST data into Finetuner.
+3. Now feed the model and Fashion-MNIST data into Finetuner.
    ```python
    import finetuner
    from finetuner.toydata import generate_fashion_match
@@ -64,7 +63,7 @@
        interactive=True)
    ```
 
-5. You can now label the data in an interactive way. The model will get tuned and improved as you are labeling.
+4. You can now label the data in an interactive way. The model will get tuned and improved as you are labeling.
    
    ````{tab} Frontend
    ```{figure} img/labeler-on-fashion-mnist.gif
@@ -151,7 +150,7 @@ Learn more about {term}`Tuner`.
 
 :::{card} Finetuner usage 2
 
-Perfect! Now `embed_model` and `unlabeled_data` are given by you, you can use Finetuner to interactive label data and train `embed_model` as below:
+You have an `embed_model` to use, but no labeled data for finetuning this model. No worry, you can use Finetuner to interactive label data and train `embed_model` as below:
 
 ```{code-block} python
 ---
@@ -175,7 +174,7 @@ Learn more about {term}`Tuner` and {term}`Labeler`.
 
 :::{card} Finetuner usage 3
 
-You have a `general_model` but it is not yet for embedding. Luckily you provide some `labeled_data` for training, so simply do: 
+You have a `general_model` but it does not output embeddings. Luckily you provide some `labeled_data` for training. No worry, Finetuner can convert your model into an embedding model and train it via: 
 
 ```{code-block} python
 ---
@@ -200,7 +199,7 @@ Learn more about {term}`Tailor` and {term}`Tuner`.
 
 :::{card} Finetuner usage 4
 
-You have a `general_model` but it is not yet for embedding. You only have unlabeled data which is not ready for training. But no worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly: 
+You have a `general_model` which is not for embeddings. Meanwhile, you don't have labeled data for training. But no worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly: 
 
 ```{code-block} python
 ---
@@ -247,13 +246,6 @@ get-started/fashion-mnist
 get-started/covid-qa
 ```
 
-
-```{toctree}
-:caption: Design (INTERNAL ONLY)
-:hidden:
-
-design/index
-```
 
 ```{toctree}
 :caption: Basics

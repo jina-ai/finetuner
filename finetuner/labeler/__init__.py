@@ -52,6 +52,9 @@ def fit(
     f.expose_endpoint('/next')  #: for allowing client to fetch for the next batch
     f.expose_endpoint('/fit')  #: for signaling the backend to fit on the labeled data
     f.expose_endpoint('/feed')  #: for signaling the backend to fit on the labeled data
+    f.expose_endpoint(
+        '/save'
+    )  #: for signaling the backend to save the current state of the model
 
     def extend_rest_function(app):
         """Allow FastAPI frontend to serve finetuner UI as a static webpage"""
