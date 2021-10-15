@@ -86,7 +86,6 @@ class PytorchTuner(BaseTuner):
         self._embed_model.train()
 
         losses = []
-        metrics = []
 
         log_generator = LogGenerator('T', losses)
 
@@ -137,9 +136,7 @@ class PytorchTuner(BaseTuner):
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
         losses_train = []
-        metrics_train = []
         losses_eval = []
-        metrics_eval = []
 
         for epoch in range(epochs):
             _data = self._get_data_loader(
@@ -160,10 +157,7 @@ class PytorchTuner(BaseTuner):
                 le = self._eval(_data, train_log=LogGenerator('T', lt)())
                 losses_eval.extend(le)
 
-        return {
-            'loss': {'train': losses_train, 'eval': losses_eval},
-            'metric': {'train': metrics_train, 'eval': metrics_eval},
-        }
+        return {'loss': {'train': losses_train, 'eval': losses_eval}}
 
     def save(self, *args, **kwargs):
         torch.save(self.embed_model.state_dict(), *args, **kwargs)
