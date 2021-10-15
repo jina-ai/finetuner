@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING, Type
+from typing import Optional, TYPE_CHECKING, Type, Dict
 
 from ..helper import AnyDNN, DocumentArrayLike, TunerReturnType, get_framework
 
