@@ -1,6 +1,6 @@
 from typing import Optional, Tuple, TYPE_CHECKING, Type
 
-from ..helper import get_framework, AnyDNN, get_tailor_class
+from ..helper import get_framework, AnyDNN
 
 if TYPE_CHECKING:
     from .base import BaseTailor
