@@ -155,7 +155,7 @@ class KerasTuner(BaseTuner):
             device = '/CPU:0'
         else:
             raise ValueError(f'Device {device} not recognized')
-        device = tf.device(device)
+        self.device = tf.device(device)
 
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
@@ -164,7 +164,7 @@ class KerasTuner(BaseTuner):
         losses_eval = []
         metrics_eval = []
 
-        with device:
+        with self.device:
             for epoch in range(epochs):
                 lt, mt = self._train(
                     _train_data,
@@ -191,7 +191,8 @@ class KerasTuner(BaseTuner):
 
     def get_embeddings(self, data: DocumentArrayLike):
         blobs = data.blobs
-        embeddings = self.embed_model(blobs)
+        with self.device:
+            embeddings = self.embed_model(blobs)
         for doc, embed in zip(data, embeddings):
             doc.embedding = np.array(embed)
 
