@@ -30,7 +30,7 @@ class KerasTuner(BaseTuner):
         if getattr(self, '_wrapped_model', None) is not None:
             return self._wrapped_model
 
-        input_shape = self.embed_modBaseTunerel.input_shape[1:]
+        input_shape = self.embed_model.input_shape[1:]
         input_values = [keras.Input(shape=input_shape) for _ in range(self.arity)]
         head_layer = self.head_layer()
         head_values = head_layer(*(self.embed_model(v) for v in input_values))
