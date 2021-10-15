@@ -33,6 +33,7 @@ const app = new Vue({
             positive: {text: 'Positive', value: 0},
             negative: {text: 'Negative', value: 0},
             ignore: {text: 'Ignore', value: 0},
+            saved: {text: 'Saved', value: 0}
         },
         general_config: {
             server_port: 65123,
@@ -210,6 +211,7 @@ const app = new Vue({
                 dataType: "json",
             }).success(function (data, textStatus, jqXHR) {
                 app.is_busy = false
+                app.progress_stats.saved.value++
             }).fail(function () {
                 console.error("Error: ", error)
                 app.is_busy = false
