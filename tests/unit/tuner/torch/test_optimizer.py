@@ -23,4 +23,4 @@ def test_non_existing_optimizer():
     ft = PytorchTuner(model, 'TripletLayer')
 
     with pytest.raises(ValueError, match='Optimizer "fake"'):
-        ft._get_optimizer("fake", {}, 1e-3)
+        ft._get_optimizer('fake', {}, 1e-3)
