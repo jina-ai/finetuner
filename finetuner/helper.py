@@ -8,6 +8,7 @@ AnyDNN = TypeVar(
 AnyDataLoader = TypeVar(
     'AnyDataLoader'
 )  #: The type of any implementation of a data loader
+AnyOptimizer = TypeVar('AnyOptimizer')
 DocumentSequence = TypeVar(
     'DocumentSequence',
     Sequence[Document],

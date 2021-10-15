@@ -8,7 +8,6 @@ from tensorflow.keras.optimizers import Optimizer
 
 from . import head_layers, datasets
 from .head_layers import HeadLayer
-from .. import _get_optimizer_kwargs
 from ..base import BaseTuner
 from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
@@ -63,7 +62,7 @@ class KerasTuner(BaseTuner):
     def _get_optimizer(
         self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
     ) -> Optimizer:
-        optimizer_kwargs = _get_optimizer_kwargs(optimizer, optimizer_kwargs)
+        optimizer_kwargs = self._get_optimizer_kwargs(optimizer, optimizer_kwargs)
 
         if optimizer == 'adam':
             return keras.optimizers.Adam(

@@ -7,7 +7,6 @@ from torch.optim.optimizer import Optimizer
 from torch.utils.data.dataloader import DataLoader
 
 from . import head_layers, datasets
-from .. import _get_optimizer_kwargs
 from ..base import BaseTuner, BaseHead, BaseArityModel
 from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
@@ -49,7 +48,7 @@ class PytorchTuner(BaseTuner):
         self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
     ) -> Optimizer:
         params = self.wrapped_model.parameters()
-        optimizer_kwargs = _get_optimizer_kwargs(optimizer, optimizer_kwargs)
+        optimizer_kwargs = self._get_optimizer_kwargs(optimizer, optimizer_kwargs)
 
         if optimizer == 'adam':
             return torch.optim.Adam(
