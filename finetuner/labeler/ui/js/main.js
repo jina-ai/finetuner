@@ -33,18 +33,21 @@ const app = new Vue({
             positive: {text: 'Positive', value: 0},
             negative: {text: 'Negative', value: 0},
             ignore: {text: 'Ignore', value: 0},
+            saved: {text: 'Saved', value: 0}
         },
         general_config: {
             server_port: 65123,
             server_address: `http://localhost`,
             next_endpoint: '/next',
-            fit_endpoint: '/fit'
+            fit_endpoint: '/fit',
+            saveEndpoint: '/save',
         },
         advanced_config: {
-            pos_value: {text: 'Positive label', value: 1},
-            neg_value: {text: 'Negative label', value: -1},
-            epochs: {text: 'Epochs', value: 10},
-            sample_size: {text: 'Match pool', value: 1000}
+            pos_value: {text: 'Positive label', value: 1, type: 'number'},
+            neg_value: {text: 'Negative label', value: -1, type: 'number'},
+            epochs: {text: 'Epochs', value: 10, type: 'number'},
+            sample_size: {text: 'Match pool', value: 1000, type: 'number'},
+            model_path: {text: 'Model save path', value: 'tuned-model', type: 'text'}
         },
         cur_batch: [],
         tags: [],
@@ -61,16 +64,16 @@ const app = new Vue({
                 stretch: 0,
                 depth: 100,
                 modifier: 1,
-                slideShadows : true
+                slideShadows: true
             },
             pagination: {
-              el: '.swiper-pagination'
+                el: '.swiper-pagination'
             },
             navigation: {
-              nextEl: '.swiper-button-next',
-              prevEl: '.swiper-button-prev'
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev'
             }
-          }
+        }
     },
     computed: {
         host_address: function () {
@@ -82,6 +85,9 @@ const app = new Vue({
         fit_address: function () {
             return `${this.host_address}${this.general_config.fit_endpoint}`
         },
+        saveAddress: function () {
+            return `${this.host_address}${this.general_config.saveEndpoint}`
+        },
         positive_rate: function () {
             return this.progress_stats.positive.value / (this.progress_stats.positive.value + this.progress_stats.negative.value) * 100
         },
@@ -91,11 +97,11 @@ const app = new Vue({
     },
     watch: {
         'labeler_config.content': (newContent) => {
-          if (newContent === 'text' || newContent === 'tags')  {
-              app.labeler_config.style = 'text'
-              app.labeler_config.tags = app.tags.length > 0 ? app.tags[0] : ''
-          } else if (newContent === 'uri') app.labeler_config.style = 'image'
-        } 
+            if (newContent === 'text' || newContent === 'tags') {
+                app.labeler_config.style = 'text'
+                app.labeler_config.tags = app.tags.length > 0 ? app.tags[0] : ''
+            } else if (newContent === 'uri') app.labeler_config.style = 'image'
+        }
     },
     methods: {
         toggle_relevance: function (match) {
@@ -189,6 +195,28 @@ const app = new Vue({
                 app.is_busy = false
             });
         },
+        saveProgress: () => {
+            app.is_busy = true
+            app.is_conn_broken = false
+            $.ajax({
+                type: "POST",
+                url: app.saveAddress,
+                data: JSON.stringify({
+                    data: [],
+                    parameters: {
+                        'model_path': app.advanced_config.model_path.value
+                    }
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+            }).success(function (data, textStatus, jqXHR) {
+                app.is_busy = false
+                app.progress_stats.saved.value++
+            }).fail(function () {
+                console.error("Error: ", error)
+                app.is_busy = false
+            });
+        },
         handleKeyPress(event) {
             let key = event.key
             if (event.target instanceof HTMLInputElement) {
@@ -196,7 +224,7 @@ const app = new Vue({
             }
             let {activeIndex} = this.$refs.swiperComponent.$swiper
             let currentDoc = this.cur_batch[activeIndex]
-            if(/\d/.test(key)) {
+            if (/\d/.test(key)) {
                 app.toggle_relevance(currentDoc.matches[parseInt(key, 10)])
             } else if (key === ' ') {
                 app.submit_doc(activeIndex)
@@ -205,13 +233,10 @@ const app = new Vue({
             }
         },
         onSetTranslate() {
-            return
         },
         onSwiperSlideChangeTransitionStart() {
-            return
         },
         onSwiperClickSlide(index, reallyIndex) {
-            return
         }
     },
     created() {
