@@ -280,7 +280,7 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.tuner.pytorch</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
@@ -325,6 +325,36 @@
             <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
             <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span>
         <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_optimizer</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">optimizer_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optimizer</span><span class="p">:</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span>
+        <span class="n">optimizer_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_optimizer_kwargs</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">optimizer_kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">optimizer</span> <span class="o">==</span> <span class="s1">'adam'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span>
+                <span class="n">params</span><span class="p">,</span>
+                <span class="n">lr</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span>
+                <span class="n">betas</span><span class="o">=</span><span class="p">(</span><span class="n">optimizer_kwargs</span><span class="p">[</span><span class="s1">'beta_1'</span><span class="p">],</span> <span class="n">optimizer_kwargs</span><span class="p">[</span><span class="s1">'beta_2'</span><span class="p">]),</span>
+                <span class="n">eps</span><span class="o">=</span><span class="n">optimizer_kwargs</span><span class="p">[</span><span class="s1">'epsilon'</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">optimizer</span> <span class="o">==</span> <span class="s1">'rmsprop'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">RMSprop</span><span class="p">(</span>
+                <span class="n">params</span><span class="p">,</span>
+                <span class="n">lr</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="n">optimizer_kwargs</span><span class="p">[</span><span class="s1">'rho'</span><span class="p">],</span>
+                <span class="n">centered</span><span class="o">=</span><span class="n">optimizer_kwargs</span><span class="p">[</span><span class="s1">'centered'</span><span class="p">],</span>
+                <span class="n">eps</span><span class="o">=</span><span class="n">optimizer_kwargs</span><span class="p">[</span><span class="s1">'epsilon'</span><span class="p">],</span>
+                <span class="n">momentum</span><span class="o">=</span><span class="n">optimizer_kwargs</span><span class="p">[</span><span class="s1">'momentum'</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">optimizer</span> <span class="o">==</span> <span class="s1">'sgd'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span>
+                <span class="n">params</span><span class="p">,</span>
+                <span class="n">lr</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span>
+                <span class="n">momentum</span><span class="o">=</span><span class="n">optimizer_kwargs</span><span class="p">[</span><span class="s1">'momentum'</span><span class="p">],</span>
+                <span class="n">nesterov</span><span class="o">=</span><span class="n">optimizer_kwargs</span><span class="p">[</span><span class="s1">'nesterov'</span><span class="p">],</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'Evaluating'</span><span class="p">,</span> <span class="n">train_log</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
@@ -388,6 +418,9 @@
         <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DocumentArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+        <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
+        <span class="n">optimizer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'adam'</span><span class="p">,</span>
+        <span class="n">optimizer_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
@@ -401,7 +434,8 @@
         <span class="c1"># Place model on device</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
-        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">RMSprop</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+        <span class="c1"># Get optimizer</span>
+        <span class="n">_optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_optimizer</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">optimizer_kwargs</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">)</span>
 
         <span class="n">losses_train</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">metrics_train</span> <span class="o">=</span> <span class="p">[]</span>
@@ -414,7 +448,7 @@
             <span class="p">)</span>
             <span class="n">lt</span><span class="p">,</span> <span class="n">mt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_train</span><span class="p">(</span>
                 <span class="n">_data</span><span class="p">,</span>
-                <span class="n">optimizer</span><span class="p">,</span>
+                <span class="n">_optimizer</span><span class="p">,</span>
                 <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">'Epoch </span><span class="si">{</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">epochs</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">losses_train</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">lt</span><span class="p">)</span>

@@ -291,7 +291,7 @@
 
 <span class="kn">from</span> <span class="nn">jina.logging.logger</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
 
-<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">AnyDataLoader</span><span class="p">,</span> <span class="n">DocumentArrayLike</span>
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">AnyDataLoader</span><span class="p">,</span> <span class="n">AnyOptimizer</span><span class="p">,</span> <span class="n">DocumentArrayLike</span>
 
 
 <div class="viewcode-block" id="BaseHead"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseHead">[docs]</a><span class="k">class</span> <span class="nc">BaseHead</span><span class="p">:</span>
@@ -330,6 +330,42 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_head_layer</span> <span class="o">=</span> <span class="n">head_layer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">JinaLogger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_get_optimizer_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">custom_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]):</span>
+        <span class="sd">"""Merges user-provided optimizer kwargs with default ones."""</span>
+
+        <span class="n">DEFAULT_OPTIMIZER_KWARGS</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">'adam'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'beta_1'</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span> <span class="s1">'beta_2'</span><span class="p">:</span> <span class="mf">0.999</span><span class="p">,</span> <span class="s1">'epsilon'</span><span class="p">:</span> <span class="mf">1e-08</span><span class="p">},</span>
+            <span class="s1">'rmsprop'</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">'rho'</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">,</span>
+                <span class="s1">'momentum'</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="s1">'epsilon'</span><span class="p">:</span> <span class="mf">1e-08</span><span class="p">,</span>
+                <span class="s1">'centered'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s1">'sgd'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'momentum'</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">'nesterov'</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="p">}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">opt_kwargs</span> <span class="o">=</span> <span class="n">DEFAULT_OPTIMIZER_KWARGS</span><span class="p">[</span><span class="n">optimizer</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'Optimizer "</span><span class="si">{</span><span class="n">optimizer</span><span class="si">}</span><span class="s1">" not supported, the supported'</span>
+                <span class="s1">' optimizers are "adam", "rmsprop" and "sgd"'</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Raise warning for non-existing keys passed</span>
+        <span class="n">custom_kwargs</span> <span class="o">=</span> <span class="n">custom_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">extra_args</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">custom_kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">opt_kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">extra_args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'The following arguments are not valid for the optimizer </span><span class="si">{</span><span class="n">optimizer</span><span class="si">}</span><span class="s1">:'</span>
+                <span class="sa">f</span><span class="s1">' </span><span class="si">{</span><span class="n">extra_args</span><span class="si">}</span><span class="s1">'</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Update only existing keys</span>
+        <span class="n">opt_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">custom_kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">opt_kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">opt_kwargs</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">embed_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
         <span class="sd">"""Get the base model of this object."""</span>
@@ -360,6 +396,12 @@
     <span class="k">def</span> <span class="nf">head_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
         <span class="sd">"""Get the head layer of this object."""</span>
         <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_get_optimizer</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">optimizer_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyOptimizer</span><span class="p">:</span>
+        <span class="sd">"""Get the optimizer for training."""</span>
 
 <div class="viewcode-block" id="BaseTuner.fit"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.fit">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
