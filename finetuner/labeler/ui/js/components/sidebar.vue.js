@@ -128,7 +128,7 @@ const sidebar = {
                         <div class="row my-1" v-for="option in advancedConfig">
                             <label class="col-sm-6 col-form-label">{{ option.text }}</label>
                             <div class="col-sm-6 text-end">
-                                <input class="form-control" type="{{ option.type }}" v-model.number="option.value">
+                                <input class="form-control" :type="option.type" v-model.number="option.value">
                             </div>
                         </div>
                     </div>
