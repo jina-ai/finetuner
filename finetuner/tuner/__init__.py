@@ -1,6 +1,26 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from ..helper import AnyDNN, DocumentArrayLike, TunerReturnType, get_tuner_class
+
+if TYPE_CHECKING:
+    from .base import BaseTuner
+
+
+def get_tuner_class(dnn_model: AnyDNN) -> 'BaseTuner':
+    f_type = get_framework(dnn_model)
+
+    if f_type == 'keras':
+        from .keras import KerasTuner
+
+        return KerasTuner
+    elif f_type == 'torch':
+        from .pytorch import PytorchTuner
+
+        return PytorchTuner
+    elif f_type == 'paddle':
+        from .paddle import PaddleTuner
+
+        return PaddleTuner
 
 
 def fit(
