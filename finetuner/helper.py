@@ -68,7 +68,7 @@ def get_framework(dnn_model: AnyDNN) -> str:
 
 
 def get_tuner_class(dnn_model: AnyDNN) -> 'BaseTuner':
-    f_type = get_framework(embed_model)
+    f_type = get_framework(dnn_model)
 
     if f_type == 'keras':
         from .tuner.keras import KerasTuner
@@ -85,20 +85,20 @@ def get_tuner_class(dnn_model: AnyDNN) -> 'BaseTuner':
 
 
 def get_tailor_class(dnn_model: AnyDNN) -> 'BaseTailor':
-    f_type = get_framework(model)
+    f_type = get_framework(dnn_model)
 
     if f_type == 'keras':
         from .tailor.keras import KerasTailor
 
-        ft = KerasTailor
+        return KerasTailor
     elif f_type == 'torch':
         from .tailor.pytorch import PytorchTailor
 
-        ft = PytorchTailor
+        return PytorchTailor
     elif f_type == 'paddle':
         from .tailor.paddle import PaddleTailor
 
-        ft = PaddleTailor
+        return PaddleTailor
 
 
 def is_seq_int(tp) -> bool:
