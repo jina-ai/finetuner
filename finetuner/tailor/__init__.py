@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, TYPE_CHECKING
+from typing import Optional, Tuple, TYPE_CHECKING, Type
 
 from ..helper import get_framework, AnyDNN, get_tailor_class
 
@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from .base import BaseTailor
 
 
-def get_tailor_class(dnn_model: AnyDNN) -> 'BaseTailor':
+def get_tailor_class(dnn_model: AnyDNN) -> Type['BaseTailor']:
     f_type = get_framework(dnn_model)
 
     if f_type == 'keras':
