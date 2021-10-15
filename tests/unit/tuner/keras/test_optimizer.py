@@ -14,3 +14,12 @@ def test_optimizer(optimizer, learning_rate):
 
     assert type(opt).__name__.lower() == optimizer
     np.testing.assert_almost_equal(opt.learning_rate, learning_rate)
+
+
+def test_non_existing_optimizer():
+    model = tf.keras.Sequential([tf.keras.Input(shape=(2,)), tf.keras.layers.Dense(2)])
+
+    ft = KerasTuner(model, 'TripletLayer')
+
+    with pytest.raises(ValueError, match='Optimizer "fake"'):
+        ft._get_optimizer("fake", {}, 1e-3)
