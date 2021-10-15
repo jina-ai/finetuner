@@ -8,7 +8,9 @@ AnyDNN = TypeVar(
 AnyDataLoader = TypeVar(
     'AnyDataLoader'
 )  #: The type of any implementation of a data loader
-AnyOptimizer = TypeVar('AnyOptimizer')
+AnyOptimizer = TypeVar(
+    'AnyOptimizer'
+)  #: The type of any implementation of an optimizer for training the model
 DocumentSequence = TypeVar(
     'DocumentSequence',
     Sequence[Document],
