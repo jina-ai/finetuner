@@ -16,7 +16,7 @@ from ..logger import LogGenerator
 class PytorchTuner(BaseTuner):
     def _get_loss(self, loss: Union[nn.Module, str, None] = None):
         if isinstance(loss, str):
-            return getattr(losses, loss)
+            return getattr(losses, loss)()
         elif isinstance(loss, nn.Module):
             return loss
 
@@ -145,22 +145,20 @@ class PytorchTuner(BaseTuner):
             _data = self._get_data_loader(
                 inputs=train_data, batch_size=batch_size, shuffle=False
             )
-            lt, mt = self._train(
+            lt = self._train(
                 _data,
                 _optimizer,
                 description=f'Epoch {epoch + 1}/{epochs}',
             )
             losses_train.extend(lt)
-            metrics_train.extend(mt)
 
             if eval_data:
                 _data = self._get_data_loader(
                     inputs=eval_data, batch_size=batch_size, shuffle=False
                 )
 
-                le, me = self._eval(_data, train_log=LogGenerator('T', lt, mt)())
+                le = self._eval(_data, train_log=LogGenerator('T', lt, mt)())
                 losses_eval.extend(le)
-                metrics_eval.extend(me)
 
         return {
             'loss': {'train': losses_train, 'eval': losses_eval},

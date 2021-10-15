@@ -31,7 +31,7 @@ class EuclideanSiameseLoss(BaseLoss, nn.Module):
     ) -> torch.Tensor:
         l_emb, r_emb = embeddings
         eucl_dist = F.pairwise_distance(l_emb, r_emb, p=2)
-        is_similar = target > 0
+        is_similar = (target > 0).to(torch.float32)
 
         loss = 0.5 * torch.square(
             is_similar * eucl_dist + (1 - is_similar) * F.relu(self.margin - eucl_dist)
