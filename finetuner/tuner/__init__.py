@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Dict, Optional
 
 from ..helper import AnyDNN, DocumentArrayLike, TunerReturnType, get_tuner_class
 
