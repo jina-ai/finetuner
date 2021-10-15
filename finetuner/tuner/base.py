@@ -76,7 +76,7 @@ class BaseTuner(abc.ABC):
         if extra_args:
             self.logger.warning(
                 f'The following arguments are not valid for the optimizer {optimizer}:'
-                ' {extra_kwargs}'
+                f' {extra_args}'
             )
 
         # Update only existing keys
