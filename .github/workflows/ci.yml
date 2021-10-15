@@ -116,7 +116,6 @@ jobs:
           python -m pip install wheel
           pip install -r .github/requirements-test.txt
           pip install -r .github/requirements-cicd.txt
-          pip install -r requirements.txt
           pip install --no-cache-dir .
           export JINA_LOG_LEVEL="ERROR"
       - name: Test
@@ -155,7 +154,6 @@ jobs:
           python -m pip install wheel
           pip install -r .github/requirements-test.txt
           pip install -r .github/requirements-cicd-gpu.txt
-          pip install -r requirements.txt
           pip install --no-cache-dir .
           export JINA_LOG_LEVEL="ERROR"
       - name: Test
