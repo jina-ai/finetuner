@@ -31,7 +31,7 @@ class PytorchTuner(BaseTuner):
     def _get_optimizer(
         self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
     ) -> Optimizer:
-        params = self.wrapped_model.parameters()
+        params = self._embed_model.parameters()
         optimizer_kwargs = self._get_optimizer_kwargs(optimizer, optimizer_kwargs)
 
         if optimizer == 'adam':
@@ -59,7 +59,7 @@ class PytorchTuner(BaseTuner):
             )
 
     def _eval(self, data, description: str = 'Evaluating', train_log: str = ''):
-        self.wrapped_model.eval()
+        self._embed_model.eval()
 
         losses = []
         metrics = []
@@ -83,7 +83,7 @@ class PytorchTuner(BaseTuner):
 
     def _train(self, data, optimizer: Optimizer, description: str):
 
-        self.wrapped_model.train()
+        self._embed_model.train()
 
         losses = []
         metrics = []
