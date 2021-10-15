@@ -6,7 +6,7 @@ __version__ = '0.0.3'
 __default_tag_key__ = 'finetuner'
 
 # define the high-level API: fit()
-from typing import Optional, overload, TYPE_CHECKING, Tuple
+from typing import Dict, Optional, overload, TYPE_CHECKING, Tuple
 
 if TYPE_CHECKING:
     from .helper import AnyDNN, DocumentArrayLike, TunerReturnType
@@ -21,6 +21,9 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     head_layer: str = 'CosineLayer',
+    learning_rate: float = 1e-3,
+    optimizer: str = 'adam',
+    optimizer_kwargs: Optional[Dict] = None,
     device: str = 'cpu',
 ) -> 'TunerReturnType':
     ...
@@ -35,6 +38,9 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     head_layer: str = 'CosineLayer',
+    learning_rate: float = 1e-3,
+    optimizer: str = 'adam',
+    optimizer_kwargs: Optional[Dict] = None,
     to_embedding_model: bool = True,  #: below are tailor args
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
@@ -56,6 +62,9 @@ def fit(
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
     head_layer: str = 'CosineLayer',
+    learning_rate: float = 1e-3,
+    optimizer: str = 'adam',
+    optimizer_kwargs: Optional[Dict] = None,
     device: str = 'cpu',
 ) -> None:
     ...
@@ -71,6 +80,9 @@ def fit(
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
     head_layer: str = 'CosineLayer',
+    learning_rate: float = 1e-3,
+    optimizer: str = 'adam',
+    optimizer_kwargs: Optional[Dict] = None,
     to_embedding_model: bool = True,  #: below are tailor args
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',

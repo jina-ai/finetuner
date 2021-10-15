@@ -29,13 +29,23 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     head_layer: str = 'CosineLayer',
+    learning_rate: float = 1e-3,
+    optimizer: str = 'adam',
+    optimizer_kwargs: Optional[Dict] = None,
     device: str = 'cpu',
-    **kwargs
+    **kwargs,
 ) -> TunerReturnType:
     ft = _get_tuner_class(embed_model)
 
     return ft(embed_model, head_layer=head_layer).fit(
-        train_data, eval_data, epochs=epochs, batch_size=batch_size, device=device
+        train_data,
+        eval_data,
+        epochs=epochs,
+        batch_size=batch_size,
+        device=device,
+        learning_rate=learning_rate,
+        optimizer=optimizer,
+        optimizer_kwargs=optimizer_kwargs,
     )
 
 

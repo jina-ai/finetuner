@@ -9,7 +9,7 @@ from typing import (
 
 from jina.logging.logger import JinaLogger
 
-from ..helper import AnyDNN, AnyDataLoader, DocumentArrayLike
+from ..helper import AnyDNN, AnyDataLoader, AnyOptimizer, DocumentArrayLike
 
 
 class BaseHead:
@@ -48,6 +48,42 @@ class BaseTuner(abc.ABC):
         self._head_layer = head_layer
         self.logger = JinaLogger(self.__class__.__name__)
 
+    def _get_optimizer_kwargs(self, optimizer: str, custom_kwargs: Optional[Dict]):
+        """Merges user-provided optimizer kwargs with default ones."""
+
+        DEFAULT_OPTIMIZER_KWARGS = {
+            'adam': {'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-08},
+            'rmsprop': {
+                'rho': 0.99,
+                'momentum': 0.0,
+                'epsilon': 1e-08,
+                'centered': False,
+            },
+            'sgd': {'momentum': 0.0, 'nesterov': False},
+        }
+
+        try:
+            opt_kwargs = DEFAULT_OPTIMIZER_KWARGS[optimizer]
+        except KeyError:
+            raise ValueError(
+                f'Optimizer "{optimizer}" not supported, the supported'
+                ' optimizers are "adam", "rmsprop" and "sgd"'
+            )
+
+        # Raise warning for non-existing keys passed
+        custom_kwargs = custom_kwargs or {}
+        extra_args = set(custom_kwargs.keys()) - set(opt_kwargs.keys())
+        if extra_args:
+            self.logger.warning(
+                f'The following arguments are not valid for the optimizer {optimizer}:'
+                f' {extra_args}'
+            )
+
+        # Update only existing keys
+        opt_kwargs.update((k, v) for k, v in custom_kwargs.items() if k in opt_kwargs)
+
+        return opt_kwargs
+
     @property
     def embed_model(self) -> AnyDNN:
         """Get the base model of this object."""
@@ -78,6 +114,12 @@ class BaseTuner(abc.ABC):
     def head_layer(self) -> AnyDNN:
         """Get the head layer of this object."""
         ...
+
+    @abc.abstractmethod
+    def _get_optimizer(
+        self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
+    ) -> AnyOptimizer:
+        """Get the optimizer for training."""
 
     @abc.abstractmethod
     def fit(

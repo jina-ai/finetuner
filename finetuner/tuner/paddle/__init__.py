@@ -1,10 +1,11 @@
-from typing import Optional
+from typing import Dict, Optional
 
 import paddle
 from jina.logging.profile import ProgressBar
 from paddle import nn
 from paddle.io import DataLoader
 from paddle.optimizer import Optimizer
+
 from . import head_layers, datasets
 from ..base import BaseTuner, BaseHead, BaseArityModel
 from ...helper import DocumentArrayLike
@@ -27,9 +28,13 @@ class PaddleTuner(BaseTuner):
     @property
     def wrapped_model(self) -> nn.Layer:
         if self.embed_model is None:
-            raise ValueError(f'embed_model is not set')
+            raise ValueError('embed_model is not set')
 
-        return self.head_layer(_ArityModel(self.embed_model))  # wrap with head layer
+        if getattr(self, '_wrapped_model', None) is not None:
+            return self._wrapped_model
+
+        self._wrapped_model = self.head_layer(_ArityModel(self.embed_model))
+        return self._wrapped_model
 
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
         ds = get_dataset(datasets, self.arity)
@@ -38,6 +43,32 @@ class PaddleTuner(BaseTuner):
             batch_size=batch_size,
             shuffle=shuffle,
         )
+
+    def _get_optimizer(
+        self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
+    ) -> Optimizer:
+        params = self.wrapped_model.parameters()
+        optimizer_kwargs = self._get_optimizer_kwargs(optimizer, optimizer_kwargs)
+
+        if optimizer == 'adam':
+            return paddle.optimizer.Adam(
+                parameters=params,
+                learning_rate=learning_rate,
+                beta1=optimizer_kwargs['beta_1'],
+                beta2=optimizer_kwargs['beta_2'],
+                epsilon=optimizer_kwargs['epsilon'],
+            )
+        elif optimizer == 'rmsprop':
+            return paddle.optimizer.RMSProp(
+                parameters=params, learning_rate=learning_rate, **optimizer_kwargs
+            )
+        elif optimizer == 'sgd':
+            return paddle.optimizer.Momentum(
+                parameters=params,
+                learning_rate=learning_rate,
+                momentum=optimizer_kwargs['momentum'],
+                use_nesterov=optimizer_kwargs['nesterov'],
+            )
 
     def _eval(self, data, description: str = 'Evaluating', train_log: str = ''):
         self.wrapped_model.eval()
@@ -95,12 +126,12 @@ class PaddleTuner(BaseTuner):
         eval_data: Optional[DocumentArrayLike] = None,
         epochs: int = 10,
         batch_size: int = 256,
+        learning_rate: float = 1e-3,
+        optimizer: str = 'adam',
+        optimizer_kwargs: Optional[Dict] = None,
         device: str = 'cpu',
         **kwargs,
     ):
-        optimizer = paddle.optimizer.RMSProp(
-            learning_rate=0.01, parameters=self.wrapped_model.parameters()
-        )
 
         if device == 'cuda':
             paddle.set_device('gpu:0')
@@ -108,6 +139,8 @@ class PaddleTuner(BaseTuner):
             paddle.set_device('cpu')
         else:
             raise ValueError(f'Device {device} not recognized')
+
+        _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
         losses_train = []
         metrics_train = []
@@ -120,7 +153,7 @@ class PaddleTuner(BaseTuner):
             )
             lt, mt = self._train(
                 _data,
-                optimizer,
+                _optimizer,
                 description=f'Epoch {epoch + 1}/{epochs}',
             )
             losses_train.extend(lt)
