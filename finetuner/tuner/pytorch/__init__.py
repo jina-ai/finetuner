@@ -62,7 +62,6 @@ class PytorchTuner(BaseTuner):
         self._embed_model.eval()
 
         losses = []
-        metrics = []
         log_generator = LogGenerator('E', losses, train_log)
 
         with ProgressBar(description, message_on_done=log_generator) as p:
@@ -72,14 +71,14 @@ class PytorchTuner(BaseTuner):
                 label = label.to(self.device)
 
                 with torch.inference_mode():
-                    embeddings = [self.embed_model(inpt) for inpt in inputs]
+                    embeddings = [self._embed_model(inpt) for inpt in inputs]
                     loss = self._loss(embeddings, label)
 
                 losses.append(loss.item())
 
                 p.update(message=log_generator())
 
-        return losses, metrics
+        return losses
 
     def _train(self, data, optimizer: Optimizer, description: str):
 

@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 
 import paddle
 from jina.logging.profile import ProgressBar
@@ -6,35 +6,19 @@ from paddle import nn
 from paddle.io import DataLoader
 from paddle.optimizer import Optimizer
 
-from . import head_layers, datasets
-from ..base import BaseTuner, BaseHead, BaseArityModel
+from . import losses, datasets
+from ..base import BaseTuner
 from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
 
 
-class _ArityModel(BaseArityModel, nn.Layer):
-    ...
-
-
 class PaddleTuner(BaseTuner):
-    @property
-    def head_layer(self) -> BaseHead:
-        if isinstance(self._head_layer, str):
-            return getattr(head_layers, self._head_layer)
-        elif isinstance(self._head_layer, nn.Layer):
-            return self._head_layer
-
-    @property
-    def wrapped_model(self) -> nn.Layer:
-        if self.embed_model is None:
-            raise ValueError('embed_model is not set')
-
-        if getattr(self, '_wrapped_model', None) is not None:
-            return self._wrapped_model
-
-        self._wrapped_model = self.head_layer(_ArityModel(self.embed_model))
-        return self._wrapped_model
+    def _get_loss(self, loss: Union[nn.Layer, str, None] = None):
+        if isinstance(loss, str):
+            return getattr(losses, loss)()
+        elif isinstance(loss, nn.Layer):
+            return loss
 
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
         ds = get_dataset(datasets, self.arity)
@@ -71,43 +55,38 @@ class PaddleTuner(BaseTuner):
             )
 
     def _eval(self, data, description: str = 'Evaluating', train_log: str = ''):
-        self.wrapped_model.eval()
+        self._embed_model.eval()
 
         losses = []
-        metrics = []
 
-        log_generator = LogGenerator('E', losses, metrics, train_log)
+        log_generator = LogGenerator('E', losses, train_log)
 
         with ProgressBar(description, message_on_done=log_generator) as p:
             for inputs, label in data:
-                outputs = self.wrapped_model(*inputs)
-                loss = self.wrapped_model.loss_fn(outputs, label)
-                metric = self.wrapped_model.metric_fn(outputs, label)
+                embeddings = [self._embed_model(inpt) for inpt in inputs]
+                loss = self._loss(embeddings, label)
 
                 losses.append(loss.item())
-                metrics.append(metric.numpy())
 
                 p.update(message=log_generator())
 
-        return losses, metrics
+        return losses
 
     def _train(self, data, optimizer: Optimizer, description: str):
 
-        self.wrapped_model.train()
+        self._embed_model.train()
 
         losses = []
-        metrics = []
 
-        log_generator = LogGenerator('T', losses, metrics)
+        log_generator = LogGenerator('T', losses)
 
         with ProgressBar(
             description, message_on_done=log_generator, final_line_feed=False
         ) as p:
             for inputs, label in data:
                 # forward step
-                outputs = self.wrapped_model(*inputs)
-                loss = self.wrapped_model.loss_fn(outputs, label)
-                metric = self.wrapped_model.metric_fn(outputs, label)
+                embeddings = [self._embed_model(inpt) for inpt in inputs]
+                loss = self._loss(embeddings, label)
 
                 optimizer.clear_grad()
 
@@ -115,10 +94,9 @@ class PaddleTuner(BaseTuner):
                 optimizer.step()
 
                 losses.append(loss.item())
-                metrics.append(metric.numpy())
 
                 p.update(message=log_generator())
-        return losses, metrics
+        return losses
 
     def fit(
         self,
@@ -143,35 +121,28 @@ class PaddleTuner(BaseTuner):
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
         losses_train = []
-        metrics_train = []
         losses_eval = []
-        metrics_eval = []
 
         for epoch in range(epochs):
             _data = self._get_data_loader(
                 inputs=train_data, batch_size=batch_size, shuffle=False
             )
-            lt, mt = self._train(
+            lt = self._train(
                 _data,
                 _optimizer,
                 description=f'Epoch {epoch + 1}/{epochs}',
             )
             losses_train.extend(lt)
-            metrics_train.extend(mt)
 
             if eval_data:
                 _data = self._get_data_loader(
                     inputs=eval_data, batch_size=batch_size, shuffle=False
                 )
 
-                le, me = self._eval(_data, train_log=LogGenerator('T', lt, mt)())
+                le = self._eval(_data, train_log=LogGenerator('T', lt)())
                 losses_eval.extend(le)
-                metrics_eval.extend(me)
 
-        return {
-            'loss': {'train': losses_train, 'eval': losses_eval},
-            'metric': {'train': metrics_train, 'eval': metrics_eval},
-        }
+        return {'loss': {'train': losses_train, 'eval': losses_eval}}
 
     def save(self, *args, **kwargs):
         paddle.save(self.embed_model.state_dict(), *args, **kwargs)
