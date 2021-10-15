@@ -5,7 +5,7 @@ from finetuner.tuner.paddle import PaddleTuner
 
 
 @pytest.mark.gpu
-@pytest.mark.parametrize('head_layer', ['TripletLayer', 'CosineLayer'])
+@pytest.mark.parametrize('head_layer', ['EuclideanTripletLoss', 'CosineSiameseLoss'])
 def test_gpu_paddle(generate_random_triplets, head_layer):
 
     data = generate_random_triplets(4, 4)

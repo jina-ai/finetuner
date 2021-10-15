@@ -31,7 +31,7 @@ class PaddleTuner(BaseTuner):
     def _get_optimizer(
         self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
     ) -> Optimizer:
-        params = self.wrapped_model.parameters()
+        params = self._embed_model.parameters()
         optimizer_kwargs = self._get_optimizer_kwargs(optimizer, optimizer_kwargs)
 
         if optimizer == 'adam':
