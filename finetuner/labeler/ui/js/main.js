@@ -195,12 +195,23 @@ const app = new Vue({
         },
         saveProgress: () => {
             app.is_busy = true
-            fetch(app.saveAddress, {
-                method: 'POST',
-                body: JSON.stringify({})
-            })
-            .then((response) => {app.is_busy = false})
-            .catch((error) => {console.log("Error: ", error)})
+            app.is_conn_broken = false
+            $.ajax({
+                type: "POST",
+                url: app.saveAddress,
+                data: JSON.stringify({
+                    data: [],
+                    parameters: {
+                    }
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+            }).success(function (data, textStatus, jqXHR) {
+                app.is_busy = false
+            }).fail(function () {
+                console.error("Error: ", error)
+                app.is_busy = false
+            });
         },
         handleKeyPress(event) {
             let key = event.key

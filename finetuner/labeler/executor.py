@@ -82,7 +82,9 @@ class FTExecutor(Executor):
 
     @requests(on='/save')
     def save(self, parameters, **kwargs):
-        save(self._embed_model, parameters.get('model_path', 'trained.model'))
+        model_path = parameters.get('model_path', 'trained.model')
+        save(self._embed_model, model_path)
+        print(f'model is saved to {model_path}')
 
 
 class DataIterator(Executor):
