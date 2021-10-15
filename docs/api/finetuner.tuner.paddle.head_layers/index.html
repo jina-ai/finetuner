@@ -302,50 +302,8 @@
                         </i>
                     </label>
                 </div>
-                <section id="module-finetuner.tuner.paddle.head_layers">
-<span id="finetuner-tuner-paddle-head-layers-module"></span><h1>finetuner.tuner.paddle.head_layers module<a class="headerlink" href="#module-finetuner.tuner.paddle.head_layers" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.head_layers.CosineLayer">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.head_layers.</span></span><span class="sig-name descname"><span class="pre">CosineLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arity_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/head_layers/#CosineLayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.head_layers.CosineLayer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseHead" title="finetuner.tuner.base.BaseHead"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseHead</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.nn.</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.head_layers.CosineLayer.arity">
-<span class="sig-name descname"><span class="pre">arity</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#finetuner.tuner.paddle.head_layers.CosineLayer.arity" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.head_layers.CosineLayer.get_output">
-<span class="sig-name descname"><span class="pre">get_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvalue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rvalue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/head_layers/#CosineLayer.get_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.head_layers.CosineLayer.get_output" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.head_layers.CosineLayer.metric_fn">
-<span class="sig-name descname"><span class="pre">metric_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/head_layers/#CosineLayer.metric_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.head_layers.CosineLayer.metric_fn" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.head_layers.CosineLayer.loss_fn">
-<span class="sig-name descname"><span class="pre">loss_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/head_layers/#CosineLayer.loss_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.head_layers.CosineLayer.loss_fn" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.head_layers.TripletLayer">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.head_layers.</span></span><span class="sig-name descname"><span class="pre">TripletLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arity_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/head_layers/#TripletLayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.head_layers.TripletLayer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseHead" title="finetuner.tuner.base.BaseHead"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseHead</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.nn.</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.head_layers.TripletLayer.arity">
-<span class="sig-name descname"><span class="pre">arity</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#finetuner.tuner.paddle.head_layers.TripletLayer.arity" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.head_layers.TripletLayer.get_output">
-<span class="sig-name descname"><span class="pre">get_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anchor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positive</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/head_layers/#TripletLayer.get_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.head_layers.TripletLayer.get_output" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.head_layers.TripletLayer.metric_fn">
-<span class="sig-name descname"><span class="pre">metric_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/head_layers/#TripletLayer.metric_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.head_layers.TripletLayer.metric_fn" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.head_layers.TripletLayer.loss_fn">
-<span class="sig-name descname"><span class="pre">loss_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/head_layers/#TripletLayer.loss_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.head_layers.TripletLayer.loss_fn" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-</dd></dl>
+                <section id="finetuner-tuner-paddle-head-layers-module">
+<h1>finetuner.tuner.paddle.head_layers module<a class="headerlink" href="#finetuner-tuner-paddle-head-layers-module" title="Permalink to this headline">¶</a></h1>
 </section>
 
             </article>
