@@ -17,7 +17,7 @@ def extract_catalog(docs):
 
 
 def prepare_eval_docs(docs, catalog, limit=10, sample_size=100, seed=42):
-    sampled_docs = docs.sample(sample_size, seed)
+    sampled_docs = docs.sample(min(sample_size, len(docs)), seed)
     to_be_scored_docs = DocumentArray()
     for doc in sampled_docs:
         d = Document(

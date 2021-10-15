@@ -194,7 +194,7 @@ class PytorchTuner(BaseTuner):
         blobs = data.blobs
         embeddings = self.embed_model(torch.Tensor(blobs).to(self.device))
         for doc, embed in zip(data, embeddings):
-            doc.embedding = np.array(embed)
+            doc.embedding = embed.cpu().detach().numpy()
 
     def save(self, *args, **kwargs):
         torch.save(self.embed_model.state_dict(), *args, **kwargs)
