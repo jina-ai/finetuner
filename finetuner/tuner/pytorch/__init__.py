@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 import torch
 import torch.nn as nn
@@ -6,35 +6,19 @@ from jina.logging.profile import ProgressBar
 from torch.optim.optimizer import Optimizer
 from torch.utils.data.dataloader import DataLoader
 
-from . import head_layers, datasets
-from ..base import BaseTuner, BaseHead, BaseArityModel
+from . import losses, datasets
+from ..base import BaseTuner
 from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
 
 
-class _ArityModel(BaseArityModel, nn.Module):
-    ...
-
-
 class PytorchTuner(BaseTuner):
-    @property
-    def head_layer(self) -> BaseHead:
-        if isinstance(self._head_layer, str):
-            return getattr(head_layers, self._head_layer)
-        elif isinstance(self._head_layer, BaseHead):
-            return self._head_layer
-
-    @property
-    def wrapped_model(self) -> nn.Module:
-        if self.embed_model is None:
-            raise ValueError('embed_model is not set')
-
-        if getattr(self, '_wrapped_model', None) is not None:
-            return self._wrapped_model
-
-        self._wrapped_model = self.head_layer(_ArityModel(self.embed_model))
-        return self._wrapped_model
+    def _get_loss(self, loss: Union[nn.Module, str, None] = None):
+        if isinstance(loss, str):
+            return getattr(losses, loss)
+        elif isinstance(loss, nn.Module):
+            return loss
 
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
         ds = get_dataset(datasets, self.arity)
@@ -53,16 +37,15 @@ class PytorchTuner(BaseTuner):
 
         with ProgressBar(description, message_on_done=log_generator) as p:
             for inputs, label in data:
+                # Inputs come as tuples or triplets
                 inputs = [inpt.to(self.device) for inpt in inputs]
                 label = label.to(self.device)
 
                 with torch.inference_mode():
-                    outputs = self.wrapped_model(*inputs)
-                    loss = self.wrapped_model.loss_fn(outputs, label)
-                    metric = self.wrapped_model.metric_fn(outputs, label)
+                    embeddings = [self.embed_model(inpt) for inpt in inputs]
+                    loss = self._loss(embeddings, label)
 
                 losses.append(loss.item())
-                metrics.append(metric.cpu().numpy())
 
                 p.update(message=log_generator())
 
@@ -81,13 +64,12 @@ class PytorchTuner(BaseTuner):
             description, message_on_done=log_generator, final_line_feed=False
         ) as p:
             for inputs, label in data:
-                # forward step
+                # inputs come as tuples or triplets
                 inputs = [inpt.to(self.device) for inpt in inputs]
                 label = label.to(self.device)
 
-                outputs = self.wrapped_model(*inputs)
-                loss = self.wrapped_model.loss_fn(outputs, label)
-                metric = self.wrapped_model.metric_fn(outputs, label)
+                embeddings = [self.embed_model(inpt) for inpt in inputs]
+                loss = self._loss(embeddings, label)
 
                 optimizer.zero_grad()
 
@@ -95,10 +77,9 @@ class PytorchTuner(BaseTuner):
                 optimizer.step()
 
                 losses.append(loss.item())
-                metrics.append(metric.cpu().numpy())
 
                 p.update(message=log_generator())
-        return losses, metrics
+        return losses
 
     def fit(
         self,
@@ -117,9 +98,9 @@ class PytorchTuner(BaseTuner):
             raise ValueError(f'Device {device} not recognized')
 
         # Place model on device
-        self._wrapped_model = self.wrapped_model.to(self.device)
+        self._embed_model = self._embed_model.to(self.device)
 
-        optimizer = torch.optim.RMSprop(params=self.wrapped_model.parameters())
+        optimizer = torch.optim.RMSprop(params=self._embed_model.parameters())
 
         losses_train = []
         metrics_train = []

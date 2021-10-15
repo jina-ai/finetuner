@@ -16,13 +16,10 @@ class LogGenerator:
         return f'{prefix}{self._name}: {self.get_statistic()}'
 
     def get_statistic(self):
-        return f'L={self.mean_loss():>8} A={self.mean_metric():>4}'
+        return f'Loss={self.mean_loss():>8}'
 
     def mean_loss(self):
         return LogGenerator.get_log_value(self._losses)
-
-    def mean_metric(self):
-        return LogGenerator.get_log_value(self._metrics)
 
     @staticmethod
     def get_log_value(data):

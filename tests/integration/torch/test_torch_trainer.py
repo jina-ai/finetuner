@@ -10,8 +10,16 @@ from finetuner.toydata import generate_fashion_match
 from finetuner.toydata import generate_qa_match
 
 
-@pytest.mark.parametrize('head_layer', ['CosineLayer', 'TripletLayer'])
-def test_simple_sequential_model(tmpdir, params, head_layer):
+@pytest.mark.parametrize(
+    'loss',
+    [
+        'CosineSiameseLoss',
+        'EuclideanSiameseLoss',
+        'EuclideanTripletLoss',
+        'CosineTripletLoss',
+    ],
+)
+def test_simple_sequential_model(tmpdir, params, loss):
     user_model = nn.Sequential(
         nn.Flatten(),
         nn.Linear(
@@ -23,7 +31,7 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
     )
     model_path = os.path.join(tmpdir, 'trained.pth')
 
-    pt = PytorchTuner(user_model, head_layer=head_layer)
+    pt = PytorchTuner(user_model, loss=loss)
 
     # fit and save the checkpoint
     pt.fit(
@@ -50,8 +58,16 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
     assert r.shape == (params['num_predict'], params['output_dim'])
 
 
-@pytest.mark.parametrize('head_layer', ['CosineLayer', 'TripletLayer'])
-def test_simple_lstm_model(tmpdir, params, head_layer):
+@pytest.mark.parametrize(
+    'loss',
+    [
+        'CosineSiameseLoss',
+        'EuclideanSiameseLoss',
+        'EuclideanTripletLoss',
+        'CosineTripletLoss',
+    ],
+)
+def test_simple_lstm_model(tmpdir, params, loss):
     class extractlastcell(nn.Module):
         def forward(self, x):
             out, _ = x
@@ -72,7 +88,7 @@ def test_simple_lstm_model(tmpdir, params, head_layer):
     )
     model_path = os.path.join(tmpdir, 'trained.pth')
 
-    pt = PytorchTuner(user_model, head_layer=head_layer)
+    pt = PytorchTuner(user_model, loss=loss)
 
     # fit and save the checkpoint
     pt.fit(

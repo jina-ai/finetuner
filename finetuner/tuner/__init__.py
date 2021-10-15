@@ -9,7 +9,7 @@ def fit(
     eval_data: Optional[DocumentArrayLike] = None,
     epochs: int = 10,
     batch_size: int = 256,
-    head_layer: str = 'CosineLayer',
+    loss: str = 'CosineSiameseLoss',
     device: str = 'cpu',
     **kwargs
 ) -> TunerReturnType:
@@ -28,6 +28,6 @@ def fit(
 
         ft = PaddleTuner
 
-    return ft(embed_model, head_layer=head_layer).fit(
+    return ft(embed_model, loss=loss).fit(
         train_data, eval_data, epochs=epochs, batch_size=batch_size, device=device
     )

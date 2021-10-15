@@ -20,7 +20,7 @@ def fit(
     eval_data: Optional['DocumentArrayLike'] = None,
     epochs: int = 10,
     batch_size: int = 256,
-    head_layer: str = 'CosineLayer',
+    loss: str = 'CosineSiameseLoss',
     device: str = 'cpu',
 ) -> 'TunerReturnType':
     ...
@@ -34,7 +34,7 @@ def fit(
     eval_data: Optional['DocumentArrayLike'] = None,
     epochs: int = 10,
     batch_size: int = 256,
-    head_layer: str = 'CosineLayer',
+    loss: str = 'CosineSiameseLoss',
     to_embedding_model: bool = True,  #: below are tailor args
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
@@ -55,7 +55,7 @@ def fit(
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
-    head_layer: str = 'CosineLayer',
+    loss: str = 'CosineSiameseLoss',
     device: str = 'cpu',
 ) -> None:
     ...
@@ -70,7 +70,7 @@ def fit(
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
-    head_layer: str = 'CosineLayer',
+    loss: str = 'CosineSiameseLoss',
     to_embedding_model: bool = True,  #: below are tailor args
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
