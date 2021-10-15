@@ -1,6 +1,26 @@
-from typing import Optional, Tuple
+from typing import Optional, Tuple, TYPE_CHECKING, Type
 
-from ..helper import get_framework, AnyDNN, get_tailor_class
+from ..helper import get_framework, AnyDNN
+
+if TYPE_CHECKING:
+    from .base import BaseTailor
+
+
+def get_tailor_class(dnn_model: AnyDNN) -> Type['BaseTailor']:
+    f_type = get_framework(dnn_model)
+
+    if f_type == 'keras':
+        from .keras import KerasTailor
+
+        return KerasTailor
+    elif f_type == 'torch':
+        from .pytorch import PytorchTailor
+
+        return PytorchTailor
+    elif f_type == 'paddle':
+        from .paddle import PaddleTailor
+
+        return PaddleTailor
 
 
 def to_embedding_model(
