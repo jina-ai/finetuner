@@ -83,10 +83,14 @@ class KerasTuner(BaseTuner):
 
         log_generator = LogGenerator('T', losses, metrics)
 
+        train_data_len = 0
         with ProgressBar(
-            description, message_on_done=log_generator, final_line_feed=False
+            description,
+            message_on_done=log_generator,
+            final_line_feed=False,
+            total_length=train_data_len,
         ) as p:
-
+            train_data_len = 0
             for inputs, label in data:
                 with tf.GradientTape() as tape:
                     outputs = self.wrapped_model(inputs, training=True)
@@ -102,6 +106,7 @@ class KerasTuner(BaseTuner):
                 metrics.append(metric.numpy())
 
                 p.update(message=log_generator())
+                train_data_len += 1
 
         return losses, metrics
 
