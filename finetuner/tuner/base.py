@@ -72,7 +72,7 @@ class BaseTuner(abc.ABC):
         custom_kwargs = custom_kwargs or {}
         extra_args = set(custom_kwargs.keys()) - set(opt_kwargs.keys())
         if extra_args:
-            warnings.warning(
+            warnings.warn(
                 f'The following arguments are not valid for the optimizer {optimizer}:'
                 f' {extra_args}'
             )
