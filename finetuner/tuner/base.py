@@ -7,8 +7,6 @@ from typing import (
     Dict,
 )
 
-from jina.logging.logger import JinaLogger
-
 from ..helper import AnyDNN, AnyDataLoader, AnyOptimizer, DocumentArrayLike
 
 
@@ -46,7 +44,6 @@ class BaseTuner(abc.ABC):
     ):
         self._embed_model = embed_model
         self._head_layer = head_layer
-        self.logger = JinaLogger(self.__class__.__name__)
 
     def _get_optimizer_kwargs(self, optimizer: str, custom_kwargs: Optional[Dict]):
         """Merges user-provided optimizer kwargs with default ones."""
@@ -74,7 +71,7 @@ class BaseTuner(abc.ABC):
         custom_kwargs = custom_kwargs or {}
         extra_args = set(custom_kwargs.keys()) - set(opt_kwargs.keys())
         if extra_args:
-            self.logger.warning(
+            warnings.warning(
                 f'The following arguments are not valid for the optimizer {optimizer}:'
                 f' {extra_args}'
             )
