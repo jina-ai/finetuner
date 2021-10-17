@@ -26,7 +26,7 @@ class LastCellPD(paddle.nn.Layer):
         return out[:, -1, :]
 
 
-def _run(framework_name, head_layer, port_expose):
+def _run(framework_name, loss, port_expose):
     from finetuner import fit
 
     import paddle
@@ -58,24 +58,31 @@ def _run(framework_name, head_layer, port_expose):
     fit(
         embed_models[framework_name](),
         generate_qa_match(num_total=10, num_neg=0),
-        head_layer=head_layer,
+        loss=loss,
         interactive=True,
         port_expose=port_expose,
     )
 
 
+all_test_losses = [
+    'CosineSiameseLoss',
+    'CosineTripletLoss',
+    'EuclideanSiameseLoss',
+    'EuclideanTripletLoss',
+]
+
 # 'keras' does not work under this test setup
 # Exception ... ust be from the same graph as Tensor ...
 # TODO: add keras backend back to the test
 @pytest.mark.parametrize('framework', ['pytorch', 'paddle'])
-@pytest.mark.parametrize('head_layer', ['CosineLayer', 'TripletLayer'])
-def test_all_frameworks(framework, head_layer, tmpdir):
+@pytest.mark.parametrize('loss', all_test_losses)
+def test_all_frameworks(framework, loss, tmpdir):
     port = random_port()
     p = multiprocessing.Process(
         target=_run,
         args=(
             framework,
-            head_layer,
+            loss,
             port,
         ),
     )

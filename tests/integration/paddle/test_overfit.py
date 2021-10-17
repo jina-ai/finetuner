@@ -7,10 +7,13 @@ from finetuner.tuner.paddle import PaddleTuner
 
 
 @pytest.mark.parametrize(
-    "n_cls,dim,n_samples,n_epochs,batch_size,head_layer",
+    "n_cls,dim,n_samples,n_epochs,batch_size,loss",
     [
-        (5, 10, 100, 5, 25, 'TripletLayer'),
-        (5, 10, 1000, 15, 256, 'CosineLayer'),  # Cosine needs more training to converge
+        (5, 10, 100, 5, 25, 'EuclideanTripletLoss'),
+        (5, 10, 100, 5, 25, 'CosineTripletLoss'),
+        # Siamese needs more time to convereg
+        (5, 10, 1000, 15, 256, 'EuclideanSiameseLoss'),
+        (5, 10, 1000, 15, 256, 'CosineSiameseLoss'),
     ],
 )
 def test_overfit_paddle(
@@ -20,7 +23,7 @@ def test_overfit_paddle(
     n_samples: int,
     n_epochs: int,
     batch_size: int,
-    head_layer: str,
+    loss: str,
 ):
     """This test makes sure that we can overfit the model to a small amount of data.
 
@@ -44,14 +47,14 @@ def test_overfit_paddle(
     )
 
     # Train
-    pt = PaddleTuner(embed_model, head_layer=head_layer)
+    pt = PaddleTuner(embed_model, loss=loss)
     pt.fit(train_data=data, epochs=n_epochs, batch_size=batch_size)
 
     # Compute embedding for original vectors
     vec_embedings = embed_model(paddle.Tensor(vecs)).numpy()
 
     # Compute distances between embeddings
-    metric = 'sqeuclidean' if head_layer == 'TripletLayer' else 'cosine'
+    metric = 'sqeuclidean' if 'Euclidean' in loss else 'cosine'
     dists = squareform(pdist(vec_embedings, metric=metric))
 
     # Make sure that for each class, the two instances are closer than

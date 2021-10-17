@@ -11,40 +11,21 @@ from typing import (
 from ..helper import AnyDNN, AnyDataLoader, AnyOptimizer, DocumentArrayLike
 
 
-class BaseHead:
+class BaseLoss:
     arity: int
-
-    def __init__(self, arity_model: Optional[AnyDNN] = None):
-        super().__init__()
-        self._arity_model = arity_model
-
-    def forward(self, *inputs):
-        if self._arity_model:
-            inputs = self._arity_model(*inputs)
-        return self.get_output(*inputs)
-
-    @abc.abstractmethod
-    def get_output(self, *inputs):
-        ...
-
-    @abc.abstractmethod
-    def loss_fn(self, pred_val, target_val):
-        ...
-
-    @abc.abstractmethod
-    def metric_fn(self, pred_val, target_val):
-        ...
 
 
 class BaseTuner(abc.ABC):
     def __init__(
         self,
         embed_model: Optional[AnyDNN] = None,
-        head_layer: Union[AnyDNN, str, None] = None,
+        loss: Union[AnyDNN, str] = 'CosineSiameseLoss',
         **kwargs,
     ):
         self._embed_model = embed_model
-        self._head_layer = head_layer
+        self._loss = self._get_loss(loss)
+        self._train_data_len = 0
+        self._eval_data_len = 0
 
     def _get_optimizer_kwargs(self, optimizer: str, custom_kwargs: Optional[Dict]):
         """Merges user-provided optimizer kwargs with default ones."""
@@ -88,16 +69,6 @@ class BaseTuner(abc.ABC):
         return self._embed_model
 
     @property
-    @abc.abstractmethod
-    def wrapped_model(self) -> AnyDNN:
-        """Get the wrapped model of this object.
-
-        A wrapped model is an :py:attr:`.embed_model` replicated by :py:attr:`.arity` times
-        with a ``head_layer`` that fuses all.
-        """
-        ...
-
-    @property
     def arity(self) -> int:
         """Get the arity of this object.
 
@@ -105,13 +76,7 @@ class BaseTuner(abc.ABC):
             - ``arity = 2`` corresponds to the siamese network;
             - ``arity = 3`` corresponds to the triplet network.
         """
-        return self.head_layer.arity
-
-    @property
-    @abc.abstractmethod
-    def head_layer(self) -> AnyDNN:
-        """Get the head layer of this object."""
-        ...
+        return self._loss.arity
 
     @abc.abstractmethod
     def _get_optimizer(
@@ -138,11 +103,12 @@ class BaseTuner(abc.ABC):
 
     @abc.abstractmethod
     def save(self, *args, **kwargs):
-        """Save the weights of the :py:attr:`.embed_model`.
+        """Save the weights of the :py:attr:`.embed_model`."""
+        ...
 
-        Note that, the :py:attr:`.head_layer` and :py:attr:`.wrapped_model` do not need to be stored,
-        as they are auxiliary layers for tuning :py:attr:`.embed_model`.
-        """
+    @abc.abstractmethod
+    def _get_loss(self, loss: Union[str, BaseLoss]) -> BaseLoss:
+        """Get the loss layer."""
         ...
 
     @abc.abstractmethod
@@ -174,14 +140,3 @@ class BaseDataset:
     ):
         super().__init__()
         self._inputs = inputs() if callable(inputs) else inputs
-
-
-class BaseArityModel:
-    """The helper class to copy the network for multi-inputs."""
-
-    def __init__(self, embed_model: AnyDNN):
-        super().__init__()
-        self._embed_model = embed_model
-
-    def forward(self, *args):
-        return tuple(self._embed_model(a) for a in args)

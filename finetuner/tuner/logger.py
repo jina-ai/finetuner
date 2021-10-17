@@ -2,9 +2,8 @@ import numpy as np
 
 
 class LogGenerator:
-    def __init__(self, name, losses, metrics, prefix: str = ''):
+    def __init__(self, name, losses, prefix: str = ''):
         self._losses = losses
-        self._metrics = metrics
         self._prefix = prefix
         self._name = name
 
@@ -16,13 +15,10 @@ class LogGenerator:
         return f'{prefix}{self._name}: {self.get_statistic()}'
 
     def get_statistic(self):
-        return f'L={self.mean_loss():>8} A={self.mean_metric():>4}'
+        return f'Loss={self.mean_loss():>8}'
 
     def mean_loss(self):
         return LogGenerator.get_log_value(self._losses)
-
-    def mean_metric(self):
-        return LogGenerator.get_log_value(self._metrics)
 
     @staticmethod
     def get_log_value(data):
