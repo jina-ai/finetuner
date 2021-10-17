@@ -73,7 +73,7 @@ class KerasTuner(BaseTuner):
             for inputs, label in data:
                 with tf.GradientTape() as tape:
                     embeddings = [self._embed_model(inpt) for inpt in inputs]
-                    loss = self._loss(embeddings, label)
+                    loss = self._loss([*embeddings, label])
 
                 grads = tape.gradient(loss, self._embed_model.trainable_weights)
                 optimizer.apply_gradients(
@@ -137,26 +137,20 @@ class KerasTuner(BaseTuner):
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
         losses_train = []
-        metrics_train = []
         losses_eval = []
-        metrics_eval = []
 
         with device:
             for epoch in range(epochs):
-                lt, mt = self._train(
+                lt = self._train(
                     _train_data,
                     _optimizer,
                     description=f'Epoch {epoch + 1}/{epochs}',
                 )
                 losses_train.extend(lt)
-                metrics_train.extend(mt)
 
                 if eval_data:
-                    le, me = self._eval(
-                        _eval_data, train_log=LogGenerator('T', lt, mt)()
-                    )
+                    le = self._eval(_eval_data, train_log=LogGenerator('T', lt, mt)())
                     losses_eval.extend(le)
-                    metrics_eval.extend(me)
 
         return {
             'loss': {'train': losses_train, 'eval': losses_eval},
