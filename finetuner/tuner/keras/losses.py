@@ -38,7 +38,7 @@ class EuclideanTripletLoss(BaseLoss, Layer):
         self._margin = margin
 
     def call(self, inputs, **kwargs):
-        anchor, positive, negative = inputs
+        anchor, positive, negative, _ = inputs
 
         # Seems that tf.norm suffers from numeric instability as explained here
         # https://github.com/tensorflow/tensorflow/issues/12071
@@ -55,7 +55,7 @@ class CosineTripletLoss(BaseLoss, Layer):
         self._margin = margin
 
     def call(self, inputs, **kwargs):
-        anchor, positive, negative = inputs
+        anchor, positive, negative, _ = inputs
 
         # Seems that tf.norm suffers from numeric instability as explained here
         # https://github.com/tensorflow/tensorflow/issues/12071

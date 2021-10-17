@@ -7,6 +7,13 @@ import torch
 import finetuner
 from finetuner.toydata import generate_fashion_match
 
+all_test_losses = [
+    'CosineSiameseLoss',
+    'CosineTripletLoss',
+    'EuclideanSiameseLoss',
+    'EuclideanTripletLoss',
+]
+
 
 def test_fit_all(tmpdir):
     embed_models = {
@@ -38,10 +45,10 @@ def test_fit_all(tmpdir):
     }
 
     for kb, b in embed_models.items():
-        for h in ['CosineLayer', 'TripletLayer']:
+        for h in all_test_losses:
             result = finetuner.fit(
                 b(),
-                head_layer=h,
+                loss=h,
                 train_data=lambda: generate_fashion_match(
                     num_neg=10, num_pos=10, num_total=300
                 ),

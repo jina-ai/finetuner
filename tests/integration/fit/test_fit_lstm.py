@@ -7,6 +7,13 @@ import torch
 from finetuner import fit
 from finetuner.toydata import generate_qa_match
 
+all_test_losses = [
+    'CosineSiameseLoss',
+    'CosineTripletLoss',
+    'EuclideanSiameseLoss',
+    'EuclideanTripletLoss',
+]
+
 
 class LastCellPT(torch.nn.Module):
     def forward(self, x):
@@ -44,10 +51,10 @@ def test_fit_all(tmpdir):
     }
 
     for kb, b in embed_models.items():
-        for h in ['CosineLayer', 'TripletLayer']:
+        for h in all_test_losses:
             result = fit(
                 b(),
-                head_layer=h,
+                loss=h,
                 train_data=lambda: generate_qa_match(
                     num_total=300, num_neg=5, max_seq_len=10
                 ),

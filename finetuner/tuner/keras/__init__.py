@@ -149,7 +149,7 @@ class KerasTuner(BaseTuner):
                 losses_train.extend(lt)
 
                 if eval_data:
-                    le = self._eval(_eval_data, train_log=LogGenerator('T', lt, mt)())
+                    le = self._eval(_eval_data, train_log=LogGenerator('T', lt)())
                     losses_eval.extend(le)
 
         return {

@@ -7,9 +7,16 @@ from finetuner.tuner.keras import KerasTuner
 from finetuner.toydata import generate_fashion_match
 from finetuner.toydata import generate_qa_match
 
+all_test_losses = [
+    'CosineSiameseLoss',
+    'CosineTripletLoss',
+    'EuclideanSiameseLoss',
+    'EuclideanTripletLoss',
+]
 
-@pytest.mark.parametrize('head_layer', ['CosineLayer', 'TripletLayer'])
-def test_simple_sequential_model(tmpdir, params, head_layer):
+
+@pytest.mark.parametrize('loss', all_test_losses)
+def test_simple_sequential_model(tmpdir, params, loss):
     user_model = tf.keras.Sequential(
         [
             tf.keras.layers.Flatten(
@@ -22,7 +29,7 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
         ]
     )
 
-    kt = KerasTuner(user_model, head_layer=head_layer)
+    kt = KerasTuner(user_model, loss=loss)
 
     # fit and save the checkpoint
     kt.fit(
@@ -46,8 +53,8 @@ def test_simple_sequential_model(tmpdir, params, head_layer):
     assert r.shape == (params['num_predict'], params['output_dim'])
 
 
-@pytest.mark.parametrize('head_layer', ['CosineLayer', 'TripletLayer'])
-def test_simple_lstm_model(tmpdir, params, head_layer):
+@pytest.mark.parametrize('loss', all_test_losses)
+def test_simple_lstm_model(tmpdir, params, loss):
     user_model = tf.keras.Sequential(
         [
             tf.keras.layers.Embedding(input_dim=5000, output_dim=params['feature_dim']),
@@ -56,7 +63,7 @@ def test_simple_lstm_model(tmpdir, params, head_layer):
         ]
     )
 
-    kt = KerasTuner(user_model, head_layer=head_layer)
+    kt = KerasTuner(user_model, loss=loss)
 
     # fit and save the checkpoint
     kt.fit(
