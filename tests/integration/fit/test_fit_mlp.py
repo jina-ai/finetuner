@@ -64,10 +64,6 @@ def test_fit_all(tmpdir):
                     'train': [float(v) for v in result['loss']['train']],
                     'eval': [float(v) for v in result['loss']['eval']],
                 },
-                'metric': {
-                    'train': [float(v) for v in result['metric']['train']],
-                    'eval': [float(v) for v in result['metric']['eval']],
-                },
             }
             with open(tmpdir / f'result-{kb}-{h}.json', 'w') as fp:
                 json.dump(result, fp)

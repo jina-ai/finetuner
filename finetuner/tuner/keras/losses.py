@@ -18,6 +18,10 @@ class CosineSiameseLoss(BaseLoss, Layer):
 class EuclideanSiameseLoss(BaseLoss, Layer):
     arity = 2
 
+    def __init__(self, margin: float = 0.7):
+        super().__init__()
+        self.margin = margin
+
     def call(self, inputs, **kwargs):
         l_emb, r_emb, target = inputs
         eucl_dist = tf.reduce_sum(tf.math.squared_difference(l_emb, r_emb), axis=-1)

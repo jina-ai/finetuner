@@ -24,9 +24,8 @@ def test_tail_and_tune(embed_model, create_easy_data):
         train_data=data,
         epochs=5,
         to_embedding_model=True,
-        input_size=128,
+        input_size=(128,),
         output_dim=16,
         layer_name='dense_2',
     )
     assert rv['loss']['train']
-    assert rv['metric']['train']
