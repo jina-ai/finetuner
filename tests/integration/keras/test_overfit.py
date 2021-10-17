@@ -9,14 +9,10 @@ from finetuner.tuner.keras import KerasTuner
     "n_cls,dim,n_samples,n_epochs,batch_size,loss",
     [
         (5, 10, 100, 5, 25, 'EuclideanTripletLoss'),
-        (
-            5,
-            10,
-            1000,
-            15,
-            256,
-            'CosineSiameseLoss',
-        ),  # Cosine needs more training to converge
+        (5, 10, 100, 5, 25, 'CosineTripletLoss'),
+        # Siamese needs more time to convereg
+        (5, 10, 1000, 15, 256, 'EuclideanSiameseLoss'),
+        (5, 10, 1000, 15, 256, 'CosineSiameseLoss'),
     ],
 )
 def test_overfit_keras(
