@@ -7,17 +7,17 @@ from paddle.io import DataLoader
 from paddle.optimizer import Optimizer
 
 from . import losses, datasets
-from ..base import BaseTuner
+from ..base import BaseTuner, BaseLoss
 from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
 
 
 class PaddleTuner(BaseTuner):
-    def _get_loss(self, loss: Union[nn.Layer, str, None] = None):
+    def _get_loss(self, loss: Union[BaseLoss, str]):
         if isinstance(loss, str):
             return getattr(losses, loss)()
-        elif isinstance(loss, nn.Layer):
+        elif isinstance(loss, BaseLoss):
             return loss
 
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):

@@ -19,7 +19,7 @@ class BaseTuner(abc.ABC):
     def __init__(
         self,
         embed_model: Optional[AnyDNN] = None,
-        loss: Union[AnyDNN, str, None] = None,
+        loss: Union[AnyDNN, str] = 'CosineSiameseLoss',
         **kwargs,
     ):
         self._embed_model = embed_model
@@ -105,7 +105,7 @@ class BaseTuner(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def _get_loss(self, loss: Union[str, AnyDNN, None]) -> BaseLoss:
+    def _get_loss(self, loss: Union[str, BaseLoss]) -> BaseLoss:
         """Get the loss layer."""
         ...
 

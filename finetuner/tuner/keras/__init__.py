@@ -7,17 +7,17 @@ from tensorflow.keras.layers import Layer
 from tensorflow.keras.optimizers import Optimizer
 
 from . import losses, datasets
-from ..base import BaseTuner
+from ..base import BaseTuner, BaseLoss
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
 from ...helper import DocumentArrayLike
 
 
 class KerasTuner(BaseTuner):
-    def _get_loss(self, loss: Union[Layer, str, None] = None):
+    def _get_loss(self, loss: Union[BaseLoss, str]):
         if isinstance(loss, str):
             return getattr(losses, loss)()
-        elif isinstance(loss, Layer):
+        elif isinstance(loss, BaseLoss):
             return loss
 
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):

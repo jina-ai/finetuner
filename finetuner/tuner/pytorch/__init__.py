@@ -7,17 +7,17 @@ from torch.optim.optimizer import Optimizer
 from torch.utils.data.dataloader import DataLoader
 
 from . import losses, datasets
-from ..base import BaseTuner
+from ..base import BaseTuner, BaseLoss
 from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
 
 
 class PytorchTuner(BaseTuner):
-    def _get_loss(self, loss: Union[nn.Module, str, None] = None):
+    def _get_loss(self, loss: Union[BaseLoss, str]):
         if isinstance(loss, str):
             return getattr(losses, loss)()
-        elif isinstance(loss, nn.Module):
+        elif isinstance(loss, BaseLoss):
             return loss
 
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
