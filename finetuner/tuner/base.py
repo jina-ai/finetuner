@@ -1,4 +1,5 @@
 import abc
+import warnings
 from typing import (
     Optional,
     Union,
@@ -6,8 +7,6 @@ from typing import (
     List,
     Dict,
 )
-
-from jina.logging.logger import JinaLogger
 
 from ..helper import AnyDNN, AnyDataLoader, AnyOptimizer, DocumentArrayLike
 
@@ -24,8 +23,7 @@ class BaseTuner(abc.ABC):
         **kwargs,
     ):
         self._embed_model = embed_model
-        self._loss = self._get_loss(loss)
-        self.logger = JinaLogger(self.__class__.__name__)
+        self._head_layer = head_layer
 
     def _get_optimizer_kwargs(self, optimizer: str, custom_kwargs: Optional[Dict]):
         """Merges user-provided optimizer kwargs with default ones."""
@@ -53,7 +51,7 @@ class BaseTuner(abc.ABC):
         custom_kwargs = custom_kwargs or {}
         extra_args = set(custom_kwargs.keys()) - set(opt_kwargs.keys())
         if extra_args:
-            self.logger.warning(
+            warnings.warn(
                 f'The following arguments are not valid for the optimizer {optimizer}:'
                 f' {extra_args}'
             )
