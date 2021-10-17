@@ -96,7 +96,7 @@ class KerasTuner(BaseTuner):
         with ProgressBar(description, message_on_done=log_generator) as p:
             for inputs, label in data:
                 embeddings = [self._embed_model(inpt) for inpt in inputs]
-                loss = self._loss(embeddings, label)
+                loss = self._loss([*embeddings, label])
 
                 losses.append(loss.numpy())
 
