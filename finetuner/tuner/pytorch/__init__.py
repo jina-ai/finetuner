@@ -1,16 +1,15 @@
 from typing import Dict, Optional, Union
 
 import torch
-import torch.nn as nn
 from jina.logging.profile import ProgressBar
 from torch.optim.optimizer import Optimizer
 from torch.utils.data.dataloader import DataLoader
 
 from . import losses, datasets
 from ..base import BaseTuner, BaseLoss
-from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
+from ...helper import DocumentArrayLike
 
 
 class PytorchTuner(BaseTuner):
@@ -64,7 +63,10 @@ class PytorchTuner(BaseTuner):
         losses = []
         log_generator = LogGenerator('E', losses, train_log)
 
-        with ProgressBar(description, message_on_done=log_generator) as p:
+        with ProgressBar(
+            description, message_on_done=log_generator, total_length=self._eval_data_len
+        ) as p:
+            self._eval_data_len = 0
             for inputs, label in data:
                 # Inputs come as tuples or triplets
                 inputs = [inpt.to(self.device) for inpt in inputs]
@@ -77,6 +79,7 @@ class PytorchTuner(BaseTuner):
                 losses.append(loss.item())
 
                 p.update(message=log_generator())
+                self._eval_data_len += 1
 
         return losses
 
@@ -87,14 +90,13 @@ class PytorchTuner(BaseTuner):
         losses = []
 
         log_generator = LogGenerator('T', losses)
-        train_data_len = 0
         with ProgressBar(
             description,
             message_on_done=log_generator,
             final_line_feed=False,
-            total_length=train_data_len,
+            total_length=self._train_data_len,
         ) as p:
-            train_data_len = 0
+            self._train_data_len = 0
             for inputs, label in data:
                 # inputs come as tuples or triplets
                 inputs = [inpt.to(self.device) for inpt in inputs]
@@ -111,7 +113,7 @@ class PytorchTuner(BaseTuner):
                 losses.append(loss.item())
 
                 p.update(message=log_generator())
-                train_data_len += 1
+                self._train_data_len += 1
         return losses
 
     def fit(

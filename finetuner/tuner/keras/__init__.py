@@ -62,14 +62,13 @@ class KerasTuner(BaseTuner):
 
         log_generator = LogGenerator('T', losses)
 
-        train_data_len = 0
         with ProgressBar(
             description,
             message_on_done=log_generator,
             final_line_feed=False,
-            total_length=train_data_len,
+            total_length=self._train_data_len,
         ) as p:
-            train_data_len = 0
+            self._train_data_len = 0
             for inputs, label in data:
                 with tf.GradientTape() as tape:
                     embeddings = [self._embed_model(inpt) for inpt in inputs]
@@ -83,7 +82,7 @@ class KerasTuner(BaseTuner):
                 losses.append(loss.numpy())
 
                 p.update(message=log_generator())
-                train_data_len += 1
+                self._train_data_len += 1
 
         return losses
 
@@ -93,7 +92,10 @@ class KerasTuner(BaseTuner):
 
         log_generator = LogGenerator('E', losses, train_log)
 
-        with ProgressBar(description, message_on_done=log_generator) as p:
+        with ProgressBar(
+            description, message_on_done=log_generator, total_length=self._eval_data_len
+        ) as p:
+            self._eval_data_len = 0
             for inputs, label in data:
                 embeddings = [self._embed_model(inpt) for inpt in inputs]
                 loss = self._loss([*embeddings, label])
@@ -101,6 +103,7 @@ class KerasTuner(BaseTuner):
                 losses.append(loss.numpy())
 
                 p.update(message=log_generator())
+                self._eval_data_len += 1
 
         return losses
 

@@ -24,6 +24,8 @@ class BaseTuner(abc.ABC):
     ):
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
+        self._train_data_len = 0
+        self._eval_data_len = 0
 
     def _get_optimizer_kwargs(self, optimizer: str, custom_kwargs: Optional[Dict]):
         """Merges user-provided optimizer kwargs with default ones."""
