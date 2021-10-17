@@ -1,15 +1,10 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Layer
 
-from ..base import BaseHead
+from ..base import BaseLoss
 
 
-class HeadLayer(BaseHead, Layer):
-    def call(self, *args, **kwargs):
-        return self.forward(*args)
-
-
-class CosineLayer(HeadLayer):
+class CosineLayer(BaseLoss, Layer):
     arity = 2
 
     def get_output(self, lvalue, rvalue):

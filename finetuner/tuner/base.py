@@ -23,7 +23,7 @@ class BaseTuner(abc.ABC):
         **kwargs,
     ):
         self._embed_model = embed_model
-        self._head_layer = head_layer
+        self._loss = self._get_loss(loss)
 
     def _get_optimizer_kwargs(self, optimizer: str, custom_kwargs: Optional[Dict]):
         """Merges user-provided optimizer kwargs with default ones."""

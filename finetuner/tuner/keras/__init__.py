@@ -1,42 +1,24 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 
 import tensorflow as tf
 from jina.logging.profile import ProgressBar
 from tensorflow import keras
-from tensorflow.keras import Model
+from tensorflow.keras.layers import Layer
 from tensorflow.keras.optimizers import Optimizer
 
-from . import head_layers, datasets
-from .head_layers import HeadLayer
+from . import losses, datasets
 from ..base import BaseTuner
-from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
+from ...helper import DocumentArrayLike
 
 
 class KerasTuner(BaseTuner):
-    @property
-    def head_layer(self) -> HeadLayer:
-        if isinstance(self._head_layer, str):
-            return getattr(head_layers, self._head_layer)
-        elif isinstance(self._head_layer, HeadLayer):
-            return self._head_layer
-
-    @property
-    def wrapped_model(self) -> Model:
-        if self.embed_model is None:
-            raise ValueError('embed_model is not set')
-
-        if getattr(self, '_wrapped_model', None) is not None:
-            return self._wrapped_model
-
-        input_shape = self.embed_model.input_shape[1:]
-        input_values = [keras.Input(shape=input_shape) for _ in range(self.arity)]
-        head_layer = self.head_layer()
-        head_values = head_layer(*(self.embed_model(v) for v in input_values))
-        self._wrapped_model = Model(inputs=input_values, outputs=head_values)
-
-        return self._wrapped_model
+    def _get_loss(self, loss: Union[Layer, str, None] = None):
+        if isinstance(loss, str):
+            return getattr(losses, loss)()
+        elif isinstance(loss, Layer):
+            return loss
 
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
 
@@ -76,12 +58,9 @@ class KerasTuner(BaseTuner):
             return keras.optimizers.SGD(learning_rate=learning_rate, **optimizer_kwargs)
 
     def _train(self, data, optimizer, description: str):
-        head_layer = self.head_layer()
-
         losses = []
-        metrics = []
 
-        log_generator = LogGenerator('T', losses, metrics)
+        log_generator = LogGenerator('T', losses)
 
         train_data_len = 0
         with ProgressBar(
@@ -93,43 +72,37 @@ class KerasTuner(BaseTuner):
             train_data_len = 0
             for inputs, label in data:
                 with tf.GradientTape() as tape:
-                    outputs = self.wrapped_model(inputs, training=True)
-                    loss = head_layer.loss_fn(pred_val=outputs, target_val=label)
-                    metric = head_layer.metric_fn(pred_val=outputs, target_val=label)
+                    embeddings = [self._embed_model(inpt) for inpt in inputs]
+                    loss = self._loss(embeddings, label)
 
-                grads = tape.gradient(loss, self.wrapped_model.trainable_weights)
+                grads = tape.gradient(loss, self._embed_model.trainable_weights)
                 optimizer.apply_gradients(
-                    zip(grads, self.wrapped_model.trainable_weights)
+                    zip(grads, self._embed_model.trainable_weights)
                 )
 
                 losses.append(loss.numpy())
-                metrics.append(metric.numpy())
 
                 p.update(message=log_generator())
                 train_data_len += 1
 
-        return losses, metrics
+        return losses
 
     def _eval(self, data, description: str = 'Evaluating', train_log: str = ''):
-        head_layer = self.head_layer()
 
         losses = []
-        metrics = []
 
-        log_generator = LogGenerator('E', losses, metrics, train_log)
+        log_generator = LogGenerator('E', losses, train_log)
 
         with ProgressBar(description, message_on_done=log_generator) as p:
             for inputs, label in data:
-                outputs = self.wrapped_model(inputs, training=False)
-                loss = head_layer.loss_fn(pred_val=outputs, target_val=label)
-                metric = head_layer.metric_fn(pred_val=outputs, target_val=label)
+                embeddings = [self._embed_model(inpt) for inpt in inputs]
+                loss = self._loss(embeddings, label)
 
                 losses.append(loss.numpy())
-                metrics.append(metric.numpy())
 
                 p.update(message=log_generator())
 
-        return losses, metrics
+        return losses
 
     def fit(
         self,
@@ -187,7 +160,6 @@ class KerasTuner(BaseTuner):
 
         return {
             'loss': {'train': losses_train, 'eval': losses_eval},
-            'metric': {'train': metrics_train, 'eval': metrics_eval},
         }
 
     def save(self, *args, **kwargs):
