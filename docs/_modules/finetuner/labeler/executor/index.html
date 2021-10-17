@@ -217,17 +217,17 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../api/finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.keras.datasets/">finetuner.tuner.keras.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.keras.head_layers/">finetuner.tuner.keras.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.keras.losses/">finetuner.tuner.keras.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.paddle.head_layers/">finetuner.tuner.paddle.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../api/finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.pytorch.datasets/">finetuner.tuner.pytorch.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.pytorch.head_layers/">finetuner.tuner.pytorch.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.pytorch.losses/">finetuner.tuner.pytorch.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
@@ -295,13 +295,13 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">dam_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cosine'</span><span class="p">,</span>
-        <span class="n">head_layer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'CosineLayer'</span><span class="p">,</span>
+        <span class="n">loss</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'CosineSiameseLoss'</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_all_data</span> <span class="o">=</span> <span class="n">DocumentArrayMemmap</span><span class="p">(</span><span class="n">dam_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metric</span> <span class="o">=</span> <span class="n">metric</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_head_layer</span> <span class="o">=</span> <span class="n">head_layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span> <span class="o">=</span> <span class="n">loss</span>
 
 <div class="viewcode-block" id="FTExecutor.get_embed_model"><a class="viewcode-back" href="../../../../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.get_embed_model">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_embed_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -359,7 +359,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">,</span>
             <span class="n">docs</span><span class="p">,</span>
             <span class="n">epochs</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'epochs'</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>
-            <span class="n">head_layer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_head_layer</span><span class="p">,</span>
+            <span class="n">loss</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="FTExecutor.save"><a class="viewcode-back" href="../../../../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.save">[docs]</a>    <span class="nd">@requests</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="s1">'/save'</span><span class="p">)</span>
@@ -414,7 +414,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 16, 2021.
+                    Last updated on Oct 17, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

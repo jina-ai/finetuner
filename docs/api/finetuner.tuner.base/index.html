@@ -25,7 +25,7 @@
 
   gtag('config', 'G-1ESRNDCK35');
 </script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.logger module" href="../finetuner.tuner.logger/" /><link rel="prev" title="finetuner.tuner.pytorch.head_layers module" href="../finetuner.tuner.pytorch.head_layers/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.logger module" href="../finetuner.tuner.logger/" /><link rel="prev" title="finetuner.tuner.pytorch.losses module" href="../finetuner.tuner.pytorch.losses/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
         <title>finetuner.tuner.base module - Finetuner 0.0.3 documentation</title>
@@ -240,17 +240,17 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.keras.datasets/">finetuner.tuner.keras.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.keras.head_layers/">finetuner.tuner.keras.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.keras.losses/">finetuner.tuner.keras.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.head_layers/">finetuner.tuner.paddle.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.pytorch.datasets/">finetuner.tuner.pytorch.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.pytorch.head_layers/">finetuner.tuner.pytorch.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.pytorch.losses/">finetuner.tuner.pytorch.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 current current-page"><a class="current reference internal" href="#">finetuner.tuner.base module</a></li>
@@ -305,50 +305,22 @@
                 <section id="module-finetuner.tuner.base">
 <span id="finetuner-tuner-base-module"></span><h1>finetuner.tuner.base module<a class="headerlink" href="#module-finetuner.tuner.base" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.base.BaseHead">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.base.</span></span><span class="sig-name descname"><span class="pre">BaseHead</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arity_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseHead"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseHead" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="finetuner.tuner.base.BaseLoss">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.base.</span></span><span class="sig-name descname"><span class="pre">BaseLoss</span></span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseLoss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="finetuner.tuner.base.BaseHead.arity">
-<span class="sig-name descname"><span class="pre">arity</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#finetuner.tuner.base.BaseHead.arity" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.base.BaseHead.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseHead.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseHead.forward" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.base.BaseHead.get_output">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">get_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseHead.get_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseHead.get_output" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.base.BaseHead.loss_fn">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">loss_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseHead.loss_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseHead.loss_fn" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.base.BaseHead.metric_fn">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">metric_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseHead.metric_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseHead.metric_fn" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="finetuner.tuner.base.BaseLoss.arity">
+<span class="sig-name descname"><span class="pre">arity</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#finetuner.tuner.base.BaseLoss.arity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.tuner.base.BaseTuner">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.base.</span></span><span class="sig-name descname"><span class="pre">BaseTuner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseTuner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseTuner" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.base.</span></span><span class="sig-name descname"><span class="pre">BaseTuner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CosineSiameseLoss'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseTuner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseTuner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <dl class="py property">
 <dt class="sig sig-object py" id="finetuner.tuner.base.BaseTuner.embed_model">
 <em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">embed_model</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="../finetuner.helper/#finetuner.helper.AnyDNN" title="finetuner.helper.AnyDNN"><span class="pre">finetuner.helper.AnyDNN</span></a></em><a class="headerlink" href="#finetuner.tuner.base.BaseTuner.embed_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the base model of this object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>~AnyDNN</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="finetuner.tuner.base.BaseTuner.wrapped_model">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">wrapped_model</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="../finetuner.helper/#finetuner.helper.AnyDNN" title="finetuner.helper.AnyDNN"><span class="pre">finetuner.helper.AnyDNN</span></a></em><a class="headerlink" href="#finetuner.tuner.base.BaseTuner.wrapped_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the wrapped model of this object.</p>
-<p>A wrapped model is an <a class="reference internal" href="#finetuner.tuner.base.BaseTuner.embed_model" title="finetuner.tuner.base.BaseTuner.embed_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embed_model</span></code></a> replicated by <a class="reference internal" href="#finetuner.tuner.base.BaseTuner.arity" title="finetuner.tuner.base.BaseTuner.arity"><code class="xref py py-attr docutils literal notranslate"><span class="pre">arity</span></code></a> times
-with a <code class="docutils literal notranslate"><span class="pre">head_layer</span></code> that fuses all.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>~AnyDNN</p>
@@ -372,16 +344,6 @@ with a <code class="docutils literal notranslate"><span class="pre">head_layer</
 </dd>
 </dl>
 </dd></dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="finetuner.tuner.base.BaseTuner.head_layer">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">head_layer</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="../finetuner.helper/#finetuner.helper.AnyDNN" title="finetuner.helper.AnyDNN"><span class="pre">finetuner.helper.AnyDNN</span></a></em><a class="headerlink" href="#finetuner.tuner.base.BaseTuner.head_layer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the head layer of this object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>~AnyDNN</p>
-</dd>
-</dl>
-</dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.base.BaseTuner.fit">
 <em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseTuner.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseTuner.fit" title="Permalink to this definition">¶</a></dt>
@@ -398,24 +360,12 @@ call <a class="reference internal" href="../finetuner/#finetuner.fit" title="fin
 <dt class="sig sig-object py" id="finetuner.tuner.base.BaseTuner.save">
 <em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseTuner.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseTuner.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the weights of the <a class="reference internal" href="#finetuner.tuner.base.BaseTuner.embed_model" title="finetuner.tuner.base.BaseTuner.embed_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embed_model</span></code></a>.</p>
-<p>Note that, the <a class="reference internal" href="#finetuner.tuner.base.BaseTuner.head_layer" title="finetuner.tuner.base.BaseTuner.head_layer"><code class="xref py py-attr docutils literal notranslate"><span class="pre">head_layer</span></code></a> and <a class="reference internal" href="#finetuner.tuner.base.BaseTuner.wrapped_model" title="finetuner.tuner.base.BaseTuner.wrapped_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">wrapped_model</span></code></a> do not need to be stored,
-as they are auxiliary layers for tuning <a class="reference internal" href="#finetuner.tuner.base.BaseTuner.embed_model" title="finetuner.tuner.base.BaseTuner.embed_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embed_model</span></code></a>.</p>
 </dd></dl>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.tuner.base.BaseDataset">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.base.</span></span><span class="sig-name descname"><span class="pre">BaseDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.base.BaseArityModel">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.base.</span></span><span class="sig-name descname"><span class="pre">BaseArityModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseArityModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseArityModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>The helper class to copy the network for multi-inputs.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.base.BaseArityModel.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseArityModel.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseArityModel.forward" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 </dd></dl>
 </section>
 
@@ -434,7 +384,7 @@ as they are auxiliary layers for tuning <a class="reference internal" href="#fin
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../finetuner.tuner.pytorch.head_layers/">
+                    <a class="prev-page" href="../finetuner.tuner.pytorch.losses/">
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -443,7 +393,7 @@ as they are auxiliary layers for tuning <a class="reference internal" href="#fin
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">finetuner.tuner.pytorch.head_layers module</div>
+                            <div class="title">finetuner.tuner.pytorch.losses module</div>
                             
                         </div>
                     </a>
@@ -451,7 +401,7 @@ as they are auxiliary layers for tuning <a class="reference internal" href="#fin
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 16, 2021.
+                    Last updated on Oct 17, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

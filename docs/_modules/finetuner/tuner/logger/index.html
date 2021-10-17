@@ -217,17 +217,17 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../api/finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.keras.datasets/">finetuner.tuner.keras.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.keras.head_layers/">finetuner.tuner.keras.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.keras.losses/">finetuner.tuner.keras.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.paddle.head_layers/">finetuner.tuner.paddle.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../api/finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.pytorch.datasets/">finetuner.tuner.pytorch.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.pytorch.head_layers/">finetuner.tuner.pytorch.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.pytorch.losses/">finetuner.tuner.pytorch.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
@@ -284,9 +284,8 @@
 
 
 <div class="viewcode-block" id="LogGenerator"><a class="viewcode-back" href="../../../../api/finetuner.tuner.logger/#finetuner.tuner.logger.LogGenerator">[docs]</a><span class="k">class</span> <span class="nc">LogGenerator</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">losses</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">losses</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_losses</span> <span class="o">=</span> <span class="n">losses</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_metrics</span> <span class="o">=</span> <span class="n">metrics</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span> <span class="o">=</span> <span class="n">prefix</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
 
@@ -298,13 +297,10 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_statistic</span><span class="p">()</span><span class="si">}</span><span class="s1">'</span>
 
 <div class="viewcode-block" id="LogGenerator.get_statistic"><a class="viewcode-back" href="../../../../api/finetuner.tuner.logger/#finetuner.tuner.logger.LogGenerator.get_statistic">[docs]</a>    <span class="k">def</span> <span class="nf">get_statistic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">'L=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mean_loss</span><span class="p">()</span><span class="si">:</span><span class="s1">&gt;8</span><span class="si">}</span><span class="s1"> A=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mean_metric</span><span class="p">()</span><span class="si">:</span><span class="s1">&gt;4</span><span class="si">}</span><span class="s1">'</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">'Loss=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mean_loss</span><span class="p">()</span><span class="si">:</span><span class="s1">&gt;8</span><span class="si">}</span><span class="s1">'</span></div>
 
 <div class="viewcode-block" id="LogGenerator.mean_loss"><a class="viewcode-back" href="../../../../api/finetuner.tuner.logger/#finetuner.tuner.logger.LogGenerator.mean_loss">[docs]</a>    <span class="k">def</span> <span class="nf">mean_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">LogGenerator</span><span class="o">.</span><span class="n">get_log_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_losses</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="LogGenerator.mean_metric"><a class="viewcode-back" href="../../../../api/finetuner.tuner.logger/#finetuner.tuner.logger.LogGenerator.mean_metric">[docs]</a>    <span class="k">def</span> <span class="nf">mean_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">LogGenerator</span><span class="o">.</span><span class="n">get_log_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metrics</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LogGenerator.get_log_value"><a class="viewcode-back" href="../../../../api/finetuner.tuner.logger/#finetuner.tuner.logger.LogGenerator.get_log_value">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_log_value</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
@@ -324,7 +320,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 16, 2021.
+                    Last updated on Oct 17, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

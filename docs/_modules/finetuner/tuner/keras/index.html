@@ -217,17 +217,17 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../api/finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.keras.datasets/">finetuner.tuner.keras.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.keras.head_layers/">finetuner.tuner.keras.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.keras.losses/">finetuner.tuner.keras.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.paddle.head_layers/">finetuner.tuner.paddle.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../api/finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.pytorch.datasets/">finetuner.tuner.pytorch.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.pytorch.head_layers/">finetuner.tuner.pytorch.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.pytorch.losses/">finetuner.tuner.pytorch.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
@@ -280,45 +280,27 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.tuner.keras</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 <span class="kn">from</span> <span class="nn">jina.logging.profile</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
 <span class="kn">from</span> <span class="nn">tensorflow</span> <span class="kn">import</span> <span class="n">keras</span>
-<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">Layer</span>
 <span class="kn">from</span> <span class="nn">tensorflow.keras.optimizers</span> <span class="kn">import</span> <span class="n">Optimizer</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">head_layers</span><span class="p">,</span> <span class="n">datasets</span>
-<span class="kn">from</span> <span class="nn">.head_layers</span> <span class="kn">import</span> <span class="n">HeadLayer</span>
-<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseTuner</span>
-<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">DocumentArrayLike</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">losses</span><span class="p">,</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseTuner</span><span class="p">,</span> <span class="n">BaseLoss</span>
 <span class="kn">from</span> <span class="nn">..dataset.helper</span> <span class="kn">import</span> <span class="n">get_dataset</span>
 <span class="kn">from</span> <span class="nn">..logger</span> <span class="kn">import</span> <span class="n">LogGenerator</span>
+<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">DocumentArrayLike</span>
 
 
 <div class="viewcode-block" id="KerasTuner"><a class="viewcode-back" href="../../../../api/finetuner.tuner.keras/#finetuner.tuner.keras.KerasTuner">[docs]</a><span class="k">class</span> <span class="nc">KerasTuner</span><span class="p">(</span><span class="n">BaseTuner</span><span class="p">):</span>
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">head_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HeadLayer</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_head_layer</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">head_layers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_head_layer</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_head_layer</span><span class="p">,</span> <span class="n">HeadLayer</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_head_layer</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">wrapped_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Model</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'embed_model is not set'</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'_wrapped_model'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_model</span>
-
-        <span class="n">input_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="o">.</span><span class="n">input_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="n">input_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">arity</span><span class="p">)]</span>
-        <span class="n">head_layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_layer</span><span class="p">()</span>
-        <span class="n">head_values</span> <span class="o">=</span> <span class="n">head_layer</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">input_values</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">input_values</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">head_values</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_model</span>
+    <span class="k">def</span> <span class="nf">_get_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="n">loss</span><span class="p">)()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">BaseLoss</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">loss</span>
 
     <span class="k">def</span> <span class="nf">_get_data_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 
@@ -358,60 +340,54 @@
             <span class="k">return</span> <span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span> <span class="o">**</span><span class="n">optimizer_kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">head_layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_layer</span><span class="p">()</span>
-
         <span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">metrics</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="n">log_generator</span> <span class="o">=</span> <span class="n">LogGenerator</span><span class="p">(</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">losses</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span>
+        <span class="n">log_generator</span> <span class="o">=</span> <span class="n">LogGenerator</span><span class="p">(</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">losses</span><span class="p">)</span>
 
-        <span class="n">train_data_len</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">with</span> <span class="n">ProgressBar</span><span class="p">(</span>
             <span class="n">description</span><span class="p">,</span>
             <span class="n">message_on_done</span><span class="o">=</span><span class="n">log_generator</span><span class="p">,</span>
             <span class="n">final_line_feed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">total_length</span><span class="o">=</span><span class="n">train_data_len</span><span class="p">,</span>
+            <span class="n">total_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_train_data_len</span><span class="p">,</span>
         <span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
-            <span class="n">train_data_len</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_train_data_len</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                 <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>
-                    <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                    <span class="n">loss</span> <span class="o">=</span> <span class="n">head_layer</span><span class="o">.</span><span class="n">loss_fn</span><span class="p">(</span><span class="n">pred_val</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">target_val</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
-                    <span class="n">metric</span> <span class="o">=</span> <span class="n">head_layer</span><span class="o">.</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">pred_val</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">target_val</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+                    <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">(</span><span class="n">inpt</span><span class="p">)</span> <span class="k">for</span> <span class="n">inpt</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">]</span>
+                    <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">([</span><span class="o">*</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">label</span><span class="p">])</span>
 
-                <span class="n">grads</span> <span class="o">=</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="o">.</span><span class="n">trainable_weights</span><span class="p">)</span>
+                <span class="n">grads</span> <span class="o">=</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="o">.</span><span class="n">trainable_weights</span><span class="p">)</span>
                 <span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span>
-                    <span class="nb">zip</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="o">.</span><span class="n">trainable_weights</span><span class="p">)</span>
+                    <span class="nb">zip</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="o">.</span><span class="n">trainable_weights</span><span class="p">)</span>
                 <span class="p">)</span>
 
                 <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
-                <span class="n">metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 
                 <span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">log_generator</span><span class="p">())</span>
-                <span class="n">train_data_len</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_train_data_len</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="k">return</span> <span class="n">losses</span><span class="p">,</span> <span class="n">metrics</span>
+        <span class="k">return</span> <span class="n">losses</span>
 
     <span class="k">def</span> <span class="nf">_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'Evaluating'</span><span class="p">,</span> <span class="n">train_log</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span><span class="p">):</span>
-        <span class="n">head_layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_layer</span><span class="p">()</span>
 
         <span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">metrics</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="n">log_generator</span> <span class="o">=</span> <span class="n">LogGenerator</span><span class="p">(</span><span class="s1">'E'</span><span class="p">,</span> <span class="n">losses</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">train_log</span><span class="p">)</span>
+        <span class="n">log_generator</span> <span class="o">=</span> <span class="n">LogGenerator</span><span class="p">(</span><span class="s1">'E'</span><span class="p">,</span> <span class="n">losses</span><span class="p">,</span> <span class="n">train_log</span><span class="p">)</span>
 
-        <span class="k">with</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">message_on_done</span><span class="o">=</span><span class="n">log_generator</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">ProgressBar</span><span class="p">(</span>
+            <span class="n">description</span><span class="p">,</span> <span class="n">message_on_done</span><span class="o">=</span><span class="n">log_generator</span><span class="p">,</span> <span class="n">total_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_data_len</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_eval_data_len</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">loss</span> <span class="o">=</span> <span class="n">head_layer</span><span class="o">.</span><span class="n">loss_fn</span><span class="p">(</span><span class="n">pred_val</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">target_val</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
-                <span class="n">metric</span> <span class="o">=</span> <span class="n">head_layer</span><span class="o">.</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">pred_val</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">target_val</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+                <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">(</span><span class="n">inpt</span><span class="p">)</span> <span class="k">for</span> <span class="n">inpt</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">]</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">([</span><span class="o">*</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">label</span><span class="p">])</span>
 
                 <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
-                <span class="n">metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 
                 <span class="n">p</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">log_generator</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_eval_data_len</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="k">return</span> <span class="n">losses</span><span class="p">,</span> <span class="n">metrics</span>
+        <span class="k">return</span> <span class="n">losses</span>
 
 <div class="viewcode-block" id="KerasTuner.fit"><a class="viewcode-back" href="../../../../api/finetuner.tuner.keras/#finetuner.tuner.keras.KerasTuner.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -446,30 +422,23 @@
         <span class="n">_optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_optimizer</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">optimizer_kwargs</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">)</span>
 
         <span class="n">losses_train</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">metrics_train</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">losses_eval</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">metrics_eval</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">with</span> <span class="n">device</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-                <span class="n">lt</span><span class="p">,</span> <span class="n">mt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_train</span><span class="p">(</span>
+                <span class="n">lt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_train</span><span class="p">(</span>
                     <span class="n">_train_data</span><span class="p">,</span>
                     <span class="n">_optimizer</span><span class="p">,</span>
                     <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">'Epoch </span><span class="si">{</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">epochs</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">losses_train</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">lt</span><span class="p">)</span>
-                <span class="n">metrics_train</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mt</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="n">eval_data</span><span class="p">:</span>
-                    <span class="n">le</span><span class="p">,</span> <span class="n">me</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval</span><span class="p">(</span>
-                        <span class="n">_eval_data</span><span class="p">,</span> <span class="n">train_log</span><span class="o">=</span><span class="n">LogGenerator</span><span class="p">(</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">lt</span><span class="p">,</span> <span class="n">mt</span><span class="p">)()</span>
-                    <span class="p">)</span>
+                    <span class="n">le</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval</span><span class="p">(</span><span class="n">_eval_data</span><span class="p">,</span> <span class="n">train_log</span><span class="o">=</span><span class="n">LogGenerator</span><span class="p">(</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">lt</span><span class="p">)())</span>
                     <span class="n">losses_eval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">le</span><span class="p">)</span>
-                    <span class="n">metrics_eval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">me</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">'loss'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'train'</span><span class="p">:</span> <span class="n">losses_train</span><span class="p">,</span> <span class="s1">'eval'</span><span class="p">:</span> <span class="n">losses_eval</span><span class="p">},</span>
-            <span class="s1">'metric'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'train'</span><span class="p">:</span> <span class="n">metrics_train</span><span class="p">,</span> <span class="s1">'eval'</span><span class="p">:</span> <span class="n">metrics_eval</span><span class="p">},</span>
         <span class="p">}</span></div>
 
 <div class="viewcode-block" id="KerasTuner.save"><a class="viewcode-back" href="../../../../api/finetuner.tuner.keras/#finetuner.tuner.keras.KerasTuner.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -485,7 +454,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 16, 2021.
+                    Last updated on Oct 17, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

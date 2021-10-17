@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
-        <title>finetuner.tuner.paddle.head_layers - Finetuner 0.0.3 documentation</title>
+        <title>finetuner.tuner.paddle.losses - Finetuner 0.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -217,17 +217,17 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../api/finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.keras.datasets/">finetuner.tuner.keras.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.keras.head_layers/">finetuner.tuner.keras.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.keras.losses/">finetuner.tuner.keras.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.paddle.head_layers/">finetuner.tuner.paddle.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../api/finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.pytorch.datasets/">finetuner.tuner.pytorch.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.pytorch.head_layers/">finetuner.tuner.pytorch.head_layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.pytorch.losses/">finetuner.tuner.pytorch.losses module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
@@ -279,50 +279,81 @@
                         </i>
                     </label>
                 </div>
-                <h1>Source code for finetuner.tuner.paddle.head_layers</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">paddle</span>
+                <h1>Source code for finetuner.tuner.paddle.losses</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">paddle</span>
+<span class="kn">import</span> <span class="nn">paddle.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">paddle.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
-<span class="kn">from</span> <span class="nn">paddle</span> <span class="kn">import</span> <span class="n">nn</span>
 
-<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseHead</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseLoss</span>
 
 
-<div class="viewcode-block" id="CosineLayer"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.head_layers/#finetuner.tuner.paddle.head_layers.CosineLayer">[docs]</a><span class="k">class</span> <span class="nc">CosineLayer</span><span class="p">(</span><span class="n">BaseHead</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
+<div class="viewcode-block" id="CosineSiameseLoss"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.losses/#finetuner.tuner.paddle.losses.CosineSiameseLoss">[docs]</a><span class="k">class</span> <span class="nc">CosineSiameseLoss</span><span class="p">(</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
     <span class="n">arity</span> <span class="o">=</span> <span class="mi">2</span>
 
-<div class="viewcode-block" id="CosineLayer.get_output"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.head_layers/#finetuner.tuner.paddle.head_layers.CosineLayer.get_output">[docs]</a>    <span class="k">def</span> <span class="nf">get_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lvalue</span><span class="p">,</span> <span class="n">rvalue</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">cosine_similarity</span><span class="p">(</span><span class="n">lvalue</span><span class="p">,</span> <span class="n">rvalue</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="CosineLayer.metric_fn"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.head_layers/#finetuner.tuner.paddle.head_layers.CosineLayer.metric_fn">[docs]</a>    <span class="k">def</span> <span class="nf">metric_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pred_val</span><span class="p">,</span> <span class="n">target_val</span><span class="p">):</span>
-        <span class="n">eval_sign</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">pred_val</span><span class="p">),</span> <span class="n">paddle</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">target_val</span><span class="p">))</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">eval_sign</span><span class="p">,</span> <span class="s1">'int64'</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">s</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_val</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="CosineLayer.loss_fn"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.head_layers/#finetuner.tuner.paddle.head_layers.CosineLayer.loss_fn">[docs]</a>    <span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pred_val</span><span class="p">,</span> <span class="n">target_val</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">pred_val</span><span class="p">,</span> <span class="n">target_val</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="CosineSiameseLoss.forward"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.losses/#finetuner.tuner.paddle.losses.CosineSiameseLoss.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">target</span><span class="p">:</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">l_emb</span><span class="p">,</span> <span class="n">r_emb</span> <span class="o">=</span> <span class="n">embeddings</span>
+        <span class="n">cos_sim</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cosine_similarity</span><span class="p">(</span><span class="n">l_emb</span><span class="p">,</span> <span class="n">r_emb</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">cos_sim</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span></div></div>
 
 
-<div class="viewcode-block" id="TripletLayer"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.head_layers/#finetuner.tuner.paddle.head_layers.TripletLayer">[docs]</a><span class="k">class</span> <span class="nc">TripletLayer</span><span class="p">(</span><span class="n">BaseHead</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
+<div class="viewcode-block" id="EuclideanSiameseLoss"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.losses/#finetuner.tuner.paddle.losses.EuclideanSiameseLoss">[docs]</a><span class="k">class</span> <span class="nc">EuclideanSiameseLoss</span><span class="p">(</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="n">arity</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">=</span> <span class="n">margin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dist</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">PairwiseDistance</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EuclideanSiameseLoss.forward"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.losses/#finetuner.tuner.paddle.losses.EuclideanSiameseLoss.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">target</span><span class="p">:</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">l_emb</span><span class="p">,</span> <span class="n">r_emb</span> <span class="o">=</span> <span class="n">embeddings</span>
+        <span class="n">eucl_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dist</span><span class="p">(</span><span class="n">l_emb</span><span class="p">,</span> <span class="n">r_emb</span><span class="p">)</span>
+        <span class="n">is_similar</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">target</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">paddle</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">paddle</span><span class="o">.</span><span class="n">square</span><span class="p">(</span>
+            <span class="n">is_similar</span> <span class="o">*</span> <span class="n">eucl_dist</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">is_similar</span><span class="p">)</span> <span class="o">*</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">-</span> <span class="n">eucl_dist</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="EuclideanTripletLoss"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.losses/#finetuner.tuner.paddle.losses.EuclideanTripletLoss">[docs]</a><span class="k">class</span> <span class="nc">EuclideanTripletLoss</span><span class="p">(</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
     <span class="n">arity</span> <span class="o">=</span> <span class="mi">3</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arity_model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">,</span> <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">arity_model</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span> <span class="o">=</span> <span class="n">margin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dist</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">PairwiseDistance</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EuclideanTripletLoss.forward"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.losses/#finetuner.tuner.paddle.losses.EuclideanTripletLoss.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">target</span><span class="p">:</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">anchor</span><span class="p">,</span> <span class="n">positive</span><span class="p">,</span> <span class="n">negative</span> <span class="o">=</span> <span class="n">embeddings</span>
+        <span class="n">dist_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dist</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="n">positive</span><span class="p">)</span>
+        <span class="n">dist_neg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dist</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="n">negative</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">paddle</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">dist_pos</span> <span class="o">-</span> <span class="n">dist_neg</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="CosineTripletLoss"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.losses/#finetuner.tuner.paddle.losses.CosineTripletLoss">[docs]</a><span class="k">class</span> <span class="nc">CosineTripletLoss</span><span class="p">(</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="n">arity</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span> <span class="o">=</span> <span class="n">margin</span>
 
-<div class="viewcode-block" id="TripletLayer.get_output"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.head_layers/#finetuner.tuner.paddle.head_layers.TripletLayer.get_output">[docs]</a>    <span class="k">def</span> <span class="nf">get_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anchor</span><span class="p">,</span> <span class="n">positive</span><span class="p">,</span> <span class="n">negative</span><span class="p">):</span>
-        <span class="n">dist_pos</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">anchor</span> <span class="o">-</span> <span class="n">positive</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">dist_neg</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">anchor</span> <span class="o">-</span> <span class="n">negative</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<div class="viewcode-block" id="CosineTripletLoss.forward"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.losses/#finetuner.tuner.paddle.losses.CosineTripletLoss.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">target</span><span class="p">:</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">anchor</span><span class="p">,</span> <span class="n">positive</span><span class="p">,</span> <span class="n">negative</span> <span class="o">=</span> <span class="n">embeddings</span>
+        <span class="n">dist_pos</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">F</span><span class="o">.</span><span class="n">cosine_similarity</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="n">positive</span><span class="p">)</span>
+        <span class="n">dist_neg</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">F</span><span class="o">.</span><span class="n">cosine_similarity</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="n">negative</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">dist_pos</span><span class="p">,</span> <span class="n">dist_neg</span></div>
-
-<div class="viewcode-block" id="TripletLayer.metric_fn"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.head_layers/#finetuner.tuner.paddle.head_layers.TripletLayer.metric_fn">[docs]</a>    <span class="k">def</span> <span class="nf">metric_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pred_val</span><span class="p">,</span> <span class="n">target_val</span><span class="p">):</span>
-        <span class="n">dist_pos</span><span class="p">,</span> <span class="n">dist_neg</span> <span class="o">=</span> <span class="n">pred_val</span>
-
-        <span class="n">s</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">less_than</span><span class="p">(</span><span class="n">dist_pos</span><span class="p">,</span> <span class="n">dist_neg</span><span class="p">),</span> <span class="s1">'int32'</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">s</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_val</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TripletLayer.loss_fn"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.head_layers/#finetuner.tuner.paddle.head_layers.TripletLayer.loss_fn">[docs]</a>    <span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pred_val</span><span class="p">,</span> <span class="n">target_val</span><span class="p">):</span>
-        <span class="n">dist_pos</span><span class="p">,</span> <span class="n">dist_neg</span> <span class="o">=</span> <span class="n">pred_val</span>
         <span class="k">return</span> <span class="n">paddle</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">dist_pos</span> <span class="o">-</span> <span class="n">dist_neg</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span><span class="p">))</span></div></div>
 </pre></div>
             </article>
@@ -335,7 +366,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 16, 2021.
+                    Last updated on Oct 17, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
