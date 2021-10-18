@@ -54,7 +54,7 @@ def test_overfit_paddle(
     vec_embedings = embed_model(paddle.Tensor(vecs)).numpy()
 
     # Compute distances between embeddings
-    metric = 'sqeuclidean' if 'Euclidean' in loss else 'cosine'
+    metric = 'euclidean' if 'Euclidean' in loss else 'cosine'
     dists = squareform(pdist(vec_embedings, metric=metric))
 
     # Make sure that for each class, the two instances are closer than
@@ -64,4 +64,4 @@ def test_overfit_paddle(
         dist_other = dists[2 * i : 2 * i + 2, :].copy()
         dist_other[:, 2 * i : 2 * i + 2] = 10_000
 
-        assert cls_dist < dist_other.min() + 1
+        assert cls_dist < dist_other.min() - 0.5
