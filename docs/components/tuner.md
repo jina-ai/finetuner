@@ -32,35 +32,27 @@ Let $\mathbf{x}_i$ denote the predicted embedding for Document $i$, the built-in
 :open:
 
 
-$$\ell_{i,j} = \big(\cos(\mathbf{x}_i, \mathbf{x}_j) - y_{i,j}\big)^2$$, 
-
-where $y_{i,j}$ is the label of $\{-1, 1\}$ and $y_{i,j}=1$ represents Document $i$ and $j$ are positively related.
+$$\ell_{i,j} = \big(\cos(\mathbf{x}_i, \mathbf{x}_j) - y_{i,j}\big)^2$$, where $y_{i,j}$ is the label of $\{-1, 1\}$ and $y_{i,j}=1$ represents Document $i$ and $j$ are positively related.
 
 :::
  
 :::{dropdown} `EuclideanSiameseLoss`
 :open:
 
-$$\ell_{i,j}=\frac{1}{2}\big(y_{i,j}\left \|  \mathbf{x}_i-\mathbf{x}_j\right \| + (1-y_{i,j})\max(0, 1-\left \|  \mathbf{x}_i-\mathbf{x}_j\right \|)\big)^2$$, 
-
-where $y_{i,j}$ is the label of $\{-1, 1\}$ and $y_{i,j}=1$ represents Document $i$ and $j$ are positively related.
+$$\ell_{i,j}=\frac{1}{2}\big(y_{i,j}\left \|  \mathbf{x}_i-\mathbf{x}_j\right \| + (1-y_{i,j})\max(0, 1-\left \|  \mathbf{x}_i-\mathbf{x}_j\right \|)\big)^2$$, where $y_{i,j}$ is the label of $\{-1, 1\}$ and $y_{i,j}=1$ represents Document $i$ and $j$ are positively related.
 
 :::
 
 :::{dropdown} `CosineTripletLoss`
 :open:
 
-$$\ell_{i, p, n}=\max(0, \cos(\mathbf{x}_i, \mathbf{x}_n)-\cos(\mathbf{x}_i, \mathbf{x}_p)+1)$$, 
-
-where Document $p$ and $i$ are positively related, whereas $n$ and $i$ are negatively related or unrelated. 
+$$\ell_{i, p, n}=\max(0, \cos(\mathbf{x}_i, \mathbf{x}_n)-\cos(\mathbf{x}_i, \mathbf{x}_p)+1)$$, where Document $p$ and $i$ are positively related, whereas $n$ and $i$ are negatively related or unrelated. 
 :::
 
 :::{dropdown} `EuclideanTripletLoss`
 :open:
 
-$$\ell_{i, p, n}=\max(0, \left \|\mathbf{x}_i, \mathbf{x}_p \right \|-\left \|\mathbf{x}_i, \mathbf{x}_n \right \|+1)$$, 
-
-where Document $p$ and $i$ are positively related, whereas $n$ and $i$ are negatively related or unrelated. 
+$$\ell_{i, p, n}=\max(0, \left \|\mathbf{x}_i, \mathbf{x}_p \right \|-\left \|\mathbf{x}_i, \mathbf{x}_n \right \|+1)$$, where Document $p$ and $i$ are positively related, whereas $n$ and $i$ are negatively related or unrelated. 
 
 :::
 
