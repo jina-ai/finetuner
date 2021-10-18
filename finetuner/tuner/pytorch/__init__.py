@@ -170,7 +170,9 @@ class PytorchTuner(BaseTuner):
 
     def get_embeddings(self, data: DocumentArrayLike):
         blobs = data.blobs
-        embeddings = self.embed_model(torch.Tensor(blobs, device=self.device))
+
+        tensor = torch.tensor(blobs, device=self.device)
+        embeddings = self.embed_model(tensor)
         with torch.inference_mode():
             for doc, embed in zip(data, embeddings):
                 doc.embedding = embed.cpu().numpy()
