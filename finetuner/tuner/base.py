@@ -8,9 +8,8 @@ from typing import (
     Dict,
 )
 
-import logging
 from jina.logging.logger import JinaLogger
-from jina import DocumentArrayMemmap
+from jina import DocumentArrayMemmap, DocumentArray
 
 from ..helper import AnyDNN, AnyDataLoader, AnyOptimizer, DocumentArrayLike
 from . import evaluation
@@ -140,7 +139,8 @@ class BaseTuner(abc.ABC):
         """Evaluate the model on given labeled data"""
         ...
 
-    def get_metrics(self, docs):
+    def get_metrics(self, docs: DocumentArrayLike):
+        docs = DocumentArray(docs()) if callable(docs) else docs
         self.get_embeddings(docs)
         self.get_embeddings(self._catalog)
         if isinstance(self._catalog, DocumentArrayMemmap):

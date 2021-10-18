@@ -7,17 +7,20 @@ from finetuner.tuner.dataset import SiameseMixin, TripletMixin
 
 
 @pytest.mark.parametrize(
-    'data_src',
-    [
-        generate_fashion_match(num_pos=10, num_neg=10, num_total=100),
-        lambda: generate_fashion_match(num_pos=10, num_neg=10, num_total=100),
-    ],
+    'pre_init_generator',
+    [True, False],
 )
-def test_siamese_dataset(data_src):
+def test_siamese_dataset(pre_init_generator):
     class SD(SiameseMixin, BaseDataset):
         ...
 
-    sd = SD(data_src)
+    data, catalog = generate_fashion_match(
+        num_pos=10,
+        num_neg=10,
+        num_total=100,
+        pre_init_generator=pre_init_generator,
+    )
+    sd = SD(data, catalog)
     for d in sd:
         assert len(d) == 2
         assert len(d[0]) == 2
@@ -28,17 +31,21 @@ def test_siamese_dataset(data_src):
 
 
 @pytest.mark.parametrize(
-    'data_src',
-    [
-        generate_fashion_match(num_pos=10, num_neg=10, num_total=100),
-        lambda: generate_fashion_match(num_pos=10, num_neg=10, num_total=100),
-    ],
+    'pre_init_generator',
+    [True, False],
 )
-def test_triplet_dataset(data_src):
+def test_triplet_dataset(pre_init_generator):
     class SD(TripletMixin, BaseDataset):
         ...
 
-    sd = SD(data_src)
+    data, catalog = generate_fashion_match(
+        num_pos=10,
+        num_neg=10,
+        num_total=100,
+        pre_init_generator=pre_init_generator,
+    )
+
+    sd = SD(data, catalog)
     for d in sd:
         assert len(d) == 2
         assert len(d[0]) == 3

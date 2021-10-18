@@ -30,15 +30,24 @@ def test_simple_sequential_model(tmpdir, params, loss):
 
     model_path = tmpdir / 'trained.pd'
     # fit and save the checkpoint
+    train_data, train_catalog = generate_fashion_match(
+        num_neg=10, num_pos=10, num_total=params['num_train'], pre_init_generator=False
+    )
+    eval_data, eval_catalog = generate_fashion_match(
+        num_neg=10,
+        num_pos=10,
+        num_total=params['num_eval'],
+        is_testset=True,
+        pre_init_generator=False,
+    )
+    train_catalog.extend(eval_catalog)
+
     fit(
         user_model,
         loss=loss,
-        train_data=lambda: generate_fashion_match(
-            num_pos=10, num_neg=10, num_total=params['num_train']
-        ),
-        eval_data=lambda: generate_fashion_match(
-            num_pos=10, num_neg=10, num_total=params['num_eval'], is_testset=True
-        ),
+        train_data=train_data,
+        eval_data=eval_data,
+        catalog=train_catalog,
         epochs=params['epochs'],
         batch_size=params['batch_size'],
     )

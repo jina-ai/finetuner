@@ -16,8 +16,8 @@ def test_qa_data_generator():
 
 
 def test_train_test_generator():
-    fmdg_train = generate_fashion_match(is_testset=True)
-    fmdg_test = generate_fashion_match(is_testset=False)
+    fmdg_train, _ = generate_fashion_match(is_testset=True)
+    fmdg_test, _ = generate_fashion_match(is_testset=False)
     for d1, d2 in zip(fmdg_train, fmdg_test):
         assert np.any(np.not_equal(d1.blob, d2.blob))
         break
@@ -32,7 +32,7 @@ def test_train_test_qa_generator():
 
 
 def test_doc_generator():
-    for d in generate_fashion_match():
+    for d in generate_fashion_match()[0]:
         assert d.tags['class']
         break
 
@@ -40,7 +40,7 @@ def test_doc_generator():
 @pytest.mark.parametrize('channels', [0, 1, 3])
 @pytest.mark.parametrize('upsampling', [1, 2, 4])
 def test_doc_generator_channel(channels, upsampling):
-    for d in generate_fashion_match(channels=channels, upsampling=upsampling):
+    for d in generate_fashion_match(channels=channels, upsampling=upsampling)[0]:
         if channels == 0:
             assert d.blob.ndim == 2
         else:
@@ -59,7 +59,7 @@ def test_doc_generator_channel(channels, upsampling):
 def test_fashion_matches_generator(num_pos, num_neg, pos_value, neg_value):
     for d in generate_fashion_match(
         num_pos=num_pos, num_neg=num_neg, pos_value=pos_value, neg_value=neg_value
-    ):
+    )[0]:
         assert len(d.matches) == num_pos + num_neg
         all_labels = [int(d.tags[__default_tag_key__]['label']) for d in d.matches]
         assert all_labels.count(pos_value) == num_pos
@@ -73,7 +73,7 @@ def test_fashion_matches_generator(num_pos, num_neg, pos_value, neg_value):
 
 
 def test_fashion_documentarray():
-    da = DocumentArray(generate_fashion_match(num_total=10, num_pos=2, num_neg=3))
+    da = DocumentArray(generate_fashion_match(num_total=10, num_pos=2, num_neg=3)[0])
     assert len(da) == 10
     assert len(da[0].matches) == 5
 

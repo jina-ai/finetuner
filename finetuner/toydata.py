@@ -145,6 +145,7 @@ def generate_fashion_match(
     channels: int = 0,
     channel_axis: int = -1,
     is_testset: bool = False,
+    pre_init_generator: bool = True,
 ) -> Generator[Document, None, None]:
     """Get a Generator of fashion-mnist Documents with synthetic matches.
 
@@ -168,44 +169,55 @@ def generate_fashion_match(
         is_testset=is_testset,
     )
 
-    n_d = 0
+    catalog = DocumentArray(_orginal_fashion_doc)
     if num_pos > 0 or num_neg > 0:
         # need to build synthetic matches
-        all_docs = DocumentArray(_orginal_fashion_doc)
+        # copy_all_docs = copy.deepcopy(catalog)
+        rv = catalog.split('class')
 
-        copy_all_docs = copy.deepcopy(all_docs)
-        rv = copy_all_docs.split('class')
+        def generator():
+            n_d = 0
+            for od in catalog:
+                new_doc = Document(od, copy=True)
+                pos_label = new_doc.tags['class']
+                pos_samples = rv[pos_label].sample(num_pos)
+                pos_samples = [Document(d, copy=True) for d in pos_samples]
+                for d in pos_samples:
+                    d.tags[__default_tag_key__] = {'label': pos_value}
 
-        for od in all_docs:
-            pos_label = od.tags['class']
-            pos_samples = rv[pos_label].sample(num_pos)
-            for d in pos_samples:
-                d.tags[__default_tag_key__] = {'label': pos_value}
+                neg_samples = DocumentArray()
+                while len(neg_samples) < num_neg:
+                    neg_samples.extend(
+                        Document(d, copy=True)
+                        for d in catalog.sample(num_neg)
+                        if d.tags['class'] != pos_label
+                    )
+                neg_samples = neg_samples[:num_neg]
 
-            neg_samples = DocumentArray()
-            while len(neg_samples) < num_neg:
-                neg_samples.extend(
-                    d
-                    for d in copy_all_docs.sample(num_neg)
-                    if d.tags['class'] != pos_label
-                )
-            neg_samples = neg_samples[:num_neg]
+                for d in neg_samples:
+                    d.tags[__default_tag_key__] = {'label': neg_value}
 
-            for d in neg_samples:
-                d.tags[__default_tag_key__] = {'label': neg_value}
+                new_doc.matches.extend(pos_samples)
+                new_doc.matches.extend(neg_samples)
+                n_d += 1
+                yield new_doc
+                if n_d >= num_total:
+                    break
 
-            od.matches.extend(pos_samples)
-            od.matches.extend(neg_samples)
-            n_d += 1
-            yield od
-            if n_d >= num_total:
-                break
     else:
-        for d in _orginal_fashion_doc:
-            n_d += 1
-            yield d
-            if n_d >= num_total:
-                break
+
+        def generator():
+            n_d = 0
+            for d in _orginal_fashion_doc:
+                n_d += 1
+                yield d
+                if n_d >= num_total:
+                    break
+
+    if pre_init_generator:
+        return generator(), catalog
+    else:
+        return generator, catalog
 
 
 def _download_qa_data(
