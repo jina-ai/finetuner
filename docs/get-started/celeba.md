@@ -11,7 +11,7 @@ Hopefully the procedure converges after several rounds; and we get a tuned embed
 
 ## Build embedding model
 
-Let's import pre-trained ResNet as our {ref}`embedding model<embedding-model>` using any of the following framework.
+Let's import pre-trained ResNet as our {ref}`embedding model<embedding-model>` using any of the following frameworks.
 
 ````{tab} PyTorch
 
