@@ -71,6 +71,7 @@ all_test_losses = [
     'EuclideanTripletLoss',
 ]
 
+
 # 'keras' does not work under this test setup
 # Exception ... ust be from the same graph as Tensor ...
 # TODO: add keras backend back to the test
@@ -95,7 +96,7 @@ def test_all_frameworks(framework, loss, tmpdir):
                     json={
                         'data': [],
                         'parameters': {
-                            'count': 1,
+                            'new_examples': 1,
                             'topk': 5,
                             'sample_size': 10,
                         },
@@ -113,7 +114,7 @@ def test_all_frameworks(framework, loss, tmpdir):
             f'http://localhost:{port}/next',
             json={
                 'data': [],
-                'parameters': {'count': 1, 'topk': 5, 'sample_size': 10},
+                'parameters': {'new_examples': 1, 'topk': 5, 'sample_size': 10},
             },
         )
         assert req.status_code == 200

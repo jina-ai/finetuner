@@ -4,7 +4,7 @@ import webbrowser
 from typing import Optional
 
 import jina.helper
-from jina import Flow
+from jina import Flow, DocumentArrayMemmap
 from jina.logging.predefined import default_logger
 
 from .executor import FTExecutor, DataIterator
@@ -22,6 +22,12 @@ def fit(
     **kwargs,
 ) -> None:
     dam_path = tempfile.mkdtemp()
+    if isinstance(catalog, DocumentArrayMemmap):
+        catalog_dam_path = catalog.path
+    else:
+        catalog_dam_path = dam_path + '/catalog'
+        catalog_memmap = DocumentArrayMemmap(catalog_dam_path)
+        catalog_memmap.extend(catalog)
 
     class MyExecutor(FTExecutor):
         def get_embed_model(self):
@@ -38,14 +44,14 @@ def fit(
             uses=DataIterator,
             uses_with={
                 'dam_path': dam_path,
-                'catalog_dam_path': dam_path + '/catalog',
+                'catalog_dam_path': catalog_dam_path,
                 'clear_labels_on_start': clear_labels_on_start,
             },
         )
         .add(
             uses=MyExecutor,
             uses_with={
-                'catalog_dam_path': dam_path + '/catalog',
+                'catalog_dam_path': catalog_dam_path,
                 'loss': loss,
             },
         )
@@ -87,15 +93,6 @@ def fit(
                 is_frontend_open = True
 
         # feed train data into the labeler flow
-        if catalog is None:
-            catalog = train_data
-        f.post(
-            '/feed',
-            catalog,
-            request_size=512,
-            show_progress=True,
-            parameters={'type': 'catalog'},
-        )
         f.post(
             '/feed',
             train_data,

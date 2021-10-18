@@ -137,6 +137,7 @@ def generate_qa_match(
 
 def generate_fashion_match(
     num_total: int = 60000,
+    num_catalog: int = 60000,
     num_pos: int = 0,
     num_neg: int = 0,
     pos_value: int = 1,
@@ -170,6 +171,8 @@ def generate_fashion_match(
     )
 
     catalog = DocumentArray(_orginal_fashion_doc)
+    if len(catalog) > num_catalog:
+        catalog = catalog.sample(num_catalog)
     if num_pos > 0 or num_neg > 0:
         # need to build synthetic matches
         # copy_all_docs = copy.deepcopy(catalog)
@@ -208,7 +211,7 @@ def generate_fashion_match(
 
         def generator():
             n_d = 0
-            for d in _orginal_fashion_doc:
+            for d in catalog:
                 n_d += 1
                 yield d
                 if n_d >= num_total:
