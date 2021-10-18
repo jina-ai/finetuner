@@ -20,5 +20,5 @@ Tailor
     A component in Finetuner. Convert any {term}`general model` into an {term}`embedding model`;
 
 Labeler
-    A component in Finetuner. Given {term}`unlabeled data` and an {term}`embedding model` or {term}`general model`, train the model to fit the data.
+    A component in Finetuner. Given {term}`unlabeled data` and an {term}`embedding model` or {term}`general model`, labeler asks human for labeling data, trains model and asks better question for labeling.
 ```

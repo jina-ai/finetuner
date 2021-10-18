@@ -220,7 +220,7 @@ footer a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: 500;
+    font-weight: lighter;
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.1px;

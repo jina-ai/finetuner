@@ -62,14 +62,14 @@ const sidebar = {
                             </div>
                         </div>
                         <div class="row my-1">
-                            <label class="col-sm-6 col-form-label">Examples/View</label>
+                            <label class="col-sm-6 col-form-label">Questions/Session</label>
                             <div class="col-sm-6">
                                 <input class="form-control" type="number" min="1" max="9"
                                         v-model.number="labelerConfig.example_per_view">
                             </div>
                         </div>
                         <div class="row my-1">
-                            <label class="col-sm-6 col-form-label">TopK/Example</label>
+                            <label class="col-sm-6 col-form-label">TopK/Question</label>
                             <div class="col-sm-6">
                                 <input class="form-control" type="number" min="1" max="9"
                                         v-model.number="labelerConfig.topk_per_example">
@@ -109,7 +109,7 @@ const sidebar = {
                     <div class="my-3 d-flex justify-content-center">
                       <button class="btn btn btn-outline-primary"
                           v-on:click="saveProgress()">
-                          Save progress
+                          Save model
                       </button>
                     </div>
                 </div>
