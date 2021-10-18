@@ -3,7 +3,7 @@ import pytest
 import tensorflow as tf
 from tensorflow import keras
 
-from finetuner.tuner.keras import KerasTuner
+from finetuner.tuner import fit, save
 from finetuner.toydata import generate_fashion_match
 from finetuner.toydata import generate_qa_match
 
@@ -29,10 +29,10 @@ def test_simple_sequential_model(tmpdir, params, loss):
         ]
     )
 
-    kt = KerasTuner(user_model, loss=loss)
-
     # fit and save the checkpoint
-    kt.fit(
+    fit(
+        user_model,
+        loss=loss,
         train_data=lambda: generate_fashion_match(
             num_pos=10, num_neg=10, num_total=params['num_train']
         ),
@@ -42,7 +42,7 @@ def test_simple_sequential_model(tmpdir, params, loss):
         epochs=params['epochs'],
         batch_size=params['batch_size'],
     )
-    kt.save(tmpdir / 'trained.kt')
+    save(user_model, tmpdir / 'trained.kt')
 
     embedding_model = keras.models.load_model(tmpdir / 'trained.kt')
     r = embedding_model.predict(
@@ -63,10 +63,10 @@ def test_simple_lstm_model(tmpdir, params, loss):
         ]
     )
 
-    kt = KerasTuner(user_model, loss=loss)
-
     # fit and save the checkpoint
-    kt.fit(
+    fit(
+        user_model,
+        loss=loss,
         train_data=lambda: generate_qa_match(
             num_total=params['num_train'],
             max_seq_len=params['max_seq_len'],
@@ -82,7 +82,7 @@ def test_simple_lstm_model(tmpdir, params, loss):
         epochs=params['epochs'],
         batch_size=params['batch_size'],
     )
-    kt.save(tmpdir / 'trained.kt')
+    save(user_model, tmpdir / 'trained.kt')
 
     embedding_model = keras.models.load_model(tmpdir / 'trained.kt')
     r = embedding_model.predict(

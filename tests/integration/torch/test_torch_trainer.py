@@ -5,7 +5,7 @@ import pytest
 import torch
 import torch.nn as nn
 
-from finetuner.tuner.pytorch import PytorchTuner
+from finetuner.tuner import fit, save
 from finetuner.toydata import generate_fashion_match
 from finetuner.toydata import generate_qa_match
 
@@ -31,10 +31,10 @@ def test_simple_sequential_model(tmpdir, params, loss):
     )
     model_path = os.path.join(tmpdir, 'trained.pth')
 
-    pt = PytorchTuner(user_model, loss=loss)
-
     # fit and save the checkpoint
     pt.fit(
+        user_model,
+        loss=loss,
         train_data=lambda: generate_fashion_match(
             num_pos=10, num_neg=10, num_total=params['num_train']
         ),
@@ -44,7 +44,7 @@ def test_simple_sequential_model(tmpdir, params, loss):
         epochs=params['epochs'],
         batch_size=params['batch_size'],
     )
-    pt.save(model_path)
+    save(user_model, model_path)
 
     # load the checkpoint and ensure the dim
     user_model.load_state_dict(torch.load(model_path))
@@ -88,10 +88,10 @@ def test_simple_lstm_model(tmpdir, params, loss):
     )
     model_path = os.path.join(tmpdir, 'trained.pth')
 
-    pt = PytorchTuner(user_model, loss=loss)
-
     # fit and save the checkpoint
-    pt.fit(
+    fit(
+        user_model,
+        loss=loss,
         train_data=lambda: generate_qa_match(
             num_total=params['num_train'],
             max_seq_len=params['max_seq_len'],
@@ -107,7 +107,7 @@ def test_simple_lstm_model(tmpdir, params, loss):
         epochs=params['epochs'],
         batch_size=params['batch_size'],
     )
-    pt.save(model_path)
+    save(user_model, model_path)
 
     # load the checkpoint and ensure the dim
     user_model.load_state_dict(torch.load(model_path))
