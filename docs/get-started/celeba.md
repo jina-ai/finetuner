@@ -5,7 +5,7 @@ In this example, we want to "tune" the pre-trained [ResNet](https://arxiv.org/ab
 Precisely, "tuning" means: 
 - we set up a Jina search pipeline and will look at the top-K visually similar result;
 - we accept or reject the results based on their quality;
-- we let the model to remember our feedback and produces better search result.
+- we let the model to remember our feedback and produce better search result.
 
 Hopefully the procedure converges after several rounds; and we get a tuned embedding for better celebrity face search.
 
