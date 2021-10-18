@@ -81,7 +81,7 @@ def test_fashion_documentarray():
 
 
 def test_qa_documentarray():
-    da = DocumentArray(generate_qa_match(num_total=10, num_catalog=1000, num_neg=3)[0])
+    da = DocumentArray(generate_qa_match(num_total=10, num_neg=3)[0])
     assert len(da) == 10
     assert len(da[0].matches) == 4
 
