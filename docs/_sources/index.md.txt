@@ -80,7 +80,7 @@
 Now that you’re set up, let’s dive into more of how Finetuner works and can improve the performance of your neural search apps.
 
 
-## Next step
+## Next steps
 
 <!-- start fit-method -->
 Finetuner is extremely easy to learn: all you need is `finetuner.fit()`!
@@ -240,6 +240,11 @@ Learn more about {term}`Tailor`, {term}`Tuner` and {term}`Labeler`.
 </script>
 
 <!-- end fit-method -->
+
+```{include} ../README.md
+:start-after: <!-- start support-pitch -->
+:end-before: <!-- end support-pitch -->
+```
 
 ```{toctree}
 :caption: Get Started
