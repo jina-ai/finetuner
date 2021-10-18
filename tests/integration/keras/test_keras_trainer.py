@@ -31,12 +31,17 @@ def test_simple_sequential_model(tmpdir, params, loss):
 
     # fit and save the checkpoint
     train_data, train_catalog = generate_fashion_match(
-        num_neg=10, num_pos=10, num_total=params['num_train'], pre_init_generator=False
+        num_neg=10,
+        num_pos=10,
+        num_total=params['num_train'],
+        num_catalog=params['num_train'] * 10,
+        pre_init_generator=False,
     )
     eval_data, eval_catalog = generate_fashion_match(
         num_neg=10,
         num_pos=10,
         num_total=params['num_eval'],
+        num_catalog=params['num_eval'] * 10,
         is_testset=True,
         pre_init_generator=False,
     )

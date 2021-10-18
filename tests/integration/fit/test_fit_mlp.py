@@ -45,12 +45,17 @@ def test_fit_all(tmpdir):
     for kb, b in embed_models.items():
         for h in all_test_losses:
             train_data, train_catalog = generate_fashion_match(
-                num_neg=10, num_pos=10, num_total=300, pre_init_generator=False
+                num_neg=10,
+                num_pos=10,
+                num_total=300,
+                num_catalog=3000,
+                pre_init_generator=False,
             )
             eval_data, eval_catalog = generate_fashion_match(
                 num_neg=10,
                 num_pos=10,
                 num_total=300,
+                num_catalog=3000,
                 is_testset=True,
                 pre_init_generator=False,
             )
