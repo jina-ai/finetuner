@@ -95,21 +95,28 @@ def test_simple_lstm_model(tmpdir, params, loss):
     model_path = tmpdir / 'trained.pd'
 
     # fit and save the checkpoint
+    train_data, train_catalog = generate_qa_match(
+        num_total=params['num_train'],
+        max_seq_len=params['max_seq_len'],
+        num_neg=5,
+        is_testset=False,
+        pre_init_generator=False,
+    )
+    eval_data, eval_catalog = generate_qa_match(
+        num_total=params['num_train'],
+        max_seq_len=params['max_seq_len'],
+        num_neg=5,
+        is_testset=True,
+        pre_init_generator=False,
+    )
+    train_catalog.extend(eval_catalog)
+
     fit(
         user_model,
         loss=loss,
-        train_data=lambda: generate_qa_match(
-            num_total=params['num_train'],
-            max_seq_len=params['max_seq_len'],
-            num_neg=5,
-            is_testset=False,
-        ),
-        eval_data=lambda: generate_qa_match(
-            num_total=params['num_eval'],
-            max_seq_len=params['max_seq_len'],
-            num_neg=5,
-            is_testset=True,
-        ),
+        train_data=train_data,
+        eval_data=eval_data,
+        catalog=train_catalog,
         epochs=params['epochs'],
         batch_size=params['batch_size'],
     )

@@ -64,6 +64,7 @@ def generate_qa_match(
     to_ndarray: bool = True,
     max_seq_len: int = 100,
     is_testset: Optional[bool] = None,
+    pre_init_generator: bool = True,
 ) -> Generator[Document, None, None]:
     """Get a generator of QA data with synthetic negative matches.
 
@@ -76,7 +77,6 @@ def generate_qa_match(
     :param is_testset: If to generate test data, if set to None, will all data return
     :return:
     """
-    num_doc = 0
     all_docs = DocumentArray(_download_qa_data(is_testset=is_testset))
 
     if to_ndarray:
@@ -86,53 +86,69 @@ def generate_qa_match(
             + all_docs.get_attributes('tags__wrong_answer')
         )
         vocab = _build_vocab(all_texts, min_freq=2)
+    catalog = DocumentArray()
+    text_to_id = {}
 
-    for d in all_docs:
-        d.text = d.tags['question']
-        m_p = Document(
-            text=d.tags['answer'], tags={__default_tag_key__: {'label': pos_value}}
-        )
-        m_n = Document(
-            text=d.tags['wrong_answer'],
-            tags={__default_tag_key__: {'label': neg_value}},
-        )
-        if to_ndarray:
-            d.blob = np.array(
-                _text_to_int_sequence(d.text, vocab, max_seq_len), np.long
-            )
-            m_p.blob = np.array(
-                _text_to_int_sequence(m_p.text, vocab, max_seq_len), np.long
-            )
-            m_n.blob = np.array(
-                _text_to_int_sequence(m_n.text, vocab, max_seq_len), np.long
-            )
+    def get_document(text, label):
+        doc = Document(text=text, tags={__default_tag_key__: {'label': label}})
+        if text in text_to_id:
+            doc.id = text_to_id[text]
+        else:
+            text_to_id[text] = doc.id
+            catalog.append(doc)
+        return doc
 
-        if num_neg > 0:
-            d.matches.append(m_p)
-            d.matches.append(m_n)
-            cur_num_neg = 1
-            if num_neg > 1:
-                sampled_docs = all_docs.sample(num_neg)
-                for n_d in sampled_docs:
-                    if n_d.id != d.id:
-                        new_nd = Document(
-                            text=n_d.tags['answer'],
-                            tags={__default_tag_key__: {'label': neg_value}},
-                        )
-                        if to_ndarray:
-                            new_nd.blob = np.array(
-                                _text_to_int_sequence(new_nd.text, vocab, max_seq_len),
-                                np.long,
-                            )
-                        d.matches.append(new_nd)
-                        cur_num_neg += 1
-                        if cur_num_neg >= num_neg:
-                            break
-        num_doc += 1
-        yield d
+    def generator():
+        num_doc = 0
+        for doc in all_docs:
+            d = Document(doc, copy=True)
+            d.text = d.tags['question']
+            m_p = get_document(d.tags['answer'], pos_value)
+            m_n = get_document(d.tags['wrong_answer'], neg_value)
+            if to_ndarray:
+                d.blob = np.array(
+                    _text_to_int_sequence(d.text, vocab, max_seq_len), np.long
+                )
+                m_p.blob = np.array(
+                    _text_to_int_sequence(m_p.text, vocab, max_seq_len), np.long
+                )
+                m_n.blob = np.array(
+                    _text_to_int_sequence(m_n.text, vocab, max_seq_len), np.long
+                )
 
-        if num_doc >= num_total:
-            break
+            if num_neg > 0:
+                d.matches.append(m_p)
+                d.matches.append(m_n)
+                cur_num_neg = 1
+                if num_neg > 1:
+                    sampled_docs = all_docs.sample(num_neg, seed=num_doc)
+                    for n_d in sampled_docs:
+                        if n_d.id != d.id:
+                            new_nd = get_document(n_d.tags['answer'], neg_value)
+                            if to_ndarray:
+                                new_nd.blob = np.array(
+                                    _text_to_int_sequence(
+                                        new_nd.text, vocab, max_seq_len
+                                    ),
+                                    np.long,
+                                )
+                            d.matches.append(new_nd)
+                            cur_num_neg += 1
+                            if cur_num_neg >= num_neg:
+                                break
+            num_doc += 1
+            yield d
+
+            if num_doc >= num_total:
+                break
+
+    # prefil catalog
+    [_ for _ in generator()]
+
+    if pre_init_generator:
+        return generator(), catalog
+    else:
+        return generator, catalog
 
 
 def generate_fashion_match(

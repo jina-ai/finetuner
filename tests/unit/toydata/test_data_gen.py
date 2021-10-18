@@ -8,7 +8,7 @@ from finetuner.toydata import *
 
 
 def test_qa_data_generator():
-    for d in generate_qa_match():
+    for d in generate_qa_match()[0]:
         assert d.tags['question']
         assert d.tags['answer']
         assert d.tags['wrong_answer']
@@ -24,8 +24,8 @@ def test_train_test_generator():
 
 
 def test_train_test_qa_generator():
-    fmdg_train = generate_qa_match(is_testset=True)
-    fmdg_test = generate_qa_match(is_testset=False)
+    fmdg_train = generate_qa_match(is_testset=True)[0]
+    fmdg_test = generate_qa_match(is_testset=False)[0]
     for d1, d2 in zip(fmdg_train, fmdg_test):
         assert d1.id != d2.id
         assert np.any(np.not_equal(d1.blob, d2.blob))
@@ -79,7 +79,7 @@ def test_fashion_documentarray():
 
 
 def test_qa_documentarray():
-    da = DocumentArray(generate_qa_match(num_total=10, num_neg=3))
+    da = DocumentArray(generate_qa_match(num_total=10, num_neg=3)[0])
     assert len(da) == 10
     assert len(da[0].matches) == 4
 
@@ -90,7 +90,7 @@ def test_qa_documentarray():
 def test_generate_qa_doc_match(pos_value, neg_value, num_neg, to_ndarray):
     for d in generate_qa_match(
         num_neg=num_neg, pos_value=pos_value, neg_value=neg_value, to_ndarray=to_ndarray
-    ):
+    )[0]:
         assert len(d.matches) == 1 + num_neg
         all_labels = [int(d.tags[__default_tag_key__]['label']) for d in d.matches]
         assert all_labels.count(pos_value) == 1
@@ -105,7 +105,7 @@ def test_generate_qa_doc_match(pos_value, neg_value, num_neg, to_ndarray):
 @pytest.mark.parametrize('max_length', [1, 10, 100])
 def test_qa_sequence_same_length(max_length):
     num_neg = 5
-    for s in generate_qa_match(num_neg=num_neg, max_seq_len=max_length):
+    for s in generate_qa_match(num_neg=num_neg, max_seq_len=max_length)[0]:
         assert s.blob.shape[0] == max_length
         assert len(s.matches) == num_neg + 1
         for m in s.matches:

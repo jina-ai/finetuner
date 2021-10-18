@@ -54,10 +54,11 @@ def _run(framework_name, loss, port_expose):
             paddle.nn.Linear(in_features=2 * 64, out_features=32),
         ),
     }
-
+    train_data, catalog = generate_qa_match(num_total=10, num_neg=0)
     fit(
         embed_models[framework_name](),
-        generate_qa_match(num_total=10, num_neg=0),
+        train_data,
+        catalog=catalog,
         loss=loss,
         interactive=True,
         port_expose=port_expose,

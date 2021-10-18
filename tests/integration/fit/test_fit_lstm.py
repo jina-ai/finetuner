@@ -50,15 +50,19 @@ def test_fit_all(tmpdir):
 
     for kb, b in embed_models.items():
         for h in all_test_losses:
+            train_data, train_catalog = generate_qa_match(
+                num_total=300, num_neg=5, max_seq_len=10, pre_init_generator=False
+            )
+            eval_data, eval_catalog = generate_qa_match(
+                num_total=300, num_neg=5, max_seq_len=10, pre_init_generator=False
+            )
+            train_catalog.extend(eval_catalog)
             result = fit(
                 b(),
                 loss=h,
-                train_data=lambda: generate_qa_match(
-                    num_total=300, num_neg=5, max_seq_len=10
-                ),
-                eval_data=lambda: generate_qa_match(
-                    num_total=300, num_neg=5, max_seq_len=10
-                ),
+                train_data=train_data,
+                eval_data=eval_data,
+                catalog=train_catalog,
                 epochs=2,
             )
             result.save(tmpdir / f'result-{kb}-{h}.json')
