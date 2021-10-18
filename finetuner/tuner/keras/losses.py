@@ -48,7 +48,13 @@ class EuclideanTripletLoss(BaseLoss, Layer):
         # https://github.com/tensorflow/tensorflow/issues/12071
         dist_pos = tf.reduce_sum(tf.math.squared_difference(anchor, positive), axis=-1)
         dist_neg = tf.reduce_sum(tf.math.squared_difference(anchor, negative), axis=-1)
-        return tf.reduce_mean(tf.nn.relu(dist_pos - dist_neg + self._margin))
+
+        dist_pos = tf.maximum(dist_pos, 1e-9)
+        dist_neg = tf.maximum(dist_neg, 1e-9)
+
+        return tf.reduce_mean(
+            tf.nn.relu(tf.sqrt(dist_pos) - tf.sqrt(dist_neg) + self._margin)
+        )
 
 
 class CosineTripletLoss(BaseLoss, Layer):

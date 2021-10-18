@@ -52,7 +52,7 @@ def test_overfit_keras(
     vec_embedings = embed_model(vecs).numpy()
 
     # Compute distances between embeddings
-    metric = 'sqeuclidean' if loss.startswith('Euclidean') else 'cosine'
+    metric = 'euclidean' if loss.startswith('Euclidean') else 'cosine'
     dists = squareform(pdist(vec_embedings, metric=metric))
 
     # Make sure that for each class, the two instances are closer than
@@ -62,4 +62,4 @@ def test_overfit_keras(
         dist_other = dists[2 * i : 2 * i + 2, :].copy()
         dist_other[:, 2 * i : 2 * i + 2] = 10_000
 
-        assert cls_dist < dist_other.min() + 1
+        assert cls_dist < dist_other.min() - 0.1
