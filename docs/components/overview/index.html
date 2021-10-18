@@ -4,10 +4,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta property="og:title" content="Labeler" />
+  <meta property="og:title" content="Overview" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://finetuner.jina.ai/basics/labeler.html" />
+  <meta property="og:url" content="https://finetuner.jina.ai/components/overview.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
+  <meta property="og:description" content="Finetuner project is composed of three components: Tuner: to tune any embedding model for better embedding on labeled data;, Tailor: to convert any deep neural network into an embedding model;, Labeler: a UI for interactive labeling and conduct active learning via Tuner.. Usage: The three compone..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -25,10 +26,10 @@
 
   gtag('config', 'G-1ESRNDCK35');
 </script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner package" href="../../api/finetuner/" /><link rel="prev" title="Tailor" href="../tailor/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Tuner" href="../tuner/" /><link rel="prev" title="&lt;no title&gt;" href="../" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
-        <title>Labeler - Finetuner 0.0.3 documentation</title>
+        <title>Overview - Finetuner 0.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -179,7 +180,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -212,12 +213,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/covid-qa/">Finetuning Bi-LSTM on Text</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/fit/">One-liner <code class="docutils literal notranslate"><span class="pre">fit()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/data-format/">Data Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/glossary/">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Components</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../glossary/">Glossary</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../data-format/">Data Format</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tuner/">Tuner</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tailor/">Tailor</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Labeler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labeler/">Labeler</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -302,26 +308,42 @@
                         </i>
                     </label>
                 </div>
-                <section class="tex2jax_ignore mathjax_ignore" id="labeler">
-<h1>Labeler<a class="headerlink" href="#labeler" title="Permalink to this headline">¶</a></h1>
+                <section class="tex2jax_ignore mathjax_ignore" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>Finetuner project is composed of three components:</p>
+<ul class="simple">
+<li><p><strong>Tuner</strong>: to tune any embedding model for better embedding on labeled data;</p></li>
+<li><p><strong>Tailor</strong>: to convert any deep neural network into an embedding model;</p></li>
+<li><p><strong>Labeler</strong>: a UI for interactive labeling and conduct <a class="reference external" href="https://en.wikipedia.org/wiki/Active_learning_(machine_learning)">active learning</a> via Tuner.</p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../../_images/finetuner-composition.svg"><img alt="../../_images/finetuner-composition.svg" src="../../_images/finetuner-composition.svg" width="70%"/></a>
+</figure>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The three components can be used in combinations under different scenarios.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../../_images/four-usecases.svg"><img alt="../../_images/four-usecases.svg" src="../../_images/four-usecases.svg" width="80%"/></a>
+</figure>
+</section>
 </section>
 
             </article>
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../../api/finetuner/">
+                    <a class="next-page" href="../tuner/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">finetuner package</div>
+                            <div class="title">Tuner</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../tailor/">
+                    <a class="prev-page" href="../">
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -330,7 +352,7 @@
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">Tailor</div>
+                            <div class="title">&lt;no title&gt;</div>
                             
                         </div>
                     </a>
@@ -338,7 +360,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 17, 2021.
+                    Last updated on Oct 18, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
@@ -354,6 +376,23 @@
             
 
             <div class="toc-sticky toc-scroll">
+                
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">Overview</a><ul>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
                 
             </div>
 

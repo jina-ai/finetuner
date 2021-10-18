@@ -190,11 +190,16 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics/glossary/">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics/fit/">One-liner <code class="docutils literal notranslate"><span class="pre">fit()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../basics/data-format/">Data Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics/tuner/">Tuner</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics/tailor/">Tailor</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics/labeler/">Labeler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics/glossary/">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Components</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../components/overview/">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../components/tuner/">Tuner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../components/tailor/">Tailor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../components/labeler/">Labeler</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -304,7 +309,7 @@
 <div class="viewcode-block" id="EuclideanSiameseLoss"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.losses/#finetuner.tuner.paddle.losses.EuclideanSiameseLoss">[docs]</a><span class="k">class</span> <span class="nc">EuclideanSiameseLoss</span><span class="p">(</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
     <span class="n">arity</span> <span class="o">=</span> <span class="mi">2</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">=</span> <span class="n">margin</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dist</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">PairwiseDistance</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -366,7 +371,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 17, 2021.
+                    Last updated on Oct 18, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

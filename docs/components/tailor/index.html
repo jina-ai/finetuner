@@ -6,7 +6,7 @@
 
   <meta property="og:title" content="Tailor" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://finetuner.jina.ai/basics/tailor.html" />
+  <meta property="og:url" content="https://finetuner.jina.ai/components/tailor.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
   <meta property="og:description" content="Tailor is a component of Finetuner. It converts any general model into an embedding model. Given a general model (either written from scratch, or from Pytorch/Keras/Huggingface model zoo), Tailor does micro-operations on the model architecture and outputs an embedding model for the Tuner. Given a..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
@@ -213,9 +213,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/covid-qa/">Finetuning Bi-LSTM on Text</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/fit/">One-liner <code class="docutils literal notranslate"><span class="pre">fit()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/data-format/">Data Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/glossary/">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Components</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../glossary/">Glossary</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../data-format/">Data Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tuner/">Tuner</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Tailor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../labeler/">Labeler</a></li>
@@ -305,7 +310,7 @@
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="tailor">
 <h1>Tailor<a class="headerlink" href="#tailor" title="Permalink to this headline">¶</a></h1>
-<p>Tailor is a component of Finetuner. It converts any <a class="reference internal" href="../glossary/#term-General-model"><span class="xref std std-term">general model</span></a> into an <a class="reference internal" href="../glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>. Given a general model (either written from scratch, or from Pytorch/Keras/Huggingface model zoo), Tailor does micro-operations on the model architecture and outputs an embedding model for the <a class="reference internal" href="../glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a>.</p>
+<p>Tailor is a component of Finetuner. It converts any <a class="reference internal" href="../../basics/glossary/#term-General-model"><span class="xref std std-term">general model</span></a> into an <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>. Given a general model (either written from scratch, or from Pytorch/Keras/Huggingface model zoo), Tailor does micro-operations on the model architecture and outputs an embedding model for the <a class="reference internal" href="../../basics/glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a>.</p>
 <p>Given a general model with weights, Tailor <em>preserves its weights</em> and does (some of) the  following steps:</p>
 <ul class="simple">
 <li><p>finding all dense layers by iterating over layers;</p></li>
@@ -945,7 +950,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 17, 2021.
+                    Last updated on Oct 18, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

@@ -6,10 +6,10 @@
 
   <meta property="og:title" content="Tuner" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://finetuner.jina.ai/basics/tuner.html" />
+  <meta property="og:url" content="https://finetuner.jina.ai/components/tuner.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
-  <meta property="og:description" content="Tuner is one of the three key components of Finetuner. Given an embedding model and labeled data, Tuner trains the model to fit the data. Labeled data can be constructed by following this. Fit method: Tuner can be called via finetuner.fit(): import finetuner finetuner.fit( embed_model, train_data..." />
-  <meta property="og:image" content="../../_images/mlp.cosine.png" />
+  <meta property="og:description" content="Tuner is one of the three key components of Finetuner. Given an embedding model and labeled data, Tuner trains the model to fit the data. Labeled data can be constructed by following this. Fit method: Tuner can be called via finetuner.fit(). Its minimum form looks like the folllowing: import fine..." />
+  <meta property="og:image" content="../../_images/mlp.png" />
   <meta property="og:image:alt" content="Finetuner Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -26,7 +26,7 @@
 
   gtag('config', 'G-1ESRNDCK35');
 </script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Tailor" href="../tailor/" /><link rel="prev" title="Data Format" href="../data-format/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Tailor" href="../tailor/" /><link rel="prev" title="Overview" href="../overview/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
         <title>Tuner - Finetuner 0.0.3 documentation</title>
@@ -213,9 +213,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/covid-qa/">Finetuning Bi-LSTM on Text</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/fit/">One-liner <code class="docutils literal notranslate"><span class="pre">fit()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/data-format/">Data Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/glossary/">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Components</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../glossary/">Glossary</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../data-format/">Data Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/">Overview</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Tuner</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tailor/">Tailor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../labeler/">Labeler</a></li>
@@ -305,12 +310,12 @@
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="tuner">
 <h1>Tuner<a class="headerlink" href="#tuner" title="Permalink to this headline">¶</a></h1>
-<p>Tuner is one of the three key components of Finetuner. Given an <a class="reference internal" href="../glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a> and <a class="reference internal" href="../glossary/#term-Labeled-data"><span class="xref std std-term">labeled data</span></a>, Tuner
+<p>Tuner is one of the three key components of Finetuner. Given an <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a> and <a class="reference internal" href="../../basics/glossary/#term-Labeled-data"><span class="xref std std-term">labeled data</span></a>, Tuner
 trains the model to fit the data.</p>
-<p>Labeled data can be constructed <a class="reference internal" href="../data-format/#construct-labeled-data"><span class="std std-ref">by following this</span></a>.</p>
+<p>Labeled data can be constructed <a class="reference internal" href="../../basics/data-format/#construct-labeled-data"><span class="std std-ref">by following this</span></a>.</p>
 <section id="fit-method">
 <h2>Fit method<a class="headerlink" href="#fit-method" title="Permalink to this headline">¶</a></h2>
-<p>Tuner can be called via <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code>:</p>
+<p>Tuner can be called via <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code>. Its minimum form looks like the folllowing:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
@@ -320,30 +325,60 @@ trains the model to fit the data.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>Here, <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> must be <a class="reference internal" href="../glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>; and <code class="docutils literal notranslate"><span class="pre">train_data</span></code> must be <a class="reference internal" href="../glossary/#term-Labeled-data"><span class="xref std std-term">labeled data</span></a>.</p>
-<p>Besides, it accepts the following <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>:</p>
-<div class="table-wrapper"><table border="1" class="docutils">
-<thead>
-<tr>
-<th>Argument</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>eval_data</code></td>
-<td>the evaluation data (same format as <code>train_data</code>) to be used on every epoch</td>
-</tr>
-<tr>
-<td><code>batch_size</code></td>
-<td>the number of <code>Document</code> in each batch</td>
-</tr>
-<tr>
-<td><code>epochs</code></td>
-<td>the number of epochs for training</td>
-</tr>
-</tbody>
-</table></div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> must be <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>; and <code class="docutils literal notranslate"><span class="pre">train_data</span></code> must be <a class="reference internal" href="../../basics/glossary/#term-Labeled-data"><span class="xref std std-term">labeled data</span></a>.</p>
+<section id="loss-function">
+<h3>Loss function<a class="headerlink" href="#loss-function" title="Permalink to this headline">¶</a></h3>
+<p>By default, Tuner uses <code class="docutils literal notranslate"><span class="pre">CosineSiameseLoss</span></code> for training. you can also use other built-in losses by <code class="docutils literal notranslate"><span class="pre">finetuner.fit(...,</span> <span class="pre">loss='...')</span></code>.</p>
+<p>Let <span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span> denote the predicted embedding for Document <span class="math notranslate nohighlight">\(i\)</span>, the built-in losses are summarized as below:</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" open="open">
+<summary class="sd-summary-title sd-card-header">
+<code class="docutils literal notranslate"><span class="pre">CosineSiameseLoss</span></code><div class="sd-summary-down docutils">
+<svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-down" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z" fill-rule="evenodd"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-up" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z" fill-rule="evenodd"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><div class="math-wrapper"><div class="math notranslate nohighlight">
+\[\ell_{i,j} = \big(\cos(\mathbf{x}_i, \mathbf{x}_j) - y_{i,j}\big)^2\]</div></div>
+, where <span class="math notranslate nohighlight">\(y_{i,j}\)</span> is the label of <span class="math notranslate nohighlight">\(\{-1, 1\}\)</span> and <span class="math notranslate nohighlight">\(y_{i,j}=1\)</span> represents Document <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> are positively related.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" open="open">
+<summary class="sd-summary-title sd-card-header">
+<code class="docutils literal notranslate"><span class="pre">EuclideanSiameseLoss</span></code><div class="sd-summary-down docutils">
+<svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-down" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z" fill-rule="evenodd"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-up" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z" fill-rule="evenodd"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><div class="math-wrapper"><div class="math notranslate nohighlight">
+\[\ell_{i,j}=\frac{1}{2}\big(y_{i,j}\left \|  \mathbf{x}_i-\mathbf{x}_j\right \| + (1-y_{i,j})\max(0, 1-\left \|  \mathbf{x}_i-\mathbf{x}_j\right \|)\big)^2\]</div></div>
+, where <span class="math notranslate nohighlight">\(y_{i,j}\)</span> is the label of <span class="math notranslate nohighlight">\(\{-1, 1\}\)</span> and <span class="math notranslate nohighlight">\(y_{i,j}=1\)</span> represents Document <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> are positively related.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" open="open">
+<summary class="sd-summary-title sd-card-header">
+<code class="docutils literal notranslate"><span class="pre">CosineTripletLoss</span></code><div class="sd-summary-down docutils">
+<svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-down" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z" fill-rule="evenodd"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-up" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z" fill-rule="evenodd"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><div class="math-wrapper"><div class="math notranslate nohighlight">
+\[\ell_{i, p, n}=\max(0, \cos(\mathbf{x}_i, \mathbf{x}_n)-\cos(\mathbf{x}_i, \mathbf{x}_p)+1)\]</div></div>
+, where Document <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(i\)</span> are positively related, whereas <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(i\)</span> are negatively related or unrelated.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" open="open">
+<summary class="sd-summary-title sd-card-header">
+<code class="docutils literal notranslate"><span class="pre">EuclideanTripletLoss</span></code><div class="sd-summary-down docutils">
+<svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-down" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z" fill-rule="evenodd"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-up" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z" fill-rule="evenodd"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><div class="math-wrapper"><div class="math notranslate nohighlight">
+\[\ell_{i, p, n}=\max(0, \left \|\mathbf{x}_i, \mathbf{x}_p \right \|-\left \|\mathbf{x}_i, \mathbf{x}_n \right \|+1)\]</div></div>
+, where Document <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(i\)</span> are positively related, whereas <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(i\)</span> are negatively related or unrelated.</p>
+</div>
+</details><div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Although siamese and triplet loss work on pair and triplet input respectively, there is <strong>no need</strong> to worry about the data input format. You only need to make sure your data is labeled according to <a class="reference internal" href="../../basics/data-format/#data-format"><span class="std std-ref">Data Format</span></a>, then you can switch between all losses freely.</p>
+</div>
+</section>
 </section>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
@@ -386,7 +421,7 @@ into 32-dim vectors.</p>
 </div>
 </div>
 </li>
-<li><p>Build labeled match data <a class="reference internal" href="../data-format/#build-mnist-data"><span class="std std-ref">according to the steps in here</span></a>. One can refer
+<li><p>Build labeled match data <a class="reference internal" href="../../basics/data-format/#build-mnist-data"><span class="std std-ref">according to the steps in here</span></a>. One can refer
 to <code class="docutils literal notranslate"><span class="pre">finetuner.toydata.generate_fashion_match</span></code> for an implementation. In this example, for each <code class="docutils literal notranslate"><span class="pre">Document</span></code> we generate 10 positive matches and 10 negative matches.</p></li>
 <li><p>Feed labeled data and the embedding model into Finetuner:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
@@ -399,21 +434,11 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
 <span class="p">)</span>
 </pre></div>
 </div>
+<figure class="align-center">
+<img alt="../../_images/mlp.png" src="../../_images/mlp.png"/>
+</figure>
 </li>
 </ol>
-<p>By default, <code class="docutils literal notranslate"><span class="pre">head_layer</span></code> is set to <code class="docutils literal notranslate"><span class="pre">CosineLayer</span></code>, one can also use <code class="docutils literal notranslate"><span class="pre">TripletLayer</span></code>:</p>
-<div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">CosineLayer</label><div class="tab-content docutils">
-<figure class="align-center">
-<img alt="../../_images/mlp.cosine.png" src="../../_images/mlp.cosine.png"/>
-</figure>
-</div>
-<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--2">TripletLayer</label><div class="tab-content docutils">
-<figure class="align-center">
-<img alt="../../_images/mlp.triplet.png" src="../../_images/mlp.triplet.png"/>
-</figure>
-</div>
-</div>
 </section>
 <section id="tune-a-bidirectional-lstm-on-covid-qa">
 <h3>Tune a bidirectional LSTM on Covid QA<a class="headerlink" href="#tune-a-bidirectional-lstm-on-covid-qa" title="Permalink to this headline">¶</a></h3>
@@ -421,7 +446,7 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
 <li><p>Write an embedding model.</p></li>
 </ol>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"/><label class="tab-label" for="tab-set--2-input--1">Keras</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">Keras</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 <span class="n">embed_model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
        <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
@@ -430,7 +455,7 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"/><label class="tab-label" for="tab-set--2-input--2">PyTorch</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--2">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="k">class</span> <span class="nc">LastCell</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
   <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -445,7 +470,7 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--2-input--3" name="tab-set--2" type="radio"/><label class="tab-label" for="tab-set--2-input--3">Paddle</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--1-input--3" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--3">Paddle</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">paddle</span>
 <span class="k">class</span> <span class="nc">LastCell</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -462,7 +487,7 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
 </div>
 </div>
 <ol>
-<li><p>Build labeled match data <a class="reference internal" href="../data-format/#build-qa-data"><span class="std std-ref">according to the steps in here</span></a>. One can refer
+<li><p>Build labeled match data <a class="reference internal" href="../../basics/data-format/#build-qa-data"><span class="std std-ref">according to the steps in here</span></a>. One can refer
 to <code class="docutils literal notranslate"><span class="pre">finetuner.toydata.generate_qa_match</span></code> for an implementation.</p></li>
 <li><p>Feed labeled data and the embedding model into Finetuner:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
@@ -475,21 +500,11 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
 <span class="p">)</span>
 </pre></div>
 </div>
+<figure class="align-center">
+<img alt="../../_images/lstm.png" src="../../_images/lstm.png"/>
+</figure>
 </li>
 </ol>
-<p>By default, <code class="docutils literal notranslate"><span class="pre">head_layer</span></code> is set to <code class="docutils literal notranslate"><span class="pre">CosineLayer</span></code>, one can also use <code class="docutils literal notranslate"><span class="pre">TripletLayer</span></code>:</p>
-<div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--3-input--1" name="tab-set--3" type="radio"/><label class="tab-label" for="tab-set--3-input--1">CosineLayer</label><div class="tab-content docutils">
-<figure class="align-center">
-<img alt="../../_images/lstm.cosine.png" src="../../_images/lstm.cosine.png"/>
-</figure>
-</div>
-<input class="tab-input" id="tab-set--3-input--2" name="tab-set--3" type="radio"/><label class="tab-label" for="tab-set--3-input--2">TripletLayer</label><div class="tab-content docutils">
-<figure class="align-center">
-<img alt="../../_images/lstm.triplet.png" src="../../_images/lstm.triplet.png"/>
-</figure>
-</div>
-</div>
 </section>
 </section>
 </section>
@@ -509,7 +524,7 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../data-format/">
+                    <a class="prev-page" href="../overview/">
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -518,7 +533,7 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">Data Format</div>
+                            <div class="title">Overview</div>
                             
                         </div>
                     </a>
@@ -526,7 +541,7 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 17, 2021.
+                    Last updated on Oct 18, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
@@ -552,7 +567,10 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">Tuner</a><ul>
-<li><a class="reference internal" href="#fit-method">Fit method</a></li>
+<li><a class="reference internal" href="#fit-method">Fit method</a><ul>
+<li><a class="reference internal" href="#loss-function">Loss function</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#examples">Examples</a><ul>
 <li><a class="reference internal" href="#tune-a-simple-mlp-on-fashion-mnist">Tune a simple MLP on Fashion-MNIST</a></li>
 <li><a class="reference internal" href="#tune-a-bidirectional-lstm-on-covid-qa">Tune a bidirectional LSTM on Covid QA</a></li>
@@ -580,5 +598,7 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/tabs.js"></script>
     <script src="../../_static/design-tabs.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     </body>
 </html>
