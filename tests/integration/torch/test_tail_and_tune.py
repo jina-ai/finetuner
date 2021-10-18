@@ -30,4 +30,3 @@ def test_tail_and_tune(embed_model, create_easy_data):
         layer_name='linear_4',
     )
     assert rv['loss']['train']
-    assert rv['metric']['train']

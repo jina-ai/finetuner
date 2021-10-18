@@ -13,13 +13,13 @@ class FTExecutor(Executor):
         self,
         dam_path: str,
         metric: str = 'cosine',
-        head_layer: str = 'CosineLayer',
+        loss: str = 'CosineSiameseLoss',
         **kwargs,
     ):
         super().__init__(**kwargs)
         self._all_data = DocumentArrayMemmap(dam_path)
         self._metric = metric
-        self._head_layer = head_layer
+        self._loss = loss
 
     @abc.abstractmethod
     def get_embed_model(self):
@@ -77,7 +77,7 @@ class FTExecutor(Executor):
             self._embed_model,
             docs,
             epochs=int(parameters.get('epochs', 10)),
-            head_layer=self._head_layer,
+            loss=self._loss,
         )
 
     @requests(on='/save')

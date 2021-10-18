@@ -29,7 +29,7 @@ def fit(
     eval_data: Optional[DocumentArrayLike] = None,
     epochs: int = 10,
     batch_size: int = 256,
-    head_layer: str = 'CosineLayer',
+    loss: str = 'CosineSiameseLoss',
     learning_rate: float = 1e-3,
     optimizer: str = 'adam',
     optimizer_kwargs: Optional[Dict] = None,
@@ -38,7 +38,7 @@ def fit(
 ) -> TunerReturnType:
     ft = get_tuner_class(embed_model)
 
-    return ft(embed_model, head_layer=head_layer).fit(
+    return ft(embed_model, loss=loss).fit(
         train_data,
         eval_data,
         epochs=epochs,

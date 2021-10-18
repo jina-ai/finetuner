@@ -9,7 +9,7 @@ from finetuner.tuner.keras import KerasTuner
 @pytest.mark.parametrize('learning_rate', [1e-2, 1e-3])
 def test_optimizer(optimizer, learning_rate):
     model = tf.keras.Sequential([tf.keras.Input(shape=(2,)), tf.keras.layers.Dense(2)])
-    ft = KerasTuner(model, 'TripletLayer')
+    ft = KerasTuner(model)
     opt = ft._get_optimizer(optimizer, {}, learning_rate)
 
     assert type(opt).__name__.lower() == optimizer
@@ -19,7 +19,7 @@ def test_optimizer(optimizer, learning_rate):
 def test_non_existing_optimizer():
     model = tf.keras.Sequential([tf.keras.Input(shape=(2,)), tf.keras.layers.Dense(2)])
 
-    ft = KerasTuner(model, 'TripletLayer')
+    ft = KerasTuner(model)
 
     with pytest.raises(ValueError, match='Optimizer "fake"'):
         ft._get_optimizer('fake', {}, 1e-3)

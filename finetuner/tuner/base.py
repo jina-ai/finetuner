@@ -1,4 +1,5 @@
 import abc
+import warnings
 from typing import (
     Optional,
     Union,
@@ -7,7 +8,6 @@ from typing import (
     Dict,
 )
 
-import numpy as np
 import logging
 from jina.logging.logger import JinaLogger
 
@@ -15,40 +15,21 @@ from ..helper import AnyDNN, AnyDataLoader, AnyOptimizer, DocumentArrayLike
 from . import evaluation
 
 
-class BaseHead:
+class BaseLoss:
     arity: int
-
-    def __init__(self, arity_model: Optional[AnyDNN] = None):
-        super().__init__()
-        self._arity_model = arity_model
-
-    def forward(self, *inputs):
-        if self._arity_model:
-            inputs = self._arity_model(*inputs)
-        return self.get_output(*inputs)
-
-    @abc.abstractmethod
-    def get_output(self, *inputs):
-        ...
-
-    @abc.abstractmethod
-    def loss_fn(self, pred_val, target_val):
-        ...
-
-    @abc.abstractmethod
-    def metric_fn(self, pred_val, target_val):
-        ...
 
 
 class BaseTuner(abc.ABC):
     def __init__(
         self,
         embed_model: Optional[AnyDNN] = None,
-        head_layer: Union[AnyDNN, str, None] = None,
+        loss: Union[AnyDNN, str] = 'CosineSiameseLoss',
         **kwargs,
     ):
         self._embed_model = embed_model
-        self._head_layer = head_layer
+        self._loss = self._get_loss(loss)
+        self._train_data_len = 0
+        self._eval_data_len = 0
         self._catalogs = {}
         self.logger = JinaLogger(self.__class__.__name__)
 
@@ -78,7 +59,7 @@ class BaseTuner(abc.ABC):
         custom_kwargs = custom_kwargs or {}
         extra_args = set(custom_kwargs.keys()) - set(opt_kwargs.keys())
         if extra_args:
-            self.logger.warning(
+            warnings.warn(
                 f'The following arguments are not valid for the optimizer {optimizer}:'
                 f' {extra_args}'
             )
@@ -94,16 +75,6 @@ class BaseTuner(abc.ABC):
         return self._embed_model
 
     @property
-    @abc.abstractmethod
-    def wrapped_model(self) -> AnyDNN:
-        """Get the wrapped model of this object.
-
-        A wrapped model is an :py:attr:`.embed_model` replicated by :py:attr:`.arity` times
-        with a ``head_layer`` that fuses all.
-        """
-        ...
-
-    @property
     def arity(self) -> int:
         """Get the arity of this object.
 
@@ -111,13 +82,7 @@ class BaseTuner(abc.ABC):
             - ``arity = 2`` corresponds to the siamese network;
             - ``arity = 3`` corresponds to the triplet network.
         """
-        return self.head_layer.arity
-
-    @property
-    @abc.abstractmethod
-    def head_layer(self) -> AnyDNN:
-        """Get the head layer of this object."""
-        ...
+        return self._loss.arity
 
     @abc.abstractmethod
     def _get_optimizer(
@@ -144,11 +109,12 @@ class BaseTuner(abc.ABC):
 
     @abc.abstractmethod
     def save(self, *args, **kwargs):
-        """Save the weights of the :py:attr:`.embed_model`.
+        """Save the weights of the :py:attr:`.embed_model`."""
+        ...
 
-        Note that, the :py:attr:`.head_layer` and :py:attr:`.wrapped_model` do not need to be stored,
-        as they are auxiliary layers for tuning :py:attr:`.embed_model`.
-        """
+    @abc.abstractmethod
+    def _get_loss(self, loss: Union[str, BaseLoss]) -> BaseLoss:
+        """Get the loss layer."""
         ...
 
     @abc.abstractmethod
@@ -204,14 +170,3 @@ class BaseDataset:
     ):
         super().__init__()
         self._inputs = inputs() if callable(inputs) else inputs
-
-
-class BaseArityModel:
-    """The helper class to copy the network for multi-inputs."""
-
-    def __init__(self, embed_model: AnyDNN):
-        super().__init__()
-        self._embed_model = embed_model
-
-    def forward(self, *args):
-        return tuple(self._embed_model(a) for a in args)

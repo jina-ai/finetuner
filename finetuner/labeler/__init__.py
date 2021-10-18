@@ -17,7 +17,7 @@ def fit(
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
-    head_layer: str = 'CosineLayer',
+    loss: str = 'CosineSiameseLoss',
     **kwargs,
 ) -> None:
     dam_path = tempfile.mkdtemp()
@@ -44,7 +44,7 @@ def fit(
             uses=MyExecutor,
             uses_with={
                 'dam_path': dam_path,
-                'head_layer': head_layer,
+                'loss': loss,
             },
         )
     )

@@ -3,6 +3,13 @@ import tensorflow as tf
 
 from finetuner.tuner.keras import KerasTuner
 
+all_test_losses = [
+    'CosineSiameseLoss',
+    'CosineTripletLoss',
+    'EuclideanSiameseLoss',
+    'EuclideanTripletLoss',
+]
+
 
 @pytest.fixture(autouse=True)
 def tf_gpu_config():
@@ -14,13 +21,13 @@ def tf_gpu_config():
 
 
 @pytest.mark.gpu
-@pytest.mark.parametrize('head_layer', ['TripletLayer', 'CosineLayer'])
-def test_gpu_keras(generate_random_triplets, head_layer, caplog):
+@pytest.mark.parametrize('loss', all_test_losses)
+def test_gpu_keras(generate_random_triplets, loss, caplog):
     data = generate_random_triplets(4, 4)
     embed_model = tf.keras.models.Sequential()
     embed_model.add(tf.keras.layers.InputLayer(input_shape=(4,)))
     embed_model.add(tf.keras.layers.Dense(4))
 
-    tuner = KerasTuner(embed_model, head_layer)
+    tuner = KerasTuner(embed_model, loss)
 
     tuner.fit(data, data, epochs=2, batch_size=4, device='cuda')
