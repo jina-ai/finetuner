@@ -10,7 +10,7 @@ from . import losses, datasets
 from ..base import BaseTuner, BaseLoss
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
-from ..result import TunerResult
+from ..stats import TunerStats
 from ...helper import DocumentArrayLike
 
 
@@ -119,7 +119,7 @@ class KerasTuner(BaseTuner):
         optimizer_kwargs: Optional[Dict] = None,
         device: str = 'cpu',
         **kwargs,
-    ):
+    ) -> TunerStats:
 
         _train_data = self._get_data_loader(
             inputs=train_data, batch_size=batch_size, shuffle=False
@@ -140,7 +140,7 @@ class KerasTuner(BaseTuner):
 
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
-        result = TunerResult()
+        stats = TunerStats()
 
         with self.device:
             for epoch in range(epochs):
@@ -149,17 +149,16 @@ class KerasTuner(BaseTuner):
                     _optimizer,
                     description=f'Epoch {epoch + 1}/{epochs}',
                 )
-                result.add_train_loss(lt)
-                result.add_train_metric(self.get_metrics(train_data))
+                stats.add_train_loss(lt)
+                stats.add_train_metric(self.get_metrics(train_data))
 
                 if eval_data:
-                    log_prefix = f'{LogGenerator("T", lt)()}'
-                    le = self._eval(_eval_data, train_log=log_prefix)
-                    result.add_eval_loss(le)
-                    result.add_eval_metric(self.get_metrics(eval_data))
+                    le = self._eval(_eval_data, train_log=LogGenerator("T", lt)())
+                    stats.add_eval_loss(le)
+                    stats.add_eval_metric(self.get_metrics(eval_data))
 
-                result.print_last()
-        return result
+                stats.print_last()
+        return stats
 
     def get_embeddings(self, data: DocumentArrayLike):
         blobs = data.blobs

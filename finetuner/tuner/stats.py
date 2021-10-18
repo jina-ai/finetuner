@@ -2,7 +2,7 @@ import json
 from typing import Dict, List
 
 
-class TunerResult:
+class TunerStats:
     def __init__(
         self,
         loss_train: List = None,
@@ -45,8 +45,8 @@ class TunerResult:
 
     def print_last(self):
         if self._metrics_train and self._metrics_eval:
-            train_string = TunerResult.get_metrics_string(self._metrics_train[-1])
-            eval_string = TunerResult.get_metrics_string(self._metrics_eval[-1])
+            train_string = TunerStats.get_metrics_string(self._metrics_train[-1])
+            eval_string = TunerStats.get_metrics_string(self._metrics_eval[-1])
             print(f'T: {train_string}, E: {eval_string}')
 
     @staticmethod

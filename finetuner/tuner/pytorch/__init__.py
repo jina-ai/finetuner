@@ -1,6 +1,5 @@
 from typing import Dict, Optional, Union
 
-import numpy as np
 import torch
 from jina.logging.profile import ProgressBar
 from torch.optim.optimizer import Optimizer
@@ -11,6 +10,7 @@ from ..base import BaseTuner, BaseLoss
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
 from ...helper import DocumentArrayLike
+from ..stats import TunerStats
 
 
 class PytorchTuner(BaseTuner):
@@ -128,7 +128,7 @@ class PytorchTuner(BaseTuner):
         optimizer_kwargs: Optional[Dict] = None,
         device: str = 'cpu',
         **kwargs,
-    ):
+    ) -> TunerStats:
         if device == 'cpu':
             self.device = torch.device('cpu')
         elif device == 'cuda':
@@ -142,8 +142,7 @@ class PytorchTuner(BaseTuner):
         # Get optimizer
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
-        losses_train = []
-        losses_eval = []
+        stats = TunerStats()
 
         for epoch in range(epochs):
             _data = self._get_data_loader(
@@ -154,7 +153,8 @@ class PytorchTuner(BaseTuner):
                 _optimizer,
                 description=f'Epoch {epoch + 1}/{epochs}',
             )
-            losses_train.extend(lt)
+            stats.add_train_loss(lt)
+            stats.add_train_metric(self.get_metrics(train_data))
 
             if eval_data:
                 _data = self._get_data_loader(
@@ -162,12 +162,11 @@ class PytorchTuner(BaseTuner):
                 )
 
                 le = self._eval(_data, train_log=LogGenerator('T', lt)())
-                losses_eval.extend(le)
+                stats.add_eval_loss(le)
+                stats.add_eval_metric(self.get_metrics(eval_data))
 
-                self.log_evaluation(train_data, 'TRAIN')
-                self.log_evaluation(eval_data, 'EVAL')
-
-        return {'loss': {'train': losses_train, 'eval': losses_eval}}
+            stats.print_last()
+        return stats
 
     def get_embeddings(self, data: DocumentArrayLike):
         blobs = data.blobs
