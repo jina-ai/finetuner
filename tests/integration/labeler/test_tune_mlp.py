@@ -52,7 +52,9 @@ def _run(framework_name, loss, port_expose):
             paddle.nn.Linear(in_features=128, out_features=32),
         ),
     }
-    data, catalog = generate_fashion_match(num_total=10, num_pos=0, num_neg=0)
+    data, catalog = generate_fashion_match(
+        num_total=10, num_catalog=100, num_pos=0, num_neg=0
+    )
 
     fit(
         embed_models[framework_name](),

@@ -38,7 +38,7 @@ def test_doc_generator():
 
 
 @pytest.mark.parametrize('channels', [0, 1, 3])
-@pytest.mark.parametrize('upsampling', [1, 2, 4])
+@pytest.mark.parametrize('upsampling', [1, 2])
 def test_doc_generator_channel(channels, upsampling):
     for d in generate_fashion_match(channels=channels, upsampling=upsampling)[0]:
         if channels == 0:
@@ -73,13 +73,15 @@ def test_fashion_matches_generator(num_pos, num_neg, pos_value, neg_value):
 
 
 def test_fashion_documentarray():
-    da = DocumentArray(generate_fashion_match(num_total=10, num_pos=2, num_neg=3)[0])
+    da = DocumentArray(
+        generate_fashion_match(num_total=10, num_catalog=1000, num_pos=2, num_neg=3)[0]
+    )
     assert len(da) == 10
     assert len(da[0].matches) == 5
 
 
 def test_qa_documentarray():
-    da = DocumentArray(generate_qa_match(num_total=10, num_neg=3)[0])
+    da = DocumentArray(generate_qa_match(num_total=10, num_catalog=1000, num_neg=3)[0])
     assert len(da) == 10
     assert len(da[0].matches) == 4
 
