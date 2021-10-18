@@ -50,6 +50,7 @@ pip install finetuner
 
 ## Usage
 
+<center>
 <table>
 <thead>
   <tr>
@@ -75,6 +76,7 @@ pip install finetuner
   </tr>
 </tbody>
 </table>
+</center>
 
 ### 1️⃣ Have embedding model and labeled data
 
