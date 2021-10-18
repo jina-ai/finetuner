@@ -44,11 +44,11 @@ class EuclideanTripletLoss(BaseLoss, Layer):
     def call(self, inputs, **kwargs):
         anchor, positive, negative, _ = inputs
 
-        # Seems that tf.norm suffers from numeric instability as explained here
-        # https://github.com/tensorflow/tensorflow/issues/12071
         dist_pos = tf.reduce_sum(tf.math.squared_difference(anchor, positive), axis=-1)
         dist_neg = tf.reduce_sum(tf.math.squared_difference(anchor, negative), axis=-1)
-        return tf.reduce_mean(tf.nn.relu(dist_pos - dist_neg + self._margin))
+        return tf.reduce_mean(
+            tf.nn.relu(tf.sqrt(dist_pos) - tf.sqrt(dist_neg) + self._margin)
+        )
 
 
 class CosineTripletLoss(BaseLoss, Layer):
