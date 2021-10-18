@@ -137,11 +137,12 @@ finetuner.fit(
 )
 ```
 
+<!-- start support-pitch -->
 ## Support
 
-- Use the discussion board of this repository to talk about your use cases, questions, and
+- Use [Discussions](https://github.com/jina-ai/finetuner/discussions) to talk about your use cases, questions, and
   support queries.
-- Join our [Slack community](https://slack.jina.ai) and chat to other Jina community members about ideas.
+- Join our [Slack community](https://slack.jina.ai) and chat with other Jina community members about ideas.
 - Join our [Engineering All Hands](https://youtube.com/playlist?list=PL3UBBWOUVhFYRUa_gpYYKBqEAkO4sxmne) meet-up to discuss your use case and learn Jina's new features.
     - **When?** The second Tuesday of every month
     - **Where?**
@@ -152,3 +153,5 @@ finetuner.fit(
 ## Join Us
 
 Finetuner is backed by [Jina AI](https://jina.ai) and licensed under [Apache-2.0](./LICENSE). [We are actively hiring](https://jobs.jina.ai) AI engineers, solution engineers to build the next neural search ecosystem in opensource.
+
+<!-- end support-pitch -->
