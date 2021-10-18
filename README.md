@@ -10,6 +10,7 @@
 <p align=center>
 <a href="https://pypi.org/project/finetuner/"><img src="https://github.com/jina-ai/jina/blob/master/.github/badges/python-badge.svg?raw=true" alt="Python 3.7 3.8 3.9" title="Finetuner supports Python 3.7 and above"></a>
 <a href="https://pypi.org/project/finetuner/"><img src="https://img.shields.io/pypi/v/finetuner?color=%23099cec&amp;label=PyPI&amp;logo=pypi&amp;logoColor=white" alt="PyPI"></a>
+<a href="https://codecov.io/gh/jina-ai/finetuner"><img src="https://codecov.io/gh/jina-ai/finetuner/branch/main/graph/badge.svg?token=xSs4acAEaJ"/></a>
 <a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-1.8k%2B-blueviolet?logo=slack&amp;logoColor=white"></a>
 </p>
 
