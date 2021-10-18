@@ -168,6 +168,7 @@ const app = new Vue({
             }
             let start_idx = app.labeler_config.start_idx
             app.labeler_config.start_idx = end_idx
+            let new_examples = end_idx - start_idx
             app.is_busy = true
             app.is_conn_broken = false
             $.ajax({
@@ -176,8 +177,7 @@ const app = new Vue({
                 data: JSON.stringify({
                     data: [],
                     parameters: {
-                        'start': start_idx,
-                        'end': end_idx,
+                        'new_examples': new_examples,
                         'topk': app.labeler_config.topk_per_example,
                         'sample_size': app.advanced_config.sample_size.value
                     }

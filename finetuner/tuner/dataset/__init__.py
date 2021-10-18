@@ -8,7 +8,9 @@ class SiameseMixin:
         for d in self._inputs:
             d_blob = d.blob
             for m in d.matches:
-                yield (d_blob, m.blob), np.float32(m.tags[__default_tag_key__]['label'])
+                yield (d_blob, self._catalog[m.id].blob), np.float32(
+                    m.tags[__default_tag_key__]['label']
+                )
 
 
 class TripletMixin:
@@ -19,9 +21,9 @@ class TripletMixin:
             negatives = []
             for m in d.matches:
                 if m.tags[__default_tag_key__]['label'] > 0:
-                    positives.append(m.blob)
+                    positives.append(self._catalog[m.id].blob)
                 else:
-                    negatives.append(m.blob)
+                    negatives.append(self._catalog[m.id].blob)
 
             for p, n in itertools.product(positives, negatives):
                 yield (anchor, p, n), np.float32(0)

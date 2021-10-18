@@ -1,19 +1,6 @@
 import numpy as np
-from jina import Document, DocumentArray, DocumentArrayMemmap
+from jina import Document, DocumentArray
 from .. import __default_tag_key__
-from tempfile import mkdtemp
-
-
-def extract_catalog(docs):
-    catalog_folder = mkdtemp()
-
-    catalog = DocumentArrayMemmap(catalog_folder)
-    for doc in docs:
-        for match in doc.matches:
-            if match.id not in catalog:
-                catalog.append(match)
-
-    return catalog
 
 
 def prepare_eval_docs(docs, catalog, limit=10, sample_size=100, seed=42):

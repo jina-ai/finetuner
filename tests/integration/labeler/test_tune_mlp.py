@@ -86,8 +86,7 @@ def test_all_frameworks(framework, loss):
                     json={
                         'data': [],
                         'parameters': {
-                            'start': 0,
-                            'end': 1,
+                            'count': 1,
                             'topk': 5,
                             'sample_size': 10,
                         },
@@ -105,7 +104,7 @@ def test_all_frameworks(framework, loss):
             f'http://localhost:{port}/next',
             json={
                 'data': [],
-                'parameters': {'start': 0, 'end': 1, 'topk': 5, 'sample_size': 10},
+                'parameters': {'count': 1, 'topk': 5, 'sample_size': 10},
             },
         )
         assert req.status_code == 200

@@ -14,6 +14,7 @@ from ..helper import AnyDNN, DocumentArrayLike
 def fit(
     embed_model: AnyDNN,
     train_data: DocumentArrayLike,
+    catalog: Optional[DocumentArrayLike] = None,
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
@@ -37,13 +38,14 @@ def fit(
             uses=DataIterator,
             uses_with={
                 'dam_path': dam_path,
+                'catalog_dam_path': dam_path + '/catalog',
                 'clear_labels_on_start': clear_labels_on_start,
             },
         )
         .add(
             uses=MyExecutor,
             uses_with={
-                'dam_path': dam_path,
+                'catalog_dam_path': dam_path + '/catalog',
                 'loss': loss,
             },
         )
@@ -85,10 +87,19 @@ def fit(
                 is_frontend_open = True
 
         # feed train data into the labeler flow
+        if catalog is None:
+            catalog = train_data
+        f.post(
+            '/feed',
+            catalog,
+            request_size=512,
+            show_progress=True,
+            parameters={'type': 'catalog'},
+        )
         f.post(
             '/feed',
             train_data,
-            request_size=10,
+            request_size=128,
             show_progress=True,
             on_done=open_frontend_in_browser,
         )

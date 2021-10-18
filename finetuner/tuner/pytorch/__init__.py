@@ -23,7 +23,7 @@ class PytorchTuner(BaseTuner):
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
         ds = get_dataset(datasets, self.arity)
         return DataLoader(
-            dataset=ds(inputs=inputs),
+            dataset=ds(inputs=inputs, catalog=self._catalog),
             batch_size=batch_size,
             shuffle=shuffle,
         )

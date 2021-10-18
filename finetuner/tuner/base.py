@@ -10,6 +10,7 @@ from typing import (
 
 import logging
 from jina.logging.logger import JinaLogger
+from jina import DocumentArrayMemmap
 
 from ..helper import AnyDNN, AnyDataLoader, AnyOptimizer, DocumentArrayLike
 from . import evaluation
@@ -23,6 +24,7 @@ class BaseTuner(abc.ABC):
     def __init__(
         self,
         embed_model: Optional[AnyDNN] = None,
+        catalog: DocumentArrayLike = None,
         loss: Union[AnyDNN, str] = 'CosineSiameseLoss',
         **kwargs,
     ):
@@ -30,7 +32,7 @@ class BaseTuner(abc.ABC):
         self._loss = self._get_loss(loss)
         self._train_data_len = 0
         self._eval_data_len = 0
-        self._catalogs = {}
+        self._catalog = catalog
         self.logger = JinaLogger(self.__class__.__name__)
 
     def _get_optimizer_kwargs(self, optimizer: str, custom_kwargs: Optional[Dict]):
@@ -138,21 +140,12 @@ class BaseTuner(abc.ABC):
         """Evaluate the model on given labeled data"""
         ...
 
-    def log_evaluation(self, docs: DocumentArrayLike, label: str):
-        if self.logger.logger.isEnabledFor(logging.DEBUG):
-            if label not in self._catalogs:
-                self._catalogs[label] = evaluation.extract_catalog(docs)
-            catalog = self._catalogs[label]
-
-            scores = self._get_evaluation(docs, catalog)
-            for name, value in scores.items():
-                self.logger.debug(f'{label} {name}: {value}')
-
-    def _get_evaluation(self, docs, catalog):
+    def get_metrics(self, docs):
         self.get_embeddings(docs)
-        self.get_embeddings(catalog)
-        catalog.prune()
-        to_be_scored_docs = evaluation.prepare_eval_docs(docs, catalog, limit=10)
+        self.get_embeddings(self._catalog)
+        if isinstance(self._catalog, DocumentArrayMemmap):
+            self._catalog.prune()
+        to_be_scored_docs = evaluation.prepare_eval_docs(docs, self._catalog, limit=10)
         return {
             'hits': evaluation.get_hits_at_n(to_be_scored_docs),
             'ndcg': evaluation.get_ndcg_at_n(to_be_scored_docs),
@@ -167,6 +160,8 @@ class BaseDataset:
     def __init__(
         self,
         inputs: DocumentArrayLike,
+        catalog: DocumentArrayLike,
     ):
         super().__init__()
         self._inputs = inputs() if callable(inputs) else inputs
+        self._catalog = catalog() if callable(catalog) else catalog

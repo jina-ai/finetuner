@@ -4,13 +4,13 @@ import numpy as np
 import tensorflow as tf
 from jina.logging.profile import ProgressBar
 from tensorflow import keras
-from tensorflow.keras.layers import Layer
 from tensorflow.keras.optimizers import Optimizer
 
 from . import losses, datasets
 from ..base import BaseTuner, BaseLoss
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
+from ..result import TunerResult
 from ...helper import DocumentArrayLike
 
 
@@ -27,7 +27,7 @@ class KerasTuner(BaseTuner):
         input_shape = self.embed_model.input_shape[1:]
 
         tf_data = tf.data.Dataset.from_generator(
-            lambda: ds(inputs),
+            lambda: ds(inputs, self._catalog),
             output_signature=(
                 tuple(
                     tf.TensorSpec(shape=input_shape, dtype=tf.float32)
@@ -140,8 +140,7 @@ class KerasTuner(BaseTuner):
 
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
-        losses_train = []
-        losses_eval = []
+        result = TunerResult()
 
         with self.device:
             for epoch in range(epochs):
@@ -150,18 +149,17 @@ class KerasTuner(BaseTuner):
                     _optimizer,
                     description=f'Epoch {epoch + 1}/{epochs}',
                 )
-                losses_train.extend(lt)
+                result.add_train_loss(lt)
+                result.add_train_metric(self.get_metrics(train_data))
 
                 if eval_data:
-                    le = self._eval(_eval_data, train_log=LogGenerator('T', lt)())
-                    losses_eval.extend(le)
+                    log_prefix = f'{LogGenerator("T", lt)()}'
+                    le = self._eval(_eval_data, train_log=log_prefix)
+                    result.add_eval_loss(le)
+                    result.add_eval_metric(self.get_metrics(eval_data))
 
-                    self.log_evaluation(train_data, 'TRAIN')
-                    self.log_evaluation(eval_data, 'EVAL')
-
-        return {
-            'loss': {'train': losses_train, 'eval': losses_eval},
-        }
+                result.print_last()
+        return result
 
     def get_embeddings(self, data: DocumentArrayLike):
         blobs = data.blobs

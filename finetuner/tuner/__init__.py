@@ -26,6 +26,7 @@ def get_tuner_class(dnn_model: AnyDNN) -> Type['BaseTuner']:
 def fit(
     embed_model: AnyDNN,
     train_data: DocumentArrayLike,
+    catalog: DocumentArrayLike,
     eval_data: Optional[DocumentArrayLike] = None,
     epochs: int = 10,
     batch_size: int = 256,
@@ -38,7 +39,7 @@ def fit(
 ) -> TunerReturnType:
     ft = get_tuner_class(embed_model)
 
-    return ft(embed_model, loss=loss).fit(
+    return ft(embed_model, catalog=catalog, loss=loss).fit(
         train_data,
         eval_data,
         epochs=epochs,
