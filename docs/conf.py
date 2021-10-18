@@ -102,6 +102,7 @@ extensions = [
 ]
 
 myst_enable_extensions = ['colon_fence', 'dollarmath']
+myst_dmath_double_inline = True
 
 # -- Custom 404 page
 

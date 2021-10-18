@@ -7,7 +7,7 @@ Labeled data can be constructed {ref}`by following this<construct-labeled-data>`
 
 ## Fit method
 
-Tuner can be called via `finetuner.fit()`:
+Tuner can be called via `finetuner.fit()`. Its minimum form looks like the folllowing:
 
 ```python
 import finetuner
@@ -22,14 +22,53 @@ finetuner.fit(
 
 Here, `embed_model` must be {term}`embedding model`; and `train_data` must be {term}`labeled data`.
 
+### Loss function
 
-Besides, it accepts the following `**kwargs`:
+By default, Tuner uses `CosineSiameseLoss` for training. you can also use other built-in losses by `finetuner.fit(..., loss='...')`.
 
-|Argument| Description |
-|---|---|
-|`eval_data` | the evaluation data (same format as `train_data`) to be used on every epoch|
-|`batch_size`| the number of `Document` in each batch|
-|`epochs` |the number of epochs for training |
+Let $\mathbf{x}_i$ denote the predicted embedding for Document $i$, the built-in losses are summarized as below:
+
+:::{dropdown} `CosineSiameseLoss`
+:open:
+
+
+$$\ell_{i,j} = \big(\cos(\mathbf{x}_i, \mathbf{x}_j) - y_{i,j}\big)^2$$, 
+
+where $y_{i,j}$ is the label of $\{-1, 1\}$ and $y_{i,j}=1$ represents Document $i$ and $j$ are positively related.
+
+:::
+ 
+:::{dropdown} `EuclideanSiameseLoss`
+:open:
+
+$$\ell_{i,j}=\frac{1}{2}\big(y_{i,j}\left \|  \mathbf{x}_i-\mathbf{x}_j\right \| + (1-y_{i,j})\max(0, 1-\left \|  \mathbf{x}_i-\mathbf{x}_j\right \|)\big)^2$$, 
+
+where $y_{i,j}$ is the label of $\{-1, 1\}$ and $y_{i,j}=1$ represents Document $i$ and $j$ are positively related.
+
+:::
+
+:::{dropdown} `CosineTripletLoss`
+:open:
+
+$$\ell_{i, p, n}=\max(0, \cos(\mathbf{x}_i, \mathbf{x}_n)-\cos(\mathbf{x}_i, \mathbf{x}_p)+1)$$, 
+
+where Document $p$ and $i$ are positively related, whereas $n$ and $i$ are negatively related or unrelated. 
+:::
+
+:::{dropdown} `EuclideanTripletLoss`
+:open:
+
+$$\ell_{i, p, n}=\max(0, \left \|\mathbf{x}_i, \mathbf{x}_p \right \|-\left \|\mathbf{x}_i, \mathbf{x}_n \right \|+1)$$, 
+
+where Document $p$ and $i$ are positively related, whereas $n$ and $i$ are negatively related or unrelated. 
+
+:::
+
+```{tip}
+
+Although siamese and triplet loss work on pair and triplet input respectively, there is **no need** to worry about the data input format. You only need to make sure your data is labeled according to {ref}`data-format`, then you can switch between all losses freely.
+
+```
 
 ## Examples
 
@@ -87,23 +126,10 @@ Besides, it accepts the following `**kwargs`:
     )
     ```
 
-By default, `head_layer` is set to `CosineLayer`, one can also use `TripletLayer`:
 
-````{tab} CosineLayer
-
-```{figure} mlp.cosine.png
-:align: center
-```
-
-````
-
-````{tab} TripletLayer
-
-```{figure} mlp.triplet.png
-:align: center
-```
-
-````
+   ```{figure} mlp.png
+   :align: center
+   ```
 
 ### Tune a bidirectional LSTM on Covid QA
 
@@ -167,22 +193,8 @@ By default, `head_layer` is set to `CosineLayer`, one can also use `TripletLayer
     )
     ```
 
-By default, `head_layer` is set to `CosineLayer`, one can also use `TripletLayer`:
-
-````{tab} CosineLayer
-
-```{figure} lstm.cosine.png
-:align: center
-```
-
-````
-
-````{tab} TripletLayer
-
-```{figure} lstm.triplet.png
-:align: center
-```
-
-````
+   ```{figure} lstm.png
+   :align: center
+   ```
 
 

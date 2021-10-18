@@ -139,6 +139,7 @@ jobs:
           name: ${{ matrix.test-path }}-codecov
           flags: ${{ steps.test.outputs.codecov_flag }}
           fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
   
   test-gpu:
     needs: prep-testbed
