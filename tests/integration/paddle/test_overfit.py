@@ -64,4 +64,4 @@ def test_overfit_paddle(
         dist_other = dists[2 * i : 2 * i + 2, :].copy()
         dist_other[:, 2 * i : 2 * i + 2] = 10_000
 
-        assert cls_dist < dist_other.min() - 0.5
+        assert cls_dist < dist_other.min() - 0.1
