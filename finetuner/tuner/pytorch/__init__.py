@@ -172,8 +172,8 @@ class PytorchTuner(BaseTuner):
         blobs = data.blobs
 
         tensor = torch.tensor(blobs, device=self.device)
-        embeddings = self.embed_model(tensor)
         with torch.inference_mode():
+            embeddings = self.embed_model(tensor)
             for doc, embed in zip(data, embeddings):
                 doc.embedding = embed.cpu().numpy()
 
