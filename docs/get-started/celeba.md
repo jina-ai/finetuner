@@ -41,6 +41,41 @@ model = paddle.vision.models.resnet50(pretrained=True)
 
 Now prepare CelebA data for the Finetuner. Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we first convert them into this format.
 
+Let's first make sure you have downloaded all the images `img_align_celeba.zip` (unzip) and `IdentityCelebA.txt` locally.
+
+Since each celebrity has multiple facial images, we first create a `defaultdict` and group these images by celebrity identity:
+
+```python
+from collections import defaultdict
+
+DATA_PATH = '~/[YOUR-DIRECTORY]/img_align_celeba/'
+IDENTITY_PATH = '~/[YOUR-DIRECTORY]/identity_CelebA.txt'
+
+
+def group_imgs_by_identity():
+    grouped = defaultdict(list)
+    with open(IDENTITY_PATH, 'r') as f:
+        for line in f:
+            img, identity = line.split()
+            grouped[identity].append(img)
+    return grouped
+```
+
+Then we create a data generator that yields every image as a `Document` object:
+
+```python
+from jina import Document
+
+# when use labeler
+def train_generator():
+    for identity, imgs in group_imgs_by_identity().items():
+        for img in imgs:
+            d = Document(uri=DATA_PATH + img)
+            d.convert_image_uri_to_blob(color_axis=0)
+            d.convert_uri_to_datauri()
+            yield d
+```
+
 
 ## Put together
 
