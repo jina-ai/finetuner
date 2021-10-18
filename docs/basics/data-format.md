@@ -1,3 +1,4 @@
+(data-format)=
 # Data Format
 
 Finetuner uses Jina [`Document`](https://docs.jina.ai/fundamentals/document/) as the primitive data type. In

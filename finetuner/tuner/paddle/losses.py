@@ -22,7 +22,7 @@ class CosineSiameseLoss(BaseLoss, nn.Layer):
 class EuclideanSiameseLoss(BaseLoss, nn.Layer):
     arity = 2
 
-    def __init__(self, margin: float = 0.7):
+    def __init__(self, margin: float = 1.0):
         super().__init__()
         self.margin = margin
         self._dist = nn.PairwiseDistance(2)

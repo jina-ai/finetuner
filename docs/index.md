@@ -82,6 +82,7 @@ Now that you’re set up, let’s dive into more of how Finetuner works and can 
 
 ## Next step
 
+<!-- start fit-method -->
 Finetuner is extremely easy to learn: all you need is `finetuner.fit()`!
 
 Answer the questions below and quickly find out what you need to learn:
@@ -238,6 +239,8 @@ Learn more about {term}`Tailor`, {term}`Tuner` and {term}`Labeler`.
     });
 </script>
 
+<!-- end fit-method -->
+
 ```{toctree}
 :caption: Get Started
 :hidden:
@@ -254,6 +257,12 @@ get-started/covid-qa
 basics/index
 ```
 
+```{toctree}
+:caption: Components
+:hidden:
+
+components/index
+```
 
 ```{toctree}
 :caption: Developer Reference

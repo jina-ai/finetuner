@@ -1,9 +1,7 @@
 ```{toctree}
 :hidden:
 
-glossary
+fit
 data-format
-tuner
-tailor
-labeler
+glossary
 ```
