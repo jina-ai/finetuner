@@ -306,12 +306,15 @@
 
 <div class="viewcode-block" id="KerasTuner"><a class="viewcode-back" href="../../../../api/finetuner.tuner.keras/#finetuner.tuner.keras.KerasTuner">[docs]</a><span class="k">class</span> <span class="nc">KerasTuner</span><span class="p">(</span><span class="n">BaseTuner</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">_get_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+        <span class="sd">"""Get the loss layer."""</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="n">loss</span><span class="p">)()</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">BaseLoss</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">loss</span>
 
     <span class="k">def</span> <span class="nf">_get_data_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">"""Get tensorflow ``Dataset`` from the input data. """</span>
 
         <span class="n">ds</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arity</span><span class="p">)</span>
         <span class="n">input_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="o">.</span><span class="n">input_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
@@ -335,6 +338,8 @@
     <span class="k">def</span> <span class="nf">_get_optimizer</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">optimizer_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optimizer</span><span class="p">:</span>
+        <span class="sd">"""Get the optimizer for training."""</span>
+
         <span class="n">optimizer_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_optimizer_kwargs</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">optimizer_kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">optimizer</span> <span class="o">==</span> <span class="s1">'adam'</span><span class="p">:</span>
@@ -349,6 +354,8 @@
             <span class="k">return</span> <span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span> <span class="o">**</span><span class="n">optimizer_kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">"""Train the model on given labeled data"""</span>
+
         <span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">log_generator</span> <span class="o">=</span> <span class="n">LogGenerator</span><span class="p">(</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">losses</span><span class="p">)</span>
@@ -378,6 +385,7 @@
         <span class="k">return</span> <span class="n">losses</span>
 
     <span class="k">def</span> <span class="nf">_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'Evaluating'</span><span class="p">,</span> <span class="n">train_log</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span><span class="p">):</span>
+        <span class="sd">"""Evaluate the model on given labeled data"""</span>
 
         <span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -410,6 +418,34 @@
         <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TunerStats</span><span class="p">:</span>
+        <span class="sd">"""Finetune the model on the training data.</span>
+
+<span class="sd">        :param train_data: Data on which to train the model</span>
+<span class="sd">        :param eval_data: Data on which to evaluate the model at the end of each epoch</span>
+<span class="sd">        :param epoch: Number of epochs to train the model</span>
+<span class="sd">        :param batch_size: The batch size to use for training and evaluation</span>
+<span class="sd">        :param learning_rate: Learning rate to use in training</span>
+<span class="sd">        :param optimizer: Which optimizer to use in training. Supported</span>
+<span class="sd">            values/optimizers are:</span>
+<span class="sd">            - ``"adam"`` for the Adam optimizer</span>
+<span class="sd">            - ``"rmsprop"`` for the RMSProp optimizer</span>
+<span class="sd">            - ``"sgd"`` for the SGD optimizer with momentum</span>
+<span class="sd">        :param optimizer_kwargs: Keyword arguments to pass to the optimizer. The</span>
+<span class="sd">            supported arguments, togethere with their defailt values, are:</span>
+<span class="sd">            - ``"adam"``:  ``{'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-08}``</span>
+<span class="sd">            - ``"rmsprop"``::</span>
+
+<span class="sd">                {</span>
+<span class="sd">                    'rho': 0.99,</span>
+<span class="sd">                    'momentum': 0.0,</span>
+<span class="sd">                    'epsilon': 1e-08,</span>
+<span class="sd">                    'centered': False,</span>
+<span class="sd">                }</span>
+
+<span class="sd">            - ``"sgd"``: ``{'momentum': 0.0, 'nesterov': False}``</span>
+<span class="sd">        :param device: The device to which to move the model. Supported options are</span>
+<span class="sd">            ``"cpu"`` and ``"cuda"`` (for GPU)</span>
+<span class="sd">        """</span>
 
         <span class="n">_train_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_loader</span><span class="p">(</span>
             <span class="n">inputs</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
@@ -457,6 +493,16 @@
             <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">embed</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="KerasTuner.save"><a class="viewcode-back" href="../../../../api/finetuner.tuner.keras/#finetuner.tuner.keras.KerasTuner.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">"""Save the embedding model.</span>
+
+<span class="sd">        You need to pass the path where to save the model in either ``args`` or</span>
+<span class="sd">        ``kwargs`` (for ``filepath`` key).</span>
+
+<span class="sd">        :param args: Arguments to pass to ``save`` method of the embedding model</span>
+<span class="sd">        :param kwargs: Keyword arguments to pass to ``save`` method of the embedding</span>
+<span class="sd">            model</span>
+<span class="sd">        """</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 </pre></div>
             </article>

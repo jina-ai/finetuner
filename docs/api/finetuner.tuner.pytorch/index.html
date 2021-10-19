@@ -328,15 +328,56 @@
 <dt class="sig sig-object py" id="finetuner.tuner.pytorch.PytorchTuner">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.pytorch.</span></span><span class="sig-name descname"><span class="pre">PytorchTuner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CosineSiameseLoss'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/#PytorchTuner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.PytorchTuner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseTuner" title="finetuner.tuner.base.BaseTuner"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseTuner</span></code></a></p>
+<p>Create the tuner instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embed_model</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[~AnyDNN]) – Model that produces embeddings from inputs</p></li>
+<li><p><strong>loss</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~AnyDNN, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Either the loss object instance, or the name of the loss function.
+Currently available losses are <code class="docutils literal notranslate"><span class="pre">CosineSiameseLoss</span></code>,
+<code class="docutils literal notranslate"><span class="pre">EuclideanSiameseLoss</span></code>, <code class="docutils literal notranslate"><span class="pre">EuclideanTripletLoss</span></code> and <code class="docutils literal notranslate"><span class="pre">CosineTripletLoss</span></code></p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.pytorch.PytorchTuner.fit">
 <span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'adam'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/#PytorchTuner.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.PytorchTuner.fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit the <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.embed_model" title="finetuner.tuner.base.BaseTuner.embed_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embed_model</span></code></a> on labeled data.</p>
-<p>Note that fitting changes the weights in <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.embed_model" title="finetuner.tuner.base.BaseTuner.embed_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embed_model</span></code></a> in-place. This allows one to consecutively
-call <a class="reference internal" href="../finetuner/#finetuner.fit" title="finetuner.fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">fit()</span></code></a> multiple times with different configs or data to get better models.</p>
+<dd><p>Finetune the model on the training data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats" title="finetuner.tuner.stats.TunerStats"><code class="xref py py-class docutils literal notranslate"><span class="pre">TunerStats</span></code></a></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentSequence, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, ~DocumentSequence]]) – Data on which to train the model</p></li>
+<li><p><strong>eval_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentSequence, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, ~DocumentSequence], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Data on which to evaluate the model at the end of each epoch</p></li>
+<li><p><strong>epoch</strong> – Number of epochs to train the model</p></li>
+<li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The batch size to use for training and evaluation</p></li>
+<li><p><strong>learning_rate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Learning rate to use in training</p></li>
+<li><p><strong>optimizer</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Which optimizer to use in training. Supported
+values/optimizers are:
+- <code class="docutils literal notranslate"><span class="pre">"adam"</span></code> for the Adam optimizer
+- <code class="docutils literal notranslate"><span class="pre">"rmsprop"</span></code> for the RMSProp optimizer
+- <code class="docutils literal notranslate"><span class="pre">"sgd"</span></code> for the SGD optimizer with momentum</p></li>
+<li><p><strong>optimizer_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – <p>Keyword arguments to pass to the optimizer. The
+supported arguments, togethere with their defailt values, are:
+- <code class="docutils literal notranslate"><span class="pre">"adam"</span></code>:  <code class="docutils literal notranslate"><span class="pre">{'beta_1':</span> <span class="pre">0.9,</span> <span class="pre">'beta_2':</span> <span class="pre">0.999,</span> <span class="pre">'epsilon':</span> <span class="pre">1e-08}</span></code>
+- <code class="docutils literal notranslate"><span class="pre">"rmsprop"</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">'rho'</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">,</span>
+    <span class="s1">'momentum'</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s1">'epsilon'</span><span class="p">:</span> <span class="mf">1e-08</span><span class="p">,</span>
+    <span class="s1">'centered'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">"sgd"</span></code>: <code class="docutils literal notranslate"><span class="pre">{'momentum':</span> <span class="pre">0.0,</span> <span class="pre">'nesterov':</span> <span class="pre">False}</span></code></p></li>
+</ul>
+</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The device to which to move the model. Supported options are
+<code class="docutils literal notranslate"><span class="pre">"cpu"</span></code> and <code class="docutils literal notranslate"><span class="pre">"cuda"</span></code> (for GPU)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats" title="finetuner.tuner.stats.TunerStats"><code class="xref py py-class docutils literal notranslate"><span class="pre">TunerStats</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -348,7 +389,17 @@ call <a class="reference internal" href="../finetuner/#finetuner.fit" title="fin
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.pytorch.PytorchTuner.save">
 <span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/#PytorchTuner.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.PytorchTuner.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save the weights of the <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.embed_model" title="finetuner.tuner.base.BaseTuner.embed_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embed_model</span></code></a>.</p>
+<dd><p>Save the embedding model.</p>
+<p>You need to pass the path where to save the model in either <code class="docutils literal notranslate"><span class="pre">args</span></code> or
+<code class="docutils literal notranslate"><span class="pre">kwargs</span></code> (for <code class="docutils literal notranslate"><span class="pre">f</span></code> key).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – Arguments to pass to <code class="docutils literal notranslate"><span class="pre">torch.save</span></code> function</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments to pass to <code class="docutils literal notranslate"><span class="pre">torch.save</span></code> function</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 </dd></dl>
 </section>

@@ -317,6 +317,13 @@
         <span class="n">loss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">AnyDNN</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'CosineSiameseLoss'</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
+        <span class="sd">"""Create the tuner instance.</span>
+
+<span class="sd">        :param embed_model: Model that produces embeddings from inputs</span>
+<span class="sd">        :param loss: Either the loss object instance, or the name of the loss function.</span>
+<span class="sd">            Currently available losses are ``CosineSiameseLoss``,</span>
+<span class="sd">            ``EuclideanSiameseLoss``, ``EuclideanTripletLoss`` and ``CosineTripletLoss``</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span> <span class="o">=</span> <span class="n">embed_model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_loss</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_train_data_len</span> <span class="o">=</span> <span class="mi">0</span>

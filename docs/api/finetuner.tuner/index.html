@@ -380,18 +380,61 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="finetuner.tuner.fit">
 <span class="sig-prename descclassname"><span class="pre">finetuner.tuner.</span></span><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CosineSiameseLoss'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'adam'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/#fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.fit" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
+<dd><p>Finetune the model on the training data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentSequence, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, ~DocumentSequence]]) – Data on which to train the model</p></li>
+<li><p><strong>eval_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentSequence, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, ~DocumentSequence], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Data on which to evaluate the model at the end of each epoch</p></li>
+<li><p><strong>epoch</strong> – Number of epochs to train the model</p></li>
+<li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The batch size to use for training and evaluation</p></li>
+<li><p><strong>learning_rate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Learning rate to use in training</p></li>
+<li><p><strong>optimizer</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Which optimizer to use in training. Supported
+values/optimizers are:
+- <code class="docutils literal notranslate"><span class="pre">"adam"</span></code> for the Adam optimizer
+- <code class="docutils literal notranslate"><span class="pre">"rmsprop"</span></code> for the RMSProp optimizer
+- <code class="docutils literal notranslate"><span class="pre">"sgd"</span></code> for the SGD optimizer with momentum</p></li>
+<li><p><strong>optimizer_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – <p>Keyword arguments to pass to the optimizer. The
+supported arguments, togethere with their defailt values, are:
+- <code class="docutils literal notranslate"><span class="pre">"adam"</span></code>:  <code class="docutils literal notranslate"><span class="pre">{'beta_1':</span> <span class="pre">0.9,</span> <span class="pre">'beta_2':</span> <span class="pre">0.999,</span> <span class="pre">'epsilon':</span> <span class="pre">1e-08}</span></code>
+- <code class="docutils literal notranslate"><span class="pre">"rmsprop"</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">'rho'</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">,</span>
+    <span class="s1">'momentum'</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s1">'epsilon'</span><span class="p">:</span> <span class="mf">1e-08</span><span class="p">,</span>
+    <span class="s1">'centered'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">"sgd"</span></code>: <code class="docutils literal notranslate"><span class="pre">{'momentum':</span> <span class="pre">0.0,</span> <span class="pre">'nesterov':</span> <span class="pre">False}</span></code></p></li>
+</ul>
+</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The device to which to move the model. Supported options are
+<code class="docutils literal notranslate"><span class="pre">"cpu"</span></code> and <code class="docutils literal notranslate"><span class="pre">"cuda"</span></code> (for GPU)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
 </dd>
 </dl>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="finetuner.tuner.save">
 <span class="sig-prename descclassname"><span class="pre">finetuner.tuner.</span></span><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/#save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.save" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd><p>Save the embedding model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embed_model</strong> (<em>~AnyDNN</em>) – The embedding model to save</p></li>
+<li><p><strong>model_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to file/folder where to save the model</p></li>
+<li><p><strong>args</strong> – Arguments to pass to framework-specific tuner’s <code class="docutils literal notranslate"><span class="pre">save</span></code> method</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments to pass to framework-specific tuner’s <code class="docutils literal notranslate"><span class="pre">save</span></code>
+method</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>

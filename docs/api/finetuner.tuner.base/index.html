@@ -325,6 +325,17 @@
 <dt class="sig sig-object py" id="finetuner.tuner.base.BaseTuner">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.base.</span></span><span class="sig-name descname"><span class="pre">BaseTuner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CosineSiameseLoss'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseTuner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseTuner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Create the tuner instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embed_model</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[~AnyDNN]) – Model that produces embeddings from inputs</p></li>
+<li><p><strong>loss</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~AnyDNN, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Either the loss object instance, or the name of the loss function.
+Currently available losses are <code class="docutils literal notranslate"><span class="pre">CosineSiameseLoss</span></code>,
+<code class="docutils literal notranslate"><span class="pre">EuclideanSiameseLoss</span></code>, <code class="docutils literal notranslate"><span class="pre">EuclideanTripletLoss</span></code> and <code class="docutils literal notranslate"><span class="pre">CosineTripletLoss</span></code></p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="finetuner.tuner.base.BaseTuner.embed_model">
 <em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">embed_model</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="../finetuner.helper/#finetuner.helper.AnyDNN" title="finetuner.helper.AnyDNN"><span class="pre">finetuner.helper.AnyDNN</span></a></em><a class="headerlink" href="#finetuner.tuner.base.BaseTuner.embed_model" title="Permalink to this definition">¶</a></dt>

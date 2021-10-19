@@ -295,9 +295,27 @@
 
 
 <div class="viewcode-block" id="CosineSiameseLoss"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.keras.losses/#finetuner.tuner.keras.losses.CosineSiameseLoss">[docs]</a><span class="k">class</span> <span class="nc">CosineSiameseLoss</span><span class="p">(</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="n">Layer</span><span class="p">):</span>
+    <span class="sd">"""Computes the loss for a siamese network using cosine distance.</span>
+
+<span class="sd">    The loss for a pair of objects equals ``(target - cos_sim)^2``, where ``target``</span>
+<span class="sd">    should equal 1 when both objects belong to the same class, and to -1 when they</span>
+<span class="sd">    belong to different classes. The ``cos_sim`` represents the cosime similarity</span>
+<span class="sd">    between both objects.</span>
+
+<span class="sd">    The final loss is the average over losses for all pairs of objects in the batch.</span>
+<span class="sd">    """</span>
+
     <span class="n">arity</span> <span class="o">=</span> <span class="mi">2</span>
 
 <div class="viewcode-block" id="CosineSiameseLoss.call"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.keras.losses/#finetuner.tuner.keras.losses.CosineSiameseLoss.call">[docs]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">"""Compute the loss.</span>
+
+<span class="sd">        :param inputs: Should be a list or a tuple containing three tensors:</span>
+<span class="sd">            - ``[N, D]`` tensor of embeddings of the first objects of the pair</span>
+<span class="sd">            - ``[N, D]`` tensor of embeddings of the second objects of the pair</span>
+<span class="sd">            - ``[N, ]`` tensor of target values</span>
+<span class="sd">        """</span>
+
         <span class="n">l_emb</span><span class="p">,</span> <span class="n">r_emb</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">inputs</span>
         <span class="n">normalize_a</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">l2_normalize</span><span class="p">(</span><span class="n">l_emb</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">normalize_b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">l2_normalize</span><span class="p">(</span><span class="n">r_emb</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
@@ -306,6 +324,22 @@
 
 
 <div class="viewcode-block" id="EuclideanSiameseLoss"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.keras.losses/#finetuner.tuner.keras.losses.EuclideanSiameseLoss">[docs]</a><span class="k">class</span> <span class="nc">EuclideanSiameseLoss</span><span class="p">(</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="n">Layer</span><span class="p">):</span>
+    <span class="sd">"""Computes the loss for a siamese network using cosine distance.</span>
+
+<span class="sd">    This loss is also known as contrastive loss.</span>
+
+<span class="sd">    The loss being optimized equals::</span>
+
+<span class="sd">        [is_sim * dist + (1 - is_sim) * max(margin - dist, 0)]^2</span>
+
+<span class="sd">    where ``target`` should equal 1 when both objects belong to the same class,</span>
+<span class="sd">    and 0 otheriwse. The ``dist`` is the euclidean distance between the embeddings of</span>
+<span class="sd">    the objects, and ``margin`` is some number, used here to ensure better stability</span>
+<span class="sd">    of training.</span>
+
+<span class="sd">    The final loss is the average over losses for all pairs of objects in the batch.</span>
+<span class="sd">    """</span>
+
     <span class="n">arity</span> <span class="o">=</span> <span class="mi">2</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
@@ -313,6 +347,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">=</span> <span class="n">margin</span>
 
 <div class="viewcode-block" id="EuclideanSiameseLoss.call"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.keras.losses/#finetuner.tuner.keras.losses.EuclideanSiameseLoss.call">[docs]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">"""Compute the loss.</span>
+
+<span class="sd">        :param inputs: Should be a list or a tuple containing three tensors:</span>
+<span class="sd">            - ``[N, D]`` tensor of embeddings of the first objects of the pair</span>
+<span class="sd">            - ``[N, D]`` tensor of embeddings of the second objects of the pair</span>
+<span class="sd">            - ``[N, ]`` tensor of target values</span>
+<span class="sd">        """</span>
         <span class="n">l_emb</span><span class="p">,</span> <span class="n">r_emb</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">inputs</span>
         <span class="n">eucl_dist</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">squared_difference</span><span class="p">(</span><span class="n">l_emb</span><span class="p">,</span> <span class="n">r_emb</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">is_similar</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">target</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -325,6 +366,17 @@
 
 
 <div class="viewcode-block" id="EuclideanTripletLoss"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.keras.losses/#finetuner.tuner.keras.losses.EuclideanTripletLoss">[docs]</a><span class="k">class</span> <span class="nc">EuclideanTripletLoss</span><span class="p">(</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="n">Layer</span><span class="p">):</span>
+    <span class="sd">"""Compute the loss for a triplet network using euclidean distance.</span>
+
+<span class="sd">    The loss is computed as ``max(dist_pos - dist_neg + margin, 0)``, where ``dist_pos``</span>
+<span class="sd">    is the euclidean distance between the anchor embedding and positive embedding,</span>
+<span class="sd">    ``dist_neg`` is the euclidean distance between the anchor and negative embedding,</span>
+<span class="sd">    and ``margin`` represents a wedge between the desired wedge between anchor-negative</span>
+<span class="sd">    and anchor-positive distances.</span>
+
+<span class="sd">    The final loss is the average over losses for all triplets in the batch.</span>
+<span class="sd">    """</span>
+
     <span class="n">arity</span> <span class="o">=</span> <span class="mi">3</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -332,6 +384,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span> <span class="o">=</span> <span class="n">margin</span>
 
 <div class="viewcode-block" id="EuclideanTripletLoss.call"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.keras.losses/#finetuner.tuner.keras.losses.EuclideanTripletLoss.call">[docs]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">"""Compute the loss.</span>
+
+<span class="sd">        :param inputs: Should be a list or a tuple containing three tensors:</span>
+<span class="sd">            - ``[N, D]`` tensor of embeddings of the anchor objects</span>
+<span class="sd">            - ``[N, D]`` tensor of embeddings of the positive objects</span>
+<span class="sd">            - ``[N, D]`` tensor of embeddings of the negative objects</span>
+<span class="sd">        """</span>
         <span class="n">anchor</span><span class="p">,</span> <span class="n">positive</span><span class="p">,</span> <span class="n">negative</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">inputs</span>
 
         <span class="c1"># Seems that tf.norm suffers from numeric instability as explained here</span>
@@ -339,15 +398,24 @@
         <span class="n">dist_pos</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">squared_difference</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="n">positive</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">dist_neg</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">squared_difference</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="n">negative</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="n">dist_pos</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">dist_pos</span><span class="p">,</span> <span class="mf">1e-9</span><span class="p">)</span>
-        <span class="n">dist_neg</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">dist_neg</span><span class="p">,</span> <span class="mf">1e-9</span><span class="p">)</span>
+        <span class="n">dist_pos</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">dist_pos</span><span class="p">,</span> <span class="mf">1e-9</span><span class="p">))</span>
+        <span class="n">dist_neg</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">dist_neg</span><span class="p">,</span> <span class="mf">1e-9</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
-            <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dist_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">tf</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dist_neg</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span><span class="p">)</span>
-        <span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">dist_pos</span> <span class="o">-</span> <span class="n">dist_neg</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span><span class="p">))</span></div></div>
 
 
 <div class="viewcode-block" id="CosineTripletLoss"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.keras.losses/#finetuner.tuner.keras.losses.CosineTripletLoss">[docs]</a><span class="k">class</span> <span class="nc">CosineTripletLoss</span><span class="p">(</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="n">Layer</span><span class="p">):</span>
+    <span class="sd">"""Compute the loss for a triplet network using cosine distance.</span>
+
+<span class="sd">    The loss is computed as ``max(dist_pos - dist_neg + margin, 0)``, where ``dist_pos``</span>
+<span class="sd">    is the cosine distance between the anchor embedding and positive embedding,</span>
+<span class="sd">    ``dist_neg`` is the cosine distance between the anchor and negative embedding, and</span>
+<span class="sd">    ``margin`` represents a wedge between the desired wedge between anchor-negative and</span>
+<span class="sd">    anchor-positive distances.</span>
+
+<span class="sd">    The final loss is the average over losses for all triplets in the batch.</span>
+<span class="sd">    """</span>
+
     <span class="n">arity</span> <span class="o">=</span> <span class="mi">3</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
@@ -355,6 +423,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span> <span class="o">=</span> <span class="n">margin</span>
 
 <div class="viewcode-block" id="CosineTripletLoss.call"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.keras.losses/#finetuner.tuner.keras.losses.CosineTripletLoss.call">[docs]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">"""Compute the loss.</span>
+
+<span class="sd">        :param inputs: Should be a list or a tuple containing three tensors:</span>
+<span class="sd">            - ``[N, D]`` tensor of embeddings of the anchor objects</span>
+<span class="sd">            - ``[N, D]`` tensor of embeddings of the positive objects</span>
+<span class="sd">            - ``[N, D]`` tensor of embeddings of the negative objects</span>
+<span class="sd">        """</span>
         <span class="n">anchor</span><span class="p">,</span> <span class="n">positive</span><span class="p">,</span> <span class="n">negative</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">inputs</span>
 
         <span class="c1"># Seems that tf.norm suffers from numeric instability as explained here</span>

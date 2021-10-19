@@ -316,6 +316,12 @@
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.CosineSiameseLoss">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.losses.</span></span><span class="sig-name descname"><span class="pre">CosineSiameseLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#CosineSiameseLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.CosineSiameseLoss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.nn.</span></code></p>
+<p>Computes the loss for a siamese network using cosine distance.</p>
+<p>The loss for a pair of objects equals <code class="docutils literal notranslate"><span class="pre">(target</span> <span class="pre">-</span> <span class="pre">cos_sim)^2</span></code>, where <code class="docutils literal notranslate"><span class="pre">target</span></code>
+should equal 1 when both objects belong to the same class, and to -1 when they
+belong to different classes. The <code class="docutils literal notranslate"><span class="pre">cos_sim</span></code> represents the cosime similarity
+between both objects.</p>
+<p>The final loss is the average over losses for all pairs of objects in the batch.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.CosineSiameseLoss.arity">
 <span class="sig-name descname"><span class="pre">arity</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#finetuner.tuner.paddle.losses.CosineSiameseLoss.arity" title="Permalink to this definition">¶</a></dt>
@@ -323,9 +329,18 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.CosineSiameseLoss.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#CosineSiameseLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.CosineSiameseLoss.forward" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+<dd><p>Compute the loss.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embeddings</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – Should be a list or a tuple containing two tensors:
+- <code class="docutils literal notranslate"><span class="pre">[N,</span> <span class="pre">D]</span></code> tensor of embeddings of the first objects of the pair
+- <code class="docutils literal notranslate"><span class="pre">[N,</span> <span class="pre">D]</span></code> tensor of embeddings of the second objects of the pair</p></li>
+<li><p><strong>target</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <code class="docutils literal notranslate"><span class="pre">[N,</span> <span class="pre">]</span></code> tensor of target values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -334,6 +349,17 @@
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.EuclideanSiameseLoss">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.losses.</span></span><span class="sig-name descname"><span class="pre">EuclideanSiameseLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#EuclideanSiameseLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.EuclideanSiameseLoss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.nn.</span></code></p>
+<p>Computes the loss for a siamese network using cosine distance.</p>
+<p>This loss is also known as contrastive loss.</p>
+<p>The loss being optimized equals:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">is_sim</span> <span class="o">*</span> <span class="n">dist</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">is_sim</span><span class="p">)</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">margin</span> <span class="o">-</span> <span class="n">dist</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span><span class="o">^</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">target</span></code> should equal 1 when both objects belong to the same class,
+and 0 otheriwse. The <code class="docutils literal notranslate"><span class="pre">dist</span></code> is the euclidean distance between the embeddings of
+the objects, and <code class="docutils literal notranslate"><span class="pre">margin</span></code> is some number, used here to ensure better stability
+of training.</p>
+<p>The final loss is the average over losses for all pairs of objects in the batch.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.EuclideanSiameseLoss.arity">
 <span class="sig-name descname"><span class="pre">arity</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#finetuner.tuner.paddle.losses.EuclideanSiameseLoss.arity" title="Permalink to this definition">¶</a></dt>
@@ -341,9 +367,18 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.EuclideanSiameseLoss.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#EuclideanSiameseLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.EuclideanSiameseLoss.forward" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+<dd><p>Compute the loss.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> – Should be a list or a tuple containing three tensors:
+- <code class="docutils literal notranslate"><span class="pre">[N,</span> <span class="pre">D]</span></code> tensor of embeddings of the first objects of the pair
+- <code class="docutils literal notranslate"><span class="pre">[N,</span> <span class="pre">D]</span></code> tensor of embeddings of the second objects of the pair</p></li>
+<li><p><strong>target</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A <code class="docutils literal notranslate"><span class="pre">[N,</span> <span class="pre">]</span></code> tensor of target values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -352,6 +387,13 @@
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.EuclideanTripletLoss">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.losses.</span></span><span class="sig-name descname"><span class="pre">EuclideanTripletLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#EuclideanTripletLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.EuclideanTripletLoss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.nn.</span></code></p>
+<p>Compute the loss for a triplet network using euclidean distance.</p>
+<p>The loss is computed as <code class="docutils literal notranslate"><span class="pre">max(dist_pos</span> <span class="pre">-</span> <span class="pre">dist_neg</span> <span class="pre">+</span> <span class="pre">margin,</span> <span class="pre">0)</span></code>, where <code class="docutils literal notranslate"><span class="pre">dist_pos</span></code>
+is the euclidean distance between the anchor embedding and positive embedding,
+<code class="docutils literal notranslate"><span class="pre">dist_neg</span></code> is the euclidean distance between the anchor and negative embedding,
+and <code class="docutils literal notranslate"><span class="pre">margin</span></code> represents a wedge between the desired wedge between anchor-negative
+and anchor-positive distances.</p>
+<p>The final loss is the average over losses for all triplets in the batch.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.EuclideanTripletLoss.arity">
 <span class="sig-name descname"><span class="pre">arity</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#finetuner.tuner.paddle.losses.EuclideanTripletLoss.arity" title="Permalink to this definition">¶</a></dt>
@@ -359,9 +401,16 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.EuclideanTripletLoss.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#EuclideanTripletLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.EuclideanTripletLoss.forward" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+<dd><p>Compute the loss.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> – Should be a list or a tuple containing three tensors:
+- <code class="docutils literal notranslate"><span class="pre">[N,</span> <span class="pre">D]</span></code> tensor of embeddings of the anchor objects
+- <code class="docutils literal notranslate"><span class="pre">[N,</span> <span class="pre">D]</span></code> tensor of embeddings of the positive objects
+- <code class="docutils literal notranslate"><span class="pre">[N,</span> <span class="pre">D]</span></code> tensor of embeddings of the negative objects</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -370,6 +419,13 @@
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.CosineTripletLoss">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.losses.</span></span><span class="sig-name descname"><span class="pre">CosineTripletLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#CosineTripletLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.CosineTripletLoss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.nn.</span></code></p>
+<p>Compute the loss for a triplet network using cosine distance.</p>
+<p>The loss is computed as <code class="docutils literal notranslate"><span class="pre">max(dist_pos</span> <span class="pre">-</span> <span class="pre">dist_neg</span> <span class="pre">+</span> <span class="pre">margin,</span> <span class="pre">0)</span></code>, where <code class="docutils literal notranslate"><span class="pre">dist_pos</span></code>
+is the cosine distance between the anchor embedding and positive embedding,
+<code class="docutils literal notranslate"><span class="pre">dist_neg</span></code> is the cosine distance between the anchor and negative embedding, and
+<code class="docutils literal notranslate"><span class="pre">margin</span></code> represents a wedge between the desired wedge between anchor-negative and
+anchor-positive distances.</p>
+<p>The final loss is the average over losses for all triplets in the batch.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.CosineTripletLoss.arity">
 <span class="sig-name descname"><span class="pre">arity</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#finetuner.tuner.paddle.losses.CosineTripletLoss.arity" title="Permalink to this definition">¶</a></dt>
@@ -377,9 +433,16 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.CosineTripletLoss.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#CosineTripletLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.CosineTripletLoss.forward" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+<dd><p>Compute the loss.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> – Should be a list or a tuple containing three tensors:
+- <code class="docutils literal notranslate"><span class="pre">[N,</span> <span class="pre">D]</span></code> tensor of embeddings of the anchor objects
+- <code class="docutils literal notranslate"><span class="pre">[N,</span> <span class="pre">D]</span></code> tensor of embeddings of the positive objects
+- <code class="docutils literal notranslate"><span class="pre">[N,</span> <span class="pre">D]</span></code> tensor of embeddings of the negative objects</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>

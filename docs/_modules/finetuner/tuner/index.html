@@ -328,6 +328,34 @@
     <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TunerReturnType</span><span class="p">:</span>
+    <span class="sd">"""Finetune the model on the training data.</span>
+
+<span class="sd">    :param train_data: Data on which to train the model</span>
+<span class="sd">    :param eval_data: Data on which to evaluate the model at the end of each epoch</span>
+<span class="sd">    :param epoch: Number of epochs to train the model</span>
+<span class="sd">    :param batch_size: The batch size to use for training and evaluation</span>
+<span class="sd">    :param learning_rate: Learning rate to use in training</span>
+<span class="sd">    :param optimizer: Which optimizer to use in training. Supported</span>
+<span class="sd">        values/optimizers are:</span>
+<span class="sd">        - ``"adam"`` for the Adam optimizer</span>
+<span class="sd">        - ``"rmsprop"`` for the RMSProp optimizer</span>
+<span class="sd">        - ``"sgd"`` for the SGD optimizer with momentum</span>
+<span class="sd">    :param optimizer_kwargs: Keyword arguments to pass to the optimizer. The</span>
+<span class="sd">        supported arguments, togethere with their defailt values, are:</span>
+<span class="sd">        - ``"adam"``:  ``{'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-08}``</span>
+<span class="sd">        - ``"rmsprop"``::</span>
+
+<span class="sd">            {</span>
+<span class="sd">                'rho': 0.99,</span>
+<span class="sd">                'momentum': 0.0,</span>
+<span class="sd">                'epsilon': 1e-08,</span>
+<span class="sd">                'centered': False,</span>
+<span class="sd">            }</span>
+
+<span class="sd">        - ``"sgd"``: ``{'momentum': 0.0, 'nesterov': False}``</span>
+<span class="sd">    :param device: The device to which to move the model. Supported options are</span>
+<span class="sd">        ``"cpu"`` and ``"cuda"`` (for GPU)</span>
+<span class="sd">    """</span>
     <span class="n">ft</span> <span class="o">=</span> <span class="n">get_tuner_class</span><span class="p">(</span><span class="n">embed_model</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">catalog</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">train_data</span><span class="p">()</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span> <span class="k">else</span> <span class="n">train_data</span><span class="p">)</span>
@@ -350,6 +378,14 @@
 
 
 <div class="viewcode-block" id="save"><a class="viewcode-back" href="../../../api/finetuner.tuner/#finetuner.tuner.save">[docs]</a><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">embed_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">"""Save the embedding model.</span>
+
+<span class="sd">    :param embed_model: The embedding model to save</span>
+<span class="sd">    :param model_path: Path to file/folder where to save the model</span>
+<span class="sd">    :param args: Arguments to pass to framework-specific tuner's ``save`` method</span>
+<span class="sd">    :param kwargs: Keyword arguments to pass to framework-specific tuner's ``save``</span>
+<span class="sd">        method</span>
+<span class="sd">    """</span>
     <span class="n">ft</span> <span class="o">=</span> <span class="n">get_tuner_class</span><span class="p">(</span><span class="n">embed_model</span><span class="p">)</span>
 
     <span class="n">ft</span><span class="p">(</span><span class="n">embed_model</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
