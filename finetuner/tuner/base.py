@@ -23,7 +23,6 @@ class BaseTuner(abc.ABC):
     def __init__(
         self,
         embed_model: Optional[AnyDNN] = None,
-        catalog: DocumentArrayLike = None,
         loss: Union[AnyDNN, str] = 'CosineSiameseLoss',
         **kwargs,
     ):
@@ -167,8 +166,6 @@ class BaseDataset:
     def __init__(
         self,
         inputs: DocumentArrayLike,
-        catalog: DocumentArrayLike,
     ):
         super().__init__()
         self._inputs = inputs() if callable(inputs) else inputs
-        self._catalog = catalog() if callable(catalog) else catalog

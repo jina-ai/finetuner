@@ -27,7 +27,6 @@ def get_tuner_class(dnn_model: AnyDNN) -> Type['BaseTuner']:
 def fit(
     embed_model: AnyDNN,
     train_data: DocumentArrayLike,
-    catalog: DocumentArrayLike = None,
     eval_data: Optional[DocumentArrayLike] = None,
     epochs: int = 10,
     batch_size: int = 256,
@@ -40,9 +39,10 @@ def fit(
 ) -> TunerReturnType:
     """Finetune the model on the training data.
 
+    :param embed_model: an embedding model
     :param train_data: Data on which to train the model
     :param eval_data: Data on which to evaluate the model at the end of each epoch
-    :param epoch: Number of epochs to train the model
+    :param epochs: Number of epochs to train the model
     :param batch_size: The batch size to use for training and evaluation
     :param learning_rate: Learning rate to use in training
     :param optimizer: Which optimizer to use in training. Supported
@@ -67,15 +67,8 @@ def fit(
         ``"cpu"`` and ``"cuda"`` (for GPU)
     """
     ft = get_tuner_class(embed_model)
-    if catalog is None:
-        train_data = DocumentArray(train_data() if callable(train_data) else train_data)
-        catalog = DocumentArray()
-        catalog.extend(train_data.traverse_flat(['r', 'm']))
-        if eval_data is not None:
-            eval_data = DocumentArray(eval_data() if callable(eval_data) else eval_data)
-            catalog.extend(eval_data.traverse_flat(['r', 'm']))
 
-    return ft(embed_model, catalog=catalog, loss=loss).fit(
+    return ft(embed_model, loss=loss).fit(
         train_data,
         eval_data,
         epochs=epochs,

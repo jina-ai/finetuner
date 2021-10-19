@@ -1,5 +1,6 @@
 import numpy as np
 from jina import Document, DocumentArray
+
 from .. import __default_tag_key__
 
 

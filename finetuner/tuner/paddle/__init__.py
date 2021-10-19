@@ -28,7 +28,7 @@ class PaddleTuner(BaseTuner):
 
         ds = get_dataset(datasets, self.arity)
         return DataLoader(
-            dataset=ds(inputs=inputs, catalog=self._catalog),
+            dataset=ds(inputs=inputs),
             batch_size=batch_size,
             shuffle=shuffle,
         )

@@ -30,7 +30,7 @@ class KerasTuner(BaseTuner):
         input_shape = self.embed_model.input_shape[1:]
 
         tf_data = tf.data.Dataset.from_generator(
-            lambda: ds(inputs, self._catalog),
+            lambda: ds(inputs),
             output_signature=(
                 tuple(
                     tf.TensorSpec(shape=input_shape, dtype=tf.float32)
@@ -132,7 +132,7 @@ class KerasTuner(BaseTuner):
 
         :param train_data: Data on which to train the model
         :param eval_data: Data on which to evaluate the model at the end of each epoch
-        :param epoch: Number of epochs to train the model
+        :param epochs: Number of epochs to train the model
         :param batch_size: The batch size to use for training and evaluation
         :param learning_rate: Learning rate to use in training
         :param optimizer: Which optimizer to use in training. Supported
@@ -188,7 +188,7 @@ class KerasTuner(BaseTuner):
                 stats.add_train_loss(lt)
 
                 if eval_data:
-                    le = self._eval(_eval_data, train_log=LogGenerator("T", lt)())
+                    le = self._eval(_eval_data, train_log=LogGenerator('T', lt)())
                     stats.add_eval_loss(le)
                     stats.add_eval_metric(self.get_metrics(eval_data))
 

@@ -9,9 +9,9 @@ class TunerStats:
         loss_eval: List = None,
         metrics_eval: List[Dict] = None,
     ):
-        self._loss_train = loss_train if loss_train is not None else []
-        self._loss_eval = loss_eval if loss_eval is not None else []
-        self._metrics_eval = metrics_eval if metrics_eval is not None else []
+        self._loss_train = loss_train or []
+        self._loss_eval = loss_eval or []
+        self._metrics_eval = metrics_eval or []
 
     def save(self, file: str):
         with open(file, 'w') as output:

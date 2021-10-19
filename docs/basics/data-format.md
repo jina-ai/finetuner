@@ -4,8 +4,16 @@
 Finetuner uses Jina [`Document`](https://docs.jina.ai/fundamentals/document/) as the primitive data type. In
 particular, [`DocumentArray`](https://docs.jina.ai/fundamentals/document/documentarray-api/)
 and [`DocumentArrayMemap`](https://docs.jina.ai/fundamentals/document/documentarraymemmap-api/) are the input data type
-for Tailor and Tuner. This means, your training dataset and evaluation dataset should be stored in `DocumentArray`
-or `DocumentArrayMemap`, where each training or evaluation instance is a `Document` object.
+in the high-level `finetuner.fit()` API. This means, your training dataset and evaluation dataset should be stored in `DocumentArray`
+or `DocumentArrayMemap`, where each training or evaluation instance is a `Document` object:
+
+```python
+import finetuner
+
+finetuner.fit(model,
+              train_data=...,
+              eval_data=...)
+```
 
 This chapter introduces how to construct a `Document` in a way that Finetuner will accept.
 
@@ -141,7 +149,8 @@ However, if all match labels from all Documents are the same, then Finetuner can
 
 In search, queries and search results are often distinct sets.
 Specifying a `catalog` helps you keep this distinction during finetuning.
-When using `finetuner.fit(train_data=...,eval_data=..., catalog=...)`, `train_data` and `eval_data` specify the potential queries and the `catalog` specifies the potential results.
+
+When using `finetuner.fit(train_data=..., eval_data=..., catalog=...)`, `train_data` and `eval_data` specify the potential queries and the `catalog` specifies the potential results.
 This distinction is mainly used
 
 - in the Labeler, when new sets of unlabeled results are generated and
