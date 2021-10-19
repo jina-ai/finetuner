@@ -1,4 +1,9 @@
-# Finetuning Bi-LSTM on Text 
+# Finetuning Bi-LSTM for Question-Answering
+
+```{tip}
+This example is inspired by [`jina hello chatbot`](https://docs.jina.ai/get-started/hello-world/covid-19-chatbot/). We stronly recommend you to checkout that demo first before go through this tutorial.
+```
+
 
 In this example, we want to "tune" the 32-dim embedding vectors from a bidirectional LSTM on Covid19 QA data, the same dataset that we are using in `jina hello chatbot`. 
 

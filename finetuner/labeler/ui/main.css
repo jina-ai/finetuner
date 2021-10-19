@@ -122,6 +122,7 @@ main {
 footer {
     align-self: center;
     margin-top: auto;
+    font-weight: lighter;
 }
 
 footer a {
