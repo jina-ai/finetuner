@@ -16,7 +16,7 @@ const imageMatchCard = {
             <div class="card-body">
                 <div class="image-matches-container">
                     <div class="col compact-img" v-for="(match, matchIndex) in doc.matches">
-                        <div class="w-100" v-bind:class="{ 'positive-match': match.tags.finetuner_label }">
+                        <div class="d-flex justify-content-center" v-bind:class="{ 'positive-match': match.tags.finetuner_label }">
                             <img v-bind:src="getContent(match)" class="img-thumbnail img-fluid"
                                     v-on:click="toggleRelevance(match)">
                         </div>
