@@ -5,7 +5,7 @@ import time
 
 import pytest
 import requests
-from finetuner.toydata import generate_fashion_match
+from finetuner.toydata import generate_fashion_match_catalog
 from jina.helper import random_port
 
 os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
@@ -52,10 +52,14 @@ def _run(framework_name, loss, port_expose):
             paddle.nn.Linear(in_features=128, out_features=32),
         ),
     }
+    data, catalog = generate_fashion_match_catalog(
+        num_total=10, num_catalog=100, num_pos=0, num_neg=0
+    )
 
     fit(
         embed_models[framework_name](),
-        generate_fashion_match(num_total=10, num_pos=0, num_neg=0),
+        data,
+        catalog=catalog,
         loss=loss,
         interactive=True,
         port_expose=port_expose,
@@ -86,8 +90,7 @@ def test_all_frameworks(framework, loss):
                     json={
                         'data': [],
                         'parameters': {
-                            'start': 0,
-                            'end': 1,
+                            'new_examples': 1,
                             'topk': 5,
                             'sample_size': 10,
                         },
@@ -105,7 +108,7 @@ def test_all_frameworks(framework, loss):
             f'http://localhost:{port}/next',
             json={
                 'data': [],
-                'parameters': {'start': 0, 'end': 1, 'topk': 5, 'sample_size': 10},
+                'parameters': {'new_examples': 1, 'topk': 5, 'sample_size': 10},
             },
         )
         assert req.status_code == 200

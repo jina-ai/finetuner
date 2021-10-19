@@ -3,7 +3,7 @@ import pytest
 from paddle import nn
 from scipy.spatial.distance import pdist, squareform
 
-from finetuner.tuner.paddle import PaddleTuner
+from finetuner.tuner import fit
 
 
 @pytest.mark.parametrize(
@@ -47,8 +47,7 @@ def test_overfit_paddle(
     )
 
     # Train
-    pt = PaddleTuner(embed_model, loss=loss)
-    pt.fit(train_data=data, epochs=n_epochs, batch_size=batch_size)
+    fit(embed_model, loss=loss, train_data=data, epochs=n_epochs, batch_size=batch_size)
 
     # Compute embedding for original vectors
     vec_embedings = embed_model(paddle.Tensor(vecs)).numpy()

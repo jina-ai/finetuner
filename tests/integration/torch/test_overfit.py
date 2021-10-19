@@ -2,7 +2,7 @@ import pytest
 import torch
 from scipy.spatial.distance import pdist, squareform
 
-from finetuner.tuner.pytorch import PytorchTuner
+from finetuner.tuner import fit
 
 
 @pytest.mark.parametrize(
@@ -44,10 +44,8 @@ def test_overfit_pytorch(
         torch.nn.ReLU(),
         torch.nn.Linear(in_features=64, out_features=32),
     )
-
     # Train
-    pt = PytorchTuner(embed_model, loss=loss)
-    pt.fit(train_data=data, epochs=n_epochs, batch_size=batch_size)
+    fit(embed_model, loss=loss, train_data=data, epochs=n_epochs, batch_size=batch_size)
 
     # Compute embedding for original vectors
     with torch.inference_mode():
