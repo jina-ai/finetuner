@@ -3,7 +3,7 @@ import tensorflow as tf
 import torch
 
 import finetuner
-from finetuner.toydata import generate_fashion_match
+from finetuner.toydata import generate_fashion_match_catalog
 
 all_test_losses = [
     'CosineSiameseLoss',
@@ -44,14 +44,14 @@ def test_fit_all(tmpdir):
 
     for kb, b in embed_models.items():
         for h in all_test_losses:
-            train_data, train_catalog = generate_fashion_match(
+            train_data, train_catalog = generate_fashion_match_catalog(
                 num_neg=10,
                 num_pos=10,
                 num_total=300,
                 num_catalog=3000,
                 pre_init_generator=False,
             )
-            eval_data, eval_catalog = generate_fashion_match(
+            eval_data, eval_catalog = generate_fashion_match_catalog(
                 num_neg=10,
                 num_pos=10,
                 num_total=300,

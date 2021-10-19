@@ -22,12 +22,7 @@ def fit(
     **kwargs,
 ) -> None:
     dam_path = tempfile.mkdtemp()
-    if isinstance(catalog, DocumentArrayMemmap):
-        catalog_dam_path = catalog.path
-    else:
-        catalog_dam_path = dam_path + '/catalog'
-        catalog_memmap = DocumentArrayMemmap(catalog_dam_path)
-        catalog_memmap.extend(catalog)
+    catalog_dam_path = init_catalog(dam_path, catalog, train_data)
 
     class MyExecutor(FTExecutor):
         def get_embed_model(self):
@@ -101,3 +96,17 @@ def fit(
             on_done=open_frontend_in_browser,
         )
         f.block()
+
+
+def init_catalog(
+    dam_path: str, catalog: DocumentArrayLike, train_data: DocumentArrayLike
+):
+    if isinstance(catalog, DocumentArrayMemmap):
+        catalog_dam_path = catalog.path
+    else:
+        catalog_dam_path = dam_path + '/catalog'
+        catalog_memmap = DocumentArrayMemmap(catalog_dam_path)
+        if catalog is None:
+            catalog = train_data() if callable(train_data) else train_data
+        catalog_memmap.extend(catalog)
+    return catalog_dam_path

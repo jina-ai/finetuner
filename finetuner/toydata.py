@@ -56,7 +56,11 @@ def _text_to_int_sequence(text, vocab, max_len=None):
     return vec
 
 
-def generate_qa_match(
+def generate_qa_match(**kwargs):
+    return generate_qa_match_catalog(pre_init_generator=False, **kwargs)[0]
+
+
+def generate_qa_match_catalog(
     num_total: int = 481,
     num_neg: int = 0,
     pos_value: int = 1,
@@ -151,7 +155,16 @@ def generate_qa_match(
         return generator, catalog
 
 
-def generate_fashion_match(
+def generate_fashion_match(num_total=100, num_catalog=5000, **kwargs):
+    return generate_fashion_match_catalog(
+        num_total=num_total,
+        num_catalog=num_catalog,
+        pre_init_generator=False,
+        **kwargs,
+    )[0]
+
+
+def generate_fashion_match_catalog(
     num_total: int = 60000,
     num_catalog: int = 60000,
     num_pos: int = 0,

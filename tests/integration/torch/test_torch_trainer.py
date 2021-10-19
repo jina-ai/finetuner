@@ -6,8 +6,8 @@ import torch
 import torch.nn as nn
 
 from finetuner.tuner import fit, save
-from finetuner.toydata import generate_fashion_match
-from finetuner.toydata import generate_qa_match
+from finetuner.toydata import generate_fashion_match_catalog
+from finetuner.toydata import generate_qa_match_catalog
 
 
 @pytest.mark.parametrize(
@@ -32,10 +32,10 @@ def test_simple_sequential_model(tmpdir, params, loss):
     model_path = os.path.join(tmpdir, 'trained.pth')
 
     # fit and save the checkpoint
-    train_data, train_catalog = generate_fashion_match(
+    train_data, train_catalog = generate_fashion_match_catalog(
         num_neg=10, num_pos=10, num_total=params['num_train'], pre_init_generator=False
     )
-    eval_data, eval_catalog = generate_fashion_match(
+    eval_data, eval_catalog = generate_fashion_match_catalog(
         num_neg=10,
         num_pos=10,
         num_total=params['num_eval'],
@@ -98,14 +98,14 @@ def test_simple_lstm_model(tmpdir, params, loss):
     model_path = os.path.join(tmpdir, 'trained.pth')
 
     # fit and save the checkpoint
-    train_data, train_catalog = generate_qa_match(
+    train_data, train_catalog = generate_qa_match_catalog(
         num_total=params['num_train'],
         max_seq_len=params['max_seq_len'],
         num_neg=5,
         is_testset=False,
         pre_init_generator=False,
     )
-    eval_data, eval_catalog = generate_qa_match(
+    eval_data, eval_catalog = generate_qa_match_catalog(
         num_total=params['num_train'],
         max_seq_len=params['max_seq_len'],
         num_neg=5,

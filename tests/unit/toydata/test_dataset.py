@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from finetuner.toydata import generate_fashion_match
+from finetuner.toydata import generate_fashion_match_catalog
 from finetuner.tuner.base import BaseDataset
 from finetuner.tuner.dataset import SiameseMixin, TripletMixin
 
@@ -14,7 +14,7 @@ def test_siamese_dataset(pre_init_generator):
     class SD(SiameseMixin, BaseDataset):
         ...
 
-    data, catalog = generate_fashion_match(
+    data, catalog = generate_fashion_match_catalog(
         num_pos=10,
         num_neg=10,
         num_total=100,
@@ -38,7 +38,7 @@ def test_triplet_dataset(pre_init_generator):
     class SD(TripletMixin, BaseDataset):
         ...
 
-    data, catalog = generate_fashion_match(
+    data, catalog = generate_fashion_match_catalog(
         num_pos=10,
         num_neg=10,
         num_total=100,

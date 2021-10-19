@@ -11,7 +11,7 @@ os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
 import paddle
 import torch
 
-from finetuner.toydata import generate_qa_match
+from finetuner.toydata import generate_qa_match_catalog
 
 
 class LastCellPT(torch.nn.Module):
@@ -54,7 +54,7 @@ def _run(framework_name, loss, port_expose):
             paddle.nn.Linear(in_features=2 * 64, out_features=32),
         ),
     }
-    train_data, catalog = generate_qa_match(num_total=10, num_neg=0)
+    train_data, catalog = generate_qa_match_catalog(num_total=10, num_neg=0)
     fit(
         embed_models[framework_name](),
         train_data,

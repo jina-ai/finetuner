@@ -5,7 +5,7 @@ import time
 
 import pytest
 import requests
-from finetuner.toydata import generate_fashion_match
+from finetuner.toydata import generate_fashion_match_catalog
 from jina.helper import random_port
 
 os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
@@ -52,7 +52,7 @@ def _run(framework_name, loss, port_expose):
             paddle.nn.Linear(in_features=128, out_features=32),
         ),
     }
-    data, catalog = generate_fashion_match(
+    data, catalog = generate_fashion_match_catalog(
         num_total=10, num_catalog=100, num_pos=0, num_neg=0
     )
 
