@@ -1,7 +1,7 @@
-finetuner.tuner.stats module
+finetuner.tailor.base module
 ============================
 
-.. automodule:: finetuner.tuner.stats
+.. automodule:: finetuner.tailor.base
    :members:
    :undoc-members:
    :show-inheritance:

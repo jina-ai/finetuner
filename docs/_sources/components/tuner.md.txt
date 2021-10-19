@@ -113,8 +113,8 @@ Although siamese and triplet loss works on pair and triplet inputs respectively,
 
     finetuner.fit(
         embed_model,
-        train_data=lambda: generate_fashion_match(num_pos=10, num_neg=10),
-        eval_data=lambda: generate_fashion_match(num_pos=10, num_neg=10, is_testset=True)
+        train_data=generate_fashion_match(num_pos=10, num_neg=10),
+        eval_data=generate_fashion_match(num_pos=10, num_neg=10, is_testset=True)
     )
     ```
 
@@ -126,16 +126,6 @@ Although siamese and triplet loss works on pair and triplet inputs respectively,
 ### Tune a bidirectional LSTM on Covid QA
 
 1. Write an embedding model:
-
-  ````{tab} Keras
-  ```python
-  import tensorflow as tf
-  embed_model = tf.keras.Sequential([
-         tf.keras.layers.Embedding(input_dim=5000, output_dim=64),
-         tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
-         tf.keras.layers.Dense(32)])
-  ```
-  ````
 
   ````{tab} PyTorch
   ```python
@@ -150,6 +140,16 @@ Although siamese and triplet loss works on pair and triplet inputs respectively,
     torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
     LastCell(),
     torch.nn.Linear(in_features=2 * 64, out_features=32))
+  ```
+  ````
+
+  ````{tab} Keras
+  ```python
+  import tensorflow as tf
+  embed_model = tf.keras.Sequential([
+         tf.keras.layers.Embedding(input_dim=5000, output_dim=64),
+         tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
+         tf.keras.layers.Dense(32)])
   ```
   ````
 
@@ -180,8 +180,8 @@ Although siamese and triplet loss works on pair and triplet inputs respectively,
 
     finetuner.fit(
         embed_model,
-        train_data=lambda: generate_qa_match(num_neg=5),
-        eval_data=lambda: generate_qa_match(num_neg=5)
+        train_data=generate_qa_match(num_neg=5),
+        eval_data=generate_qa_match(num_neg=5)
     )
     ```
 

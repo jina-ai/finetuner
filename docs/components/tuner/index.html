@@ -432,8 +432,8 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">embed_model</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">generate_fashion_match</span><span class="p">(</span><span class="n">num_pos</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_neg</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-    <span class="n">eval_data</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">generate_fashion_match</span><span class="p">(</span><span class="n">num_pos</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_neg</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">is_testset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="n">generate_fashion_match</span><span class="p">(</span><span class="n">num_pos</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_neg</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+    <span class="n">eval_data</span><span class="o">=</span><span class="n">generate_fashion_match</span><span class="p">(</span><span class="n">num_pos</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_neg</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">is_testset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -449,16 +449,7 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
 <li><p>Write an embedding model:</p></li>
 </ol>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">Keras</label><div class="tab-content docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
-<span class="n">embed_model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
-       <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
-       <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Bidirectional</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">64</span><span class="p">)),</span>
-       <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">)])</span>
-</pre></div>
-</div>
-</div>
-<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--2">PyTorch</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="k">class</span> <span class="nc">LastCell</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
   <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -470,6 +461,15 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
   <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
   <span class="n">LastCell</span><span class="p">(),</span>
   <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="mi">64</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--2">Keras</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="n">embed_model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+       <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
+       <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Bidirectional</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">64</span><span class="p">)),</span>
+       <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">)])</span>
 </pre></div>
 </div>
 </div>
@@ -498,8 +498,8 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">embed_model</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">generate_qa_match</span><span class="p">(</span><span class="n">num_neg</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
-    <span class="n">eval_data</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">generate_qa_match</span><span class="p">(</span><span class="n">num_neg</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="n">generate_qa_match</span><span class="p">(</span><span class="n">num_neg</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
+    <span class="n">eval_data</span><span class="o">=</span><span class="n">generate_qa_match</span><span class="p">(</span><span class="n">num_neg</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
 </div>
