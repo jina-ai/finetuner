@@ -236,7 +236,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.evaluation/">finetuner.tuner.evaluation module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.stats/">finetuner.tuner.stats module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.helper/">finetuner.helper module</a></li>
@@ -295,7 +297,11 @@
     <span class="n">Dict</span><span class="p">,</span>
 <span class="p">)</span>
 
+<span class="kn">from</span> <span class="nn">jina.logging.logger</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArrayMemmap</span><span class="p">,</span> <span class="n">DocumentArray</span>
+
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">AnyDataLoader</span><span class="p">,</span> <span class="n">AnyOptimizer</span><span class="p">,</span> <span class="n">DocumentArrayLike</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">evaluation</span>
 
 
 <div class="viewcode-block" id="BaseLoss"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseLoss">[docs]</a><span class="k">class</span> <span class="nc">BaseLoss</span><span class="p">:</span>
@@ -306,6 +312,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">embed_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyDNN</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">catalog</span><span class="p">:</span> <span class="n">DocumentArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">loss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">AnyDNN</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'CosineSiameseLoss'</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
@@ -313,6 +320,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_loss</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_train_data_len</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_eval_data_len</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span> <span class="o">=</span> <span class="n">catalog</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">JinaLogger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_optimizer_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">custom_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]):</span>
         <span class="sd">"""Merges user-provided optimizer kwargs with default ones."""</span>
@@ -417,16 +426,34 @@
         <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">AnyDataLoader</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'Evaluating'</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
         <span class="sd">"""Evaluate the model on given labeled data"""</span>
-        <span class="o">...</span></div>
+        <span class="o">...</span>
+
+<div class="viewcode-block" id="BaseTuner.get_metrics"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.get_metrics">[docs]</a>    <span class="k">def</span> <span class="nf">get_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">DocumentArrayLike</span><span class="p">):</span>
+        <span class="n">docs</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">docs</span><span class="p">())</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span> <span class="k">else</span> <span class="n">docs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_embeddings</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">,</span> <span class="n">DocumentArrayMemmap</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
+        <span class="n">to_be_scored_docs</span> <span class="o">=</span> <span class="n">evaluation</span><span class="o">.</span><span class="n">prepare_eval_docs</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">'hits'</span><span class="p">:</span> <span class="n">evaluation</span><span class="o">.</span><span class="n">get_hits_at_n</span><span class="p">(</span><span class="n">to_be_scored_docs</span><span class="p">),</span>
+            <span class="s1">'ndcg'</span><span class="p">:</span> <span class="n">evaluation</span><span class="o">.</span><span class="n">get_ndcg_at_n</span><span class="p">(</span><span class="n">to_be_scored_docs</span><span class="p">),</span>
+        <span class="p">}</span></div>
+
+<div class="viewcode-block" id="BaseTuner.get_embeddings"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.get_embeddings">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">DocumentArrayLike</span><span class="p">):</span>
+        <span class="sd">"""Calculates and adds the embeddings for the given Documents."""</span></div></div>
 
 
 <div class="viewcode-block" id="BaseDataset"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseDataset">[docs]</a><span class="k">class</span> <span class="nc">BaseDataset</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">inputs</span><span class="p">:</span> <span class="n">DocumentArrayLike</span><span class="p">,</span>
+        <span class="n">catalog</span><span class="p">:</span> <span class="n">DocumentArrayLike</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">()</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="k">else</span> <span class="n">inputs</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">()</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="k">else</span> <span class="n">inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span> <span class="o">=</span> <span class="n">catalog</span><span class="p">()</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span> <span class="k">else</span> <span class="n">catalog</span></div>
 </pre></div>
             </article>
             <footer>

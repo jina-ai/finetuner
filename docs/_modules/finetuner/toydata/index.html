@@ -236,7 +236,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.evaluation/">finetuner.tuner.evaluation module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.stats/">finetuner.tuner.stats module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.helper/">finetuner.helper module</a></li>
@@ -343,7 +345,11 @@
     <span class="k">return</span> <span class="n">vec</span>
 
 
-<div class="viewcode-block" id="generate_qa_match"><a class="viewcode-back" href="../../../api/finetuner.toydata/#finetuner.toydata.generate_qa_match">[docs]</a><span class="k">def</span> <span class="nf">generate_qa_match</span><span class="p">(</span>
+<div class="viewcode-block" id="generate_qa_match"><a class="viewcode-back" href="../../../api/finetuner.toydata/#finetuner.toydata.generate_qa_match">[docs]</a><span class="k">def</span> <span class="nf">generate_qa_match</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">generate_qa_match_catalog</span><span class="p">(</span><span class="n">pre_init_generator</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="generate_qa_match_catalog"><a class="viewcode-back" href="../../../api/finetuner.toydata/#finetuner.toydata.generate_qa_match_catalog">[docs]</a><span class="k">def</span> <span class="nf">generate_qa_match_catalog</span><span class="p">(</span>
     <span class="n">num_total</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">481</span><span class="p">,</span>
     <span class="n">num_neg</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">pos_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -351,6 +357,7 @@
     <span class="n">to_ndarray</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">max_seq_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
     <span class="n">is_testset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">pre_init_generator</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Document</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="sd">"""Get a generator of QA data with synthetic negative matches.</span>
 
@@ -363,7 +370,6 @@
 <span class="sd">    :param is_testset: If to generate test data, if set to None, will all data return</span>
 <span class="sd">    :return:</span>
 <span class="sd">    """</span>
-    <span class="n">num_doc</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">all_docs</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">_download_qa_data</span><span class="p">(</span><span class="n">is_testset</span><span class="o">=</span><span class="n">is_testset</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">to_ndarray</span><span class="p">:</span>
@@ -373,57 +379,83 @@
             <span class="o">+</span> <span class="n">all_docs</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">(</span><span class="s1">'tags__wrong_answer'</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="n">vocab</span> <span class="o">=</span> <span class="n">_build_vocab</span><span class="p">(</span><span class="n">all_texts</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">catalog</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span>
+    <span class="n">text_to_id</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">all_docs</span><span class="p">:</span>
-        <span class="n">d</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'question'</span><span class="p">]</span>
-        <span class="n">m_p</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span>
-            <span class="n">text</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'answer'</span><span class="p">],</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="n">__default_tag_key__</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="n">pos_value</span><span class="p">}}</span>
-        <span class="p">)</span>
-        <span class="n">m_n</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span>
-            <span class="n">text</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'wrong_answer'</span><span class="p">],</span>
-            <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="n">__default_tag_key__</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="n">neg_value</span><span class="p">}},</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">to_ndarray</span><span class="p">:</span>
-            <span class="n">d</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="n">_text_to_int_sequence</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">max_seq_len</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">long</span>
-            <span class="p">)</span>
-            <span class="n">m_p</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="n">_text_to_int_sequence</span><span class="p">(</span><span class="n">m_p</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">max_seq_len</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">long</span>
-            <span class="p">)</span>
-            <span class="n">m_n</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="n">_text_to_int_sequence</span><span class="p">(</span><span class="n">m_n</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">max_seq_len</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">long</span>
-            <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_document</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="n">__default_tag_key__</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="n">label</span><span class="p">}})</span>
+        <span class="k">if</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">text_to_id</span><span class="p">:</span>
+            <span class="n">doc</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">text_to_id</span><span class="p">[</span><span class="n">text</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text_to_id</span><span class="p">[</span><span class="n">text</span><span class="p">]</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">catalog</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">doc</span>
 
-        <span class="k">if</span> <span class="n">num_neg</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m_p</span><span class="p">)</span>
-            <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m_n</span><span class="p">)</span>
-            <span class="n">cur_num_neg</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">num_neg</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">sampled_docs</span> <span class="o">=</span> <span class="n">all_docs</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">num_neg</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">n_d</span> <span class="ow">in</span> <span class="n">sampled_docs</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">n_d</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">d</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-                        <span class="n">new_nd</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span>
-                            <span class="n">text</span><span class="o">=</span><span class="n">n_d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'answer'</span><span class="p">],</span>
-                            <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="n">__default_tag_key__</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="n">neg_value</span><span class="p">}},</span>
-                        <span class="p">)</span>
-                        <span class="k">if</span> <span class="n">to_ndarray</span><span class="p">:</span>
-                            <span class="n">new_nd</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                                <span class="n">_text_to_int_sequence</span><span class="p">(</span><span class="n">new_nd</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">max_seq_len</span><span class="p">),</span>
-                                <span class="n">np</span><span class="o">.</span><span class="n">long</span><span class="p">,</span>
-                            <span class="p">)</span>
-                        <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_nd</span><span class="p">)</span>
-                        <span class="n">cur_num_neg</span> <span class="o">+=</span> <span class="mi">1</span>
-                        <span class="k">if</span> <span class="n">cur_num_neg</span> <span class="o">&gt;=</span> <span class="n">num_neg</span><span class="p">:</span>
-                            <span class="k">break</span>
-        <span class="n">num_doc</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">yield</span> <span class="n">d</span>
+    <span class="k">def</span> <span class="nf">generator</span><span class="p">():</span>
+        <span class="n">num_doc</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">all_docs</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'question'</span><span class="p">]</span>
+            <span class="n">m_p</span> <span class="o">=</span> <span class="n">get_document</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'answer'</span><span class="p">],</span> <span class="n">pos_value</span><span class="p">)</span>
+            <span class="n">m_n</span> <span class="o">=</span> <span class="n">get_document</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'wrong_answer'</span><span class="p">],</span> <span class="n">neg_value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">to_ndarray</span><span class="p">:</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="n">_text_to_int_sequence</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">max_seq_len</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">long</span>
+                <span class="p">)</span>
+                <span class="n">m_p</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="n">_text_to_int_sequence</span><span class="p">(</span><span class="n">m_p</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">max_seq_len</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">long</span>
+                <span class="p">)</span>
+                <span class="n">m_n</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="n">_text_to_int_sequence</span><span class="p">(</span><span class="n">m_n</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">max_seq_len</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">long</span>
+                <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">num_doc</span> <span class="o">&gt;=</span> <span class="n">num_total</span><span class="p">:</span>
-            <span class="k">break</span></div>
+            <span class="k">if</span> <span class="n">num_neg</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m_p</span><span class="p">)</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m_n</span><span class="p">)</span>
+                <span class="n">cur_num_neg</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">num_neg</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">sampled_docs</span> <span class="o">=</span> <span class="n">all_docs</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">num_neg</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">num_doc</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">n_d</span> <span class="ow">in</span> <span class="n">sampled_docs</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">n_d</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">d</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+                            <span class="n">new_nd</span> <span class="o">=</span> <span class="n">get_document</span><span class="p">(</span><span class="n">n_d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'answer'</span><span class="p">],</span> <span class="n">neg_value</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">to_ndarray</span><span class="p">:</span>
+                                <span class="n">new_nd</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                                    <span class="n">_text_to_int_sequence</span><span class="p">(</span>
+                                        <span class="n">new_nd</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">max_seq_len</span>
+                                    <span class="p">),</span>
+                                    <span class="n">np</span><span class="o">.</span><span class="n">long</span><span class="p">,</span>
+                                <span class="p">)</span>
+                            <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_nd</span><span class="p">)</span>
+                            <span class="n">cur_num_neg</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="k">if</span> <span class="n">cur_num_neg</span> <span class="o">&gt;=</span> <span class="n">num_neg</span><span class="p">:</span>
+                                <span class="k">break</span>
+            <span class="n">num_doc</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">yield</span> <span class="n">d</span>
+
+            <span class="k">if</span> <span class="n">num_doc</span> <span class="o">&gt;=</span> <span class="n">num_total</span><span class="p">:</span>
+                <span class="k">break</span>
+
+    <span class="c1"># prefil catalog</span>
+    <span class="p">[</span><span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">generator</span><span class="p">()]</span>
+
+    <span class="k">if</span> <span class="n">pre_init_generator</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">generator</span><span class="p">(),</span> <span class="n">catalog</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">generator</span><span class="p">,</span> <span class="n">catalog</span></div>
 
 
-<div class="viewcode-block" id="generate_fashion_match"><a class="viewcode-back" href="../../../api/finetuner.toydata/#finetuner.toydata.generate_fashion_match">[docs]</a><span class="k">def</span> <span class="nf">generate_fashion_match</span><span class="p">(</span>
+<div class="viewcode-block" id="generate_fashion_match"><a class="viewcode-back" href="../../../api/finetuner.toydata/#finetuner.toydata.generate_fashion_match">[docs]</a><span class="k">def</span> <span class="nf">generate_fashion_match</span><span class="p">(</span><span class="n">num_total</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num_catalog</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">generate_fashion_match_catalog</span><span class="p">(</span>
+        <span class="n">num_total</span><span class="o">=</span><span class="n">num_total</span><span class="p">,</span>
+        <span class="n">num_catalog</span><span class="o">=</span><span class="n">num_catalog</span><span class="p">,</span>
+        <span class="n">pre_init_generator</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="generate_fashion_match_catalog"><a class="viewcode-back" href="../../../api/finetuner.toydata/#finetuner.toydata.generate_fashion_match_catalog">[docs]</a><span class="k">def</span> <span class="nf">generate_fashion_match_catalog</span><span class="p">(</span>
     <span class="n">num_total</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60000</span><span class="p">,</span>
+    <span class="n">num_catalog</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60000</span><span class="p">,</span>
     <span class="n">num_pos</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">num_neg</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">pos_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -432,6 +464,7 @@
     <span class="n">channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">is_testset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">pre_init_generator</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Document</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="sd">"""Get a Generator of fashion-mnist Documents with synthetic matches.</span>
 
@@ -455,44 +488,57 @@
         <span class="n">is_testset</span><span class="o">=</span><span class="n">is_testset</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="n">n_d</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">catalog</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">_orginal_fashion_doc</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">num_catalog</span><span class="p">:</span>
+        <span class="n">catalog</span> <span class="o">=</span> <span class="n">catalog</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">num_catalog</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">num_pos</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">num_neg</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="c1"># need to build synthetic matches</span>
-        <span class="n">all_docs</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">_orginal_fashion_doc</span><span class="p">)</span>
+        <span class="c1"># copy_all_docs = copy.deepcopy(catalog)</span>
+        <span class="n">rv</span> <span class="o">=</span> <span class="n">catalog</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'class'</span><span class="p">)</span>
 
-        <span class="n">copy_all_docs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">all_docs</span><span class="p">)</span>
-        <span class="n">rv</span> <span class="o">=</span> <span class="n">copy_all_docs</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'class'</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">generator</span><span class="p">():</span>
+            <span class="n">n_d</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">od</span> <span class="ow">in</span> <span class="n">catalog</span><span class="p">:</span>
+                <span class="n">new_doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">od</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">pos_label</span> <span class="o">=</span> <span class="n">new_doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'class'</span><span class="p">]</span>
+                <span class="n">pos_samples</span> <span class="o">=</span> <span class="n">rv</span><span class="p">[</span><span class="n">pos_label</span><span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">num_pos</span><span class="p">)</span>
+                <span class="n">pos_samples</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">pos_samples</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">pos_samples</span><span class="p">:</span>
+                    <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="n">pos_value</span><span class="p">}</span>
 
-        <span class="k">for</span> <span class="n">od</span> <span class="ow">in</span> <span class="n">all_docs</span><span class="p">:</span>
-            <span class="n">pos_label</span> <span class="o">=</span> <span class="n">od</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'class'</span><span class="p">]</span>
-            <span class="n">pos_samples</span> <span class="o">=</span> <span class="n">rv</span><span class="p">[</span><span class="n">pos_label</span><span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">num_pos</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">pos_samples</span><span class="p">:</span>
-                <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="n">pos_value</span><span class="p">}</span>
+                <span class="n">neg_samples</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span>
+                <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">neg_samples</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num_neg</span><span class="p">:</span>
+                    <span class="n">neg_samples</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                        <span class="n">Document</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">catalog</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">num_neg</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'class'</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pos_label</span>
+                    <span class="p">)</span>
+                <span class="n">neg_samples</span> <span class="o">=</span> <span class="n">neg_samples</span><span class="p">[:</span><span class="n">num_neg</span><span class="p">]</span>
 
-            <span class="n">neg_samples</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span>
-            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">neg_samples</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num_neg</span><span class="p">:</span>
-                <span class="n">neg_samples</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-                    <span class="n">d</span>
-                    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">copy_all_docs</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">num_neg</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'class'</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pos_label</span>
-                <span class="p">)</span>
-            <span class="n">neg_samples</span> <span class="o">=</span> <span class="n">neg_samples</span><span class="p">[:</span><span class="n">num_neg</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">neg_samples</span><span class="p">:</span>
+                    <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="n">neg_value</span><span class="p">}</span>
 
-            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">neg_samples</span><span class="p">:</span>
-                <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="n">neg_value</span><span class="p">}</span>
+                <span class="n">new_doc</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">pos_samples</span><span class="p">)</span>
+                <span class="n">new_doc</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">neg_samples</span><span class="p">)</span>
+                <span class="n">n_d</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">yield</span> <span class="n">new_doc</span>
+                <span class="k">if</span> <span class="n">n_d</span> <span class="o">&gt;=</span> <span class="n">num_total</span><span class="p">:</span>
+                    <span class="k">break</span>
 
-            <span class="n">od</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">pos_samples</span><span class="p">)</span>
-            <span class="n">od</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">neg_samples</span><span class="p">)</span>
-            <span class="n">n_d</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">yield</span> <span class="n">od</span>
-            <span class="k">if</span> <span class="n">n_d</span> <span class="o">&gt;=</span> <span class="n">num_total</span><span class="p">:</span>
-                <span class="k">break</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">_orginal_fashion_doc</span><span class="p">:</span>
-            <span class="n">n_d</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">yield</span> <span class="n">d</span>
-            <span class="k">if</span> <span class="n">n_d</span> <span class="o">&gt;=</span> <span class="n">num_total</span><span class="p">:</span>
-                <span class="k">break</span></div>
+
+        <span class="k">def</span> <span class="nf">generator</span><span class="p">():</span>
+            <span class="n">n_d</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">catalog</span><span class="p">:</span>
+                <span class="n">n_d</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">yield</span> <span class="n">d</span>
+                <span class="k">if</span> <span class="n">n_d</span> <span class="o">&gt;=</span> <span class="n">num_total</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">pre_init_generator</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">generator</span><span class="p">(),</span> <span class="n">catalog</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">generator</span><span class="p">,</span> <span class="n">catalog</span></div>
 
 
 <span class="k">def</span> <span class="nf">_download_qa_data</span><span class="p">(</span>

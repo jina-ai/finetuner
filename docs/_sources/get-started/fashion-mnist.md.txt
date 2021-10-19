@@ -77,7 +77,7 @@ import finetuner
 
 finetuner.fit(
    embed_model,
-   train_data=generate_fashion_match,
+   train_data=generate_fashion_match(),
    interactive=True)
 ```
 

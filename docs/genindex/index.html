@@ -235,7 +235,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/finetuner.tuner.evaluation/">finetuner.tuner.evaluation module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/finetuner.tuner.stats/">finetuner.tuner.stats module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.helper/">finetuner.helper module</a></li>
@@ -292,7 +294,13 @@
   <h2>A</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="../api/finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats.add_eval_loss">add_eval_loss() (finetuner.tuner.stats.TunerStats method)</a>
+</li>
+        <li><a href="../api/finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats.add_eval_metric">add_eval_metric() (finetuner.tuner.stats.TunerStats method)</a>
+</li>
         <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.DataIterator.add_fit_data">add_fit_data() (finetuner.labeler.executor.DataIterator method)</a>
+</li>
+        <li><a href="../api/finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats.add_train_loss">add_train_loss() (finetuner.tuner.stats.TunerStats method)</a>
 </li>
         <li><a href="../api/finetuner.helper/#finetuner.helper.AnyDataLoader">AnyDataLoader (in module finetuner.helper)</a>
 </li>
@@ -545,6 +553,13 @@
 </li>
         </ul></li>
         <li>
+    finetuner.tuner.evaluation
+
+        <ul>
+          <li><a href="../api/finetuner.tuner.evaluation/#module-finetuner.tuner.evaluation">module</a>
+</li>
+        </ul></li>
+        <li>
     finetuner.tuner.keras
 
         <ul>
@@ -616,6 +631,13 @@
           <li><a href="../api/finetuner.tuner.pytorch.losses/#module-finetuner.tuner.pytorch.losses">module</a>
 </li>
         </ul></li>
+        <li>
+    finetuner.tuner.stats
+
+        <ul>
+          <li><a href="../api/finetuner.tuner.stats/#module-finetuner.tuner.stats">module</a>
+</li>
+        </ul></li>
         <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.fit">fit() (finetuner.labeler.executor.FTExecutor method)</a>
 
         <ul>
@@ -666,17 +688,39 @@
 </li>
         <li><a href="../api/finetuner.toydata/#finetuner.toydata.generate_fashion_match">generate_fashion_match() (in module finetuner.toydata)</a>
 </li>
+        <li><a href="../api/finetuner.toydata/#finetuner.toydata.generate_fashion_match_catalog">generate_fashion_match_catalog() (in module finetuner.toydata)</a>
+</li>
         <li><a href="../api/finetuner.toydata/#finetuner.toydata.generate_qa_match">generate_qa_match() (in module finetuner.toydata)</a>
+</li>
+        <li><a href="../api/finetuner.toydata/#finetuner.toydata.generate_qa_match_catalog">generate_qa_match_catalog() (in module finetuner.toydata)</a>
 </li>
         <li><a href="../api/finetuner.tuner.dataset.helper/#finetuner.tuner.dataset.helper.get_dataset">get_dataset() (in module finetuner.tuner.dataset.helper)</a>
 </li>
         <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.get_embed_model">get_embed_model() (finetuner.labeler.executor.FTExecutor method)</a>
 </li>
+        <li><a href="../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.get_embeddings">get_embeddings() (finetuner.tuner.base.BaseTuner method)</a>
+
+        <ul>
+          <li><a href="../api/finetuner.tuner.keras/#finetuner.tuner.keras.KerasTuner.get_embeddings">(finetuner.tuner.keras.KerasTuner method)</a>
+</li>
+          <li><a href="../api/finetuner.tuner.paddle/#finetuner.tuner.paddle.PaddleTuner.get_embeddings">(finetuner.tuner.paddle.PaddleTuner method)</a>
+</li>
+          <li><a href="../api/finetuner.tuner.pytorch/#finetuner.tuner.pytorch.PytorchTuner.get_embeddings">(finetuner.tuner.pytorch.PytorchTuner method)</a>
+</li>
+        </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.helper/#finetuner.helper.get_framework">get_framework() (in module finetuner.helper)</a>
 </li>
+        <li><a href="../api/finetuner.tuner.evaluation/#finetuner.tuner.evaluation.get_hits_at_n">get_hits_at_n() (in module finetuner.tuner.evaluation)</a>
+</li>
         <li><a href="../api/finetuner.tuner.logger/#finetuner.tuner.logger.LogGenerator.get_log_value">get_log_value() (finetuner.tuner.logger.LogGenerator static method)</a>
+</li>
+        <li><a href="../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.get_metrics">get_metrics() (finetuner.tuner.base.BaseTuner method)</a>
+</li>
+        <li><a href="../api/finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats.get_metrics_string">get_metrics_string() (finetuner.tuner.stats.TunerStats static method)</a>
+</li>
+        <li><a href="../api/finetuner.tuner.evaluation/#finetuner.tuner.evaluation.get_ndcg_at_n">get_ndcg_at_n() (in module finetuner.tuner.evaluation)</a>
 </li>
         <li><a href="../api/finetuner.tuner.logger/#finetuner.tuner.logger.LogGenerator.get_statistic">get_statistic() (finetuner.tuner.logger.LogGenerator method)</a>
 </li>
@@ -691,6 +735,10 @@
 <section id="I" class="genindex-section">
   <h2>I</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="../api/finetuner.labeler/#finetuner.labeler.init_catalog">init_catalog() (in module finetuner.labeler)</a>
+</li>
+    </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.helper/#finetuner.helper.is_seq_int">is_seq_int() (in module finetuner.helper)</a>
 </li>
@@ -768,6 +816,8 @@
 </li>
           <li><a href="../api/finetuner.tuner.dataset.helper/#module-finetuner.tuner.dataset.helper">finetuner.tuner.dataset.helper</a>
 </li>
+          <li><a href="../api/finetuner.tuner.evaluation/#module-finetuner.tuner.evaluation">finetuner.tuner.evaluation</a>
+</li>
           <li><a href="../api/finetuner.tuner.keras/#module-finetuner.tuner.keras">finetuner.tuner.keras</a>
 </li>
           <li><a href="../api/finetuner.tuner.keras.datasets/#module-finetuner.tuner.keras.datasets">finetuner.tuner.keras.datasets</a>
@@ -788,6 +838,8 @@
 </li>
           <li><a href="../api/finetuner.tuner.pytorch.losses/#module-finetuner.tuner.pytorch.losses">finetuner.tuner.pytorch.losses</a>
 </li>
+          <li><a href="../api/finetuner.tuner.stats/#module-finetuner.tuner.stats">finetuner.tuner.stats</a>
+</li>
         </ul></li>
     </ul></td>
   </tr></table>
@@ -801,8 +853,12 @@
 </li>
         <li><a href="../api/finetuner.tuner.paddle/#finetuner.tuner.paddle.PaddleTuner">PaddleTuner (class in finetuner.tuner.paddle)</a>
 </li>
+        <li><a href="../api/finetuner.tuner.evaluation/#finetuner.tuner.evaluation.prepare_eval_docs">prepare_eval_docs() (in module finetuner.tuner.evaluation)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="../api/finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats.print_last">print_last() (finetuner.tuner.stats.TunerStats method)</a>
+</li>
         <li><a href="../api/finetuner.tailor.pytorch/#finetuner.tailor.pytorch.PytorchTailor">PytorchTailor (class in finetuner.tailor.pytorch)</a>
 </li>
         <li><a href="../api/finetuner.tuner.pytorch/#finetuner.tuner.pytorch.PytorchTuner">PytorchTuner (class in finetuner.tuner.pytorch)</a>
@@ -839,6 +895,8 @@
           <li><a href="../api/finetuner.tuner.paddle/#finetuner.tuner.paddle.PaddleTuner.save">(finetuner.tuner.paddle.PaddleTuner method)</a>
 </li>
           <li><a href="../api/finetuner.tuner.pytorch/#finetuner.tuner.pytorch.PytorchTuner.save">(finetuner.tuner.pytorch.PytorchTuner method)</a>
+</li>
+          <li><a href="../api/finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats.save">(finetuner.tuner.stats.TunerStats method)</a>
 </li>
           <li><a href="../api/finetuner.tuner/#finetuner.tuner.save">(in module finetuner.tuner)</a>
 </li>
@@ -906,6 +964,8 @@
         <li><a href="../basics/glossary/#term-Tuner"><strong>Tuner</strong></a>
 </li>
         <li><a href="../api/finetuner.helper/#finetuner.helper.TunerReturnType">TunerReturnType (in module finetuner.helper)</a>
+</li>
+        <li><a href="../api/finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats">TunerStats (class in finetuner.tuner.stats)</a>
 </li>
     </ul></td>
   </tr></table>

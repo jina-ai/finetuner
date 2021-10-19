@@ -236,7 +236,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.evaluation/">finetuner.tuner.evaluation module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.stats/">finetuner.tuner.stats module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.helper/">finetuner.helper module</a></li>
@@ -288,6 +290,7 @@
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Dict</span>
 
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">DocumentArrayLike</span><span class="p">,</span> <span class="n">TunerReturnType</span><span class="p">,</span> <span class="n">get_framework</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseTuner</span>
@@ -313,6 +316,7 @@
 <div class="viewcode-block" id="fit"><a class="viewcode-back" href="../../../api/finetuner.tuner/#finetuner.tuner.fit">[docs]</a><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
     <span class="n">embed_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span>
     <span class="n">train_data</span><span class="p">:</span> <span class="n">DocumentArrayLike</span><span class="p">,</span>
+    <span class="n">catalog</span><span class="p">:</span> <span class="n">DocumentArrayLike</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DocumentArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
@@ -324,8 +328,15 @@
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TunerReturnType</span><span class="p">:</span>
     <span class="n">ft</span> <span class="o">=</span> <span class="n">get_tuner_class</span><span class="p">(</span><span class="n">embed_model</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">catalog</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">train_data</span><span class="p">()</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span> <span class="k">else</span> <span class="n">train_data</span><span class="p">)</span>
+        <span class="n">catalog</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span>
+        <span class="n">catalog</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">traverse_flat</span><span class="p">([</span><span class="s1">'r'</span><span class="p">,</span> <span class="s1">'m'</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">eval_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">eval_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">eval_data</span><span class="p">()</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">eval_data</span><span class="p">)</span> <span class="k">else</span> <span class="n">eval_data</span><span class="p">)</span>
+            <span class="n">catalog</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">eval_data</span><span class="o">.</span><span class="n">traverse_flat</span><span class="p">([</span><span class="s1">'r'</span><span class="p">,</span> <span class="s1">'m'</span><span class="p">]))</span>
 
-    <span class="k">return</span> <span class="n">ft</span><span class="p">(</span><span class="n">embed_model</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ft</span><span class="p">(</span><span class="n">embed_model</span><span class="p">,</span> <span class="n">catalog</span><span class="o">=</span><span class="n">catalog</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
         <span class="n">train_data</span><span class="p">,</span>
         <span class="n">eval_data</span><span class="p">,</span>
         <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span>

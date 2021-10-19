@@ -236,7 +236,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.evaluation/">finetuner.tuner.evaluation module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.stats/">finetuner.tuner.stats module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.helper/">finetuner.helper module</a></li>
@@ -295,7 +297,9 @@
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inputs</span><span class="p">:</span>
             <span class="n">d_blob</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">blob</span>
             <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="p">(</span><span class="n">d_blob</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">blob</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">][</span><span class="s1">'label'</span><span class="p">])</span></div>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">d_blob</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">blob</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">][</span><span class="s1">'label'</span><span class="p">]</span>
+                <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TripletMixin"><a class="viewcode-back" href="../../../../api/finetuner.tuner.dataset/#finetuner.tuner.dataset.TripletMixin">[docs]</a><span class="k">class</span> <span class="nc">TripletMixin</span><span class="p">:</span>
@@ -306,9 +310,9 @@
             <span class="n">negatives</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">][</span><span class="s1">'label'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">positives</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">blob</span><span class="p">)</span>
+                    <span class="n">positives</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">blob</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">negatives</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">blob</span><span class="p">)</span>
+                    <span class="n">negatives</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">blob</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">positives</span><span class="p">,</span> <span class="n">negatives</span><span class="p">):</span>
                 <span class="k">yield</span> <span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>

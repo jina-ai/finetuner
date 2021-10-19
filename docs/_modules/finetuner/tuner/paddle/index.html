@@ -236,7 +236,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.evaluation/">finetuner.tuner.evaluation module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.stats/">finetuner.tuner.stats module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.helper/">finetuner.helper module</a></li>
@@ -287,9 +289,9 @@
                 <h1>Source code for finetuner.tuner.paddle</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">paddle</span>
 <span class="kn">from</span> <span class="nn">jina.logging.profile</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
-<span class="kn">from</span> <span class="nn">paddle</span> <span class="kn">import</span> <span class="n">nn</span>
 <span class="kn">from</span> <span class="nn">paddle.io</span> <span class="kn">import</span> <span class="n">DataLoader</span>
 <span class="kn">from</span> <span class="nn">paddle.optimizer</span> <span class="kn">import</span> <span class="n">Optimizer</span>
 
@@ -298,6 +300,7 @@
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">DocumentArrayLike</span>
 <span class="kn">from</span> <span class="nn">..dataset.helper</span> <span class="kn">import</span> <span class="n">get_dataset</span>
 <span class="kn">from</span> <span class="nn">..logger</span> <span class="kn">import</span> <span class="n">LogGenerator</span>
+<span class="kn">from</span> <span class="nn">..stats</span> <span class="kn">import</span> <span class="n">TunerStats</span>
 
 
 <div class="viewcode-block" id="PaddleTuner"><a class="viewcode-back" href="../../../../api/finetuner.tuner.paddle/#finetuner.tuner.paddle.PaddleTuner">[docs]</a><span class="k">class</span> <span class="nc">PaddleTuner</span><span class="p">(</span><span class="n">BaseTuner</span><span class="p">):</span>
@@ -310,7 +313,7 @@
     <span class="k">def</span> <span class="nf">_get_data_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
         <span class="n">ds</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arity</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span>
-            <span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">),</span>
+            <span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">catalog</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">),</span>
             <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
             <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span>
         <span class="p">)</span>
@@ -404,7 +407,7 @@
         <span class="n">optimizer_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TunerStats</span><span class="p">:</span>
 
         <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">'cuda'</span><span class="p">:</span>
             <span class="n">paddle</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="s1">'gpu:0'</span><span class="p">)</span>
@@ -415,8 +418,7 @@
 
         <span class="n">_optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_optimizer</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">optimizer_kwargs</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">)</span>
 
-        <span class="n">losses_train</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">losses_eval</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">TunerStats</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
             <span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_loader</span><span class="p">(</span>
@@ -427,7 +429,7 @@
                 <span class="n">_optimizer</span><span class="p">,</span>
                 <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">'Epoch </span><span class="si">{</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">epochs</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">losses_train</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">lt</span><span class="p">)</span>
+            <span class="n">stats</span><span class="o">.</span><span class="n">add_train_loss</span><span class="p">(</span><span class="n">lt</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">eval_data</span><span class="p">:</span>
                 <span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_loader</span><span class="p">(</span>
@@ -435,9 +437,17 @@
                 <span class="p">)</span>
 
                 <span class="n">le</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval</span><span class="p">(</span><span class="n">_data</span><span class="p">,</span> <span class="n">train_log</span><span class="o">=</span><span class="n">LogGenerator</span><span class="p">(</span><span class="s1">'T'</span><span class="p">,</span> <span class="n">lt</span><span class="p">)())</span>
-                <span class="n">losses_eval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">le</span><span class="p">)</span>
+                <span class="n">stats</span><span class="o">.</span><span class="n">add_eval_loss</span><span class="p">(</span><span class="n">le</span><span class="p">)</span>
+                <span class="n">stats</span><span class="o">.</span><span class="n">add_eval_metric</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_metrics</span><span class="p">(</span><span class="n">eval_data</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="p">{</span><span class="s1">'loss'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'train'</span><span class="p">:</span> <span class="n">losses_train</span><span class="p">,</span> <span class="s1">'eval'</span><span class="p">:</span> <span class="n">losses_eval</span><span class="p">}}</span></div>
+            <span class="n">stats</span><span class="o">.</span><span class="n">print_last</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">stats</span></div>
+
+<div class="viewcode-block" id="PaddleTuner.get_embeddings"><a class="viewcode-back" href="../../../../api/finetuner.tuner.paddle/#finetuner.tuner.paddle.PaddleTuner.get_embeddings">[docs]</a>    <span class="k">def</span> <span class="nf">get_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">DocumentArrayLike</span><span class="p">):</span>
+        <span class="n">blobs</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">blobs</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">blobs</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">embed</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">):</span>
+            <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">embed</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PaddleTuner.save"><a class="viewcode-back" href="../../../../api/finetuner.tuner.paddle/#finetuner.tuner.paddle.PaddleTuner.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">paddle</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>

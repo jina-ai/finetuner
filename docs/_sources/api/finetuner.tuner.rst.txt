@@ -19,7 +19,9 @@ Submodules
    :maxdepth: 4
 
    finetuner.tuner.base
+   finetuner.tuner.evaluation
    finetuner.tuner.logger
+   finetuner.tuner.stats
 
 Module contents
 ---------------

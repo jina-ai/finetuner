@@ -4,9 +4,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta property="og:title" content="finetuner.tuner.paddle.datasets module" />
+  <meta property="og:title" content="finetuner.tuner.stats module" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.tuner.paddle.datasets.html" />
+  <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.tuner.stats.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner Documentation" />
@@ -25,10 +25,10 @@
 
   gtag('config', 'G-1ESRNDCK35');
 </script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.paddle.losses module" href="../finetuner.tuner.paddle.losses/" /><link rel="prev" title="finetuner.tuner.paddle package" href="../finetuner.tuner.paddle/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.helper module" href="../finetuner.helper/" /><link rel="prev" title="finetuner.tuner.logger module" href="../finetuner.tuner.logger/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
-        <title>finetuner.tuner.paddle.datasets module - Finetuner 0.0.3 documentation</title>
+        <title>finetuner.tuner.stats module - Finetuner 0.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -248,8 +248,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.keras.losses/">finetuner.tuner.keras.losses module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current has-children"><a class="reference internal" href="../finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">finetuner.tuner.paddle.datasets module</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
 </ul>
 </li>
@@ -261,7 +261,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.base/">finetuner.tuner.base module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.evaluation/">finetuner.tuner.evaluation module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.stats/">finetuner.tuner.stats module</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">finetuner.tuner.stats module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.helper/">finetuner.helper module</a></li>
@@ -309,17 +309,36 @@
                         </i>
                     </label>
                 </div>
-                <section id="module-finetuner.tuner.paddle.datasets">
-<span id="finetuner-tuner-paddle-datasets-module"></span><h1>finetuner.tuner.paddle.datasets module<a class="headerlink" href="#module-finetuner.tuner.paddle.datasets" title="Permalink to this headline">¶</a></h1>
+                <section id="module-finetuner.tuner.stats">
+<span id="finetuner-tuner-stats-module"></span><h1>finetuner.tuner.stats module<a class="headerlink" href="#module-finetuner.tuner.stats" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.datasets.SiameseDataset">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.datasets.</span></span><span class="sig-name descname"><span class="pre">SiameseDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/datasets/#SiameseDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.datasets.SiameseDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.dataset/#finetuner.tuner.dataset.SiameseMixin" title="finetuner.tuner.dataset.SiameseMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.dataset.SiameseMixin</span></code></a>, <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseDataset" title="finetuner.tuner.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseDataset</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.io.</span></code></p>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.datasets.TripletDataset">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.datasets.</span></span><span class="sig-name descname"><span class="pre">TripletDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/datasets/#TripletDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.datasets.TripletDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.dataset/#finetuner.tuner.dataset.TripletMixin" title="finetuner.tuner.dataset.TripletMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.dataset.TripletMixin</span></code></a>, <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseDataset" title="finetuner.tuner.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseDataset</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.io.</span></code></p>
+<dt class="sig sig-object py" id="finetuner.tuner.stats.TunerStats">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.stats.</span></span><span class="sig-name descname"><span class="pre">TunerStats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loss_train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_eval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics_eval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/stats/#TunerStats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.stats.TunerStats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.stats.TunerStats.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/stats/#TunerStats.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.stats.TunerStats.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.stats.TunerStats.add_train_loss">
+<span class="sig-name descname"><span class="pre">add_train_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">losses</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/stats/#TunerStats.add_train_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.stats.TunerStats.add_train_loss" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.stats.TunerStats.add_eval_loss">
+<span class="sig-name descname"><span class="pre">add_eval_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">losses</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/stats/#TunerStats.add_eval_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.stats.TunerStats.add_eval_loss" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.stats.TunerStats.add_eval_metric">
+<span class="sig-name descname"><span class="pre">add_eval_metric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/stats/#TunerStats.add_eval_metric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.stats.TunerStats.add_eval_metric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.stats.TunerStats.print_last">
+<span class="sig-name descname"><span class="pre">print_last</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/stats/#TunerStats.print_last"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.stats.TunerStats.print_last" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.stats.TunerStats.get_metrics_string">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_metrics_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/stats/#TunerStats.get_metrics_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.stats.TunerStats.get_metrics_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 </dd></dl>
 </section>
 
@@ -327,18 +346,18 @@
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../finetuner.tuner.paddle.losses/">
+                    <a class="next-page" href="../finetuner.helper/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">finetuner.tuner.paddle.losses module</div>
+                            <div class="title">finetuner.helper module</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../finetuner.tuner.paddle/">
+                    <a class="prev-page" href="../finetuner.tuner.logger/">
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -347,7 +366,7 @@
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">finetuner.tuner.paddle package</div>
+                            <div class="title">finetuner.tuner.logger module</div>
                             
                         </div>
                     </a>

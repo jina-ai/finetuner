@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex/" /><link rel="search" title="Search" href="../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
-        <title>finetuner.tailor.base - Finetuner 0.0.3 documentation</title>
+        <title>finetuner.tuner.evaluation - Finetuner 0.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
@@ -286,99 +286,60 @@
                         </i>
                     </label>
                 </div>
-                <h1>Source code for finetuner.tailor.base</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Optional</span><span class="p">,</span>
-    <span class="n">Tuple</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">LayerInfoType</span>
+                <h1>Source code for finetuner.tuner.evaluation</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">__default_tag_key__</span>
 
 
-<div class="viewcode-block" id="BaseTailor"><a class="viewcode-back" href="../../../../api/finetuner.tailor.base/#finetuner.tailor.base.BaseTailor">[docs]</a><span class="k">class</span> <span class="nc">BaseTailor</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span>
-        <span class="n">input_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">input_dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'float32'</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="sd">"""Tailor converts a general DNN model into an embedding model.</span>
+<div class="viewcode-block" id="prepare_eval_docs"><a class="viewcode-back" href="../../../../api/finetuner.tuner.evaluation/#finetuner.tuner.evaluation.prepare_eval_docs">[docs]</a><span class="k">def</span> <span class="nf">prepare_eval_docs</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">catalog</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sample_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+    <span class="n">sampled_docs</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">sample_size</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)),</span> <span class="n">seed</span><span class="p">)</span>
+    <span class="n">to_be_scored_docs</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">sampled_docs</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">embedding</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span><span class="p">,</span>
+            <span class="n">tags</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">'positive_ids'</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">id</span>
+                    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span>
+                    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">][</span><span class="s1">'label'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="n">to_be_scored_docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">to_be_scored_docs</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">to_be_scored_docs</span></div>
 
-<span class="sd">        :param model: a general DNN model</span>
-<span class="sd">        :param input_size: a sequence of integers defining the shape of the input tensor. Note, batch size is *not* part</span>
-<span class="sd">            of ``input_size``. It is required for :py:class:`PytorchTailor` and  :py:class:`PaddleTailor`, but not :py:class:`C`</span>
-<span class="sd">        :param input_dtype: the data type of the input tensor.</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">model</span>
 
-        <span class="c1"># multiple inputs to the network</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="n">input_size</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_size</span><span class="p">]</span>
+<div class="viewcode-block" id="get_hits_at_n"><a class="viewcode-back" href="../../../../api/finetuner.tuner.evaluation/#finetuner.tuner.evaluation.get_hits_at_n">[docs]</a><span class="k">def</span> <span class="nf">get_hits_at_n</span><span class="p">(</span><span class="n">to_be_scored_docs</span><span class="p">,</span> <span class="n">n</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">hits</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">to_be_scored_docs</span><span class="p">:</span>
+        <span class="n">positive_ids</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'positive_ids'</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="p">[:</span><span class="n">n</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">match</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">positive_ids</span><span class="p">:</span>
+                <span class="n">hits</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">hits</span></div>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span> <span class="o">=</span> <span class="n">input_size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_input_dtype</span> <span class="o">=</span> <span class="n">input_dtype</span>
 
-<div class="viewcode-block" id="BaseTailor.to_embedding_model"><a class="viewcode-back" href="../../../../api/finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.to_embedding_model">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">to_embedding_model</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
-        <span class="sd">"""Convert a general model from :py:attr:`.model` to an embedding model.</span>
+<div class="viewcode-block" id="get_ndcg_at_n"><a class="viewcode-back" href="../../../../api/finetuner.tuner.evaluation/#finetuner.tuner.evaluation.get_ndcg_at_n">[docs]</a><span class="k">def</span> <span class="nf">get_ndcg_at_n</span><span class="p">(</span><span class="n">to_be_scored_docs</span><span class="p">,</span> <span class="n">n</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">ndcg</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">to_be_scored_docs</span><span class="p">:</span>
+        <span class="n">dcg</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">positive_ids</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'positive_ids'</span><span class="p">]</span>
+        <span class="n">first_n</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">match</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">first_n</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">match</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">positive_ids</span><span class="p">:</span>
+                <span class="n">dcg</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">position</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
 
-<span class="sd">        :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer</span>
-<span class="sd">            will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.</span>
-<span class="sd">            To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.</span>
-<span class="sd">        :param output_dim: the dimensionality of the embedding output.</span>
-<span class="sd">        :param freeze: if set, then freeze all weights of the original model.</span>
+        <span class="n">max_positives</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">positive_ids</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">first_n</span><span class="p">))</span>
+        <span class="n">idcg</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">_get_idcg</span><span class="p">(</span><span class="n">max_positives</span><span class="p">),</span> <span class="mf">1e-10</span><span class="p">)</span>
+        <span class="n">ndcg</span> <span class="o">+=</span> <span class="n">dcg</span> <span class="o">/</span> <span class="n">idcg</span>
+    <span class="k">return</span> <span class="n">ndcg</span></div>
 
-<span class="sd">        """</span>
-        <span class="o">...</span></div>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">embedding_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayerInfoType</span><span class="p">:</span>
-        <span class="sd">"""Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.</span>
-
-<span class="sd">        :return: layers info as Dict.</span>
-<span class="sd">        """</span>
-        <span class="n">_layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">_l</span> <span class="k">for</span> <span class="n">_l</span> <span class="ow">in</span> <span class="n">_layers</span> <span class="k">if</span> <span class="n">_l</span><span class="p">[</span><span class="s1">'is_embedding_layer'</span><span class="p">]]</span>
-
-<div class="viewcode-block" id="BaseTailor.summary"><a class="viewcode-back" href="../../../../api/finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.summary">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_identity_layer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayerInfoType</span><span class="p">:</span>
-        <span class="sd">"""The summary of the model architecture. To list all potential embedding layers, use :py:attr:`.embedding_layers`.</span>
-
-<span class="sd">        :param include_identity_layer: if set, then identity layers are included and returned.</span>
-<span class="sd">        :return: all layers info as Dict.</span>
-<span class="sd">        """</span>
-        <span class="o">...</span></div>
-
-<div class="viewcode-block" id="BaseTailor.display"><a class="viewcode-back" href="../../../../api/finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">"""Display the model architecture from :py:attr:`.summary` in a table.</span>
-
-<span class="sd">        :param args: args pass to :py:attr:`.summary`</span>
-<span class="sd">        :param kwargs: kwargs pass to :py:attr:`.summary`</span>
-<span class="sd">        """</span>
-        <span class="kn">from</span> <span class="nn">rich.table</span> <span class="kn">import</span> <span class="n">Table</span>
-        <span class="kn">from</span> <span class="nn">rich</span> <span class="kn">import</span> <span class="nb">print</span><span class="p">,</span> <span class="n">box</span>
-
-        <span class="n">_summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">SIMPLE</span><span class="p">)</span>
-        <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'output_shape_display'</span><span class="p">,</span> <span class="s1">'nb_params'</span><span class="p">,</span> <span class="s1">'trainable'</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">:</span>
-            <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">_summary</span><span class="p">:</span>
-            <span class="n">style</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="s1">'is_embedding_layer'</span><span class="p">]:</span>
-                <span class="n">style</span> <span class="o">=</span> <span class="s1">'green'</span>
-            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">)),</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span>
-            <span class="n">table</span><span class="p">,</span>
-            <span class="s1">'[green]Green[/green] layers can be used as embedding layers, '</span>
-            <span class="s1">'whose [b]name[/b] can be used as [b]layer_name[/b] in to_embedding_model(...).'</span><span class="p">,</span>
-        <span class="p">)</span></div></div>
+<span class="k">def</span> <span class="nf">_get_idcg</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">position</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">position</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
 </pre></div>
             </article>
             <footer>
