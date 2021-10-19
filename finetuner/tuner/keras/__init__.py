@@ -24,7 +24,7 @@ class KerasTuner(BaseTuner):
             return loss
 
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
-        """Get tensorflow ``Dataset```` from the input data. """
+        """Get tensorflow ``Dataset`` from the input data. """
 
         ds = get_dataset(datasets, self.arity)
         input_shape = self.embed_model.input_shape[1:]
