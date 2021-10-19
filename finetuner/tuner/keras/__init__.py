@@ -1,6 +1,5 @@
 from typing import Dict, Optional, Union
 
-import numpy as np
 import tensorflow as tf
 from jina.logging.profile import ProgressBar
 from tensorflow import keras
@@ -190,17 +189,9 @@ class KerasTuner(BaseTuner):
                 if eval_data:
                     le = self._eval(_eval_data, train_log=LogGenerator('T', lt)())
                     stats.add_eval_loss(le)
-                    stats.add_eval_metric(self.get_metrics(eval_data))
 
                 stats.print_last()
         return stats
-
-    def get_embeddings(self, data: DocumentArrayLike):
-        blobs = data.blobs
-        with self.device:
-            embeddings = self.embed_model(blobs)
-        for doc, embed in zip(data, embeddings):
-            doc.embedding = np.array(embed)
 
     def save(self, *args, **kwargs):
         """Save the embedding model.

@@ -143,18 +143,6 @@ class BaseTuner(abc.ABC):
         """Evaluate the model on given labeled data"""
         ...
 
-    def get_metrics(self, docs: DocumentArrayLike):
-        docs = DocumentArray(docs()) if callable(docs) else docs
-        self.get_embeddings(docs)
-        self.get_embeddings(self._catalog)
-        if isinstance(self._catalog, DocumentArrayMemmap):
-            self._catalog.prune()
-        to_be_scored_docs = evaluation.prepare_eval_docs(docs, self._catalog, limit=10)
-        return {
-            'hits': evaluation.get_hits_at_n(to_be_scored_docs),
-            'ndcg': evaluation.get_ndcg_at_n(to_be_scored_docs),
-        }
-
     @abc.abstractmethod
     def get_embeddings(self, docs: DocumentArrayLike):
         """Calculates and adds the embeddings for the given Documents."""

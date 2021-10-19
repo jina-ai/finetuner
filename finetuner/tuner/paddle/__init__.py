@@ -1,6 +1,5 @@
 from typing import Dict, Optional, Union
 
-import numpy as np
 import paddle
 from jina.logging.profile import ProgressBar
 from paddle.io import DataLoader
@@ -8,10 +7,10 @@ from paddle.optimizer import Optimizer
 
 from . import losses, datasets
 from ..base import BaseTuner, BaseLoss
-from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
 from ..stats import TunerStats
+from ...helper import DocumentArrayLike
 
 
 class PaddleTuner(BaseTuner):
@@ -186,16 +185,9 @@ class PaddleTuner(BaseTuner):
 
                 le = self._eval(_data, train_log=LogGenerator('T', lt)())
                 stats.add_eval_loss(le)
-                stats.add_eval_metric(self.get_metrics(eval_data))
 
             stats.print_last()
         return stats
-
-    def get_embeddings(self, data: DocumentArrayLike):
-        blobs = data.blobs
-        embeddings = self.embed_model(paddle.Tensor(blobs))
-        for doc, embed in zip(data, embeddings):
-            doc.embedding = np.array(embed)
 
     def save(self, *args, **kwargs):
         """Save the embedding model.

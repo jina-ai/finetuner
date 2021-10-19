@@ -199,19 +199,9 @@ class PytorchTuner(BaseTuner):
 
                 le = self._eval(_data, train_log=LogGenerator('T', lt)())
                 stats.add_eval_loss(le)
-                stats.add_eval_metric(self.get_metrics(eval_data))
 
             stats.print_last()
         return stats
-
-    def get_embeddings(self, data: DocumentArrayLike):
-        blobs = data.blobs
-
-        tensor = torch.tensor(blobs, device=self.device)
-        with torch.inference_mode():
-            embeddings = self.embed_model(tensor)
-            for doc, embed in zip(data, embeddings):
-                doc.embedding = embed.cpu().numpy()
 
     def save(self, *args, **kwargs):
         """Save the embedding model.
