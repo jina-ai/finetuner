@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta property="og:title" content="Finetuning MLP on Image" />
+  <meta property="og:title" content="Finetuning MLP for Fashion Image Search" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/get-started/fashion-mnist.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
@@ -26,10 +26,10 @@
 
   gtag('config', 'G-1ESRNDCK35');
 </script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Finetuning Bi-LSTM on Text" href="../covid-qa/" /><link rel="prev" title="Welcome to Finetuner!" href="../../" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Finetuning Bi-LSTM for Question-Answering" href="../covid-qa/" /><link rel="prev" title="Welcome to Finetuner!" href="../../" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
-        <title>Finetuning MLP on Image - Finetuner 0.0.3 documentation</title>
+        <title>Finetuning MLP for Fashion Image Search - Finetuner 0.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -209,8 +209,9 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Finetuning MLP on Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../covid-qa/">Finetuning Bi-LSTM on Text</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Finetuning MLP for Fashion Image Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../covid-qa/">Finetuning Bi-LSTM for Question-Answering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../celeba/">Finetuning Pretrained ResNet for Celebrity Face Search</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
@@ -310,8 +311,12 @@
                         </i>
                     </label>
                 </div>
-                <section class="tex2jax_ignore mathjax_ignore" id="finetuning-mlp-on-image">
-<h1>Finetuning MLP on Image<a class="headerlink" href="#finetuning-mlp-on-image" title="Permalink to this headline">¶</a></h1>
+                <section class="tex2jax_ignore mathjax_ignore" id="finetuning-mlp-for-fashion-image-search">
+<h1>Finetuning MLP for Fashion Image Search<a class="headerlink" href="#finetuning-mlp-for-fashion-image-search" title="Permalink to this headline">¶</a></h1>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This example is inspired by <a class="reference external" href="https://docs.jina.ai/get-started/hello-world/fashion/"><code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">hello</span> <span class="pre">fashion</span></code></a>. We stronly recommend you to checkout that demo first before go through this tutorial.</p>
+</div>
 <p>In this example, we want to “tune” the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST image data, the same dataset that we are using in <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">hello</span> <span class="pre">fashion</span></code>.</p>
 <p>Precisely, “tuning” means:</p>
 <ul class="simple">
@@ -422,7 +427,7 @@ UserWarning: The given NumPy array is not writeable, and PyTorch does not suppor
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">Finetuning Bi-LSTM on Text</div>
+                            <div class="title">Finetuning Bi-LSTM for Question-Answering</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
@@ -470,7 +475,7 @@ UserWarning: The given NumPy array is not writeable, and PyTorch does not suppor
                 <div class="toc-tree-container">
                     <div class="toc-tree">
                         <ul>
-<li><a class="reference internal" href="#">Finetuning MLP on Image</a><ul>
+<li><a class="reference internal" href="#">Finetuning MLP for Fashion Image Search</a><ul>
 <li><a class="reference internal" href="#build-embedding-model">Build embedding model</a></li>
 <li><a class="reference internal" href="#prepare-data">Prepare data</a></li>
 <li><a class="reference internal" href="#put-together">Put together</a></li>

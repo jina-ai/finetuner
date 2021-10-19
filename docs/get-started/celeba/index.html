@@ -4,12 +4,12 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta property="og:title" content="Finetuning Pre-Trained ResNet on CelebA Dataset" />
+  <meta property="og:title" content="Finetuning Pretrained ResNet for Celebrity Face Search" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/get-started/celeba.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
-  <meta property="og:description" content="In this example, we want to “tune” the pre-trained ResNet on CelebA dataset, the ResNet model has pre-trained weights on ImageNet. Precisely, “tuning” means: we set up a Jina search pipeline and will look at the top-K visually similar result;, we accept or reject the results based on their qualit..." />
-  <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
+  <meta property="og:description" content="In this example, we want to “tune” the pre-trained ResNet on CelebA dataset. Note that, the original weights of the ResNet model was trained on ImageNet. The Finetuner will work in the following steps: first, we spawn the Labeler that helps us to inspect the top-K visually similar celebrities fac..." />
+  <meta property="og:image" content="../../_images/celeba-labeler.gif" />
   <meta property="og:image:alt" content="Finetuner Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -26,10 +26,10 @@
 
   gtag('config', 'G-1ESRNDCK35');
 </script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="&lt;no title&gt;" href="../../basics/" /><link rel="prev" title="Finetuning Bi-LSTM for Question-Answering" href="../covid-qa/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
-        <title>Finetuning Pre-Trained ResNet on CelebA Dataset - Finetuner 0.0.3 documentation</title>
+        <title>Finetuning Pretrained ResNet for Celebrity Face Search - Finetuner 0.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -208,9 +208,10 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../fashion-mnist/">Finetuning MLP on Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../covid-qa/">Finetuning Bi-LSTM on Text</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../fashion-mnist/">Finetuning MLP for Fashion Image Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../covid-qa/">Finetuning Bi-LSTM for Question-Answering</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Finetuning Pretrained ResNet for Celebrity Face Search</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
@@ -310,19 +311,41 @@
                         </i>
                     </label>
                 </div>
-                <section class="tex2jax_ignore mathjax_ignore" id="finetuning-pre-trained-resnet-on-celeba-dataset">
-<h1>Finetuning Pre-Trained ResNet on CelebA Dataset<a class="headerlink" href="#finetuning-pre-trained-resnet-on-celeba-dataset" title="Permalink to this headline">¶</a></h1>
-<p>In this example, we want to “tune” the pre-trained <a class="reference external" href="https://arxiv.org/abs/1512.03385">ResNet</a> on <a class="reference external" href="https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html">CelebA dataset</a>, the ResNet model has pre-trained weights on ImageNet.</p>
-<p>Precisely, “tuning” means:</p>
+                <section class="tex2jax_ignore mathjax_ignore" id="finetuning-pretrained-resnet-for-celebrity-face-search">
+<h1>Finetuning Pretrained ResNet for Celebrity Face Search<a class="headerlink" href="#finetuning-pretrained-resnet-for-celebrity-face-search" title="Permalink to this headline">¶</a></h1>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>For this example, you will need a GPU machine to enable the best experience.</p>
+</div>
+<p>In this example, we want to “tune” the pre-trained <a class="reference external" href="https://arxiv.org/abs/1512.03385">ResNet</a> on <a class="reference external" href="https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html">CelebA dataset</a>. Note that, the original weights of the ResNet model was trained on ImageNet.</p>
+<p>The Finetuner will work in the following steps:</p>
 <ul class="simple">
-<li><p>we set up a Jina search pipeline and will look at the top-K visually similar result;</p></li>
-<li><p>we accept or reject the results based on their quality;</p></li>
-<li><p>we let the model to remember our feedback and produce better search result.</p></li>
+<li><p>first, we spawn the Labeler that helps us to inspect the top-K visually similar celebrities face images from original ResNet;</p></li>
+<li><p>then, with the Labeler UI we accept or reject the results based on their similarities;</p></li>
+<li><p>finally, the results are collected at the backend by the Tuner, which “tunes” the ResNet and produces better search result.</p></li>
 </ul>
 <p>Hopefully the procedure converges after several rounds; and we get a tuned embedding for better celebrity face search.</p>
-<section id="build-embedding-model">
-<h2>Build embedding model<a class="headerlink" href="#build-embedding-model" title="Permalink to this headline">¶</a></h2>
-<p>Let’s import pre-trained ResNet as our <a class="reference internal" href="../../design/design-decisions/#embedding-model"><span class="std std-ref">embedding model</span></a> using any of the following frameworks.</p>
+<section id="prepare-celeba-data">
+<h2>Prepare CelebA data<a class="headerlink" href="#prepare-celeba-data" title="Permalink to this headline">¶</a></h2>
+<p>Let’s first make sure you have downloaded all the images <a class="reference external" href="https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?usp=sharing&amp;resourcekey=0-dYn9z10tMJOBAkviAcfdyQ"><code class="docutils literal notranslate"><span class="pre">img_align_celeba.zip</span></code></a> and <a class="reference external" href="https://drive.google.com/file/d/1_ee_0u7vcNLOfNLegJRHmolfH5ICW-XS/view?usp=sharing"><code class="docutils literal notranslate"><span class="pre">IdentityCelebA.txt</span></code></a> locally.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Beware that the original CelebA dataset is 1.3GB. In this example, we do not need the full dataset. Here is a smaller version which contains 1000 images from the original dataset. You can <a class="reference external" href="https://static.jina.ai/celeba/celeba-img.zip">download it from here</a>.</p>
+</div>
+<p>Note that Finetuner accepts Jina <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>/<code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>, so we first load CelebA data into this format using generator:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.types.document.generators</span> <span class="kn">import</span> <span class="n">from_files</span>
+
+
+<span class="k">def</span> <span class="nf">data_gen</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">from_files</span><span class="p">(</span><span class="s1">'/Users/jina/Downloads/img_align_celeba/*.jpg'</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">to_dataturi</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">convert_image_datauri_to_blob</span><span class="p">(</span><span class="n">color_axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># no need of tf</span>
+        <span class="k">yield</span> <span class="n">d</span>
+</pre></div>
+</div>
+</section>
+<section id="load-the-pretrained-model">
+<h2>Load the pretrained model<a class="headerlink" href="#load-the-pretrained-model" title="Permalink to this headline">¶</a></h2>
+<p>Let’s import pretrained ResNet50 as our base model. ResNet50 is implemented in Pytorch, Keras and Paddle. You can choose whatever framework you feel comfortable:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchvision</span>
@@ -347,65 +370,44 @@
 </div>
 </div>
 </section>
-<section id="prepare-data">
-<h2>Prepare data<a class="headerlink" href="#prepare-data" title="Permalink to this headline">¶</a></h2>
-<p>Now prepare CelebA data for the Finetuner. Note that Finetuner accepts Jina <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>/<code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>, so we first convert them into this format.</p>
-<p>Let’s first make sure you have downloaded all the images <code class="docutils literal notranslate"><span class="pre">img_align_celeba.zip</span></code> (unzip) and <code class="docutils literal notranslate"><span class="pre">IdentityCelebA.txt</span></code> locally.</p>
-<p>Since each celebrity has multiple facial images, we first create a <code class="docutils literal notranslate"><span class="pre">defaultdict</span></code> and group these images by their identity:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-
-<span class="n">DATA_PATH</span> <span class="o">=</span> <span class="s1">'~/[YOUR-DIRECTORY]/img_align_celeba/'</span>
-<span class="n">IDENTITY_PATH</span> <span class="o">=</span> <span class="s1">'~/[YOUR-DIRECTORY]/identity_CelebA.txt'</span>
-
-
-<span class="k">def</span> <span class="nf">group_imgs_by_identity</span><span class="p">():</span>
-    <span class="n">grouped</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">IDENTITY_PATH</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">img_file_name</span><span class="p">,</span> <span class="n">identity</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-            <span class="n">grouped</span><span class="p">[</span><span class="n">identity</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img_file_name</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">grouped</span>
-</pre></div>
-</div>
-<p>Then we create a data generator that yields every image as a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
-
-<span class="k">def</span> <span class="nf">train_generator</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">identity</span><span class="p">,</span> <span class="n">imgs</span> <span class="ow">in</span> <span class="n">group_imgs_by_identity</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">imgs</span><span class="p">:</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">DATA_PATH</span> <span class="o">+</span> <span class="n">img</span><span class="p">)</span>
-            <span class="n">d</span><span class="o">.</span><span class="n">convert_image_uri_to_blob</span><span class="p">(</span><span class="n">color_axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">d</span><span class="o">.</span><span class="n">convert_uri_to_datauri</span><span class="p">()</span>
-            <span class="k">yield</span> <span class="n">d</span>
-</pre></div>
-</div>
-</section>
 <section id="put-together">
 <h2>Put together<a class="headerlink" href="#put-together" title="Permalink to this headline">¶</a></h2>
-<p>Finally, let’s feed the model and the data into the Finetuner:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rv</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span>
+<p>Finally, let’s start the Finetuner. Note that we freeze the weights of the original ResNet and tuned only for the last linear layer, which leverages Tailor underneath:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
+
+<span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
-    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="n">train_generator</span><span class="p">,</span>
+<span class="hll">    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span>    <span class="n">train_data</span><span class="o">=</span><span class="n">data_gen</span><span class="p">,</span>
     <span class="n">freeze</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">input_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">),</span>
-    <span class="n">output_dim</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>  <span class="c1"># Chop-off the last fc layer and add a trainable linear layer.</span>
+<span class="hll">    <span class="n">to_embedding_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span>    <span class="n">input_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">),</span>
+    <span class="n">output_dim</span><span class="o">=</span><span class="mi">100</span>
 <span class="p">)</span>
 </pre></div>
 </div>
+<p>Note that how we specify <code class="docutils literal notranslate"><span class="pre">interactive=True</span></code> and <code class="docutils literal notranslate"><span class="pre">to_embedding_model=True</span></code> in the above code to activate Labler and Tailor, respectively.</p>
+<p><code class="docutils literal notranslate"><span class="pre">input_size</span></code> is not required when you using Keras as the backend.</p>
 </section>
 <section id="label-interactively">
 <h2>Label interactively<a class="headerlink" href="#label-interactively" title="Permalink to this headline">¶</a></h2>
-<p>You can now label the data by mouse/keyboard. The model will get trained and improved as you are labeling.</p>
-<p>From the backend you will see model’s training procedure:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>           Flow@22900<span class="o">[</span>I<span class="o">]</span>:🎉 Flow is ready to use!
-	🔗 Protocol: 		HTTP
-	🏠 Local access:	<span class="m">0</span>.0.0.0:52621
-	🔒 Private network:	<span class="m">172</span>.18.1.109:52621
-	🌐 Public address:	<span class="m">94</span>.135.231.132:52621
-	💬 Swagger UI:		http://localhost:52621/docs
-	📚 Redoc:		http://localhost:52621/redoc
-           JINA@22900<span class="o">[</span>I<span class="o">]</span>:Finetuner is available at http://localhost:52621/finetuner
+<p>After running the script, the browser will open the Labeler UI. You can now label the data by mouse/keyboard. The model will get trained and improved as you are labeling. If you are running this example on a CPU machine, it can take up to 20 seconds for each labeling round.</p>
+<figure class="align-center">
+<img alt="../../_images/celeba-labeler.gif" src="../../_images/celeba-labeler.gif"/>
+</figure>
+<p>On the backend, you should be able to see the training procedure in the terminal.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">           Flow@6620[I]:🎉 Flow is ready to use!</span>
+<span class="go">	🔗 Protocol: 		HTTP</span>
+<span class="go">	🏠 Local access:	0.0.0.0:61622</span>
+<span class="go">	🔒 Private network:	172.18.1.109:61622</span>
+<span class="go">	🌐 Public address:	94.135.231.132:61622</span>
+<span class="go">	💬 Swagger UI:		http://localhost:61622/docs</span>
+<span class="go">	📚 Redoc:		http://localhost:61622/redoc</span>
+<span class="go">UserWarning: ignored unknown argument: ['thread']. (raised from /Users/hanxiao/Documents/jina/jina/helper.py:685)</span>
+<span class="go">⠴ Working... ━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:00 estimating...            JINA@6620[I]:Finetuner is available at http://localhost:61622/finetuner</span>
+<span class="go">⠏ Working... ━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:00  0.0 step/s UserWarning: The given NumPy array is not writeable, and PyTorch does not support non-writeable tensors. This means you can write to the underlying (supposedly non-writeable) NumPy array using the tensor. You may want to copy the array to protect its data or make it writeable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at  ../torch/csrc/utils/tensor_numpy.cpp:180.) (raised from /Users/hanxiao/Documents/trainer/finetuner/labeler/executor.py:53)</span>
+<span class="go">⠦       DONE ━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:06  1.4 step/s 11 steps done in 6 seconds</span>
+<span class="go">⠙       DONE ━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:03  0.3 step/s T: Loss=    0.75</span>
 </pre></div>
 </div>
 </section>
@@ -415,8 +417,30 @@
             <footer>
                 
                 <div class="related-pages">
-                    
-                    
+                    <a class="next-page" href="../../basics/">
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Next</span>
+                            </div>
+                            <div class="title">&lt;no title&gt;</div>
+                        </div>
+                        <svg>
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                    </a>
+                    <a class="prev-page" href="../covid-qa/">
+                        <svg>
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Previous</span>
+                            </div>
+                            
+                            <div class="title">Finetuning Bi-LSTM for Question-Answering</div>
+                            
+                        </div>
+                    </a>
                 </div>
 
                 <div class="related-information sd-d-inline-flex">
@@ -446,9 +470,9 @@
                 <div class="toc-tree-container">
                     <div class="toc-tree">
                         <ul>
-<li><a class="reference internal" href="#">Finetuning Pre-Trained ResNet on CelebA Dataset</a><ul>
-<li><a class="reference internal" href="#build-embedding-model">Build embedding model</a></li>
-<li><a class="reference internal" href="#prepare-data">Prepare data</a></li>
+<li><a class="reference internal" href="#">Finetuning Pretrained ResNet for Celebrity Face Search</a><ul>
+<li><a class="reference internal" href="#prepare-celeba-data">Prepare CelebA data</a></li>
+<li><a class="reference internal" href="#load-the-pretrained-model">Load the pretrained model</a></li>
 <li><a class="reference internal" href="#put-together">Put together</a></li>
 <li><a class="reference internal" href="#label-interactively">Label interactively</a></li>
 </ul>

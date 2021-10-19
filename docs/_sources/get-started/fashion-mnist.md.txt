@@ -1,4 +1,8 @@
-# Finetuning MLP on Image
+# Finetuning MLP for Fashion Image Search
+
+```{tip}
+This example is inspired by [`jina hello fashion`](https://docs.jina.ai/get-started/hello-world/fashion/). We stronly recommend you to checkout that demo first before go through this tutorial.
+```
 
 In this example, we want to "tune" the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST image data, the same dataset that we are using in `jina hello fashion`. 
 

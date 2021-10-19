@@ -185,8 +185,9 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../get-started/fashion-mnist/">Finetuning MLP on Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../get-started/covid-qa/">Finetuning Bi-LSTM on Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../get-started/fashion-mnist/">Finetuning MLP for Fashion Image Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../get-started/covid-qa/">Finetuning Bi-LSTM for Question-Answering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../get-started/celeba/">Finetuning Pretrained ResNet for Celebrity Face Search</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
@@ -340,8 +341,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
             <span class="n">da_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">blobs</span><span class="p">)</span>
             <span class="n">docs_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">docs</span><span class="o">.</span><span class="n">blobs</span><span class="p">)</span>
-            <span class="n">da</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">(</span><span class="n">da_input</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-            <span class="n">docs</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">(</span><span class="n">docs_input</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">inference_mode</span><span class="p">():</span>
+                <span class="n">da</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">(</span><span class="n">da_input</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+                <span class="n">docs</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">(</span><span class="n">docs_input</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">f_type</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">paddle</span>
 

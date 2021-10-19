@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta property="og:title" content="Finetuning Bi-LSTM on Text" />
+  <meta property="og:title" content="Finetuning Bi-LSTM for Question-Answering" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/get-started/covid-qa.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
@@ -26,10 +26,10 @@
 
   gtag('config', 'G-1ESRNDCK35');
 </script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="&lt;no title&gt;" href="../../basics/" /><link rel="prev" title="Finetuning MLP on Image" href="../fashion-mnist/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Finetuning Pretrained ResNet for Celebrity Face Search" href="../celeba/" /><link rel="prev" title="Finetuning MLP for Fashion Image Search" href="../fashion-mnist/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
-        <title>Finetuning Bi-LSTM on Text - Finetuner 0.0.3 documentation</title>
+        <title>Finetuning Bi-LSTM for Question-Answering - Finetuner 0.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -209,8 +209,9 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../fashion-mnist/">Finetuning MLP on Image</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Finetuning Bi-LSTM on Text</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fashion-mnist/">Finetuning MLP for Fashion Image Search</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Finetuning Bi-LSTM for Question-Answering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../celeba/">Finetuning Pretrained ResNet for Celebrity Face Search</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
@@ -310,8 +311,12 @@
                         </i>
                     </label>
                 </div>
-                <section class="tex2jax_ignore mathjax_ignore" id="finetuning-bi-lstm-on-text">
-<h1>Finetuning Bi-LSTM on Text<a class="headerlink" href="#finetuning-bi-lstm-on-text" title="Permalink to this headline">¶</a></h1>
+                <section class="tex2jax_ignore mathjax_ignore" id="finetuning-bi-lstm-for-question-answering">
+<h1>Finetuning Bi-LSTM for Question-Answering<a class="headerlink" href="#finetuning-bi-lstm-for-question-answering" title="Permalink to this headline">¶</a></h1>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This example is inspired by <a class="reference external" href="https://docs.jina.ai/get-started/hello-world/covid-19-chatbot/"><code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">hello</span> <span class="pre">chatbot</span></code></a>. We stronly recommend you to checkout that demo first before go through this tutorial.</p>
+</div>
 <p>In this example, we want to “tune” the 32-dim embedding vectors from a bidirectional LSTM on Covid19 QA data, the same dataset that we are using in <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">hello</span> <span class="pre">chatbot</span></code>.</p>
 <p>Precisely, “tuning” means:</p>
 <ul class="simple">
@@ -411,12 +416,12 @@ It also codes and pads the question into a 100-dimensional array, which is store
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../../basics/">
+                    <a class="next-page" href="../celeba/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">&lt;no title&gt;</div>
+                            <div class="title">Finetuning Pretrained ResNet for Celebrity Face Search</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
@@ -431,7 +436,7 @@ It also codes and pads the question into a 100-dimensional array, which is store
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">Finetuning MLP on Image</div>
+                            <div class="title">Finetuning MLP for Fashion Image Search</div>
                             
                         </div>
                     </a>
@@ -464,7 +469,7 @@ It also codes and pads the question into a 100-dimensional array, which is store
                 <div class="toc-tree-container">
                     <div class="toc-tree">
                         <ul>
-<li><a class="reference internal" href="#">Finetuning Bi-LSTM on Text</a><ul>
+<li><a class="reference internal" href="#">Finetuning Bi-LSTM for Question-Answering</a><ul>
 <li><a class="reference internal" href="#build-embedding-model">Build embedding model</a></li>
 <li><a class="reference internal" href="#prepare-data">Prepare data</a></li>
 <li><a class="reference internal" href="#put-together">Put together</a></li>
