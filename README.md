@@ -40,7 +40,7 @@ and production.
 
 ## Install
 
-Make sure you have Python 3.7+ and one of PyTorch (>=1.9), Tensorflow (>=2.5) or PaddlePaddle installed on Linux/MacOS.
+Make sure you have Python 3.7+ and *one of* PyTorch (>=1.9) or Tensorflow (>=2.5) or PaddlePaddle installed on Linux/MacOS.
 
 ```bash
 pip install finetuner
