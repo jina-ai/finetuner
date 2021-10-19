@@ -1,7 +1,7 @@
-finetuner.tuner.evaluation module
+finetuner.labeler.executor module
 =================================
 
-.. automodule:: finetuner.tuner.evaluation
+.. automodule:: finetuner.labeler.executor
    :members:
    :undoc-members:
    :show-inheritance:

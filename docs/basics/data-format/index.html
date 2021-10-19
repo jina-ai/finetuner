@@ -429,6 +429,19 @@ more related to this Document than <code class="docutils literal notranslate"><s
 <p>However, if all match labels from all Documents are the same, then Finetuner cannot learn anything useful.</p>
 </div>
 </section>
+<section id="catalog">
+<h3>Catalog<a class="headerlink" href="#catalog" title="Permalink to this headline">¶</a></h3>
+<p>In search, queries and search results are often distinct sets.
+Specifying a <code class="docutils literal notranslate"><span class="pre">catalog</span></code> helps you keep this distinction during finetuning.
+When using <code class="docutils literal notranslate"><span class="pre">finetuner.fit(train_data=...,eval_data=...,</span> <span class="pre">catalog=...)</span></code>, <code class="docutils literal notranslate"><span class="pre">train_data</span></code> and <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> specify the potential queries and the <code class="docutils literal notranslate"><span class="pre">catalog</span></code> specifies the potential results.
+This distinction is mainly used</p>
+<ul class="simple">
+<li><p>in the Labeler, when new sets of unlabeled results are generated and</p></li>
+<li><p>during evaluation, for the NDCG calculation.</p></li>
+</ul>
+<p>A <code class="docutils literal notranslate"><span class="pre">catalog</span></code> is either a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> or a <code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>.
+If no <code class="docutils literal notranslate"><span class="pre">catalog</span></code> is specified, the Finetuner will implicitly use <code class="docutils literal notranslate"><span class="pre">train_data</span></code> as catalog.</p>
+</section>
 </section>
 <section id="data-source">
 <h2>Data source<a class="headerlink" href="#data-source" title="Permalink to this headline">¶</a></h2>
@@ -485,8 +498,8 @@ grayscale image.</p>
 </ul>
 <p>Matches are built with the logic below:</p>
 <ul class="simple">
-<li><p>only allows one positive match per Document, taken from the <code class="docutils literal notranslate"><span class="pre">answer</span></code> column;</p></li>
-<li><p>always include <code class="docutils literal notranslate"><span class="pre">wrong_answer</span></code> column as the negative match. Then sample other Documents’ answer as negative matches.</p></li>
+<li><p>only allows 1 positive match per Document, it is taken from the <code class="docutils literal notranslate"><span class="pre">answer</span></code> column;</p></li>
+<li><p>always include <code class="docutils literal notranslate"><span class="pre">wrong_answer</span></code> column as the negative match. Then sample other documents’ answer as negative matches.</p></li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -562,6 +575,7 @@ grayscale image.</p>
 <li><a class="reference internal" href="#required-fields">Required fields</a><ul>
 <li><a class="reference internal" href="#matches">Matches</a></li>
 <li><a class="reference internal" href="#labels">Labels</a></li>
+<li><a class="reference internal" href="#catalog">Catalog</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#data-source">Data source</a></li>
