@@ -137,6 +137,19 @@ Yes. Labels should reflect the groundtruth as-is. If a Document contains only po
 However, if all match labels from all Documents are the same, then Finetuner can not learn anything useful.
 ```
 
+### Catalog
+
+In search, queries and search results are often distinct sets.
+Specifying a `catalog` helps you keep this distinction during finetuning.
+When using `finetuner.fit(train_data=...,eval_data=..., catalog=...)`, `train_data` and `eval_data` specify the potential queries and the `catalog` specifies the potential results.
+This distinction is mainly used
+
+- in the Labeler, when new sets of unlabeled results are generated and
+- during evaluation, for the NDCG calculation.
+
+A `catalog` is either a `DocumentArray` or a `DocumentArrayMemmap`.
+If no `catalog` is specified, the Finetuner will implicitly use `train_data` as catalog.
+
 ## Data source
 
 After organizing the labeled `Document` into `DocumentArray` or `DocumentArrayMemmap`, you can feed them
@@ -156,7 +169,7 @@ made here.
 ### Fashion-MNIST
 
 Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. Each image is a single channel 28x28
-grayscale image. 
+grayscale image.
 
 
 ```{figure} fashion-mnist-sprite.png
@@ -180,7 +193,7 @@ Matches are built with the logic below:
 ### Covid QA
 
 
-Covid QA data is a CSV that has 481 rows with columns `question`, `answer` & `wrong_answer`. 
+Covid QA data is a CSV that has 481 rows with columns `question`, `answer` & `wrong_answer`.
 
 ```{figure} covid-qa-data.png
 :align: center
@@ -198,7 +211,7 @@ into match data, we build each document to contain the following info that are r
 
 Matches are built with the logic below:
 
-- only allows 1 positive match per Document, it is taken from the `answer` column; 
+- only allows 1 positive match per Document, it is taken from the `answer` column;
 - always include `wrong_answer` column as the negative match. Then sample other documents' answer as negative matches.
 
 
