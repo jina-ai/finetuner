@@ -5,13 +5,13 @@ In this example, we want to "tune" the 32-dim embedding vectors from a bidirecti
 Precisely, "tuning" means: 
 - we set up a Jina search pipeline and will look at the top-K semantically similar questions;
 - we accept or reject the results based on their quality;
-- we let the model to remember our feedback and produces better search result.
+- we let the model remember our feedback and produce better search results.
 
-Hopefully the procedure converges after several rounds; and we get a tuned embedding for better search task.
+Hopefully the procedure converges after several rounds and we get a tuned embedding for better search tasks.
 
 ## Build embedding model
 
-Let's write a 2-layer MLP as our {ref}`embedding model<embedding-model>` using any of the following framework.
+Let's write a 2-layer MLP as our {ref}`embedding model<embedding-model>` using any of the following frameworks:
 
 ````{tab} PyTorch
 
@@ -64,7 +64,7 @@ embed_model = paddle.nn.Sequential(
 
 ## Prepare data
 
-Now prepare CovidQA data for the Finetuner. Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we first convert them into this format.
+Now prepare CovidQA data for the Finetuner. Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we first convert the data into this format.
 
 ```python
 from finetuner.toydata import generate_qa_match
@@ -94,7 +94,7 @@ finetuner.fit(
 
 From the left bar, select `text` as the view.
 
-In the content, select `.tags` and then fill in `question` to tell the UI renders text from `Document.tags['question']`. 
+In the content, select `.tags` and then fill in `question` to tell the UI to render text from `Document.tags['question']`. 
 
 You can now label the data by mouse/keyboard. The model will get trained and improved as you are labeling.
 

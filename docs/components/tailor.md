@@ -1,8 +1,8 @@
 # Tailor
 
-Tailor is a component of Finetuner. It converts any {term}`general model` into an {term}`embedding model`. Given a general model (either written from scratch, or from Pytorch/Keras/Huggingface model zoo), Tailor does micro-operations on the model architecture and outputs an embedding model for the {term}`Tuner`. 
+Tailor is a component of Finetuner. It converts any {term}`general model` into an {term}`embedding model`. Given a general model (either written from scratch, or from PyTorch/Keras/Huggingface model zoo), Tailor performs micro-operations on the model architecture and outputs an embedding model for the {term}`Tuner`. 
 
-Given a general model with weights, Tailor *preserves its weights* and does (some of) the  following steps:
+Given a general model with weights, Tailor *preserves its weights* and performs (some of) the following steps:
 - finding all dense layers by iterating over layers;
 - chopping off all layers after a certain dense layer;
 - freezing the weights on the remaining layers;
@@ -12,11 +12,11 @@ Given a general model with weights, Tailor *preserves its weights* and does (som
 :align: center
 ```
 
-In the end, Tailor outputs an embedding model that can be fine-tuned in Tuner.
+Finally, Tailor outputs an embedding model that can be fine-tuned in Tuner.
 
 ## `to_embedding_model` method
 
-Tailor provides a high-level API `finetuner.tailor.to_embedding_model()`, which can be used as following:
+Tailor provides a high-level API `finetuner.tailor.to_embedding_model()`, which can be used as follows:
 
 ```python
 from finetuner.tailor import to_embedding_model
@@ -31,15 +31,15 @@ to_embedding_model(
 ) -> AnyDNN
 ```
 
-Here, `model` is the general model with loaded weights; `layer_name` is the selected bottleneck layer; `freeze` defines if to set weights of remaining layers as nontrainable parameters.
+Here, `model` is the general model with loaded weights; `layer_name` is the selected bottleneck layer; `freeze` defines whether to set weights of remaining layers as non-trainable parameters.
 
-`input_size` and `input_dtype` are input type specification required by Pytorch and Paddle models. They are not required for Kersas models.
+`input_size` and `input_dtype` are input type specification required by PyTorch and Paddle models. They are not required for Keras models.
 
-In general, you do not need to call `to_embedding_model` manually. You can directly use it via `finetuner.fit(..., to_embedding_model=True)`
+In general, you do not need to call `to_embedding_model` manually. You can use it directly via `finetuner.fit(..., to_embedding_model=True)`
 
 ## `display` method
 
-Tailor also provides a helper function `finetuner.tailor.display()` that gives a table summary of a Keras/Pytorch/Paddle model.
+Tailor also provides a helper function `finetuner.tailor.display()` that gives a table summary of a Keras/PyTorch/Paddle model.
 
 Let's see how to use them in action.
 
@@ -47,7 +47,7 @@ Let's see how to use them in action.
 
 ### Simple MLP
 
-1. Let's first build a simple 2-layer perceptron with 128 and 32-dim output as layers via Pytorch/Keras/Paddle. 
+1. Let's first build a simple 2-layer perceptron with 128 and 32-dim output as layers via PyTorch/Keras/Paddle. 
     ````{tab} PyTorch
     ```python
     import torch
@@ -84,7 +84,7 @@ Let's see how to use them in action.
    
     ````
 2. Let's use `display` to look at the layer information.
-   ````{tab} Pytorch
+   ````{tab} PyTorch
    ```python
    from finetuner.tailor import display
     
@@ -132,7 +132,7 @@ Let's see how to use them in action.
      linear_4    [32]                   4128        True       
    ```      
    ````
-3. Say we want to get an embedding model that outputs 100-dimensional embeddings. One can simply do
+3. Say we want to get an embedding model that outputs 100-dimensional embeddings. You can simply do:
    ```python
    from finetuner.tailor import to_embedding_model
     
@@ -146,7 +146,7 @@ Let's see how to use them in action.
     
    display(model, input_size=(28, 28))
    ```
-   ````{tab} Pytorch
+   ````{tab} PyTorch
    
    ```console
      name        output_shape_display   nb_params   trainable  
@@ -182,11 +182,11 @@ Let's see how to use them in action.
      linear_5    [100]                  3300        True       
    ```      
    ````
-   One can see that Tailor adds an additional linear layer with 100-dimensional output at the end.
+   You can see that Tailor adds an additional linear layer with 100-dimensional output at the end.
    
 ### Simple Bi-LSTM
 
-1. Let's first build a simple Bi-directional LSTM with Pytorch/Keras/Paddle.
+1. Let's first build a simple bi-directional LSTM with PyTorch/Keras/Paddle.
      ````{tab} PyTorch
      ```python
      import torch
@@ -231,7 +231,7 @@ Let's see how to use them in action.
      ````
 
 2. Let's use `display` to look at the layer information.
-   ````{tab} Pytorch
+   ````{tab} PyTorch
    ```python
    from finetuner.tailor import display
     
@@ -279,8 +279,8 @@ Let's see how to use them in action.
      linear_4      [32]                         4128        True       
    ```      
    ````
-3. Say we want to get an embedding model that outputs 100-dimensional embeddings. But this time, we want to directly concat this layer after LSTM, and freeze all previous layers. One can use `layer_name` and `freeze` to solve this problem. In Pytorch and Paddle implementation, the layer name is `lastcell_3`; in Keras the layer name is `bidirectional`.
-   ````{tab} Pytorch
+3. Say we want to get an embedding model that outputs 100-dimensional embeddings. But this time, we want to directly concat this layer after LSTM, and freeze all previous layers. You can use `layer_name` and `freeze` to solve this problem. In PyTorch or Paddle implementations, the layer name is `lastcell_3`; in Keras the layer name is `bidirectional`.
+   ````{tab} PyTorch
    
    ```python
    from finetuner.tailor import to_embedding_model
@@ -339,15 +339,15 @@ Let's see how to use them in action.
      linear_4      [100]                        12900       True       
    ```      
    ```` 
-   One can observe the last linear layer is replaced from a 32-dimensional output to a 100-dimensional output. Also, the weights of all layers except the last layers are frozen and not trainable. 
+   You can observe the last linear layer is replaced from a 32-dimensional output to a 100-dimensional output. Also, the weights of all layers except the last layers are frozen and not trainable. 
 
 
 ### Pretrained VGG16 model
 
-Apart from building model on your own and then tailor it, Tailor can work directly on pretrained models. In this example, we load a pretrained VGG16 model and tailor it into an embedding model. 
+Apart from building a model on your own and then tailoring it, Tailor can work directly on pretrained models. In this example, we load a pretrained VGG16 model and tailor it into an embedding model. 
 
 
-1. Let's first load a pretrained VGG16 from Pytorch/Keras/Paddle model zoo.
+1. Let's first load a pretrained VGG16 from PyTorch/Keras/Paddle model zoo.
      ````{tab} PyTorch
      ```python
      import torchvision.models as models
@@ -371,7 +371,7 @@ Apart from building model on your own and then tailor it, Tailor can work direct
      ````
 
 2. Let's use `display` to look at the layer information.
-   ````{tab} Pytorch
+   ````{tab} PyTorch
    ```python
    from finetuner.tailor import display
     
@@ -490,8 +490,8 @@ Apart from building model on your own and then tailor it, Tailor can work direct
      linear_39      [1000]                 4097000     True  
    ```      
    ````
-3. Say we want to get an embedding model that outputs 100-dimensional embeddings. This time we want to remove all existing dense layers, and freeze all previous layers, then concat a new 100-dimensional dense output to the mode. To achieve that, 
-   ````{tab} Pytorch
+3. Say we want to get an embedding model that outputs 100-dimensional embeddings. This time we want to remove all existing dense layers, and freeze all previous layers, then concat a new 100-dimensional dense output to the model. To achieve that you can do:
+   ````{tab} PyTorch
    
    ```python
    from finetuner.tailor import to_embedding_model
@@ -599,10 +599,10 @@ Apart from building model on your own and then tailor it, Tailor can work direct
      linear_34      [100]                  409700      True                                                              
    ```      
    ```` 
-   One can observe the original last two linear layers are removed, and a new linear layer with 100-dimensional output is added at the end. Also, the weights of all layers except the last layers are frozen and not trainable. 
+   You can observe the original last two linear layers are removed, and a new linear layer with 100-dimensional output has been added at the end. Also, the weights of all layers except the last layers are frozen and not trainable. 
 
 ## Tips
 
-- For Pytorch/Paddle models, having the correct `input_size` and `input_dtype` is fundamental to use `to_embedding_model` and `display`.
-- One can chop-off layers and concat new layer afterward. To get the accurate layer name, one can first use `display` to list all layers. 
-- Different frameworks may give different layer names. Often, Pytorch and Paddle layer names are consistent.
+- For PyTorch/Paddle models, having the correct `input_size` and `input_dtype` is fundamental to use `to_embedding_model` and `display`.
+- You can chop off layers and concat new layers afterward. To get the accurate layer name, you can first use `display` to list all layers. 
+- Different frameworks may give different layer names. Often, PyTorch and Paddle layer names are consistent.
