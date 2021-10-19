@@ -321,7 +321,7 @@ or <code class="docutils literal notranslate"><span class="pre">DocumentArrayMem
 <p>This chapter introduces how to construct a <code class="docutils literal notranslate"><span class="pre">Document</span></code> in a way that Finetuner will accept.</p>
 <section id="understand-supervision">
 <h2>Understand supervision<a class="headerlink" href="#understand-supervision" title="Permalink to this headline">¶</a></h2>
-<p>Finetuner tunes a deep neural network on search tasks. In this context, the supervision comes from if the nearest-neighbour matches are good or bad, where matches are often computed on model’s embeddings. You have to label those good matches and bad matches, so Finetuner can learn about your feedback and improve the model. The following graph illustrates the process.</p>
+<p>Finetuner tunes a deep neural network on search tasks. In this context, the supervision comes from whether the nearest-neighbour matches are good or bad, where matches are often computed on model’s embeddings. You have to label these good matches and bad matches so Finetuner can learn your feedback and improve the model. The following graph illustrates the process:</p>
 <figure class="align-center">
 <img alt="../../_images/tuner-journey.svg" src="../../_images/tuner-journey.svg"/></figure>
 </section>
@@ -344,7 +344,7 @@ each <code class="docutils literal notranslate"><span class="pre">Document</span
 <p>In summary, you either label the matches on-the-fly or prepare the labeled data in advance.</p>
 <section id="matches">
 <h3>Matches<a class="headerlink" href="#matches" title="Permalink to this headline">¶</a></h3>
-<p>Finetuner relies on matching data in <code class="docutils literal notranslate"><span class="pre">.matches</span></code>. To manually add a match to a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object, one can do:</p>
+<p>Finetuner relies on matching data in <code class="docutils literal notranslate"><span class="pre">.matches</span></code>. To manually add a match to a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object, you can do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello, world!'</span><span class="p">)</span>
@@ -359,7 +359,7 @@ each <code class="docutils literal notranslate"><span class="pre">Document</span
 </pre></div>
 </div>
 <p>Note that the match <code class="docutils literal notranslate"><span class="pre">Document</span></code> should share the same content type as its parent <code class="docutils literal notranslate"><span class="pre">Document</span></code>. The following combinations
-are not valid to Finetuner:</p>
+are not valid in Finetuner:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -425,8 +425,8 @@ more related to this Document than <code class="docutils literal notranslate"><s
 </div>
 <div class="hint admonition">
 <p class="admonition-title">Is it okay to have all matches as 1, or all as -1?</p>
-<p>Yes. Labels should reflect the groundtruth as-is. If a Document contains only postive matches or only negative matches, then so be it.</p>
-<p>However, if all match labels from all Documents are the same, then Finetuner can not learn anything useful.</p>
+<p>Yes. Labels should reflect the groundtruth as-is. If a Document contains only positive matches or only negative matches, then so be it.</p>
+<p>However, if all match labels from all Documents are the same, then Finetuner cannot learn anything useful.</p>
 </div>
 </section>
 </section>
@@ -434,7 +434,7 @@ more related to this Document than <code class="docutils literal notranslate"><s
 <h2>Data source<a class="headerlink" href="#data-source" title="Permalink to this headline">¶</a></h2>
 <p>After organizing the labeled <code class="docutils literal notranslate"><span class="pre">Document</span></code> into <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> or <code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>, you can feed them
 into <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code>.</p>
-<p>But where are the labels come from? You can use Labeler, which allows one interactively label data and tune the model at
+<p>But where do the labels come from? You can use Labeler, which allows you to interactively label data and tune the model at
 the same time.</p>
 <p>Otherwise, you will need to prepare labeled data on your own.</p>
 </section>
@@ -449,11 +449,10 @@ grayscale image.</p>
 <figure class="align-center">
 <img alt="../../_images/fashion-mnist-sprite.png" src="../../_images/fashion-mnist-sprite.png"/>
 </figure>
-<p>To convert this dataset into match data, we build each document to contain the following info that are
-relevant:</p>
+<p>To convert this dataset into match data, we build each Document to contain the following relevant information:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.blob</span></code>: the image;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.matches</span></code>: the generated positive &amp; negative matches Document;</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">.matches</span></code>: the generated positive and negative matches of the Document;</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">.blob</span></code>: the matched Document’s image;</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.tags['finetuner']['label']</span></code>: the match label: <code class="docutils literal notranslate"><span class="pre">1</span></code> or <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p></li>
@@ -468,12 +467,11 @@ relevant:</p>
 </section>
 <section id="covid-qa">
 <span id="build-qa-data"></span><h3>Covid QA<a class="headerlink" href="#covid-qa" title="Permalink to this headline">¶</a></h3>
-<p>Covid QA data is a CSV that has 481 rows with columns <code class="docutils literal notranslate"><span class="pre">question</span></code>, <code class="docutils literal notranslate"><span class="pre">answer</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">wrong_answer</span></code>.</p>
+<p>Covid QA data is a CSV that has 481 rows with the columns <code class="docutils literal notranslate"><span class="pre">question</span></code>, <code class="docutils literal notranslate"><span class="pre">answer</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">wrong_answer</span></code>.</p>
 <figure class="align-center">
 <img alt="../../_images/covid-qa-data.png" src="../../_images/covid-qa-data.png"/>
 </figure>
-<p>To convert this dataset
-into match data, we build each document to contain the following info that are relevant:</p>
+<p>To convert this dataset into match data, we build each Document to contain the following relevant information:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">.text</span></code>: the original <code class="docutils literal notranslate"><span class="pre">question</span></code> column</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.blob</span></code>: a fixed length <code class="docutils literal notranslate"><span class="pre">ndarray</span></code> tokenized from <code class="docutils literal notranslate"><span class="pre">.text</span></code></p></li>
@@ -487,12 +485,12 @@ into match data, we build each document to contain the following info that are r
 </ul>
 <p>Matches are built with the logic below:</p>
 <ul class="simple">
-<li><p>only allows 1 positive match per Document, it is taken from the <code class="docutils literal notranslate"><span class="pre">answer</span></code> column;</p></li>
-<li><p>always include <code class="docutils literal notranslate"><span class="pre">wrong_answer</span></code> column as the negative match. Then sample other documents’ answer as negative matches.</p></li>
+<li><p>only allows one positive match per Document, taken from the <code class="docutils literal notranslate"><span class="pre">answer</span></code> column;</p></li>
+<li><p>always include <code class="docutils literal notranslate"><span class="pre">wrong_answer</span></code> column as the negative match. Then sample other Documents’ answer as negative matches.</p></li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Finetuner codebase contains two synthetic matching data generator for demo and debugging purpose:</p>
+<p>The Finetuner codebase contains two synthetic matching data generators for demo and debugging purpose:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">finetuner.toydata.generate_fashion_match()</span></code>: the generator of Fashion-MNIST matching data.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">finetuner.toydata.generate_qa_match()</span></code>: the generator of Covid QA matching data.</p></li>

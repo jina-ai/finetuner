@@ -315,7 +315,7 @@
 <h1>Labeler<a class="headerlink" href="#labeler" title="Permalink to this headline">¶</a></h1>
 <p>Labeler is a component in Finetuner. It contains a backend and a frontend UI. Given <a class="reference internal" href="../../basics/glossary/#term-Unlabeled-data"><span class="xref std std-term">unlabeled data</span></a> and an <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a> or <a class="reference internal" href="../../basics/glossary/#term-General-model"><span class="xref std std-term">general model</span></a>, Labeler asks human for labeling data, trains model, conducts <a class="reference external" href="https://en.wikipedia.org/wiki/Active_learning_(machine_learning)">active learning</a> and then asks better question for labeling.</p>
 <p>Algorithms such as few-shot learning, negative sampling, active learning are implemented in the Labeler.</p>
-<p>Labeler can be also used together with Tailor.</p>
+<p>Labeler can also be used together with Tailor.</p>
 <section id="fit-method">
 <h2>Fit method<a class="headerlink" href="#fit-method" title="Permalink to this headline">¶</a></h2>
 <section id="use-without-tailor">
@@ -369,15 +369,15 @@
 <span class="go">⠴ Working... ━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:00 estimating...            JINA@29672[I]:Finetuner is available at http://localhost:61130/finetuner</span>
 </pre></div>
 </div>
-<p>All <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code> can be ignored. After few seconds, your browser will open the Labeler UI. If not (depending on your operating system/browser setup), you can find the URL in the terminal and then open it manually. For example,</p>
+<p>All <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code>s can be ignored. After a few seconds, your browser will open the Labeler UI. If not (depending on your operating system/browser setup), you can find the URL in the terminal and then open it manually. For example,</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">JINA@29672[I]:Finetuner is available at http://localhost:61130/finetuner</span>
 </pre></div>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>While the frontend may already show examples to label, you may observe a progressbar at the backend keep showing <code class="docutils literal notranslate"><span class="pre">Working...</span></code>. This is because it is still loading your complete input data into the Labeler. The Labeler is designed in an “async” way that you can directly start labeling without waiting for all data to be loaded.</p>
+<p>While the frontend may already show examples to label, you may observe a progress bar on the backend that keeps showing <code class="docutils literal notranslate"><span class="pre">Working...</span></code>. This is because it is still loading your complete input data into the Labeler. The Labeler is designed in an “async” way so that you can directly start labeling without waiting for all data to load.</p>
 </div>
-<p>If everything is successful, you should observe the following UI.</p>
+<p>If everything is successful, you should observe the following UI:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Image</label><div class="tab-content docutils">
 <figure class="align-center">
@@ -399,7 +399,7 @@
 <p>Control panel is on the left side of the UI. It collects some configs of the frontend and backend to adjust your labeling experience.</p>
 <section id="view">
 <h4>View<a class="headerlink" href="#view" title="Permalink to this headline">¶</a></h4>
-<p>View section collects the configs determining how frontend renders the question panel.</p>
+<p>The view section collects the configs determining how frontend renders the question panel.</p>
 <aside class="sidebar">
 <p class="sidebar-title">View</p>
 <figure class="align-center">
@@ -409,7 +409,7 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Field</span></code>: represents the field of <code class="docutils literal notranslate"><span class="pre">Document</span></code> your question data come from.</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">Tags</span> <span class="pre">Key</span></code>: when you select <code class="docutils literal notranslate"><span class="pre">Field</span></code> as <code class="docutils literal notranslate"><span class="pre">.tags</span></code>, this textbox will show up, asking you to further specify which <code class="docutils literal notranslate"><span class="pre">.tags</span></code> key your question data come from.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Tags</span> <span class="pre">Key</span></code>: when you select <code class="docutils literal notranslate"><span class="pre">Field</span></code> as <code class="docutils literal notranslate"><span class="pre">.tags</span></code>, this textbox will show up, asking you to further specify which <code class="docutils literal notranslate"><span class="pre">.tags</span></code> key your question data comes from.</p></li>
 </ul>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Content</span> <span class="pre">Type</span></code>: you need to select the right content type to have the correct rendering on the the question data.</p></li>
@@ -418,7 +418,7 @@
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>If your question panel looks something below, this means rendering is not setup correctly. You need to change <code class="docutils literal notranslate"><span class="pre">Field</span></code>, <code class="docutils literal notranslate"><span class="pre">Content</span> <span class="pre">Type</span></code> and <code class="docutils literal notranslate"><span class="pre">Tags</span> <span class="pre">Key</span></code> to correct the render setup.</p>
+<p>If your question panel looks like the image below, this means rendering is not setup correctly. You need to change <code class="docutils literal notranslate"><span class="pre">Field</span></code>, <code class="docutils literal notranslate"><span class="pre">Content</span> <span class="pre">Type</span></code> and <code class="docutils literal notranslate"><span class="pre">Tags</span> <span class="pre">Key</span></code> to correct the render setup.</p>
 <figure class="align-center">
 <a class="reference internal image-reference" href="../../_images/bad-config.png"><img alt="../../_images/bad-config.png" src="../../_images/bad-config.png" style="width: 50%;"/></a>
 </figure>
@@ -439,10 +439,10 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">Positve</span></code>: the number of labeled positive instances.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Negative</span></code>: the number of labeled negative instances.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Ignore</span></code>: the number of ignored instances.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Saved</span></code>: the times of saving the model</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Saved</span></code>: how many times the model has been saved.</p></li>
 </ul>
-<p>Underneath the stats there is a progressbar, indicating the ratio of positive, negative and ignored instances so far.</p>
-<p>Click <code class="docutils literal notranslate"><span class="pre">Save</span> <span class="pre">Model</span></code> button to tell the backend store the model weights at any time.</p>
+<p>Below the stats there is a progress bar, indicating the ratio of positive, negative and ignored instances so far.</p>
+<p>Click <code class="docutils literal notranslate"><span class="pre">Save</span> <span class="pre">Model</span></code> button to tell the backend to store the model weights at any time.</p>
 </section>
 <section id="advanced">
 <h4>Advanced<a class="headerlink" href="#advanced" title="Permalink to this headline">¶</a></h4>
@@ -457,23 +457,23 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">Positive</span> <span class="pre">Label</span></code>: the value of the label when an instance is considered as positively related to the question.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Negative</span> <span class="pre">Label</span></code>: the value of the label when an instance is considered as negatively related/unrelated to the question.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Epochs</span></code>: the number of training epochs every time a new example is labeled.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Match</span> <span class="pre">pool</span></code>: the size of the pool for computing nearest neighbours. Note that, a larger pool means more diversity when proposing a labeling question; yet slower on every proposal. A smaller pool means faster question proposal, but you may not have very meaningful questions as all top-K answers are bad.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Model</span> <span class="pre">save</span> <span class="pre">path</span></code>: the file path for saving the model, this is used when you click “Save model” button.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Match</span> <span class="pre">pool</span></code>: the size of the pool for computing nearest neighbours. Note that a larger pool means more diversity when proposing a labeling question; yet it’s slower on every proposal. A smaller pool means faster question proposal, but you may not have very meaningful questions if all top-K answers are bad.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Model</span> <span class="pre">save</span> <span class="pre">path</span></code>: the file path for saving the model, used when you click “Save model” button.</p></li>
 </ul>
 </section>
 </section>
 <section id="question-panel">
 <h3>Question panel<a class="headerlink" href="#question-panel" title="Permalink to this headline">¶</a></h3>
-<p>Question panel shows a multi-selection question in a card. The user needs to select the most related answers from the list/grid and submit the results.</p>
+<p>Question panel shows a multi-choice question in a card. The user needs to select the most relevant answers from the list/grid and submit the results.</p>
 <figure class="align-center">
 <a class="reference internal image-reference" href="../../_images/labeler-question.gif"><img alt="../../_images/labeler-question.gif" src="../../_images/labeler-question.gif" style="width: 50%;"/></a>
 </figure>
 <figure class="align-center">
 <a class="reference internal image-reference" href="../../_images/labeler-question-text.gif"><img alt="../../_images/labeler-question-text.gif" src="../../_images/labeler-question-text.gif" style="width: 50%;"/></a>
 </figure>
-<p>You can use keyboard shortcut to select related answers. The selections are considered as positive, whereas the remains are considered as negative. Use <code class="docutils literal notranslate"><span class="pre">Invert</span></code> or hit <code class="docutils literal notranslate"><span class="pre">&lt;i&gt;</span></code> to invert the selections.</p>
+<p>You can use a keyboard shortcut to select related answers. The selections are considered positive, whereas the remains are considered negative. Use <code class="docutils literal notranslate"><span class="pre">Invert</span></code> or hit <code class="docutils literal notranslate"><span class="pre">&lt;i&gt;</span></code> to invert the selection.</p>
 <p>Click <code class="docutils literal notranslate"><span class="pre">Done</span></code> or hit <code class="docutils literal notranslate"><span class="pre">&lt;space&gt;</span></code> to submit the result.</p>
-<p>Once a submission is done, you will see the backend starts to train based on your submission. A spinner will be showed near the “Progress” section, indicating the backend is working. Afterwards, a new question is proposed based on the newly trained model.</p>
+<p>Once a submission is completed, you will see the backend starts to train based on your submission. A spinner will show near the “Progress” section, indicating the backend is working. Afterwards, a new question is proposed based on the newly trained model.</p>
 </section>
 </section>
 </section>

@@ -322,12 +322,12 @@
 <ul class="simple">
 <li><p>we set up a Jina search pipeline and will look at the top-K visually similar result;</p></li>
 <li><p>we accept or reject the results based on their quality;</p></li>
-<li><p>we let the model to remember our feedback and produces better search result.</p></li>
+<li><p>we let the model remember our feedback and produce better search result.</p></li>
 </ul>
-<p>Hopefully the procedure converges after several rounds; and we get a tuned embedding for better search task.</p>
+<p>Hopefully the procedure converges after several rounds and we get a tuned embedding for better search task.</p>
 <section id="build-embedding-model">
 <h2>Build embedding model<a class="headerlink" href="#build-embedding-model" title="Permalink to this headline">¶</a></h2>
-<p>Let’s write a 2-layer MLP as our <a class="reference internal" href="../../design/design-decisions/#embedding-model"><span class="std std-ref">embedding model</span></a> using any of the following framework.</p>
+<p>Let’s write a 2-layer MLP as our <a class="reference internal" href="../../design/design-decisions/#embedding-model"><span class="std std-ref">embedding model</span></a> using any of the following frameworks:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -398,7 +398,7 @@
 <figure class="align-center">
 <img alt="../../_images/labeler-on-fashion-mnist.gif" src="../../_images/labeler-on-fashion-mnist.gif"/>
 </figure>
-<p>From the backend you will see model’s training procedure:</p>
+<p>From the backend you will see the model’s training procedure:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>           Flow@22900<span class="o">[</span>I<span class="o">]</span>:🎉 Flow is ready to use!
 	🔗 Protocol: 		HTTP
 	🏠 Local access:	<span class="m">0</span>.0.0.0:52621

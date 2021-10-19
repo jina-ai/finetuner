@@ -331,7 +331,7 @@ and production.</p>
 </pre></div>
 </div>
 </li>
-<li><p>In this example, we want to tune the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST data. Let’s write a model with any of the following framework:</p>
+<li><p>In this example, we want to tune the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST dataset. Let’s write a model with any of the following frameworks:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -399,7 +399,7 @@ and production.</p>
 </div>
 </li>
 </ol>
-<p>Now that you’re set up, let’s dive into more of how Finetuner works and can improve the performance of your neural search apps.</p>
+<p>Now that you’re set up, let’s dive into more of how Finetuner works and improves the performance of your neural search apps.</p>
 </section>
 <section id="next-steps">
 <h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
@@ -453,7 +453,7 @@ Do you have labeled data?</div>
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
 Finetuner usage 1</div>
-<p class="sd-card-text">Perfect! Now <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> and <code class="docutils literal notranslate"><span class="pre">train_data</span></code> are given by you already, simply do:</p>
+<p class="sd-card-text">Perfect! Now <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> and <code class="docutils literal notranslate"><span class="pre">train_data</span></code> are already provided by you, simply do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
@@ -473,7 +473,7 @@ Finetuner usage 1</div>
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
 Finetuner usage 2</div>
-<p class="sd-card-text">You have an <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> to use, but no labeled data for finetuning this model. No worry, you can use Finetuner to interactive label data and train <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> as below:</p>
+<p class="sd-card-text">You have an <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> to use, but no labeled data for fine-tuning this model. No worries, you can use Finetuner to interactively label data and train <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
@@ -494,7 +494,7 @@ Finetuner usage 2</div>
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
 Finetuner usage 3</div>
-<p class="sd-card-text">You have a <code class="docutils literal notranslate"><span class="pre">general_model</span></code> but it does not output embeddings. Luckily you provide some <code class="docutils literal notranslate"><span class="pre">labeled_data</span></code> for training. No worry, Finetuner can convert your model into an embedding model and train it via:</p>
+<p class="sd-card-text">You have a <code class="docutils literal notranslate"><span class="pre">general_model</span></code> but it does not output embeddings. Luckily, you’ve got some <code class="docutils literal notranslate"><span class="pre">labeled_data</span></code> for training. No worries, Finetuner can convert your model into an embedding model and train it via:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
@@ -516,7 +516,7 @@ Finetuner usage 3</div>
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
 Finetuner usage 4</div>
-<p class="sd-card-text">You have a <code class="docutils literal notranslate"><span class="pre">general_model</span></code> which is not for embeddings. Meanwhile, you don’t have labeled data for training. But no worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly:</p>
+<p class="sd-card-text">You have a <code class="docutils literal notranslate"><span class="pre">general_model</span></code> which is not for embeddings. Meanwhile, you don’t have any labeled data for training. But no worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>

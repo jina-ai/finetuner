@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/components/tailor.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
-  <meta property="og:description" content="Tailor is a component of Finetuner. It converts any general model into an embedding model. Given a general model (either written from scratch, or from Pytorch/Keras/Huggingface model zoo), Tailor does micro-operations on the model architecture and outputs an embedding model for the Tuner. Given a..." />
+  <meta property="og:description" content="Tailor is a component of Finetuner. It converts any general model into an embedding model. Given a general model (either written from scratch, or from PyTorch/Keras/Huggingface model zoo), Tailor performs micro-operations on the model architecture and outputs an embedding model for the Tuner. Giv..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -313,8 +313,8 @@
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="tailor">
 <h1>Tailor<a class="headerlink" href="#tailor" title="Permalink to this headline">¶</a></h1>
-<p>Tailor is a component of Finetuner. It converts any <a class="reference internal" href="../../basics/glossary/#term-General-model"><span class="xref std std-term">general model</span></a> into an <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>. Given a general model (either written from scratch, or from Pytorch/Keras/Huggingface model zoo), Tailor does micro-operations on the model architecture and outputs an embedding model for the <a class="reference internal" href="../../basics/glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a>.</p>
-<p>Given a general model with weights, Tailor <em>preserves its weights</em> and does (some of) the  following steps:</p>
+<p>Tailor is a component of Finetuner. It converts any <a class="reference internal" href="../../basics/glossary/#term-General-model"><span class="xref std std-term">general model</span></a> into an <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>. Given a general model (either written from scratch, or from PyTorch/Keras/Huggingface model zoo), Tailor performs micro-operations on the model architecture and outputs an embedding model for the <a class="reference internal" href="../../basics/glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a>.</p>
+<p>Given a general model with weights, Tailor <em>preserves its weights</em> and performs (some of) the following steps:</p>
 <ul class="simple">
 <li><p>finding all dense layers by iterating over layers;</p></li>
 <li><p>chopping off all layers after a certain dense layer;</p></li>
@@ -323,10 +323,10 @@
 </ul>
 <figure class="align-center">
 <img alt="../../_images/tailor-feature.svg" src="../../_images/tailor-feature.svg"/></figure>
-<p>In the end, Tailor outputs an embedding model that can be fine-tuned in Tuner.</p>
+<p>Finally, Tailor outputs an embedding model that can be fine-tuned in Tuner.</p>
 <section id="to-embedding-model-method">
 <h2><code class="docutils literal notranslate"><span class="pre">to_embedding_model</span></code> method<a class="headerlink" href="#to-embedding-model-method" title="Permalink to this headline">¶</a></h2>
-<p>Tailor provides a high-level API <code class="docutils literal notranslate"><span class="pre">finetuner.tailor.to_embedding_model()</span></code>, which can be used as following:</p>
+<p>Tailor provides a high-level API <code class="docutils literal notranslate"><span class="pre">finetuner.tailor.to_embedding_model()</span></code>, which can be used as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.tailor</span> <span class="kn">import</span> <span class="n">to_embedding_model</span>
 
 <span class="n">to_embedding_model</span><span class="p">(</span>
@@ -339,13 +339,13 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span>
 </pre></div>
 </div>
-<p>Here, <code class="docutils literal notranslate"><span class="pre">model</span></code> is the general model with loaded weights; <code class="docutils literal notranslate"><span class="pre">layer_name</span></code> is the selected bottleneck layer; <code class="docutils literal notranslate"><span class="pre">freeze</span></code> defines if to set weights of remaining layers as nontrainable parameters.</p>
-<p><code class="docutils literal notranslate"><span class="pre">input_size</span></code> and <code class="docutils literal notranslate"><span class="pre">input_dtype</span></code> are input type specification required by Pytorch and Paddle models. They are not required for Kersas models.</p>
-<p>In general, you do not need to call <code class="docutils literal notranslate"><span class="pre">to_embedding_model</span></code> manually. You can directly use it via <code class="docutils literal notranslate"><span class="pre">finetuner.fit(...,</span> <span class="pre">to_embedding_model=True)</span></code></p>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">model</span></code> is the general model with loaded weights; <code class="docutils literal notranslate"><span class="pre">layer_name</span></code> is the selected bottleneck layer; <code class="docutils literal notranslate"><span class="pre">freeze</span></code> defines whether to set weights of remaining layers as non-trainable parameters.</p>
+<p><code class="docutils literal notranslate"><span class="pre">input_size</span></code> and <code class="docutils literal notranslate"><span class="pre">input_dtype</span></code> are input type specification required by PyTorch and Paddle models. They are not required for Keras models.</p>
+<p>In general, you do not need to call <code class="docutils literal notranslate"><span class="pre">to_embedding_model</span></code> manually. You can use it directly via <code class="docutils literal notranslate"><span class="pre">finetuner.fit(...,</span> <span class="pre">to_embedding_model=True)</span></code></p>
 </section>
 <section id="display-method">
 <h2><code class="docutils literal notranslate"><span class="pre">display</span></code> method<a class="headerlink" href="#display-method" title="Permalink to this headline">¶</a></h2>
-<p>Tailor also provides a helper function <code class="docutils literal notranslate"><span class="pre">finetuner.tailor.display()</span></code> that gives a table summary of a Keras/Pytorch/Paddle model.</p>
+<p>Tailor also provides a helper function <code class="docutils literal notranslate"><span class="pre">finetuner.tailor.display()</span></code> that gives a table summary of a Keras/PyTorch/Paddle model.</p>
 <p>Let’s see how to use them in action.</p>
 </section>
 <section id="examples">
@@ -353,7 +353,7 @@
 <section id="simple-mlp">
 <h3>Simple MLP<a class="headerlink" href="#simple-mlp" title="Permalink to this headline">¶</a></h3>
 <ol>
-<li><p>Let’s first build a simple 2-layer perceptron with 128 and 32-dim output as layers via Pytorch/Keras/Paddle.</p>
+<li><p>Let’s first build a simple 2-layer perceptron with 128 and 32-dim output as layers via PyTorch/Keras/Paddle.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -392,7 +392,7 @@
 </li>
 <li><p>Let’s use <code class="docutils literal notranslate"><span class="pre">display</span></code> to look at the layer information.</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">Pytorch</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.tailor</span> <span class="kn">import</span> <span class="n">display</span>
  
 <span class="n">display</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">input_size</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">))</span>
@@ -438,7 +438,7 @@
 </div>
 </div>
 </li>
-<li><p>Say we want to get an embedding model that outputs 100-dimensional embeddings. One can simply do</p>
+<li><p>Say we want to get an embedding model that outputs 100-dimensional embeddings. You can simply do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.tailor</span> <span class="kn">import</span> <span class="n">to_embedding_model</span>
  
 <span class="n">embed_model</span> <span class="o">=</span> <span class="n">to_embedding_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
@@ -454,7 +454,7 @@
 </pre></div>
 </div>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"/><label class="tab-label" for="tab-set--2-input--1">Pytorch</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"/><label class="tab-label" for="tab-set--2-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">  name        output_shape_display   nb_params   trainable  </span>
 <span class="go"> ────────────────────────────────────────────────────────── </span>
 <span class="go">  flatten_1   [784]                  0           False      </span>
@@ -488,14 +488,14 @@
 </div>
 </div>
 </div>
-<p>One can see that Tailor adds an additional linear layer with 100-dimensional output at the end.</p>
+<p>You can see that Tailor adds an additional linear layer with 100-dimensional output at the end.</p>
 </li>
 </ol>
 </section>
 <section id="simple-bi-lstm">
 <h3>Simple Bi-LSTM<a class="headerlink" href="#simple-bi-lstm" title="Permalink to this headline">¶</a></h3>
 <ol>
-<li><p>Let’s first build a simple Bi-directional LSTM with Pytorch/Keras/Paddle.</p>
+<li><p>Let’s first build a simple bi-directional LSTM with PyTorch/Keras/Paddle.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--3-input--1" name="tab-set--3" type="radio"/><label class="tab-label" for="tab-set--3-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -543,7 +543,7 @@
 </li>
 <li><p>Let’s use <code class="docutils literal notranslate"><span class="pre">display</span></code> to look at the layer information.</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--4-input--1" name="tab-set--4" type="radio"/><label class="tab-label" for="tab-set--4-input--1">Pytorch</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--4-input--1" name="tab-set--4" type="radio"/><label class="tab-label" for="tab-set--4-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.tailor</span> <span class="kn">import</span> <span class="n">display</span>
  
 <span class="n">display</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">input_size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="p">),</span> <span class="n">input_dtype</span><span class="o">=</span><span class="s1">'int64'</span><span class="p">)</span>
@@ -589,9 +589,9 @@
 </div>
 </div>
 </li>
-<li><p>Say we want to get an embedding model that outputs 100-dimensional embeddings. But this time, we want to directly concat this layer after LSTM, and freeze all previous layers. One can use <code class="docutils literal notranslate"><span class="pre">layer_name</span></code> and <code class="docutils literal notranslate"><span class="pre">freeze</span></code> to solve this problem. In Pytorch and Paddle implementation, the layer name is <code class="docutils literal notranslate"><span class="pre">lastcell_3</span></code>; in Keras the layer name is <code class="docutils literal notranslate"><span class="pre">bidirectional</span></code>.</p>
+<li><p>Say we want to get an embedding model that outputs 100-dimensional embeddings. But this time, we want to directly concat this layer after LSTM, and freeze all previous layers. You can use <code class="docutils literal notranslate"><span class="pre">layer_name</span></code> and <code class="docutils literal notranslate"><span class="pre">freeze</span></code> to solve this problem. In PyTorch or Paddle implementations, the layer name is <code class="docutils literal notranslate"><span class="pre">lastcell_3</span></code>; in Keras the layer name is <code class="docutils literal notranslate"><span class="pre">bidirectional</span></code>.</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--5-input--1" name="tab-set--5" type="radio"/><label class="tab-label" for="tab-set--5-input--1">Pytorch</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--5-input--1" name="tab-set--5" type="radio"/><label class="tab-label" for="tab-set--5-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.tailor</span> <span class="kn">import</span> <span class="n">to_embedding_model</span>
  
 <span class="n">embed_model</span> <span class="o">=</span> <span class="n">to_embedding_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
@@ -647,15 +647,15 @@
 </div>
 </div>
 </div>
-<p>One can observe the last linear layer is replaced from a 32-dimensional output to a 100-dimensional output. Also, the weights of all layers except the last layers are frozen and not trainable.</p>
+<p>You can observe the last linear layer is replaced from a 32-dimensional output to a 100-dimensional output. Also, the weights of all layers except the last layers are frozen and not trainable.</p>
 </li>
 </ol>
 </section>
 <section id="pretrained-vgg16-model">
 <h3>Pretrained VGG16 model<a class="headerlink" href="#pretrained-vgg16-model" title="Permalink to this headline">¶</a></h3>
-<p>Apart from building model on your own and then tailor it, Tailor can work directly on pretrained models. In this example, we load a pretrained VGG16 model and tailor it into an embedding model.</p>
+<p>Apart from building a model on your own and then tailoring it, Tailor can work directly on pretrained models. In this example, we load a pretrained VGG16 model and tailor it into an embedding model.</p>
 <ol>
-<li><p>Let’s first load a pretrained VGG16 from Pytorch/Keras/Paddle model zoo.</p>
+<li><p>Let’s first load a pretrained VGG16 from PyTorch/Keras/Paddle model zoo.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--6-input--1" name="tab-set--6" type="radio"/><label class="tab-label" for="tab-set--6-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchvision.models</span> <span class="k">as</span> <span class="nn">models</span>
@@ -682,7 +682,7 @@
 </li>
 <li><p>Let’s use <code class="docutils literal notranslate"><span class="pre">display</span></code> to look at the layer information.</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--7-input--1" name="tab-set--7" type="radio"/><label class="tab-label" for="tab-set--7-input--1">Pytorch</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--7-input--1" name="tab-set--7" type="radio"/><label class="tab-label" for="tab-set--7-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.tailor</span> <span class="kn">import</span> <span class="n">display</span>
  
 <span class="n">display</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">input_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">))</span>
@@ -799,9 +799,9 @@
 </div>
 </div>
 </li>
-<li><p>Say we want to get an embedding model that outputs 100-dimensional embeddings. This time we want to remove all existing dense layers, and freeze all previous layers, then concat a new 100-dimensional dense output to the mode. To achieve that,</p>
+<li><p>Say we want to get an embedding model that outputs 100-dimensional embeddings. This time we want to remove all existing dense layers, and freeze all previous layers, then concat a new 100-dimensional dense output to the model. To achieve that you can do:</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--8-input--1" name="tab-set--8" type="radio"/><label class="tab-label" for="tab-set--8-input--1">Pytorch</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--8-input--1" name="tab-set--8" type="radio"/><label class="tab-label" for="tab-set--8-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.tailor</span> <span class="kn">import</span> <span class="n">to_embedding_model</span>
  
 <span class="n">embed_model</span> <span class="o">=</span> <span class="n">to_embedding_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
@@ -906,7 +906,7 @@
 </div>
 </div>
 </div>
-<p>One can observe the original last two linear layers are removed, and a new linear layer with 100-dimensional output is added at the end. Also, the weights of all layers except the last layers are frozen and not trainable.</p>
+<p>You can observe the original last two linear layers are removed, and a new linear layer with 100-dimensional output has been added at the end. Also, the weights of all layers except the last layers are frozen and not trainable.</p>
 </li>
 </ol>
 </section>
@@ -914,9 +914,9 @@
 <section id="tips">
 <h2>Tips<a class="headerlink" href="#tips" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>For Pytorch/Paddle models, having the correct <code class="docutils literal notranslate"><span class="pre">input_size</span></code> and <code class="docutils literal notranslate"><span class="pre">input_dtype</span></code> is fundamental to use <code class="docutils literal notranslate"><span class="pre">to_embedding_model</span></code> and <code class="docutils literal notranslate"><span class="pre">display</span></code>.</p></li>
-<li><p>One can chop-off layers and concat new layer afterward. To get the accurate layer name, one can first use <code class="docutils literal notranslate"><span class="pre">display</span></code> to list all layers.</p></li>
-<li><p>Different frameworks may give different layer names. Often, Pytorch and Paddle layer names are consistent.</p></li>
+<li><p>For PyTorch/Paddle models, having the correct <code class="docutils literal notranslate"><span class="pre">input_size</span></code> and <code class="docutils literal notranslate"><span class="pre">input_dtype</span></code> is fundamental to use <code class="docutils literal notranslate"><span class="pre">to_embedding_model</span></code> and <code class="docutils literal notranslate"><span class="pre">display</span></code>.</p></li>
+<li><p>You can chop off layers and concat new layers afterward. To get the accurate layer name, you can first use <code class="docutils literal notranslate"><span class="pre">display</span></code> to list all layers.</p></li>
+<li><p>Different frameworks may give different layer names. Often, PyTorch and Paddle layer names are consistent.</p></li>
 </ul>
 </section>
 </section>
