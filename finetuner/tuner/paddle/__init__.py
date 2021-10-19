@@ -7,11 +7,10 @@ from paddle.optimizer import Optimizer
 
 from . import losses, datasets
 from ..base import BaseTuner, BaseLoss
-from ...helper import DocumentArrayLike, AnyDataLoader
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
 from ..stats import TunerStats
-from ...helper import DocumentArrayLike
+from ...helper import AnyDataLoader, DocumentArrayLike
 
 
 class PaddleTuner(BaseTuner):

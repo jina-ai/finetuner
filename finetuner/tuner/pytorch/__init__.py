@@ -9,8 +9,8 @@ from . import losses, datasets
 from ..base import BaseTuner, BaseLoss
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
-from ...helper import DocumentArrayLike, AnyDataLoader
 from ..stats import TunerStats
+from ...helper import DocumentArrayLike, AnyDataLoader
 
 
 class PytorchTuner(BaseTuner):
