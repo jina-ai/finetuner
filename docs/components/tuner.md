@@ -7,7 +7,7 @@ Labeled data can be constructed {ref}`by following this<construct-labeled-data>`
 
 ## Fit method
 
-Tuner can be called via `finetuner.fit()`. Its minimum form looks like the folllowing:
+Tuner can be called via `finetuner.fit()`. Its minimum form is as follows:
 
 ```python
 import finetuner
@@ -20,13 +20,13 @@ finetuner.fit(
 ```
 
 
-Here, `embed_model` must be {term}`embedding model`; and `train_data` must be {term}`labeled data`.
+Here, `embed_model` must be an {term}`embedding model`; and `train_data` must be {term}`labeled data`.
 
 ### Loss function
 
-By default, Tuner uses `CosineSiameseLoss` for training. you can also use other built-in losses by `finetuner.fit(..., loss='...')`.
+By default, Tuner uses `CosineSiameseLoss` for training. You can also use other built-in losses by `finetuner.fit(..., loss='...')`.
 
-Let $\mathbf{x}_i$ denote the predicted embedding for Document $i$, the built-in losses are summarized as below:
+Let $\mathbf{x}_i$ denotes the predicted embedding for Document $i$. The built-in losses are summarized as follows:
 
 :::{dropdown} `CosineSiameseLoss`
 :open:
@@ -58,7 +58,7 @@ $$\ell_{i, p, n}=\max(0, \left \|\mathbf{x}_i, \mathbf{x}_p \right \|-\left \|\m
 
 ```{tip}
 
-Although siamese and triplet loss work on pair and triplet input respectively, there is **no need** to worry about the data input format. You only need to make sure your data is labeled according to {ref}`data-format`, then you can switch between all losses freely.
+Although siamese and triplet loss works on pair and triplet inputs respectively, there is **no need** to worry about the data input format. You only need to make sure your data is labeled according to {ref}`data-format`, then you can switch between all losses freely.
 
 ```
 
@@ -103,10 +103,10 @@ Although siamese and triplet loss work on pair and triplet input respectively, t
    
     ````
 
-2. Build labeled match data {ref}`according to the steps in here<build-mnist-data>`. One can refer
+2. Build labeled match data {ref}`according to the steps here<build-mnist-data>`. You can refer
    to `finetuner.toydata.generate_fashion_match` for an implementation. In this example, for each `Document` we generate 10 positive matches and 10 negative matches.
 
-3. Feed labeled data and the embedding model into Finetuner:
+3. Feed the labeled data and embedding model into Finetuner:
     ```python
     import finetuner
     from finetuner.toydata import generate_fashion_match
@@ -125,7 +125,7 @@ Although siamese and triplet loss work on pair and triplet input respectively, t
 
 ### Tune a bidirectional LSTM on Covid QA
 
-1. Write an embedding model.
+1. Write an embedding model:
 
   ````{tab} Keras
   ```python
@@ -169,7 +169,7 @@ Although siamese and triplet loss work on pair and triplet input respectively, t
   ```
   ````
 
-2. Build labeled match data {ref}`according to the steps in here<build-qa-data>`. One can refer
+2. Build labeled match data {ref}`according to the steps here<build-qa-data>`. You can refer
    to `finetuner.toydata.generate_qa_match` for an implementation.
 
 3. Feed labeled data and the embedding model into Finetuner:

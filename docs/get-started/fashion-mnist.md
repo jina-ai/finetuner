@@ -9,13 +9,13 @@ In this example, we want to "tune" the 32-dim embedding vectors from a 2-layer M
 Precisely, "tuning" means: 
 - we set up a Jina search pipeline and will look at the top-K visually similar result;
 - we accept or reject the results based on their quality;
-- we let the model to remember our feedback and produces better search result.
+- we let the model remember our feedback and produce better search result.
 
-Hopefully the procedure converges after several rounds; and we get a tuned embedding for better search task.
+Hopefully the procedure converges after several rounds and we get a tuned embedding for better search task.
 
 ## Build embedding model
 
-Let's write a 2-layer MLP as our {ref}`embedding model<embedding-model>` using any of the following framework.
+Let's write a 2-layer MLP as our {ref}`embedding model<embedding-model>` using any of the following frameworks:
 
 ````{tab} PyTorch
 
@@ -93,7 +93,7 @@ You can now label the data by mouse/keyboard. The model will get trained and imp
 :align: center
 ```
 
-From the backend you will see model's training procedure:
+From the backend you will see the model's training procedure:
 
 ```bash
            Flow@22900[I]:🎉 Flow is ready to use!
