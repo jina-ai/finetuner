@@ -288,7 +288,7 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.tuner.paddle</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">paddle</span>
@@ -298,24 +298,24 @@
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">losses</span><span class="p">,</span> <span class="n">datasets</span>
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseTuner</span><span class="p">,</span> <span class="n">BaseLoss</span>
-<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">DocumentArrayLike</span>
+<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">DocumentArrayLike</span><span class="p">,</span> <span class="n">AnyDataLoader</span>
 <span class="kn">from</span> <span class="nn">..dataset.helper</span> <span class="kn">import</span> <span class="n">get_dataset</span>
 <span class="kn">from</span> <span class="nn">..logger</span> <span class="kn">import</span> <span class="n">LogGenerator</span>
 <span class="kn">from</span> <span class="nn">..stats</span> <span class="kn">import</span> <span class="n">TunerStats</span>
 
 
 <div class="viewcode-block" id="PaddleTuner"><a class="viewcode-back" href="../../../../api/finetuner.tuner.paddle/#finetuner.tuner.paddle.PaddleTuner">[docs]</a><span class="k">class</span> <span class="nc">PaddleTuner</span><span class="p">(</span><span class="n">BaseTuner</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">_get_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">_get_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">BaseLoss</span><span class="p">:</span>
         <span class="sd">"""Get the loss layer."""</span>
-
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="n">loss</span><span class="p">)()</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">BaseLoss</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">loss</span>
 
-    <span class="k">def</span> <span class="nf">_get_data_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="sd">"""Get the paddle ``DataLoader`` from the input data. """</span>
-
+    <span class="k">def</span> <span class="nf">_get_data_loader</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">DocumentArrayLike</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDataLoader</span><span class="p">:</span>
+        <span class="sd">"""Get the paddle ``DataLoader`` from the input data."""</span>
         <span class="n">ds</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arity</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span>
             <span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">catalog</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">),</span>
@@ -351,7 +351,9 @@
                 <span class="n">use_nesterov</span><span class="o">=</span><span class="n">optimizer_kwargs</span><span class="p">[</span><span class="s1">'nesterov'</span><span class="p">],</span>
             <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'Evaluating'</span><span class="p">,</span> <span class="n">train_log</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_eval</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">AnyDataLoader</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'Evaluating'</span><span class="p">,</span> <span class="n">train_log</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="sd">"""Evaluate the model on given labeled data"""</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
@@ -375,7 +377,9 @@
 
         <span class="k">return</span> <span class="n">losses</span>
 
-    <span class="k">def</span> <span class="nf">_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_train</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">AnyDataLoader</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="sd">"""Train the model on given labeled data"""</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
@@ -422,7 +426,7 @@
 
 <span class="sd">        :param train_data: Data on which to train the model</span>
 <span class="sd">        :param eval_data: Data on which to evaluate the model at the end of each epoch</span>
-<span class="sd">        :param epoch: Number of epochs to train the model</span>
+<span class="sd">        :param epochs: Number of epochs to train the model</span>
 <span class="sd">        :param batch_size: The batch size to use for training and evaluation</span>
 <span class="sd">        :param learning_rate: Learning rate to use in training</span>
 <span class="sd">        :param optimizer: Which optimizer to use in training. Supported</span>
@@ -481,10 +485,14 @@
             <span class="n">stats</span><span class="o">.</span><span class="n">print_last</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">stats</span></div>
 
-<div class="viewcode-block" id="PaddleTuner.get_embeddings"><a class="viewcode-back" href="../../../../api/finetuner.tuner.paddle/#finetuner.tuner.paddle.PaddleTuner.get_embeddings">[docs]</a>    <span class="k">def</span> <span class="nf">get_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">DocumentArrayLike</span><span class="p">):</span>
-        <span class="n">blobs</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">blobs</span>
+<div class="viewcode-block" id="PaddleTuner.get_embeddings"><a class="viewcode-back" href="../../../../api/finetuner.tuner.paddle/#finetuner.tuner.paddle.PaddleTuner.get_embeddings">[docs]</a>    <span class="k">def</span> <span class="nf">get_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">DocumentArrayLike</span><span class="p">):</span>
+        <span class="sd">"""Calculates and adds the embeddings for the given Documents.</span>
+
+<span class="sd">        :param docs: The documents to get embeddings from.</span>
+<span class="sd">        """</span>
+        <span class="n">blobs</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">blobs</span>
         <span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">blobs</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">embed</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">embed</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">):</span>
             <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">embed</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PaddleTuner.save"><a class="viewcode-back" href="../../../../api/finetuner.tuner.paddle/#finetuner.tuner.paddle.PaddleTuner.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

@@ -419,7 +419,7 @@
     <span class="k">def</span> <span class="nf">_get_data_loader</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">DocumentArrayLike</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDataLoader</span><span class="p">:</span>
-        <span class="sd">"""Get framework specific data loader from the input data. """</span>
+        <span class="sd">"""Get framework specific data loader from the input data."""</span>
         <span class="o">...</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -450,7 +450,10 @@
 
 <div class="viewcode-block" id="BaseTuner.get_embeddings"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.get_embeddings">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">DocumentArrayLike</span><span class="p">):</span>
-        <span class="sd">"""Calculates and adds the embeddings for the given Documents."""</span></div></div>
+        <span class="sd">"""Calculates and adds the embeddings for the given Documents.</span>
+
+<span class="sd">        :param docs: The documents to get embeddings from.</span>
+<span class="sd">        """</span></div></div>
 
 
 <div class="viewcode-block" id="BaseDataset"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseDataset">[docs]</a><span class="k">class</span> <span class="nc">BaseDataset</span><span class="p">:</span>

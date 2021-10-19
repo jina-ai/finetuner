@@ -288,7 +288,7 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.tuner.dataset.helper</h1><div class="highlight"><pre>
-<div class="viewcode-block" id="get_dataset"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.dataset.helper/#finetuner.tuner.dataset.helper.get_dataset">[docs]</a><span></span><span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">arity</span><span class="p">):</span>
+<div class="viewcode-block" id="get_dataset"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.dataset.helper/#finetuner.tuner.dataset.helper.get_dataset">[docs]</a><span></span><span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">arity</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
 
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s1">'SiameseDataset'</span><span class="p">)</span>

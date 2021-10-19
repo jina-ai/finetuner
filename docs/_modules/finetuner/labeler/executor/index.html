@@ -363,7 +363,7 @@
             <span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'blob'</span><span class="p">,</span> <span class="s1">'embedding'</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FTExecutor.fit"><a class="viewcode-back" href="../../../../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.fit">[docs]</a>    <span class="nd">@requests</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="s1">'/fit'</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">fit</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">,</span>
             <span class="n">docs</span><span class="p">,</span>
@@ -373,7 +373,7 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="FTExecutor.save"><a class="viewcode-back" href="../../../../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.save">[docs]</a>    <span class="nd">@requests</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="s1">'/save'</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">model_path</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'model_path'</span><span class="p">,</span> <span class="s1">'trained.model'</span><span class="p">)</span>
         <span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">,</span> <span class="n">model_path</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'model is saved to </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span></div></div>
