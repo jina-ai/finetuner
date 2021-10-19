@@ -238,25 +238,31 @@ footer a {
     position: absolute;
     top: 0;
     right: 0;
-    margin-left: .8rem;
     line-height: 0.8rem;
-    padding: .2rem .4rem;
     color: #000000;
     background-color: #fff;
-    border-radius: 1px;
-    box-shadow: 0 0 0 4px #d9d9d9,
-    2px 2.5px 4px #adb5bd,
-    0 -1px 2.5px #adb5bd;
     cursor: pointer;
+
+    border: 1px solid gray;
+    font-size: 1.2em;
+    box-shadow: 1px 0 1px 0 #eee, 0 2px 0 2px #ccc, 0 2px 0 3px #444;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    padding: 2px 2px;
+    max-height: 1em;
+    font-family: monospace;
+    min-width: 1em;
 }
 
 .btn .kbd {
     position: relative;
+    top: -10px;
+    right: -10px;
 }
 
-.text-card .kbd {
-    position: relative;
-    font-family: monospace;
+.hint-text {
+    max-width: 50%;
 }
 
 .text-card .positive-match::before {

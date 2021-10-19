@@ -10,7 +10,7 @@ const imageMatchCard = {
     template: `
         <div class="card image-card">
             <div class="card-header">
-                <p class="fs-6 fw-light mb-2">Select all images similar to the image on right</p>
+                <p class="fs-6 fw-light mb-2 hint-text">Select all images similar to the image on right</p>
                 <img v-bind:src="getContent(doc)" class="img-thumbnail img-fluid my-2">
             </div>
             <div class="card-body">
