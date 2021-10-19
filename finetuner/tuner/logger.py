@@ -1,8 +1,10 @@
+from typing import List
+
 import numpy as np
 
 
 class LogGenerator:
-    def __init__(self, name, losses, prefix: str = ''):
+    def __init__(self, name: str, losses: List, prefix: str = ''):
         self._losses = losses
         self._prefix = prefix
         self._name = name
@@ -12,16 +14,18 @@ class LogGenerator:
             prefix = f'{self._prefix} | '
         else:
             prefix = ''
-        return f'{prefix}{self._name}: {self.get_statistic()}'
+        return f'{prefix}{self._name}: {self._statistic}'
 
-    def get_statistic(self):
-        return f'Loss={self.mean_loss():>8}'
+    @property
+    def _statistic(self):
+        return f'Loss={self._mean_loss:>8}'
 
-    def mean_loss(self):
-        return LogGenerator.get_log_value(self._losses)
+    @property
+    def _mean_loss(self):
+        return LogGenerator._get_log_value(self._losses)
 
     @staticmethod
-    def get_log_value(data):
+    def _get_log_value(data):
         mean = np.mean(data)
         if mean < 1e5:
             return f'{mean:.2f}'
