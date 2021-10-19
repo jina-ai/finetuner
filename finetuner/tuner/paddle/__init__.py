@@ -2,7 +2,6 @@ from typing import Dict, Optional, Union
 
 import paddle
 from jina.logging.profile import ProgressBar
-from paddle import nn
 from paddle.io import DataLoader
 from paddle.optimizer import Optimizer
 
@@ -15,12 +14,16 @@ from ..logger import LogGenerator
 
 class PaddleTuner(BaseTuner):
     def _get_loss(self, loss: Union[BaseLoss, str]):
+        """Get the loss layer."""
+
         if isinstance(loss, str):
             return getattr(losses, loss)()
         elif isinstance(loss, BaseLoss):
             return loss
 
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
+        """Get the paddle ``DataLoader`` from the input data. """
+
         ds = get_dataset(datasets, self.arity)
         return DataLoader(
             dataset=ds(inputs=inputs),
@@ -31,6 +34,8 @@ class PaddleTuner(BaseTuner):
     def _get_optimizer(
         self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
     ) -> Optimizer:
+        """Get the optimizer for training."""
+
         params = self._embed_model.parameters()
         optimizer_kwargs = self._get_optimizer_kwargs(optimizer, optimizer_kwargs)
 
@@ -55,6 +60,8 @@ class PaddleTuner(BaseTuner):
             )
 
     def _eval(self, data, description: str = 'Evaluating', train_log: str = ''):
+        """Evaluate the model on given labeled data"""
+
         self._embed_model.eval()
 
         losses = []
@@ -77,6 +84,7 @@ class PaddleTuner(BaseTuner):
         return losses
 
     def _train(self, data, optimizer: Optimizer, description: str):
+        """Train the model on given labeled data"""
 
         self._embed_model.train()
 
@@ -118,7 +126,34 @@ class PaddleTuner(BaseTuner):
         device: str = 'cpu',
         **kwargs,
     ):
+        """Finetune the model on the training data.
 
+        :param train_data: Data on which to train the model
+        :param eval_data: Data on which to evaluate the model at the end of each epoch
+        :param epoch: Number of epochs to train the model
+        :param batch_size: The batch size to use for training and evaluation
+        :param learning_rate: Learning rate to use in training
+        :param optimizer: Which optimizer to use in training. Supported
+            values/optimizers are:
+            - ``"adam"`` for the Adam optimizer
+            - ``"rmsprop"`` for the RMSProp optimizer
+            - ``"sgd"`` for the SGD optimizer with momentum
+        :param optimizer_kwargs: Keyword arguments to pass to the optimizer. The
+            supported arguments, togethere with their defailt values, are:
+            - ``"adam"``:  ``{'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-08}``
+            - ``"rmsprop"``::
+
+                {
+                    'rho': 0.99,
+                    'momentum': 0.0,
+                    'epsilon': 1e-08,
+                    'centered': False,
+                }
+
+            - ``"sgd"``: ``{'momentum': 0.0, 'nesterov': False}``
+        :param device: The device to which to move the model. Supported options are
+            ``"cpu"`` and ``"cuda"`` (for GPU)
+        """
         if device == 'cuda':
             paddle.set_device('gpu:0')
         elif device == 'cpu':
@@ -153,4 +188,12 @@ class PaddleTuner(BaseTuner):
         return {'loss': {'train': losses_train, 'eval': losses_eval}}
 
     def save(self, *args, **kwargs):
+        """Save the embedding model.
+
+        You need to pass the path where to save the model in either ``args`` or
+        ``kwargs`` (for ``path`` key).
+
+        :param args: Arguments to pass to ``paddle.save`` function
+        :param kwargs: Keyword arguments to pass to ``paddle.save`` function
+        """
         paddle.save(self.embed_model.state_dict(), *args, **kwargs)

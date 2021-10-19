@@ -36,6 +36,34 @@ def fit(
     device: str = 'cpu',
     **kwargs,
 ) -> TunerReturnType:
+    """Finetune the model on the training data.
+
+    :param train_data: Data on which to train the model
+    :param eval_data: Data on which to evaluate the model at the end of each epoch
+    :param epoch: Number of epochs to train the model
+    :param batch_size: The batch size to use for training and evaluation
+    :param learning_rate: Learning rate to use in training
+    :param optimizer: Which optimizer to use in training. Supported
+        values/optimizers are:
+        - ``"adam"`` for the Adam optimizer
+        - ``"rmsprop"`` for the RMSProp optimizer
+        - ``"sgd"`` for the SGD optimizer with momentum
+    :param optimizer_kwargs: Keyword arguments to pass to the optimizer. The
+        supported arguments, togethere with their defailt values, are:
+        - ``"adam"``:  ``{'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-08}``
+        - ``"rmsprop"``::
+
+            {
+                'rho': 0.99,
+                'momentum': 0.0,
+                'epsilon': 1e-08,
+                'centered': False,
+            }
+
+        - ``"sgd"``: ``{'momentum': 0.0, 'nesterov': False}``
+    :param device: The device to which to move the model. Supported options are
+        ``"cpu"`` and ``"cuda"`` (for GPU)
+    """
     ft = get_tuner_class(embed_model)
 
     return ft(embed_model, loss=loss).fit(
@@ -51,6 +79,14 @@ def fit(
 
 
 def save(embed_model: AnyDNN, model_path: str, *args, **kwargs) -> None:
+    """Save the embedding model.
+
+    :param embed_model: The embedding model to save
+    :param model_path: Path to file/folder where to save the model
+    :param args: Arguments to pass to framework-specific tuner's ``save`` method
+    :param kwargs: Keyword arguments to pass to framework-specific tuner's ``save``
+        method
+    """
     ft = get_tuner_class(embed_model)
 
     ft(embed_model).save(model_path, *args, **kwargs)
