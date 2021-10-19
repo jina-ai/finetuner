@@ -8,8 +8,7 @@ from tensorflow.keras.optimizers import Optimizer
 from . import losses, datasets
 from ..base import BaseTuner, BaseLoss
 from ..dataset.helper import get_dataset
-from ..logger import LogGenerator
-from ..stats import TunerStats
+from ..summary import ScalarSummary, SummaryCollection
 from ...helper import DocumentArrayLike, AnyDataLoader
 
 
@@ -65,16 +64,13 @@ class KerasTuner(BaseTuner):
 
     def _train(
         self, data: AnyDataLoader, optimizer: Optimizer, description: str
-    ) -> List[float]:
+    ) -> ScalarSummary:
         """Train the model on given labeled data"""
 
-        losses = []
-
-        log_generator = LogGenerator('T', losses)
-
+        losses = ScalarSummary('Train Loss')
         with ProgressBar(
             description,
-            message_on_done=log_generator,
+            message_on_done=losses.__str__,
             final_line_feed=False,
             total_length=self._train_data_len,
         ) as p:
@@ -89,33 +85,36 @@ class KerasTuner(BaseTuner):
                     zip(grads, self._embed_model.trainable_weights)
                 )
 
-                losses.append(loss.numpy())
+                losses += loss.item()
 
-                p.update(message=log_generator())
+                p.update(message=str(losses))
                 self._train_data_len += 1
 
         return losses
 
     def _eval(
-        self, data: AnyDataLoader, description: str = 'Evaluating', train_log: str = ''
-    ) -> List[float]:
+        self,
+        data: AnyDataLoader,
+        description: str = 'Evaluating',
+        train_loss: Optional[ScalarSummary] = None,
+    ) -> ScalarSummary:
         """Evaluate the model on given labeled data"""
 
-        losses = []
-
-        log_generator = LogGenerator('E', losses, train_log)
+        losses = ScalarSummary('Eval Loss')
 
         with ProgressBar(
-            description, message_on_done=log_generator, total_length=self._eval_data_len
+            description,
+            message_on_done=lambda: f'{train_loss} | {losses}',
+            total_length=self._eval_data_len,
         ) as p:
             self._eval_data_len = 0
             for inputs, label in data:
                 embeddings = [self._embed_model(inpt) for inpt in inputs]
                 loss = self._loss([*embeddings, label])
 
-                losses.append(loss.numpy())
+                losses += loss.numpy()
 
-                p.update(message=log_generator())
+                p.update(message=str(losses))
                 self._eval_data_len += 1
 
         return losses
@@ -131,7 +130,7 @@ class KerasTuner(BaseTuner):
         optimizer_kwargs: Optional[Dict] = None,
         device: str = 'cpu',
         **kwargs,
-    ) -> TunerStats:
+    ) -> SummaryCollection:
         """Finetune the model on the training data.
 
         :param train_data: Data on which to train the model
@@ -180,7 +179,8 @@ class KerasTuner(BaseTuner):
 
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
-        stats = TunerStats()
+        m_train_loss = ScalarSummary('train')
+        m_eval_loss = ScalarSummary('eval')
 
         with self.device:
             for epoch in range(epochs):
@@ -189,14 +189,13 @@ class KerasTuner(BaseTuner):
                     _optimizer,
                     description=f'Epoch {epoch + 1}/{epochs}',
                 )
-                stats.add_train_loss(lt)
+                m_train_loss += lt
 
                 if eval_data:
-                    le = self._eval(_eval_data, train_log=LogGenerator('T', lt)())
-                    stats.add_eval_loss(le)
+                    le = self._eval(_eval_data, train_loss=m_train_loss)
+                    m_eval_loss += le
 
-                stats.print_last()
-        return stats
+        return SummaryCollection(m_train_loss, m_eval_loss)
 
     def save(self, *args, **kwargs):
         """Save the embedding model.

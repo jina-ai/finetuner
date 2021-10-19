@@ -4,7 +4,7 @@ from ..helper import AnyDNN, DocumentArrayLike, get_framework
 
 if TYPE_CHECKING:
     from .base import BaseTuner
-    from .stats import TunerStats
+    from .summary import SummaryCollection
 
 
 def get_tuner_class(dnn_model: AnyDNN) -> Type['BaseTuner']:
@@ -36,7 +36,7 @@ def fit(
     optimizer_kwargs: Optional[Dict] = None,
     device: str = 'cpu',
     **kwargs,
-) -> 'TunerStats':
+) -> 'SummaryCollection':
     """Finetune the model on the training data.
 
     :param embed_model: an embedding model
