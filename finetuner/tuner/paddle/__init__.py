@@ -141,7 +141,6 @@ class PaddleTuner(BaseTuner):
                 description=f'Epoch {epoch + 1}/{epochs}',
             )
             stats.add_train_loss(lt)
-            stats.add_train_metric(self.get_metrics(train_data))
 
             if eval_data:
                 _data = self._get_data_loader(
