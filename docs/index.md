@@ -252,6 +252,7 @@ Learn more about {term}`Tailor`, {term}`Tuner` and {term}`Labeler`.
 
 get-started/fashion-mnist
 get-started/covid-qa
+get-started/celeba
 ```
 
 
