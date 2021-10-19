@@ -1,4 +1,4 @@
-def get_dataset(module, arity):
+def get_dataset(module, arity: int):
     if arity == 2:
 
         return getattr(module, 'SiameseDataset')

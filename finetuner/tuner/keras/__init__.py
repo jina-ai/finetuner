@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, List
 
 import numpy as np
 import tensorflow as tf
@@ -11,17 +11,19 @@ from ..base import BaseTuner, BaseLoss
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
 from ..stats import TunerStats
-from ...helper import DocumentArrayLike
+from ...helper import DocumentArrayLike, AnyDataLoader
 
 
 class KerasTuner(BaseTuner):
-    def _get_loss(self, loss: Union[BaseLoss, str]):
+    def _get_loss(self, loss: Union[BaseLoss, str]) -> BaseLoss:
         if isinstance(loss, str):
             return getattr(losses, loss)()
         elif isinstance(loss, BaseLoss):
             return loss
 
-    def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
+    def _get_data_loader(
+        self, inputs: DocumentArrayLike, batch_size: int, shuffle: bool
+    ) -> AnyDataLoader:
 
         ds = get_dataset(datasets, self.arity)
         input_shape = self.embed_model.input_shape[1:]
@@ -58,7 +60,9 @@ class KerasTuner(BaseTuner):
         elif optimizer == 'sgd':
             return keras.optimizers.SGD(learning_rate=learning_rate, **optimizer_kwargs)
 
-    def _train(self, data, optimizer, description: str):
+    def _train(
+        self, data: AnyDataLoader, optimizer: Optimizer, description: str
+    ) -> List[float]:
         losses = []
 
         log_generator = LogGenerator('T', losses)
@@ -87,7 +91,9 @@ class KerasTuner(BaseTuner):
 
         return losses
 
-    def _eval(self, data, description: str = 'Evaluating', train_log: str = ''):
+    def _eval(
+        self, data: AnyDataLoader, description: str = 'Evaluating', train_log: str = ''
+    ) -> List[float]:
 
         losses = []
 

@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, List
 
 import numpy as np
 import paddle
@@ -8,20 +8,22 @@ from paddle.optimizer import Optimizer
 
 from . import losses, datasets
 from ..base import BaseTuner, BaseLoss
-from ...helper import DocumentArrayLike
+from ...helper import DocumentArrayLike, AnyDataLoader
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
 from ..stats import TunerStats
 
 
 class PaddleTuner(BaseTuner):
-    def _get_loss(self, loss: Union[BaseLoss, str]):
+    def _get_loss(self, loss: Union[BaseLoss, str]) -> BaseLoss:
         if isinstance(loss, str):
             return getattr(losses, loss)()
         elif isinstance(loss, BaseLoss):
             return loss
 
-    def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
+    def _get_data_loader(
+        self, inputs: DocumentArrayLike, batch_size: int, shuffle: bool
+    ) -> AnyDataLoader:
         ds = get_dataset(datasets, self.arity)
         return DataLoader(
             dataset=ds(inputs=inputs, catalog=self._catalog),
@@ -55,7 +57,9 @@ class PaddleTuner(BaseTuner):
                 use_nesterov=optimizer_kwargs['nesterov'],
             )
 
-    def _eval(self, data, description: str = 'Evaluating', train_log: str = ''):
+    def _eval(
+        self, data: AnyDataLoader, description: str = 'Evaluating', train_log: str = ''
+    ) -> List[float]:
         self._embed_model.eval()
 
         losses = []
@@ -77,7 +81,9 @@ class PaddleTuner(BaseTuner):
 
         return losses
 
-    def _train(self, data, optimizer: Optimizer, description: str):
+    def _train(
+        self, data: AnyDataLoader, optimizer: Optimizer, description: str
+    ) -> List[float]:
 
         self._embed_model.train()
 

@@ -122,7 +122,7 @@ class BaseTuner(abc.ABC):
     def _get_data_loader(
         self, inputs: DocumentArrayLike, batch_size: int, shuffle: bool
     ) -> AnyDataLoader:
-        """Get framework specific data loader from the input data. """
+        """Get framework specific data loader from the input data."""
         ...
 
     @abc.abstractmethod
