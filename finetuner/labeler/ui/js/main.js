@@ -163,7 +163,7 @@ const app = new Vue({
         },
         next_batch: function () {
             let end_idx = app.labeler_config.start_idx + (app.labeler_config.example_per_view - app.cur_batch.length)
-            if (end_idx === app.labeler_config.start_idx) {
+            if (end_idx <= app.labeler_config.start_idx) {
                 return
             }
             let start_idx = app.labeler_config.start_idx

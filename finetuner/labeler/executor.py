@@ -118,7 +118,7 @@ class DataIterator(Executor):
         count = int(parameters.get('new_examples', 5))
 
         self._all_data.reload()
-        count = min(count, len(self._all_data))
+        count = min(max(count, 0), len(self._all_data))
         return self._all_data.sample(k=count)
 
     @requests(on='/fit')
