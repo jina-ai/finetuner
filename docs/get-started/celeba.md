@@ -43,7 +43,7 @@ Now prepare CelebA data for the Finetuner. Note that Finetuner accepts Jina `Doc
 
 Let's first make sure you have downloaded all the images `img_align_celeba.zip` (unzip) and `IdentityCelebA.txt` locally.
 
-Since each celebrity has multiple facial images, we first create a `defaultdict` and group these images by celebrity identity:
+Since each celebrity has multiple facial images, we first create a `defaultdict` and group these images by their identity:
 
 ```python
 from collections import defaultdict
@@ -56,8 +56,8 @@ def group_imgs_by_identity():
     grouped = defaultdict(list)
     with open(IDENTITY_PATH, 'r') as f:
         for line in f:
-            img, identity = line.split()
-            grouped[identity].append(img)
+            img_file_name, identity = line.split()
+            grouped[identity].append(img_file_name)
     return grouped
 ```
 
@@ -66,7 +66,6 @@ Then we create a data generator that yields every image as a `Document` object:
 ```python
 from jina import Document
 
-# when use labeler
 def train_generator():
     for identity, imgs in group_imgs_by_identity().items():
         for img in imgs:
@@ -88,7 +87,7 @@ rv = fit(
     train_data=train_generator,
     freeze=True,
     input_size=(3, 224, 224),
-    output_dim=512,  # Chop-off the last fc layer and add a trainable Linear layer.
+    output_dim=512,  # Chop-off the last fc layer and add a trainable linear layer.
 )
 ```
 
