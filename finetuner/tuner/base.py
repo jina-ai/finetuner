@@ -27,6 +27,13 @@ class BaseTuner(abc.ABC):
         loss: Union[AnyDNN, str] = 'CosineSiameseLoss',
         **kwargs,
     ):
+        """Create the tuner instance.
+
+        :param embed_model: Model that produces embeddings from inputs
+        :param loss: Either the loss object instance, or the name of the loss function.
+            Currently available losses are ``CosineSiameseLoss``,
+            ``EuclideanSiameseLoss``, ``EuclideanTripletLoss`` and ``CosineTripletLoss``
+        """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
         self._train_data_len = 0
