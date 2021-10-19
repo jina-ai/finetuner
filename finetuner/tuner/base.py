@@ -143,13 +143,6 @@ class BaseTuner(abc.ABC):
         """Evaluate the model on given labeled data"""
         ...
 
-    @abc.abstractmethod
-    def get_embeddings(self, docs: DocumentArrayLike):
-        """Calculates and adds the embeddings for the given Documents.
-
-        :param docs: The documents to get embeddings from.
-        """
-
 
 class BaseDataset:
     def __init__(

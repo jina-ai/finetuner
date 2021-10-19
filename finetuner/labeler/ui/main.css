@@ -352,8 +352,9 @@ footer a {
 }
 
 .image-card .card-body .img-thumbnail {
-    width: auto;
-    max-height: 20vh;
+    width: 20vh;
+    height: 20vh;
+    object-fit: cover;
     padding: 0;
 }
 
