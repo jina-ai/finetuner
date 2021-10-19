@@ -126,7 +126,7 @@ class BaseTuner(abc.ABC):
     def _get_data_loader(
         self, inputs: DocumentArrayLike, batch_size: int, shuffle: bool
     ) -> AnyDataLoader:
-        """Get framework specific data loader from the input data. """
+        """Get framework specific data loader from the input data."""
         ...
 
     @abc.abstractmethod
@@ -145,7 +145,10 @@ class BaseTuner(abc.ABC):
 
     @abc.abstractmethod
     def get_embeddings(self, docs: DocumentArrayLike):
-        """Calculates and adds the embeddings for the given Documents."""
+        """Calculates and adds the embeddings for the given Documents.
+
+        :param docs: The documents to get embeddings from.
+        """
 
 
 class BaseDataset:

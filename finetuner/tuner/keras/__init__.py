@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, List
 
 import tensorflow as tf
 from jina.logging.profile import ProgressBar
@@ -10,20 +10,21 @@ from ..base import BaseTuner, BaseLoss
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
 from ..stats import TunerStats
-from ...helper import DocumentArrayLike
+from ...helper import DocumentArrayLike, AnyDataLoader
 
 
 class KerasTuner(BaseTuner):
-    def _get_loss(self, loss: Union[BaseLoss, str]):
+    def _get_loss(self, loss: Union[BaseLoss, str]) -> BaseLoss:
         """Get the loss layer."""
-
         if isinstance(loss, str):
             return getattr(losses, loss)()
         elif isinstance(loss, BaseLoss):
             return loss
 
-    def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
-        """Get tensorflow ``Dataset`` from the input data. """
+    def _get_data_loader(
+        self, inputs: DocumentArrayLike, batch_size: int, shuffle: bool
+    ) -> AnyDataLoader:
+        """Get tensorflow ``Dataset`` from the input data."""
 
         ds = get_dataset(datasets, self.arity)
         input_shape = self.embed_model.input_shape[1:]
@@ -62,7 +63,9 @@ class KerasTuner(BaseTuner):
         elif optimizer == 'sgd':
             return keras.optimizers.SGD(learning_rate=learning_rate, **optimizer_kwargs)
 
-    def _train(self, data, optimizer, description: str):
+    def _train(
+        self, data: AnyDataLoader, optimizer: Optimizer, description: str
+    ) -> List[float]:
         """Train the model on given labeled data"""
 
         losses = []
@@ -93,7 +96,9 @@ class KerasTuner(BaseTuner):
 
         return losses
 
-    def _eval(self, data, description: str = 'Evaluating', train_log: str = ''):
+    def _eval(
+        self, data: AnyDataLoader, description: str = 'Evaluating', train_log: str = ''
+    ) -> List[float]:
         """Evaluate the model on given labeled data"""
 
         losses = []

@@ -217,5 +217,5 @@ class _LinearAtLast(nn.Layer):
         self._model = model
         self._linear = nn.Linear(*args, **kwargs)
 
-    def forward(self, input):
-        return self._linear(self._model(input))
+    def forward(self, input_):
+        return self._linear(self._model(input_))
