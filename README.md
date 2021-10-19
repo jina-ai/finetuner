@@ -54,7 +54,7 @@ pip install finetuner
 <thead>
   <tr>
     <th colspan="2" rowspan="2">🪄 Usage</th>
-    <th colspan="2">Do you have an embedding model?</th>
+    <th colspan="2">Do you have an <a href="https://finetuner.jina.ai/basics/glossary/#term-Embedding-model">embedding model</a>?</th>
   </tr>
   <tr>
     <th>Yes</th>
@@ -63,7 +63,7 @@ pip install finetuner
 </thead>
 <tbody>
   <tr>
-    <td rowspan="2"><b>Do you have labeled data?</b></td>
+    <td rowspan="2"><b>Do you have <a href="https://finetuner.jina.ai/basics/glossary/#term-Labeled-data">labeled data</a>?</b></td>
     <td><b>Yes</b></td>
     <td align="center">🟠</td>
     <td align="center">🟡</td>
@@ -107,7 +107,7 @@ finetuner.fit(
 ### 🟡 Have general model and labeled data
 
 You have a `general_model` which does not output embeddings. Luckily you provide some `labeled_data` for training. No
-worry, Finetuner can convert your model into an embedding model and train it via:
+worries, Finetuner can convert your model into an embedding model and train it via:
 
 ```python
 import finetuner
@@ -181,7 +181,7 @@ finetuner.fit(
         output_dim=100
     )
     ```
-5. Now the browser will open the Labeler UI. You can now label the data by mouse/keyboard. The model will get finetuned and improved as you are labeling. If you are running this example on a CPU machine, it can take up to 20 seconds for each labeling round.
+5. After model downloading is complete, your browser will open the Labeler UI. You can now label the relevance of celebrity faces via mouse/keyboard. The ResNet50 model will get finetuned and improved as you are labeling. If you are running this example on a CPU machine, it may take up to 20 seconds for each labeling round.
 
 ![Finetuning ResNet50 on CelebA with interactive labeling](docs/get-started/celeba-labeler.gif)
 
