@@ -67,10 +67,10 @@ class KerasTuner(BaseTuner):
     ) -> ScalarSummary:
         """Train the model on given labeled data"""
 
-        losses = ScalarSummary('Train Loss')
+        _summary = ScalarSummary('Train Loss')
         with ProgressBar(
             description,
-            message_on_done=losses.__str__,
+            message_on_done=_summary.__str__,
             final_line_feed=False,
             total_length=self._train_data_len,
         ) as p:
@@ -85,12 +85,12 @@ class KerasTuner(BaseTuner):
                     zip(grads, self._embed_model.trainable_weights)
                 )
 
-                losses += loss.item()
+                _summary += loss.numpy()
 
-                p.update(message=str(losses))
+                p.update(message=str(_summary))
                 self._train_data_len += 1
 
-        return losses
+        return _summary
 
     def _eval(
         self,
@@ -100,11 +100,11 @@ class KerasTuner(BaseTuner):
     ) -> ScalarSummary:
         """Evaluate the model on given labeled data"""
 
-        losses = ScalarSummary('Eval Loss')
+        _summary = ScalarSummary('Eval Loss')
 
         with ProgressBar(
             description,
-            message_on_done=lambda: f'{train_loss} | {losses}',
+            message_on_done=lambda: f'{train_loss} | {_summary}',
             total_length=self._eval_data_len,
         ) as p:
             self._eval_data_len = 0
@@ -112,12 +112,12 @@ class KerasTuner(BaseTuner):
                 embeddings = [self._embed_model(inpt) for inpt in inputs]
                 loss = self._loss([*embeddings, label])
 
-                losses += loss.numpy()
+                _summary += loss.numpy()
 
-                p.update(message=str(losses))
+                p.update(message=str(_summary))
                 self._eval_data_len += 1
 
-        return losses
+        return _summary
 
     def fit(
         self,

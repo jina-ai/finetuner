@@ -73,11 +73,11 @@ class PytorchTuner(BaseTuner):
 
         self._embed_model.eval()
 
-        losses = ScalarSummary('Eval Loss')
+        _summary = ScalarSummary('Eval Loss')
 
         with ProgressBar(
             description,
-            message_on_done=lambda: f'{train_loss} | {losses}',
+            message_on_done=lambda: f'{train_loss} | {_summary}',
             total_length=self._eval_data_len,
         ) as p:
             self._eval_data_len = 0
@@ -90,12 +90,12 @@ class PytorchTuner(BaseTuner):
                     embeddings = [self._embed_model(inpt) for inpt in inputs]
                     loss = self._loss(embeddings, label)
 
-                losses += loss.item()
+                _summary += loss.item()
 
-                p.update(message=str(losses))
+                p.update(message=str(_summary))
                 self._eval_data_len += 1
 
-        return losses
+        return _summary
 
     def _train(
         self, data: AnyDataLoader, optimizer: Optimizer, description: str
@@ -104,10 +104,10 @@ class PytorchTuner(BaseTuner):
 
         self._embed_model.train()
 
-        losses = ScalarSummary('Train Loss')
+        _summary = ScalarSummary('Train Loss')
         with ProgressBar(
             description,
-            message_on_done=losses.__str__,
+            message_on_done=_summary.__str__,
             final_line_feed=False,
             total_length=self._train_data_len,
         ) as p:
@@ -125,11 +125,11 @@ class PytorchTuner(BaseTuner):
                 loss.backward()
                 optimizer.step()
 
-                losses += loss.item()
+                _summary += loss.item()
 
-                p.update(message=str(losses))
+                p.update(message=str(_summary))
                 self._train_data_len += 1
-        return losses
+        return _summary
 
     def fit(
         self,
