@@ -1,11 +1,9 @@
-import json
-
 import paddle
 import tensorflow as tf
 import torch
 
 import finetuner
-from finetuner.toydata import generate_fashion_match
+from finetuner.toydata import generate_fashion_match_catalog
 
 all_test_losses = [
     'CosineSiameseLoss',
@@ -46,24 +44,28 @@ def test_fit_all(tmpdir):
 
     for kb, b in embed_models.items():
         for h in all_test_losses:
+            train_data, train_catalog = generate_fashion_match_catalog(
+                num_neg=10,
+                num_pos=10,
+                num_total=300,
+                num_catalog=3000,
+                pre_init_generator=False,
+            )
+            eval_data, eval_catalog = generate_fashion_match_catalog(
+                num_neg=10,
+                num_pos=10,
+                num_total=300,
+                num_catalog=3000,
+                is_testset=True,
+                pre_init_generator=False,
+            )
+            train_catalog.extend(eval_catalog)
             result = finetuner.fit(
                 b(),
                 loss=h,
-                train_data=lambda: generate_fashion_match(
-                    num_neg=10, num_pos=10, num_total=300
-                ),
-                eval_data=lambda: generate_fashion_match(
-                    num_neg=10, num_pos=10, num_total=300, is_testset=True
-                ),
+                train_data=train_data,
+                eval_data=eval_data,
+                catalog=train_catalog,
                 epochs=2,
             )
-
-            # convert from numpy to python native float for json dump
-            result = {
-                'loss': {
-                    'train': [float(v) for v in result['loss']['train']],
-                    'eval': [float(v) for v in result['loss']['eval']],
-                },
-            }
-            with open(tmpdir / f'result-{kb}-{h}.json', 'w') as fp:
-                json.dump(result, fp)
+            result.save(tmpdir / f'result-{kb}-{h}.json')

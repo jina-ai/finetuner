@@ -86,7 +86,7 @@ import finetuner
 
 finetuner.fit(
    embed_model,
-   train_data=generate_qa_match,
+   train_data=generate_qa_match(),
    interactive=True)
 ```
 

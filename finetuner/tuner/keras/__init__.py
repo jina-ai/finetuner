@@ -1,15 +1,16 @@
 from typing import Dict, Optional, Union
 
+import numpy as np
 import tensorflow as tf
 from jina.logging.profile import ProgressBar
 from tensorflow import keras
-from tensorflow.keras.layers import Layer
 from tensorflow.keras.optimizers import Optimizer
 
 from . import losses, datasets
 from ..base import BaseTuner, BaseLoss
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
+from ..stats import TunerStats
 from ...helper import DocumentArrayLike
 
 
@@ -26,7 +27,7 @@ class KerasTuner(BaseTuner):
         input_shape = self.embed_model.input_shape[1:]
 
         tf_data = tf.data.Dataset.from_generator(
-            lambda: ds(inputs),
+            lambda: ds(inputs, self._catalog),
             output_signature=(
                 tuple(
                     tf.TensorSpec(shape=input_shape, dtype=tf.float32)
@@ -118,7 +119,7 @@ class KerasTuner(BaseTuner):
         optimizer_kwargs: Optional[Dict] = None,
         device: str = 'cpu',
         **kwargs,
-    ):
+    ) -> TunerStats:
 
         _train_data = self._get_data_loader(
             inputs=train_data, batch_size=batch_size, shuffle=False
@@ -135,29 +136,35 @@ class KerasTuner(BaseTuner):
             device = '/CPU:0'
         else:
             raise ValueError(f'Device {device} not recognized')
-        device = tf.device(device)
+        self.device = tf.device(device)
 
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
-        losses_train = []
-        losses_eval = []
+        stats = TunerStats()
 
-        with device:
+        with self.device:
             for epoch in range(epochs):
                 lt = self._train(
                     _train_data,
                     _optimizer,
                     description=f'Epoch {epoch + 1}/{epochs}',
                 )
-                losses_train.extend(lt)
+                stats.add_train_loss(lt)
 
                 if eval_data:
-                    le = self._eval(_eval_data, train_log=LogGenerator('T', lt)())
-                    losses_eval.extend(le)
+                    le = self._eval(_eval_data, train_log=LogGenerator("T", lt)())
+                    stats.add_eval_loss(le)
+                    stats.add_eval_metric(self.get_metrics(eval_data))
 
-        return {
-            'loss': {'train': losses_train, 'eval': losses_eval},
-        }
+                stats.print_last()
+        return stats
+
+    def get_embeddings(self, data: DocumentArrayLike):
+        blobs = data.blobs
+        with self.device:
+            embeddings = self.embed_model(blobs)
+        for doc, embed in zip(data, embeddings):
+            doc.embedding = np.array(embed)
 
     def save(self, *args, **kwargs):
         self.embed_model.save(*args, **kwargs)

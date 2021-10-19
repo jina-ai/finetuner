@@ -3,9 +3,9 @@ import pytest
 import tensorflow as tf
 from tensorflow import keras
 
-from finetuner.tuner.keras import KerasTuner
-from finetuner.toydata import generate_fashion_match
-from finetuner.toydata import generate_qa_match
+from finetuner.tuner import fit, save
+from finetuner.toydata import generate_fashion_match_catalog
+from finetuner.toydata import generate_qa_match_catalog
 
 all_test_losses = [
     'CosineSiameseLoss',
@@ -29,20 +29,33 @@ def test_simple_sequential_model(tmpdir, params, loss):
         ]
     )
 
-    kt = KerasTuner(user_model, loss=loss)
-
     # fit and save the checkpoint
-    kt.fit(
-        train_data=lambda: generate_fashion_match(
-            num_pos=10, num_neg=10, num_total=params['num_train']
-        ),
-        eval_data=lambda: generate_fashion_match(
-            num_pos=10, num_neg=10, num_total=params['num_eval'], is_testset=True
-        ),
+    train_data, train_catalog = generate_fashion_match_catalog(
+        num_neg=10,
+        num_pos=10,
+        num_total=params['num_train'],
+        num_catalog=params['num_train'] * 10,
+        pre_init_generator=False,
+    )
+    eval_data, eval_catalog = generate_fashion_match_catalog(
+        num_neg=10,
+        num_pos=10,
+        num_total=params['num_eval'],
+        num_catalog=params['num_eval'] * 10,
+        is_testset=True,
+        pre_init_generator=False,
+    )
+    train_catalog.extend(eval_catalog)
+    fit(
+        user_model,
+        loss=loss,
+        train_data=train_data,
+        eval_data=eval_data,
+        catalog=train_catalog,
         epochs=params['epochs'],
         batch_size=params['batch_size'],
     )
-    kt.save(tmpdir / 'trained.kt')
+    save(user_model, tmpdir / 'trained.kt')
 
     embedding_model = keras.models.load_model(tmpdir / 'trained.kt')
     r = embedding_model.predict(
@@ -63,26 +76,33 @@ def test_simple_lstm_model(tmpdir, params, loss):
         ]
     )
 
-    kt = KerasTuner(user_model, loss=loss)
-
     # fit and save the checkpoint
-    kt.fit(
-        train_data=lambda: generate_qa_match(
-            num_total=params['num_train'],
-            max_seq_len=params['max_seq_len'],
-            num_neg=5,
-            is_testset=False,
-        ),
-        eval_data=lambda: generate_qa_match(
-            num_total=params['num_eval'],
-            max_seq_len=params['max_seq_len'],
-            num_neg=5,
-            is_testset=True,
-        ),
+    train_data, train_catalog = generate_qa_match_catalog(
+        num_total=params['num_train'],
+        max_seq_len=params['max_seq_len'],
+        num_neg=5,
+        is_testset=False,
+        pre_init_generator=False,
+    )
+    eval_data, eval_catalog = generate_qa_match_catalog(
+        num_total=params['num_train'],
+        max_seq_len=params['max_seq_len'],
+        num_neg=5,
+        is_testset=True,
+        pre_init_generator=False,
+    )
+    train_catalog.extend(eval_catalog)
+
+    fit(
+        user_model,
+        loss=loss,
+        train_data=train_data,
+        eval_data=eval_data,
+        catalog=train_catalog,
         epochs=params['epochs'],
         batch_size=params['batch_size'],
     )
-    kt.save(tmpdir / 'trained.kt')
+    save(user_model, tmpdir / 'trained.kt')
 
     embedding_model = keras.models.load_model(tmpdir / 'trained.kt')
     r = embedding_model.predict(

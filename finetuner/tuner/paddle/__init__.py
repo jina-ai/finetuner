@@ -1,8 +1,8 @@
 from typing import Dict, Optional, Union
 
+import numpy as np
 import paddle
 from jina.logging.profile import ProgressBar
-from paddle import nn
 from paddle.io import DataLoader
 from paddle.optimizer import Optimizer
 
@@ -11,6 +11,7 @@ from ..base import BaseTuner, BaseLoss
 from ...helper import DocumentArrayLike
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
+from ..stats import TunerStats
 
 
 class PaddleTuner(BaseTuner):
@@ -23,7 +24,7 @@ class PaddleTuner(BaseTuner):
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
         ds = get_dataset(datasets, self.arity)
         return DataLoader(
-            dataset=ds(inputs=inputs),
+            dataset=ds(inputs=inputs, catalog=self._catalog),
             batch_size=batch_size,
             shuffle=shuffle,
         )
@@ -117,7 +118,7 @@ class PaddleTuner(BaseTuner):
         optimizer_kwargs: Optional[Dict] = None,
         device: str = 'cpu',
         **kwargs,
-    ):
+    ) -> TunerStats:
 
         if device == 'cuda':
             paddle.set_device('gpu:0')
@@ -128,8 +129,7 @@ class PaddleTuner(BaseTuner):
 
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
-        losses_train = []
-        losses_eval = []
+        stats = TunerStats()
 
         for epoch in range(epochs):
             _data = self._get_data_loader(
@@ -140,7 +140,7 @@ class PaddleTuner(BaseTuner):
                 _optimizer,
                 description=f'Epoch {epoch + 1}/{epochs}',
             )
-            losses_train.extend(lt)
+            stats.add_train_loss(lt)
 
             if eval_data:
                 _data = self._get_data_loader(
@@ -148,9 +148,17 @@ class PaddleTuner(BaseTuner):
                 )
 
                 le = self._eval(_data, train_log=LogGenerator('T', lt)())
-                losses_eval.extend(le)
+                stats.add_eval_loss(le)
+                stats.add_eval_metric(self.get_metrics(eval_data))
 
-        return {'loss': {'train': losses_train, 'eval': losses_eval}}
+            stats.print_last()
+        return stats
+
+    def get_embeddings(self, data: DocumentArrayLike):
+        blobs = data.blobs
+        embeddings = self.embed_model(paddle.Tensor(blobs))
+        for doc, embed in zip(data, embeddings):
+            doc.embedding = np.array(embed)
 
     def save(self, *args, **kwargs):
         paddle.save(self.embed_model.state_dict(), *args, **kwargs)

@@ -10,6 +10,7 @@ from ..base import BaseTuner, BaseLoss
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
 from ...helper import DocumentArrayLike
+from ..stats import TunerStats
 
 
 class PytorchTuner(BaseTuner):
@@ -22,7 +23,7 @@ class PytorchTuner(BaseTuner):
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
         ds = get_dataset(datasets, self.arity)
         return DataLoader(
-            dataset=ds(inputs=inputs),
+            dataset=ds(inputs=inputs, catalog=self._catalog),
             batch_size=batch_size,
             shuffle=shuffle,
         )
@@ -127,7 +128,7 @@ class PytorchTuner(BaseTuner):
         optimizer_kwargs: Optional[Dict] = None,
         device: str = 'cpu',
         **kwargs,
-    ):
+    ) -> TunerStats:
         if device == 'cpu':
             self.device = torch.device('cpu')
         elif device == 'cuda':
@@ -141,8 +142,7 @@ class PytorchTuner(BaseTuner):
         # Get optimizer
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
-        losses_train = []
-        losses_eval = []
+        stats = TunerStats()
 
         for epoch in range(epochs):
             _data = self._get_data_loader(
@@ -153,7 +153,7 @@ class PytorchTuner(BaseTuner):
                 _optimizer,
                 description=f'Epoch {epoch + 1}/{epochs}',
             )
-            losses_train.extend(lt)
+            stats.add_train_loss(lt)
 
             if eval_data:
                 _data = self._get_data_loader(
@@ -161,9 +161,20 @@ class PytorchTuner(BaseTuner):
                 )
 
                 le = self._eval(_data, train_log=LogGenerator('T', lt)())
-                losses_eval.extend(le)
+                stats.add_eval_loss(le)
+                stats.add_eval_metric(self.get_metrics(eval_data))
 
-        return {'loss': {'train': losses_train, 'eval': losses_eval}}
+            stats.print_last()
+        return stats
+
+    def get_embeddings(self, data: DocumentArrayLike):
+        blobs = data.blobs
+
+        tensor = torch.tensor(blobs, device=self.device)
+        with torch.inference_mode():
+            embeddings = self.embed_model(tensor)
+            for doc, embed in zip(data, embeddings):
+                doc.embedding = embed.cpu().numpy()
 
     def save(self, *args, **kwargs):
         torch.save(self.embed_model.state_dict(), *args, **kwargs)
