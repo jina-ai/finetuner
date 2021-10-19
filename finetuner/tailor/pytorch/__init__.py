@@ -2,7 +2,7 @@ import copy
 import warnings
 from collections import OrderedDict
 from copy import deepcopy
-from typing import Tuple, Optional
+from typing import Optional
 
 import numpy as np
 import torch
@@ -206,5 +206,5 @@ class _LinearAtLast(nn.Module):
         self._model = model
         self._linear = nn.Linear(*args, **kwargs)
 
-    def forward(self, input):
-        return self._linear(self._model(input))
+    def forward(self, input_):
+        return self._linear(self._model(input_))

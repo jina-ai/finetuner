@@ -73,7 +73,7 @@ class FTExecutor(Executor):
             d.pop('blob', 'embedding')
 
     @requests(on='/fit')
-    def fit(self, docs, parameters: Dict, **kwargs):
+    def fit(self, docs: DocumentArray, parameters: Dict, **kwargs):
         fit(
             self._embed_model,
             docs,
@@ -83,7 +83,7 @@ class FTExecutor(Executor):
         )
 
     @requests(on='/save')
-    def save(self, parameters, **kwargs):
+    def save(self, parameters: Dict, **kwargs):
         model_path = parameters.get('model_path', 'trained.model')
         save(self._embed_model, model_path)
         print(f'model is saved to {model_path}')

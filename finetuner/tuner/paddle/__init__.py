@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, List
 
 import numpy as np
 import paddle
@@ -8,24 +8,24 @@ from paddle.optimizer import Optimizer
 
 from . import losses, datasets
 from ..base import BaseTuner, BaseLoss
-from ...helper import DocumentArrayLike
+from ...helper import DocumentArrayLike, AnyDataLoader
 from ..dataset.helper import get_dataset
 from ..logger import LogGenerator
 from ..stats import TunerStats
 
 
 class PaddleTuner(BaseTuner):
-    def _get_loss(self, loss: Union[BaseLoss, str]):
+    def _get_loss(self, loss: Union[BaseLoss, str]) -> BaseLoss:
         """Get the loss layer."""
-
         if isinstance(loss, str):
             return getattr(losses, loss)()
         elif isinstance(loss, BaseLoss):
             return loss
 
-    def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
-        """Get the paddle ``DataLoader`` from the input data. """
-
+    def _get_data_loader(
+        self, inputs: DocumentArrayLike, batch_size: int, shuffle: bool
+    ) -> AnyDataLoader:
+        """Get the paddle ``DataLoader`` from the input data."""
         ds = get_dataset(datasets, self.arity)
         return DataLoader(
             dataset=ds(inputs=inputs, catalog=self._catalog),
@@ -61,7 +61,9 @@ class PaddleTuner(BaseTuner):
                 use_nesterov=optimizer_kwargs['nesterov'],
             )
 
-    def _eval(self, data, description: str = 'Evaluating', train_log: str = ''):
+    def _eval(
+        self, data: AnyDataLoader, description: str = 'Evaluating', train_log: str = ''
+    ) -> List[float]:
         """Evaluate the model on given labeled data"""
 
         self._embed_model.eval()
@@ -85,7 +87,9 @@ class PaddleTuner(BaseTuner):
 
         return losses
 
-    def _train(self, data, optimizer: Optimizer, description: str):
+    def _train(
+        self, data: AnyDataLoader, optimizer: Optimizer, description: str
+    ) -> List[float]:
         """Train the model on given labeled data"""
 
         self._embed_model.train()
@@ -132,7 +136,7 @@ class PaddleTuner(BaseTuner):
 
         :param train_data: Data on which to train the model
         :param eval_data: Data on which to evaluate the model at the end of each epoch
-        :param epoch: Number of epochs to train the model
+        :param epochs: Number of epochs to train the model
         :param batch_size: The batch size to use for training and evaluation
         :param learning_rate: Learning rate to use in training
         :param optimizer: Which optimizer to use in training. Supported
@@ -191,10 +195,14 @@ class PaddleTuner(BaseTuner):
             stats.print_last()
         return stats
 
-    def get_embeddings(self, data: DocumentArrayLike):
-        blobs = data.blobs
+    def get_embeddings(self, docs: DocumentArrayLike):
+        """Calculates and adds the embeddings for the given Documents.
+
+        :param docs: The documents to get embeddings from.
+        """
+        blobs = docs.blobs
         embeddings = self.embed_model(paddle.Tensor(blobs))
-        for doc, embed in zip(data, embeddings):
+        for doc, embed in zip(docs, embeddings):
             doc.embedding = np.array(embed)
 
     def save(self, *args, **kwargs):
