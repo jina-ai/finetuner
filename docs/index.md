@@ -278,15 +278,6 @@ components/index
 api/finetuner
 ```
 
-
-```{toctree}
-:caption: Ecosystem
-:hidden:
-
-Jina <https://github.com/jina-ai/jina>
-Jina Hub <https://hub.jina.ai>
-```
-
 ---
 {ref}`genindex` {ref}`modindex`
 
