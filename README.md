@@ -16,19 +16,19 @@
 
 <!-- start elevator-pitch -->
 
-Finetuner allows one to tune the weights of any deep neural network for better embedding on search tasks. It
-accompanies [Jina](https://github.com/jina-ai/jina) to deliver the last mile of performance-tuning for neural search
+Finetuner allows one to tune the weights of any deep neural network for better embeddings on search tasks. It
+accompanies [Jina](https://github.com/jina-ai/jina) to deliver the last mile of performance for domain-specific neural search
 applications.
 
-🎛 **Designed for finetuning**: a machine learning-powered human-in-the-loop tool for leveling up your pretrained models in neural search applications.
+🎛 **Designed for finetuning**: a human-in-the-loop deep learning tool for leveling up your pretrained models in domain-specific neural search applications.
 
 🔱 **Powerful yet intuitive**: all you need is `finetuner.fit()` - a one-liner that unlocks rich features such as
-siamese/triplet network, interactive labeling, layer trimming, weights freezing, dimensionality reduction.
+siamese/triplet network, interactive labeling, layer pruning, weights freezing, dimensionality reduction.
 
-⚛️ **Framework-agnostic**: promise an identical API experience on [PyTorch](https://pytorch.org/)
+⚛️ **Framework-agnostic**: promise an identical API & user experience on [PyTorch](https://pytorch.org/)
 , [Tensorflow/Keras](https://tensorflow.org/) or [PaddlePaddle](https://github.com/PaddlePaddle/Paddle) deep learning backends.
 
-🧈 **Jina integration**: buttery smooth integration with Jina, reducing the cost of context-switch between experimenting
+🧈 **Jina integration**: buttery smooth integration with Jina, reducing the cost of context-switch between experiment
 and production.
 
 <!-- end elevator-pitch -->
@@ -140,6 +140,7 @@ finetuner.fit(
 ## Finetuning ResNet50 on CelebA
 
 > ⚡ To get the best experience, you will need a GPU-machine for this example. For CPU users, we provide [finetuning a MLP on FashionMNIST](https://finetuner.jina.ai/get-started/fashion-mnist/) and [finetuning a Bi-LSTM on CovidQA](https://finetuner.jina.ai/get-started/covid-qa/) that run out the box on low-profile machines. Check out more examples in [our docs](https://finetuner.jina.ai)!
+
 
 1. Download [CelebA dataset](https://static.jina.ai/celeba/celeba-img.zip) and decompress it to `'./img_align_celeba'`.
 2. Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we load CelebA data into this format using generator:
