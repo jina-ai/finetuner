@@ -1,47 +1,26 @@
 # Finetuning Pre-Trained ResNet on CelebA Dataset
 
-In this example, we want to "tune" the pre-trained [ResNet](https://arxiv.org/abs/1512.03385) on [CelebA dataset](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), the ResNet model has pre-trained weights on ImageNet.
+In this example, we want to "tune" the pre-trained [ResNet](https://arxiv.org/abs/1512.03385) on [CelebA dataset](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html). Note that, the original weights of the ResNet model was trained on ImageNet.
 
-Precisely, "tuning" means: 
-- we set up a Jina search pipeline and will look at the top-K visually similar result;
-- we accept or reject the results based on their quality;
-- we let the model to remember our feedback and produce better search result.
+The Finetuner will work in the following steps: 
+- first, we spawn the Labeler that helps us to inspect the top-K visually similar celebrities face images from original ResNet;
+- then, with the Labeler UI we accept or reject the results based on their similarities;
+- finally, the results are collected at the backend by the Tuner, which "tunes" the ResNet and produces better search result.
 
 Hopefully the procedure converges after several rounds; and we get a tuned embedding for better celebrity face search.
 
-## Build embedding model
+## Prepare CelebA data
 
-Let's import pre-trained ResNet as our {ref}`embedding model<embedding-model>` using any of the following frameworks.
+Let's first make sure you have downloaded all the images [`img_align_celeba.zip`](https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?usp=sharing&resourcekey=0-dYn9z10tMJOBAkviAcfdyQ) and [`IdentityCelebA.txt`](https://drive.google.com/file/d/1_ee_0u7vcNLOfNLegJRHmolfH5ICW-XS/view?usp=sharing) locally.
 
-````{tab} PyTorch
+```{caution}
 
-```python
-import torchvision
-
-model = torchvision.models.resnet50(pretrained=True)
+Beware that the original CelebA dataset is 1.3GB. In this example, we do not need the full dataset. Here is a smaller version which contains 1000 images from the original dataset. You can [download it from here]().
 ```
 
-````
-````{tab} Keras
-```python
-import tensorflow as tf
+Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we first convert CelebA data into this format.
 
-model = tf.keras.applications.resnet50.ResNet50(weights='imagenet')
-```
-````
-````{tab} Paddle
-```python
-import paddle
 
-model = paddle.vision.models.resnet50(pretrained=True)
-```
-````
-
-## Prepare data
-
-Now prepare CelebA data for the Finetuner. Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we first convert them into this format.
-
-Let's first make sure you have downloaded all the images `img_align_celeba.zip` (unzip) and `IdentityCelebA.txt` locally.
 
 Since each celebrity has multiple facial images, we first create a `defaultdict` and group these images by their identity:
 
@@ -74,6 +53,36 @@ def train_generator():
             d.convert_uri_to_datauri()
             yield d
 ```
+
+## Download the pretrained model
+
+Let's import pre-trained ResNet as our {ref}`embedding model<embedding-model>` using any of the following frameworks.
+
+````{tab} PyTorch
+
+```python
+import torchvision
+
+model = torchvision.models.resnet50(pretrained=True)
+```
+
+````
+````{tab} Keras
+```python
+import tensorflow as tf
+
+model = tf.keras.applications.resnet50.ResNet50(weights='imagenet')
+```
+````
+````{tab} Paddle
+```python
+import paddle
+
+model = paddle.vision.models.resnet50(pretrained=True)
+```
+````
+
+
 
 
 ## Put together
