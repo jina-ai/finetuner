@@ -56,6 +56,7 @@ const app = new Vue({
             grabCursor: false,
             centeredSlides: true,
             slidesPerView: 3,
+            allowTouchMove: false,
             keyboard: {
                 enabled: true,
             },
