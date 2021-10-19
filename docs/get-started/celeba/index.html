@@ -1,0 +1,475 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta property="og:title" content="Finetuning Pre-Trained ResNet on CelebA Dataset" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://finetuner.jina.ai/get-started/celeba.html" />
+  <meta property="og:site_name" content="Finetuner Documentation" />
+  <meta property="og:description" content="In this example, we want to “tune” the pre-trained ResNet on CelebA dataset, the ResNet model has pre-trained weights on ImageNet. Precisely, “tuning” means: we set up a Jina search pipeline and will look at the top-K visually similar result;, we accept or reject the results based on their qualit..." />
+  <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
+  <meta property="og:image:alt" content="Finetuner Documentation" />
+  <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description" content="Finetuner allows one to finetune any deep neural network for better embedding on search tasks.">
+<meta property="og:description" content="Finetuner allows one to finetune any deep neural network for better embedding on search tasks.">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1ESRNDCK35"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1ESRNDCK35');
+</script>
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
+
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
+        <title>Finetuning Pre-Trained ResNet on CelebA Dataset - Finetuner 0.0.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.d53ab927f7bad3eaa42da95908504b10.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=16fb25fabf47304eee183a5e9af80b1ba98259b1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+    <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+    <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+    <header class="mobile-header">
+        <div class="header-left">
+            <label class="nav-overlay-icon" for="__navigation">
+                <div class="visually-hidden">Toggle site navigation sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-menu"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+        <div class="header-center">
+            <a href="../../">
+                <div class="brand">Finetuner 0.0.3 documentation</div>
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="theme-toggle-container theme-toggle-header">
+                <button class="theme-toggle">
+                    <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                    <svg class="theme-icon-when-auto">
+                        <use href="#svg-sun-half"></use>
+                    </svg>
+                    <svg class="theme-icon-when-dark">
+                        <use href="#svg-moon"></use>
+                    </svg>
+                    <svg class="theme-icon-when-light">
+                        <use href="#svg-sun"></use>
+                    </svg>
+                </button>
+            </div>
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
+                <div class="visually-hidden">Toggle table of contents sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-toc"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+    </header>
+    <aside class="sidebar-drawer">
+        <div class="sidebar-container">
+            
+            <div class="sidebar-sticky"><a class="sidebar-brand" href="../../">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/logo-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search/" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../fashion-mnist/">Finetuning MLP on Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../covid-qa/">Finetuning Bi-LSTM on Text</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/fit/">One-liner <code class="docutils literal notranslate"><span class="pre">fit()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/data-format/">Data Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/glossary/">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Components</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../components/overview/">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../components/tuner/">Tuner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../components/tailor/">Tailor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../components/labeler/">Labeler</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/finetuner/">finetuner package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.labeler/">finetuner.labeler package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.labeler.executor/">finetuner.labeler.executor module</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.tailor/">finetuner.tailor package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tailor.keras/">finetuner.tailor.keras package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tailor.paddle/">finetuner.tailor.paddle package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tailor.pytorch/">finetuner.tailor.pytorch package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tailor.base/">finetuner.tailor.base module</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.tuner/">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.keras.datasets/">finetuner.tuner.keras.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.keras.losses/">finetuner.tuner.keras.losses module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.pytorch.datasets/">finetuner.tuner.pytorch.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.pytorch.losses/">finetuner.tuner.pytorch.losses module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.helper/">finetuner.helper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.toydata/">finetuner.toydata module</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jina">Jina</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">Jina Hub</a></li>
+</ul>
+
+</div>
+</div>
+            </div>
+            
+        </div>
+    </aside>
+    <div class="main">
+        <div class="content">
+            <article role="main">
+                <div class="content-icon-container">
+                    <div class="theme-toggle-container theme-toggle-content">
+                        <button class="theme-toggle">
+                            <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                            <svg class="theme-icon-when-auto">
+                                <use href="#svg-sun-half"></use>
+                            </svg>
+                            <svg class="theme-icon-when-dark">
+                                <use href="#svg-moon"></use>
+                            </svg>
+                            <svg class="theme-icon-when-light">
+                                <use href="#svg-sun"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <label class="toc-overlay-icon toc-content-icon"
+                           for="__toc">
+                        <div class="visually-hidden">Toggle table of contents sidebar</div>
+                        <i class="icon">
+                            <svg>
+                                <use href="#svg-toc"></use>
+                            </svg>
+                        </i>
+                    </label>
+                </div>
+                <section class="tex2jax_ignore mathjax_ignore" id="finetuning-pre-trained-resnet-on-celeba-dataset">
+<h1>Finetuning Pre-Trained ResNet on CelebA Dataset<a class="headerlink" href="#finetuning-pre-trained-resnet-on-celeba-dataset" title="Permalink to this headline">¶</a></h1>
+<p>In this example, we want to “tune” the pre-trained <a class="reference external" href="https://arxiv.org/abs/1512.03385">ResNet</a> on <a class="reference external" href="https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html">CelebA dataset</a>, the ResNet model has pre-trained weights on ImageNet.</p>
+<p>Precisely, “tuning” means:</p>
+<ul class="simple">
+<li><p>we set up a Jina search pipeline and will look at the top-K visually similar result;</p></li>
+<li><p>we accept or reject the results based on their quality;</p></li>
+<li><p>we let the model to remember our feedback and produce better search result.</p></li>
+</ul>
+<p>Hopefully the procedure converges after several rounds; and we get a tuned embedding for better celebrity face search.</p>
+<section id="build-embedding-model">
+<h2>Build embedding model<a class="headerlink" href="#build-embedding-model" title="Permalink to this headline">¶</a></h2>
+<p>Let’s import pre-trained ResNet as our <a class="reference internal" href="../../design/design-decisions/#embedding-model"><span class="std std-ref">embedding model</span></a> using any of the following frameworks.</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">PyTorch</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchvision</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">resnet50</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">Keras</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">applications</span><span class="o">.</span><span class="n">resnet50</span><span class="o">.</span><span class="n">ResNet50</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="s1">'imagenet'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--3">Paddle</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">paddle</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">vision</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">resnet50</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="prepare-data">
+<h2>Prepare data<a class="headerlink" href="#prepare-data" title="Permalink to this headline">¶</a></h2>
+<p>Now prepare CelebA data for the Finetuner. Note that Finetuner accepts Jina <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>/<code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>, so we first convert them into this format.</p>
+<p>Let’s first make sure you have downloaded all the images <code class="docutils literal notranslate"><span class="pre">img_align_celeba.zip</span></code> (unzip) and <code class="docutils literal notranslate"><span class="pre">IdentityCelebA.txt</span></code> locally.</p>
+<p>Since each celebrity has multiple facial images, we first create a <code class="docutils literal notranslate"><span class="pre">defaultdict</span></code> and group these images by their identity:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="n">DATA_PATH</span> <span class="o">=</span> <span class="s1">'~/[YOUR-DIRECTORY]/img_align_celeba/'</span>
+<span class="n">IDENTITY_PATH</span> <span class="o">=</span> <span class="s1">'~/[YOUR-DIRECTORY]/identity_CelebA.txt'</span>
+
+
+<span class="k">def</span> <span class="nf">group_imgs_by_identity</span><span class="p">():</span>
+    <span class="n">grouped</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">IDENTITY_PATH</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">img_file_name</span><span class="p">,</span> <span class="n">identity</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">grouped</span><span class="p">[</span><span class="n">identity</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img_file_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">grouped</span>
+</pre></div>
+</div>
+<p>Then we create a data generator that yields every image as a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
+
+<span class="k">def</span> <span class="nf">train_generator</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">identity</span><span class="p">,</span> <span class="n">imgs</span> <span class="ow">in</span> <span class="n">group_imgs_by_identity</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">imgs</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">DATA_PATH</span> <span class="o">+</span> <span class="n">img</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">convert_image_uri_to_blob</span><span class="p">(</span><span class="n">color_axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">convert_uri_to_datauri</span><span class="p">()</span>
+            <span class="k">yield</span> <span class="n">d</span>
+</pre></div>
+</div>
+</section>
+<section id="put-together">
+<h2>Put together<a class="headerlink" href="#put-together" title="Permalink to this headline">¶</a></h2>
+<p>Finally, let’s feed the model and the data into the Finetuner:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rv</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="n">train_generator</span><span class="p">,</span>
+    <span class="n">freeze</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">input_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">),</span>
+    <span class="n">output_dim</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>  <span class="c1"># Chop-off the last fc layer and add a trainable linear layer.</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="label-interactively">
+<h2>Label interactively<a class="headerlink" href="#label-interactively" title="Permalink to this headline">¶</a></h2>
+<p>You can now label the data by mouse/keyboard. The model will get trained and improved as you are labeling.</p>
+<p>From the backend you will see model’s training procedure:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>           Flow@22900<span class="o">[</span>I<span class="o">]</span>:🎉 Flow is ready to use!
+	🔗 Protocol: 		HTTP
+	🏠 Local access:	<span class="m">0</span>.0.0.0:52621
+	🔒 Private network:	<span class="m">172</span>.18.1.109:52621
+	🌐 Public address:	<span class="m">94</span>.135.231.132:52621
+	💬 Swagger UI:		http://localhost:52621/docs
+	📚 Redoc:		http://localhost:52621/redoc
+           JINA@22900<span class="o">[</span>I<span class="o">]</span>:Finetuner is available at http://localhost:52621/finetuner
+</pre></div>
+</div>
+</section>
+</section>
+
+            </article>
+            <footer>
+                
+                <div class="related-pages">
+                    
+                    
+                </div>
+
+                <div class="related-information sd-d-inline-flex">
+                    <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
+                    Last updated on Oct 19, 2021.
+                    <div class="social-btns">
+                    <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
+                    <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
+                    <a class='social-btn' href="https://youtube.com/c/jina-ai" target="_blank"> <i class="fab fa-youtube"></i></a>
+                    <a class='social-btn' href="https://twitter.com/JinaAI_" target="_blank"> <i class="fab fa-twitter"></i></a>
+                    <a class='social-btn' href="https://www.linkedin.com/company/jinaai/" target="_blank"> <i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+            </footer>
+        </div>
+        <aside class="toc-drawer">
+            
+
+            <div class="toc-sticky toc-scroll">
+                
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">Finetuning Pre-Trained ResNet on CelebA Dataset</a><ul>
+<li><a class="reference internal" href="#build-embedding-model">Build embedding model</a></li>
+<li><a class="reference internal" href="#prepare-data">Prepare data</a></li>
+<li><a class="reference internal" href="#put-together">Put together</a></li>
+<li><a class="reference internal" href="#label-interactively">Label interactively</a></li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+                
+            </div>
+
+            
+        </aside>
+
+    </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/scripts/main.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    </body>
+</html>
