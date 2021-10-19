@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from .summary import SummaryCollection
 
 
-def get_tuner_class(dnn_model: AnyDNN) -> Type['BaseTuner']:
+def _get_tuner_class(dnn_model: AnyDNN) -> Type['BaseTuner']:
     f_type = get_framework(dnn_model)
 
     if f_type == 'keras':
@@ -66,7 +66,7 @@ def fit(
     :param device: The device to which to move the model. Supported options are
         ``"cpu"`` and ``"cuda"`` (for GPU)
     """
-    ft = get_tuner_class(embed_model)
+    ft = _get_tuner_class(embed_model)
 
     return ft(embed_model, loss=loss).fit(
         train_data,
@@ -89,6 +89,6 @@ def save(embed_model: AnyDNN, model_path: str, *args, **kwargs) -> None:
     :param kwargs: Keyword arguments to pass to framework-specific tuner's ``save``
         method
     """
-    ft = get_tuner_class(embed_model)
+    ft = _get_tuner_class(embed_model)
 
     ft(embed_model).save(model_path, *args, **kwargs)

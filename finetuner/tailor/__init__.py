@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from .base import BaseTailor
 
 
-def get_tailor_class(dnn_model: AnyDNN) -> Type['BaseTailor']:
+def _get_tailor_class(dnn_model: AnyDNN) -> Type['BaseTailor']:
     f_type = get_framework(dnn_model)
 
     if f_type == 'keras':
@@ -32,7 +32,7 @@ def to_embedding_model(
     input_dtype: str = 'float32',
     **kwargs
 ) -> AnyDNN:
-    ft = get_tailor_class(model)
+    ft = _get_tailor_class(model)
 
     return ft(model, input_size, input_dtype).to_embedding_model(
         layer_name=layer_name, output_dim=output_dim, freeze=freeze
@@ -44,6 +44,6 @@ def display(
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
 ) -> AnyDNN:
-    ft = get_tailor_class(model)
+    ft = _get_tailor_class(model)
 
     return ft(model, input_size, input_dtype).display()
