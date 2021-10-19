@@ -27,7 +27,7 @@ class CosineSiameseLoss(BaseLoss, nn.Module):
 
         :param embeddings: Should be a list or a tuple containing two tensors:
             - ``[N, D]`` tensor of embeddings of the first objects of the pair
-            - ``[N, D]`` tensor of embeddings of the second objects of the pair
+            - ``[N, D]`` tensor of embeddings of the second object of the pair
         :param target: A ``[N, ]`` tensor of target values
         """
         l_emb, r_emb = embeddings
