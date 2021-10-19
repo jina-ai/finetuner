@@ -4,7 +4,7 @@ import webbrowser
 from typing import Optional
 
 import jina.helper
-from jina import Flow, DocumentArrayMemmap
+from jina import Flow
 from jina.logging.predefined import default_logger
 
 from .executor import FTExecutor, DataIterator
@@ -14,7 +14,6 @@ from ..helper import AnyDNN, DocumentArrayLike
 def fit(
     embed_model: AnyDNN,
     train_data: DocumentArrayLike,
-    catalog: Optional[DocumentArrayLike] = None,
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
@@ -22,7 +21,6 @@ def fit(
     **kwargs,
 ) -> None:
     dam_path = tempfile.mkdtemp()
-    catalog_dam_path = init_catalog(dam_path, catalog, train_data)
 
     class MyExecutor(FTExecutor):
         def get_embed_model(self):
@@ -39,14 +37,13 @@ def fit(
             uses=DataIterator,
             uses_with={
                 'dam_path': dam_path,
-                'catalog_dam_path': catalog_dam_path,
                 'clear_labels_on_start': clear_labels_on_start,
             },
         )
         .add(
             uses=MyExecutor,
             uses_with={
-                'catalog_dam_path': catalog_dam_path,
+                'dam_path': dam_path,
                 'loss': loss,
             },
         )
@@ -91,22 +88,8 @@ def fit(
         f.post(
             '/feed',
             train_data,
-            request_size=128,
+            request_size=10,
             show_progress=True,
             on_done=open_frontend_in_browser,
         )
         f.block()
-
-
-def init_catalog(
-    dam_path: str, catalog: DocumentArrayLike, train_data: DocumentArrayLike
-):
-    if isinstance(catalog, DocumentArrayMemmap):
-        catalog_dam_path = catalog.path
-    else:
-        catalog_dam_path = dam_path + '/catalog'
-        catalog_memmap = DocumentArrayMemmap(catalog_dam_path)
-        if catalog is None:
-            catalog = train_data() if callable(train_data) else train_data
-        catalog_memmap.extend(catalog)
-    return catalog_dam_path
