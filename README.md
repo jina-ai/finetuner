@@ -65,18 +65,18 @@ pip install finetuner
   <tr>
     <td rowspan="2"><b>Do you have labeled data?</b></td>
     <td><b>Yes</b></td>
-    <td align="center">1️⃣</td>
-    <td align="center">3️⃣</td>
+    <td align="center">🟠</td>
+    <td align="center">🟡</td>
   </tr>
   <tr>
     <td><b>No</b></td>
-    <td align="center">2️⃣</td>
-    <td align="center">4️⃣</td>
+    <td align="center">🟢</td>
+    <td align="center">🔵</td>
   </tr>
 </tbody>
 </table>
 
-### 1️⃣ Have embedding model and labeled data
+### 🟠 Have embedding model and labeled data
 
 Perfect! Now `embed_model` and `labeled_data` are given by you already, simply do:
 
@@ -89,7 +89,7 @@ finetuner.fit(
 )
 ```
 
-### 2️⃣ Have embedding model and unlabeled data
+### 🟢 Have embedding model and unlabeled data
 
 You have an `embed_model` to use, but no labeled data for finetuning this model. No worry, that's good enough already!
 You can use Finetuner to interactive label data and train `embed_model` as below:
@@ -104,7 +104,7 @@ finetuner.fit(
 )
 ```
 
-### 3️⃣ Have general model and labeled data
+### 🟡 Have general model and labeled data
 
 You have a `general_model` which does not output embeddings. Luckily you provide some `labeled_data` for training. No
 worry, Finetuner can convert your model into an embedding model and train it via:
@@ -120,7 +120,7 @@ finetuner.fit(
 )
 ```
 
-### 4️⃣ Have general model and unlabeled data
+### 🔵 Have general model and unlabeled data
 
 You have a `general_model` which is not for embeddings. Meanwhile, you don't have labeled data for training. But no
 worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly:
@@ -148,11 +148,11 @@ finetuner.fit(
 
     def data_gen():
         for d in from_files('./img_align_celeba/*.jpg', size=100, to_dataturi=True):
-            d.convert_image_datauri_to_blob(color_axis=0)  # no need of tf
+            d.convert_image_datauri_to_blob(color_axis=0)  # `color_axis=-1` for TF/Keras users
             yield d
     ```
-3. Load pretrained ResNet50.
-    - Pytorch
+3. Load pretrained ResNet50 using PyTorch/Keras/Paddle:
+    - PyTorch
       ```python
       import torchvision
       model = torchvision.models.resnet50(pretrained=True)
@@ -167,7 +167,7 @@ finetuner.fit(
       import paddle
       model = paddle.vision.models.resnet50(pretrained=True)
       ```
-4. Starts the Finetuner
+4. Starts the Finetuner:
     ```python
     import finetuner
     
