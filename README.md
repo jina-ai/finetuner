@@ -137,6 +137,55 @@ finetuner.fit(
 )
 ```
 
+## Finetuning ResNet50 on CelebA
+
+> ⚡ To get the best experience, you need a GPU machine to run this example. For CPU users, we provide [finetuning a MLP on FashionMNIST](https://finetuner.jina.ai/get-started/fashion-mnist/) and [finetuning a Bi-LSTM on CovidQA](https://finetuner.jina.ai/get-started/covid-qa/) that run out the box. Give them a try!
+
+1. Download [CelebA dataset](https://static.jina.ai/celeba/celeba-img.zip) and decompress it to './img_align_celeba'
+2. Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we load CelebA data into this format using generator:
+    ```python
+    from jina.types.document.generators import from_files
+
+    def data_gen():
+        for d in from_files('./img_align_celeba/*.jpg', size=100, to_dataturi=True):
+            d.convert_image_datauri_to_blob(color_axis=0)  # no need of tf
+            yield d
+    ```
+3. Load pretrained ResNet50.
+    - Pytorch
+      ```python
+      import torchvision
+      model = torchvision.models.resnet50(pretrained=True)
+      ```
+    - Keras
+      ```python
+      import tensorflow as tf
+      model = tf.keras.applications.resnet50.ResNet50(weights='imagenet')
+      ```
+    - Paddle
+      ```python
+      import paddle
+      model = paddle.vision.models.resnet50(pretrained=True)
+      ```
+4. Starts the Finetuner
+    ```python
+    import finetuner
+    
+    finetuner.fit(
+        model=model,
+        interactive=True,
+        train_data=data_gen,
+        freeze=True,
+        to_embedding_model=True,
+        input_size=(3, 224, 224),
+        output_dim=100
+    )
+    ```
+5. Now the browser will open the Labeler UI. You can now label the data by mouse/keyboard. The model will get finetuned and improved as you are labeling. If you are running this example on a CPU machine, it can take up to 20 seconds for each labeling round.
+
+![Finetuning ResNet50 on CelebA with interactive labeling](docs/get-started/celeba-labeler.gif)
+
+
 <!-- start support-pitch -->
 ## Support
 
