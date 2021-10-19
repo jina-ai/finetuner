@@ -145,20 +145,6 @@ Yes. Labels should reflect the groundtruth as-is. If a Document contains only po
 However, if all match labels from all Documents are the same, then Finetuner cannot learn anything useful.
 ```
 
-### Catalog
-
-In search, queries and search results are often distinct sets.
-Specifying a `catalog` helps you keep this distinction during finetuning.
-
-When using `finetuner.fit(train_data=..., eval_data=..., catalog=...)`, `train_data` and `eval_data` specify the potential queries and the `catalog` specifies the potential results.
-This distinction is mainly used
-
-- in the Labeler, when new sets of unlabeled results are generated and
-- during evaluation, for the NDCG calculation.
-
-A `catalog` is either a `DocumentArray` or a `DocumentArrayMemmap`.
-If no `catalog` is specified, the Finetuner will implicitly use `train_data` as catalog.
-
 ## Data source
 
 After organizing the labeled `Document` into `DocumentArray` or `DocumentArrayMemmap`, you can feed them
