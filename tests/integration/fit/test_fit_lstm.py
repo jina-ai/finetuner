@@ -63,13 +63,4 @@ def test_fit_all(tmpdir):
                 ),
                 epochs=2,
             )
-
-            # convert from numpy to python native float for json dump
-            result = {
-                'loss': {
-                    'train': [float(v) for v in result['loss']['train']],
-                    'eval': [float(v) for v in result['loss']['eval']],
-                },
-            }
-            with open(tmpdir / f'result-{kb}-{h}.json', 'w') as fp:
-                json.dump(result, fp)
+            result.save(tmpdir / f'result-{kb}-{h}.json')

@@ -1,6 +1,8 @@
 import itertools
-from ... import __default_tag_key__
+
 import numpy as np
+
+from ... import __default_tag_key__
 
 
 class SiameseMixin:

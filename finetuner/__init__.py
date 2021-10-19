@@ -9,7 +9,8 @@ __default_tag_key__ = 'finetuner'
 from typing import Dict, Optional, overload, TYPE_CHECKING, Tuple
 
 if TYPE_CHECKING:
-    from .helper import AnyDNN, DocumentArrayLike, TunerReturnType
+    from .helper import AnyDNN, DocumentArrayLike
+    from .tuner.stats import TunerStats
 
 
 # fit interface generated from Tuner
@@ -25,7 +26,7 @@ def fit(
     optimizer: str = 'adam',
     optimizer_kwargs: Optional[Dict] = None,
     device: str = 'cpu',
-) -> 'TunerReturnType':
+) -> 'TunerStats':
     ...
 
 
@@ -48,7 +49,7 @@ def fit(
     output_dim: Optional[int] = None,
     freeze: bool = False,
     device: str = 'cpu',
-) -> 'TunerReturnType':
+) -> 'TunerStats':
     ...
 
 
@@ -96,7 +97,7 @@ def fit(
 
 def fit(
     model: 'AnyDNN', train_data: 'DocumentArrayLike', *args, **kwargs
-) -> Optional['TunerReturnType']:
+) -> Optional['TunerStats']:
     if kwargs.get('to_embedding_model', False):
         from .tailor import to_embedding_model
 

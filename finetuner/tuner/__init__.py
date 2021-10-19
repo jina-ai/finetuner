@@ -1,7 +1,7 @@
 from typing import Optional, TYPE_CHECKING, Type, Dict
 
-from ..helper import AnyDNN, DocumentArrayLike, TunerReturnType, get_framework
-from jina import DocumentArray
+from .. import TunerStats
+from ..helper import AnyDNN, DocumentArrayLike, get_framework
 
 if TYPE_CHECKING:
     from .base import BaseTuner
@@ -36,7 +36,7 @@ def fit(
     optimizer_kwargs: Optional[Dict] = None,
     device: str = 'cpu',
     **kwargs,
-) -> TunerReturnType:
+) -> TunerStats:
     """Finetune the model on the training data.
 
     :param embed_model: an embedding model
