@@ -51,8 +51,9 @@ class FTExecutor(Executor):
             self._embed_model.eval()
             da_input = torch.from_numpy(da.blobs)
             docs_input = torch.from_numpy(docs.blobs)
-            da.embeddings = self._embed_model(da_input).detach().numpy()
-            docs.embeddings = self._embed_model(docs_input).detach().numpy()
+            with torch.inference_mode():
+                da.embeddings = self._embed_model(da_input).detach().numpy()
+                docs.embeddings = self._embed_model(docs_input).detach().numpy()
         elif f_type == 'paddle':
             import paddle
 

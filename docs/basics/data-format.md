@@ -11,7 +11,7 @@ This chapter introduces how to construct a `Document` in a way that Finetuner wi
 
 ## Understand supervision
 
-Finetuner tunes a deep neural network on search tasks. In this context, the supervision comes from if the nearest-neighbour matches are good or bad, where matches are often computed on model's embeddings. You have to label those good matches and bad matches, so Finetuner can learn about your feedback and improve the model. The following graph illustrates the process.
+Finetuner tunes a deep neural network on search tasks. In this context, the supervision comes from whether the nearest-neighbour matches are good or bad, where matches are often computed on model's embeddings. You have to label these good matches and bad matches so Finetuner can learn your feedback and improve the model. The following graph illustrates the process:
 
 ```{figure} tuner-journey.svg
 :align: center
@@ -36,7 +36,7 @@ In summary, you either label the matches on-the-fly or prepare the labeled data 
 
 ### Matches
 
-Finetuner relies on matching data in `.matches`. To manually add a match to a `Document` object, one can do:
+Finetuner relies on matching data in `.matches`. To manually add a match to a `Document` object, you can do:
 
 ```python
 from jina import Document
@@ -54,7 +54,7 @@ print(d)
 ```
 
 Note that the match `Document` should share the same content type as its parent `Document`. The following combinations
-are not valid to Finetuner:
+are not valid in Finetuner:
 
 ```python
 from jina import Document
@@ -132,9 +132,9 @@ d.matches.extend([m1, m2, m3])
 ```{admonition} Is it okay to have all matches as 1, or all as -1?
 :class: hint
 
-Yes. Labels should reflect the groundtruth as-is. If a Document contains only postive matches or only negative matches, then so be it.
+Yes. Labels should reflect the groundtruth as-is. If a Document contains only positive matches or only negative matches, then so be it.
 
-However, if all match labels from all Documents are the same, then Finetuner can not learn anything useful.
+However, if all match labels from all Documents are the same, then Finetuner cannot learn anything useful.
 ```
 
 ### Catalog
@@ -155,7 +155,7 @@ If no `catalog` is specified, the Finetuner will implicitly use `train_data` as 
 After organizing the labeled `Document` into `DocumentArray` or `DocumentArrayMemmap`, you can feed them
 into `finetuner.fit()`.
 
-But where are the labels come from? You can use Labeler, which allows one interactively label data and tune the model at
+But where do the labels come from? You can use Labeler, which allows you to interactively label data and tune the model at
 the same time.
 
 Otherwise, you will need to prepare labeled data on your own.
@@ -176,11 +176,10 @@ grayscale image.
 :align: center
 ```
 
-To convert this dataset into match data, we build each document to contain the following info that are
-relevant:
+To convert this dataset into match data, we build each Document to contain the following relevant information:
 
 - `.blob`: the image;
-- `.matches`: the generated positive & negative matches Document;
+- `.matches`: the generated positive and negative matches of the Document;
     - `.blob`: the matched Document's image;
     - `.tags['finetuner']['label']`: the match label: `1` or `-1`.
 
@@ -193,14 +192,14 @@ Matches are built with the logic below:
 ### Covid QA
 
 
-Covid QA data is a CSV that has 481 rows with columns `question`, `answer` & `wrong_answer`.
+
+Covid QA data is a CSV that has 481 rows with the columns `question`, `answer` & `wrong_answer`. 
 
 ```{figure} covid-qa-data.png
 :align: center
 ```
 
-To convert this dataset
-into match data, we build each document to contain the following info that are relevant:
+To convert this dataset into match data, we build each Document to contain the following relevant information:
 
 - `.text`: the original `question` column
 - `.blob`: a fixed length `ndarray` tokenized from `.text`
@@ -217,7 +216,7 @@ Matches are built with the logic below:
 
 ```{tip}
 
-Finetuner codebase contains two synthetic matching data generator for demo and debugging purpose:
+The Finetuner codebase contains two synthetic matching data generators for demo and debugging purpose:
 
 - `finetuner.toydata.generate_fashion_match()`: the generator of Fashion-MNIST matching data.
 - `finetuner.toydata.generate_qa_match()`: the generator of Covid QA matching data.

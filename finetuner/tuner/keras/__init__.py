@@ -16,12 +16,15 @@ from ...helper import DocumentArrayLike
 
 class KerasTuner(BaseTuner):
     def _get_loss(self, loss: Union[BaseLoss, str]):
+        """Get the loss layer."""
+
         if isinstance(loss, str):
             return getattr(losses, loss)()
         elif isinstance(loss, BaseLoss):
             return loss
 
     def _get_data_loader(self, inputs, batch_size: int, shuffle: bool):
+        """Get tensorflow ``Dataset`` from the input data. """
 
         ds = get_dataset(datasets, self.arity)
         input_shape = self.embed_model.input_shape[1:]
@@ -45,6 +48,8 @@ class KerasTuner(BaseTuner):
     def _get_optimizer(
         self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
     ) -> Optimizer:
+        """Get the optimizer for training."""
+
         optimizer_kwargs = self._get_optimizer_kwargs(optimizer, optimizer_kwargs)
 
         if optimizer == 'adam':
@@ -59,6 +64,8 @@ class KerasTuner(BaseTuner):
             return keras.optimizers.SGD(learning_rate=learning_rate, **optimizer_kwargs)
 
     def _train(self, data, optimizer, description: str):
+        """Train the model on given labeled data"""
+
         losses = []
 
         log_generator = LogGenerator('T', losses)
@@ -88,6 +95,7 @@ class KerasTuner(BaseTuner):
         return losses
 
     def _eval(self, data, description: str = 'Evaluating', train_log: str = ''):
+        """Evaluate the model on given labeled data"""
 
         losses = []
 
@@ -120,6 +128,34 @@ class KerasTuner(BaseTuner):
         device: str = 'cpu',
         **kwargs,
     ) -> TunerStats:
+        """Finetune the model on the training data.
+
+        :param train_data: Data on which to train the model
+        :param eval_data: Data on which to evaluate the model at the end of each epoch
+        :param epoch: Number of epochs to train the model
+        :param batch_size: The batch size to use for training and evaluation
+        :param learning_rate: Learning rate to use in training
+        :param optimizer: Which optimizer to use in training. Supported
+            values/optimizers are:
+            - ``"adam"`` for the Adam optimizer
+            - ``"rmsprop"`` for the RMSProp optimizer
+            - ``"sgd"`` for the SGD optimizer with momentum
+        :param optimizer_kwargs: Keyword arguments to pass to the optimizer. The
+            supported arguments, togethere with their defailt values, are:
+            - ``"adam"``:  ``{'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-08}``
+            - ``"rmsprop"``::
+
+                {
+                    'rho': 0.99,
+                    'momentum': 0.0,
+                    'epsilon': 1e-08,
+                    'centered': False,
+                }
+
+            - ``"sgd"``: ``{'momentum': 0.0, 'nesterov': False}``
+        :param device: The device to which to move the model. Supported options are
+            ``"cpu"`` and ``"cuda"`` (for GPU)
+        """
 
         _train_data = self._get_data_loader(
             inputs=train_data, batch_size=batch_size, shuffle=False
@@ -167,4 +203,14 @@ class KerasTuner(BaseTuner):
             doc.embedding = np.array(embed)
 
     def save(self, *args, **kwargs):
+        """Save the embedding model.
+
+        You need to pass the path where to save the model in either ``args`` or
+        ``kwargs`` (for ``filepath`` key).
+
+        :param args: Arguments to pass to ``save`` method of the embedding model
+        :param kwargs: Keyword arguments to pass to ``save`` method of the embedding
+            model
+        """
+
         self.embed_model.save(*args, **kwargs)

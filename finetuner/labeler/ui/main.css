@@ -122,6 +122,7 @@ main {
 footer {
     align-self: center;
     margin-top: auto;
+    font-weight: lighter;
 }
 
 footer a {
@@ -317,10 +318,6 @@ footer a {
     border: none;
 }
 
-.image-matches-container .positive-match {
-    background: transparent;
-}
-
 .positive-match:before {
     background: url(./img/check.svg);
     content: '';
@@ -349,12 +346,14 @@ footer a {
 
 .image-card .card-header .img-thumbnail {
     margin-left: .25rem;
-    min-width: 30%;
+    min-height: 20vh;
+    width: auto;
     padding: 0;
 }
 
 .image-card .card-body .img-thumbnail {
-    width: 100%;
+    width: auto;
+    max-height: 20vh;
     padding: 0;
 }
 

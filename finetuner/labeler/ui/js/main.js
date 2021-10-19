@@ -45,7 +45,7 @@ const app = new Vue({
         advanced_config: {
             pos_value: {text: 'Positive label', value: 1, type: 'number'},
             neg_value: {text: 'Negative label', value: -1, type: 'number'},
-            epochs: {text: 'Epochs', value: 10, type: 'number'},
+            epochs: {text: 'Epochs', value: 1, type: 'number'},
             sample_size: {text: 'Match pool', value: 1000, type: 'number'},
             model_path: {text: 'Model save path', value: 'tuned-model', type: 'text'}
         },

@@ -1,12 +1,11 @@
 import base64
-import copy
 import csv
 import gzip
 import os
 import urllib.request
 from collections import defaultdict
 from pathlib import Path
-from typing import Optional, Generator
+from typing import Optional, Generator, Tuple
 
 import numpy as np
 from jina import Document, DocumentArray
@@ -14,6 +13,7 @@ from jina.logging.profile import ProgressBar
 from jina.types.document import png_to_buffer
 
 from finetuner import __default_tag_key__
+from finetuner.helper import DocumentArrayLike
 
 
 def _text_to_word_sequence(
@@ -56,7 +56,7 @@ def _text_to_int_sequence(text, vocab, max_len=None):
     return vec
 
 
-def generate_qa_match(**kwargs):
+def generate_qa_match(**kwargs) -> DocumentArrayLike:
     return generate_qa_match_catalog(pre_init_generator=False, **kwargs)[0]
 
 
@@ -69,7 +69,7 @@ def generate_qa_match_catalog(
     max_seq_len: int = 100,
     is_testset: Optional[bool] = None,
     pre_init_generator: bool = True,
-) -> Generator[Document, None, None]:
+) -> Tuple[DocumentArrayLike, DocumentArray]:
     """Get a generator of QA data with synthetic negative matches.
 
     :param num_total: the total number of documents to return
@@ -155,7 +155,9 @@ def generate_qa_match_catalog(
         return generator, catalog
 
 
-def generate_fashion_match(num_total=100, num_catalog=5000, **kwargs):
+def generate_fashion_match(
+    num_total=100, num_catalog=5000, **kwargs
+) -> DocumentArrayLike:
     return generate_fashion_match_catalog(
         num_total=num_total,
         num_catalog=num_catalog,
@@ -176,7 +178,7 @@ def generate_fashion_match_catalog(
     channel_axis: int = -1,
     is_testset: bool = False,
     pre_init_generator: bool = True,
-) -> Generator[Document, None, None]:
+) -> Tuple[DocumentArrayLike, DocumentArray]:
     """Get a Generator of fashion-mnist Documents with synthetic matches.
 
     :param num_total: the total number of documents to return
