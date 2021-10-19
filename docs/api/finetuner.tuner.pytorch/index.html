@@ -261,9 +261,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.base/">finetuner.tuner.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.evaluation/">finetuner.tuner.evaluation module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.stats/">finetuner.tuner.stats module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.helper/">finetuner.helper module</a></li>
@@ -326,7 +324,7 @@
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-finetuner.tuner.pytorch" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.tuner.pytorch.PytorchTuner">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.pytorch.</span></span><span class="sig-name descname"><span class="pre">PytorchTuner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CosineSiameseLoss'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/#PytorchTuner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.PytorchTuner" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.pytorch.</span></span><span class="sig-name descname"><span class="pre">PytorchTuner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CosineSiameseLoss'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/#PytorchTuner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.PytorchTuner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseTuner" title="finetuner.tuner.base.BaseTuner"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseTuner</span></code></a></p>
 <p>Create the tuner instance.</p>
 <dl class="field-list simple">
@@ -377,17 +375,7 @@ supported arguments, togethere with their defailt values, are:
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats" title="finetuner.tuner.stats.TunerStats"><code class="xref py py-class docutils literal notranslate"><span class="pre">TunerStats</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.pytorch.PytorchTuner.get_embeddings">
-<span class="sig-name descname"><span class="pre">get_embeddings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/#PytorchTuner.get_embeddings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.PytorchTuner.get_embeddings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates and adds the embeddings for the given Documents.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>docs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentSequence, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, ~DocumentSequence]]) – The documents to get embeddings from.</p>
+<dd class="field-even"><p><a class="reference internal" href="../finetuner.tuner.summary/#finetuner.tuner.summary.SummaryCollection" title="finetuner.tuner.summary.SummaryCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SummaryCollection</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>

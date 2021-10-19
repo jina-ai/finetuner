@@ -25,7 +25,7 @@
 
   gtag('config', 'G-1ESRNDCK35');
 </script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.evaluation module" href="../finetuner.tuner.evaluation/" /><link rel="prev" title="finetuner.tuner.pytorch.losses module" href="../finetuner.tuner.pytorch.losses/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.summary module" href="../finetuner.tuner.summary/" /><link rel="prev" title="finetuner.tuner.pytorch.losses module" href="../finetuner.tuner.pytorch.losses/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
         <title>finetuner.tuner.base module - Finetuner 0.0.3 documentation</title>
@@ -260,9 +260,7 @@
 </ul>
 </li>
 <li class="toctree-l3 current current-page"><a class="current reference internal" href="#">finetuner.tuner.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.evaluation/">finetuner.tuner.evaluation module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.stats/">finetuner.tuner.stats module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.helper/">finetuner.helper module</a></li>
@@ -323,7 +321,7 @@
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.tuner.base.BaseTuner">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.base.</span></span><span class="sig-name descname"><span class="pre">BaseTuner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CosineSiameseLoss'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseTuner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseTuner" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.base.</span></span><span class="sig-name descname"><span class="pre">BaseTuner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CosineSiameseLoss'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseTuner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseTuner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>Create the tuner instance.</p>
 <dl class="field-list simple">
@@ -371,7 +369,7 @@ Currently available losses are <code class="docutils literal notranslate"><span 
 call <a class="reference internal" href="../finetuner/#finetuner.fit" title="finetuner.fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">fit()</span></code></a> multiple times with different configs or data to get better models.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></p>
+<dd class="field-odd"><p><a class="reference internal" href="../finetuner.tuner.summary/#finetuner.tuner.summary.SummaryCollection" title="finetuner.tuner.summary.SummaryCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">SummaryCollection</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -380,24 +378,10 @@ call <a class="reference internal" href="../finetuner/#finetuner.fit" title="fin
 <em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseTuner.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseTuner.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the weights of the <a class="reference internal" href="#finetuner.tuner.base.BaseTuner.embed_model" title="finetuner.tuner.base.BaseTuner.embed_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embed_model</span></code></a>.</p>
 </dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.base.BaseTuner.get_metrics">
-<span class="sig-name descname"><span class="pre">get_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseTuner.get_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseTuner.get_metrics" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.base.BaseTuner.get_embeddings">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">get_embeddings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseTuner.get_embeddings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseTuner.get_embeddings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates and adds the embeddings for the given Documents.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>docs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentSequence, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, ~DocumentSequence]]) – The documents to get embeddings from.</p>
-</dd>
-</dl>
-</dd></dl>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.tuner.base.BaseDataset">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.base.</span></span><span class="sig-name descname"><span class="pre">BaseDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.base.</span></span><span class="sig-name descname"><span class="pre">BaseDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 </section>
@@ -406,12 +390,12 @@ call <a class="reference internal" href="../finetuner/#finetuner.fit" title="fin
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../finetuner.tuner.evaluation/">
+                    <a class="next-page" href="../finetuner.tuner.summary/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">finetuner.tuner.evaluation module</div>
+                            <div class="title">finetuner.tuner.summary module</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>

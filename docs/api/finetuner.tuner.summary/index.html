@@ -4,9 +4,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta property="og:title" content="finetuner.tuner.evaluation module" />
+  <meta property="og:title" content="finetuner.tuner.summary module" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.tuner.evaluation.html" />
+  <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.tuner.summary.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner Documentation" />
@@ -25,10 +25,10 @@
 
   gtag('config', 'G-1ESRNDCK35');
 </script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.logger module" href="../finetuner.tuner.logger/" /><link rel="prev" title="finetuner.tuner.base module" href="../finetuner.tuner.base/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.helper module" href="../finetuner.helper/" /><link rel="prev" title="finetuner.tuner.base module" href="../finetuner.tuner.base/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
-        <title>finetuner.tuner.evaluation module - Finetuner 0.0.3 documentation</title>
+        <title>finetuner.tuner.summary module - Finetuner 0.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -260,9 +260,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.base/">finetuner.tuner.base module</a></li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">finetuner.tuner.evaluation module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.stats/">finetuner.tuner.stats module</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.helper/">finetuner.helper module</a></li>
@@ -310,32 +308,71 @@
                         </i>
                     </label>
                 </div>
-                <section id="module-finetuner.tuner.evaluation">
-<span id="finetuner-tuner-evaluation-module"></span><h1>finetuner.tuner.evaluation module<a class="headerlink" href="#module-finetuner.tuner.evaluation" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="finetuner.tuner.evaluation.prepare_eval_docs">
-<span class="sig-prename descclassname"><span class="pre">finetuner.tuner.evaluation.</span></span><span class="sig-name descname"><span class="pre">prepare_eval_docs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/evaluation/#prepare_eval_docs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.evaluation.prepare_eval_docs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="finetuner.tuner.evaluation.get_hits_at_n">
-<span class="sig-prename descclassname"><span class="pre">finetuner.tuner.evaluation.</span></span><span class="sig-name descname"><span class="pre">get_hits_at_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_be_scored_docs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/evaluation/#get_hits_at_n"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.evaluation.get_hits_at_n" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="finetuner.tuner.evaluation.get_ndcg_at_n">
-<span class="sig-prename descclassname"><span class="pre">finetuner.tuner.evaluation.</span></span><span class="sig-name descname"><span class="pre">get_ndcg_at_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_be_scored_docs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/evaluation/#get_ndcg_at_n"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.evaluation.get_ndcg_at_n" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+                <section id="module-finetuner.tuner.summary">
+<span id="finetuner-tuner-summary-module"></span><h1>finetuner.tuner.summary module<a class="headerlink" href="#module-finetuner.tuner.summary" title="Permalink to this headline">¶</a></h1>
+<dl class="py data">
+<dt class="sig sig-object py" id="finetuner.tuner.summary.NumericType">
+<span class="sig-prename descclassname"><span class="pre">finetuner.tuner.summary.</span></span><span class="sig-name descname"><span class="pre">NumericType</span></span><a class="headerlink" href="#finetuner.tuner.summary.NumericType" title="Permalink to this definition">¶</a></dt>
+<dd><p>The type of numerics including numpy data type</p>
+<p>alias of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.</span></code>]</p>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.tuner.summary.ScalarSummary">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.summary.</span></span><span class="sig-name descname"><span class="pre">ScalarSummary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/summary/#ScalarSummary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.summary.ScalarSummary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Create a record for storing a list of scalar values e.g. losses/metrics</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the name of that record</p></li>
+<li><p><strong>data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">number</span></code>]]]) – the data record to initialize from</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.summary.ScalarSummary.floats">
+<span class="sig-name descname"><span class="pre">floats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/summary/#ScalarSummary.floats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.summary.ScalarSummary.floats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all numbers as a list of Python native float</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">number</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.tuner.summary.SummaryCollection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.summary.</span></span><span class="sig-name descname"><span class="pre">SummaryCollection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">records</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/summary/#SummaryCollection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.summary.SummaryCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Create a collection of summaries.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.summary.SummaryCollection.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/summary/#SummaryCollection.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.summary.SummaryCollection.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store all summary into a JSON file</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.summary.SummaryCollection.dict">
+<span class="sig-name descname"><span class="pre">dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/summary/#SummaryCollection.dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.summary.SummaryCollection.dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all summaries as a Dictionary, where key is the name and value is the record</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">number</span></code>]]]</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
 </section>
 
             </article>
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../finetuner.tuner.logger/">
+                    <a class="next-page" href="../finetuner.helper/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">finetuner.tuner.logger module</div>
+                            <div class="title">finetuner.helper module</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>

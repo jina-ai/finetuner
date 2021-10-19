@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/basics/data-format.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
-  <meta property="og:description" content="Finetuner uses Jina Document as the primitive data type. In particular, DocumentArray and DocumentArrayMemap are the input data type for Tailor and Tuner. This means, your training dataset and evaluation dataset should be stored in DocumentArray or DocumentArrayMemap, where each training or evalu..." />
+  <meta property="og:description" content="Finetuner uses Jina Document as the primitive data type. In particular, DocumentArray and DocumentArrayMemap are the input data type in the high-level finetuner.fit() API. This means, your training dataset and evaluation dataset should be stored in DocumentArray or DocumentArrayMemap, where each ..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -261,9 +261,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.evaluation/">finetuner.tuner.evaluation module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.stats/">finetuner.tuner.stats module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.helper/">finetuner.helper module</a></li>
@@ -316,8 +314,15 @@
 <p>Finetuner uses Jina <a class="reference external" href="https://docs.jina.ai/fundamentals/document/"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a> as the primitive data type. In
 particular, <a class="reference external" href="https://docs.jina.ai/fundamentals/document/documentarray-api/"><code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>
 and <a class="reference external" href="https://docs.jina.ai/fundamentals/document/documentarraymemmap-api/"><code class="docutils literal notranslate"><span class="pre">DocumentArrayMemap</span></code></a> are the input data type
-for Tailor and Tuner. This means, your training dataset and evaluation dataset should be stored in <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>
-or <code class="docutils literal notranslate"><span class="pre">DocumentArrayMemap</span></code>, where each training or evaluation instance is a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object.</p>
+in the high-level <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code> API. This means, your training dataset and evaluation dataset should be stored in <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>
+or <code class="docutils literal notranslate"><span class="pre">DocumentArrayMemap</span></code>, where each training or evaluation instance is a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
+
+<span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
+              <span class="n">train_data</span><span class="o">=...</span><span class="p">,</span>
+              <span class="n">eval_data</span><span class="o">=...</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>This chapter introduces how to construct a <code class="docutils literal notranslate"><span class="pre">Document</span></code> in a way that Finetuner will accept.</p>
 <section id="understand-supervision">
 <h2>Understand supervision<a class="headerlink" href="#understand-supervision" title="Permalink to this headline">¶</a></h2>
@@ -428,19 +433,6 @@ more related to this Document than <code class="docutils literal notranslate"><s
 <p>Yes. Labels should reflect the groundtruth as-is. If a Document contains only positive matches or only negative matches, then so be it.</p>
 <p>However, if all match labels from all Documents are the same, then Finetuner cannot learn anything useful.</p>
 </div>
-</section>
-<section id="catalog">
-<h3>Catalog<a class="headerlink" href="#catalog" title="Permalink to this headline">¶</a></h3>
-<p>In search, queries and search results are often distinct sets.
-Specifying a <code class="docutils literal notranslate"><span class="pre">catalog</span></code> helps you keep this distinction during finetuning.
-When using <code class="docutils literal notranslate"><span class="pre">finetuner.fit(train_data=...,eval_data=...,</span> <span class="pre">catalog=...)</span></code>, <code class="docutils literal notranslate"><span class="pre">train_data</span></code> and <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> specify the potential queries and the <code class="docutils literal notranslate"><span class="pre">catalog</span></code> specifies the potential results.
-This distinction is mainly used</p>
-<ul class="simple">
-<li><p>in the Labeler, when new sets of unlabeled results are generated and</p></li>
-<li><p>during evaluation, for the NDCG calculation.</p></li>
-</ul>
-<p>A <code class="docutils literal notranslate"><span class="pre">catalog</span></code> is either a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> or a <code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>.
-If no <code class="docutils literal notranslate"><span class="pre">catalog</span></code> is specified, the Finetuner will implicitly use <code class="docutils literal notranslate"><span class="pre">train_data</span></code> as catalog.</p>
 </section>
 </section>
 <section id="data-source">
@@ -575,7 +567,6 @@ grayscale image.</p>
 <li><a class="reference internal" href="#required-fields">Required fields</a><ul>
 <li><a class="reference internal" href="#matches">Matches</a></li>
 <li><a class="reference internal" href="#labels">Labels</a></li>
-<li><a class="reference internal" href="#catalog">Catalog</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#data-source">Data source</a></li>

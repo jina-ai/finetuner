@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex/" /><link rel="search" title="Search" href="../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
-        <title>finetuner.tuner.stats - Finetuner 0.0.3 documentation</title>
+        <title>finetuner.tuner.summary - Finetuner 0.0.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
@@ -237,9 +237,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.evaluation/">finetuner.tuner.evaluation module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.stats/">finetuner.tuner.stats module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.helper/">finetuner.helper module</a></li>
@@ -287,50 +285,66 @@
                         </i>
                     </label>
                 </div>
-                <h1>Source code for finetuner.tuner.stats</h1><div class="highlight"><pre>
+                <h1>Source code for finetuner.tuner.summary</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">NumericType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span>
+    <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span>
+<span class="p">]</span>  <span class="c1">#: The type of numerics including numpy data type</span>
 
 
-<div class="viewcode-block" id="TunerStats"><a class="viewcode-back" href="../../../../api/finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats">[docs]</a><span class="k">class</span> <span class="nc">TunerStats</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">loss_train</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">loss_eval</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">metrics_eval</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_loss_train</span> <span class="o">=</span> <span class="n">loss_train</span> <span class="k">if</span> <span class="n">loss_train</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_loss_eval</span> <span class="o">=</span> <span class="n">loss_eval</span> <span class="k">if</span> <span class="n">loss_eval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_eval</span> <span class="o">=</span> <span class="n">metrics_eval</span> <span class="k">if</span> <span class="n">metrics_eval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
+<div class="viewcode-block" id="ScalarSummary"><a class="viewcode-back" href="../../../../api/finetuner.tuner.summary/#finetuner.tuner.summary.ScalarSummary">[docs]</a><span class="k">class</span> <span class="nc">ScalarSummary</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">NumericType</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">"""Create a record for storing a list of scalar values e.g. losses/metrics</span>
 
-<div class="viewcode-block" id="TunerStats.save"><a class="viewcode-back" href="../../../../api/finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+<span class="sd">        :param name: the name of that record</span>
+<span class="sd">        :param data: the data record to initialize from</span>
+<span class="sd">        """</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="s1">''</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_record</span> <span class="o">=</span> <span class="n">data</span> <span class="ow">or</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">NumericType</span><span class="p">],</span> <span class="nb">float</span><span class="p">,</span> <span class="s1">'ScalarSummary'</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_record</span> <span class="o">+=</span> <span class="n">other</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ScalarSummary</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_record</span> <span class="o">+=</span> <span class="n">other</span><span class="o">.</span><span class="n">_record</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_record</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="k">for</span> <span class="n">loss</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_record</span><span class="p">])</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">'</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s1"> has no record'</span>
+
+<div class="viewcode-block" id="ScalarSummary.floats"><a class="viewcode-back" href="../../../../api/finetuner.tuner.summary/#finetuner.tuner.summary.ScalarSummary.floats">[docs]</a>    <span class="k">def</span> <span class="nf">floats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NumericType</span><span class="p">]:</span>
+        <span class="sd">"""Return all numbers as a list of Python native float """</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_record</span><span class="p">]</span></div></div>
+
+
+<div class="viewcode-block" id="SummaryCollection"><a class="viewcode-back" href="../../../../api/finetuner.tuner.summary/#finetuner.tuner.summary.SummaryCollection">[docs]</a><span class="k">class</span> <span class="nc">SummaryCollection</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">records</span><span class="p">:</span> <span class="n">ScalarSummary</span><span class="p">):</span>
+        <span class="sd">"""Create a collection of summaries. """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_records</span> <span class="o">=</span> <span class="n">records</span>
+
+<div class="viewcode-block" id="SummaryCollection.save"><a class="viewcode-back" href="../../../../api/finetuner.tuner.summary/#finetuner.tuner.summary.SummaryCollection.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">"""Store all summary into a JSON file"""</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
-                <span class="p">{</span>
-                    <span class="s1">'loss_train'</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="k">for</span> <span class="n">loss</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loss_train</span><span class="p">],</span>
-                    <span class="s1">'loss_eval'</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="k">for</span> <span class="n">loss</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loss_eval</span><span class="p">],</span>
-                    <span class="s1">'metrics_eval'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_eval</span><span class="p">,</span>
-                <span class="p">},</span>
-                <span class="n">output</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span>
+                <span class="n">fp</span><span class="p">,</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="TunerStats.add_train_loss"><a class="viewcode-back" href="../../../../api/finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats.add_train_loss">[docs]</a>    <span class="k">def</span> <span class="nf">add_train_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">losses</span><span class="p">:</span> <span class="n">List</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_loss_train</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TunerStats.add_eval_loss"><a class="viewcode-back" href="../../../../api/finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats.add_eval_loss">[docs]</a>    <span class="k">def</span> <span class="nf">add_eval_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">losses</span><span class="p">:</span> <span class="n">List</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_loss_eval</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TunerStats.add_eval_metric"><a class="viewcode-back" href="../../../../api/finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats.add_eval_metric">[docs]</a>    <span class="k">def</span> <span class="nf">add_eval_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_eval</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TunerStats.print_last"><a class="viewcode-back" href="../../../../api/finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats.print_last">[docs]</a>    <span class="k">def</span> <span class="nf">print_last</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metrics_eval</span><span class="p">:</span>
-            <span class="n">eval_string</span> <span class="o">=</span> <span class="n">TunerStats</span><span class="o">.</span><span class="n">get_metrics_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metrics_eval</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Evaluation metrics: </span><span class="si">{</span><span class="n">eval_string</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TunerStats.get_metrics_string"><a class="viewcode-back" href="../../../../api/finetuner.tuner.stats/#finetuner.tuner.stats.TunerStats.get_metrics_string">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_metrics_string</span><span class="p">(</span><span class="n">metrics</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">'hits: </span><span class="si">{</span><span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"hits"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s1">&gt;3</span><span class="si">}</span><span class="s1">, NDCG: </span><span class="si">{</span><span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"ndcg"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">'</span></div></div>
+<div class="viewcode-block" id="SummaryCollection.dict"><a class="viewcode-back" href="../../../../api/finetuner.tuner.summary/#finetuner.tuner.summary.SummaryCollection.dict">[docs]</a>    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">NumericType</span><span class="p">]]:</span>
+        <span class="sd">"""Return all summaries as a Dictionary, where key is the name and value is the record"""</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">r</span><span class="o">.</span><span class="n">_name</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">floats</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">}</span></div></div>
 </pre></div>
             </article>
             <footer>

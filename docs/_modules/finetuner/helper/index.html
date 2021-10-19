@@ -237,9 +237,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.evaluation/">finetuner.tuner.evaluation module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.logger/">finetuner.tuner.logger module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.stats/">finetuner.tuner.stats module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.helper/">finetuner.helper module</a></li>
@@ -325,9 +323,6 @@
 <span class="n">LayerInfoType</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span>
     <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
 <span class="p">]</span>  <span class="c1">#: The type of embedding layer information used in Tailor</span>
-<span class="n">TunerReturnType</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span>
-    <span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
-<span class="p">]</span>  <span class="c1">#: The type of loss, metric information Tuner returns</span>
 
 
 <div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../../api/finetuner.helper/#finetuner.helper.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
