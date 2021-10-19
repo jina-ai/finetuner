@@ -35,9 +35,6 @@ DocumentArrayLike = Union[
 LayerInfoType = List[
     Dict[str, Any]
 ]  #: The type of embedding layer information used in Tailor
-TunerReturnType = Dict[
-    str, Dict[str, Any]
-]  #: The type of loss, metric information Tuner returns
 
 
 def get_framework(dnn_model: AnyDNN) -> str:

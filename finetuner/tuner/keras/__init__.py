@@ -1,6 +1,5 @@
 from typing import Dict, Optional, Union, List
 
-import numpy as np
 import tensorflow as tf
 from jina.logging.profile import ProgressBar
 from tensorflow import keras
@@ -9,8 +8,7 @@ from tensorflow.keras.optimizers import Optimizer
 from . import losses, datasets
 from ..base import BaseTuner, BaseLoss
 from ..dataset.helper import get_dataset
-from ..logger import LogGenerator
-from ..stats import TunerStats
+from ..summary import ScalarSummary, SummaryCollection
 from ...helper import DocumentArrayLike, AnyDataLoader
 
 
@@ -31,7 +29,7 @@ class KerasTuner(BaseTuner):
         input_shape = self.embed_model.input_shape[1:]
 
         tf_data = tf.data.Dataset.from_generator(
-            lambda: ds(inputs, self._catalog),
+            lambda: ds(inputs),
             output_signature=(
                 tuple(
                     tf.TensorSpec(shape=input_shape, dtype=tf.float32)
@@ -66,16 +64,13 @@ class KerasTuner(BaseTuner):
 
     def _train(
         self, data: AnyDataLoader, optimizer: Optimizer, description: str
-    ) -> List[float]:
+    ) -> ScalarSummary:
         """Train the model on given labeled data"""
 
-        losses = []
-
-        log_generator = LogGenerator('T', losses)
-
+        _summary = ScalarSummary('Train Loss')
         with ProgressBar(
             description,
-            message_on_done=log_generator,
+            message_on_done=_summary.__str__,
             final_line_feed=False,
             total_length=self._train_data_len,
         ) as p:
@@ -90,36 +85,39 @@ class KerasTuner(BaseTuner):
                     zip(grads, self._embed_model.trainable_weights)
                 )
 
-                losses.append(loss.numpy())
+                _summary += loss.numpy()
 
-                p.update(message=log_generator())
+                p.update(message=str(_summary))
                 self._train_data_len += 1
 
-        return losses
+        return _summary
 
     def _eval(
-        self, data: AnyDataLoader, description: str = 'Evaluating', train_log: str = ''
-    ) -> List[float]:
+        self,
+        data: AnyDataLoader,
+        description: str = 'Evaluating',
+        train_loss: Optional[ScalarSummary] = None,
+    ) -> ScalarSummary:
         """Evaluate the model on given labeled data"""
 
-        losses = []
-
-        log_generator = LogGenerator('E', losses, train_log)
+        _summary = ScalarSummary('Eval Loss')
 
         with ProgressBar(
-            description, message_on_done=log_generator, total_length=self._eval_data_len
+            description,
+            message_on_done=lambda: f'{train_loss} | {_summary}',
+            total_length=self._eval_data_len,
         ) as p:
             self._eval_data_len = 0
             for inputs, label in data:
                 embeddings = [self._embed_model(inpt) for inpt in inputs]
                 loss = self._loss([*embeddings, label])
 
-                losses.append(loss.numpy())
+                _summary += loss.numpy()
 
-                p.update(message=log_generator())
+                p.update(message=str(_summary))
                 self._eval_data_len += 1
 
-        return losses
+        return _summary
 
     def fit(
         self,
@@ -132,7 +130,7 @@ class KerasTuner(BaseTuner):
         optimizer_kwargs: Optional[Dict] = None,
         device: str = 'cpu',
         **kwargs,
-    ) -> TunerStats:
+    ) -> SummaryCollection:
         """Finetune the model on the training data.
 
         :param train_data: Data on which to train the model
@@ -181,7 +179,8 @@ class KerasTuner(BaseTuner):
 
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
-        stats = TunerStats()
+        m_train_loss = ScalarSummary('train')
+        m_eval_loss = ScalarSummary('eval')
 
         with self.device:
             for epoch in range(epochs):
@@ -190,26 +189,13 @@ class KerasTuner(BaseTuner):
                     _optimizer,
                     description=f'Epoch {epoch + 1}/{epochs}',
                 )
-                stats.add_train_loss(lt)
+                m_train_loss += lt
 
                 if eval_data:
-                    le = self._eval(_eval_data, train_log=LogGenerator("T", lt)())
-                    stats.add_eval_loss(le)
-                    stats.add_eval_metric(self.get_metrics(eval_data))
+                    le = self._eval(_eval_data, train_loss=m_train_loss)
+                    m_eval_loss += le
 
-                stats.print_last()
-        return stats
-
-    def get_embeddings(self, docs: DocumentArrayLike):
-        """Calculates and adds the embeddings for the given Documents.
-
-        :param docs: The documents to get embeddings from.
-        """
-        blobs = docs.blobs
-        with self.device:
-            embeddings = self.embed_model(blobs)
-        for doc, embed in zip(docs, embeddings):
-            doc.embedding = np.array(embed)
+        return SummaryCollection(m_train_loss, m_eval_loss)
 
     def save(self, *args, **kwargs):
         """Save the embedding model.

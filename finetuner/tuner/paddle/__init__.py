@@ -1,6 +1,5 @@
 from typing import Dict, Optional, Union, List
 
-import numpy as np
 import paddle
 from jina.logging.profile import ProgressBar
 from paddle.io import DataLoader
@@ -8,10 +7,9 @@ from paddle.optimizer import Optimizer
 
 from . import losses, datasets
 from ..base import BaseTuner, BaseLoss
-from ...helper import DocumentArrayLike, AnyDataLoader
 from ..dataset.helper import get_dataset
-from ..logger import LogGenerator
-from ..stats import TunerStats
+from ..summary import ScalarSummary, SummaryCollection
+from ...helper import DocumentArrayLike, AnyDataLoader
 
 
 class PaddleTuner(BaseTuner):
@@ -28,7 +26,7 @@ class PaddleTuner(BaseTuner):
         """Get the paddle ``DataLoader`` from the input data."""
         ds = get_dataset(datasets, self.arity)
         return DataLoader(
-            dataset=ds(inputs=inputs, catalog=self._catalog),
+            dataset=ds(inputs=inputs),
             batch_size=batch_size,
             shuffle=shuffle,
         )
@@ -62,44 +60,45 @@ class PaddleTuner(BaseTuner):
             )
 
     def _eval(
-        self, data: AnyDataLoader, description: str = 'Evaluating', train_log: str = ''
-    ) -> List[float]:
+        self,
+        data: AnyDataLoader,
+        description: str = 'Evaluating',
+        train_loss: Optional[ScalarSummary] = None,
+    ) -> ScalarSummary:
         """Evaluate the model on given labeled data"""
 
         self._embed_model.eval()
 
-        losses = []
-
-        log_generator = LogGenerator('E', losses, train_log)
+        _summary = ScalarSummary('Eval Loss')
 
         with ProgressBar(
-            description, message_on_done=log_generator, total_length=self._eval_data_len
+            description,
+            message_on_done=lambda: f'{train_loss} | {_summary}',
+            total_length=self._eval_data_len,
         ) as p:
             self._eval_data_len = 0
             for inputs, label in data:
                 embeddings = [self._embed_model(inpt) for inpt in inputs]
                 loss = self._loss(embeddings, label)
 
-                losses.append(loss.item())
+                _summary += loss.item()
 
-                p.update(message=log_generator())
+                p.update(message=str(_summary))
                 self._eval_data_len += 1
 
-        return losses
+        return _summary
 
     def _train(
         self, data: AnyDataLoader, optimizer: Optimizer, description: str
-    ) -> List[float]:
+    ) -> ScalarSummary:
         """Train the model on given labeled data"""
 
         self._embed_model.train()
 
-        losses = []
-
-        log_generator = LogGenerator('T', losses)
+        _summary = ScalarSummary('Train Loss')
         with ProgressBar(
             description,
-            message_on_done=log_generator,
+            message_on_done=_summary.__str__,
             final_line_feed=False,
             total_length=self._train_data_len,
         ) as p:
@@ -114,11 +113,11 @@ class PaddleTuner(BaseTuner):
                 loss.backward()
                 optimizer.step()
 
-                losses.append(loss.item())
+                _summary += loss.item()
 
-                p.update(message=log_generator())
+                p.update(message=str(_summary))
                 self._train_data_len += 1
-        return losses
+        return _summary
 
     def fit(
         self,
@@ -131,7 +130,7 @@ class PaddleTuner(BaseTuner):
         optimizer_kwargs: Optional[Dict] = None,
         device: str = 'cpu',
         **kwargs,
-    ) -> TunerStats:
+    ) -> SummaryCollection:
         """Finetune the model on the training data.
 
         :param train_data: Data on which to train the model
@@ -170,7 +169,8 @@ class PaddleTuner(BaseTuner):
 
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
-        stats = TunerStats()
+        m_train_loss = ScalarSummary('train')
+        m_eval_loss = ScalarSummary('eval')
 
         for epoch in range(epochs):
             _data = self._get_data_loader(
@@ -181,29 +181,17 @@ class PaddleTuner(BaseTuner):
                 _optimizer,
                 description=f'Epoch {epoch + 1}/{epochs}',
             )
-            stats.add_train_loss(lt)
+            m_train_loss += lt
 
             if eval_data:
                 _data = self._get_data_loader(
                     inputs=eval_data, batch_size=batch_size, shuffle=False
                 )
 
-                le = self._eval(_data, train_log=LogGenerator('T', lt)())
-                stats.add_eval_loss(le)
-                stats.add_eval_metric(self.get_metrics(eval_data))
+                le = self._eval(_data, train_loss=m_train_loss)
+                m_eval_loss += le
 
-            stats.print_last()
-        return stats
-
-    def get_embeddings(self, docs: DocumentArrayLike):
-        """Calculates and adds the embeddings for the given Documents.
-
-        :param docs: The documents to get embeddings from.
-        """
-        blobs = docs.blobs
-        embeddings = self.embed_model(paddle.Tensor(blobs))
-        for doc, embed in zip(docs, embeddings):
-            doc.embedding = np.array(embed)
+        return SummaryCollection(m_train_loss, m_eval_loss)
 
     def save(self, *args, **kwargs):
         """Save the embedding model.

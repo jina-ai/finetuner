@@ -11,7 +11,7 @@ os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
 import paddle
 import torch
 
-from finetuner.toydata import generate_qa_match_catalog
+from finetuner.toydata import generate_qa_match
 
 
 class LastCellPT(torch.nn.Module):
@@ -54,11 +54,10 @@ def _run(framework_name, loss, port_expose):
             paddle.nn.Linear(in_features=2 * 64, out_features=32),
         ),
     }
-    train_data, catalog = generate_qa_match_catalog(num_total=10, num_neg=0)
+
     fit(
         embed_models[framework_name](),
-        train_data,
-        catalog=catalog,
+        generate_qa_match(num_total=10, num_neg=0),
         loss=loss,
         interactive=True,
         port_expose=port_expose,
@@ -71,7 +70,6 @@ all_test_losses = [
     'EuclideanSiameseLoss',
     'EuclideanTripletLoss',
 ]
-
 
 # 'keras' does not work under this test setup
 # Exception ... ust be from the same graph as Tensor ...
@@ -97,7 +95,8 @@ def test_all_frameworks(framework, loss, tmpdir):
                     json={
                         'data': [],
                         'parameters': {
-                            'new_examples': 1,
+                            'start': 0,
+                            'end': 1,
                             'topk': 5,
                             'sample_size': 10,
                         },
@@ -115,7 +114,7 @@ def test_all_frameworks(framework, loss, tmpdir):
             f'http://localhost:{port}/next',
             json={
                 'data': [],
-                'parameters': {'new_examples': 1, 'topk': 5, 'sample_size': 10},
+                'parameters': {'start': 0, 'end': 1, 'topk': 5, 'sample_size': 10},
             },
         )
         assert req.status_code == 200

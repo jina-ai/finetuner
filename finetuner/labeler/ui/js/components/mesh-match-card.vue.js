@@ -10,7 +10,7 @@ const meshMatchCard = {
     template: `
         <div class="card mesh-card">
             <div class="card-header">
-                <p class="fs-6 fw-light mb-2">Select all images similar to the image on right</p>
+                <p class="fs-6 fw-light mb-2 hint-text">Select all meshes similar to the image on right</p>
                 <model-viewer
                     v-bind:src="getContent(doc)" 
                     v-on:click="toggleRelevance(match)"

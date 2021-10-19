@@ -5,9 +5,9 @@ import pytest
 import torch
 import torch.nn as nn
 
-from finetuner.tuner import fit, save
-from finetuner.toydata import generate_fashion_match_catalog
-from finetuner.toydata import generate_qa_match_catalog
+from finetuner.tuner.pytorch import PytorchTuner
+from finetuner.toydata import generate_fashion_match
+from finetuner.toydata import generate_qa_match
 
 
 @pytest.mark.parametrize(
@@ -31,29 +31,20 @@ def test_simple_sequential_model(tmpdir, params, loss):
     )
     model_path = os.path.join(tmpdir, 'trained.pth')
 
-    # fit and save the checkpoint
-    train_data, train_catalog = generate_fashion_match_catalog(
-        num_neg=10, num_pos=10, num_total=params['num_train'], pre_init_generator=False
-    )
-    eval_data, eval_catalog = generate_fashion_match_catalog(
-        num_neg=10,
-        num_pos=10,
-        num_total=params['num_eval'],
-        is_testset=True,
-        pre_init_generator=False,
-    )
-    train_catalog.extend(eval_catalog)
+    pt = PytorchTuner(user_model, loss=loss)
 
-    fit(
-        user_model,
-        loss=loss,
-        train_data=train_data,
-        eval_data=eval_data,
-        catalog=train_catalog,
+    # fit and save the checkpoint
+    pt.fit(
+        train_data=lambda: generate_fashion_match(
+            num_pos=10, num_neg=10, num_total=params['num_train']
+        ),
+        eval_data=lambda: generate_fashion_match(
+            num_pos=10, num_neg=10, num_total=params['num_eval'], is_testset=True
+        ),
         epochs=params['epochs'],
         batch_size=params['batch_size'],
     )
-    save(user_model, model_path)
+    pt.save(model_path)
 
     # load the checkpoint and ensure the dim
     user_model.load_state_dict(torch.load(model_path))
@@ -97,33 +88,26 @@ def test_simple_lstm_model(tmpdir, params, loss):
     )
     model_path = os.path.join(tmpdir, 'trained.pth')
 
-    # fit and save the checkpoint
-    train_data, train_catalog = generate_qa_match_catalog(
-        num_total=params['num_train'],
-        max_seq_len=params['max_seq_len'],
-        num_neg=5,
-        is_testset=False,
-        pre_init_generator=False,
-    )
-    eval_data, eval_catalog = generate_qa_match_catalog(
-        num_total=params['num_train'],
-        max_seq_len=params['max_seq_len'],
-        num_neg=5,
-        is_testset=True,
-        pre_init_generator=False,
-    )
-    train_catalog.extend(eval_catalog)
+    pt = PytorchTuner(user_model, loss=loss)
 
-    fit(
-        user_model,
-        loss=loss,
-        train_data=train_data,
-        eval_data=eval_data,
-        catalog=train_catalog,
+    # fit and save the checkpoint
+    pt.fit(
+        train_data=lambda: generate_qa_match(
+            num_total=params['num_train'],
+            max_seq_len=params['max_seq_len'],
+            num_neg=5,
+            is_testset=False,
+        ),
+        eval_data=lambda: generate_qa_match(
+            num_total=params['num_eval'],
+            max_seq_len=params['max_seq_len'],
+            num_neg=5,
+            is_testset=True,
+        ),
         epochs=params['epochs'],
         batch_size=params['batch_size'],
     )
-    save(user_model, model_path)
+    pt.save(model_path)
 
     # load the checkpoint and ensure the dim
     user_model.load_state_dict(torch.load(model_path))

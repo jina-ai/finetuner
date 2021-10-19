@@ -28,4 +28,4 @@ def test_tail_and_tune(embed_model, create_easy_data):
         output_dim=16,
         layer_name='dense_2',
     )
-    assert rv._loss_train
+    assert rv.dict()

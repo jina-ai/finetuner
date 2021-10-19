@@ -11,13 +11,13 @@ from ..tuner import fit, save
 class FTExecutor(Executor):
     def __init__(
         self,
-        catalog_dam_path: str,
+        dam_path: str,
         metric: str = 'cosine',
         loss: str = 'CosineSiameseLoss',
         **kwargs,
     ):
         super().__init__(**kwargs)
-        self._catalog = DocumentArrayMemmap(catalog_dam_path)
+        self._all_data = DocumentArrayMemmap(dam_path)
         self._metric = metric
         self._loss = loss
 
@@ -33,9 +33,9 @@ class FTExecutor(Executor):
     def embed(self, docs: DocumentArray, parameters: Dict, **kwargs):
         if not docs:
             return
-        self._catalog.reload()
-        da = self._catalog.sample(
-            min(len(self._catalog), int(parameters.get('sample_size', 1000)))
+        self._all_data.reload()
+        da = self._all_data.sample(
+            min(len(self._all_data), int(parameters.get('sample_size', 1000)))
         )
 
         f_type = get_framework(self._embed_model)
@@ -77,7 +77,6 @@ class FTExecutor(Executor):
         fit(
             self._embed_model,
             docs,
-            self._catalog,
             epochs=int(parameters.get('epochs', 10)),
             loss=self._loss,
         )
@@ -93,14 +92,12 @@ class DataIterator(Executor):
     def __init__(
         self,
         dam_path: str,
-        catalog_dam_path: str,
         labeled_dam_path: Optional[str] = None,
         clear_labels_on_start: bool = False,
         **kwargs,
     ):
         super().__init__(**kwargs)
         self._all_data = DocumentArrayMemmap(dam_path)
-        self._catalog = DocumentArrayMemmap(catalog_dam_path)
         if not labeled_dam_path:
             labeled_dam_path = dam_path + '/labeled'
         self._labeled_dam = DocumentArrayMemmap(labeled_dam_path)
@@ -108,25 +105,20 @@ class DataIterator(Executor):
             self._labeled_dam.clear()
 
     @requests(on='/feed')
-    def store_data(self, docs: DocumentArray, parameters: Dict, **kwargs):
-        if parameters.get('type', 'query') == 'query':
-            self._all_data.extend(docs)
-        else:
-            self._catalog.extend(docs)
+    def store_data(self, docs: DocumentArray, **kwargs):
+        self._all_data.extend(docs)
 
     @requests(on='/next')
     def take_batch(self, parameters: Dict, **kwargs):
-        count = int(parameters.get('new_examples', 5))
+        st = int(parameters.get('start', 0))
+        ed = int(parameters.get('end', 1))
 
         self._all_data.reload()
-        count = min(max(count, 0), len(self._all_data))
-        return self._all_data.sample(k=count)
+        return self._all_data[st:ed]
 
     @requests(on='/fit')
     def add_fit_data(self, docs: DocumentArray, **kwargs):
-        for d in docs.traverse_flat(['r']):
+        for d in docs.traverse_flat(['r', 'm']):
             d.content = self._all_data[d.id].content
-        for d in docs.traverse_flat(['m']):
-            d.content = self._catalog[d.id].content
         self._labeled_dam.extend(docs)
         return self._labeled_dam

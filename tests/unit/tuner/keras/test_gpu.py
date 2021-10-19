@@ -24,11 +24,10 @@ def tf_gpu_config():
 @pytest.mark.parametrize('loss', all_test_losses)
 def test_gpu_keras(generate_random_triplets, loss, caplog):
     data = generate_random_triplets(4, 4)
-    catalog = DocumentArray(data.traverse_flat(['m']))
     embed_model = tf.keras.models.Sequential()
     embed_model.add(tf.keras.layers.InputLayer(input_shape=(4,)))
     embed_model.add(tf.keras.layers.Dense(4))
 
-    tuner = KerasTuner(embed_model, catalog, loss)
+    tuner = KerasTuner(embed_model, loss)
 
     tuner.fit(data, data, epochs=2, batch_size=4, device='cuda')
