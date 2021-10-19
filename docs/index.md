@@ -7,7 +7,7 @@
 
 ## Quick start
 
-1. Make sure that you have Python 3.7+ installed on Linux/MacOS. You have one of Pytorch, Keras or PaddlePaddle installed.
+1. Make sure that you have Python 3.7+ installed on Linux/MacOS. You have one of PyTorch (>=1.9), Tensorflow (>=2.5) or PaddlePaddle installed.
    ```bash
    pip install finetuner
    ```

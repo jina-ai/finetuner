@@ -25,8 +25,8 @@ applications.
 🔱 **Powerful yet intuitive**: all you need is `finetuner.fit()` - a one-liner that unlocks rich features such as
 siamese/triplet network, interactive labeling, layer trimming, weights freezing, dimensionality reduction.
 
-⚛️ **Framework-agnostic**: promise an identical API experience on [Pytorch](https://pytorch.org/)
-, [Keras](https://keras.io/) or [PaddlePaddle](https://github.com/PaddlePaddle/Paddle) deep learning backends.
+⚛️ **Framework-agnostic**: promise an identical API experience on [PyTorch](https://pytorch.org/)
+, [Tensorflow/Keras](https://tensorflow.org/) or [PaddlePaddle](https://github.com/PaddlePaddle/Paddle) deep learning backends.
 
 🧈 **Jina integration**: buttery smooth integration with Jina, reducing the cost of context-switch between experimenting
 and production.
@@ -40,7 +40,7 @@ and production.
 
 ## Install
 
-Make sure you have Python 3.7+ and one of Pytorch (>=1.9), Tensorflow (>=2.5) or PaddlePaddle installed on Linux/MacOS.
+Make sure you have Python 3.7+ and one of PyTorch (>=1.9), Tensorflow (>=2.5) or PaddlePaddle installed on Linux/MacOS.
 
 ```bash
 pip install finetuner
@@ -139,9 +139,9 @@ finetuner.fit(
 
 ## Finetuning ResNet50 on CelebA
 
-> ⚡ To get the best experience, you need a GPU machine to run this example. For CPU users, we provide [finetuning a MLP on FashionMNIST](https://finetuner.jina.ai/get-started/fashion-mnist/) and [finetuning a Bi-LSTM on CovidQA](https://finetuner.jina.ai/get-started/covid-qa/) that run out the box. Give them a try!
+> ⚡ To get the best experience, you will need a GPU-machine for this example. For CPU users, we provide [finetuning a MLP on FashionMNIST](https://finetuner.jina.ai/get-started/fashion-mnist/) and [finetuning a Bi-LSTM on CovidQA](https://finetuner.jina.ai/get-started/covid-qa/) that run out the box on low-profile machines. Check out more examples in [our docs](https://finetuner.jina.ai)!
 
-1. Download [CelebA dataset](https://static.jina.ai/celeba/celeba-img.zip) and decompress it to './img_align_celeba'
+1. Download [CelebA dataset](https://static.jina.ai/celeba/celeba-img.zip) and decompress it to `'./img_align_celeba'`.
 2. Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we load CelebA data into this format using generator:
     ```python
     from jina.types.document.generators import from_files
@@ -181,7 +181,7 @@ finetuner.fit(
         output_dim=100
     )
     ```
-5. After model downloading is complete, your browser will open the Labeler UI. You can now label the relevance of celebrity faces via mouse/keyboard. The ResNet50 model will get finetuned and improved as you are labeling. If you are running this example on a CPU machine, it may take up to 20 seconds for each labeling round.
+5. After model downloading and data loading is complete (takes ~20s depending on your network/CPU/GPU), your browser will open the Labeler UI as below. You can now label the relevance of celebrity faces via mouse/keyboard. The ResNet50 model will get finetuned and improved as you are labeling. If you are running this example on a CPU machine, it may take up to 20 seconds for each labeling round.
 
 ![Finetuning ResNet50 on CelebA with interactive labeling](docs/get-started/celeba-labeler.gif)
 

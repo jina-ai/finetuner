@@ -91,7 +91,7 @@ But where does this embedding model come from? As I said, general models widely 
 
 In [my blog post on the new AI supply chain](https://hanxiao.io/2019/07/29/Generic-Neural-Elastic-Search-From-bert-as-service-and-Go-Way-Beyond/?highlight=body%20%3E%20div.wrap%20%3E%20main%20%3E%20div%20%3E%20article%20%3E%20div.post-content%20%3E%20img:nth-child(26)), I already said less & less people will build new model from scratch. Most people will simply use pretrained or preachitectured models. Hence there is a strong & common requirement of "converting" arbitrary general DNN model into embedding model that Tuner could handle. That's what tailor responsible for.
 
-Given a general model (from your colleague or Pytorch/Keras/Huggingface model zoo), Tailor trims, cuts and does micro-operations on its architecture and outputs an embedding model for the Tuner.
+Given a general model (from your colleague or PyTorch/Keras/Huggingface model zoo), Tailor trims, cuts and does micro-operations on its architecture and outputs an embedding model for the Tuner.
 
 Tailor can be considered as a funnel, which enlarges our model landscape and speeds up the adoption of the Finetuner project. 
 
@@ -137,7 +137,7 @@ In particular, Finetuner is implemented as follows to maximize the compatability
 
 ## DL backend support
 
-The decision on supporting Pytorch, Keras and Paddle as deep learning backend is fixed. We shall try our best effort to maintain a consistent behavior across these three backends. This will make the Finetuner project framework-agnostic, and serve better our diversified community.
+The decision on supporting PyTorch, Keras and Paddle as deep learning backend is fixed. We shall try our best effort to maintain a consistent behavior across these three backends. This will make the Finetuner project framework-agnostic, and serve better our diversified community.
 
 This decision mostly affect the implementation and design of `Tuner` and `Tailor`. In particular, `Tuner` is a good example to show such requirement can be done beautifully. Please read the source code behind Tuner and observe the unified interface there.
 
