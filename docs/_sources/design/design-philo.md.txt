@@ -58,7 +58,7 @@ Let me pose some questions, take a minute and think about them. Then, unfold my 
 
 ```{dropdown} What is the tools for developing a DNN model from scratch?
 
-Tensorflow or Pytorch. 
+Tensorflow or PyTorch. 
 
 They have became the defacto tooling for creating a new model. Researchers use them to create pretrained models.
 ```
@@ -78,7 +78,7 @@ Nothing, yet!
 
 And that's the chance of Finetuner project. Finetuner will fill the blank of model tuning in the search domain.
  
-Why not Tensorflow/Pytorch again here? They are too heavy and too complicated for finetuning task. Plus, I belive a good finetuner should have:
+Why not Tensorflow/PyTorch again here? They are too heavy and too complicated for finetuning task. Plus, I belive a good finetuner should have:
 - extremely simple interface (as the users here are *not* exposed to the full knowledge of deep learning anymore!)
 - exteremly easy way to incorpate human feedback and domain knowledge.
 ```

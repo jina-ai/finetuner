@@ -24,6 +24,8 @@ Here, `embed_model` must be an {term}`embedding model`; and `train_data` must be
 
 ### Loss function
 
+Loss function is an argument of `finetuner.fit()`.
+
 By default, Tuner uses `CosineSiameseLoss` for training. You can also use other built-in losses by `finetuner.fit(..., loss='...')`.
 
 Let $\mathbf{x}_i$ denotes the predicted embedding for Document $i$. The built-in losses are summarized as follows:
@@ -188,5 +190,9 @@ Although siamese and triplet loss works on pair and triplet inputs respectively,
    ```{figure} lstm.png
    :align: center
    ```
+
+## Save model
+
+After a model is tuned, you can save it by calling `finetuner.tuner.save(model, save_path)`.
 
 

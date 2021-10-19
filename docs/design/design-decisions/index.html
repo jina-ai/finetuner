@@ -26,6 +26,8 @@
 
   gtag('config', 'G-1ESRNDCK35');
 </script>
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
@@ -199,6 +201,9 @@
     <img class="sidebar-logo only-light" src="../../_static/logo-light.svg" alt="Light Logo"/>
     <img class="sidebar-logo only-dark" src="../../_static/logo-dark.svg" alt="Dark Logo"/>
   </div>
+  <div class="sd-text-center">
+  <a class="github-button" href="https://github.com/jina-ai/finetuner" data-icon="octicon-star" data-show-count="true" aria-label="Star jina-ai/finetuner on GitHub">Star</a>
+  </div>
   
   
 </a><form class="sidebar-search-container" method="get" action="../../search/" role="search">
@@ -207,7 +212,7 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+    <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/fashion-mnist/">Finetuning MLP for Fashion Image Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/covid-qa/">Finetuning Bi-LSTM for Question-Answering</a></li>
@@ -269,12 +274,14 @@
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jina">Jina</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">Jina Hub</a></li>
-</ul>
 
+    <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
+    <ul>
+        <li class="toctree-l1">
+            <a class="reference external" href="https://docs.jina.ai"><img class="sidebar-ecosys-logo" src="../../_static/search-light.svg">Jina</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai"><img class="sidebar-ecosys-logo" src="../../_static/hub-light.svg">Jina Hub</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="#"><img class="sidebar-ecosys-logo sidebar-ecosys-logo-finetuner" src="../../_static/finetuner-light.svg">Finetuner</a></li>
+    </ul>
 </div>
 </div>
             </div>
@@ -378,7 +385,7 @@
 <li><p>converting a general model to a embedding model.</p></li>
 </ul>
 <p>In <a class="reference external" href="https://hanxiao.io/2019/07/29/Generic-Neural-Elastic-Search-From-bert-as-service-and-Go-Way-Beyond/?highlight=body%20%3E%20div.wrap%20%3E%20main%20%3E%20div%20%3E%20article%20%3E%20div.post-content%20%3E%20img:nth-child(26)">my blog post on the new AI supply chain</a>, I already said less &amp; less people will build new model from scratch. Most people will simply use pretrained or preachitectured models. Hence there is a strong &amp; common requirement of “converting” arbitrary general DNN model into embedding model that Tuner could handle. That’s what tailor responsible for.</p>
-<p>Given a general model (from your colleague or Pytorch/Keras/Huggingface model zoo), Tailor trims, cuts and does micro-operations on its architecture and outputs an embedding model for the Tuner.</p>
+<p>Given a general model (from your colleague or PyTorch/Keras/Huggingface model zoo), Tailor trims, cuts and does micro-operations on its architecture and outputs an embedding model for the Tuner.</p>
 <p>Tailor can be considered as a funnel, which enlarges our model landscape and speeds up the adoption of the Finetuner project.</p>
 </section>
 <section id="labeler">
@@ -440,7 +447,7 @@
 </section>
 <section id="dl-backend-support">
 <h2>DL backend support<a class="headerlink" href="#dl-backend-support" title="Permalink to this headline">¶</a></h2>
-<p>The decision on supporting Pytorch, Keras and Paddle as deep learning backend is fixed. We shall try our best effort to maintain a consistent behavior across these three backends. This will make the Finetuner project framework-agnostic, and serve better our diversified community.</p>
+<p>The decision on supporting PyTorch, Keras and Paddle as deep learning backend is fixed. We shall try our best effort to maintain a consistent behavior across these three backends. This will make the Finetuner project framework-agnostic, and serve better our diversified community.</p>
 <p>This decision mostly affect the implementation and design of <code class="docutils literal notranslate"><span class="pre">Tuner</span></code> and <code class="docutils literal notranslate"><span class="pre">Tailor</span></code>. In particular, <code class="docutils literal notranslate"><span class="pre">Tuner</span></code> is a good example to show such requirement can be done beautifully. Please read the source code behind Tuner and observe the unified interface there.</p>
 <p>On the high-level API, PyTorch and Paddle look and feel extremely similar. This reduces 1/3 our development effort. Paddle is also popular in China. By working with Baidu on promoting Finetuner (scheduled a big press release from them in Nov. 2021), this gives us good exposure to Paddle community.</p>
 <p>This decision does not affect the implementation of <code class="docutils literal notranslate"><span class="pre">Labeler</span></code>, as it can be seen as UI + <code class="docutils literal notranslate"><span class="pre">Flow</span></code> + <code class="docutils literal notranslate"><span class="pre">Tuner</span></code> + <code class="docutils literal notranslate"><span class="pre">Tailor</span></code>, where the first two components are framework-irrelevant.</p>

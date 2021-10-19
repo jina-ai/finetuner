@@ -35,7 +35,7 @@ def data_gen():
 
 ## Load the pretrained model
 
-Let's import pretrained ResNet50 as our base model. ResNet50 is implemented in Pytorch, Keras and Paddle. You can choose whatever framework you feel comfortable:
+Let's import pretrained ResNet50 as our base model. ResNet50 is implemented in PyTorch, Keras and Paddle. You can choose whatever framework you feel comfortable:
 
 ````{tab} PyTorch
 ```python

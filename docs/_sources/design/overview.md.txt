@@ -36,7 +36,7 @@ ft.fit(...)
 
 ## Framework-agnostic
 
-Finetuner supports Keras, Pytorch and Paddle as the deep learning backend; with the same look, feel and behave on the high-level API. Users can stick to their most comfortable framework and they will enjoy a consistent experience when using Finetuner.  
+Finetuner supports Keras, PyTorch and Paddle as the deep learning backend; with the same look, feel and behave on the high-level API. Users can stick to their most comfortable framework and they will enjoy a consistent experience when using Finetuner.  
 
 (three-pillars)=
 ## Three pillars
