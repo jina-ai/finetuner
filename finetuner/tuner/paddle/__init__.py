@@ -195,10 +195,14 @@ class PaddleTuner(BaseTuner):
             stats.print_last()
         return stats
 
-    def get_embeddings(self, data: DocumentArrayLike):
-        blobs = data.blobs
+    def get_embeddings(self, docs: DocumentArrayLike):
+        """Calculates and adds the embeddings for the given Documents.
+
+        :param docs: The documents to get embeddings from.
+        """
+        blobs = docs.blobs
         embeddings = self.embed_model(paddle.Tensor(blobs))
-        for doc, embed in zip(data, embeddings):
+        for doc, embed in zip(docs, embeddings):
             doc.embedding = np.array(embed)
 
     def save(self, *args, **kwargs):
