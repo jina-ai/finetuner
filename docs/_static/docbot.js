@@ -5,13 +5,13 @@ const app = new Vue({
         is_busy: false,
         is_conn_broken: false,
         general_config: {
-            server_address: server_address || 'https://docsbot.jina.ai',
+            server_address: server_address || 'https://finetuner-docsbot.jina.ai',
             search_endpoint: '/search',
             slack_endpoint: '/slack'
         },
         qa_pairs: [],
         cur_question: '',
-        root_url: 'http://docs.jina.ai/'
+        root_url: 'http://finetuner.jina.ai/'
     },
     computed: {
         host_address: function () {
