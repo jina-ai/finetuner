@@ -1,5 +1,6 @@
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -105,4 +106,27 @@ The changes of each release is tracked by this file.
  - [[```a589a016```](https://github.com/jina-ai/finetuner/commit/a589a0163492e749546e0e69a57226e043bd2db8)] __-__ __docs__: add note from get_framework (*Han Xiao*)
  - [[```d970a2b6```](https://github.com/jina-ai/finetuner/commit/d970a2b63e0712483f119d27cda7a966019904fb)] __-__ fix styling (*Han Xiao*)
  - [[```62a0da7e```](https://github.com/jina-ai/finetuner/commit/62a0da7e2b0cf938dd63a6bbd28d32d693c1f486)] __-__ __version__: the next version will be 0.0.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-0-4></a>
+## Release Note (`0.0.4`)
+
+> Release time: 2021-10-20 08:53:48
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 📗 Documentation
+
+ - [[```6854ba0b```](https://github.com/jina-ai/finetuner/commit/6854ba0ba8ca7b9fa08c5fc12f55734cc304da03)] __-__ fix ecosystem sidebar (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```0007fd84```](https://github.com/jina-ai/finetuner/commit/0007fd84cde8b4b59f6f50ef2a6e6325af2e4cc6)] __-__ fix logos (*Han Xiao*)
+ - [[```400e8070```](https://github.com/jina-ai/finetuner/commit/400e8070ba56f7a4b4b566cf94031a1615901ca1)] __-__ update readme (*Han Xiao*)
+ - [[```73421284```](https://github.com/jina-ai/finetuner/commit/734212848d3276d29a7bb4ba9e7da59db77aef13)] __-__ fix setup.py (*Han Xiao*)
+ - [[```db3757d4```](https://github.com/jina-ai/finetuner/commit/db3757d49694d70925f9158bd5be9a18d095a5f2)] __-__ fix readme (*Han Xiao*)
+ - [[```1a3002b6```](https://github.com/jina-ai/finetuner/commit/1a3002b66419515b817566713413ba6527b01c79)] __-__ __version__: the next version will be 0.0.4 (*Jina Dev Bot*)
 
