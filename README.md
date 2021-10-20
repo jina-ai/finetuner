@@ -52,7 +52,7 @@ pip install finetuner
 <table>
 <thead>
   <tr>
-    <th colspan="2" rowspan="2">🪄 Usage</th>
+    <th colspan="2" rowspan="2">Usage</th>
     <th colspan="2">Do you have an <a href="https://finetuner.jina.ai/basics/glossary/#term-Embedding-model">embedding model</a>?</th>
   </tr>
   <tr>
