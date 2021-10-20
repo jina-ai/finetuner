@@ -1,6 +1,7 @@
 
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -129,4 +130,23 @@ The changes of each release is tracked by this file.
  - [[```73421284```](https://github.com/jina-ai/finetuner/commit/734212848d3276d29a7bb4ba9e7da59db77aef13)] __-__ fix setup.py (*Han Xiao*)
  - [[```db3757d4```](https://github.com/jina-ai/finetuner/commit/db3757d49694d70925f9158bd5be9a18d095a5f2)] __-__ fix readme (*Han Xiao*)
  - [[```1a3002b6```](https://github.com/jina-ai/finetuner/commit/1a3002b66419515b817566713413ba6527b01c79)] __-__ __version__: the next version will be 0.0.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-1-0></a>
+## Release Note (`0.1.0`)
+
+> Release time: 2021-10-20 09:04:47
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```f6ba40d0```](https://github.com/jina-ai/finetuner/commit/f6ba40d0c9619a92c19a0a19d2ba6a71a419ea8b)] __-__ __setup__: add MANIFEST.in (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```377959a1```](https://github.com/jina-ai/finetuner/commit/377959a14976d6f3ec99165bcbd23bf6132e2477)] __-__ __version__: the next version will be 0.0.5 (*Jina Dev Bot*)
 
