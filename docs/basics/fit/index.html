@@ -449,6 +449,11 @@ Finetuner usage 4</div>
 </div>
 </div>
 <script>
+    function init() {
+        document.getElementById('embed_model_yes').click();
+        document.getElementById('labeled_yes').click()
+    }
+    window.onload = init;
     function myfunction(event) {
         const answer = document.querySelector('input[name="embed_model"]:checked').value +document.querySelector('input[name="labeled"]:checked').value;
          document.querySelectorAll(".usage-card").forEach((input) => {

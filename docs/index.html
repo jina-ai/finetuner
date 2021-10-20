@@ -324,7 +324,7 @@ applications.</p>
 <p>🎛 <strong>Designed for finetuning</strong>: a human-in-the-loop deep learning tool for leveling up your pretrained models in domain-specific neural search applications.</p>
 <p>🔱 <strong>Powerful yet intuitive</strong>: all you need is <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code> - a one-liner that unlocks rich features such as
 siamese/triplet network, interactive labeling, layer pruning, weights freezing, dimensionality reduction.</p>
-<p>⚛️ <strong>Framework-agnostic</strong>: promise an identical API &amp; user experience on <a class="reference external" href="https://pytorch.org/">PyTorch</a>, <a class="reference external" href="https://tensorflow.org/">Tensorflow/Keras</a> or <a class="reference external" href="https://github.com/PaddlePaddle/Paddle">PaddlePaddle</a> deep learning backends.</p>
+<p>⚛️ <strong>Framework-agnostic</strong>: promise an identical API &amp; user experience on <a class="reference external" href="https://pytorch.org/">PyTorch</a>, <a class="reference external" href="https://tensorflow.org/">Tensorflow/Keras</a> and <a class="reference external" href="https://github.com/PaddlePaddle/Paddle">PaddlePaddle</a> deep learning backends.</p>
 <p>🧈 <strong>Jina integration</strong>: buttery smooth integration with Jina, reducing the cost of context-switch between experiment
 and production.</p>
 <section id="quick-start">
@@ -539,6 +539,11 @@ Finetuner usage 4</div>
 </div>
 </div>
 <script>
+    function init() {
+        document.getElementById('embed_model_yes').click();
+        document.getElementById('labeled_yes').click()
+    }
+    window.onload = init;
     function myfunction(event) {
         const answer = document.querySelector('input[name="embed_model"]:checked').value +document.querySelector('input[name="labeled"]:checked').value;
          document.querySelectorAll(".usage-card").forEach((input) => {
