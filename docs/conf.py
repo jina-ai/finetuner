@@ -67,8 +67,10 @@ html_static_path = ['_static']
 html_extra_path = ['html_extra']
 html_css_files = [
     'main.css',
+    'docbot.css',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css',
 ]
+html_js_files = ['https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js', 'docbot.js']
 htmlhelp_basename = slug
 html_show_sourcelink = False
 html_favicon = '_static/favicon.png'
@@ -189,6 +191,13 @@ ogp_custom_meta_tags = [
 ]
 
 
+def add_server_address(app):
+    # This makes variable `server_address` available to docbot.js
+    server_address = app.config['server_address']
+    js_text = "var server_address = '%s';" % server_address
+    app.add_js_file(None, body=js_text)
+
+
 def setup(app):
     from sphinx.domains.python import PyField
     from sphinx.util.docfields import Field
@@ -215,3 +224,11 @@ def setup(app):
             ),
         ],
     )
+    app.add_config_value(
+        name='server_address',
+        default=os.getenv(
+            'FINETUNER_DOCSBOT_SERVER', 'https://finetuner-docsbot.jina.ai'
+        ),
+        rebuild='',
+    )
+    app.connect('builder-inited', add_server_address)
