@@ -34,7 +34,7 @@ and production.
 
 ## How does it work
 
-![](docs/img/finetuner-journey.svg)
+<img src="https://github.com/jina-ai/finetuner/blob/main/docs/img/finetuner-journey.svg?raw=true" alt="Python 3.7 3.8 3.9" title="Finetuner supports Python 3.7 and above">
 
 
 ## Install
