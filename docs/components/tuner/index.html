@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/components/tuner.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
-  <meta property="og:description" content="Tuner is one of the three key components of Finetuner. Given an embedding model and labeled data, Tuner trains the model to fit the data. Labeled data can be constructed by following this. Fit method: Tuner can be called via finetuner.fit(). Its minimum form is as follows: import finetuner finetu..." />
+  <meta property="og:description" content="Tuner is one of the three key components of Finetuner. Given an embedding model and labeled data, Tuner trains the model to fit the data. Labeled data can be constructed by following this. fit method: Tuner can be called via finetuner.fit(). Its minimum form is as follows: import finetuner finetu..." />
   <meta property="og:image" content="../../_images/mlp.png" />
   <meta property="og:image:alt" content="Finetuner Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -322,7 +322,7 @@
 trains the model to fit the data.</p>
 <p>Labeled data can be constructed <a class="reference internal" href="../../basics/data-format/#construct-labeled-data"><span class="std std-ref">by following this</span></a>.</p>
 <section id="fit-method">
-<h2>Fit method<a class="headerlink" href="#fit-method" title="Permalink to this headline">¶</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">fit</span></code> method<a class="headerlink" href="#fit-method" title="Permalink to this headline">¶</a></h2>
 <p>Tuner can be called via <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code>. Its minimum form is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
@@ -333,11 +333,11 @@ trains the model to fit the data.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>Here, <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> must be an <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>; and <code class="docutils literal notranslate"><span class="pre">train_data</span></code> must be <a class="reference internal" href="../../basics/glossary/#term-Labeled-data"><span class="xref std std-term">labeled data</span></a>.</p>
-<section id="loss-function">
-<h3>Loss function<a class="headerlink" href="#loss-function" title="Permalink to this headline">¶</a></h3>
-<p>Loss function is an argument of <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code>.</p>
-<p>By default, Tuner uses <code class="docutils literal notranslate"><span class="pre">CosineSiameseLoss</span></code> for training. You can also use other built-in losses by <code class="docutils literal notranslate"><span class="pre">finetuner.fit(...,</span> <span class="pre">loss='...')</span></code>.</p>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> must be an <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>; and <code class="docutils literal notranslate"><span class="pre">train_data</span></code> must be <a class="reference internal" href="../../basics/glossary/#term-Labeled-data"><span class="xref std std-term">labeled data</span></a>. Other parameters such as <code class="docutils literal notranslate"><span class="pre">epochs</span></code>, <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> can be found in the Developer Reference.</p>
+<section id="loss-argument">
+<h3><code class="docutils literal notranslate"><span class="pre">loss</span></code> argument<a class="headerlink" href="#loss-argument" title="Permalink to this headline">¶</a></h3>
+<p>Loss function of the Tuner can be specified via the <code class="docutils literal notranslate"><span class="pre">loss</span></code> argument of <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code>.</p>
+<p>By default, Tuner uses <code class="docutils literal notranslate"><span class="pre">CosineSiameseLoss</span></code> for training. You can also use other built-in losses by specifying <code class="docutils literal notranslate"><span class="pre">finetuner.fit(...,</span> <span class="pre">loss='...')</span></code>.</p>
 <p>Let <span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span> denotes the predicted embedding for Document <span class="math notranslate nohighlight">\(i\)</span>. The built-in losses are summarized as follows:</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" open="open">
 <summary class="sd-summary-title sd-card-header">
@@ -388,6 +388,10 @@ trains the model to fit the data.</p>
 <p>Although siamese and triplet loss works on pair and triplet inputs respectively, there is <strong>no need</strong> to worry about the data input format. You only need to make sure your data is labeled according to <a class="reference internal" href="../../basics/data-format/#data-format"><span class="std std-ref">Data Format</span></a>, then you can switch between all losses freely.</p>
 </div>
 </section>
+</section>
+<section id="save-method">
+<h2><code class="docutils literal notranslate"><span class="pre">save</span></code> method<a class="headerlink" href="#save-method" title="Permalink to this headline">¶</a></h2>
+<p>After a model is tuned, you can save it by calling <code class="docutils literal notranslate"><span class="pre">finetuner.tuner.save(model,</span> <span class="pre">save_path)</span></code>.</p>
 </section>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
@@ -514,11 +518,22 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
 </figure>
 </li>
 </ol>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Tuner accepts generator as the data input. However, when using generator with <code class="docutils literal notranslate"><span class="pre">epochs</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>, the generator will be exhausted right after the first epoch. In Python, there is no way to “reset” the generator to its “initial” position. To solve this problem, you can wrap your data generator into a lambda function as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
+<span class="kn">from</span> <span class="nn">finetuner.toydata</span> <span class="kn">import</span> <span class="n">generate_qa_match</span>
+
+<span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+  <span class="n">embed_model</span><span class="p">,</span>
+  <span class="n">train_data</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">generate_qa_match</span><span class="p">(</span><span class="n">num_neg</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
+  <span class="n">eval_data</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">generate_qa_match</span><span class="p">(</span><span class="n">num_neg</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+  <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </section>
-</section>
-<section id="save-model">
-<h2>Save model<a class="headerlink" href="#save-model" title="Permalink to this headline">¶</a></h2>
-<p>After a model is tuned, you can save it by calling <code class="docutils literal notranslate"><span class="pre">finetuner.tuner.save(model,</span> <span class="pre">save_path)</span></code>.</p>
 </section>
 </section>
 
@@ -554,7 +569,7 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 19, 2021.
+                    Last updated on Oct 20, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
@@ -580,16 +595,16 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">Tuner</a><ul>
-<li><a class="reference internal" href="#fit-method">Fit method</a><ul>
-<li><a class="reference internal" href="#loss-function">Loss function</a></li>
+<li><a class="reference internal" href="#fit-method"><code class="docutils literal notranslate"><span class="pre">fit</span></code> method</a><ul>
+<li><a class="reference internal" href="#loss-argument"><code class="docutils literal notranslate"><span class="pre">loss</span></code> argument</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#save-method"><code class="docutils literal notranslate"><span class="pre">save</span></code> method</a></li>
 <li><a class="reference internal" href="#examples">Examples</a><ul>
 <li><a class="reference internal" href="#tune-a-simple-mlp-on-fashion-mnist">Tune a simple MLP on Fashion-MNIST</a></li>
 <li><a class="reference internal" href="#tune-a-bidirectional-lstm-on-covid-qa">Tune a bidirectional LSTM on Covid QA</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#save-model">Save model</a></li>
 </ul>
 </li>
 </ul>
