@@ -11,7 +11,7 @@ const app = new Vue({
         },
         qa_pairs: [],
         cur_question: '',
-        root_url: window.location
+        root_url: 'https://finetuner.jina.ai'
     },
     computed: {
         host_address: function () {
