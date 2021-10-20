@@ -6,7 +6,7 @@ Algorithms such as few-shot learning, negative sampling, active learning are imp
 
 Labeler can also be used together with Tailor.
 
-## Fit method
+## `fit` method
 
 ### Use without Tailor
 

@@ -5,7 +5,7 @@ trains the model to fit the data.
 
 Labeled data can be constructed {ref}`by following this<construct-labeled-data>`.
 
-## Fit method
+## `fit` method
 
 Tuner can be called via `finetuner.fit()`. Its minimum form is as follows:
 
@@ -19,14 +19,13 @@ finetuner.fit(
 )
 ```
 
+Here, `embed_model` must be an {term}`embedding model`; and `train_data` must be {term}`labeled data`. Other parameters such as `epochs`, `optimizer` can be found in the Developer Reference.
 
-Here, `embed_model` must be an {term}`embedding model`; and `train_data` must be {term}`labeled data`.
+### `loss` argument
 
-### Loss function
+Loss function of the Tuner can be specified via the `loss` argument of `finetuner.fit()`.
 
-Loss function is an argument of `finetuner.fit()`.
-
-By default, Tuner uses `CosineSiameseLoss` for training. You can also use other built-in losses by `finetuner.fit(..., loss='...')`.
+By default, Tuner uses `CosineSiameseLoss` for training. You can also use other built-in losses by specifying `finetuner.fit(..., loss='...')`.
 
 Let $\mathbf{x}_i$ denotes the predicted embedding for Document $i$. The built-in losses are summarized as follows:
 
@@ -63,6 +62,11 @@ $$\ell_{i, p, n}=\max(0, \left \|\mathbf{x}_i, \mathbf{x}_p \right \|-\left \|\m
 Although siamese and triplet loss works on pair and triplet inputs respectively, there is **no need** to worry about the data input format. You only need to make sure your data is labeled according to {ref}`data-format`, then you can switch between all losses freely.
 
 ```
+
+## `save` method
+
+After a model is tuned, you can save it by calling `finetuner.tuner.save(model, save_path)`.
+
 
 ## Examples
 
@@ -191,8 +195,19 @@ Although siamese and triplet loss works on pair and triplet inputs respectively,
    :align: center
    ```
 
-## Save model
+````{caution}
+Tuner accepts generator as the data input. However, when using generator with `epochs > 1`, the generator will be exhausted right after the first epoch. In Python, there is no way to "reset" the generator to its "initial" position. To solve this problem, you can wrap your data generator into a lambda function as follows:
 
-After a model is tuned, you can save it by calling `finetuner.tuner.save(model, save_path)`.
+```python
+import finetuner
+from finetuner.toydata import generate_qa_match
 
+finetuner.fit(
+  embed_model,
+  train_data=lambda: generate_qa_match(num_neg=5),
+  eval_data=lambda: generate_qa_match(num_neg=5)
+  epochs=10
+)
+```
 
+````
