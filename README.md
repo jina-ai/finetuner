@@ -25,7 +25,7 @@ applications.
 🔱 **Powerful yet intuitive**: all you need is `finetuner.fit()` - a one-liner that unlocks rich features such as
 siamese/triplet network, interactive labeling, layer pruning, weights freezing, dimensionality reduction.
 
-⚛️ **Framework-agnostic**: promise an identical API & user experience on [PyTorch](https://pytorch.org/), [Tensorflow/Keras](https://tensorflow.org/) or [PaddlePaddle](https://github.com/PaddlePaddle/Paddle) deep learning backends.
+⚛️ **Framework-agnostic**: promise an identical API & user experience on [PyTorch](https://pytorch.org/), [Tensorflow/Keras](https://tensorflow.org/) and [PaddlePaddle](https://github.com/PaddlePaddle/Paddle) deep learning backends.
 
 🧈 **Jina integration**: buttery smooth integration with Jina, reducing the cost of context-switch between experiment
 and production.
