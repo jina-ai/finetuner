@@ -25,7 +25,7 @@ applications.
 🔱 **Powerful yet intuitive**: all you need is `finetuner.fit()` - a one-liner that unlocks rich features such as
 siamese/triplet network, interactive labeling, layer pruning, weights freezing, dimensionality reduction.
 
-⚛️ **Framework-agnostic**: promise an identical API & user experience on [PyTorch](https://pytorch.org/), [Tensorflow/Keras](https://tensorflow.org/) and [PaddlePaddle](https://github.com/PaddlePaddle/Paddle) deep learning backends.
+⚛️ **Framework-agnostic**: promise an identical API & user experience on PyTorch, Tensorflow/Keras and PaddlePaddle deep learning backends.
 
 🧈 **Jina integration**: buttery smooth integration with Jina, reducing the cost of context-switch between experiment
 and production.
@@ -39,7 +39,7 @@ and production.
 
 ## Install
 
-Requires Python 3.7+ and *one of* PyTorch (>=1.9) or Tensorflow (>=2.5) or PaddlePaddle installed on Linux/MacOS.
+Requires Python 3.7+ and *one of* [PyTorch](https://pytorch.org/)(>=1.9) or [Tensorflow](https://tensorflow.org/)(>=2.5) or [PaddlePaddle](https://github.com/PaddlePaddle/Paddle) installed on Linux/MacOS.
 
 ```bash
 pip install finetuner
