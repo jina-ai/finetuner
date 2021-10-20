@@ -162,7 +162,7 @@ linkcheck_anchors = False
 
 ogp_site_url = 'https://finetuner.jina.ai/'
 ogp_image = 'https://finetuner.jina.ai/_static/banner.png'
-ogp_use_first_image = True
+ogp_use_first_image = False
 ogp_description_length = 300
 ogp_type = 'website'
 ogp_site_name = 'Finetuner Documentation'
