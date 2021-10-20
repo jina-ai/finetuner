@@ -48,26 +48,17 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
-        'Programming Language :: Unix Shell',
         'Environment :: Console',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
-        'Topic :: Database :: Database Engines/Servers',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
-        'Topic :: Internet :: WWW/HTTP :: Indexing/Search',
-        'Topic :: Scientific/Engineering :: Image Recognition',
-        'Topic :: Multimedia :: Video',
-        'Topic :: Scientific/Engineering',
-        'Topic :: Scientific/Engineering :: Mathematics',
-        'Topic :: Software Development',
-        'Topic :: Software Development :: Libraries',
-        'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     project_urls={
         'Documentation': 'https://finetuner.jina.ai',
         'Source': 'https://github.com/jina-ai/finetuner/',
         'Tracker': 'https://github.com/jina-ai/finetuner/issues',
     },
-    keywords='jina cloud-native neural-search query search index elastic neural-network encoding '
-    'embedding serving docker container image video audio deep-learning',
+    keywords='jina neural-search neural-network deep-learning pretraining '
+    'fine-tuning pretrained-models triplet-loss paddlepaddle metric-learning labeling-tool siamese-network '
+    'few-shot-learning',
 )
