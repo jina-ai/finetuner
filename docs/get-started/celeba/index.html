@@ -343,6 +343,7 @@
 
 
 <span class="k">def</span> <span class="nf">data_gen</span><span class="p">():</span>
+    <span class="c1"># please change the file path to your data path</span>
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">from_files</span><span class="p">(</span><span class="s1">'/Users/jina/Downloads/img_align_celeba/*.jpg'</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">to_dataturi</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">d</span><span class="o">.</span><span class="n">convert_image_datauri_to_blob</span><span class="p">(</span><span class="n">color_axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># no need of tf</span>
         <span class="k">yield</span> <span class="n">d</span>
