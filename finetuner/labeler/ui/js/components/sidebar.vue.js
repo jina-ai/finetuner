@@ -10,7 +10,6 @@ const sidebar = {
         advancedConfig: Object,
         saveProgress: Function,
         nextBatch: Function,
-        askSame: Function
     },
     template: `
     <div class="d-flex flex-column flex-shrink-0 p-3 sidebar">
@@ -80,10 +79,10 @@ const sidebar = {
                             </div>
                         </div>
                         <div class="row my-1">
-                            <label class="col-sm-6 col-form-label">Keep asking same</label>
+                            <label class="col-sm-6 col-form-label">Keep same question</label>
                             <div class="col-sm-6 d-flex align-items-center justify-content-center">
                                 <input class="form-check-input"  type="checkbox"
-                                        v-model="labelerConfig.same_question" v-on:input="askSame()">
+                                        v-model="labelerConfig.same_question" v-on:input="nextBatch(true, false)">
                             </div>
                         </div>
                         <div class="row my-1">

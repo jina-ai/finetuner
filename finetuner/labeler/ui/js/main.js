@@ -160,16 +160,13 @@ const app = new Vue({
                 return doc.tags[app.labeler_config.tags]
             }
         },
-        ask_same_question: function () {
-            app.labeler_config.example_per_view = 1
-            app.next_batch(true, false)
-        },
         next_batch: function (clear_exist=true, update_start_idx=true) {
             if (clear_exist) {
                 app.cur_batch = []
             }
-            let end_idx = app.labeler_config.start_idx + (app.labeler_config.example_per_view - app.cur_batch.length)
-            if (end_idx < app.labeler_config.start_idx) {
+            let new_examples_to_query = Math.max(0, app.labeler_config.example_per_view - app.cur_batch.length)
+            let end_idx = app.labeler_config.start_idx + new_examples_to_query
+            if (end_idx <= app.labeler_config.start_idx) {
                 return
             }
             app.is_busy = true
