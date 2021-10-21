@@ -22,7 +22,8 @@ const app = new Vue({
         labeler_config: {
             content: 'uri',
             style: 'image',
-            example_per_view: 5,
+            example_per_view: 3,
+            same_question: false,
             topk_per_example: 9,
             tags: '',
             start_idx: 0,
@@ -122,7 +123,11 @@ const app = new Vue({
             });
             app.progress_stats.total.value++
             app.fit_doc(doc)
-            app.next_batch()
+            if (app.labeler_config.same_question) {
+                app.next_batch(true, false)
+            } else {
+                app.next_batch(false)
+            }
         },
         fit_doc: function (doc) {
             app.is_busy = true
@@ -155,13 +160,18 @@ const app = new Vue({
                 return doc.tags[app.labeler_config.tags]
             }
         },
-        next_batch: function () {
+        ask_same_question: function () {
+            app.labeler_config.example_per_view = 1
+            app.next_batch(true, false)
+        },
+        next_batch: function (clear_exist=true, update_start_idx=true) {
+            if (clear_exist) {
+                app.cur_batch = []
+            }
             let end_idx = app.labeler_config.start_idx + (app.labeler_config.example_per_view - app.cur_batch.length)
-            if (end_idx === app.labeler_config.start_idx) {
+            if (end_idx < app.labeler_config.start_idx) {
                 return
             }
-            let start_idx = app.labeler_config.start_idx
-            app.labeler_config.start_idx = end_idx
             app.is_busy = true
             app.is_conn_broken = false
             $.ajax({
@@ -170,7 +180,7 @@ const app = new Vue({
                 data: JSON.stringify({
                     data: [],
                     parameters: {
-                        'start': start_idx,
+                        'start': app.labeler_config.start_idx,
                         'end': end_idx,
                         'topk': app.labeler_config.topk_per_example,
                         'sample_size': app.advanced_config.sample_size.value
@@ -179,8 +189,15 @@ const app = new Vue({
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
             }).success(function (data, textStatus, jqXHR) {
+                if (update_start_idx) {
+                    app.labeler_config.start_idx = end_idx
+                }
+
                 app.cur_batch.push(...data['data'].docs)
-                app.tags = Object.keys(data.data.docs[0].tags)
+                try {
+                    app.tags = Object.keys(data.data.docs[0].tags)
+                } catch (e) {}
+
                 app.is_busy = false
                 app.progress_stats.this_session.value = app.cur_batch.length
             }).fail(function () {

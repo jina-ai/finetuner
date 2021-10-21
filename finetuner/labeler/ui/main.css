@@ -2,6 +2,7 @@ body {
     min-height: 100vh;
     min-height: -webkit-fill-available;
     font-family: 'Poppins', sans-serif;
+    font-weight: lighter;
 }
 
 html {

@@ -9,6 +9,8 @@ const sidebar = {
         negativeRate: Number,
         advancedConfig: Object,
         saveProgress: Function,
+        nextBatch: Function,
+        askSame: Function
     },
     template: `
     <div class="d-flex flex-column flex-shrink-0 p-3 sidebar">
@@ -62,17 +64,33 @@ const sidebar = {
                             </div>
                         </div>
                         <div class="row my-1">
+                            <label class="col-sm-6 col-form-label">Start question</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="number" min="0"
+                                        v-model.number="labelerConfig.start_idx" v-on:input="nextBatch()" 
+                                        :disabled="labelerConfig.same_question">
+                            </div>
+                        </div>
+                        <div class="row my-1">
                             <label class="col-sm-6 col-form-label">Questions/Session</label>
                             <div class="col-sm-6">
                                 <input class="form-control" type="number" min="1" max="9"
-                                        v-model.number="labelerConfig.example_per_view">
+                                        v-model.number="labelerConfig.example_per_view" v-on:input="nextBatch()"
+                                        :disabled="labelerConfig.same_question">
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <label class="col-sm-6 col-form-label">Keep asking same</label>
+                            <div class="col-sm-6 d-flex align-items-center justify-content-center">
+                                <input class="form-check-input"  type="checkbox"
+                                        v-model="labelerConfig.same_question" v-on:input="askSame()">
                             </div>
                         </div>
                         <div class="row my-1">
                             <label class="col-sm-6 col-form-label">TopK/Question</label>
                             <div class="col-sm-6">
                                 <input class="form-control" type="number" min="1" max="9"
-                                        v-model.number="labelerConfig.topk_per_example">
+                                        v-model.number="labelerConfig.topk_per_example" v-on:input="nextBatch()">
                             </div>
                         </div>
                     </div>
