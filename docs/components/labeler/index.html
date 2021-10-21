@@ -419,8 +419,10 @@
 </ul>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Content</span> <span class="pre">Type</span></code>: you need to select the right content type to have the correct rendering on the the question data.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Examples/View</span></code>: The maximum number of labeling examples on the frontend.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">TopK/Examples</span></code>: The maximum number of results for each example on the frontend.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Questions/session</span></code>: The maximum number of labeling examples on the frontend.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TopK/Question</span></code>: The maximum number of results for each example on the frontend.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Start</span> <span class="pre">question</span></code>: The starting index of the question</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Keep</span> <span class="pre">same</span> <span class="pre">question</span></code>: If set, then <code class="docutils literal notranslate"><span class="pre">Start</span> <span class="pre">question</span></code> and <code class="docutils literal notranslate"><span class="pre">Questions/session</span></code> are locked. You will always get the same questions for labeling.</p></li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -428,6 +430,10 @@
 <figure class="align-center">
 <a class="reference internal image-reference" href="../../_images/bad-config.png"><img alt="../../_images/bad-config.png" src="../../_images/bad-config.png" style="width: 50%;"/></a>
 </figure>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can use <code class="docutils literal notranslate"><span class="pre">Keep</span> <span class="pre">same</span> <span class="pre">question</span></code> to debug your model: by fixing the query and observing how the model behaves after learning from your new labels.</p>
 </div>
 </section>
 <section id="progress">

@@ -116,8 +116,10 @@ The view section collects the configs determining how frontend renders the quest
 - `Field`: represents the field of `Document` your question data come from.
   - `Tags Key`: when you select `Field` as `.tags`, this textbox will show up, asking you to further specify which `.tags` key your question data comes from.
 - `Content Type`: you need to select the right content type to have the correct rendering on the the question data.
-- `Examples/View`: The maximum number of labeling examples on the frontend.
-- `TopK/Examples`: The maximum number of results for each example on the frontend.
+- `Questions/session`: The maximum number of labeling examples on the frontend.
+- `TopK/Question`: The maximum number of results for each example on the frontend.
+- `Start question`: The starting index of the question
+- `Keep same question`: If set, then `Start question` and `Questions/session` are locked. You will always get the same questions for labeling. 
 
 ````{tip}
 If your question panel looks like the image below, this means rendering is not setup correctly. You need to change `Field`, `Content Type` and `Tags Key` to correct the render setup.
@@ -129,6 +131,9 @@ If your question panel looks like the image below, this means rendering is not s
 
 ````
 
+```{tip}
+You can use `Keep same question` to debug your model: by fixing the query and observing how the model behaves after learning from your new labels.
+```
 
 #### Progress
 
