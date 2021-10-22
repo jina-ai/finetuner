@@ -44,6 +44,12 @@ def fit(
     :param eval_data: Data on which to evaluate the model at the end of each epoch
     :param epochs: Number of epochs to train the model
     :param batch_size: The batch size to use for training and evaluation
+    :param loss: Which loss to use in training. Supported
+        losses are:
+        - ``CosineSiameseLoss`` for Siamese network with cosine distance
+        - ``EuclideanSiameseLoss`` for Siamese network with eculidean distance
+        - ``CosineTripletLoss`` for Triplet network with cosine distance
+        - ``EuclideanTripletLoss`` for Triplet network with eculidean distance
     :param learning_rate: Learning rate to use in training
     :param optimizer: Which optimizer to use in training. Supported
         values/optimizers are:

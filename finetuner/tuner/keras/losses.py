@@ -34,7 +34,7 @@ class CosineSiameseLoss(BaseLoss, Layer):
 
 
 class EuclideanSiameseLoss(BaseLoss, Layer):
-    """Computes the loss for a siamese network using cosine distance.
+    """Computes the loss for a siamese network using eculidean distance.
 
     This loss is also known as contrastive loss.
 
