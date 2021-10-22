@@ -13,14 +13,27 @@ import torch
 
 from finetuner.toydata import generate_qa_match
 
+cur_dir = os.path.dirname(os.path.abspath(__file__))
+
 
 class LastCellPT(torch.nn.Module):
+
+    def __init__(self, extra_param, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._extra_param = extra_param
+        assert self._extra_param == 1
+
     def forward(self, x):
         out, _ = x
         return out[:, -1, :]
 
 
 class LastCellPD(paddle.nn.Layer):
+    def __init__(self, extra_param, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._extra_param = extra_param
+        assert self._extra_param == 1
+
     def forward(self, x):
         out, _ = x
         return out[:, -1, :]
@@ -61,6 +74,8 @@ def _run(framework_name, head_layer, port_expose):
         head_layer=head_layer,
         interactive=True,
         port_expose=port_expose,
+        model_definition_file_path=__file__,
+        extra_kwargs_model_init={'extra_param': 1},
     )
 
 

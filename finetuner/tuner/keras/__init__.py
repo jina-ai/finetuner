@@ -1,6 +1,5 @@
 from typing import Optional
 
-import numpy as np
 import tensorflow as tf
 from jina.helper import cached_property
 from jina.logging.profile import ProgressBar
