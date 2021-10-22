@@ -20,6 +20,21 @@ def fit(
     loss: str = 'CosineSiameseLoss',
     **kwargs,
 ) -> None:
+    """Fit the model in an interactive UI.
+
+    :param embed_model: The embedding model to fine-tune
+    :param train_data: Data on which to train the model
+    :param clear_labels_on_start: If set True, will remove all labeled data.
+    :param port_expose: The port to expose.
+    :param runtime_backend: The parallel backend of the runtime inside the Pea, either ``thread`` or ``process``.
+    :param loss: Which loss to use in training. Supported
+        losses are:
+        - ``CosineSiameseLoss`` for Siamese network with cosine distance
+        - ``EuclideanSiameseLoss`` for Siamese network with eculidean distance
+        - ``CosineTripletLoss`` for Triplet network with cosine distance
+        - ``EuclideanTripletLoss`` for Triplet network with eculidean distance
+    :param kwargs: Additional keyword arguments.
+    """
     dam_path = tempfile.mkdtemp()
 
     class MyExecutor(FTExecutor):

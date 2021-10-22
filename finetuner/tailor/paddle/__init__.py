@@ -19,6 +19,11 @@ class PaddleTailor(BaseTailor):
     """
 
     def summary(self, skip_identity_layer: bool = False) -> LayerInfoType:
+        """Interpret the DNN model and produce model information.
+
+        :param skip_identity_layer: If skip identity layer.
+        :return: The model information stored as dict.
+        """
         if not self._input_size:
             raise ValueError(
                 f'{self.__class__} requires a valid `input_size`, but receiving {self._input_size}'
@@ -134,6 +139,15 @@ class PaddleTailor(BaseTailor):
         output_dim: Optional[int] = None,
         freeze: bool = False,
     ) -> AnyDNN:
+        """Convert a general model from :py:attr:`.model` to an embedding model.
+
+        :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
+            will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
+            To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
+        :param output_dim: the dimensionality of the embedding output.
+        :param freeze: if set, then freeze all weights of the original model.
+        :return: Converted embedding model.
+        """
         model = copy.deepcopy(self._model)
 
         if layer_name:

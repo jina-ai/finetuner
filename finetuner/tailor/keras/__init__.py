@@ -11,6 +11,12 @@ class KerasTailor(BaseTailor):
     """Tailor class for Keras DNN models."""
 
     def summary(self, skip_identity_layer: bool = False) -> LayerInfoType:
+        """Interpret the DNN model and produce model information.
+
+        :param skip_identity_layer: If skip identity layer.
+        :return: The model information stored as dict.
+        """
+
         def _get_output_shape(layer):
             try:
                 return layer.output_shape
@@ -69,6 +75,16 @@ class KerasTailor(BaseTailor):
         output_dim: Optional[int] = None,
         freeze: bool = False,
     ) -> AnyDNN:
+
+        """Convert a general model from :py:attr:`.model` to an embedding model.
+
+        :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
+            will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
+            To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
+        :param output_dim: the dimensionality of the embedding output.
+        :param freeze: if set, then freeze all weights of the original model.
+        :return: Converted embedding model.
+        """
 
         if layer_name:
             _all_embed_layers = {l['name']: l for l in self.embedding_layers}
