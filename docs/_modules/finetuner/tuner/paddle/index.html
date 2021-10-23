@@ -244,6 +244,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.embedding/">finetuner.embedding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.helper/">finetuner.helper module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.toydata/">finetuner.toydata module</a></li>
 </ul>
@@ -454,12 +455,7 @@
 <span class="sd">            ``"cpu"`` and ``"cuda"`` (for GPU)</span>
 <span class="sd">        """</span>
 
-        <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">'cuda'</span><span class="p">:</span>
-            <span class="n">paddle</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="s1">'gpu:0'</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">'cpu'</span><span class="p">:</span>
-            <span class="n">paddle</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="s1">'cpu'</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Device </span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s1"> not recognized'</span><span class="p">)</span>
+        <span class="n">get_device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>  <span class="c1">#: this actually sets the device in Paddle</span>
 
         <span class="n">_optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_optimizer</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">optimizer_kwargs</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">)</span>
 
@@ -497,6 +493,21 @@
 <span class="sd">        :param kwargs: Keyword arguments to pass to ``paddle.save`` function</span>
 <span class="sd">        """</span>
         <span class="n">paddle</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="get_device"><a class="viewcode-back" href="../../../../api/finetuner.tuner.paddle/#finetuner.tuner.paddle.get_device">[docs]</a><span class="k">def</span> <span class="nf">get_device</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">"""Get Paddle compute device.</span>
+
+<span class="sd">    :param device: device name</span>
+<span class="sd">    """</span>
+
+    <span class="c1"># translate our own alias into framework-compatible ones</span>
+    <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">'cuda'</span><span class="p">:</span>
+        <span class="n">paddle</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="s1">'gpu:0'</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">'cpu'</span><span class="p">:</span>
+        <span class="n">paddle</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="s1">'cpu'</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">paddle</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 </pre></div>
             </article>
             <footer>
@@ -508,7 +519,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 21, 2021.
+                    Last updated on Oct 23, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

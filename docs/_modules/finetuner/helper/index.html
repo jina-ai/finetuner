@@ -244,6 +244,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.embedding/">finetuner.embedding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.helper/">finetuner.helper module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.toydata/">finetuner.toydata module</a></li>
 </ul>
@@ -350,9 +351,7 @@
     <span class="k">elif</span> <span class="s1">'paddle'</span> <span class="ow">in</span> <span class="n">dnn_model</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">'paddle'</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">'can not determine the backend from embed_model from </span><span class="si">{</span><span class="n">dnn_model</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">'</span>
-        <span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'can not determine the backend of </span><span class="si">{</span><span class="n">dnn_model</span><span class="si">!r}</span><span class="s1">'</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="is_seq_int"><a class="viewcode-back" href="../../../api/finetuner.helper/#finetuner.helper.is_seq_int">[docs]</a><span class="k">def</span> <span class="nf">is_seq_int</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -369,7 +368,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 21, 2021.
+                    Last updated on Oct 23, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

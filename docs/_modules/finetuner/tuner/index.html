@@ -244,6 +244,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.embedding/">finetuner.embedding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.helper/">finetuner.helper module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.toydata/">finetuner.toydata module</a></li>
 </ul>
@@ -338,6 +339,12 @@
 <span class="sd">    :param eval_data: Data on which to evaluate the model at the end of each epoch</span>
 <span class="sd">    :param epochs: Number of epochs to train the model</span>
 <span class="sd">    :param batch_size: The batch size to use for training and evaluation</span>
+<span class="sd">    :param loss: Which loss to use in training. Supported</span>
+<span class="sd">        losses are:</span>
+<span class="sd">        - ``CosineSiameseLoss`` for Siamese network with cosine distance</span>
+<span class="sd">        - ``EuclideanSiameseLoss`` for Siamese network with eculidean distance</span>
+<span class="sd">        - ``CosineTripletLoss`` for Triplet network with cosine distance</span>
+<span class="sd">        - ``EuclideanTripletLoss`` for Triplet network with eculidean distance</span>
 <span class="sd">    :param learning_rate: Learning rate to use in training</span>
 <span class="sd">    :param optimizer: Which optimizer to use in training. Supported</span>
 <span class="sd">        values/optimizers are:</span>
@@ -397,7 +404,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 21, 2021.
+                    Last updated on Oct 23, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

@@ -244,6 +244,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.embedding/">finetuner.embedding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.helper/">finetuner.helper module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.toydata/">finetuner.toydata module</a></li>
 </ul>
@@ -313,6 +314,11 @@
 <span class="sd">    """</span>
 
 <div class="viewcode-block" id="PaddleTailor.summary"><a class="viewcode-back" href="../../../../api/finetuner.tailor.paddle/#finetuner.tailor.paddle.PaddleTailor.summary">[docs]</a>    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skip_identity_layer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayerInfoType</span><span class="p">:</span>
+        <span class="sd">"""Interpret the DNN model and produce model information.</span>
+
+<span class="sd">        :param skip_identity_layer: If skip identity layer.</span>
+<span class="sd">        :return: The model information stored as dict.</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1"> requires a valid `input_size`, but receiving </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="si">}</span><span class="s1">'</span>
@@ -428,6 +434,15 @@
         <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
+        <span class="sd">"""Convert a general model from :py:attr:`.model` to an embedding model.</span>
+
+<span class="sd">        :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer</span>
+<span class="sd">            will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.</span>
+<span class="sd">            To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.</span>
+<span class="sd">        :param output_dim: the dimensionality of the embedding output.</span>
+<span class="sd">        :param freeze: if set, then freeze all weights of the original model.</span>
+<span class="sd">        :return: Converted embedding model.</span>
+<span class="sd">        """</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">layer_name</span><span class="p">:</span>
@@ -524,7 +539,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 21, 2021.
+                    Last updated on Oct 23, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

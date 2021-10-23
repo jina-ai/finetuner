@@ -270,6 +270,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.embedding/">finetuner.embedding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.helper/">finetuner.helper module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.toydata/">finetuner.toydata module</a></li>
 </ul>
@@ -384,6 +385,12 @@
 <li><p><strong>eval_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentSequence, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, ~DocumentSequence], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Data on which to evaluate the model at the end of each epoch</p></li>
 <li><p><strong>epochs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of epochs to train the model</p></li>
 <li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The batch size to use for training and evaluation</p></li>
+<li><p><strong>loss</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Which loss to use in training. Supported
+losses are:
+- <code class="docutils literal notranslate"><span class="pre">CosineSiameseLoss</span></code> for Siamese network with cosine distance
+- <code class="docutils literal notranslate"><span class="pre">EuclideanSiameseLoss</span></code> for Siamese network with eculidean distance
+- <code class="docutils literal notranslate"><span class="pre">CosineTripletLoss</span></code> for Triplet network with cosine distance
+- <code class="docutils literal notranslate"><span class="pre">EuclideanTripletLoss</span></code> for Triplet network with eculidean distance</p></li>
 <li><p><strong>learning_rate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Learning rate to use in training</p></li>
 <li><p><strong>optimizer</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Which optimizer to use in training. Supported
 values/optimizers are:
@@ -469,7 +476,7 @@ method</p></li>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 21, 2021.
+                    Last updated on Oct 23, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

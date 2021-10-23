@@ -244,6 +244,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.embedding/">finetuner.embedding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.helper/">finetuner.helper module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.toydata/">finetuner.toydata module</a></li>
 </ul>
@@ -326,6 +327,17 @@
     <span class="n">input_dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'float32'</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
+    <span class="sd">"""Convert a general model from :py:attr:`.model` to an embedding model.</span>
+
+<span class="sd">    :param model: The DNN model to be converted.</span>
+<span class="sd">    :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer</span>
+<span class="sd">        will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.</span>
+<span class="sd">        To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.</span>
+<span class="sd">    :param output_dim: the dimensionality of the embedding output.</span>
+<span class="sd">    :param freeze: if set, then freeze all weights of the original model.</span>
+<span class="sd">    :param input_size: The input size of the DNN model.</span>
+<span class="sd">    :param input_dtype: The input data type of the DNN model.</span>
+<span class="sd">    """</span>
     <span class="n">ft</span> <span class="o">=</span> <span class="n">_get_tailor_class</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ft</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">input_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">to_embedding_model</span><span class="p">(</span>
@@ -338,6 +350,12 @@
     <span class="n">input_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">input_dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'float32'</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
+    <span class="sd">"""Display the model architecture from :py:attr:`.summary` in a table.</span>
+
+<span class="sd">    :param model: The DNN model to display.</span>
+<span class="sd">    :param input_size: The input size of the DNN model.</span>
+<span class="sd">    :param input_dtype: The input data type of the DNN model.</span>
+<span class="sd">    """</span>
     <span class="n">ft</span> <span class="o">=</span> <span class="n">_get_tailor_class</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ft</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">input_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">display</span><span class="p">()</span></div>
@@ -352,7 +370,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 21, 2021.
+                    Last updated on Oct 23, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

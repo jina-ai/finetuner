@@ -244,6 +244,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.embedding/">finetuner.embedding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.helper/">finetuner.helper module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.toydata/">finetuner.toydata module</a></li>
 </ul>
@@ -314,6 +315,21 @@
     <span class="n">loss</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'CosineSiameseLoss'</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">"""Fit the model in an interactive UI.</span>
+
+<span class="sd">    :param embed_model: The embedding model to fine-tune</span>
+<span class="sd">    :param train_data: Data on which to train the model</span>
+<span class="sd">    :param clear_labels_on_start: If set True, will remove all labeled data.</span>
+<span class="sd">    :param port_expose: The port to expose.</span>
+<span class="sd">    :param runtime_backend: The parallel backend of the runtime inside the Pea, either ``thread`` or ``process``.</span>
+<span class="sd">    :param loss: Which loss to use in training. Supported</span>
+<span class="sd">        losses are:</span>
+<span class="sd">        - ``CosineSiameseLoss`` for Siamese network with cosine distance</span>
+<span class="sd">        - ``EuclideanSiameseLoss`` for Siamese network with eculidean distance</span>
+<span class="sd">        - ``CosineTripletLoss`` for Triplet network with cosine distance</span>
+<span class="sd">        - ``EuclideanTripletLoss`` for Triplet network with eculidean distance</span>
+<span class="sd">    :param kwargs: Additional keyword arguments.</span>
+<span class="sd">    """</span>
     <span class="n">dam_path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
 
     <span class="k">class</span> <span class="nc">MyExecutor</span><span class="p">(</span><span class="n">FTExecutor</span><span class="p">):</span>
@@ -398,7 +414,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 21, 2021.
+                    Last updated on Oct 23, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

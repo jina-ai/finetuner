@@ -244,6 +244,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.embedding/">finetuner.embedding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.helper/">finetuner.helper module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.toydata/">finetuner.toydata module</a></li>
 </ul>
@@ -305,7 +306,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 <span class="kn">from</span> <span class="nn">jina.logging.profile</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
-<span class="kn">from</span> <span class="nn">jina.types.document</span> <span class="kn">import</span> <span class="n">png_to_buffer</span>
 
 <span class="kn">from</span> <span class="nn">finetuner</span> <span class="kn">import</span> <span class="n">__default_tag_key__</span>
 
@@ -600,12 +600,7 @@
                 <span class="s1">'class'</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">lbl</span><span class="p">),</span>
             <span class="p">},</span>
         <span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">'channels'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">png_to_buffer</span><span class="p">(</span>
-                <span class="n">raw_img</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">resize_method</span><span class="o">=</span><span class="s1">'BILINEAR'</span>
-            <span class="p">)</span>
-            <span class="n">_d</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="s1">'data:image/png;base64,'</span> <span class="o">+</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">png_bytes</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="n">_d</span><span class="o">.</span><span class="n">convert_image_blob_to_uri</span><span class="p">()</span>
         <span class="k">yield</span> <span class="n">_d</span>
 
 
@@ -658,7 +653,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 21, 2021.
+                    Last updated on Oct 23, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

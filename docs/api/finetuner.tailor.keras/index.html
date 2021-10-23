@@ -270,6 +270,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.embedding/">finetuner.embedding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.helper/">finetuner.helper module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.toydata/">finetuner.toydata module</a></li>
 </ul>
@@ -340,16 +341,16 @@ of <code class="docutils literal notranslate"><span class="pre">input_size</span
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tailor.keras.KerasTailor.summary">
 <span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">skip_identity_layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tailor/keras/#KerasTailor.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tailor.keras.KerasTailor.summary" title="Permalink to this definition">¶</a></dt>
-<dd><p>The summary of the model architecture. To list all potential embedding layers, use <a class="reference internal" href="../finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.embedding_layers" title="finetuner.tailor.base.BaseTailor.embedding_layers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding_layers</span></code></a>.</p>
+<dd><p>Interpret the DNN model and produce model information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>include_identity_layer</strong> – if set, then identity layers are included and returned.</p>
+<dd class="field-odd"><p><strong>skip_identity_layer</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If skip identity layer.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>all layers info as Dict.</p>
+<dd class="field-odd"><p>The model information stored as dict.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -369,6 +370,9 @@ To see all available names you can check <code class="docutils literal notransla
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>~AnyDNN</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Converted embedding model.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -408,7 +412,7 @@ To see all available names you can check <code class="docutils literal notransla
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 21, 2021.
+                    Last updated on Oct 23, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

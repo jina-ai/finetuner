@@ -269,6 +269,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.embedding/">finetuner.embedding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.helper/">finetuner.helper module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.toydata/">finetuner.toydata module</a></li>
 </ul>
@@ -350,7 +351,7 @@ between both objects.</p>
 <dt class="sig sig-object py" id="finetuner.tuner.keras.losses.EuclideanSiameseLoss">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.keras.losses.</span></span><span class="sig-name descname"><span class="pre">EuclideanSiameseLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/keras/losses/#EuclideanSiameseLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.keras.losses.EuclideanSiameseLoss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.keras.layers.</span></code></p>
-<p>Computes the loss for a siamese network using cosine distance.</p>
+<p>Computes the loss for a siamese network using eculidean distance.</p>
 <p>This loss is also known as contrastive loss.</p>
 <p>The loss being optimized equals:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">is_sim</span> <span class="o">*</span> <span class="n">dist</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">is_sim</span><span class="p">)</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">margin</span> <span class="o">-</span> <span class="n">dist</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span><span class="o">^</span><span class="mi">2</span>
@@ -471,7 +472,7 @@ anchor-positive distances.</p>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 21, 2021.
+                    Last updated on Oct 23, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
