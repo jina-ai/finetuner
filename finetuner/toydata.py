@@ -11,7 +11,6 @@ from typing import Optional, Generator
 import numpy as np
 from jina import Document, DocumentArray
 from jina.logging.profile import ProgressBar
-from jina.types.document import png_to_buffer
 
 from finetuner import __default_tag_key__
 
@@ -306,12 +305,7 @@ def _download_fashion_doc(
                 'class': int(lbl),
             },
         )
-
-        if kwargs['channels'] == 0:
-            png_bytes = png_to_buffer(
-                raw_img, width=28, height=28, resize_method='BILINEAR'
-            )
-            _d.uri = 'data:image/png;base64,' + base64.b64encode(png_bytes).decode()
+        _d.convert_image_blob_to_uri()
         yield _d
 
 
