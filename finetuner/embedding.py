@@ -49,7 +49,7 @@ def _set_embeddings_torch(
     tensor = torch.tensor(docs.blobs, device=device)
     embed_model = embed_model.to(device)
     with torch.inference_mode():
-        embeddings = embed_model(tensor).detach().numpy()
+        embeddings = embed_model(tensor).cpu().detach().numpy()
 
     docs.embeddings = embeddings
 
