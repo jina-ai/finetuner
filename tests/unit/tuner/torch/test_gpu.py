@@ -1,6 +1,10 @@
 import pytest
 import torch
-from jina import DocumentArray
+import torch.nn as nn
+from jina import DocumentArray, DocumentArrayMemmap
+
+from finetuner.embedding import set_embeddings
+from finetuner.toydata import generate_fashion_match
 from finetuner.tuner.pytorch import PytorchTuner
 
 
@@ -30,3 +34,26 @@ def test_gpu_pytorch(generate_random_triplets, loss):
 
     # Test the model was moved (by checking one of its parameters)
     assert next(embed_model.parameters()).device.type == 'cuda'
+
+
+@pytest.mark.gpu
+def test_embedding_docs_gpu(tmpdir):
+    # works for DA
+    embed_model = nn.Sequential(
+        nn.Flatten(),
+        nn.Linear(
+            in_features=28 * 28,
+            out_features=128,
+        ),
+        nn.ReLU(),
+        nn.Linear(in_features=128, out_features=32),
+    )
+    docs = DocumentArray(generate_fashion_match(num_total=100))
+    set_embeddings(docs, embed_model)
+    assert docs.embeddings.shape == (100, 32)
+
+    # works for DAM
+    dam = DocumentArrayMemmap(tmpdir)
+    dam.extend(generate_fashion_match(num_total=42))
+    set_embeddings(dam, embed_model)
+    assert dam.embeddings.shape == (42, 32)
