@@ -49,3 +49,19 @@ def test_embedding_docs(framework, tmpdir):
     dam.extend(generate_fashion_match(num_total=42))
     set_embeddings(dam, embed_model)
     assert dam.embeddings.shape == (42, 32)
+
+
+@pytest.mark.gpu
+@pytest.mark.parametrize('framework', ['keras', 'pytorch', 'paddle'])
+def test_embedding_docs_gpu(framework, tmpdir):
+    # works for DA
+    embed_model = embed_models[framework]()
+    docs = DocumentArray(generate_fashion_match(num_total=100))
+    set_embeddings(docs, embed_model)
+    assert docs.embeddings.shape == (100, 32)
+
+    # works for DAM
+    dam = DocumentArrayMemmap(tmpdir)
+    dam.extend(generate_fashion_match(num_total=42))
+    set_embeddings(dam, embed_model)
+    assert dam.embeddings.shape == (42, 32)
