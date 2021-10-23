@@ -56,9 +56,7 @@ def get_framework(dnn_model: AnyDNN) -> str:
     elif 'paddle' in dnn_model.__module__:
         return 'paddle'
     else:
-        raise ValueError(
-            f'can not determine the backend from embed_model from {dnn_model.__module__}'
-        )
+        raise ValueError(f'can not determine the backend of {dnn_model!r}')
 
 
 def is_seq_int(tp) -> bool:

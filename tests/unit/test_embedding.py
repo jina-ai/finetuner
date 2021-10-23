@@ -2,7 +2,7 @@ import paddle
 import pytest
 import tensorflow as tf
 import torch
-from jina import DocumentArray
+from jina import DocumentArray, DocumentArrayMemmap
 
 from finetuner.embedding import fill_embeddings
 from finetuner.toydata import generate_fashion_match
@@ -37,7 +37,15 @@ embed_models = {
 
 
 @pytest.mark.parametrize('framework', ['keras', 'pytorch', 'paddle'])
-def test_embedding_docs(framework):
-    embed_model = embed_models[framework]
+def test_embedding_docs(framework, tmpdir):
+    # works for DA
+    embed_model = embed_models[framework]()
     docs = DocumentArray(generate_fashion_match(num_total=100))
     fill_embeddings(docs, embed_model)
+    assert docs.embeddings.shape == (100, 32)
+
+    # works for DAM
+    dam = DocumentArrayMemmap(tmpdir)
+    dam.extend(generate_fashion_match(num_total=42))
+    fill_embeddings(dam, embed_model)
+    assert dam.embeddings.shape == (42, 32)
