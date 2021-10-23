@@ -1,5 +1,6 @@
 import json
-from typing import List, Union, Optional, Dict
+from collections import defaultdict
+from typing import List, Union, Dict
 
 import numpy as np
 
@@ -9,41 +10,44 @@ NumericType = Union[
 
 
 class ScalarSummary:
-    def __init__(self, name: str = '', data: Optional[List[NumericType]] = None):
-        """Create a record for storing a list of scalar values e.g. losses/metrics
+    def __init__(self, name: str = ''):
+        """Create a record for storing a :py:class:`defaultdict` with lists.
+        The key is the epoch number, the values are scalar values w.r.t the epoch, e.g. losses/metrics.
 
         :param name: the name of that record
-        :param data: the data record to initialize from
         """
 
-        self._name = name or ''
-        self._record = data or []
+        self.name = name or ''
+        self.record = defaultdict(list)
 
-    def __iadd__(self, other: Union[List[NumericType], float, 'ScalarSummary']):
-        if isinstance(other, list):
-            self._record += other
-        elif isinstance(other, ScalarSummary):
-            self._record += other._record
-        else:
-            self._record.append(other)
+    def __iadd__(self, other: Union[Dict, 'ScalarSummary']):
+        if isinstance(other, ScalarSummary):
+            other = other.record
+        for key, val in other.items():
+            if isinstance(val, NumericType.__args__):
+                self.record[key].append(float(val))
+            elif isinstance(val, list):
+                self.record[key].extend([float(item) for item in val])
+            else:
+                raise TypeError(f'Unexpected value type {type(val)}.')
         return self
 
-    def __str__(self):
-        if self._record:
-            return (
-                f'{self._name}: {np.mean([float(loss) for loss in self._record]):.2f}'
-            )
-        else:
-            return f'{self._name} has no record'
+    def _values(self):
+        vals = []
+        for item in self.record.values():
+            vals += item
+        return vals
 
-    def floats(self) -> List[NumericType]:
-        """Return all numbers as a list of Python native float """
-        return [float(v) for v in self._record]
+    def __str__(self):
+        if self.record:
+            return f'{self.name}: {np.mean(self._values()):.2f}'
+        else:
+            return f'{self.name} has no record'
 
 
 class SummaryCollection:
     def __init__(self, *records: ScalarSummary):
-        """Create a collection of summaries. """
+        """Create a collection of summaries."""
         self._records = records
 
     def save(self, filepath: str):
@@ -56,4 +60,8 @@ class SummaryCollection:
 
     def dict(self) -> Dict[str, List[NumericType]]:
         """Return all summaries as a Dictionary, where key is the name and value is the record"""
-        return {r._name: r.floats() for r in self._records}
+        return {r.name: dict(r.record) for r in self._records}
+
+    def plot(self):
+        """Draw learning curve."""
+        pass
