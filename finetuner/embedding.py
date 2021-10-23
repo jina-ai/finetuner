@@ -5,7 +5,7 @@ from jina import DocumentArray, DocumentArrayMemmap
 from .helper import AnyDNN, get_framework
 
 
-def fill_embeddings(
+def set_embeddings(
     docs: Union[DocumentArray, DocumentArrayMemmap],
     embed_model: AnyDNN,
     device: str = 'cpu',
@@ -18,10 +18,10 @@ def fill_embeddings(
 
     """
     fm = get_framework(embed_model)
-    globals()[f'_fill_embeddings_{fm}'](docs, embed_model, device)
+    globals()[f'_set_embeddings_{fm}'](docs, embed_model, device)
 
 
-def _fill_embeddings_keras(
+def _set_embeddings_keras(
     docs: Union[DocumentArray, DocumentArrayMemmap],
     embed_model: AnyDNN,
     device: str = 'cpu',
@@ -32,11 +32,10 @@ def _fill_embeddings_keras(
     with device:
         embeddings = embed_model(docs.blobs).numpy()
 
-    for doc, embed in zip(docs, embeddings):
-        doc.embedding = embed
+    docs.embeddings = embeddings
 
 
-def _fill_embeddings_torch(
+def _set_embeddings_torch(
     docs: Union[DocumentArray, DocumentArrayMemmap],
     embed_model: AnyDNN,
     device: str = 'cpu',
@@ -51,11 +50,10 @@ def _fill_embeddings_torch(
     with torch.inference_mode():
         embeddings = embed_model(tensor).cpu().numpy()
 
-        for doc, embed in zip(docs, embeddings):
-            doc.embedding = embed
+    docs.embeddings = embeddings
 
 
-def _fill_embeddings_paddle(
+def _set_embeddings_paddle(
     docs: Union[DocumentArray, DocumentArrayMemmap],
     embed_model: AnyDNN,
     device: str = 'cpu',
@@ -67,5 +65,4 @@ def _fill_embeddings_paddle(
     import paddle
 
     embeddings = embed_model(paddle.Tensor(docs.blobs)).numpy()
-    for doc, embed in zip(docs, embeddings):
-        doc.embedding = embed
+    docs.embeddings = embeddings
