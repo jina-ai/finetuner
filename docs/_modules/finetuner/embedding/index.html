@@ -309,7 +309,7 @@
 
 <span class="sd">    :param docs: the Documents to be embedded</span>
 <span class="sd">    :param embed_model: the embedding model written in Keras/Pytorch/Paddle</span>
-<span class="sd">    :param device: the computational device for `embed_model`, can be `cpu`, `cuda`, etc.</span>
+<span class="sd">    :param device: the computational device for `embed_model`, can be either `cpu` or `cuda`.</span>
 
 <span class="sd">    """</span>
     <span class="n">fm</span> <span class="o">=</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">embed_model</span><span class="p">)</span>
@@ -342,8 +342,9 @@
     <span class="kn">import</span> <span class="nn">torch</span>
 
     <span class="n">tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">docs</span><span class="o">.</span><span class="n">blobs</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">embed_model</span> <span class="o">=</span> <span class="n">embed_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">inference_mode</span><span class="p">():</span>
-        <span class="n">embeddings</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 
     <span class="n">docs</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">embeddings</span>
 
