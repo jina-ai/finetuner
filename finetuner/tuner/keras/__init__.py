@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Union, List
+from typing import Dict, Optional, Union
 
 import tensorflow as tf
 from jina.logging.profile import ProgressBar
@@ -169,20 +169,12 @@ class KerasTuner(BaseTuner):
                 inputs=eval_data, batch_size=batch_size, shuffle=False
             )
 
-        if device == 'cuda':
-            device = '/GPU:0'
-        elif device == 'cpu':
-            device = '/CPU:0'
-        else:
-            raise ValueError(f'Device {device} not recognized')
-        self.device = tf.device(device)
-
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
         m_train_loss = ScalarSummary('train')
         m_eval_loss = ScalarSummary('eval')
 
-        with self.device:
+        with get_device(device):
             for epoch in range(epochs):
                 lt = self._train(
                     _train_data,
@@ -209,3 +201,17 @@ class KerasTuner(BaseTuner):
         """
 
         self.embed_model.save(*args, **kwargs)
+
+
+def get_device(device: str):
+    """Get tensorflow compute device.
+
+    :param device: device name
+    """
+
+    # translate our own alias into framework-compatible ones
+    if device == 'cuda':
+        device = '/GPU:0'
+    elif device == 'cpu':
+        device = '/CPU:0'
+    return tf.device(device)

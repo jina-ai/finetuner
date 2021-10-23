@@ -160,12 +160,7 @@ class PaddleTuner(BaseTuner):
             ``"cpu"`` and ``"cuda"`` (for GPU)
         """
 
-        if device == 'cuda':
-            paddle.set_device('gpu:0')
-        elif device == 'cpu':
-            paddle.set_device('cpu')
-        else:
-            raise ValueError(f'Device {device} not recognized')
+        get_device(device)  #: this actually sets the device in Paddle
 
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
@@ -203,3 +198,18 @@ class PaddleTuner(BaseTuner):
         :param kwargs: Keyword arguments to pass to ``paddle.save`` function
         """
         paddle.save(self.embed_model.state_dict(), *args, **kwargs)
+
+
+def get_device(device: str):
+    """Get Paddle compute device.
+
+    :param device: device name
+    """
+
+    # translate our own alias into framework-compatible ones
+    if device == 'cuda':
+        paddle.set_device('gpu:0')
+    elif device == 'cpu':
+        paddle.set_device('cpu')
+    else:
+        paddle.set_device(device)

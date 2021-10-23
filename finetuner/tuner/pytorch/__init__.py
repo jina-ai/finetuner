@@ -171,12 +171,7 @@ class PytorchTuner(BaseTuner):
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
         """
-        if device == 'cpu':
-            self.device = torch.device('cpu')
-        elif device == 'cuda':
-            self.device = torch.device('cuda')
-        else:
-            raise ValueError(f'Device {device} not recognized')
+        self.device = get_device(device)
 
         # Place model on device
         self._embed_model = self._embed_model.to(self.device)
@@ -218,3 +213,13 @@ class PytorchTuner(BaseTuner):
         :param kwargs: Keyword arguments to pass to ``torch.save`` function
         """
         torch.save(self.embed_model.state_dict(), *args, **kwargs)
+
+
+def get_device(device: str):
+    """Get Pytorch compute device.
+
+    :param device: device name
+    """
+
+    # translate our own alias into framework-compatible ones
+    return torch.device(device)
