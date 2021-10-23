@@ -4,7 +4,7 @@ from typing import Dict, Optional
 from jina import Executor, DocumentArray, requests, DocumentArrayMemmap
 from jina.helper import cached_property
 
-from ..helper import get_framework
+from ..embedding import set_embeddings
 from ..tuner import fit, save
 
 
@@ -34,37 +34,15 @@ class FTExecutor(Executor):
         if not docs:
             return
         self._all_data.reload()
-        da = self._all_data.sample(
+        _catalog = self._all_data.sample(
             min(len(self._all_data), int(parameters.get('sample_size', 1000)))
         )
 
-        f_type = get_framework(self._embed_model)
-
-        if f_type == 'keras':
-            da_input = da.blobs
-            docs_input = docs.blobs
-            da.embeddings = self._embed_model(da_input).numpy()
-            docs.embeddings = self._embed_model(docs_input).numpy()
-        elif f_type == 'torch':
-            import torch
-
-            self._embed_model.eval()
-            da_input = torch.from_numpy(da.blobs)
-            docs_input = torch.from_numpy(docs.blobs)
-            with torch.inference_mode():
-                da.embeddings = self._embed_model(da_input).detach().numpy()
-                docs.embeddings = self._embed_model(docs_input).detach().numpy()
-        elif f_type == 'paddle':
-            import paddle
-
-            self._embed_model.eval()
-            da_input = paddle.to_tensor(da.blobs)
-            docs_input = paddle.to_tensor(docs.blobs)
-            da.embeddings = self._embed_model(da_input).detach().numpy()
-            docs.embeddings = self._embed_model(docs_input).detach().numpy()
+        set_embeddings(docs, self._embed_model)
+        set_embeddings(_catalog, self._embed_model)
 
         docs.match(
-            da,
+            _catalog,
             metric=self._metric,
             limit=int(parameters.get('topk', 10)),
             exclude_self=True,

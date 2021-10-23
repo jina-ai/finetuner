@@ -300,12 +300,13 @@ def _download_fashion_doc(
     ):
 
         _d = Document(
-            content=(raw_img / 255.0).astype(np.float32),
+            content=raw_img,
             tags={
                 'class': int(lbl),
             },
         )
         _d.convert_image_blob_to_uri()
+        _d.blob = (_d.blob / 255.0).astype(np.float32)
         yield _d
 
 
