@@ -14,7 +14,7 @@ def set_embeddings(
 
     :param docs: the Documents to be embedded
     :param embed_model: the embedding model written in Keras/Pytorch/Paddle
-    :param device: the computational device for `embed_model`, can be `cpu`, `cuda`, etc.
+    :param device: the computational device for `embed_model`, can be either `cpu` or `cuda`.
 
     """
     fm = get_framework(embed_model)
@@ -47,8 +47,9 @@ def _set_embeddings_torch(
     import torch
 
     tensor = torch.tensor(docs.blobs, device=device)
+    embed_model = embed_model.to(device)
     with torch.inference_mode():
-        embeddings = embed_model(tensor).cpu().numpy()
+        embeddings = embed_model(tensor).cpu().detach().numpy()
 
     docs.embeddings = embeddings
 

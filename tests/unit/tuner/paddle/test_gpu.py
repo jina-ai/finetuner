@@ -1,6 +1,9 @@
 import pytest
 import paddle.nn as nn
-from jina import DocumentArray
+from jina import DocumentArray, DocumentArrayMemmap
+
+from finetuner.embedding import set_embeddings
+from finetuner.toydata import generate_fashion_match
 from finetuner.tuner.paddle import PaddleTuner
 
 all_test_losses = [
@@ -27,3 +30,26 @@ def test_gpu_paddle(generate_random_triplets, loss):
 
     for param in tuner.embed_model.parameters():
         assert str(param.place) == 'CUDAPlace(0)'
+
+
+@pytest.mark.gpu
+def test_set_embeddings_gpu(tmpdir):
+    # works for DA
+    embed_model = nn.Sequential(
+        nn.Flatten(),
+        nn.Linear(
+            in_features=28 * 28,
+            out_features=128,
+        ),
+        nn.ReLU(),
+        nn.Linear(in_features=128, out_features=32),
+    )
+    docs = DocumentArray(generate_fashion_match(num_total=100))
+    set_embeddings(docs, embed_model, 'cuda')
+    assert docs.embeddings.shape == (100, 32)
+
+    # works for DAM
+    dam = DocumentArrayMemmap(tmpdir)
+    dam.extend(generate_fashion_match(num_total=42))
+    set_embeddings(dam, embed_model, 'cuda')
+    assert dam.embeddings.shape == (42, 32)

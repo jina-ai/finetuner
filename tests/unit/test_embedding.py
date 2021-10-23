@@ -37,7 +37,7 @@ embed_models = {
 
 
 @pytest.mark.parametrize('framework', ['keras', 'pytorch', 'paddle'])
-def test_embedding_docs(framework, tmpdir):
+def test_set_embeddings(framework, tmpdir):
     # works for DA
     embed_model = embed_models[framework]()
     docs = DocumentArray(generate_fashion_match(num_total=100))
