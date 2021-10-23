@@ -37,7 +37,7 @@ def test_gpu_keras(generate_random_triplets, loss):
 
 
 @pytest.mark.gpu
-def test_embedding_docs_gpu(tmpdir):
+def test_set_embeddings_gpu(tmpdir):
     # works for DA
     embed_model = tf.keras.Sequential(
         [
