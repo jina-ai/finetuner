@@ -1,4 +1,3 @@
-import base64
 import copy
 import csv
 import gzip
@@ -298,7 +297,6 @@ def _download_fashion_doc(
     for raw_img, lbl in zip(
         targets[partition]['data'], targets[f'{partition}-labels']['data']
     ):
-
         _d = Document(
             content=raw_img,
             tags={
