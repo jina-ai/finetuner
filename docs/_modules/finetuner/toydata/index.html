@@ -595,12 +595,13 @@
     <span class="p">):</span>
 
         <span class="n">_d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span>
-            <span class="n">content</span><span class="o">=</span><span class="p">(</span><span class="n">raw_img</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">raw_img</span><span class="p">,</span>
             <span class="n">tags</span><span class="o">=</span><span class="p">{</span>
                 <span class="s1">'class'</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">lbl</span><span class="p">),</span>
             <span class="p">},</span>
         <span class="p">)</span>
         <span class="n">_d</span><span class="o">.</span><span class="n">convert_image_blob_to_uri</span><span class="p">()</span>
+        <span class="n">_d</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="p">(</span><span class="n">_d</span><span class="o">.</span><span class="n">blob</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="k">yield</span> <span class="n">_d</span>
 
 
