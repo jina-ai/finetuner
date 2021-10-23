@@ -14,7 +14,7 @@ def set_embeddings(
 
     :param docs: the Documents to be embedded
     :param embed_model: the embedding model written in Keras/Pytorch/Paddle
-    :param device: the computational device for `embed_model`, can be `cpu`, `cuda`, etc.
+    :param device: the computational device for `embed_model`, can be either `cpu` or `cuda`.
 
     """
     fm = get_framework(embed_model)
