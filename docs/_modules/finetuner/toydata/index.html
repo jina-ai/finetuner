@@ -254,9 +254,18 @@
     <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
     <ul>
         <li class="toctree-l1">
-            <a class="reference external" href="https://docs.jina.ai"><img class="sidebar-ecosys-logo" src="../../../_static/search-light.svg">Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai"><img class="sidebar-ecosys-logo" src="../../../_static/hub-light.svg">Jina Hub</a></li>
-        <li class="toctree-l1"><a class="reference internal" href="#"><img class="sidebar-ecosys-logo" src="../../../_static/finetuner-light.svg">Finetuner</a></li>
+            <a class="reference external" href="https://docs.jina.ai">
+                <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/search-light.svg">
+                <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/search-dark.svg">
+                Jina</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/hub-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/hub-dark.svg">
+            Jina Hub</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="#">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/finetuner-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/finetuner-dark.svg">
+            Finetuner</a></li>
     </ul>
 </div>
 </div>
@@ -293,8 +302,7 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.toydata</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">base64</span>
-<span class="kn">import</span> <span class="nn">copy</span>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -593,7 +601,6 @@
     <span class="k">for</span> <span class="n">raw_img</span><span class="p">,</span> <span class="n">lbl</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
         <span class="n">targets</span><span class="p">[</span><span class="n">partition</span><span class="p">][</span><span class="s1">'data'</span><span class="p">],</span> <span class="n">targets</span><span class="p">[</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">partition</span><span class="si">}</span><span class="s1">-labels'</span><span class="p">][</span><span class="s1">'data'</span><span class="p">]</span>
     <span class="p">):</span>
-
         <span class="n">_d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span>
             <span class="n">content</span><span class="o">=</span><span class="n">raw_img</span><span class="p">,</span>
             <span class="n">tags</span><span class="o">=</span><span class="p">{</span>
@@ -654,7 +661,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 23, 2021.
+                    Last updated on Oct 24, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
