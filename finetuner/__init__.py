@@ -10,7 +10,7 @@ from typing import Dict, Optional, overload, TYPE_CHECKING, Tuple
 
 if TYPE_CHECKING:
     from .helper import AnyDNN, DocumentArrayLike
-    from .tuner.summary import SummaryCollection
+    from .tuner.summary import Summary
 
 
 # fit interface generated from Tuner
@@ -26,7 +26,7 @@ def fit(
     optimizer: str = 'adam',
     optimizer_kwargs: Optional[Dict] = None,
     device: str = 'cpu',
-) -> 'SummaryCollection':
+) -> 'Summary':
     ...
 
 
@@ -49,7 +49,7 @@ def fit(
     output_dim: Optional[int] = None,
     freeze: bool = False,
     device: str = 'cpu',
-) -> 'SummaryCollection':
+) -> 'Summary':
     ...
 
 
@@ -97,7 +97,7 @@ def fit(
 
 def fit(
     model: 'AnyDNN', train_data: 'DocumentArrayLike', *args, **kwargs
-) -> Optional['SummaryCollection']:
+) -> Optional['Summary']:
     if kwargs.get('to_embedding_model', False):
         from .tailor import to_embedding_model
 

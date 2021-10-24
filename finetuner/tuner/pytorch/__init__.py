@@ -8,7 +8,7 @@ from torch.utils.data.dataloader import DataLoader
 from . import losses, datasets
 from ..base import BaseTuner, BaseLoss
 from ..dataset.helper import get_dataset
-from ..summary import ScalarSummary, SummaryCollection
+from ..summary import ScalarSequence, Summary
 from ...helper import DocumentArrayLike, AnyDataLoader
 
 
@@ -67,13 +67,13 @@ class PytorchTuner(BaseTuner):
         self,
         data: AnyDataLoader,
         description: str = 'Evaluating',
-        train_loss: Optional[ScalarSummary] = None,
-    ) -> ScalarSummary:
+        train_loss: Optional[ScalarSequence] = None,
+    ) -> ScalarSequence:
         """Evaluate the model on given labeled data"""
 
         self._embed_model.eval()
 
-        _summary = ScalarSummary('Eval Loss')
+        _summary = ScalarSequence('Eval Loss')
 
         with ProgressBar(
             description,
@@ -99,12 +99,12 @@ class PytorchTuner(BaseTuner):
 
     def _train(
         self, data: AnyDataLoader, optimizer: Optimizer, description: str
-    ) -> ScalarSummary:
+    ) -> ScalarSequence:
         """Train the model on given labeled data"""
 
         self._embed_model.train()
 
-        _summary = ScalarSummary('Train Loss')
+        _summary = ScalarSequence('Train Loss')
         with ProgressBar(
             description,
             message_on_done=_summary.__str__,
@@ -142,7 +142,7 @@ class PytorchTuner(BaseTuner):
         optimizer_kwargs: Optional[Dict] = None,
         device: str = 'cpu',
         **kwargs,
-    ) -> SummaryCollection:
+    ) -> Summary:
         """Finetune the model on the training data.
 
         :param train_data: Data on which to train the model
@@ -179,8 +179,8 @@ class PytorchTuner(BaseTuner):
         # Get optimizer
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
-        m_train_loss = ScalarSummary('train')
-        m_eval_loss = ScalarSummary('eval')
+        m_train_loss = ScalarSequence('train')
+        m_eval_loss = ScalarSequence('eval')
 
         for epoch in range(epochs):
             _data = self._get_data_loader(
@@ -201,7 +201,7 @@ class PytorchTuner(BaseTuner):
                 le = self._eval(_data, train_loss=m_train_loss)
                 m_eval_loss += le
 
-        return SummaryCollection(m_train_loss, m_eval_loss)
+        return Summary(m_train_loss, m_eval_loss)
 
     def save(self, *args, **kwargs):
         """Save the embedding model.
