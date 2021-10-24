@@ -9,7 +9,7 @@ from typing import (
 )
 
 from ..helper import AnyDNN, AnyDataLoader, AnyOptimizer, DocumentArrayLike
-from .summary import SummaryCollection
+from .summary import Summary
 
 
 class BaseLoss:
@@ -101,7 +101,7 @@ class BaseTuner(abc.ABC):
         batch_size: int = 256,
         *args,
         **kwargs,
-    ) -> SummaryCollection:
+    ) -> Summary:
         """Fit the :py:attr:`.embed_model` on labeled data.
 
         Note that fitting changes the weights in :py:attr:`.embed_model` in-place. This allows one to consecutively
