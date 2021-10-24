@@ -30,7 +30,9 @@ from jina.types.document.generators import from_files
 def data_gen():
     # please change the file path to your data path
     for d in from_files('/Users/jina/Downloads/img_align_celeba/*.jpg', size=100, to_dataturi=True):
-        d.convert_image_datauri_to_blob(color_axis=0)  # no need of tf
+        d.convert_image_uri_to_blob()
+        d.normalize_image_blob()
+        d.set_image_blob_channel_axis(-1, 0)  #: no need of this line if you are using tf/keras
         yield d
 ```
 

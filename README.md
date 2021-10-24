@@ -148,7 +148,9 @@ finetuner.fit(
 
     def data_gen():
         for d in from_files('./img_align_celeba/*.jpg', size=100, to_dataturi=True):
-            d.convert_image_datauri_to_blob(color_axis=0)  # `color_axis=-1` for TF/Keras users
+            d.convert_image_uri_to_blob()
+            d.normalize_image_blob()
+            d.set_image_blob_channel_axis(-1, 0)  #: no need of this line if you are using tf/keras
             yield d
     ```
 3. Load pretrained ResNet50 using PyTorch/Keras/Paddle:
