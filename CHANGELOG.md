@@ -2,6 +2,7 @@
 
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -149,4 +150,47 @@ The changes of each release is tracked by this file.
 ### 🍹 Other Improvements
 
  - [[```377959a1```](https://github.com/jina-ai/finetuner/commit/377959a14976d6f3ec99165bcbd23bf6132e2477)] __-__ __version__: the next version will be 0.0.5 (*Jina Dev Bot*)
+
+<a name=release-note-0-1-1></a>
+## Release Note (`0.1.1`)
+
+> Release time: 2021-10-24 11:03:40
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Wang Bo,  Deepankar Mahapatro,  Mohammad Kalim Akram,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```43480cc3```](https://github.com/jina-ai/finetuner/commit/43480cc312bc2134d88a7fe4105766877b49cbcd)] __-__ __helper__: set_embedding function for all frameworks (#163) (*Han Xiao*)
+ - [[```fddc57dc```](https://github.com/jina-ai/finetuner/commit/fddc57dc1200abb4c0eeb889778300bf5f82c23e)] __-__ __labeler__: allow user fixing the question (#159) (*Han Xiao*)
+
+### 🐞 Bug fixes
+
+ - [[```1e07e34c```](https://github.com/jina-ai/finetuner/commit/1e07e34c60b3455921f3e66329e276c4b1557889)] __-__ reset toggle on reload (#154) (*Mohammad Kalim Akram*)
+
+### 🧼 Code Refactoring
+
+ - [[```d8d875ff```](https://github.com/jina-ai/finetuner/commit/d8d875ff86745e2bafd83df99ff18d885c85c21a)] __-__ __labeler__: use set_embeddings in labeler (#165) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```d1a9396d```](https://github.com/jina-ai/finetuner/commit/d1a9396df03685710eb61a67954784f22ed0db69)] __-__ remind user again change the data pth (#158) (*Wang Bo*)
+ - [[```b92df7de```](https://github.com/jina-ai/finetuner/commit/b92df7de90cf07c345971dc1af354e70bdee9708)] __-__ enable docbot for finetuner (#153) (*Deepankar Mahapatro*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```0d8e0b58```](https://github.com/jina-ai/finetuner/commit/0d8e0b587587326ba40bb79d825cc8030161cbda)] __-__ add gpu test for set embedding (#164) (*Wang Bo*)
+
+### 🍹 Other Improvements
+
+ - [[```87cdc133```](https://github.com/jina-ai/finetuner/commit/87cdc1337b41d3bc81bff12b6503511248aec1e6)] __-__ fix docs css styling (*Han Xiao*)
+ - [[```8e3b1fbb```](https://github.com/jina-ai/finetuner/commit/8e3b1fbbb3854ecac5c2a9afb339ce338ea34f50)] __-__ fix styling (*Han Xiao*)
+ - [[```870c5a23```](https://github.com/jina-ai/finetuner/commit/870c5a233060b2808d9d16a5134c480d496380c0)] __-__ fill missing docstrings (#162) (*Wang Bo*)
+ - [[```67896b97```](https://github.com/jina-ai/finetuner/commit/67896b97146b567c4a0c7505f62d0626bfd8adde)] __-__ fix readme (*Han Xiao*)
+ - [[```838ebe35```](https://github.com/jina-ai/finetuner/commit/838ebe358e945960b2e1fe663a7c4a63e38295eb)] __-__ update readme (*Han Xiao*)
+ - [[```ccf6de1a```](https://github.com/jina-ai/finetuner/commit/ccf6de1a10ff5228a159326f30567331339a7e6e)] __-__ __docs__: fix docs banner (*Han Xiao*)
+ - [[```9e4af657```](https://github.com/jina-ai/finetuner/commit/9e4af657aeba05da64c79addfc19b17a6143264a)] __-__ __version__: the next version will be 0.1.1 (*Jina Dev Bot*)
 
