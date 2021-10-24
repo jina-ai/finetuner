@@ -4,8 +4,8 @@ from os import path
 from setuptools import find_packages
 from setuptools import setup
 
-if sys.version_info >= (3, 10, 0) or sys.version_info < (3, 7, 0):
-    raise OSError(f'Finetuner requires Python 3.7/3.8/3.9, but yours is {sys.version}')
+if sys.version_info < (3, 7, 0):
+    raise OSError(f'Finetuner requires Python >=3.7, but yours is {sys.version}')
 
 try:
     pkg_name = 'finetuner'
