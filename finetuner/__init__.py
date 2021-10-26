@@ -108,8 +108,13 @@ def fit(
 
         # TODO: atm return will never hit as labeler UI hangs the
         #  flow via `.block()`
-        fit(model, train_data, *args, **kwargs)
+        return model, fit(model, train_data, *args, **kwargs)
     else:
         from .tuner import fit
 
         return model, fit(model, train_data, *args, **kwargs)
+
+
+# level them up to the top-level
+from .tuner import save
+from .tailor import display

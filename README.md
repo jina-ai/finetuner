@@ -82,7 +82,7 @@ Perfect! Now `embed_model` and `labeled_data` are given by you already, simply d
 ```python
 import finetuner
 
-finetuner.fit(
+tuned_model, _ = finetuner.fit(
     embed_model,
     train_data=labeled_data
 )
@@ -96,7 +96,7 @@ You can use Finetuner to interactive label data and train `embed_model` as below
 ```python
 import finetuner
 
-finetuner.fit(
+tuned_model, _ = finetuner.fit(
     embed_model,
     train_data=unlabeled_data,
     interactive=True
@@ -111,7 +111,7 @@ worries, Finetuner can convert your model into an embedding model and train it v
 ```python
 import finetuner
 
-finetuner.fit(
+tuned_model, _ = finetuner.fit(
     general_model,
     train_data=labeled_data,
     to_embedding_model=True,
@@ -127,7 +127,7 @@ worries, Finetuner can help you train an embedding model with interactive labeli
 ```python
 import finetuner
 
-finetuner.fit(
+tuned_model, _ = finetuner.fit(
     general_model,
     train_data=unlabeled_data,
     interactive=True,

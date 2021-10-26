@@ -65,7 +65,7 @@ Although siamese and triplet loss works on pair and triplet inputs respectively,
 
 ## `save` method
 
-After a model is tuned, you can save it by calling `finetuner.tuner.save(model, save_path)`.
+After a model is tuned, you can save it by calling `finetuner.save(model, save_path)`.
 
 
 ## Examples
