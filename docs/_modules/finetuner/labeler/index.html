@@ -304,6 +304,7 @@
                 <h1>Source code for finetuner.labeler</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">webbrowser</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
@@ -340,10 +341,14 @@
 <span class="sd">    :param kwargs: Additional keyword arguments.</span>
 <span class="sd">    """</span>
     <span class="n">dam_path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
+    <span class="n">stop_event</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
 
     <span class="k">class</span> <span class="nc">MyExecutor</span><span class="p">(</span><span class="n">FTExecutor</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">get_embed_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">embed_model</span>
+
+        <span class="k">def</span> <span class="nf">get_stop_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">stop_event</span>
 
     <span class="n">f</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">Flow</span><span class="p">(</span>
@@ -374,6 +379,7 @@
     <span class="n">f</span><span class="o">.</span><span class="n">expose_endpoint</span><span class="p">(</span>
         <span class="s1">'/save'</span>
     <span class="p">)</span>  <span class="c1">#: for signaling the backend to save the current state of the model</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">expose_endpoint</span><span class="p">(</span><span class="s1">'/terminate'</span><span class="p">)</span>  <span class="c1">#: for terminating the flow from frontend</span>
 
     <span class="k">def</span> <span class="nf">extend_rest_function</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
         <span class="sd">"""Allow FastAPI frontend to serve finetuner UI as a static webpage"""</span>
@@ -411,7 +417,7 @@
             <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">on_done</span><span class="o">=</span><span class="n">open_frontend_in_browser</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">()</span></div>
+        <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="n">stop_event</span><span class="o">=</span><span class="n">stop_event</span><span class="p">)</span></div>
 </pre></div>
             </article>
             <footer>
