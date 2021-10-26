@@ -25,6 +25,10 @@ class FTExecutor(Executor):
     def get_embed_model(self):
         ...
 
+    @abc.abstractmethod
+    def get_stop_event(self):
+        ...
+
     @cached_property
     def _embed_model(self):
         return self.get_embed_model()
@@ -64,6 +68,10 @@ class FTExecutor(Executor):
         model_path = parameters.get('model_path', 'trained.model')
         save(self._embed_model, model_path)
         print(f'model is saved to {model_path}')
+
+    @requests(on='/terminate')
+    def terminate(self, **kwargs):
+        self.get_stop_event().set()
 
 
 class DataIterator(Executor):

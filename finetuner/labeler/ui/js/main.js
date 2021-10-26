@@ -41,7 +41,8 @@ const app = new Vue({
             server_address: `http://localhost`,
             next_endpoint: '/next',
             fit_endpoint: '/fit',
-            saveEndpoint: '/save',
+            save_endpoint: '/save',
+            stop_endpoint: '/terminate',
         },
         advanced_config: {
             pos_value: {text: 'Positive label', value: 1, type: 'number'},
@@ -80,8 +81,11 @@ const app = new Vue({
         fit_address: function () {
             return `${this.host_address}${this.general_config.fit_endpoint}`
         },
-        saveAddress: function () {
-            return `${this.host_address}${this.general_config.saveEndpoint}`
+        save_address: function () {
+            return `${this.host_address}${this.general_config.save_endpoint}`
+        },
+        stop_address: function () {
+            return `${this.host_address}${this.general_config.stop_endpoint}`
         },
         positive_rate: function () {
             return this.progress_stats.positive.value / (this.progress_stats.positive.value + this.progress_stats.negative.value) * 100
@@ -208,7 +212,7 @@ const app = new Vue({
             app.is_conn_broken = false
             $.ajax({
                 type: "POST",
-                url: app.saveAddress,
+                url: app.save_address,
                 data: JSON.stringify({
                     data: [],
                     parameters: {
@@ -220,6 +224,27 @@ const app = new Vue({
             }).success(function (data, textStatus, jqXHR) {
                 app.is_busy = false
                 app.progress_stats.saved.value++
+            }).fail(function () {
+                console.error("Error: ", error)
+                app.is_busy = false
+            });
+        },
+        terminateFlow: () => {
+            app.is_busy = true
+            app.is_conn_broken = false
+            $.ajax({
+                type: "POST",
+                url: app.stop_address,
+                data: JSON.stringify({
+                    data: [],
+                    parameters: {
+                    }
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+            }).success(function (data, textStatus, jqXHR) {
+                app.is_busy = false
+                close();
             }).fail(function () {
                 console.error("Error: ", error)
                 app.is_busy = false

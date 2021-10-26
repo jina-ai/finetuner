@@ -10,6 +10,7 @@ const sidebar = {
         advancedConfig: Object,
         saveProgress: Function,
         nextBatch: Function,
+        terminateFlow: Function,
     },
     template: `
     <div class="d-flex flex-column flex-shrink-0 p-3 sidebar">
@@ -124,9 +125,13 @@ const sidebar = {
                         </div>
                     </div>
                     <div class="my-3 d-flex justify-content-center">
-                      <button class="btn btn btn-outline-primary"
+                      <button class="btn btn btn-outline-primary m-2"
                           v-on:click="saveProgress()">
                           Save model
+                      </button>
+                      <button class="btn btn btn-outline-secondary m-2"
+                          v-on:click="terminateFlow()">
+                          Terminate
                       </button>
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 import os
 import tempfile
+import threading
 import webbrowser
 from typing import Optional
 
@@ -36,10 +37,14 @@ def fit(
     :param kwargs: Additional keyword arguments.
     """
     dam_path = tempfile.mkdtemp()
+    stop_event = threading.Event()
 
     class MyExecutor(FTExecutor):
         def get_embed_model(self):
             return embed_model
+
+        def get_stop_event(self):
+            return stop_event
 
     f = (
         Flow(
@@ -70,6 +75,7 @@ def fit(
     f.expose_endpoint(
         '/save'
     )  #: for signaling the backend to save the current state of the model
+    f.expose_endpoint('/terminate')  #: for terminating the flow from frontend
 
     def extend_rest_function(app):
         """Allow FastAPI frontend to serve finetuner UI as a static webpage"""
@@ -107,4 +113,4 @@ def fit(
             show_progress=True,
             on_done=open_frontend_in_browser,
         )
-        f.block()
+        f.block(stop_event=stop_event)

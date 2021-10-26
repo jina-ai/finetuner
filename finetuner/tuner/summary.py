@@ -48,6 +48,11 @@ class Summary:
         """Create a collection of summaries. """
         self._records = [r for r in records if r]
 
+    def __iadd__(self, other: 'Summary'):
+        if isinstance(other, Summary):
+            self._records += other._records
+        return self
+
     def save(self, filepath: str):
         """Store all summary into a JSON file"""
         with open(filepath, 'w') as fp:
