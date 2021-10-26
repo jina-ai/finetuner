@@ -39,7 +39,7 @@ In general, you do not need to call `to_embedding_model` manually. You can use i
 
 ## `display` method
 
-Tailor also provides a helper function `finetuner.tailor.display()` that gives a table summary of a Keras/PyTorch/Paddle model.
+Tailor also provides a helper function `finetuner.display()` that gives a table summary of a Keras/PyTorch/Paddle model.
 
 Let's see how to use them in action.
 

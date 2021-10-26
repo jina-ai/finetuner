@@ -113,3 +113,8 @@ def fit(
         from .tuner import fit
 
         return model, fit(model, train_data, *args, **kwargs)
+
+
+# level them up to the top-level
+from .tuner import save
+from .tailor import display
