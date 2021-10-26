@@ -55,13 +55,16 @@ def _run(framework_name, loss, port_expose):
         ),
     }
 
-    fit(
+    rv1, rv2 = fit(
         embed_models[framework_name](),
         generate_qa_match(num_total=10, num_neg=0),
         loss=loss,
         interactive=True,
         port_expose=port_expose,
     )
+
+    assert rv1
+    assert not rv2
 
 
 all_test_losses = [
@@ -139,6 +142,16 @@ def test_all_frameworks(framework, loss, tmpdir):
             json={
                 'data': [],
                 'parameters': {'model_path': model_path},
+            },
+        )
+        assert req.status_code == 200
+        assert os.path.isfile(model_path)
+
+        req = requests.post(
+            f'http://localhost:{port}/terminate',
+            json={
+                'data': [],
+                'parameters': {},
             },
         )
         assert req.status_code == 200

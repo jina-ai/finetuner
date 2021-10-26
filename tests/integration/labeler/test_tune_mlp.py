@@ -53,7 +53,7 @@ def _run(framework_name, loss, port_expose):
         ),
     }
 
-    fit(
+    rv1, rv2 = fit(
         embed_models[framework_name](),
         generate_fashion_match(num_total=10, num_pos=0, num_neg=0),
         loss=loss,
@@ -61,13 +61,16 @@ def _run(framework_name, loss, port_expose):
         port_expose=port_expose,
     )
 
+    assert rv1
+    assert not rv2
+
 
 # 'keras' does not work under this test setup
 # Exception ... ust be from the same graph as Tensor ...
 # TODO: add keras backend back to the test
 @pytest.mark.parametrize('framework', ['pytorch', 'paddle'])
 @pytest.mark.parametrize('loss', all_test_losses)
-def test_all_frameworks(framework, loss):
+def test_all_frameworks(framework, loss, tmpdir):
     port = random_port()
     p = multiprocessing.Process(
         target=_run,
@@ -125,6 +128,27 @@ def test_all_frameworks(framework, loss):
             json={'data': rj['data']['docs'], 'parameters': {'epochs': 10}},
         )
         assert req.status_code == 200
+
+        model_path = os.path.join(tmpdir, 'model.train')
+        req = requests.post(
+            f'http://localhost:{port}/save',
+            json={
+                'data': [],
+                'parameters': {'model_path': model_path},
+            },
+        )
+        assert req.status_code == 200
+        assert os.path.isfile(model_path)
+
+        req = requests.post(
+            f'http://localhost:{port}/terminate',
+            json={
+                'data': [],
+                'parameters': {},
+            },
+        )
+        assert req.status_code == 200
+
     except:
         raise
     finally:
