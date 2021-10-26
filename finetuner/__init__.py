@@ -67,7 +67,7 @@ def fit(
     optimizer: str = 'adam',
     optimizer_kwargs: Optional[Dict] = None,
     device: str = 'cpu',
-) -> Tuple['AnyDNN', 'Summary']:
+) -> Tuple['AnyDNN', None]:
     ...
 
 
@@ -91,7 +91,7 @@ def fit(
     output_dim: Optional[int] = None,
     freeze: bool = False,
     device: str = 'cpu',
-) -> Tuple['AnyDNN', 'Summary']:
+) -> Tuple['AnyDNN', None]:
     ...
 
 
@@ -116,3 +116,4 @@ def fit(
 # level them up to the top-level
 from .tuner import save
 from .tailor import display
+from .embedding import embed

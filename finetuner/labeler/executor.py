@@ -4,7 +4,7 @@ from typing import Dict, Optional
 from jina import Executor, DocumentArray, requests, DocumentArrayMemmap
 from jina.helper import cached_property
 
-from ..embedding import set_embeddings
+from ..embedding import embed
 from ..tuner import fit, save
 
 
@@ -42,8 +42,8 @@ class FTExecutor(Executor):
             min(len(self._all_data), int(parameters.get('sample_size', 1000)))
         )
 
-        set_embeddings(docs, self._embed_model)
-        set_embeddings(_catalog, self._embed_model)
+        embed(docs, self._embed_model)
+        embed(_catalog, self._embed_model)
 
         docs.match(
             _catalog,

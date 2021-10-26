@@ -3,7 +3,7 @@ import tensorflow as tf
 from jina import DocumentArray, DocumentArrayMemmap
 
 from finetuner.tuner.keras import KerasTuner
-from finetuner.embedding import set_embeddings
+from finetuner.embedding import embed
 from finetuner.toydata import generate_fashion_match
 
 all_test_losses = [
@@ -47,11 +47,11 @@ def test_set_embeddings_gpu(tmpdir):
         ]
     )
     docs = DocumentArray(generate_fashion_match(num_total=100))
-    set_embeddings(docs, embed_model, 'cuda')
+    embed(docs, embed_model, 'cuda')
     assert docs.embeddings.shape == (100, 32)
 
     # works for DAM
     dam = DocumentArrayMemmap(tmpdir)
     dam.extend(generate_fashion_match(num_total=42))
-    set_embeddings(dam, embed_model, 'cuda')
+    embed(dam, embed_model, 'cuda')
     assert dam.embeddings.shape == (42, 32)
