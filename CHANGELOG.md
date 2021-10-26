@@ -3,6 +3,7 @@
 
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -193,4 +194,30 @@ The changes of each release is tracked by this file.
  - [[```838ebe35```](https://github.com/jina-ai/finetuner/commit/838ebe358e945960b2e1fe663a7c4a63e38295eb)] __-__ update readme (*Han Xiao*)
  - [[```ccf6de1a```](https://github.com/jina-ai/finetuner/commit/ccf6de1a10ff5228a159326f30567331339a7e6e)] __-__ __docs__: fix docs banner (*Han Xiao*)
  - [[```9e4af657```](https://github.com/jina-ai/finetuner/commit/9e4af657aeba05da64c79addfc19b17a6143264a)] __-__ __version__: the next version will be 0.1.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-1-2></a>
+## Release Note (`0.1.2`)
+
+> Release time: 2021-10-26 19:03:12
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```df192645```](https://github.com/jina-ai/finetuner/commit/df1926453880976a85eafe5ce0a94f1e81168fcb)] __-__ __labeler__: gently terminate the labler UI from frontend (#177) (*Han Xiao*)
+ - [[```115a0aa4```](https://github.com/jina-ai/finetuner/commit/115a0aa45ce913b95b8e93ceb96aa43905092b83)] __-__ __tuner__: add plot function for tuner.summary (#167) (*Han Xiao*)
+
+### 🐞 Bug fixes
+
+ - [[```40261d47```](https://github.com/jina-ai/finetuner/commit/40261d478f67185a9743ae0136010b7895f73fa9)] __-__ __api__: levelup save and display to top-level (#176) (*Han Xiao*)
+ - [[```320ec5df```](https://github.com/jina-ai/finetuner/commit/320ec5df11d104fbe36ba7e6d467b159a4fbb1c9)] __-__ __api__: return model and summary in highlevel fit (#175) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```ebb9c8d5```](https://github.com/jina-ai/finetuner/commit/ebb9c8d57b9df1b65f0ce650b72b5ec4446a2a35)] __-__ __setup__: update jina minimum requirement for new block() (*Han Xiao*)
+ - [[```1c5d00cd```](https://github.com/jina-ai/finetuner/commit/1c5d00cd0b7aab01fa36ada730614d6d3c410d63)] __-__ __version__: the next version will be 0.1.2 (*Jina Dev Bot*)
 
