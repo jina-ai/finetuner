@@ -97,7 +97,7 @@ def fit(
 
 def fit(
     model: 'AnyDNN', train_data: 'DocumentArrayLike', *args, **kwargs
-) -> Optional['Summary']:
+) -> Optional[Tuple['AnyDNN', 'Summary']]:
     if kwargs.get('to_embedding_model', False):
         from .tailor import to_embedding_model
 
@@ -106,8 +106,10 @@ def fit(
     if kwargs.get('interactive', False):
         from .labeler import fit
 
-        return fit(model, train_data, *args, **kwargs)
+        # TODO: atm return will never hit as labeler UI hangs the
+        #  flow via `.block()`
+        fit(model, train_data, *args, **kwargs)
     else:
         from .tuner import fit
 
-        return fit(model, train_data, *args, **kwargs)
+        return model, fit(model, train_data, *args, **kwargs)

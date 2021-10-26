@@ -97,7 +97,6 @@ class Summary:
                 **plt_kwargs,
             )
             axes[idx].set_ylabel(record.name)
-            axes[idx].set_box_aspect(1)
             axes[idx].set_xlabel('Steps')
 
         if output:

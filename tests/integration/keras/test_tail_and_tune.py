@@ -19,7 +19,7 @@ def embed_model():
 
 def test_tail_and_tune(embed_model, create_easy_data):
     data, _ = create_easy_data(10, 128, 1000)
-    rv = fit(
+    model, rv = fit(
         model=embed_model,
         train_data=data,
         epochs=5,
@@ -29,3 +29,5 @@ def test_tail_and_tune(embed_model, create_easy_data):
         layer_name='dense_2',
     )
     assert rv.dict()
+    assert model
+    assert model != embed_model
