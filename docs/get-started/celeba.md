@@ -32,6 +32,7 @@ def data_gen():
     for d in from_files('/Users/jina/Downloads/img_align_celeba/*.jpg', size=100, to_dataturi=True):
         d.convert_image_uri_to_blob()
         d.normalize_image_blob()
+        d.resize_image_blob(width=224,height=224) #: no need of this line if you are using pytorch/paddle
         d.set_image_blob_channel_axis(-1, 0)  #: no need of this line if you are using tf/keras
         yield d
 ```
