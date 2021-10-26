@@ -136,7 +136,7 @@ Perfect! Now `embed_model` and `train_data` are already provided by you, simply 
 ```python
 import finetuner
 
-finetuner.fit(
+tuned_model, _ = finetuner.fit(
     embed_model,
     train_data=train_data
 )
@@ -159,7 +159,7 @@ emphasize-lines: 6
 ---
 import finetuner
 
-finetuner.fit(
+tuned_model, _ = finetuner.fit(
     embed_model,
     train_data=unlabeled_data,
     interactive=True
@@ -183,7 +183,7 @@ emphasize-lines: 6, 7
 ---
 import finetuner
 
-finetuner.fit(
+tuned_model, _ = finetuner.fit(
     general_model,
     train_data=labeled_data,
     to_embedding_model=True,
@@ -208,7 +208,7 @@ emphasize-lines: 6, 7
 ---
 import finetuner
 
-finetuner.fit(
+tuned_model, _ = finetuner.fit(
     general_model,
     train_data=labeled_data,
     interactive=True,

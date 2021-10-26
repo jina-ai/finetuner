@@ -37,9 +37,10 @@ Here, `model` is the general model with loaded weights; `layer_name` is the sele
 
 In general, you do not need to call `to_embedding_model` manually. You can use it directly via `finetuner.fit(..., to_embedding_model=True)`
 
+(display-method)=
 ## `display` method
 
-Tailor also provides a helper function `finetuner.tailor.display()` that gives a table summary of a Keras/PyTorch/Paddle model.
+Tailor also provides a helper function `finetuner.display()` that gives a table summary of a Keras/PyTorch/Paddle model.
 
 Let's see how to use them in action.
 
