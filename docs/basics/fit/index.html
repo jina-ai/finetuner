@@ -31,7 +31,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Data Format" href="../data-format/" /><link rel="prev" title="&lt;no title&gt;" href="../" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
-        <title>One-liner fit() - Finetuner 0.1.2 documentation</title>
+        <title>One-liner fit() - Finetuner 0.1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -165,7 +165,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">Finetuner 0.1.2 documentation</div>
+                <div class="brand">Finetuner 0.1.3 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -381,7 +381,7 @@ Finetuner usage 1</div>
 <p class="sd-card-text">Perfect! Now <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> and <code class="docutils literal notranslate"><span class="pre">train_data</span></code> are already provided by you, simply do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">tuned_model</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="n">tuned_model</span><span class="p">,</span> <span class="n">summary</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">embed_model</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span>
 <span class="p">)</span>
@@ -401,7 +401,7 @@ Finetuner usage 2</div>
 <p class="sd-card-text">You have an <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> to use, but no labeled data for fine-tuning this model. No worries, you can use Finetuner to interactively label data and train <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">tuned_model</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="n">tuned_model</span><span class="p">,</span> <span class="n">summary</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">embed_model</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="n">unlabeled_data</span><span class="p">,</span>
 <span class="hll">    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span>
@@ -422,7 +422,7 @@ Finetuner usage 3</div>
 <p class="sd-card-text">You have a <code class="docutils literal notranslate"><span class="pre">general_model</span></code> but it does not output embeddings. Luckily, you’ve got some <code class="docutils literal notranslate"><span class="pre">labeled_data</span></code> for training. No worries, Finetuner can convert your model into an embedding model and train it via:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">tuned_model</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="n">tuned_model</span><span class="p">,</span> <span class="n">summary</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">general_model</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="n">labeled_data</span><span class="p">,</span>
 <span class="hll">    <span class="n">to_embedding_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -444,7 +444,7 @@ Finetuner usage 4</div>
 <p class="sd-card-text">You have a <code class="docutils literal notranslate"><span class="pre">general_model</span></code> which is not for embeddings. Meanwhile, you don’t have any labeled data for training. But no worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">tuned_model</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="n">tuned_model</span><span class="p">,</span> <span class="n">summary</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">general_model</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="n">labeled_data</span><span class="p">,</span>
 <span class="hll">    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -505,6 +505,21 @@ Finetuner usage 4</div>
 </div>
 <p>More information can be <a class="reference internal" href="../../components/tailor/#display-method"><span class="std std-ref">found here</span></a>.</p>
 </section>
+<section id="embed-documents">
+<h2>Embed documents<a class="headerlink" href="#embed-documents" title="Permalink to this headline">¶</a></h2>
+<p>You can use <code class="docutils literal notranslate"><span class="pre">finetuner.embed()</span></code> method to compute the embeddings of a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> or <code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+
+<span class="n">docs</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="n">finetuner</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">docs</span><span class="o">.</span><span class="n">embeddings</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that, <code class="docutils literal notranslate"><span class="pre">model</span></code> above must be an <a class="reference internal" href="../glossary/#term-Embedding-model"><span class="xref std std-term">Embedding model</span></a>.</p>
+</section>
 <section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -530,9 +545,6 @@ Finetuner usage 4</div>
 <span class="p">)</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">input_size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,),</span> <span class="n">input_dtype</span><span class="o">=</span><span class="s1">'long'</span><span class="p">)</span>
-
-<span class="n">finetuner</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s1">'./saved-model'</span><span class="p">)</span>
-<span class="n">summary</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'fit.png'</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">⠼  Epoch 1/3 ━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:00 estimating... </span>
@@ -551,8 +563,27 @@ Finetuner usage 4</div>
 <span class="go">layer_name in to_embedding_model(...).</span>
 </pre></div>
 </div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">finetuner</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s1">'./saved-model'</span><span class="p">)</span>
+<span class="n">summary</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'fit.png'</span><span class="p">)</span>
+</pre></div>
+</div>
 <figure class="align-center">
 <a class="reference internal image-reference" href="../../_images/fit-plot.png"><img alt="../../_images/fit-plot.png" src="../../_images/fit-plot.png" style="width: 80%;"/></a>
+</figure>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+<span class="n">all_q</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">generate_qa_match</span><span class="p">())</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">all_q</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">all_q</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(481, 32)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">all_q</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="s1">'embed.png'</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'tsne'</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../../_images/embed.png"><img alt="../../_images/embed.png" src="../../_images/embed.png" style="width: 80%;"/></a>
 </figure>
 </section>
 </section>
@@ -589,7 +620,7 @@ Finetuner usage 4</div>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 26, 2021.
+                    Last updated on Oct 27, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
@@ -617,6 +648,7 @@ Finetuner usage 4</div>
 <li><a class="reference internal" href="#">One-liner <code class="docutils literal notranslate"><span class="pre">fit()</span></code></a><ul>
 <li><a class="reference internal" href="#save-model">Save model</a></li>
 <li><a class="reference internal" href="#display-model">Display model</a></li>
+<li><a class="reference internal" href="#embed-documents">Embed documents</a></li>
 <li><a class="reference internal" href="#example">Example</a></li>
 </ul>
 </li>
