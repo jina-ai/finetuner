@@ -4,6 +4,7 @@
 
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -220,4 +221,23 @@ The changes of each release is tracked by this file.
 
  - [[```ebb9c8d5```](https://github.com/jina-ai/finetuner/commit/ebb9c8d57b9df1b65f0ce650b72b5ec4446a2a35)] __-__ __setup__: update jina minimum requirement for new block() (*Han Xiao*)
  - [[```1c5d00cd```](https://github.com/jina-ai/finetuner/commit/1c5d00cd0b7aab01fa36ada730614d6d3c410d63)] __-__ __version__: the next version will be 0.1.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-1-3></a>
+## Release Note (`0.1.3`)
+
+> Release time: 2021-10-27 07:27:34
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🧼 Code Refactoring
+
+ - [[```1ae201a0```](https://github.com/jina-ai/finetuner/commit/1ae201a087ebcf7c80d5c1dbe736a64e0c11a341)] __-__ __embedding__: level up embed method to top API add docs (#178) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```bf07ab12```](https://github.com/jina-ai/finetuner/commit/bf07ab122c23a987722590817bad85c83d108a51)] __-__ __version__: the next version will be 0.1.3 (*Jina Dev Bot*)
 
