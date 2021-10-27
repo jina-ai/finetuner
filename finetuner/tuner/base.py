@@ -163,7 +163,7 @@ class BaseMiner(abc.ABC):
         self,
         embeddings: List['FloatTensor'],
         labels: List['IntTensor'],
-        limit: Optional[int] = None,
+        limit: int = -1,
     ):
         assert len(embeddings) == len(labels)
         self.embeddings = embeddings
@@ -171,6 +171,6 @@ class BaseMiner(abc.ABC):
         self.limit = limit
 
     @abc.abstractmethod
-    def mine(self) -> List[Tuple[...]]:
+    def mine(self) -> List[Tuple['...']]:
         """Generate tuples/triplets from input embeddings and labels, cut by limit if set."""
         ...
