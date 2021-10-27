@@ -33,6 +33,25 @@ Depending on your framework, `display` may require different argument for render
 
 More information can be {ref}`found here<display-method>`.
 
+## Embed documents
+
+You can use `finetuner.embed()` method to compute the embeddings of a `DocumentArray` or `DocumentArrayMemmap`.
+
+```python
+import finetuner
+from jina import DocumentArray
+
+docs = DocumentArray(...)
+
+finetuner.embed(docs, model)
+
+print(docs.embeddings)
+```
+
+Note that, `model` above must be an {term}`Embedding model`.
+
+
+
 ## Example
 
 ```python
@@ -59,9 +78,6 @@ model, summary = finetuner.fit(
 )
 
 finetuner.display(model, input_size=(100,), input_dtype='long')
-
-finetuner.save(model, './saved-model')
-summary.plot('fit.png')
 ```
 
 ```console
@@ -81,7 +97,32 @@ Green layers can be used as embedding layers, whose name can be used as
 layer_name in to_embedding_model(...).
 ```
 
+```python
+finetuner.save(model, './saved-model')
+summary.plot('fit.png')
+```
+
 ```{figure} fit-plot.png
+:align: center
+:width: 80%
+```
+
+```python
+from jina import DocumentArray
+all_q = DocumentArray(generate_qa_match())
+finetuner.embed(all_q, model)
+print(all_q.embeddings.shape)
+```
+
+```console
+(481, 32)
+```
+
+```python
+all_q.visualize('embed.png', method='tsne')
+```
+
+```{figure} embed.png
 :align: center
 :width: 80%
 ```

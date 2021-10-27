@@ -5,7 +5,7 @@ from jina import DocumentArray, DocumentArrayMemmap
 from .helper import AnyDNN, get_framework
 
 
-def set_embeddings(
+def embed(
     docs: Union[DocumentArray, DocumentArrayMemmap],
     embed_model: AnyDNN,
     device: str = 'cpu',
