@@ -27,7 +27,6 @@ def test_siamese_miner(embeddings, labels):
     miner = SiameseMiner(embeddings=embeddings, labels=labels)
     rv = miner.mine()
     assert len(rv) == 27
-    # random find some pos/neg pairs assure label correct
     for item in rv:
         tensor_left, tensor_right, label = item
         tensor_left_idx = _get_idx_by_tensor(embeddings, tensor_left)
