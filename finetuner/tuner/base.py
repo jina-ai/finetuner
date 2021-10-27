@@ -148,3 +148,29 @@ class BaseDataset:
     ):
         super().__init__()
         self._inputs = inputs() if callable(inputs) else inputs
+
+
+class BaseMiner(abc.ABC):
+    """Miner takes :attr:py:`embeddings` and :attr:py:`labels` produced from sampler
+    and create all possible tuples/triplets.
+
+    :param embeddings: embeddings from model, should be a list of Tensor objects.
+    :param labels: labels of each embeddings, embeddings with same label indicates same class, vice versa.
+    :param limit: set threshold for number of tuples/triplets to generate. If not set, generate all possible pairs.
+    """
+
+    def __init__(
+        self,
+        embeddings: List['FloatTensor'],
+        labels: List['IntTensor'],
+        limit: Optional[int] = None,
+    ):
+        assert len(embeddings) == len(labels)
+        self.embeddings = embeddings
+        self.labels = labels
+        self.limit = limit
+
+    @abc.abstractmethod
+    def mine(self) -> List[Tuple[...]]:
+        """Generate tuples/triplets from input embeddings and labels, cut by limit if set."""
+        ...
