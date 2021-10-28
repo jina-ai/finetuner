@@ -164,6 +164,11 @@ class BaseMiner(abc.ABC):
         self.limit = limit
 
     @abc.abstractmethod
-    def mine(self) -> List[Tuple['...']]:
-        """Generate tuples/triplets from input embeddings and labels, cut by limit if set."""
+    def mine(self, embeddings: List['TensorType'], labels: List[int]):
+        """Generate tuples/triplets from input embeddings and labels, cut by limit if set.
+
+        :param embeddings: embeddings from model, should be a list of Tensor objects.
+        :param labels: labels of each embeddings, embeddings with same label indicates same class.
+        :return: tuple/triplet of embeddings.
+        """
         ...

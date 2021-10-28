@@ -43,4 +43,18 @@ def test_siamese_miner(embeddings, labels):
 
 def test_triplet_miner(embeddings, labels):
     miner = TripletMiner()
-    pass
+    rv = list(miner.mine(embeddings, labels))
+    assert len(rv) == 48
+    for item in rv:
+        tensor_left, tensor_middle, tensor_right = item
+        tensor_left_idx = _get_idx_by_tensor(embeddings, tensor_left)
+        tensor_middle_idx = _get_idx_by_tensor(embeddings, tensor_middle)
+        tensor_right_idx = _get_idx_by_tensor(embeddings, tensor_right)
+        # find corresponded label idx
+        tensor_left_label = labels[tensor_left_idx]
+        tensor_middle_label = labels[tensor_middle_idx]
+        tensor_right_label = labels[tensor_right_idx]
+        # given ordered anchor, pos, neg,
+        # assure first two labels are identical, first third label is different
+        assert tensor_left_label == tensor_middle_label
+        assert tensor_left_label != tensor_right_label
