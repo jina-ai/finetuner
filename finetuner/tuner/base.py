@@ -154,8 +154,6 @@ class BaseMiner(abc.ABC):
     """Miner takes :attr:py:`embeddings` and :attr:py:`labels` produced from sampler
     and create all possible tuples/triplets.
 
-    :param embeddings: embeddings from model, should be a list of Tensor objects.
-    :param labels: labels of each embeddings, embeddings with same label indicates same class, vice versa.
     :param limit: set threshold for number of tuples/triplets to generate. If not set, generate all possible pairs.
     """
 
