@@ -1,5 +1,5 @@
 import torch
-from typing import List, Generator, Tuple
+from typing import List, Generator
 from itertools import combinations
 
 from ..base import BaseMiner
@@ -8,13 +8,14 @@ from ..base import BaseMiner
 class SiameseMiner(BaseMiner):
     def mine(
         self, embeddings: List[torch.Tensor], labels: List[int]
-    ) -> Generator[Tuple[torch.Tensor, torch.Tensor, int]]:
+    ) -> Generator[torch.Tensor, torch.Tensor, int]:
         """Generate tuples from input embeddings and labels, cut by limit if set.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
         :param labels: labels of each embeddings, embeddings with same label indicates same class.
         :return: a pair of embeddings and their labels as tuple.
         """
+        assert len(embeddings) == len(labels)
         for left, right in combinations(enumerate(labels), 2):
             if left[1] == right[1]:
                 yield embeddings[left[0]], embeddings[right[0]], 1
@@ -25,13 +26,14 @@ class SiameseMiner(BaseMiner):
 class TripletMiner(BaseMiner):
     def mine(
         self, embeddings: List[torch.Tensor], labels: List[int]
-    ) -> Generator[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]]:
+    ) -> Generator[torch.Tensor, torch.Tensor, torch.Tensor]:
         """Generate triplets from input embeddings and labels, cut by limit if set.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
         :param labels: labels of each embeddings, embeddings with same label indicates same class.
         :return: triplet of embeddings follows the order of anchor, positive and negative.
         """
+        assert len(embeddings) == len(labels)
         for left, middle, right in combinations(enumerate(labels), 3):
             # two items share the same label (label1, label1, label2) -> (anchor, pos, neg)
             if left[1] == middle[1] and left[1] != right[1]:

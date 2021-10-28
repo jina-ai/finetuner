@@ -152,22 +152,10 @@ class BaseDataset:
 
 
 class BaseMiner(abc.ABC):
-    """Miner takes :attr:py:`embeddings` and :attr:py:`labels` produced from sampler
-    and create all possible tuples/triplets.
-
-    :param limit: set threshold for number of tuples/triplets to generate. If not set, generate all possible pairs.
-    """
-
-    def __init__(
-        self,
-        limit: int = -1,
-    ):
-        self.limit = limit
-
     @abc.abstractmethod
     def mine(
         self, embeddings: List['TensorType'], labels: List[int]
-    ) -> Generator[Tuple]:
+    ) -> Generator['...']:
         """Generate tuples/triplets from input embeddings and labels, cut by limit if set.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.

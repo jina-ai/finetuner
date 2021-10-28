@@ -8,6 +8,16 @@ NUM_DIM = 10
 
 
 @pytest.fixture
+def siamese_miner():
+    return SiameseMiner()
+
+
+@pytest.fixture
+def triplet_miner():
+    return TripletMiner()
+
+
+@pytest.fixture
 def embeddings():
     return [torch.rand(NUM_DIM) for _ in range(BATCH_SIZE)]
 
@@ -23,10 +33,9 @@ def _get_idx_by_tensor(embeddings, tensor):
             return idx
 
 
-def test_siamese_miner(embeddings, labels):
-    miner = SiameseMiner()
-    rv = miner.mine(embeddings, labels)
-    assert len(list(rv)) == 28
+def test_siamese_miner(embeddings, labels, siamese_miner):
+    rv = list(siamese_miner.mine(embeddings, labels))
+    assert len(rv) == 28
     for item in rv:
         tensor_left, tensor_right, label = item
         tensor_left_idx = _get_idx_by_tensor(embeddings, tensor_left)
@@ -41,9 +50,18 @@ def test_siamese_miner(embeddings, labels):
         assert label == expected_label
 
 
-def test_triplet_miner(embeddings, labels):
-    miner = TripletMiner()
-    rv = list(miner.mine(embeddings, labels))
+@pytest.mark.parametrize('cut_index', [0, 1])
+def test_siamese_miner_given_insufficient_inputs(
+    embeddings, labels, siamese_miner, cut_index
+):
+    embeddings = embeddings[:cut_index]
+    labels = labels[:cut_index]
+    rv = list(siamese_miner.mine(embeddings, labels))
+    assert len(rv) == 0
+
+
+def test_triplet_miner(embeddings, labels, triplet_miner):
+    rv = list(triplet_miner.mine(embeddings, labels))
     assert len(rv) == 48
     for item in rv:
         tensor_left, tensor_middle, tensor_right = item
@@ -58,3 +76,13 @@ def test_triplet_miner(embeddings, labels):
         # assure first two labels are identical, first third label is different
         assert tensor_left_label == tensor_middle_label
         assert tensor_left_label != tensor_right_label
+
+
+@pytest.mark.parametrize('cut_index', [0, 1])
+def test_triplet_miner_given_insufficient_inputs(
+    embeddings, labels, siamese_miner, cut_index
+):
+    embeddings = embeddings[:cut_index]
+    labels = labels[:cut_index]
+    rv = list(siamese_miner.mine(embeddings, labels))
+    assert len(rv) == 0
