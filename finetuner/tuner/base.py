@@ -9,7 +9,7 @@ from typing import (
     Dict,
 )
 
-from ..helper import AnyDNN, AnyDataLoader, AnyOptimizer, DocumentArrayLike
+from ..helper import AnyDNN, AnyTensor, AnyDataLoader, AnyOptimizer, DocumentArrayLike
 from .summary import Summary
 
 
@@ -153,9 +153,7 @@ class BaseDataset:
 
 class BaseMiner(abc.ABC):
     @abc.abstractmethod
-    def mine(
-        self, embeddings: List['TensorType'], labels: List[int]
-    ) -> Generator['...']:
+    def mine(self, embeddings: List[AnyTensor], labels: List[int]) -> Generator['...']:
         """Generate tuples/triplets from input embeddings and labels, cut by limit if set.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
