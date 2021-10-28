@@ -6,14 +6,11 @@ from .base import BaseMiner
 class SiameseMiner(BaseMiner):
     def mine(self):
         """Generate tuples/triplets from input embeddings and labels, cut by limit if set."""
-        rv = []
-        for left, right in combinations(enumerate(self.labels), 2):
+        for left, right in combinations(enumerate(self.labels), 2)[: self.limit]:
             if left[1] == right[1]:
-                label = 1
+                yield self.embeddings[left[0]], self.embeddings[right[0]], 1
             else:
-                label = -1
-            rv.append((self.embeddings[left[0]], self.embeddings[right[0]], label))
-        return rv[: self.limit]
+                yield self.embeddings[left[0]], self.embeddings[right[0]], -1
 
 
 class TripletMiner(BaseMiner):
