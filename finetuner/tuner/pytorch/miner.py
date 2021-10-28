@@ -1,11 +1,14 @@
-from typing import List
+import torch
+from typing import List, Generator, Tuple
 from itertools import combinations
 
-from .base import BaseMiner
+from ..base import BaseMiner
 
 
 class SiameseMiner(BaseMiner):
-    def mine(self, embeddings: List['TensorType'], labels: List[int]):
+    def mine(
+        self, embeddings: List[torch.Tensor], labels: List[int]
+    ) -> Generator[Tuple[torch.Tensor, torch.Tensor, int]]:
         """Generate tuples from input embeddings and labels, cut by limit if set.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
@@ -20,7 +23,9 @@ class SiameseMiner(BaseMiner):
 
 
 class TripletMiner(BaseMiner):
-    def mine(self, embeddings: List['TensorType'], labels: List[int]):
+    def mine(
+        self, embeddings: List[torch.Tensor], labels: List[int]
+    ) -> Generator[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]]:
         """Generate triplets from input embeddings and labels, cut by limit if set.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.

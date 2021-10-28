@@ -1,6 +1,7 @@
 import abc
 import warnings
 from typing import (
+    Generator,
     Optional,
     Union,
     Tuple,
@@ -164,7 +165,9 @@ class BaseMiner(abc.ABC):
         self.limit = limit
 
     @abc.abstractmethod
-    def mine(self, embeddings: List['TensorType'], labels: List[int]):
+    def mine(
+        self, embeddings: List['TensorType'], labels: List[int]
+    ) -> Generator[Tuple]:
         """Generate tuples/triplets from input embeddings and labels, cut by limit if set.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.

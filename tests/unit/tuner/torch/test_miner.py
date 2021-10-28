@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from finetuner.tuner.miner import SiameseMiner, TripletMiner
+from finetuner.tuner.pytorch.miner import SiameseMiner, TripletMiner
 
 BATCH_SIZE = 8
 NUM_DIM = 10
