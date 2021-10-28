@@ -153,7 +153,7 @@ class BaseDataset:
 
 class BaseMiner(abc.ABC):
     @abc.abstractmethod
-    def mine(self, embeddings: List[AnyTensor], labels: List[int]) -> Generator['...']:
+    def mine(self, embeddings: List[AnyTensor], labels: List[int]):
         """Generate tuples/triplets from input embeddings and labels, cut by limit if set.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
