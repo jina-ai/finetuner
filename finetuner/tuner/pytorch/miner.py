@@ -8,7 +8,7 @@ from ..base import BaseMiner
 class SiameseMiner(BaseMiner):
     def mine(
         self, embeddings: List[torch.Tensor], labels: List[int]
-    ) -> Generator[torch.Tensor, torch.Tensor, int]:
+    ) -> Generator['...']:
         """Generate tuples from input embeddings and labels, cut by limit if set.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
@@ -26,7 +26,7 @@ class SiameseMiner(BaseMiner):
 class TripletMiner(BaseMiner):
     def mine(
         self, embeddings: List[torch.Tensor], labels: List[int]
-    ) -> Generator[torch.Tensor, torch.Tensor, torch.Tensor]:
+    ) -> Generator['...']:
         """Generate triplets from input embeddings and labels, cut by limit if set.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
