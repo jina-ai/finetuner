@@ -161,13 +161,8 @@ class BaseMiner(abc.ABC):
 
     def __init__(
         self,
-        embeddings: List['FloatTensor'],
-        labels: List['IntTensor'],
         limit: int = -1,
     ):
-        assert len(embeddings) == len(labels)
-        self.embeddings = embeddings
-        self.labels = labels
         self.limit = limit
 
     @abc.abstractmethod

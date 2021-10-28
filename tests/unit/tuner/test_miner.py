@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from finetuner.tuner.miner import SiameseMiner
+from finetuner.tuner.miner import SiameseMiner, TripletMiner
 
 BATCH_SIZE = 8
 NUM_DIM = 10
@@ -24,9 +24,9 @@ def _get_idx_by_tensor(embeddings, tensor):
 
 
 def test_siamese_miner(embeddings, labels):
-    miner = SiameseMiner(embeddings=embeddings, labels=labels)
-    rv = miner.mine()
-    assert len(rv) == 27
+    miner = SiameseMiner()
+    rv = miner.mine(embeddings, labels)
+    assert len(list(rv)) == 28
     for item in rv:
         tensor_left, tensor_right, label = item
         tensor_left_idx = _get_idx_by_tensor(embeddings, tensor_left)
@@ -39,3 +39,8 @@ def test_siamese_miner(embeddings, labels):
         else:
             expected_label = -1
         assert label == expected_label
+
+
+def test_triplet_miner(embeddings, labels):
+    miner = TripletMiner()
+    pass
