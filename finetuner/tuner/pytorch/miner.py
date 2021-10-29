@@ -23,7 +23,7 @@ class SiameseMiner(BaseMiner):
 
 
 class TripletMiner(BaseMiner):
-    def mine(self, embeddings: List[AnyTensor], labels: List[int]):
+    def mine(self, embeddings: List[AnyTensor], labels: List[int]) -> Tuple[int]:
         """Generate triplets from input embeddings and labels.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
