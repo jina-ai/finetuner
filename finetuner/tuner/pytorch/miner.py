@@ -1,13 +1,13 @@
-import torch
 import numpy as np
-from typing import List, Generator
+from typing import List
 from itertools import combinations
 
 from ..base import BaseMiner
+from ...helper import AnyTensor
 
 
 class SiameseMiner(BaseMiner):
-    def mine(self, embeddings: List[torch.Tensor], labels: List[int]):
+    def mine(self, embeddings: List[AnyTensor], labels: List[int]):
         """Generate tuples from input embeddings and labels, cut by limit if set.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
@@ -23,7 +23,7 @@ class SiameseMiner(BaseMiner):
 
 
 class TripletMiner(BaseMiner):
-    def mine(self, embeddings: List[torch.Tensor], labels: List[int]):
+    def mine(self, embeddings: List[AnyTensor], labels: List[int]):
         """Generate triplets from input embeddings and labels, cut by limit if set.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
@@ -37,8 +37,6 @@ class TripletMiner(BaseMiner):
         diffs = matches ^ 1
         np.fill_diagonal(matches, 0)
         triplets = np.expand_dims(matches, 2) * np.expand_dims(diffs, 1)
-        indices_left, indices_middle, indices_right = np.where(triplets)
-        for idx_left, idx_middle, idx_right in zip(
-            indices_left, indices_middle, indices_right
-        ):
-            yield embeddings[idx_left], embeddings[idx_middle], embeddings[idx_right]
+        idxes_anchor, idxes_pos, idxes_neg = np.where(triplets)
+        for idx_anchor, idx_pos, idx_neg in zip(idxes_anchor, idxes_pos, idxes_neg):
+            yield embeddings[idx_anchor], embeddings[idx_pos], embeddings[idx_neg]
