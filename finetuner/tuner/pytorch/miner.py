@@ -1,5 +1,5 @@
 import numpy as np
-from typing import List
+from typing import List, Tuple
 from itertools import combinations
 
 from ..base import BaseMiner
@@ -7,28 +7,28 @@ from ...helper import AnyTensor
 
 
 class SiameseMiner(BaseMiner):
-    def mine(self, embeddings: List[AnyTensor], labels: List[int]):
-        """Generate tuples from input embeddings and labels, cut by limit if set.
+    def mine(self, embeddings: List[AnyTensor], labels: List[int]) -> Tuple[int]:
+        """Generate tuples from input embeddings and labels.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
         :param labels: labels of each embeddings, embeddings with same label indicates same class.
-        :return: a pair of embeddings and their labels as tuple.
+        :return: a pair of label indices and their label as tuple.
         """
         assert len(embeddings) == len(labels)
         for left, right in combinations(enumerate(labels), 2):
             if left[1] == right[1]:
-                yield embeddings[left[0]], embeddings[right[0]], 1
+                yield left[0], right[0], 1
             else:
-                yield embeddings[left[0]], embeddings[right[0]], -1
+                yield left[0], right[0], -1
 
 
 class TripletMiner(BaseMiner):
     def mine(self, embeddings: List[AnyTensor], labels: List[int]):
-        """Generate triplets from input embeddings and labels, cut by limit if set.
+        """Generate triplets from input embeddings and labels.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
         :param labels: labels of each embeddings, embeddings with same label indicates same class.
-        :return: triplet of embeddings follows the order of anchor, positive and negative.
+        :return: triplet of label indices follows the order of anchor, positive and negative.
         """
         assert len(embeddings) == len(labels)
         labels1 = np.expand_dims(labels, 1)
@@ -39,4 +39,4 @@ class TripletMiner(BaseMiner):
         triplets = np.expand_dims(matches, 2) * np.expand_dims(diffs, 1)
         idxes_anchor, idxes_pos, idxes_neg = np.where(triplets)
         for idx_anchor, idx_pos, idx_neg in zip(idxes_anchor, idxes_pos, idxes_neg):
-            yield embeddings[idx_anchor], embeddings[idx_pos], embeddings[idx_neg]
+            yield idx_anchor, idx_pos, idx_neg

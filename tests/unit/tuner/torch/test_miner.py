@@ -27,23 +27,15 @@ def labels():
     return [1, 3, 1, 3, 2, 4, 2, 4]
 
 
-def _get_idx_by_tensor(embeddings, tensor):
-    for idx, embedding in enumerate(embeddings):
-        if torch.equal(tensor, embedding):
-            return idx
-
-
 def test_siamese_miner(embeddings, labels, siamese_miner):
     rv = list(siamese_miner.mine(embeddings, labels))
     assert len(rv) == 28
     for item in rv:
-        tensor_left, tensor_right, label = item
-        tensor_left_idx = _get_idx_by_tensor(embeddings, tensor_left)
-        tensor_right_idx = _get_idx_by_tensor(embeddings, tensor_right)
+        idx_left, idx_right, label = item
         # find corresponded label idx
-        tensor_left_label = labels[tensor_left_idx]
-        tensor_right_label = labels[tensor_right_idx]
-        if tensor_left_label == tensor_right_label:
+        label_left = labels[idx_left]
+        label_right = labels[idx_right]
+        if label_left == label_right:
             expected_label = 1
         else:
             expected_label = -1
@@ -64,18 +56,15 @@ def test_triplet_miner(embeddings, labels, triplet_miner):
     rv = list(triplet_miner.mine(embeddings, labels))
     assert len(rv) == 48
     for item in rv:
-        tensor_left, tensor_middle, tensor_right = item
-        tensor_left_idx = _get_idx_by_tensor(embeddings, tensor_left)
-        tensor_middle_idx = _get_idx_by_tensor(embeddings, tensor_middle)
-        tensor_right_idx = _get_idx_by_tensor(embeddings, tensor_right)
+        idx_anchor, idx_pos, idx_neg = item
         # find corresponded label idx
-        tensor_left_label = labels[tensor_left_idx]
-        tensor_middle_label = labels[tensor_middle_idx]
-        tensor_right_label = labels[tensor_right_idx]
+        label_anchor = labels[idx_anchor]
+        label_pos = labels[idx_pos]
+        label_neg = labels[idx_neg]
         # given ordered anchor, pos, neg,
         # assure first two labels are identical, first third label is different
-        assert tensor_left_label == tensor_middle_label
-        assert tensor_left_label != tensor_right_label
+        assert label_anchor == label_pos
+        assert label_anchor != label_neg
 
 
 @pytest.mark.parametrize('cut_index', [0, 1])
