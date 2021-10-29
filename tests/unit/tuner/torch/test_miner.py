@@ -28,7 +28,7 @@ def labels():
 
 
 def test_siamese_miner(embeddings, labels, siamese_miner):
-    rv = list(siamese_miner.mine(embeddings, labels))
+    rv = siamese_miner.mine(embeddings, labels)
     assert len(rv) == 28
     for item in rv:
         idx_left, idx_right, label = item
@@ -53,7 +53,7 @@ def test_siamese_miner_given_insufficient_inputs(
 
 
 def test_triplet_miner(embeddings, labels, triplet_miner):
-    rv = list(triplet_miner.mine(embeddings, labels))
+    rv = triplet_miner.mine(embeddings, labels)
     assert len(rv) == 48
     for item in rv:
         idx_anchor, idx_pos, idx_neg = item

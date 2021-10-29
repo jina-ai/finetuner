@@ -7,7 +7,9 @@ from ...helper import AnyTensor
 
 
 class SiameseMiner(BaseMiner):
-    def mine(self, embeddings: List[AnyTensor], labels: List[int]) -> Tuple[int]:
+    def mine(
+        self, embeddings: List[AnyTensor], labels: List[int]
+    ) -> List[Tuple[int, ...]]:
         """Generate tuples from input embeddings and labels.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
@@ -15,15 +17,16 @@ class SiameseMiner(BaseMiner):
         :return: a pair of label indices and their label as tuple.
         """
         assert len(embeddings) == len(labels)
-        for left, right in combinations(enumerate(labels), 2):
-            if left[1] == right[1]:
-                yield left[0], right[0], 1
-            else:
-                yield left[0], right[0], -1
+        return [
+            (left[0], right[0], 1) if left[1] == right[1] else (left[0], right[0], -1)
+            for left, right in combinations(enumerate(labels), 2)
+        ]
 
 
 class TripletMiner(BaseMiner):
-    def mine(self, embeddings: List[AnyTensor], labels: List[int]) -> Tuple[int]:
+    def mine(
+        self, embeddings: List[AnyTensor], labels: List[int]
+    ) -> List[Tuple[int, ...]]:
         """Generate triplets from input embeddings and labels.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
@@ -38,5 +41,4 @@ class TripletMiner(BaseMiner):
         np.fill_diagonal(matches, 0)
         triplets = np.expand_dims(matches, 2) * np.expand_dims(diffs, 1)
         idxes_anchor, idxes_pos, idxes_neg = np.where(triplets)
-        for idx_anchor, idx_pos, idx_neg in zip(idxes_anchor, idxes_pos, idxes_neg):
-            yield idx_anchor, idx_pos, idx_neg
+        return list(zip(idxes_anchor, idxes_pos, idxes_neg))
