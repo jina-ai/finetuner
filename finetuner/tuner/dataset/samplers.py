@@ -39,7 +39,8 @@ class RandomClassBatchSampler:
         if batch_size % num_items_per_class != 0:
             raise ValueError(
                 'batch_size must be a multiple of num_items_per_class,'
-                f' got {batch_size=} and {num_items_per_class=}'
+                f' got batch_size={batch_size} and'
+                f' num_items_per_class={num_items_per_class}'
             )
 
         self._num_items_per_class = num_items_per_class
