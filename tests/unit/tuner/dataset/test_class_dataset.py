@@ -113,3 +113,17 @@ def test_custom_document_sequence_input(labels):
     for i in range(len(ds)):
         assert ds[i][0] == docs[i].text
         assert ds[i][1] == [0, 1, 0][i]
+
+
+def test_preprocess_fn():
+    def preprocess(x: str):
+        return x + '_new'
+
+    data = [
+        Document(text='text1', tags=_class(1)),
+        Document(text='text2', tags=_class(2)),
+        Document(text='text1a', tags=_class(1)),
+    ]
+    ds = ClassDataset(data, preprocess_fn=preprocess)
+    for (content, _), doc in zip(ds, data):
+        assert content == doc.text + '_new'

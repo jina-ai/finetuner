@@ -124,3 +124,21 @@ def test_custom_document_sequence_input():
     for i in range(len(ds)):
         assert ds[i][0] == contents[i]
         assert ds[i][1] == labels[i]
+
+
+def test_preprocess_fn():
+    def preprocess(x: str):
+        return x + '_new'
+
+    data = [Document(text='text1'), Document(text='text2')]
+    data[0].matches = DocumentArray(
+        [
+            Document(text='text1a', tags=_label(-1)),
+            Document(text='text1b', tags=_label(1)),
+        ]
+    )
+    ds = SessionDataset(data, preprocess_fn=preprocess)
+
+    new_contents = ['text1_new', 'text1a_new', 'text1b_new', 'text2_new']
+    for (content, _), new_content in zip(ds, new_contents):
+        assert content == new_content
