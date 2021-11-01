@@ -194,15 +194,11 @@ class SessionBatchSampler:
                     if len(current_batch) == 0:
                         session_exhausted = True
 
-                        # Take the first one (root), sample the rest
-                        current_batch += [session_items[0][0]]
-                        current_batch += [
-                            x[0] for x in sample(session_items[1:], missing - 1)
-                        ]
-
-                    # Add however many items are missing
-                    else:
-                        current_batch += [x[0] for x in session_items[:missing]]
+                    # Take the first one (root), sample the rest
+                    current_batch += [session_items[0][0]]
+                    current_batch += [
+                        x[0] for x in sample(session_items[1:], missing - 1)
+                    ]
 
                 if len(current_batch) == self._batch_size:
                     batches.append(current_batch)
