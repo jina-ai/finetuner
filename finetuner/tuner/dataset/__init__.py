@@ -1,4 +1,3 @@
-import abc
 import itertools
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
@@ -8,38 +7,13 @@ from ... import __default_tag_key__
 from ...helper import DocumentSequence
 
 
-class BaseDataset:
-    @abc.abstractmethod
-    def __init__(
-        self,
-        docs: DocumentSequence,
-        preprocess: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
-    ):
-        ...
-
-    @abc.abstractmethod
-    def __getitem__(
-        self, ind: int
-    ) -> Tuple[Union[str, np.ndarray], Union[int, Tuple[int, int]]]:
-        ...
-
-    @property
-    @abc.abstractmethod
-    def labels(self) -> Union[int, Tuple[int, int]]:
-        ...
-
-    @abc.abstractmethod
-    def __len__(self) -> int:
-        ...
-
-
 class ClassDataset:
     """ Dataset for enapsulating data where each item has a class label."""
 
     def __init__(
         self,
         docs: DocumentSequence,
-        preprocess: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
+        preprocess_fn: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
     ):
         """Create the :class:`ClassDataset` instance.
 
@@ -47,12 +21,12 @@ class ClassDataset:
             - a content (only blob or text are accepted currently)
             - a class label, saved under ``tags['finetuner']['label']``. This class
               label should be an integer or a string
-        :param preprocess: A pre-processing function. It should take as input the
+        :param preprocess_fn: A pre-processing function. It should take as input the
             content of an item in the dataset (currently only text of blob are
             accepted).
         """
         self._docs = docs
-        self._preprocess = preprocess
+        self._preprocess_fn = preprocess_fn
 
         self._tag_labels_dict: Dict[Union[str, int], int] = {}
         self._labels: List[int] = []
@@ -60,12 +34,12 @@ class ClassDataset:
 
         for doc in self._docs:
             try:
-                tag = doc.tags['finetuner']['label']
-            except KeyError:
+                tag = doc.tags[__default_tag_key__]['label']
+            except KeyError as e:
                 raise KeyError(
                     'The tag ["finetuner"]["label"] was not found in a document.'
                     ' When using ClassDataset all documents need this tag'
-                )
+                ) from e
             label = self._tag_labels_dict.get(tag)
 
             if label is None:
@@ -83,8 +57,8 @@ class ClassDataset:
         content = self._docs[ind].content
         label = self._labels[ind]
 
-        if self._preprocess is not None:
-            content = self._preprocess(content)
+        if self._preprocess_fn is not None:
+            content = self._preprocess_fn(content)
 
         return (content, label)
 
@@ -107,7 +81,7 @@ class SessionDataset:
     def __init__(
         self,
         docs: DocumentSequence,
-        preprocess: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
+        preprocess_fn: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
     ):
         """Create the :class:`SessionDataset` instance.
 
@@ -117,12 +91,12 @@ class SessionDataset:
                 ``tags['finetuner']['label']``, which be either 1 or -1, denoting
                 whether the match is a positive or negative input in relation to the
                 anchor document
-        :param preprocess: A pre-processing function. It should take as input the
+        :param preprocess_fn: A pre-processing function. It should take as input the
             content of an item in the dataset (currently only text of blob are
             accepted).
         """
         self._docs = docs
-        self._preprocess = preprocess
+        self._preprocess_fn = preprocess_fn
 
         self._locations: List[Tuple[int, int]] = []
         self._labels: List[Tuple[int, int]] = []
@@ -161,8 +135,8 @@ class SessionDataset:
 
         label = self._labels[ind]
 
-        if self._preprocess is not None:
-            content = self._preprocess(content)
+        if self._preprocess_fn is not None:
+            content = self._preprocess_fn(content)
 
         return (content, label)
 
