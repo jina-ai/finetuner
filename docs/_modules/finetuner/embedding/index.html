@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.d53ab927f7bad3eaa42da95908504b10.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.59c74d8c95b765a7fd995ac71d459ebe.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=16fb25fabf47304eee183a5e9af80b1ba98259b1" />
     <link rel="stylesheet" type="text/css" href="../../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/docbot.css" />
@@ -313,36 +313,38 @@
     <span class="n">docs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DocumentArray</span><span class="p">,</span> <span class="n">DocumentArrayMemmap</span><span class="p">],</span>
     <span class="n">embed_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">"""Fill the embedding of Documents inplace by using `embed_model`</span>
 
 <span class="sd">    :param docs: the Documents to be embedded</span>
 <span class="sd">    :param embed_model: the embedding model written in Keras/Pytorch/Paddle</span>
 <span class="sd">    :param device: the computational device for `embed_model`, can be either `cpu` or `cuda`.</span>
-
+<span class="sd">    :param batch_size: number of Documents in a batch for embedding</span>
 <span class="sd">    """</span>
     <span class="n">fm</span> <span class="o">=</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">embed_model</span><span class="p">)</span>
-    <span class="nb">globals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">'_set_embeddings_</span><span class="si">{</span><span class="n">fm</span><span class="si">}</span><span class="s1">'</span><span class="p">](</span><span class="n">docs</span><span class="p">,</span> <span class="n">embed_model</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
+    <span class="nb">globals</span><span class="p">()[</span><span class="sa">f</span><span class="s1">'_set_embeddings_</span><span class="si">{</span><span class="n">fm</span><span class="si">}</span><span class="s1">'</span><span class="p">](</span><span class="n">docs</span><span class="p">,</span> <span class="n">embed_model</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_set_embeddings_keras</span><span class="p">(</span>
     <span class="n">docs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DocumentArray</span><span class="p">,</span> <span class="n">DocumentArrayMemmap</span><span class="p">],</span>
     <span class="n">embed_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="kn">from</span> <span class="nn">.tuner.keras</span> <span class="kn">import</span> <span class="n">get_device</span>
 
     <span class="n">device</span> <span class="o">=</span> <span class="n">get_device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">device</span><span class="p">:</span>
-        <span class="n">embeddings</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">docs</span><span class="o">.</span><span class="n">blobs</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-
-    <span class="n">docs</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">embeddings</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">docs</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
+            <span class="n">b</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">blobs</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">_set_embeddings_torch</span><span class="p">(</span>
     <span class="n">docs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DocumentArray</span><span class="p">,</span> <span class="n">DocumentArrayMemmap</span><span class="p">],</span>
     <span class="n">embed_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="kn">from</span> <span class="nn">.tuner.pytorch</span> <span class="kn">import</span> <span class="n">get_device</span>
 
@@ -350,18 +352,18 @@
 
     <span class="kn">import</span> <span class="nn">torch</span>
 
-    <span class="n">tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">docs</span><span class="o">.</span><span class="n">blobs</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
     <span class="n">embed_model</span> <span class="o">=</span> <span class="n">embed_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">inference_mode</span><span class="p">():</span>
-        <span class="n">embeddings</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-
-    <span class="n">docs</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">embeddings</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">docs</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
+            <span class="n">tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">blobs</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">b</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">_set_embeddings_paddle</span><span class="p">(</span>
     <span class="n">docs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DocumentArray</span><span class="p">,</span> <span class="n">DocumentArrayMemmap</span><span class="p">],</span>
     <span class="n">embed_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="kn">from</span> <span class="nn">.tuner.paddle</span> <span class="kn">import</span> <span class="n">get_device</span>
 
@@ -369,8 +371,8 @@
 
     <span class="kn">import</span> <span class="nn">paddle</span>
 
-    <span class="n">embeddings</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">docs</span><span class="o">.</span><span class="n">blobs</span><span class="p">))</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-    <span class="n">docs</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">embeddings</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">docs</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">blobs</span><span class="p">))</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 </pre></div>
             </article>
             <footer>
@@ -382,7 +384,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Oct 27, 2021.
+                    Last updated on Nov 01, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
