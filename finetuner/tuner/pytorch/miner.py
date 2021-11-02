@@ -46,25 +46,25 @@ class TripletMiner(BaseMiner):
 
 class SiameseSessionMiner(BaseMiner):
     def mine(
-        self, embeddings: List[AnyTensor], labels: List[int]
+        self, embeddings: List[AnyTensor], labels: List[Tuple[int, int]]
     ) -> List[Tuple[int, ...]]:
         """Generate tuples from input embeddings and labels.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
-        :param labels: labels of each embeddings, embeddings with same label indicates same class.
+        :param labels: labels of each embeddings, consist of session id and label.
         :return: a pair of label indices and their label as tuple.
         """
-        pass
+        assert len(embeddings) == len(labels)
 
 
 class TripletSessionMiner(BaseMiner):
     def mine(
-        self, embeddings: List[AnyTensor], labels: List[int]
+        self, embeddings: List[AnyTensor], labels: List[Tuple[int, int]]
     ) -> List[Tuple[int, ...]]:
         """Generate triplets from input embeddings and labels.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
-        :param labels: labels of each embeddings, embeddings with same label indicates same class.
+        :param labels: labels of each embeddings, consist of session id and label.
         :return: triplet of label indices follows the order of anchor, positive and negative.
         """
         pass
