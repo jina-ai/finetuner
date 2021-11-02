@@ -67,9 +67,7 @@ class SiameseSessionMiner(BaseMiner):
         rv = []
         labels_with_index = [item + (index,) for index, item in enumerate(labels)]
         sorted_labels_with_index = sorted(labels_with_index, key=lambda x: x[0])
-        for session, group in groupby(
-            sorted(sorted_labels_with_index, key=lambda x: x[0]), lambda x: x[0]
-        ):
+        for session, group in groupby(sorted_labels_with_index, lambda x: x[0]):
             _, session_labels, session_indices = zip(*group)
             pairs = _generate_all_possible_pairs(session_labels)
             rv.extend(
@@ -95,9 +93,7 @@ class TripletSessionMiner(BaseMiner):
         rv = []
         labels_with_index = [item + (index,) for index, item in enumerate(labels)]
         sorted_labels_with_index = sorted(labels_with_index, key=lambda x: x[0])
-        for session, group in groupby(
-            sorted(sorted_labels_with_index, key=lambda x: x[0]), lambda x: x[0]
-        ):
+        for session, group in groupby(sorted_labels_with_index, lambda x: x[0]):
             _, session_labels, session_indices = zip(*group)
             triplets = _generate_all_possible_triplets(session_labels)
             rv.extend(
