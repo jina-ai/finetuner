@@ -63,15 +63,21 @@ class SiameseSessionMiner(BaseMiner):
           the labels are either -1 or 1.
         :return: a pair of label indices and their label as tuple.
         """
-        rv = []
         assert len(embeddings) == len(labels)
+        rv = []
+        labels_with_index = [item + (index,) for index, item in enumerate(labels)]
+        sorted_labels_with_index = sorted(labels_with_index, key=lambda x: x[0])
         for session, group in groupby(
-            sorted(labels, key=lambda x: x[0]), lambda x: x[0]
+            sorted(sorted_labels_with_index, key=lambda x: x[0]), lambda x: x[0]
         ):
-            session_labels = [item for _, item in group]
+            _, session_labels, session_indices = zip(*group)
+            pairs = _generate_all_possible_pairs(session_labels)
             rv.extend(
-                _generate_all_possible_pairs(session_labels)
-            )  # all possible tuples in the session
+                [
+                    (session_indices[left_idx], session_indices[right_idx], label)
+                    for left_idx, right_idx, label in pairs
+                ]
+            )
         return rv
 
 
@@ -85,11 +91,23 @@ class TripletSessionMiner(BaseMiner):
         :param labels: labels of each embeddings, consist of session id and label.
         :return: triplet of label indices follows the order of anchor, positive and negative.
         """
-        rv = []
         assert len(embeddings) == len(labels)
+        rv = []
+        labels_with_index = [item + (index,) for index, item in enumerate(labels)]
+        sorted_labels_with_index = sorted(labels_with_index, key=lambda x: x[0])
         for session, group in groupby(
-            sorted(labels, key=lambda x: x[0]), lambda x: x[0]
+            sorted(sorted_labels_with_index, key=lambda x: x[0]), lambda x: x[0]
         ):
-            session_labels = [item for _, item in group]
-            rv.extend(_generate_all_possible_triplets(session_labels))
+            _, session_labels, session_indices = zip(*group)
+            triplets = _generate_all_possible_triplets(session_labels)
+            rv.extend(
+                [
+                    (
+                        session_indices[left_idx],
+                        session_indices[middle_idx],
+                        session_indices[right_idx],
+                    )
+                    for left_idx, middle_idx, right_idx in triplets
+                ]
+            )
         return rv
