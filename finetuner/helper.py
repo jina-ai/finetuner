@@ -14,6 +14,9 @@ from jina import Document, DocumentArray, DocumentArrayMemmap
 AnyDNN = TypeVar(
     'AnyDNN'
 )  #: The type of any implementation of a Deep Neural Network object
+AnyTensor = TypeVar(
+    'AnyTensor'
+)  #: The type of any implementation of an tensor for model tuning
 AnyDataLoader = TypeVar(
     'AnyDataLoader'
 )  #: The type of any implementation of a data loader
