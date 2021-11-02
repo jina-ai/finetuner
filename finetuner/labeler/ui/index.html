@@ -44,6 +44,13 @@
                                 :submit-doc="submit_doc">
                             </image-match-card>
                         </swiper-slide>
+                        <swiper-slide v-if="labeler_config.style=='audio'" v-for="(doc, doc_idx) in cur_batch"
+                            :key="doc_idx">
+                            <audio-match-card :doc="doc" :doc-idx="doc_idx" :get-content="get_content"
+                                :toggle-relevance="toggle_relevance" :invert-selection="select_all"
+                                :submit-doc="submit_doc">
+                            </audio-match-card>
+                        </swiper-slide>
                         <swiper-slide v-if="labeler_config.style=='mesh'" v-for="(doc, doc_idx) in cur_batch"
                             :key="doc_idx">
                             <mesh-match-card :doc="doc" :doc-idx="doc_idx" :get-content="get_content"
@@ -74,6 +81,7 @@
     <script src="./js/components/sidebar.vue.js"></script>
     <script src="./js/components/image-match-card.vue.js"></script>
     <script src="./js/components/text-match-card.vue.js"></script>
+    <script src="./js/components/audio-match-card.vue.js"></script>
     <script src="./js/components/mesh-match-card.vue.js"></script>
     <script src="./js/main.js"></script>
 </body>
