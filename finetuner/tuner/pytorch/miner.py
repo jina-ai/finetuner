@@ -42,3 +42,29 @@ class TripletMiner(BaseMiner):
         triplets = np.expand_dims(matches, 2) * np.expand_dims(diffs, 1)
         idxes_anchor, idxes_pos, idxes_neg = np.where(triplets)
         return list(zip(idxes_anchor, idxes_pos, idxes_neg))
+
+
+class SiameseSessionMiner(BaseMiner):
+    def mine(
+        self, embeddings: List[AnyTensor], labels: List[int]
+    ) -> List[Tuple[int, ...]]:
+        """Generate tuples from input embeddings and labels.
+
+        :param embeddings: embeddings from model, should be a list of Tensor objects.
+        :param labels: labels of each embeddings, embeddings with same label indicates same class.
+        :return: a pair of label indices and their label as tuple.
+        """
+        pass
+
+
+class TripletSessionMiner(BaseMiner):
+    def mine(
+        self, embeddings: List[AnyTensor], labels: List[int]
+    ) -> List[Tuple[int, ...]]:
+        """Generate triplets from input embeddings and labels.
+
+        :param embeddings: embeddings from model, should be a list of Tensor objects.
+        :param labels: labels of each embeddings, embeddings with same label indicates same class.
+        :return: triplet of label indices follows the order of anchor, positive and negative.
+        """
+        pass
