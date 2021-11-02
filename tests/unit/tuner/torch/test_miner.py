@@ -128,7 +128,7 @@ def test_triplet_session_miner(embeddings, session_labels, triplet_session_miner
     rv = triplet_session_miner.mine(embeddings, session_labels)
     assert (
         len(rv) == 6
-    )  # session 1 and session 2 only have 2 data. session 3 generate 6 triplets.
+    )  # session 1 and session 2 only have 2 data points, generate 0 triplets. session 3 generate 6 triplets.
     for item in rv:
         idx_anchor, idx_pos, idx_neg = item
         # find corresponded label idx
@@ -142,3 +142,13 @@ def test_triplet_session_miner(embeddings, session_labels, triplet_session_miner
     all_anchors = {item[0] for item in rv}
     # assure only index 4, 6, 7 in anchor, 5 is a positive anchor do not have a positive pair
     assert {4, 6, 7}.issubset(all_anchors)
+
+
+@pytest.mark.parametrize('cut_index', [0, 1])
+def test_triplet_session_miner_given_insufficient_inputs(
+    embeddings, session_labels, triplet_session_miner, cut_index
+):
+    embeddings = embeddings[:cut_index]
+    session_labels = session_labels[:cut_index]
+    rv = list(triplet_session_miner.mine(embeddings, session_labels))
+    assert len(rv) == 0
