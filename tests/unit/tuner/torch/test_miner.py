@@ -122,3 +122,23 @@ def test_siamese_session_miner_given_insufficient_inputs(
     session_labels = session_labels[:cut_index]
     rv = list(siamese_session_miner.mine(embeddings, session_labels))
     assert len(rv) == 0
+
+
+def test_triplet_session_miner(embeddings, session_labels, triplet_session_miner):
+    rv = triplet_session_miner.mine(embeddings, session_labels)
+    assert (
+        len(rv) == 6
+    )  # session 1 and session 2 only have 2 data. session 3 generate 6 triplets.
+    for item in rv:
+        idx_anchor, idx_pos, idx_neg = item
+        # find corresponded label idx
+        label_anchor = session_labels[idx_anchor]
+        label_pos = session_labels[idx_pos]
+        label_neg = session_labels[idx_neg]
+        # given ordered anchor, pos, neg,
+        # assure first two labels are identical, first third label is different
+        assert label_anchor == label_pos
+        assert label_anchor != label_neg
+    all_anchors = {item[0] for item in rv}
+    # assure only index 4, 6, 7 in anchor, 5 is a positive anchor do not have a positive pair
+    assert {4, 6, 7}.issubset(all_anchors)
