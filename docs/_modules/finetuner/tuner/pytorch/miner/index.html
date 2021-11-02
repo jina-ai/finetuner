@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
-        <title>finetuner.tuner.pytorch.losses - Finetuner 0.1.4 documentation</title>
+        <title>finetuner.tuner.pytorch.miner - Finetuner 0.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -302,150 +302,51 @@
                         </i>
                     </label>
                 </div>
-                <h1>Source code for finetuner.tuner.pytorch.losses</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+                <h1>Source code for finetuner.tuner.pytorch.miner</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
 
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
-
-<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseLoss</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseMiner</span>
+<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">AnyTensor</span>
 
 
-<div class="viewcode-block" id="CosineSiameseLoss"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.losses/#finetuner.tuner.pytorch.losses.CosineSiameseLoss">[docs]</a><span class="k">class</span> <span class="nc">CosineSiameseLoss</span><span class="p">(</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">"""Computes the loss for a siamese network using cosine distance.</span>
+<div class="viewcode-block" id="SiameseMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseMiner">[docs]</a><span class="k">class</span> <span class="nc">SiameseMiner</span><span class="p">(</span><span class="n">BaseMiner</span><span class="p">):</span>
+<div class="viewcode-block" id="SiameseMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AnyTensor</span><span class="p">],</span> <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+        <span class="sd">"""Generate tuples from input embeddings and labels.</span>
 
-<span class="sd">    The loss for a pair of objects equals ``(target - cos_sim)^2``, where ``target``</span>
-<span class="sd">    should equal 1 when both objects belong to the same class, and to -1 when they</span>
-<span class="sd">    belong to different classes. The ``cos_sim`` represents the cosime similarity</span>
-<span class="sd">    between both objects.</span>
-
-<span class="sd">    The final loss is the average over losses for all pairs of objects in the batch.</span>
-<span class="sd">    """</span>
-
-    <span class="n">arity</span> <span class="o">=</span> <span class="mi">2</span>
-
-<div class="viewcode-block" id="CosineSiameseLoss.forward"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.losses/#finetuner.tuner.pytorch.losses.CosineSiameseLoss.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="sd">"""Compute the loss.</span>
-
-<span class="sd">        :param embeddings: Should be a list or a tuple containing two tensors:</span>
-<span class="sd">            - ``[N, D]`` tensor of embeddings of the first objects of the pair</span>
-<span class="sd">            - ``[N, D]`` tensor of embeddings of the second object of the pair</span>
-<span class="sd">        :param target: A ``[N, ]`` tensor of target values</span>
+<span class="sd">        :param embeddings: embeddings from model, should be a list of Tensor objects.</span>
+<span class="sd">        :param labels: labels of each embeddings, embeddings with same label indicates same class.</span>
+<span class="sd">        :return: a pair of label indices and their label as tuple.</span>
 <span class="sd">        """</span>
-        <span class="n">l_emb</span><span class="p">,</span> <span class="n">r_emb</span> <span class="o">=</span> <span class="n">embeddings</span>
-        <span class="n">cos_sim</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cosine_similarity</span><span class="p">(</span><span class="n">l_emb</span><span class="p">,</span> <span class="n">r_emb</span><span class="p">)</span>
-        <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">cos_sim</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">loss</span></div></div>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">left</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">right</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">right</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">else</span> <span class="p">(</span><span class="n">left</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">right</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="p">]</span></div></div>
 
 
-<div class="viewcode-block" id="EuclideanSiameseLoss"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.losses/#finetuner.tuner.pytorch.losses.EuclideanSiameseLoss">[docs]</a><span class="k">class</span> <span class="nc">EuclideanSiameseLoss</span><span class="p">(</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">"""Computes the loss for a siamese network using eculidean distance.</span>
+<div class="viewcode-block" id="TripletMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletMiner">[docs]</a><span class="k">class</span> <span class="nc">TripletMiner</span><span class="p">(</span><span class="n">BaseMiner</span><span class="p">):</span>
+<div class="viewcode-block" id="TripletMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AnyTensor</span><span class="p">],</span> <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+        <span class="sd">"""Generate triplets from input embeddings and labels.</span>
 
-<span class="sd">    This loss is also known as contrastive loss.</span>
-
-<span class="sd">    The loss being optimized equals::</span>
-
-<span class="sd">        [is_sim * dist + (1 - is_sim) * max(margin - dist, 0)]^2</span>
-
-<span class="sd">    where ``target`` should equal 1 when both objects belong to the same class,</span>
-<span class="sd">    and 0 otheriwse. The ``dist`` is the euclidean distance between the embeddings of</span>
-<span class="sd">    the objects, and ``margin`` is some number, used here to ensure better stability</span>
-<span class="sd">    of training.</span>
-
-<span class="sd">    The final loss is the average over losses for all pairs of objects in the batch.</span>
-<span class="sd">    """</span>
-
-    <span class="n">arity</span> <span class="o">=</span> <span class="mi">2</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">=</span> <span class="n">margin</span>
-
-<div class="viewcode-block" id="EuclideanSiameseLoss.forward"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.losses/#finetuner.tuner.pytorch.losses.EuclideanSiameseLoss.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="sd">"""Compute the loss.</span>
-
-<span class="sd">        :param inputs: Should be a list or a tuple containing three tensors:</span>
-<span class="sd">            - ``[N, D]`` tensor of embeddings of the first objects of the pair</span>
-<span class="sd">            - ``[N, D]`` tensor of embeddings of the second objects of the pair</span>
-<span class="sd">        :param target: A ``[N, ]`` tensor of target values</span>
+<span class="sd">        :param embeddings: embeddings from model, should be a list of Tensor objects.</span>
+<span class="sd">        :param labels: labels of each embeddings, embeddings with same label indicates same class.</span>
+<span class="sd">        :return: triplet of label indices follows the order of anchor, positive and negative.</span>
 <span class="sd">        """</span>
-        <span class="n">l_emb</span><span class="p">,</span> <span class="n">r_emb</span> <span class="o">=</span> <span class="n">embeddings</span>
-        <span class="n">eucl_dist</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">pairwise_distance</span><span class="p">(</span><span class="n">l_emb</span><span class="p">,</span> <span class="n">r_emb</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">is_similar</span> <span class="o">=</span> <span class="p">(</span><span class="n">target</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-
-        <span class="n">loss</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">square</span><span class="p">(</span>
-            <span class="n">is_similar</span> <span class="o">*</span> <span class="n">eucl_dist</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">is_similar</span><span class="p">)</span> <span class="o">*</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">-</span> <span class="n">eucl_dist</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">loss</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div></div>
-
-
-<div class="viewcode-block" id="EuclideanTripletLoss"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.losses/#finetuner.tuner.pytorch.losses.EuclideanTripletLoss">[docs]</a><span class="k">class</span> <span class="nc">EuclideanTripletLoss</span><span class="p">(</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">"""Compute the loss for a triplet network using euclidean distance.</span>
-
-<span class="sd">    The loss is computed as ``max(dist_pos - dist_neg + margin, 0)``, where ``dist_pos``</span>
-<span class="sd">    is the euclidean distance between the anchor embedding and positive embedding,</span>
-<span class="sd">    ``dist_neg`` is the euclidean distance between the anchor and negative embedding,</span>
-<span class="sd">    and ``margin`` represents a wedge between the desired wedge between anchor-negative</span>
-<span class="sd">    and anchor-positive distances.</span>
-
-<span class="sd">    The final loss is the average over losses for all triplets in the batch.</span>
-<span class="sd">    """</span>
-
-    <span class="n">arity</span> <span class="o">=</span> <span class="mi">3</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span> <span class="o">=</span> <span class="n">margin</span>
-
-<div class="viewcode-block" id="EuclideanTripletLoss.forward"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.losses/#finetuner.tuner.pytorch.losses.EuclideanTripletLoss.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="sd">"""Compute the loss.</span>
-
-<span class="sd">        :param inputs: Should be a list or a tuple containing three tensors:</span>
-<span class="sd">            - ``[N, D]`` tensor of embeddings of the anchor objects</span>
-<span class="sd">            - ``[N, D]`` tensor of embeddings of the positive objects</span>
-<span class="sd">            - ``[N, D]`` tensor of embeddings of the negative objects</span>
-<span class="sd">        """</span>
-        <span class="n">anchor</span><span class="p">,</span> <span class="n">positive</span><span class="p">,</span> <span class="n">negative</span> <span class="o">=</span> <span class="n">embeddings</span>
-        <span class="n">dist_pos</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">pairwise_distance</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="n">positive</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">dist_neg</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">pairwise_distance</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="n">negative</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">dist_pos</span> <span class="o">-</span> <span class="n">dist_neg</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span><span class="p">))</span></div></div>
-
-
-<div class="viewcode-block" id="CosineTripletLoss"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.losses/#finetuner.tuner.pytorch.losses.CosineTripletLoss">[docs]</a><span class="k">class</span> <span class="nc">CosineTripletLoss</span><span class="p">(</span><span class="n">EuclideanTripletLoss</span><span class="p">):</span>
-    <span class="sd">"""Compute the loss for a triplet network using cosine distance.</span>
-
-<span class="sd">    The loss is computed as ``max(dist_pos - dist_neg + margin, 0)``, where ``dist_pos``</span>
-<span class="sd">    is the cosine distance between the anchor embedding and positive embedding,</span>
-<span class="sd">    ``dist_neg`` is the cosine distance between the anchor and negative embedding, and</span>
-<span class="sd">    ``margin`` represents a wedge between the desired wedge between anchor-negative and</span>
-<span class="sd">    anchor-positive distances.</span>
-
-<span class="sd">    The final loss is the average over losses for all triplets in the batch.</span>
-<span class="sd">    """</span>
-
-<div class="viewcode-block" id="CosineTripletLoss.forward"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.losses/#finetuner.tuner.pytorch.losses.CosineTripletLoss.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="sd">"""Compute the loss.</span>
-
-<span class="sd">        :param inputs: Should be a list or a tuple containing three tensors:</span>
-<span class="sd">            - ``[N, D]`` tensor of embeddings of the anchor objects</span>
-<span class="sd">            - ``[N, D]`` tensor of embeddings of the positive objects</span>
-<span class="sd">            - ``[N, D]`` tensor of embeddings of the negative objects</span>
-<span class="sd">        """</span>
-        <span class="n">anchor</span><span class="p">,</span> <span class="n">positive</span><span class="p">,</span> <span class="n">negative</span> <span class="o">=</span> <span class="n">embeddings</span>
-        <span class="n">dist_pos</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">F</span><span class="o">.</span><span class="n">cosine_similarity</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="n">positive</span><span class="p">)</span>
-        <span class="n">dist_neg</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">F</span><span class="o">.</span><span class="n">cosine_similarity</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="n">negative</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">dist_pos</span> <span class="o">-</span> <span class="n">dist_neg</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margin</span><span class="p">))</span></div></div>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+        <span class="n">labels1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">labels2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="p">(</span><span class="n">labels1</span> <span class="o">==</span> <span class="n">labels2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">diffs</span> <span class="o">=</span> <span class="n">matches</span> <span class="o">^</span> <span class="mi">1</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">triplets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">diffs</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">idxes_anchor</span><span class="p">,</span> <span class="n">idxes_pos</span><span class="p">,</span> <span class="n">idxes_neg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">triplets</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">idxes_anchor</span><span class="p">,</span> <span class="n">idxes_pos</span><span class="p">,</span> <span class="n">idxes_neg</span><span class="p">))</span></div></div>
 </pre></div>
             </article>
             <footer>

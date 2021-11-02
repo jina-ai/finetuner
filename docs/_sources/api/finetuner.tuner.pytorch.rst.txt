@@ -9,6 +9,7 @@ Submodules
 
    finetuner.tuner.pytorch.datasets
    finetuner.tuner.pytorch.losses
+   finetuner.tuner.pytorch.miner
 
 Module contents
 ---------------
