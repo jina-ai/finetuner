@@ -26,8 +26,8 @@ def _generate_all_possible_triplets(labels: List[int]):
 
 class SiameseMiner(BaseMiner):
     def mine(
-        self, embeddings: List[AnyTensor], labels: List[int]
-    ) -> List[Tuple[int, ...]]:
+        self, embeddings: AnyTensor, labels: List[int]
+    ) -> List[Tuple[int, int, int]]:
         """Generate tuples from input embeddings and labels.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
@@ -40,8 +40,8 @@ class SiameseMiner(BaseMiner):
 
 class TripletMiner(BaseMiner):
     def mine(
-        self, embeddings: List[AnyTensor], labels: List[int]
-    ) -> List[Tuple[int, ...]]:
+        self, embeddings: AnyTensor, labels: List[int]
+    ) -> List[Tuple[int, int, int]]:
         """Generate triplets from input embeddings and labels.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
@@ -54,8 +54,8 @@ class TripletMiner(BaseMiner):
 
 class SiameseSessionMiner(BaseMiner):
     def mine(
-        self, embeddings: List[AnyTensor], labels: List[Tuple[int, int]]
-    ) -> List[Tuple[int, ...]]:
+        self, embeddings: AnyTensor, labels: List[Tuple[int, int]]
+    ) -> List[Tuple[int, int, int]]:
         """Generate tuples from input embeddings and labels.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
@@ -81,8 +81,8 @@ class SiameseSessionMiner(BaseMiner):
 
 class TripletSessionMiner(BaseMiner):
     def mine(
-        self, embeddings: List[AnyTensor], labels: List[Tuple[int, int]]
-    ) -> List[Tuple[int, ...]]:
+        self, embeddings: AnyTensor, labels: List[Tuple[int, int]]
+    ) -> List[Tuple[int, int, int]]:
         """Generate triplets from input embeddings and labels.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
