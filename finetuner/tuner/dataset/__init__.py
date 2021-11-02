@@ -57,7 +57,7 @@ class ClassDataset:
         content = self._docs[ind].content
         label = self._labels[ind]
 
-        if self._preprocess_fn is not None:
+        if self._preprocess_fn:
             content = self._preprocess_fn(content)
 
         return (content, label)
@@ -111,7 +111,7 @@ class SessionDataset:
             for match_ind, match in enumerate(doc.matches):
                 self._locations.append((i, match_ind))
                 try:
-                    tag = match.tags['finetuner']['label']
+                    tag = match.tags[__default_tag_key__]['label']
                 except KeyError:
                     raise KeyError(
                         'The tag ["finetuner"]["label"] was not found in a document.'
