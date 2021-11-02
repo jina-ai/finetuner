@@ -352,15 +352,14 @@
 <p>Note that Finetuner accepts Jina <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>/<code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>, so we first load CelebA data into this format using generator:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.types.document.generators</span> <span class="kn">import</span> <span class="n">from_files</span>
 
-
 <span class="k">def</span> <span class="nf">data_gen</span><span class="p">():</span>
     <span class="c1"># please change the file path to your data path</span>
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">from_files</span><span class="p">(</span><span class="s1">'/Users/jina/Downloads/img_align_celeba/*.jpg'</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">to_dataturi</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="n">d</span><span class="o">.</span><span class="n">convert_image_uri_to_blob</span><span class="p">()</span>
-        <span class="n">d</span><span class="o">.</span><span class="n">normalize_image_blob</span><span class="p">()</span>
-        <span class="n">d</span><span class="o">.</span><span class="n">resize_image_blob</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">224</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">224</span><span class="p">)</span> <span class="c1">#: no need of this line if you are using pytorch/paddle</span>
-        <span class="n">d</span><span class="o">.</span><span class="n">set_image_blob_channel_axis</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1">#: no need of this line if you are using tf/keras</span>
-        <span class="k">yield</span> <span class="n">d</span>
+        <span class="k">yield</span> <span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">convert_uri_to_image_blob</span><span class="p">()</span>
+               <span class="o">.</span><span class="n">set_image_blob_normalization</span><span class="p">()</span>
+               <span class="o">.</span><span class="n">set_image_blob_shape</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">))</span>
+               <span class="o">.</span><span class="n">set_image_blob_channel_axis</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">new_channel_axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+               <span class="p">)</span>
 </pre></div>
 </div>
 </section>
