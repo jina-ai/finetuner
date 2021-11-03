@@ -92,22 +92,23 @@ class TripletSessionMiner(BaseMiner):
         labels_with_index = [item + (index,) for index, item in enumerate(labels)]
         sorted_labels_with_index = sorted(labels_with_index, key=lambda x: x[0])
         for session, group in groupby(sorted_labels_with_index, lambda x: x[0]):
-            anchor_pos_session_labels = []
-            anchor_pos_session_indices = []
-            neg_session_indices = []
-            for _, session_label, session_index in group:
-                if session_label >= 0:
-                    anchor_pos_session_labels.append(session_label)
-                    anchor_pos_session_indices.append(session_index)
-                else:
-                    neg_session_indices.append(session_index)
-            for anchor, pos in permutations(enumerate(anchor_pos_session_labels), 2):
-                for neg_idx in neg_session_indices:
-                    rv.append(
-                        (
-                            anchor_pos_session_indices[anchor[0]],
-                            anchor_pos_session_indices[pos[0]],
-                            neg_idx,
-                        )
-                    )
+            pass
+            # anchor_pos_session_labels = []
+            # anchor_pos_session_indices = []
+            # neg_session_indices = []
+            # for _, session_label, session_index in group:
+            #     if session_label >= 0:
+            #         anchor_pos_session_labels.append(session_label)
+            #         anchor_pos_session_indices.append(session_index)
+            #     else:
+            #         neg_session_indices.append(session_index)
+            # for anchor, pos in permutations(enumerate(anchor_pos_session_labels), 2):
+            #     for neg_idx in neg_session_indices:
+            #         rv.append(
+            #             (
+            #                 anchor_pos_session_indices[anchor[0]],
+            #                 anchor_pos_session_indices[pos[0]],
+            #                 neg_idx,
+            #             )
+            #         )
         return rv
