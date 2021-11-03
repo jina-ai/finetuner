@@ -6,6 +6,7 @@ import numpy as np
 from ... import __default_tag_key__
 from ...helper import DocumentSequence
 
+
 AnyLabel = TypeVar('AnyLabel')
 
 
@@ -20,12 +21,10 @@ class BaseDataset(abc.ABC, Generic[AnyLabel]):
         """
 
     @property
-    @abc.abstractmethod
     def labels(self) -> List[AnyLabel]:
         """ Get the list of labels for all items in the dataset."""
         return self._labels
 
-    @abc.abstractmethod
     def __len__(self) -> int:
         return len(self._labels)
 
@@ -89,9 +88,6 @@ class ClassDataset(BaseDataset[int]):
     def labels(self) -> List[int]:
         """ Get the list of integer labels for all items in the dataset."""
         return self._labels
-
-    def __len__(self) -> int:
-        return len(self._labels)
 
 
 class SessionDataset(BaseDataset[Tuple[int, int]]):
@@ -173,6 +169,3 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
         a negative input (match)
         """
         return self._labels
-
-    def __len__(self) -> int:
-        return len(self._labels)

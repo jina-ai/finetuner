@@ -5,6 +5,7 @@
 
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -240,4 +241,31 @@ The changes of each release is tracked by this file.
 ### 🍹 Other Improvements
 
  - [[```bf07ab12```](https://github.com/jina-ai/finetuner/commit/bf07ab122c23a987722590817bad85c83d108a51)] __-__ __version__: the next version will be 0.1.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-1-4></a>
+## Release Note (`0.1.4`)
+
+> Release time: 2021-11-02 21:06:01
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Wang Bo,  Aziz Belaweid,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```1e4a1aee```](https://github.com/jina-ai/finetuner/commit/1e4a1aeebce9c11ec3372a716a1f17c31396b6b8)] __-__ __tuner__: add miner v1 (#180) (*Wang Bo*)
+ - [[```ae8e3990```](https://github.com/jina-ai/finetuner/commit/ae8e3990080681a760f465b29c381ffe0e4b0245)] __-__ __helper__: add batch_size to embed fn (#183) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```d21345a3```](https://github.com/jina-ai/finetuner/commit/d21345a3201ec6c9e920a41bfe59cf53e6a0524e)] __-__ update according to new jina api (*Han Xiao*)
+ - [[```7e9c04fa```](https://github.com/jina-ai/finetuner/commit/7e9c04faebc649a45e032d4ef86040b3342824d5)] __-__ added resize to fix keras shape error (#174) (*Aziz Belaweid*)
+
+### 🍹 Other Improvements
+
+ - [[```1ce3d8e1```](https://github.com/jina-ai/finetuner/commit/1ce3d8e1e4e343968083a9e54b2e31b61160c544)] __-__ bump jina requirements (*Han Xiao*)
+ - [[```43d62f06```](https://github.com/jina-ai/finetuner/commit/43d62f068fdf80ca0a1a4d9f86ec24804f7f6aca)] __-__ __readme__: update logo (*Han Xiao*)
+ - [[```489014ee```](https://github.com/jina-ai/finetuner/commit/489014ee4e12e6c3cc697d7c4da4129dd600ccdb)] __-__ __version__: the next version will be 0.1.4 (*Jina Dev Bot*)
 

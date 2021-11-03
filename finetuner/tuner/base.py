@@ -1,8 +1,14 @@
 import abc
 import warnings
-from typing import Dict, List, Optional, Tuple, Union
+from typing import (
+    Optional,
+    Union,
+    Tuple,
+    List,
+    Dict,
+)
 
-from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, DocumentArrayLike
+from ..helper import AnyDNN, AnyTensor, AnyDataLoader, AnyOptimizer, DocumentArrayLike
 from .summary import Summary
 
 
@@ -140,3 +146,17 @@ class BaseDataset:
     ):
         super().__init__()
         self._inputs = inputs() if callable(inputs) else inputs
+
+
+class BaseMiner(abc.ABC):
+    @abc.abstractmethod
+    def mine(
+        self, embeddings: List[AnyTensor], labels: List[int]
+    ) -> List[Tuple[int, ...]]:
+        """Generate tuples/triplets from input embeddings and labels.
+
+        :param embeddings: embeddings from model, should be a list of Tensor objects.
+        :param labels: labels of each embeddings, embeddings with same label indicates same class.
+        :return: tuple/triplet of label indices.
+        """
+        ...
