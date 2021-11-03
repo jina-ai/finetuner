@@ -100,8 +100,7 @@ class TripletSessionMiner(BaseMiner):
             _, session_labels, session_indices = zip(*group)
             for left, middle, right in permutations(enumerate(session_labels), 3):
                 neg_label_count = [left[1], middle[1], right[1]].count(-1)
-                # one and only one label is -1 means all rest greater or equal than 0
-                # and last element must be negative
+                # one and only one label is -1 and last element must be negative.
                 if neg_label_count == 1 and right[1] == -1:
                     rv.append(
                         (
