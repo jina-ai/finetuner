@@ -6,17 +6,6 @@ from ..base import BaseMiner
 from ...helper import AnyTensor
 
 
-def _generate_all_possible_triplets(labels: List[int]):
-    labels1 = np.expand_dims(labels, 1)
-    labels2 = np.expand_dims(labels, 0)
-    matches = (labels1 == labels2).astype(int)
-    diffs = matches ^ 1
-    np.fill_diagonal(matches, 0)
-    triplets = np.expand_dims(matches, 2) * np.expand_dims(diffs, 1)
-    idxes_anchor, idxes_pos, idxes_neg = np.where(triplets)
-    return list(zip(idxes_anchor, idxes_pos, idxes_neg))
-
-
 class SiameseMiner(BaseMiner):
     def mine(
         self, embeddings: AnyTensor, labels: List[int]
@@ -45,7 +34,14 @@ class TripletMiner(BaseMiner):
         :return: triplet of label indices follows the order of anchor, positive and negative.
         """
         assert len(embeddings) == len(labels)
-        return _generate_all_possible_triplets(labels)
+        labels1 = np.expand_dims(labels, 1)
+        labels2 = np.expand_dims(labels, 0)
+        matches = (labels1 == labels2).astype(int)
+        diffs = matches ^ 1
+        np.fill_diagonal(matches, 0)
+        triplets = np.expand_dims(matches, 2) * np.expand_dims(diffs, 1)
+        idxes_anchor, idxes_pos, idxes_neg = np.where(triplets)
+        return list(zip(idxes_anchor, idxes_pos, idxes_neg))
 
 
 class SiameseSessionMiner(BaseMiner):
@@ -100,13 +96,15 @@ class TripletSessionMiner(BaseMiner):
         sorted_labels_with_index = sorted(labels_with_index, key=lambda x: x[0])
         for session, group in groupby(sorted_labels_with_index, lambda x: x[0]):
             _, session_labels, session_indices = zip(*group)
-            triplets = _generate_all_possible_triplets(session_labels)
-            for left_idx, middle_idx, right_idx in triplets:
-                rv.append(
-                    (
-                        session_indices[left_idx],
-                        session_indices[middle_idx],
-                        session_indices[right_idx],
+            for left, middle, right in combinations(enumerate(session_labels), 3):
+                neg_label_count = [left[1], middle[1], right[1]].count(-1)
+                # one and only one label is -1 means all rest greater or equal than 0
+                if neg_label_count == 1:
+                    rv.append(
+                        (
+                            session_indices[left[0]],
+                            session_indices[middle[0]],
+                            session_indices[right[0]],
+                        )
                     )
-                )
         return rv
