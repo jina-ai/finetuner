@@ -6,13 +6,6 @@ from ..base import BaseMiner
 from ...helper import AnyTensor
 
 
-def _generate_all_possible_pairs(labels: List[int]):
-    return [
-        (left[0], right[0], 1) if left[1] == right[1] else (left[0], right[0], -1)
-        for left, right in combinations(enumerate(labels), 2)
-    ]
-
-
 def _generate_all_possible_triplets(labels: List[int]):
     labels1 = np.expand_dims(labels, 1)
     labels2 = np.expand_dims(labels, 0)
@@ -35,7 +28,10 @@ class SiameseMiner(BaseMiner):
         :return: a pair of label indices and their label as tuple.
         """
         assert len(embeddings) == len(labels)
-        return _generate_all_possible_pairs(labels)
+        return [
+            (left[0], right[0], 1) if left[1] == right[1] else (left[0], right[0], -1)
+            for left, right in combinations(enumerate(labels), 2)
+        ]
 
 
 class TripletMiner(BaseMiner):
@@ -69,8 +65,15 @@ class SiameseSessionMiner(BaseMiner):
         sorted_labels_with_index = sorted(labels_with_index, key=lambda x: x[0])
         for session, group in groupby(sorted_labels_with_index, lambda x: x[0]):
             _, session_labels, session_indices = zip(*group)
-            pairs = _generate_all_possible_pairs(session_labels)
-            for left_idx, right_idx, label in pairs:
+            session_pairs = []
+            for left, right in combinations(enumerate(session_labels), 2):
+                if (left[1] in [0, 1] and right[1] in [0, 1]) or (
+                    left[1] == -1 and right[1] == -1
+                ):
+                    session_pairs.append((left[0], right[0], 1))
+                else:
+                    session_pairs.append((left[0], right[0], -1))
+            for left_idx, right_idx, label in session_pairs:
                 rv.append(
                     (session_indices[left_idx], session_indices[right_idx], label)
                 )
@@ -84,7 +87,8 @@ class TripletSessionMiner(BaseMiner):
         """Generate triplets from input embeddings and labels.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
-        :param labels: labels of each embeddings, consist of session id and label.
+        :param labels: labels of each embeddings, consist of session id and label, the labels of
+          anchor, positive, negative are 0, 1 and -1.
         :return: triplet of label indices follows the order of anchor, positive and negative.
         """
         assert len(embeddings) == len(labels)

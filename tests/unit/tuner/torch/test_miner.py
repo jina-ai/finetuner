@@ -44,7 +44,7 @@ def labels():
 
 @pytest.fixture
 def session_labels():
-    return [(1, 1), (2, -1), (2, 1), (1, -1), (3, -1), (3, 1), (3, -1), (3, -1)]
+    return [(1, 1), (2, 1), (2, 0), (2, -1), (1, 0), (1, -1), (2, -1), (2, 1)]
 
 
 def test_siamese_miner(embeddings, labels, siamese_miner):
@@ -99,19 +99,22 @@ def test_triplet_miner_given_insufficient_inputs(
 
 def test_siamese_session_miner(embeddings, session_labels, siamese_session_miner):
     rv = siamese_session_miner.mine(embeddings, session_labels)
-    assert (
-        len(rv) == 8
-    )  # 1 pair with session 1, 1 pair with session 2, 6 pairs with session 3
-    for item in rv:
-        idx_left, idx_right, label = item
-        # find corresponded label idx
-        label_left = session_labels[idx_left]
-        label_right = session_labels[idx_right]
-        if label_left == label_right:
-            expected_label = 1
-        else:
-            expected_label = -1
-        assert label == expected_label
+    assert len(rv) == 13
+    assert rv == [
+        (0, 4, 1),
+        (0, 5, -1),
+        (4, 5, -1),
+        (1, 2, 1),
+        (1, 3, -1),
+        (1, 6, -1),
+        (1, 7, 1),
+        (2, 3, -1),
+        (2, 6, -1),
+        (2, 7, 1),
+        (3, 6, 1),
+        (3, 7, -1),
+        (6, 7, -1),
+    ]
 
 
 @pytest.mark.parametrize('cut_index', [0, 1])
