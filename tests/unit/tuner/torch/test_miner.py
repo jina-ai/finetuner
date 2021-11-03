@@ -129,12 +129,19 @@ def test_triplet_session_miner(embeddings, session_labels, triplet_session_miner
     rv = triplet_session_miner.mine(embeddings, session_labels)
     assert rv == [
         (0, 4, 5),
+        (4, 0, 5),
         (1, 2, 3),
         (1, 2, 6),
-        (1, 3, 7),
-        (1, 6, 7),
-        (2, 3, 7),
-        (2, 6, 7),
+        (1, 7, 3),
+        (1, 7, 6),
+        (2, 1, 3),
+        (2, 1, 6),
+        (2, 7, 3),
+        (2, 7, 6),
+        (7, 1, 3),
+        (7, 1, 6),
+        (7, 2, 3),
+        (7, 2, 6),
     ]
 
 

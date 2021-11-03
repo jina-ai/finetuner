@@ -1,6 +1,6 @@
 import numpy as np
 from typing import List, Tuple
-from itertools import combinations, groupby
+from itertools import combinations, groupby, permutations
 
 from ..base import BaseMiner
 from ...helper import AnyTensor
@@ -96,10 +96,11 @@ class TripletSessionMiner(BaseMiner):
         sorted_labels_with_index = sorted(labels_with_index, key=lambda x: x[0])
         for session, group in groupby(sorted_labels_with_index, lambda x: x[0]):
             _, session_labels, session_indices = zip(*group)
-            for left, middle, right in combinations(enumerate(session_labels), 3):
+            for left, middle, right in permutations(enumerate(session_labels), 3):
                 neg_label_count = [left[1], middle[1], right[1]].count(-1)
                 # one and only one label is -1 means all rest greater or equal than 0
-                if neg_label_count == 1:
+                # and last element must be negative
+                if neg_label_count == 1 and right[1] == -1:
                     rv.append(
                         (
                             session_indices[left[0]],
