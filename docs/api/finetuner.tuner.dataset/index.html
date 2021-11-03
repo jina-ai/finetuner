@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.tuner.dataset.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
-  <meta property="og:description" content="Submodules: finetuner.tuner.dataset.helper module. Module contents:" />
+  <meta property="og:description" content="Submodules: finetuner.tuner.dataset.helper module, finetuner.tuner.dataset.samplers module. Module contents:" />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -31,7 +31,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.dataset.helper module" href="../finetuner.tuner.dataset.helper/" /><link rel="prev" title="finetuner.tuner package" href="../finetuner.tuner/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
-        <title>finetuner.tuner.dataset package - Finetuner 0.1.4 documentation</title>
+        <title>finetuner.tuner.dataset package - Finetuner 0.1.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -165,7 +165,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">Finetuner 0.1.4 documentation</div>
+                <div class="brand">Finetuner 0.1.5 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -249,6 +249,7 @@
 <li class="toctree-l2 current has-children"><a class="reference internal" href="../finetuner.tuner/">finetuner.tuner package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3 current has-children current-page"><a class="current reference internal" href="#">finetuner.tuner.dataset package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -335,11 +336,101 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </div>
 </section>
 <section id="module-finetuner.tuner.dataset">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-finetuner.tuner.dataset" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.tuner.dataset.BaseDataset">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.dataset.</span></span><span class="sig-name descname"><span class="pre">BaseDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/dataset/#BaseDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.dataset.BaseDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">finetuner.tuner.dataset.AnyLabel</span></code>]</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="finetuner.tuner.dataset.BaseDataset.labels">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">labels</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">finetuner.tuner.dataset.AnyLabel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#finetuner.tuner.dataset.BaseDataset.labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of labels for all items in the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[~AnyLabel]</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.tuner.dataset.ClassDataset">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.dataset.</span></span><span class="sig-name descname"><span class="pre">ClassDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/dataset/#ClassDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.dataset.ClassDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#finetuner.tuner.dataset.BaseDataset" title="finetuner.tuner.dataset.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.dataset.BaseDataset</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
+<p>Dataset for enapsulating data where each item has a class label.</p>
+<p>Create the <a class="reference internal" href="#finetuner.tuner.dataset.ClassDataset" title="finetuner.tuner.dataset.ClassDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClassDataset</span></code></a> instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>docs</strong> (<em>~DocumentSequence</em>) – <p>The documents for the dataset. Each document is expected to have
+- a content (only blob or text are accepted currently)
+- a class label, saved under <code class="docutils literal notranslate"><span class="pre">tags['finetuner']['label']</span></code>. This class</p>
+<blockquote>
+<div><p>label should be an integer or a string</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>preprocess_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – A pre-processing function. It should take as input the
+content of an item in the dataset (currently only text of blob are
+accepted).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="finetuner.tuner.dataset.ClassDataset.labels">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">labels</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#finetuner.tuner.dataset.ClassDataset.labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of integer labels for all items in the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.tuner.dataset.SessionDataset">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.dataset.</span></span><span class="sig-name descname"><span class="pre">SessionDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/dataset/#SessionDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.dataset.SessionDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#finetuner.tuner.dataset.BaseDataset" title="finetuner.tuner.dataset.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.dataset.BaseDataset</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</p>
+<p>Dataset for enapsulating data that comes in batches of “sessions”.</p>
+<p>A session here is supposed to mean an anchor document, together with a set of
+matches, which may be either positive or negative inputs.</p>
+<p>Create the <a class="reference internal" href="#finetuner.tuner.dataset.SessionDataset" title="finetuner.tuner.dataset.SessionDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">SessionDataset</span></code></a> instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>docs</strong> (<em>~DocumentSequence</em>) – <p>The documents for the dataset. Each document is expected to have
+- a content (only blob or text are accepted currently)
+- matches, which should also have content, as well a label, stored under</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">tags['finetuner']['label']</span></code>, which be either 1 or -1, denoting
+whether the match is a positive or negative input in relation to the
+anchor document</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>preprocess_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – A pre-processing function. It should take as input the
+content of an item in the dataset (currently only text of blob are
+accepted).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="finetuner.tuner.dataset.SessionDataset.labels">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">labels</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#finetuner.tuner.dataset.SessionDataset.labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of labels for all items in the dataset.</p>
+<p>A label consists of two integers, the session ID (index of root document in
+original document array), and the type, which is 0 if the document is the
+anchor (root) document, 1 if it is a positive input (match), and -1 if it is
+a negative input (match)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.tuner.dataset.SiameseMixin">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.dataset.</span></span><span class="sig-name descname"><span class="pre">SiameseMixin</span></span><a class="reference internal" href="../../_modules/finetuner/tuner/dataset/#SiameseMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.dataset.SiameseMixin" title="Permalink to this definition">¶</a></dt>
@@ -385,7 +476,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 02, 2021.
+                    Last updated on Nov 03, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
