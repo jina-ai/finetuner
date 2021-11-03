@@ -63,15 +63,17 @@ class SiameseSessionMiner(BaseMiner):
             _, session_labels, session_indices = zip(*group)
             session_pairs = []
             for left, right in combinations(enumerate(session_labels), 2):
-                if left[1] in [0, 1] and right[1] in [0, 1]:
+                if left[1] >= 0 and right[1] >= 0:
                     # 0 represents for anchor, 1 for positive, they form positive pairs.
                     session_pairs.append((left[0], right[0], 1))
-                elif left[1] == -1 and right[1] == -1:
-                    # if both left and right are negatives, skip.
-                    continue
-                else:
-                    # one anchor or positive, one negative form a negative sample.
+                elif (left[1] >= 0 and right[1] == -1) or (
+                    left[1] == -1 and right[1] >= 0
+                ):
+                    # one of the item is positive or anchor, another one is negative
                     session_pairs.append((left[0], right[0], -1))
+                else:
+                    # both are negatives
+                    continue
             for left_idx, right_idx, label in session_pairs:
                 rv.append(
                     (session_indices[left_idx], session_indices[right_idx], label)
