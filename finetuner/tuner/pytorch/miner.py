@@ -70,12 +70,10 @@ class SiameseSessionMiner(BaseMiner):
         for session, group in groupby(sorted_labels_with_index, lambda x: x[0]):
             _, session_labels, session_indices = zip(*group)
             pairs = _generate_all_possible_pairs(session_labels)
-            rv.extend(
-                [
+            for left_idx, right_idx, label in pairs:
+                rv.append(
                     (session_indices[left_idx], session_indices[right_idx], label)
-                    for left_idx, right_idx, label in pairs
-                ]
-            )
+                )
         return rv
 
 
@@ -96,14 +94,12 @@ class TripletSessionMiner(BaseMiner):
         for session, group in groupby(sorted_labels_with_index, lambda x: x[0]):
             _, session_labels, session_indices = zip(*group)
             triplets = _generate_all_possible_triplets(session_labels)
-            rv.extend(
-                [
+            for left_idx, middle_idx, right_idx in triplets:
+                rv.append(
                     (
                         session_indices[left_idx],
                         session_indices[middle_idx],
                         session_indices[right_idx],
                     )
-                    for left_idx, middle_idx, right_idx in triplets
-                ]
-            )
+                )
         return rv
