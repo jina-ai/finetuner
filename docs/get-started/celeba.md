@@ -26,15 +26,14 @@ Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we fi
 ```python
 from jina.types.document.generators import from_files
 
-
 def data_gen():
     # please change the file path to your data path
     for d in from_files('/Users/jina/Downloads/img_align_celeba/*.jpg', size=100, to_dataturi=True):
-        d.convert_image_uri_to_blob()
-        d.normalize_image_blob()
-        d.resize_image_blob(width=224, height=224) #: no need of this line if you are using pytorch/paddle
-        d.set_image_blob_channel_axis(-1, 0)  #: no need of this line if you are using tf/keras
-        yield d
+        yield (d.convert_uri_to_image_blob()
+               .set_image_blob_normalization()
+               .set_image_blob_shape(shape=(224, 224))
+               .set_image_blob_channel_axis(-1, new_channel_axis=0)
+               )
 ```
 
 ## Load the pretrained model
