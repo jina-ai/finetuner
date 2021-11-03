@@ -1,13 +1,36 @@
-import itertools
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+import abc
+from typing import Any, Callable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 
 import numpy as np
 
 from ... import __default_tag_key__
 from ...helper import DocumentSequence
 
+AnyLabel = TypeVar('AnyLabel')
 
-class ClassDataset:
+
+class BaseDataset(abc.ABC, Generic[AnyLabel]):
+    _labels: List[AnyLabel]
+
+    @abc.abstractmethod
+    def __getitem__(self, ind: int) -> Tuple[Union[np.ndarray, str], AnyLabel]:
+        """
+        Get the (preprocessed) content and label for the item at ``ind`` index in the
+        dataset.
+        """
+
+    @property
+    @abc.abstractmethod
+    def labels(self) -> List[AnyLabel]:
+        """ Get the list of labels for all items in the dataset."""
+        return self._labels
+
+    @abc.abstractmethod
+    def __len__(self) -> int:
+        return len(self._labels)
+
+
+class ClassDataset(BaseDataset[int]):
     """ Dataset for enapsulating data where each item has a class label."""
 
     def __init__(
@@ -71,7 +94,7 @@ class ClassDataset:
         return len(self._labels)
 
 
-class SessionDataset:
+class SessionDataset(BaseDataset[Tuple[int, int]]):
     """Dataset for enapsulating data that comes in batches of "sessions".
 
     A session here is supposed to mean an anchor document, together with a set of
@@ -153,27 +176,3 @@ class SessionDataset:
 
     def __len__(self) -> int:
         return len(self._labels)
-
-
-class SiameseMixin:
-    def __iter__(self):
-        for d in self._inputs:
-            d_blob = d.blob
-            for m in d.matches:
-                yield (d_blob, m.blob), np.float32(m.tags[__default_tag_key__]['label'])
-
-
-class TripletMixin:
-    def __iter__(self):
-        for d in self._inputs:
-            anchor = d.blob
-            positives = []
-            negatives = []
-            for m in d.matches:
-                if m.tags[__default_tag_key__]['label'] > 0:
-                    positives.append(m.blob)
-                else:
-                    negatives.append(m.blob)
-
-            for p, n in itertools.product(positives, negatives):
-                yield (anchor, p, n), np.float32(0)
