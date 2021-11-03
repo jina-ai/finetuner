@@ -99,7 +99,7 @@ def test_triplet_miner_given_insufficient_inputs(
 
 def test_siamese_session_miner(embeddings, session_labels, siamese_session_miner):
     rv = siamese_session_miner.mine(embeddings, session_labels)
-    assert len(rv) == 13
+    assert len(rv) == 12
     assert rv == [
         (0, 4, 1),
         (0, 5, -1),
@@ -111,7 +111,6 @@ def test_siamese_session_miner(embeddings, session_labels, siamese_session_miner
         (2, 3, -1),
         (2, 6, -1),
         (2, 7, 1),
-        (3, 6, 1),
         (3, 7, -1),
         (6, 7, -1),
     ]
