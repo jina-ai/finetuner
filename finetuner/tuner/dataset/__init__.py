@@ -1,5 +1,6 @@
+import abc
 import itertools
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 
 import numpy as np
 
@@ -7,7 +8,31 @@ from ... import __default_tag_key__
 from ...helper import DocumentSequence
 
 
-class ClassDataset:
+AnyLabel = TypeVar('AnyLabel')
+
+
+class BaseDataset(abc.ABC, Generic[AnyLabel]):
+    _labels: List[AnyLabel]
+
+    @abc.abstractmethod
+    def __getitem__(self, ind: int) -> Tuple[Union[np.ndarray, str], AnyLabel]:
+        """
+        Get the (preprocessed) content and label for the item at ``ind`` index in the
+        dataset.
+        """
+
+    @property
+    @abc.abstractmethod
+    def labels(self) -> List[AnyLabel]:
+        """ Get the list of labels for all items in the dataset."""
+        return self._labels
+
+    @abc.abstractmethod
+    def __len__(self) -> int:
+        return len(self._labels)
+
+
+class ClassDataset(BaseDataset[int]):
     """ Dataset for enapsulating data where each item has a class label."""
 
     def __init__(
@@ -71,7 +96,7 @@ class ClassDataset:
         return len(self._labels)
 
 
-class SessionDataset:
+class SessionDataset(BaseDataset[Tuple[int, int]]):
     """Dataset for enapsulating data that comes in batches of "sessions".
 
     A session here is supposed to mean an anchor document, together with a set of
