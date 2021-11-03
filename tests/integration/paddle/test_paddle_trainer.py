@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import paddle
 import pytest
@@ -29,7 +31,7 @@ def test_simple_sequential_model(tmpdir, params, loss):
     )
 
     pt = PaddleTuner(user_model, loss=loss)
-    model_path = tmpdir / 'trained.pd'
+    model_path = os.path.join(tmpdir, 'trained.pd')
     # fit and save the checkpoint
     pt.fit(
         train_data=lambda: generate_fashion_match(
@@ -82,7 +84,7 @@ def test_simple_lstm_model(tmpdir, params, loss):
             in_features=2 * params['feature_dim'], out_features=params['output_dim']
         ),
     )
-    model_path = tmpdir / 'trained.pd'
+    model_path = os.path.join(tmpdir, 'trained.pd')
 
     pt = PaddleTuner(user_model, loss=loss)
 
