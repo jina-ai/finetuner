@@ -94,14 +94,12 @@ class TripletSessionMiner(BaseMiner):
         for session, group in groupby(sorted_labels_with_index, lambda x: x[0]):
             anchor_pos_session_labels = []
             anchor_pos_session_indices = []
-            neg_session_labels = []
             neg_session_indices = []
             for _, session_label, session_index in group:
                 if session_label >= 0:
                     anchor_pos_session_labels.append(session_label)
                     anchor_pos_session_indices.append(session_index)
                 else:
-                    neg_session_labels.append(session_label)
                     neg_session_indices.append(session_index)
             for anchor, pos in permutations(enumerate(anchor_pos_session_labels), 2):
                 for neg_idx in neg_session_indices:
