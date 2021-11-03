@@ -61,23 +61,18 @@ class SiameseSessionMiner(BaseMiner):
         sorted_labels_with_index = sorted(labels_with_index, key=lambda x: x[0])
         for session, group in groupby(sorted_labels_with_index, lambda x: x[0]):
             _, session_labels, session_indices = zip(*group)
-            session_pairs = []
             for left, right in combinations(enumerate(session_labels), 2):
                 if left[1] >= 0 and right[1] >= 0:
                     # 0 represents for anchor, 1 for positive, they form positive pairs.
-                    session_pairs.append((left[0], right[0], 1))
+                    rv.append((session_indices[left[0]], session_indices[right[0]], 1))
                 elif (left[1] >= 0 and right[1] == -1) or (
                     left[1] == -1 and right[1] >= 0
                 ):
                     # one of the item is positive or anchor, another one is negative
-                    session_pairs.append((left[0], right[0], -1))
+                    rv.append((session_indices[left[0]], session_indices[right[0]], -1))
                 else:
                     # both are negatives
                     continue
-            for left_idx, right_idx, label in session_pairs:
-                rv.append(
-                    (session_indices[left_idx], session_indices[right_idx], label)
-                )
         return rv
 
 
@@ -97,16 +92,24 @@ class TripletSessionMiner(BaseMiner):
         labels_with_index = [item + (index,) for index, item in enumerate(labels)]
         sorted_labels_with_index = sorted(labels_with_index, key=lambda x: x[0])
         for session, group in groupby(sorted_labels_with_index, lambda x: x[0]):
-            _, session_labels, session_indices = zip(*group)
-            for left, middle, right in permutations(enumerate(session_labels), 3):
-                neg_label_count = [left[1], middle[1], right[1]].count(-1)
-                # one and only one label is -1 and last element must be negative.
-                if neg_label_count == 1 and right[1] == -1:
+            anchor_pos_session_labels = []
+            anchor_pos_session_indices = []
+            neg_session_labels = []
+            neg_session_indices = []
+            for _, session_label, session_index in group:
+                if session_label >= 0:
+                    anchor_pos_session_labels.append(session_label)
+                    anchor_pos_session_indices.append(session_index)
+                else:
+                    neg_session_labels.append(session_label)
+                    neg_session_indices.append(session_index)
+            for anchor, pos in permutations(enumerate(anchor_pos_session_labels), 2):
+                for neg_idx in neg_session_indices:
                     rv.append(
                         (
-                            session_indices[left[0]],
-                            session_indices[middle[0]],
-                            session_indices[right[0]],
+                            anchor_pos_session_indices[anchor[0]],
+                            anchor_pos_session_indices[pos[0]],
+                            neg_idx,
                         )
                     )
         return rv
