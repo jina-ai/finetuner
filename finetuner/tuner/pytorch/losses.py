@@ -7,6 +7,28 @@ import torch.nn.functional as F
 from ..base import BaseLoss
 
 
+class SiameseLoss(nn.Module):
+    def __init__(self, margin: float = 1.0, distance_metric: str = 'cosine'):
+        self.margin = margin
+        self.distance_metric = distance_metric
+
+    def forward(
+        self, embeddings: List[torch.Tensor], target: torch.Tensor
+    ) -> torch.Tensor:
+        pass
+
+
+class TripletLoss(nn.Module):
+    def __init__(self, margin: float = 1.0, distance_metric: str = 'cosine'):
+        self.margin = margin
+        self.distance_metric = distance_metric
+
+    def forward(
+        self, embeddings: List[torch.Tensor], target: torch.Tensor
+    ) -> torch.Tensor:
+        pass
+
+
 class CosineSiameseLoss(BaseLoss, nn.Module):
     """Computes the loss for a siamese network using cosine distance.
 
