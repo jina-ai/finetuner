@@ -1,6 +1,6 @@
 https://github.com/jina-ai/jina/archive/refs/heads/master.zip
 tensorflow==2.5.0
-paddlepaddle
-torch
-torchvision
-scipy
+paddlepaddle<=2.2.0
+torch<=1.1.0
+torchvision<=0.11.1
+scipy<=1.7.1
