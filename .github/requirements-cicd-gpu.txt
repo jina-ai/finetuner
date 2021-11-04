@@ -1,5 +1,5 @@
 https://github.com/jina-ai/jina/archive/refs/heads/master.zip
-tensorflow
+tensorflow==2.5.0
 paddlepaddle-gpu
 torch
 torchvision
