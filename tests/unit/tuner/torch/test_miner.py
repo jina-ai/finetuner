@@ -1,7 +1,12 @@
 import pytest
 import torch
 
-from finetuner.tuner.pytorch.miner import SiameseMiner, TripletMiner
+from finetuner.tuner.pytorch.miner import (
+    SiameseMiner,
+    TripletMiner,
+    SiameseSessionMiner,
+    TripletSessionMiner,
+)
 
 BATCH_SIZE = 8
 NUM_DIM = 10
@@ -18,6 +23,16 @@ def triplet_miner():
 
 
 @pytest.fixture
+def siamese_session_miner():
+    return SiameseSessionMiner()
+
+
+@pytest.fixture
+def triplet_session_miner():
+    return TripletSessionMiner()
+
+
+@pytest.fixture
 def embeddings():
     return [torch.rand(NUM_DIM) for _ in range(BATCH_SIZE)]
 
@@ -25,6 +40,11 @@ def embeddings():
 @pytest.fixture
 def labels():
     return [1, 3, 1, 3, 2, 4, 2, 4]
+
+
+@pytest.fixture
+def session_labels():
+    return [(1, 1), (2, 1), (2, 0), (2, -1), (1, 0), (1, -1), (2, -1), (2, 1)]
 
 
 def test_siamese_miner(embeddings, labels, siamese_miner):
@@ -74,4 +94,62 @@ def test_triplet_miner_given_insufficient_inputs(
     embeddings = embeddings[:cut_index]
     labels = labels[:cut_index]
     rv = list(siamese_miner.mine(embeddings, labels))
+    assert len(rv) == 0
+
+
+def test_siamese_session_miner(embeddings, session_labels, siamese_session_miner):
+    rv = siamese_session_miner.mine(embeddings, session_labels)
+    assert rv == [
+        (0, 4, 1),
+        (0, 5, -1),
+        (4, 5, -1),
+        (1, 2, 1),
+        (1, 3, -1),
+        (1, 6, -1),
+        (1, 7, 1),
+        (2, 3, -1),
+        (2, 6, -1),
+        (2, 7, 1),
+        (3, 7, -1),
+        (6, 7, -1),
+    ]
+
+
+@pytest.mark.parametrize('cut_index', [0, 1])
+def test_siamese_session_miner_given_insufficient_inputs(
+    embeddings, session_labels, siamese_session_miner, cut_index
+):
+    embeddings = embeddings[:cut_index]
+    session_labels = session_labels[:cut_index]
+    rv = list(siamese_session_miner.mine(embeddings, session_labels))
+    assert len(rv) == 0
+
+
+def test_triplet_session_miner(embeddings, session_labels, triplet_session_miner):
+    rv = triplet_session_miner.mine(embeddings, session_labels)
+    assert rv == [
+        (0, 4, 5),
+        (4, 0, 5),
+        (1, 2, 3),
+        (1, 2, 6),
+        (1, 7, 3),
+        (1, 7, 6),
+        (2, 1, 3),
+        (2, 1, 6),
+        (2, 7, 3),
+        (2, 7, 6),
+        (7, 1, 3),
+        (7, 1, 6),
+        (7, 2, 3),
+        (7, 2, 6),
+    ]
+
+
+@pytest.mark.parametrize('cut_index', [0, 1])
+def test_triplet_session_miner_given_insufficient_inputs(
+    embeddings, session_labels, triplet_session_miner, cut_index
+):
+    embeddings = embeddings[:cut_index]
+    session_labels = session_labels[:cut_index]
+    rv = list(triplet_session_miner.mine(embeddings, session_labels))
     assert len(rv) == 0
