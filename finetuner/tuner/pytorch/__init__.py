@@ -1,29 +1,31 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, Optional, Union
 
 import torch
 from jina.logging.profile import ProgressBar
+from torch import nn
 from torch.optim.optimizer import Optimizer
 from torch.utils.data.dataloader import DataLoader
 
-from ...helper import AnyDataLoader, DocumentArrayLike
-from ..base import BaseLoss, BaseTuner
+from ...helper import DocumentSequence
+from ..base import BaseTuner
 from ..summary import ScalarSequence, Summary
 from . import losses
 from .datasets import PytorchClassDataset, PytorchSessionDataset
 
 
-class PytorchTuner(BaseTuner):
-    def _get_loss(self, loss: Union[BaseLoss, str]) -> BaseLoss:
+class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
+    def _get_loss(self, loss: Union[nn.Module, str]) -> nn.Module:
         """Get the loss layer."""
         if isinstance(loss, str):
             return getattr(losses, loss)()
-        elif isinstance(loss, BaseLoss):
+        elif isinstance(loss, nn.Module):
             return loss
 
     def _get_data_loader(
-        self, dataset: DocumentArrayLike, batch_size: int, shuffle: bool
-    ) -> AnyDataLoader:
-        """Get pytorch ``DataLoader`` data loader from the input data."""
+        self, dataset: DocumentSequence, batch_size: int, shuffle: bool
+    ) -> DataLoader:
+        """Get pytorch ``DataLoader`` from the input data."""
+
         return DataLoader(dataset=dataset, batch_sampler=batch_sampler)
 
     def _get_optimizer(
@@ -93,7 +95,7 @@ class PytorchTuner(BaseTuner):
     #     return _summary
 
     def _train(
-        self, data: AnyDataLoader, optimizer: Optimizer, description: str
+        self, data: DataLoader, optimizer: Optimizer, description: str
     ) -> ScalarSequence:
         """Train the model on given labeled data"""
 
@@ -152,7 +154,7 @@ class PytorchTuner(BaseTuner):
             - ``"rmsprop"`` for the RMSProp optimizer
             - ``"sgd"`` for the SGD optimizer with momentum
         :param optimizer_kwargs: Keyword arguments to pass to the optimizer. The
-            supported arguments, togethere with their defailt values, are:
+            supported arguments, togethere with their default values, are:
             - ``"adam"``:  ``{'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-08}``
             - ``"rmsprop"``::
 

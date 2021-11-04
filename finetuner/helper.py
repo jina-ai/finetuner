@@ -1,13 +1,4 @@
-from typing import (
-    TypeVar,
-    Sequence,
-    Iterator,
-    Union,
-    Callable,
-    List,
-    Dict,
-    Any,
-)
+from typing import TypeVar, Sequence, List, Dict, Any
 
 from jina import Document, DocumentArray, DocumentArrayMemmap
 
@@ -28,12 +19,7 @@ DocumentSequence = TypeVar(
     Sequence[Document],
     DocumentArray,
     DocumentArrayMemmap,
-    Iterator[Document],
 )  #: The type of any sequence of Document
-DocumentArrayLike = Union[
-    DocumentSequence,
-    Callable[..., DocumentSequence],
-]  #: The type :py:data:`DocumentSequence` or a function that gives :py:data:`DocumentSequence`
 
 LayerInfoType = List[
     Dict[str, Any]

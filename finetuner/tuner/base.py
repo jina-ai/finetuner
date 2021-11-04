@@ -1,26 +1,18 @@
 import abc
 import warnings
-from typing import (
-    Optional,
-    Union,
-    Tuple,
-    List,
-    Dict,
-)
+from typing import Dict, Generic, List, Optional, Tuple, Union
 
-from ..helper import AnyDNN, AnyTensor, AnyDataLoader, AnyOptimizer, DocumentArrayLike
+from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, DocumentSequence
+from .miner import BaseMiner
 from .summary import Summary
 
 
-class BaseLoss:
-    arity: int
-
-
-class BaseTuner(abc.ABC):
+class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
     def __init__(
         self,
         embed_model: Optional[AnyDNN] = None,
         loss: Union[AnyDNN, str] = 'CosineSiameseLoss',
+        miner: Optional[BaseMiner] = None,
         **kwargs,
     ):
         """Create the tuner instance.
@@ -32,6 +24,7 @@ class BaseTuner(abc.ABC):
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
+        self._miner = self._get_miner(miner, self._loss)
 
     def _get_optimizer_kwargs(self, optimizer: str, custom_kwargs: Optional[Dict]):
         """Merges user-provided optimizer kwargs with default ones."""
@@ -74,16 +67,6 @@ class BaseTuner(abc.ABC):
         """Get the base model of this object."""
         return self._embed_model
 
-    @property
-    def arity(self) -> int:
-        """Get the arity of this object.
-
-        For example,
-            - ``arity = 2`` corresponds to the siamese network;
-            - ``arity = 3`` corresponds to the triplet network.
-        """
-        return self._loss.arity
-
     @abc.abstractmethod
     def _get_optimizer(
         self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
@@ -93,8 +76,8 @@ class BaseTuner(abc.ABC):
     @abc.abstractmethod
     def fit(
         self,
-        train_data: DocumentArrayLike,
-        eval_data: Optional[DocumentArrayLike] = None,
+        train_data: DocumentSequence,
+        eval_data: Optional[DocumentSequence] = None,
         epochs: int = 10,
         batch_size: int = 256,
         *args,
@@ -102,8 +85,9 @@ class BaseTuner(abc.ABC):
     ) -> Summary:
         """Fit the :py:attr:`.embed_model` on labeled data.
 
-        Note that fitting changes the weights in :py:attr:`.embed_model` in-place. This allows one to consecutively
-        call :py:func:`.fit` multiple times with different configs or data to get better models.
+        Note that fitting changes the weights in :py:attr:`.embed_model` in-place. This
+        allows one to consecutively call :py:func:`.fit` multiple times with different
+        configs or data to get better models.
         """
         ...
 
@@ -113,13 +97,13 @@ class BaseTuner(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def _get_loss(self, loss: Union[str, BaseLoss]) -> BaseLoss:
+    def _get_loss(self, loss: Union[str, AnyDNN]) -> AnyDNN:
         """Get the loss layer."""
         ...
 
     @abc.abstractmethod
     def _get_data_loader(
-        self, inputs: DocumentArrayLike, batch_size: int, shuffle: bool
+        self, inputs: DocumentSequence, batch_size: int, shuffle: bool
     ) -> AnyDataLoader:
         """Get framework specific data loader from the input data."""
         ...
@@ -136,27 +120,4 @@ class BaseTuner(abc.ABC):
         self, data: AnyDataLoader, description: str = 'Evaluating'
     ) -> Tuple[List, List]:
         """Evaluate the model on given labeled data"""
-        ...
-
-
-class BaseDataset:
-    def __init__(
-        self,
-        inputs: DocumentArrayLike,
-    ):
-        super().__init__()
-        self._inputs = inputs() if callable(inputs) else inputs
-
-
-class BaseMiner(abc.ABC):
-    @abc.abstractmethod
-    def mine(
-        self, embeddings: List[AnyTensor], labels: List[int]
-    ) -> List[Tuple[int, ...]]:
-        """Generate tuples/triplets from input embeddings and labels.
-
-        :param embeddings: embeddings from model, should be a list of Tensor objects.
-        :param labels: labels of each embeddings, embeddings with same label indicates same class.
-        :return: tuple/triplet of label indices.
-        """
         ...

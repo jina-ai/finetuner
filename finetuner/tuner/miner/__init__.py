@@ -1,14 +1,32 @@
-import numpy as np
-from typing import List, Tuple
+import abc
 from itertools import combinations
+from typing import Generic, List, Sequence, Tuple, TypeVar
 
-from ..base import BaseMiner
+import numpy as np
+
 from ...helper import AnyTensor
 
+LabelType = TypeVar('LabelType')
 
-class SiameseMiner(BaseMiner):
+
+class BaseMiner(abc.ABC, Generic[LabelType]):
+    @abc.abstractmethod
     def mine(
-        self, embeddings: List[AnyTensor], labels: List[int]
+        self, embeddings: AnyTensor, labels: Sequence[LabelType]
+    ) -> List[Tuple[int, ...]]:
+        """Generate tuples/triplets from input embeddings and labels.
+
+        :param embeddings: embeddings from model, should be a list of Tensor objects.
+        :param labels: labels of each embeddings
+
+        :return: tuple/triplet of label indices.
+        """
+        ...
+
+
+class SiameseMiner(BaseMiner[int]):
+    def mine(
+        self, embeddings: AnyTensor, labels: Sequence[int]
     ) -> List[Tuple[int, ...]]:
         """Generate tuples from input embeddings and labels.
 
@@ -23,10 +41,10 @@ class SiameseMiner(BaseMiner):
         ]
 
 
-class TripletMiner(BaseMiner):
+class TripletMiner(BaseMiner[int]):
     def mine(
-        self, embeddings: List[AnyTensor], labels: List[int]
-    ) -> List[Tuple[int, ...]]:
+        self, embeddings: AnyTensor, labels: Sequence[int]
+    ) -> List[Tuple[int, int, int]]:
         """Generate triplets from input embeddings and labels.
 
         :param embeddings: embeddings from model, should be a list of Tensor objects.
