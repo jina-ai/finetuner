@@ -48,10 +48,10 @@ def test_fit_all(tmpdir):
                 b(),
                 loss=h,
                 train_data=lambda: generate_fashion_match(
-                    num_neg=10, num_pos=10, num_total=300
+                    num_neg=10, num_pos=10, num_total=100
                 ),
                 eval_data=lambda: generate_fashion_match(
-                    num_neg=10, num_pos=10, num_total=300, is_testset=True
+                    num_neg=10, num_pos=10, num_total=100, is_testset=True
                 ),
                 epochs=2,
             )

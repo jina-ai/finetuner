@@ -62,7 +62,7 @@ def test_classes_in_batch():
 
 
 def test_almost_full_coverage():
-    """ Check that almost all items get covered in one epoch"""
+    """Check that almost all items get covered in one epoch"""
     labels = []
     for i in range(100):
         labels += [i] * 20
