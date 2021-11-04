@@ -341,12 +341,12 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>embeddings</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[~AnyTensor]) – embeddings from model, should be a list of Tensor objects.</p></li>
+<li><p><strong>embeddings</strong> (<em>~AnyTensor</em>) – embeddings from model, should be a list of Tensor objects.</p></li>
 <li><p><strong>labels</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – labels of each embeddings, embeddings with same label indicates same class.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, …]]</p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>a pair of label indices and their label as tuple.</p>
@@ -365,12 +365,62 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>embeddings</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[~AnyTensor]) – embeddings from model, should be a list of Tensor objects.</p></li>
+<li><p><strong>embeddings</strong> (<em>~AnyTensor</em>) – embeddings from model, should be a list of Tensor objects.</p></li>
 <li><p><strong>labels</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – labels of each embeddings, embeddings with same label indicates same class.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, …]]</p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>triplet of label indices follows the order of anchor, positive and negative.</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.tuner.pytorch.miner.SiameseSessionMiner">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.pytorch.miner.</span></span><span class="sig-name descname"><span class="pre">SiameseSessionMiner</span></span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/miner/#SiameseSessionMiner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.miner.SiameseSessionMiner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseMiner" title="finetuner.tuner.base.BaseMiner"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseMiner</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.pytorch.miner.SiameseSessionMiner.mine">
+<span class="sig-name descname"><span class="pre">mine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/miner/#SiameseSessionMiner.mine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.miner.SiameseSessionMiner.mine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate tuples from input embeddings and labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embeddings</strong> (<em>~AnyTensor</em>) – embeddings from model, should be a list of Tensor objects.</p></li>
+<li><p><strong>labels</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – labels of each embeddings, consist of session id and label.
+the labels are either -1 or 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a pair of label indices and their label as tuple.</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.tuner.pytorch.miner.TripletSessionMiner">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.pytorch.miner.</span></span><span class="sig-name descname"><span class="pre">TripletSessionMiner</span></span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/miner/#TripletSessionMiner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.miner.TripletSessionMiner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseMiner" title="finetuner.tuner.base.BaseMiner"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseMiner</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.pytorch.miner.TripletSessionMiner.mine">
+<span class="sig-name descname"><span class="pre">mine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/miner/#TripletSessionMiner.mine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.miner.TripletSessionMiner.mine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate triplets from input embeddings and labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embeddings</strong> (<em>~AnyTensor</em>) – embeddings from model, should be a list of Tensor objects.</p></li>
+<li><p><strong>labels</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – labels of each embeddings, consist of session id and label, the labels of
+anchor, positive, negative are 0, 1 and -1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>triplet of label indices follows the order of anchor, positive and negative.</p>
@@ -412,7 +462,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 03, 2021.
+                    Last updated on Nov 04, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

@@ -306,7 +306,7 @@
                 <h1>Source code for finetuner.tuner.pytorch.miner</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">permutations</span>
 
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseMiner</span>
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">AnyTensor</span>
@@ -314,8 +314,8 @@
 
 <div class="viewcode-block" id="SiameseMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseMiner">[docs]</a><span class="k">class</span> <span class="nc">SiameseMiner</span><span class="p">(</span><span class="n">BaseMiner</span><span class="p">):</span>
 <div class="viewcode-block" id="SiameseMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AnyTensor</span><span class="p">],</span> <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">AnyTensor</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
         <span class="sd">"""Generate tuples from input embeddings and labels.</span>
 
 <span class="sd">        :param embeddings: embeddings from model, should be a list of Tensor objects.</span>
@@ -331,8 +331,8 @@
 
 <div class="viewcode-block" id="TripletMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletMiner">[docs]</a><span class="k">class</span> <span class="nc">TripletMiner</span><span class="p">(</span><span class="n">BaseMiner</span><span class="p">):</span>
 <div class="viewcode-block" id="TripletMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AnyTensor</span><span class="p">],</span> <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">AnyTensor</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
         <span class="sd">"""Generate triplets from input embeddings and labels.</span>
 
 <span class="sd">        :param embeddings: embeddings from model, should be a list of Tensor objects.</span>
@@ -348,6 +348,75 @@
         <span class="n">triplets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">diffs</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">idxes_anchor</span><span class="p">,</span> <span class="n">idxes_pos</span><span class="p">,</span> <span class="n">idxes_neg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">triplets</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">idxes_anchor</span><span class="p">,</span> <span class="n">idxes_pos</span><span class="p">,</span> <span class="n">idxes_neg</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="SiameseSessionMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseSessionMiner">[docs]</a><span class="k">class</span> <span class="nc">SiameseSessionMiner</span><span class="p">(</span><span class="n">BaseMiner</span><span class="p">):</span>
+<div class="viewcode-block" id="SiameseSessionMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseSessionMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">AnyTensor</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="sd">"""Generate tuples from input embeddings and labels.</span>
+
+<span class="sd">        :param embeddings: embeddings from model, should be a list of Tensor objects.</span>
+<span class="sd">        :param labels: labels of each embeddings, consist of session id and label.</span>
+<span class="sd">          the labels are either -1 or 1.</span>
+<span class="sd">        :return: a pair of label indices and their label as tuple.</span>
+<span class="sd">        """</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+        <span class="n">rv</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">labels_with_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="o">+</span> <span class="p">(</span><span class="n">index</span><span class="p">,)</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">)]</span>
+        <span class="n">sorted_labels_with_index</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">labels_with_index</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">(</span><span class="n">sorted_labels_with_index</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">session_labels</span><span class="p">,</span> <span class="n">session_indices</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">group</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">session_labels</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">right</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># 0 represents for anchor, 1 for positive, they form positive pairs.</span>
+                    <span class="n">rv</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">session_indices</span><span class="p">[</span><span class="n">left</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">session_indices</span><span class="p">[</span><span class="n">right</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">right</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                    <span class="n">left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">right</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+                <span class="p">):</span>
+                    <span class="c1"># one of the item is positive or anchor, another one is negative</span>
+                    <span class="n">rv</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">session_indices</span><span class="p">[</span><span class="n">left</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">session_indices</span><span class="p">[</span><span class="n">right</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># both are negatives</span>
+                    <span class="k">continue</span>
+        <span class="k">return</span> <span class="n">rv</span></div></div>
+
+
+<div class="viewcode-block" id="TripletSessionMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletSessionMiner">[docs]</a><span class="k">class</span> <span class="nc">TripletSessionMiner</span><span class="p">(</span><span class="n">BaseMiner</span><span class="p">):</span>
+<div class="viewcode-block" id="TripletSessionMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletSessionMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">:</span> <span class="n">AnyTensor</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="sd">"""Generate triplets from input embeddings and labels.</span>
+
+<span class="sd">        :param embeddings: embeddings from model, should be a list of Tensor objects.</span>
+<span class="sd">        :param labels: labels of each embeddings, consist of session id and label, the labels of</span>
+<span class="sd">          anchor, positive, negative are 0, 1 and -1.</span>
+<span class="sd">        :return: triplet of label indices follows the order of anchor, positive and negative.</span>
+<span class="sd">        """</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+        <span class="n">rv</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">labels_with_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="o">+</span> <span class="p">(</span><span class="n">index</span><span class="p">,)</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">)]</span>
+        <span class="n">sorted_labels_with_index</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">labels_with_index</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">(</span><span class="n">sorted_labels_with_index</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">anchor_pos_session_labels</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">anchor_pos_session_indices</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">neg_session_indices</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">session_label</span><span class="p">,</span> <span class="n">session_index</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">session_label</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">anchor_pos_session_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session_label</span><span class="p">)</span>
+                    <span class="n">anchor_pos_session_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session_index</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">neg_session_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session_index</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">anchor</span><span class="p">,</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">permutations</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">anchor_pos_session_labels</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">neg_idx</span> <span class="ow">in</span> <span class="n">neg_session_indices</span><span class="p">:</span>
+                    <span class="n">rv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">(</span>
+                            <span class="n">anchor_pos_session_indices</span><span class="p">[</span><span class="n">anchor</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                            <span class="n">anchor_pos_session_indices</span><span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                            <span class="n">neg_idx</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+        <span class="k">return</span> <span class="n">rv</span></div></div>
 </pre></div>
             </article>
             <footer>
@@ -359,7 +428,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 03, 2021.
+                    Last updated on Nov 04, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
