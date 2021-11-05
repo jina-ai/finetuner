@@ -7,6 +7,7 @@ const app = new Vue({
         "image-match-card": imageMatchCard,
         "text-match-card": textMatchCard,
         "mesh-match-card": meshMatchCard,
+        "audio-match-card": audioMatchCard,
     },
     data: {
         is_busy: false,
@@ -17,6 +18,7 @@ const app = new Vue({
                 {text: '.tags', value: 'tags'}],
             style: [{text: 'Image', value: 'image'},
                 {text: 'Text', value: 'text'},
+                {text: 'Audio', value: 'audio'},
                 {text: '3D mesh', value: 'mesh'}],
         },
         labeler_config: {
