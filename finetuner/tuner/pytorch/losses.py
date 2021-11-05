@@ -4,6 +4,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from ..base import BaseSiameseLoss, BaseTripletLoss
+
 
 def _cosine_dist(emb_one: torch.Tensor, emb_two: torch.Tensor) -> torch.Tensor:
     return 1 - F.cosine_similarity(emb_one, emb_two)
@@ -20,7 +22,7 @@ def _dist_fn(dist_name: str) -> Callable[[torch.Tensor, torch.Tensor], torch.Ten
         return _euclidean_dist
 
 
-class SiameseLoss(nn.Module):
+class SiameseLoss(nn.Module, BaseSiameseLoss):
     """Computes the loss for a siamese network.
 
     The loss for a pair of objects equals ::
@@ -34,14 +36,14 @@ class SiameseLoss(nn.Module):
     The final loss is the average over losses for all pairs given by the indices.
     """
 
-    def __init__(self, distance: str = "cosine", margin: float = 0.0):
+    def __init__(self, distance: str = "cosine", margin: float = 1.0):
         """Initialize the loss instance
 
         :param distance: The type of distance to use, avalilable options are
             ``"cosine"`` and ``"euclidean"``
         :param margin: The margin to use in loss calculation
         """
-
+        super().__init__()
         self.distance = distance
         self.margin = margin
 
@@ -56,17 +58,16 @@ class SiameseLoss(nn.Module):
             and their similarity (which equals 1 if they are similar, and 0 if they
             are dissimilar)
         """
-        ind_one, ind_two, target = list(zip(*indices))
+        ind_one, ind_two, target = [list(x) for x in zip(*indices)]
 
         target = torch.tensor(target, dtype=torch.float32, device=embeddings.device)
         emb_one, emb_two = embeddings[ind_one], embeddings[ind_two]
         dist = _dist_fn(self.distance)(emb_one, emb_two)
-
-        loss = 0.5 * (target * dist + (1 - target) * F.relu(0, self.margin - dist)) ** 2
+        loss = 0.5 * (target * dist + (1 - target) * F.relu(self.margin - dist)) ** 2
         return loss.mean()
 
 
-class TripletLoss(nn.Module):
+class TripletLoss(nn.Module, BaseTripletLoss):
     """Compute the loss for a triplet network.
 
     The loss for a single triplet equals::
@@ -81,13 +82,14 @@ class TripletLoss(nn.Module):
     The final loss is the average over losses for all triplets given by the indices.
     """
 
-    def __init__(self, distance: str = "cosine", margin: float = 0.0):
+    def __init__(self, distance: str = "cosine", margin: float = 1.0):
         """Initialize the loss instance
 
         :param distance: The type of distance to use, avalilable options are
             ``"cosine"`` and ``"euclidean"``
         :param margin: The margin to use in loss calculation
         """
+        super().__init__()
         self.distance = distance
         self.margin = margin
 
@@ -101,7 +103,7 @@ class TripletLoss(nn.Module):
             contains three elements: the index of anchor, positive match and negative
             match in the embeddings tensor
         """
-        ind_anch, ind_pos, ind_neg = list(zip(*indices))
+        ind_anch, ind_pos, ind_neg = [list(x) for x in zip(*indices)]
         emb_anch, emb_pos, emb_neg = (
             embeddings[ind_anch],
             embeddings[ind_pos],

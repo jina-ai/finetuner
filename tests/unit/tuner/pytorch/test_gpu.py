@@ -8,12 +8,7 @@ from finetuner.toydata import generate_fashion_match
 from finetuner.tuner.pytorch import PytorchTuner
 
 
-all_test_losses = [
-    'CosineSiameseLoss',
-    'CosineTripletLoss',
-    'EuclideanSiameseLoss',
-    'EuclideanTripletLoss',
-]
+all_test_losses = ['SiameseLoss', 'TripletLoss']
 
 
 @pytest.mark.gpu
@@ -28,8 +23,8 @@ def test_gpu_pytorch(generate_random_triplets, loss):
 
     tuner = PytorchTuner(embed_model, loss)
 
-    # Run quick training - mainly makes sure no errors appear, and that the model
-    # is moved to GPU
+    # Run quick training - mainly makes sure no errors appear, and that the model is
+    # moved to GPU
     tuner.fit(data, data, epochs=2, batch_size=4, device='cuda')
 
     # Test the model was moved (by checking one of its parameters)

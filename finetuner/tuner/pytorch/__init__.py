@@ -1,13 +1,16 @@
-from typing import Dict, Optional, Union
+from typing import Callable, Dict, Optional, Union
 
+import numpy as np
 import torch
 from jina.logging.profile import ProgressBar
 from torch import nn
 from torch.optim.optimizer import Optimizer
 from torch.utils.data.dataloader import DataLoader
 
+from ... import __default_tag_key__
 from ...helper import DocumentSequence
-from ..base import BaseTuner
+from ..dataset.samplers import RandomClassBatchSampler, SessionBatchSampler
+from ..base import BaseTuner, BaseMiner
 from ..summary import ScalarSequence, Summary
 from . import losses
 from .datasets import PytorchClassDataset, PytorchSessionDataset
@@ -22,11 +25,34 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
             return loss
 
     def _get_data_loader(
-        self, dataset: DocumentSequence, batch_size: int, shuffle: bool
+        self,
+        data: Union[DocumentSequence, PytorchClassDataset, PytorchSessionDataset],
+        batch_size: int,
+        num_items_per_class: int,
+        shuffle: bool,
+        collate_fn: Optional[Callable],
     ) -> DataLoader:
         """Get pytorch ``DataLoader`` from the input data."""
 
-        return DataLoader(dataset=dataset, batch_sampler=batch_sampler)
+        # Infer dataset type and pick dataset and batch sampler accordingly
+        if not isinstance(data, torch.utils.data.Dataset):
+            if __default_tag_key__ in data[0].tags:
+                dataset = PytorchClassDataset(data)
+            else:
+                dataset = PytorchSessionDataset(data)
+        else:
+            dataset = data
+
+        if isinstance(dataset, PytorchClassDataset):
+            batch_sampler = RandomClassBatchSampler(
+                dataset.labels, batch_size, num_items_per_class
+            )
+        else:
+            batch_sampler = SessionBatchSampler(dataset.labels, batch_size, shuffle)
+
+        return DataLoader(
+            dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn
+        )
 
     def _get_optimizer(
         self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
@@ -59,6 +85,26 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
                 momentum=optimizer_kwargs['momentum'],
                 nesterov=optimizer_kwargs['nesterov'],
             )
+
+    @staticmethod
+    def _get_distances(embeddings: torch.Tensor, distance: str) -> np.ndarray:
+        """Compute the distance between items in the embeddings
+
+        :param embeddings: An ``[N, d]`` tensor of item embeddings
+        :param distance: Type of distance to compute. Supported values are
+            ``"cosine"`` and ``"euclidean"``
+
+        :return: An ``[N, N]`` matrix of item distances
+        """
+
+        with torch.inference_mode():
+            if distance == 'cosine':
+                emb_norm = torch.nn.functional.normalize(embeddings, p=2, dim=1)
+                dists = 1 - torch.mm(emb_norm, emb_norm.transpose(0, 1))
+            elif distance == 'euclidean':
+                dists = torch.cdist(embeddings, embeddings, p=2)
+
+        return dists.cpu().numpy()
 
     # def _eval(
     #     self,
@@ -108,15 +154,19 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
             final_line_feed=False,
             total_length=len(data),
         ) as p:
-            self._train_data_len = 0
-            for inputs, label in data:
+            for inputs, labels in data:
                 # inputs come as tuples or triplets
                 inputs = inputs.to(self.device)
-                label = label.to(self.device)
+
+                if isinstance(labels, list):  # If labels come from a session dataset
+                    labels = [tuple(x) for x in torch.stack(labels).T.tolist()]
+                else:
+                    labels = labels.tolist()
 
                 embeddings = self.embed_model(inputs)
+                dists = self._get_distances(embeddings, self._loss.distance)
 
-                mined_tuples = self._miner(inputs)
+                mined_tuples = self._miner.mine(labels, dists)
                 loss = self._loss(embeddings, mined_tuples)
 
                 optimizer.zero_grad()
@@ -125,16 +175,18 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
                 optimizer.step()
 
                 _summary += loss.item()
-
                 p.update(message=str(_summary))
         return _summary
 
     def fit(
         self,
-        train_data: Union[PytorchClassDataset, PytorchSessionDataset],
+        train_data: Union[DocumentSequence, PytorchClassDataset, PytorchSessionDataset],
         # eval_data: Optional[DocumentArrayLike] = None,
         epochs: int = 10,
+        miner: Optional[BaseMiner] = None,
         batch_size: int = 256,
+        num_items_per_class: int = 4,
+        collate_fn: Optional[Callable] = None,
         learning_rate: float = 1e-3,
         optimizer: str = 'adam',
         optimizer_kwargs: Optional[Dict] = None,
@@ -147,6 +199,10 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         :param eval_data: Data on which to evaluate the model at the end of each epoch
         :param epochs: Number of epochs to train the model
         :param batch_size: The batch size to use for training and evaluation
+        :param num_items_per_class: Number of items from a single class to include in
+            the batch. Only relevant for class datasets
+        :param collate_fn: The collation function to collate items for an individual
+            batch into inputs for the model. Will be passed to torch ``DataLoader``.
         :param learning_rate: Learning rate to use in training
         :param optimizer: Which optimizer to use in training. Supported
             values/optimizers are:
@@ -169,9 +225,30 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
         """
-        self.device = get_device(device)
+        # Get dataloaders
+        train_dl = self._get_data_loader(
+            data=train_data,
+            batch_size=batch_size,
+            num_items_per_class=num_items_per_class,
+            shuffle=False,
+            collate_fn=collate_fn,
+        )
+        # eval_dl = self._get_data_loader(
+        #     inputs=eval_data, batch_size=batch_size, shuffle=False
+        # )
+
+        # Get miner
+        if isinstance(train_data, torch.utils.data.Dataset):
+            is_session_data = isinstance(train_data, PytorchSessionDataset)
+        else:
+            is_session_data = __default_tag_key__ not in train_data[0].tags
+
+        self._miner = self._get_miner(
+            miner, loss=self._loss, is_session_data=is_session_data
+        )
 
         # Place model on device
+        self.device = get_device(device)
         self._embed_model = self._embed_model.to(self.device)
 
         # Get optimizer
@@ -179,14 +256,6 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
         m_train_loss = ScalarSequence('train')
         m_eval_loss = ScalarSequence('eval')
-
-        train_dl = self._get_data_loader(
-            inputs=train_data, batch_size=batch_size, shuffle=False
-        )
-        # eval_dl = self._get_data_loader(
-        #     inputs=eval_data, batch_size=batch_size, shuffle=False
-        # )
-
         for epoch in range(epochs):
             lt = self._train(
                 train_dl,

@@ -137,7 +137,7 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
                         ' When using ClassDataset all documents need this tag'
                     )
 
-                self._labels.append((i, tag))
+                self._labels.append((i, int(tag)))
                 num_docs += 1
 
     def __getitem__(self, ind: int) -> Tuple[Union[str, np.ndarray], Tuple[int, int]]:

@@ -3,28 +3,43 @@ import warnings
 from typing import Dict, Generic, List, Optional, Tuple, Union
 
 from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, DocumentSequence
-from .miner import BaseMiner
+from .miner import (
+    BaseMiner,
+    TripletSessionMiner,
+    TripletMiner,
+    SiameseSessionMiner,
+    SiameseMiner,
+)
 from .summary import Summary
+
+
+class BaseLoss:
+    distance: str
+
+
+class BaseSiameseLoss(BaseLoss):
+    ...
+
+
+class BaseTripletLoss(BaseLoss):
+    ...
 
 
 class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
     def __init__(
         self,
         embed_model: Optional[AnyDNN] = None,
-        loss: Union[AnyDNN, str] = 'CosineSiameseLoss',
-        miner: Optional[BaseMiner] = None,
+        loss: Union[BaseLoss, str] = 'SiameseLoss',
         **kwargs,
     ):
         """Create the tuner instance.
 
         :param embed_model: Model that produces embeddings from inputs
         :param loss: Either the loss object instance, or the name of the loss function.
-            Currently available losses are ``CosineSiameseLoss``,
-            ``EuclideanSiameseLoss``, ``EuclideanTripletLoss`` and ``CosineTripletLoss``
+            Currently available losses are ``SiameseLoss`` and ``TripletLoss``
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
-        self._miner = self._get_miner(miner, self._loss)
 
     def _get_optimizer_kwargs(self, optimizer: str, custom_kwargs: Optional[Dict]):
         """Merges user-provided optimizer kwargs with default ones."""
@@ -73,13 +88,37 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
     ) -> AnyOptimizer:
         """Get the optimizer for training."""
 
+    def _get_miner(
+        self, miner: Optional[BaseMiner], is_session_data: bool, loss: BaseLoss
+    ) -> BaseMiner:
+        """Get the miner"""
+
+        # Get the default miner if none provided
+        if not miner:
+            if not is_session_data:
+                if isinstance(loss, BaseTripletLoss):
+                    return TripletMiner()
+                elif isinstance(loss, BaseSiameseLoss):
+                    return SiameseMiner()
+            else:
+                if isinstance(loss, BaseTripletLoss):
+                    return TripletSessionMiner()
+                elif isinstance(loss, BaseSiameseLoss):
+                    return SiameseSessionMiner()
+
+        return miner
+
     @abc.abstractmethod
     def fit(
         self,
         train_data: DocumentSequence,
         eval_data: Optional[DocumentSequence] = None,
+        miner: Optional[BaseMiner] = None,
         epochs: int = 10,
         batch_size: int = 256,
+        optimizer: str = 'adam',
+        optimizer_kwargs: Optional[Dict] = None,
+        device: str = 'cpu',
         *args,
         **kwargs,
     ) -> Summary:
@@ -115,9 +154,9 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         """Train the model on given labeled data"""
         ...
 
-    @abc.abstractmethod
-    def _eval(
-        self, data: AnyDataLoader, description: str = 'Evaluating'
-    ) -> Tuple[List, List]:
-        """Evaluate the model on given labeled data"""
-        ...
+    # @abc.abstractmethod
+    # def _eval(
+    #     self, data: AnyDataLoader, description: str = 'Evaluating'
+    # ) -> Tuple[List, List]:
+    #     """Evaluate the model on given labeled data"""
+    #     ...
