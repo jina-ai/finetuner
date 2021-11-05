@@ -33,7 +33,7 @@ def _set_embeddings_keras(
     device = get_device(device)
     with device:
         for b in docs.batch(batch_size):
-            b.embeddings = embed_model(b.blobs).numpy()
+            b.embeddings = embed_model(b.blobs, training=False).numpy()
 
 
 def _set_embeddings_torch(
@@ -49,10 +49,14 @@ def _set_embeddings_torch(
     import torch
 
     embed_model = embed_model.to(device)
+    is_training_before = embed_model.training
+    embed_model.eval()
     with torch.inference_mode():
         for b in docs.batch(batch_size):
             tensor = torch.tensor(b.blobs, device=device)
             b.embeddings = embed_model(tensor).cpu().detach().numpy()
+    if is_training_before:
+        embed_model.train()
 
 
 def _set_embeddings_paddle(
@@ -67,5 +71,9 @@ def _set_embeddings_paddle(
 
     import paddle
 
+    is_training_before = embed_model.training
+    embed_model.eval()
     for b in docs.batch(batch_size):
         b.embeddings = embed_model(paddle.Tensor(b.blobs)).numpy()
+    if is_training_before:
+        embed_model.train()
