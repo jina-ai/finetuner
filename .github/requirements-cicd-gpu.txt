@@ -1,6 +1,6 @@
 https://github.com/jina-ai/jina/archive/refs/heads/master.zip
-tensorflow==2.5.0
-paddlepaddle-gpu
-torch
-torchvision
-scipy
+tensorflow==2.7.0
+paddlepaddle-gpu==2.2.0
+torch==1.9.0
+torchvision==0.10.0
+scipy==1.7.1

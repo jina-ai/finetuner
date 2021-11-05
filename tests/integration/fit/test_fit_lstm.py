@@ -1,5 +1,3 @@
-import json
-
 import paddle
 import tensorflow as tf
 import torch
@@ -56,10 +54,10 @@ def test_fit_all(tmpdir):
                 b(),
                 loss=h,
                 train_data=lambda: generate_qa_match(
-                    num_total=300, num_neg=5, max_seq_len=10
+                    num_total=100, num_neg=5, max_seq_len=10
                 ),
                 eval_data=lambda: generate_qa_match(
-                    num_total=300, num_neg=5, max_seq_len=10
+                    num_total=100, num_neg=5, max_seq_len=10
                 ),
                 epochs=2,
             )
