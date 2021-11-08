@@ -1,11 +1,11 @@
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset as PytorchDataset
 
 from ..dataset import ClassDataset, SessionDataset
 
 
-class PytorchClassDataset(ClassDataset, Dataset):
+class PytorchClassDataset(ClassDataset, PytorchDataset):
     ...
 
 
-class PytorchSessionDataset(SessionDataset, Dataset):
+class PytorchSessionDataset(SessionDataset, PytorchDataset):
     ...
