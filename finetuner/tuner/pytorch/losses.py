@@ -6,18 +6,19 @@ import torch.nn.functional as F
 
 from ..base import BaseLoss
 from ..dataset import ClassDataset, SessionDataset
-from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
+from .miner import (SiameseMiner, SiameseSessionMiner, TripletMiner,
+                    TripletSessionMiner)
 
 
 def get_distance(embeddings: torch.Tensor, distance: str) -> torch.Tensor:
     """Get a matrix of pairwise distances between the embedings"""
 
-    if distance == "cosine":
+    if distance == 'cosine':
         emb_norm = torch.nn.functional.normalize(embeddings, p=2, dim=1)
         dists = 1 - torch.mm(emb_norm, emb_norm.transpose(0, 1))
-    elif distance == "euclidean":
+    elif distance == 'euclidean':
         dists = torch.cdist(embeddings, embeddings, p=2)
-    elif distance == "sqeuclidean":
+    elif distance == 'sqeuclidean':
         dists = torch.cdist(embeddings, embeddings, p=2) ** 2
 
     return dists

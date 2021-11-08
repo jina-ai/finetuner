@@ -51,45 +51,45 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         params = self._embed_model.parameters()
         optimizer_kwargs = self._get_optimizer_kwargs(optimizer, optimizer_kwargs)
 
-        if optimizer == "adam":
+        if optimizer == 'adam':
             return torch.optim.Adam(
                 params,
                 lr=learning_rate,
-                betas=(optimizer_kwargs["beta_1"], optimizer_kwargs["beta_2"]),
-                eps=optimizer_kwargs["epsilon"],
+                betas=(optimizer_kwargs['beta_1'], optimizer_kwargs['beta_2']),
+                eps=optimizer_kwargs['epsilon'],
             )
-        elif optimizer == "rmsprop":
+        elif optimizer == 'rmsprop':
             return torch.optim.RMSprop(
                 params,
                 lr=learning_rate,
-                alpha=optimizer_kwargs["rho"],
-                centered=optimizer_kwargs["centered"],
-                eps=optimizer_kwargs["epsilon"],
-                momentum=optimizer_kwargs["momentum"],
+                alpha=optimizer_kwargs['rho'],
+                centered=optimizer_kwargs['centered'],
+                eps=optimizer_kwargs['epsilon'],
+                momentum=optimizer_kwargs['momentum'],
             )
-        elif optimizer == "sgd":
+        elif optimizer == 'sgg':
             return torch.optim.SGD(
                 params,
                 lr=learning_rate,
-                momentum=optimizer_kwargs["momentum"],
-                nesterov=optimizer_kwargs["nesterov"],
+                momentum=optimizer_kwargs['momentum'],
+                nesterov=optimizer_kwargs['nesterov'],
             )
 
     def _eval(
         self,
         data: DataLoader,
-        description: str = "Evaluating",
+        description: str = 'Evaluating',
         train_loss: Optional[ScalarSequence] = None,
     ) -> ScalarSequence:
         """Evaluate the model on given labeled data"""
 
         self._embed_model.eval()
 
-        _summary = ScalarSequence("Eval Loss")
+        _summary = ScalarSequence('Eval Loss')
 
         with ProgressBar(
             description,
-            message_on_done=lambda: f"{train_loss} | {_summary}",
+            message_on_done=lambda: f'{train_loss} | {_summary}',
             total_length=len(data),
         ) as p:
             for inputs, labels in data:
@@ -118,7 +118,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
         self._embed_model.train()
 
-        _summary = ScalarSequence("Train Loss")
+        _summary = ScalarSequence('Train Loss')
         with ProgressBar(
             description,
             message_on_done=_summary.__str__,
@@ -156,9 +156,9 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         num_items_per_class: int = 4,
         collate_fn: Optional[Callable] = None,
         learning_rate: float = 1e-3,
-        optimizer: str = "adam",
+        optimizer: str = 'adam',
         optimizer_kwargs: Optional[Dict] = None,
-        device: str = "cpu",
+        device: str = 'cpu',
         **kwargs,
     ) -> Summary:
         """Finetune the model on the training data.
@@ -226,13 +226,13 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         # Get optimizer
         _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
 
-        m_train_loss = ScalarSequence("train")
-        m_eval_loss = ScalarSequence("eval")
+        m_train_loss = ScalarSequence('train')
+        m_eval_loss = ScalarSequence('eval')
         for epoch in range(epochs):
             lt = self._train(
                 train_dl,
                 _optimizer,
-                description=f"Epoch {epoch + 1}/{epochs}",
+                description=f'Epoch {epoch + 1}/{epochs}',
             )
             m_train_loss += lt
 

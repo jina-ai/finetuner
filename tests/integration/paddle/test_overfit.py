@@ -1,13 +1,13 @@
-import paddle
 import pytest
-from paddle import nn
+from finetuner.tuner import fit
 from scipy.spatial.distance import pdist, squareform
 
-from finetuner.tuner import fit
+import paddle
+from paddle import nn
 
 
 @pytest.mark.parametrize(
-    "n_cls,dim,n_samples,n_epochs,batch_size,loss",
+    'n_cls,dim,n_samples,n_epochs,batch_size,loss',
     [
         (5, 10, 100, 5, 25, 'EuclideanTripletLoss'),
         (5, 10, 100, 5, 25, 'CosineTripletLoss'),
