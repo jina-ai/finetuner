@@ -43,37 +43,10 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
         return dataset
 
-    def _get_optimizer(
-        self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
-    ) -> Optimizer:
-        """Get the optimizer for training."""
+    def _get_default_optimizer(self, learning_rate: float) -> Optimizer:
+        """Get the default optimizer (Adam), if none was provided by user."""
 
-        params = self._embed_model.parameters()
-        optimizer_kwargs = self._get_optimizer_kwargs(optimizer, optimizer_kwargs)
-
-        if optimizer == 'adam':
-            return torch.optim.Adam(
-                params,
-                lr=learning_rate,
-                betas=(optimizer_kwargs['beta_1'], optimizer_kwargs['beta_2']),
-                eps=optimizer_kwargs['epsilon'],
-            )
-        elif optimizer == 'rmsprop':
-            return torch.optim.RMSprop(
-                params,
-                lr=learning_rate,
-                alpha=optimizer_kwargs['rho'],
-                centered=optimizer_kwargs['centered'],
-                eps=optimizer_kwargs['epsilon'],
-                momentum=optimizer_kwargs['momentum'],
-            )
-        elif optimizer == 'sgg':
-            return torch.optim.SGD(
-                params,
-                lr=learning_rate,
-                momentum=optimizer_kwargs['momentum'],
-                nesterov=optimizer_kwargs['nesterov'],
-            )
+        return torch.optim.Adam(self._embed_model.parameters(), lr=learning_rate)
 
     def _eval(
         self,
@@ -156,8 +129,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         num_items_per_class: int = 4,
         collate_fn: Optional[Callable] = None,
         learning_rate: float = 1e-3,
-        optimizer: str = 'adam',
-        optimizer_kwargs: Optional[Dict] = None,
+        optimizer: Optional[Optimizer] = None,
         device: str = 'cpu',
         **kwargs,
     ) -> Summary:
@@ -173,25 +145,11 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
             the batch. Only relevant for class datasets
         :param collate_fn: The collation function to merge individual items into batch
             inputs for the model (plus labels). Will be passed to torch ``DataLoader``
-        :param learning_rate: Learning rate to use in training
-        :param optimizer: Which optimizer to use in training. Supported
-            values/optimizers are:
-            - ``"adam"`` for the Adam optimizer
-            - ``"rmsprop"`` for the RMSProp optimizer
-            - ``"sgd"`` for the SGD optimizer with momentum
-        :param optimizer_kwargs: Keyword arguments to pass to the optimizer. The
-            supported arguments, togethere with their default values, are:
-            - ``"adam"``:  ``{'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-08}``
-            - ``"rmsprop"``::
-
-                {
-                    'rho': 0.99,
-                    'momentum': 0.0,
-                    'epsilon': 1e-08,
-                    'centered': False,
-                }
-
-            - ``"sgd"``: ``{'momentum': 0.0, 'nesterov': False}``
+        :param learning_rate: Learning rate for the default optimizer. If you
+            provide a custom optimizer, this learning rate will not apply.
+        :param optimizer: The optimizer to use for training. If none is passed, an
+            Adam optimizer is used by default, with learning rate specified by the
+            ``learning_rate`` parameter.
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
         """
@@ -224,14 +182,14 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         self._embed_model = self._embed_model.to(self.device)
 
         # Get optimizer
-        _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
+        optimizer = optimizer or self._get_default_optimizer(learning_rate)
 
         m_train_loss = ScalarSequence('train')
         m_eval_loss = ScalarSequence('eval')
         for epoch in range(epochs):
             lt = self._train(
                 train_dl,
-                _optimizer,
+                optimizer,
                 description=f'Epoch {epoch + 1}/{epochs}',
             )
             m_train_loss += lt

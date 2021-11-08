@@ -103,52 +103,14 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
 
         return batch_sampler
 
-    def _get_optimizer_kwargs(self, optimizer: str, custom_kwargs: Optional[Dict]):
-        """Merges user-provided optimizer kwargs with default ones."""
-
-        DEFAULT_OPTIMIZER_KWARGS = {
-            'adam': {'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-08},
-            'rmsprop': {
-                'rho': 0.99,
-                'momentum': 0.0,
-                'epsilon': 1e-08,
-                'centered': False,
-            },
-            'sgd': {'momentum': 0.0, 'nesterov': False},
-        }
-
-        try:
-            opt_kwargs = DEFAULT_OPTIMIZER_KWARGS[optimizer]
-        except KeyError:
-            raise ValueError(
-                f'Optimizer "{optimizer}" not supported, the supported'
-                ' optimizers are "adam", "rmsprop" and "sgd"'
-            )
-
-        # Raise warning for non-existing keys passed
-        custom_kwargs = custom_kwargs or {}
-        extra_args = set(custom_kwargs.keys()) - set(opt_kwargs.keys())
-        if extra_args:
-            warnings.warn(
-                f'The following arguments are not valid for the optimizer {optimizer}:'
-                f' {extra_args}'
-            )
-
-        # Update only existing keys
-        opt_kwargs.update((k, v) for k, v in custom_kwargs.items() if k in opt_kwargs)
-
-        return opt_kwargs
-
     @property
     def embed_model(self) -> AnyDNN:
         """Get the base model of this object."""
         return self._embed_model
 
     @abc.abstractmethod
-    def _get_optimizer(
-        self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
-    ) -> AnyOptimizer:
-        """Get the optimizer for training."""
+    def _get_default_optimizer(self, learning_rate: float) -> AnyOptimizer:
+        """Get the default optimizer (Adam), if none was provided by user."""
 
     @abc.abstractmethod
     def fit(
@@ -161,8 +123,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         epochs: int = 10,
         batch_size: int = 256,
         learning_rate: float = 1e-3,
-        optimizer: str = 'adam',
-        optimizer_kwargs: Optional[Dict] = None,
+        optimizer: Optional[AnyOptimizer] = None,
         device: str = 'cpu',
         *args,
         **kwargs,
