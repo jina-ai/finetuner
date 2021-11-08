@@ -40,4 +40,4 @@ def test_fit_transformer():
     model = TransformerEmbedder()
 
     tuner = PytorchTuner(model, loss='SiameseLoss')
-    tuner.fit(docs, docs_eval, collate_fn=collate_fn, batch_size=30, epochs=2, device='cuda')
+    tuner.fit(docs, docs_eval, collate_fn=collate_fn, batch_size=30, epochs=2)
