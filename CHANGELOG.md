@@ -6,6 +6,7 @@
 
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -268,4 +269,35 @@ The changes of each release is tracked by this file.
  - [[```1ce3d8e1```](https://github.com/jina-ai/finetuner/commit/1ce3d8e1e4e343968083a9e54b2e31b61160c544)] __-__ bump jina requirements (*Han Xiao*)
  - [[```43d62f06```](https://github.com/jina-ai/finetuner/commit/43d62f068fdf80ca0a1a4d9f86ec24804f7f6aca)] __-__ __readme__: update logo (*Han Xiao*)
  - [[```489014ee```](https://github.com/jina-ai/finetuner/commit/489014ee4e12e6c3cc697d7c4da4129dd600ccdb)] __-__ __version__: the next version will be 0.1.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-1-5></a>
+## Release Note (`0.1.5`)
+
+> Release time: 2021-11-08 10:20:47
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Roshan Jossy,  Han Xiao,  Wang Bo,  Tadej Svetina,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```531d9052```](https://github.com/jina-ai/finetuner/commit/531d9052c5af93327974aa31a1da47f14bdc3239)] __-__ __tuner__: add miner for session dataset (#184) (*Wang Bo*)
+ - [[```77df7676```](https://github.com/jina-ai/finetuner/commit/77df7676f2fb39cda98fb7d87be8b5e21c49c421)] __-__ reformat data loading (#181) (*Tadej Svetina*)
+
+### 🐞 Bug fixes
+
+ - [[```3d5fc769```](https://github.com/jina-ai/finetuner/commit/3d5fc7691ee7591b489e1db37fbc22fabb75680e)] __-__ __embedding__: fix embedding train/eval time behavior (#190) (*Han Xiao*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```d80a4d0f```](https://github.com/jina-ai/finetuner/commit/d80a4d0faba7b504dcc93fe9769242f331df1484)] __-__ __embedding__: add test for #190 (*Han Xiao*)
+ - [[```fd1fe384```](https://github.com/jina-ai/finetuner/commit/fd1fe3843d5d4130065100194694b57216a71953)] __-__ upgrade tf version (#189) (*Wang Bo*)
+ - [[```5059e202```](https://github.com/jina-ai/finetuner/commit/5059e20280b9c5c8008577f63fd5404c08b40db1)] __-__ pin framework version (#188) (*Wang Bo*)
+
+### 🍹 Other Improvements
+
+ - [[```e1a73434```](https://github.com/jina-ai/finetuner/commit/e1a734346a69c8763072fa43b536224363cb8509)] __-__ __labeler__: add component for audio matches (#185) (*Roshan Jossy*)
+ - [[```717f06a0```](https://github.com/jina-ai/finetuner/commit/717f06a06ecb97eebc54b4448e865dbd4adc24e0)] __-__ __version__: the next version will be 0.1.5 (*Jina Dev Bot*)
 
