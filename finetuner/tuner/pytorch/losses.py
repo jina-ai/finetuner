@@ -6,8 +6,7 @@ import torch.nn.functional as F
 
 from ..base import BaseLoss
 from ..dataset import ClassDataset, SessionDataset
-from .miner import (SiameseMiner, SiameseSessionMiner, TripletMiner,
-                    TripletSessionMiner)
+from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
 
 
 def get_distance(embeddings: torch.Tensor, distance: str) -> torch.Tensor:
