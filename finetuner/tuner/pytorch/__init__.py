@@ -16,7 +16,7 @@ from .datasets import PytorchClassDataset, PytorchSessionDataset
 
 def _to_device(
     inputs: Union[torch.Tensor, Mapping[str, torch.Tensor]], device: torch.device
-) -> Union[torch.Tensor, dict[str, torch.Tensor]]:
+) -> Union[torch.Tensor, Dict[str, torch.Tensor]]:
     if isinstance(inputs, torch.Tensor):
         return inputs.to(device)
     elif isinstance(inputs, Mapping):
