@@ -1,6 +1,6 @@
+from collections.abc import Mapping, Sequence
 from typing import Callable, Dict, Optional, Union
 
-import numpy as np
 import torch
 from jina.logging.profile import ProgressBar
 from torch import nn
@@ -9,11 +9,21 @@ from torch.utils.data.dataloader import DataLoader
 
 from ... import __default_tag_key__
 from ...helper import DocumentSequence
-from ..dataset.samplers import RandomClassBatchSampler, SessionBatchSampler
 from ..base import BaseTuner, BaseMiner
 from ..summary import ScalarSequence, Summary
 from . import losses
 from .datasets import PytorchClassDataset, PytorchSessionDataset
+
+
+def _to_device(
+    inputs: Union[torch.Tensor, Mapping[str, torch.Tensor]], device: torch.device
+) -> Union[torch.Tensor, dict[str, torch.Tensor]]:
+    if isinstance(inputs, torch.Tensor):
+        return inputs.to(device)
+    elif isinstance(inputs, Mapping):
+        return {k: v.to(device) for k, v in inputs.items()}
+    elif isinstance(inputs, Sequence):
+        return [x.to(device) for x in inputs]
 
 
 class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
@@ -24,35 +34,15 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         elif isinstance(loss, nn.Module):
             return loss
 
-    def _get_data_loader(
-        self,
-        data: Union[DocumentSequence, PytorchClassDataset, PytorchSessionDataset],
-        batch_size: int,
-        num_items_per_class: int,
-        shuffle: bool,
-        collate_fn: Optional[Callable],
-    ) -> DataLoader:
-        """Get pytorch ``DataLoader`` from the input data."""
-
-        # Infer dataset type and pick dataset and batch sampler accordingly
-        if not isinstance(data, torch.utils.data.Dataset):
-            if __default_tag_key__ in data[0].tags:
-                dataset = PytorchClassDataset(data)
-            else:
-                dataset = PytorchSessionDataset(data)
+    def _get_dataset(
+        self, data: DocumentSequence, preprocess_fn: Optional[Callable]
+    ) -> Union[PytorchClassDataset, PytorchSessionDataset]:
+        if __default_tag_key__ in data[0].tags:
+            dataset = PytorchClassDataset(data, preprocess_fn=preprocess_fn)
         else:
-            dataset = data
+            dataset = PytorchSessionDataset(data, preprocess_fn=preprocess_fn)
 
-        if isinstance(dataset, PytorchClassDataset):
-            batch_sampler = RandomClassBatchSampler(
-                dataset.labels, batch_size, num_items_per_class
-            )
-        else:
-            batch_sampler = SessionBatchSampler(dataset.labels, batch_size, shuffle)
-
-        return DataLoader(
-            dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn
-        )
+        return dataset
 
     def _get_optimizer(
         self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
@@ -86,66 +76,55 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
                 nesterov=optimizer_kwargs['nesterov'],
             )
 
-    @staticmethod
-    def _get_distances(embeddings: torch.Tensor, distance: str) -> np.ndarray:
-        """Compute the distance between items in the embeddings
+    def _eval(
+        self,
+        data: DataLoader,
+        description: str = 'Evaluating',
+        train_loss: Optional[ScalarSequence] = None,
+    ) -> ScalarSequence:
+        """Evaluate the model on given labeled data"""
 
-        :param embeddings: An ``[N, d]`` tensor of item embeddings
-        :param distance: Type of distance to compute. Supported values are
-            ``"cosine"`` and ``"euclidean"``
+        self._embed_model.eval()
 
-        :return: An ``[N, N]`` matrix of item distances
-        """
+        _summary = ScalarSequence('Eval Loss')
 
-        with torch.inference_mode():
-            if distance == 'cosine':
-                emb_norm = torch.nn.functional.normalize(embeddings, p=2, dim=1)
-                dists = 1 - torch.mm(emb_norm, emb_norm.transpose(0, 1))
-            elif distance == 'euclidean':
-                dists = torch.cdist(embeddings, embeddings, p=2)
+        with ProgressBar(
+            description,
+            message_on_done=lambda: f'{train_loss} | {_summary}',
+            total_length=len(data),
+        ) as p:
+            for inputs, labels in data:
+                inputs = _to_device(inputs, self.device)
+                labels = _to_device(labels, self.device)
 
-        return dists.cpu().numpy()
+                # Can not use inference mode due to (when having too many triplets)
+                # https://github.com/pytorch/pytorch/issues/60539
+                with torch.no_grad():
+                    embeddings = self.embed_model(inputs)
+                    dists = losses.get_distance(embeddings, self._loss.distance)
 
-    # def _eval(
-    #     self,
-    #     data: AnyDataLoader,
-    #     description: str = 'Evaluating',
-    #     train_loss: Optional[ScalarSequence] = None,
-    # ) -> ScalarSequence:
-    #     """Evaluate the model on given labeled data"""
+                    mined_tuples = self._miner.mine(labels, dists)
+                    loss = self._loss(embeddings, mined_tuples)
 
-    #     self._embed_model.eval()
+                _summary += loss.item()
 
-    #     _summary = ScalarSequence('Eval Loss')
+                p.update(message=str(_summary))
 
-    #     with ProgressBar(
-    #         description,
-    #         message_on_done=lambda: f'{train_loss} | {_summary}',
-    #         total_length=self._eval_data_len,
-    #     ) as p:
-    #         self._eval_data_len = 0
-    #         for inputs, label in data:
-    #             # Inputs come as tuples or triplets
-    #             inputs = [inpt.to(self.device) for inpt in inputs]
-    #             label = label.to(self.device)
-
-    #             with torch.inference_mode():
-    #                 embeddings = [self._embed_model(inpt) for inpt in inputs]
-    #                 loss = self._loss(embeddings, label)
-
-    #             _summary += loss.item()
-
-    #             p.update(message=str(_summary))
-    #             self._eval_data_len += 1
-
-    #     return _summary
+        return _summary
 
     def _train(
         self, data: DataLoader, optimizer: Optimizer, description: str
     ) -> ScalarSequence:
         """Train the model on given labeled data"""
+        from time import perf_counter
 
         self._embed_model.train()
+
+        time_total = 0
+        time_embed = 0
+        time_mine = 0
+        time_loss = 0
+        time_back = 0
 
         _summary = ScalarSequence('Train Loss')
         with ProgressBar(
@@ -155,33 +134,51 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
             total_length=len(data),
         ) as p:
             for inputs, labels in data:
-                # inputs come as tuples or triplets
-                inputs = inputs.to(self.device)
+                inputs = _to_device(inputs, self.device)
+                labels = _to_device(labels, self.device)
 
-                if isinstance(labels, list):  # If labels come from a session dataset
-                    labels = [tuple(x) for x in torch.stack(labels).T.tolist()]
-                else:
-                    labels = labels.tolist()
-
+                t0 = perf_counter()
                 embeddings = self.embed_model(inputs)
-                dists = self._get_distances(embeddings, self._loss.distance)
+                # torch.cuda.synchronize()
 
+                t1 = perf_counter()
+                with torch.inference_mode():
+                    dists = losses.get_distance(embeddings, self._loss.distance)
+
+                t2 = perf_counter()
                 mined_tuples = self._miner.mine(labels, dists)
+                t3 = perf_counter()
                 loss = self._loss(embeddings, mined_tuples)
+                # torch.cuda.synchronize()
 
+                t4 = perf_counter()
                 optimizer.zero_grad()
 
                 loss.backward()
                 optimizer.step()
+                # torch.cuda.synchronize()
+                t5 = perf_counter()
+
+                time_total += t5 - t0
+                time_embed += t1 - t0
+                time_mine += t3 - t2
+                time_loss += t4 - t3
+                time_back += t5 - t4
 
                 _summary += loss.item()
                 p.update(message=str(_summary))
+        T = time_total
+        print(
+            f'## T={T:.2f} E={time_embed/T:.2%} M={time_mine/T:.2%} L={time_loss/T:.2%} B={time_back/T:.2%}'
+        )
+
         return _summary
 
     def fit(
         self,
-        train_data: Union[DocumentSequence, PytorchClassDataset, PytorchSessionDataset],
-        # eval_data: Optional[DocumentArrayLike] = None,
+        train_data: DocumentSequence,
+        eval_data: Optional[DocumentSequence] = None,
+        preprocess_fn: Optional[Callable] = None,
         epochs: int = 10,
         miner: Optional[BaseMiner] = None,
         batch_size: int = 256,
@@ -197,12 +194,14 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
         :param train_data: Data on which to train the model
         :param eval_data: Data on which to evaluate the model at the end of each epoch
+        :param preprocess_fn: A pre-processing function. It should take as input the
+            content of an item in the dataset and return the pre-processed content
         :param epochs: Number of epochs to train the model
         :param batch_size: The batch size to use for training and evaluation
         :param num_items_per_class: Number of items from a single class to include in
             the batch. Only relevant for class datasets
-        :param collate_fn: The collation function to collate items for an individual
-            batch into inputs for the model. Will be passed to torch ``DataLoader``.
+        :param collate_fn: The collation function to merge individual items into batch
+            inputs for the model (plus labels). Will be passed to torch ``DataLoader``
         :param learning_rate: Learning rate to use in training
         :param optimizer: Which optimizer to use in training. Supported
             values/optimizers are:
@@ -226,26 +225,28 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
             ``"cpu"`` and ``"cuda"`` (for GPU)
         """
         # Get dataloaders
-        train_dl = self._get_data_loader(
-            data=train_data,
-            batch_size=batch_size,
-            num_items_per_class=num_items_per_class,
-            shuffle=False,
+        train_dataset = self._get_dataset(train_data, preprocess_fn)
+        train_batch_sampler = self.get_batch_sampler(
+            train_dataset, batch_size, num_items_per_class, True
+        )
+        train_dl = DataLoader(
+            dataset=train_dataset,
+            batch_sampler=train_batch_sampler,
             collate_fn=collate_fn,
         )
-        # eval_dl = self._get_data_loader(
-        #     inputs=eval_data, batch_size=batch_size, shuffle=False
-        # )
+        if eval_data:
+            eval_dataset = self._get_dataset(train_data, preprocess_fn)
+            eval_batch_sampler = self.get_batch_sampler(
+                eval_dataset, batch_size, num_items_per_class, False
+            )
+            eval_dl = DataLoader(
+                dataset=eval_dataset,
+                batch_sampler=eval_batch_sampler,
+                collate_fn=collate_fn,
+            )
 
         # Get miner
-        if isinstance(train_data, torch.utils.data.Dataset):
-            is_session_data = isinstance(train_data, PytorchSessionDataset)
-        else:
-            is_session_data = __default_tag_key__ not in train_data[0].tags
-
-        self._miner = self._get_miner(
-            miner, loss=self._loss, is_session_data=is_session_data
-        )
+        self._miner = miner if miner else self._loss.get_default_miner(train_dataset)
 
         # Place model on device
         self.device = get_device(device)
@@ -264,9 +265,9 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
             )
             m_train_loss += lt
 
-            # if eval_data:
-            #     le = self._eval(_data, train_loss=m_train_loss)
-            #     m_eval_loss += le
+            if eval_data:
+                le = self._eval(eval_dl, train_loss=m_train_loss)
+                m_eval_loss += le
 
         return Summary(m_train_loss, m_eval_loss)
 

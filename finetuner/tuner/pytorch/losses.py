@@ -1,33 +1,34 @@
-from typing import Callable, List, Tuple
+from typing import Union, Tuple
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ..base import BaseSiameseLoss, BaseTripletLoss
+from .miner import TripletMiner, TripletSessionMiner, SiameseMiner, SiameseSessionMiner
+from ..base import BaseLoss
+from ..dataset import ClassDataset, SessionDataset
 
 
-def _cosine_dist(emb_one: torch.Tensor, emb_two: torch.Tensor) -> torch.Tensor:
-    return 1 - F.cosine_similarity(emb_one, emb_two)
+def get_distance(embeddings: torch.Tensor, distance: str) -> torch.Tensor:
+    """Get a matrix of pairwise distances between the embedings"""
+
+    if distance == 'cosine':
+        emb_norm = torch.nn.functional.normalize(embeddings, p=2, dim=1)
+        dists = 1 - torch.mm(emb_norm, emb_norm.transpose(0, 1))
+    elif distance == 'euclidean':
+        dists = torch.cdist(embeddings, embeddings, p=2)
+    elif distance == 'sqeuclidean':
+        dists = torch.cdist(embeddings, embeddings, p=2) ** 2
+
+    return dists
 
 
-def _euclidean_dist(emb_one: torch.Tensor, emb_two: torch.Tensor) -> torch.Tensor:
-    return F.pairwise_distance(emb_one, emb_two, p=2)
-
-
-def _dist_fn(dist_name: str) -> Callable[[torch.Tensor, torch.Tensor], torch.Tensor]:
-    if dist_name == 'cosine':
-        return _cosine_dist
-    elif dist_name == 'euclidean':
-        return _euclidean_dist
-
-
-class SiameseLoss(nn.Module, BaseSiameseLoss):
+class SiameseLoss(nn.Module, BaseLoss):
     """Computes the loss for a siamese network.
 
     The loss for a pair of objects equals ::
 
-        0.5 * ( is_sim * dist + (1 - is_sim) * max(0, margin - dist) )^2
+        is_sim * dist + (1 - is_sim) * max(0, margin - dist)
 
     where ``is_sim`` equals 1 if the two objects are similar, and 0 if they are not
     similar. The ``dist`` refers to the distance between the two objects, and ``margin``
@@ -40,7 +41,7 @@ class SiameseLoss(nn.Module, BaseSiameseLoss):
         """Initialize the loss instance
 
         :param distance: The type of distance to use, avalilable options are
-            ``"cosine"`` and ``"euclidean"``
+            ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``
         :param margin: The margin to use in loss calculation
         """
         super().__init__()
@@ -48,7 +49,9 @@ class SiameseLoss(nn.Module, BaseSiameseLoss):
         self.margin = margin
 
     def forward(
-        self, embeddings: torch.Tensor, indices: List[Tuple[int, int, int]]
+        self,
+        embeddings: torch.Tensor,
+        indices: Tuple[torch.Tensor, torch.Tensor, torch.Tensor],
     ) -> torch.Tensor:
         """Compute the loss
 
@@ -58,16 +61,24 @@ class SiameseLoss(nn.Module, BaseSiameseLoss):
             and their similarity (which equals 1 if they are similar, and 0 if they
             are dissimilar)
         """
-        ind_one, ind_two, target = [list(x) for x in zip(*indices)]
+        ind_one, ind_two, target = indices
+        dist_matrix = get_distance(embeddings, self.distance)
+        dists = dist_matrix[ind_one, ind_two]
+        target = target.to(torch.float32)
 
-        target = torch.tensor(target, dtype=torch.float32, device=embeddings.device)
-        emb_one, emb_two = embeddings[ind_one], embeddings[ind_two]
-        dist = _dist_fn(self.distance)(emb_one, emb_two)
-        loss = 0.5 * (target * dist + (1 - target) * F.relu(self.margin - dist)) ** 2
+        loss = target * dists + (1 - target) * F.relu(self.margin - dists)
         return loss.mean()
 
+    def get_default_miner(
+        self, dataset: Union[ClassDataset, SessionDataset]
+    ) -> Union[SiameseMiner, SiameseSessionMiner]:
+        if isinstance(dataset, ClassDataset):
+            return SiameseMiner()
+        elif isinstance(dataset, SessionDataset):
+            return SiameseSessionMiner()
 
-class TripletLoss(nn.Module, BaseTripletLoss):
+
+class TripletLoss(nn.Module, BaseLoss):
     """Compute the loss for a triplet network.
 
     The loss for a single triplet equals::
@@ -86,7 +97,7 @@ class TripletLoss(nn.Module, BaseTripletLoss):
         """Initialize the loss instance
 
         :param distance: The type of distance to use, avalilable options are
-            ``"cosine"`` and ``"euclidean"``
+            ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``
         :param margin: The margin to use in loss calculation
         """
         super().__init__()
@@ -94,7 +105,9 @@ class TripletLoss(nn.Module, BaseTripletLoss):
         self.margin = margin
 
     def forward(
-        self, embeddings: torch.Tensor, indices: List[Tuple[int, int, int]]
+        self,
+        embeddings: torch.Tensor,
+        indices: Tuple[torch.Tensor, torch.Tensor, torch.Tensor],
     ) -> torch.Tensor:
         """Compute the loss
 
@@ -103,14 +116,19 @@ class TripletLoss(nn.Module, BaseTripletLoss):
             contains three elements: the index of anchor, positive match and negative
             match in the embeddings tensor
         """
-        ind_anch, ind_pos, ind_neg = [list(x) for x in zip(*indices)]
-        emb_anch, emb_pos, emb_neg = (
-            embeddings[ind_anch],
-            embeddings[ind_pos],
-            embeddings[ind_neg],
-        )
-        dist_pos = _dist_fn(self.distance)(emb_anch, emb_pos)
-        dist_neg = _dist_fn(self.distance)(emb_anch, emb_neg)
+        ind_anch, ind_pos, ind_neg = indices
 
+        dist_matrix = get_distance(embeddings, self.distance)
+        dist_pos = dist_matrix[ind_anch, ind_pos]
+        dist_neg = dist_matrix[ind_anch, ind_neg]
         loss = F.relu(dist_pos - dist_neg + self.margin)
+
         return loss.mean()
+
+    def get_default_miner(
+        self, dataset: Union[ClassDataset, SessionDataset]
+    ) -> Union[TripletMiner, TripletSessionMiner]:
+        if isinstance(dataset, ClassDataset):
+            return TripletMiner()
+        elif isinstance(dataset, SessionDataset):
+            return TripletSessionMiner()

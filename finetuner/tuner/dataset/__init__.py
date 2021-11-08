@@ -37,7 +37,7 @@ class ClassDataset(BaseDataset[int]):
         docs: DocumentSequence,
         preprocess_fn: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
     ):
-        """Create the :class:`ClassDataset` instance.
+        """Create the dataset instance.
 
         :param docs: The documents for the dataset. Each document is expected to have
             - a content (only blob or text are accepted currently)
@@ -102,7 +102,7 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
         docs: DocumentSequence,
         preprocess_fn: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
     ):
-        """Create the :class:`SessionDataset` instance.
+        """Create the dataset instance.
 
         :param docs: The documents for the dataset. Each document is expected to have
             - a content (only blob or text are accepted currently)
