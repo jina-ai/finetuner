@@ -1,5 +1,4 @@
-from collections.abc import Mapping, Sequence
-from typing import Callable, Dict, Optional, Union
+from typing import Callable, Dict, Mapping, Optional, Sequence, Union
 
 import torch
 from jina.logging.profile import ProgressBar
