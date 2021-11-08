@@ -50,7 +50,7 @@ class RandomClassBatchSampler:
         if len(set(labels)) < self._num_classes:
             raise ValueError(
                 'Number of distinct classes in labels must be larger or equal than'
-                'numbers of classes in a batch'
+                ' numbers of classes in a batch'
             )
 
         # Get mapping of labels (classes) and their positions

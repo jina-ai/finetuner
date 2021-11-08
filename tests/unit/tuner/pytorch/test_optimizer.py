@@ -10,7 +10,7 @@ from finetuner.tuner.pytorch import PytorchTuner
 def test_optimizer(optimizer, learning_rate):
     model = torch.nn.Linear(2, 2)
 
-    ft = PytorchTuner(model, 'EuclideanTripletLoss')
+    ft = PytorchTuner(model, 'TripletLoss')
     opt = ft._get_optimizer(optimizer, {}, learning_rate)
 
     assert type(opt).__name__.lower() == optimizer
@@ -20,7 +20,7 @@ def test_optimizer(optimizer, learning_rate):
 def test_non_existing_optimizer():
     model = torch.nn.Linear(2, 2)
 
-    ft = PytorchTuner(model, 'EuclideanTripletLoss')
+    ft = PytorchTuner(model, 'TripletLoss')
 
     with pytest.raises(ValueError, match='Optimizer "fake"'):
         ft._get_optimizer('fake', {}, 1e-3)

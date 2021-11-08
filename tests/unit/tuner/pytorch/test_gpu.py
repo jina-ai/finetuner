@@ -8,29 +8,36 @@ from finetuner.toydata import generate_fashion_match
 from finetuner.tuner.pytorch import PytorchTuner
 
 
-all_test_losses = [
-    'CosineSiameseLoss',
-    'CosineTripletLoss',
-    'EuclideanSiameseLoss',
-    'EuclideanTripletLoss',
-]
+all_test_losses = ['SiameseLoss', 'TripletLoss']
 
 
 @pytest.mark.gpu
 @pytest.mark.parametrize('loss', all_test_losses)
-def test_gpu_pytorch(generate_random_triplets, loss):
+def test_gpu(generate_random_data, loss):
 
-    data = generate_random_triplets(4, 4)
-
-    embed_model = torch.nn.Sequential(
-        torch.nn.Linear(in_features=4, out_features=4),
-    )
-
+    data = generate_random_data(40, 4)
+    embed_model = torch.nn.Sequential(torch.nn.Linear(in_features=4, out_features=4))
     tuner = PytorchTuner(embed_model, loss)
 
-    # Run quick training - mainly makes sure no errors appear, and that the model
-    # is moved to GPU
-    tuner.fit(data, data, epochs=2, batch_size=4, device='cuda')
+    # Run quick training - mainly makes sure no errors appear, and that the model is
+    # moved to GPU
+    tuner.fit(data, data, epochs=2, batch_size=8, device='cuda')
+
+    # Test the model was moved (by checking one of its parameters)
+    assert next(embed_model.parameters()).device.type == 'cuda'
+
+
+@pytest.mark.gpu
+@pytest.mark.parametrize('loss', all_test_losses)
+def test_gpu_session(generate_random_session_data, loss):
+
+    data = generate_random_session_data(40, 4)
+    embed_model = torch.nn.Sequential(torch.nn.Linear(in_features=4, out_features=4))
+    tuner = PytorchTuner(embed_model, loss)
+
+    # Run quick training - mainly makes sure no errors appear, and that the model is
+    # moved to GPU
+    tuner.fit(data, data, epochs=2, batch_size=9, device='cuda')
 
     # Test the model was moved (by checking one of its parameters)
     assert next(embed_model.parameters()).device.type == 'cuda'

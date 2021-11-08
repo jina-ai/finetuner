@@ -1,6 +1,7 @@
-from typing import Optional, TYPE_CHECKING, Type, Dict
+from typing import Optional, TYPE_CHECKING, Type, Dict, Union
 
-from ..helper import AnyDNN, DocumentArrayLike, get_framework
+from .base import BaseLoss
+from ..helper import AnyDNN, DocumentSequence, get_framework
 
 if TYPE_CHECKING:
     from .base import BaseTuner
@@ -26,11 +27,11 @@ def _get_tuner_class(dnn_model: AnyDNN) -> Type['BaseTuner']:
 
 def fit(
     embed_model: AnyDNN,
-    train_data: DocumentArrayLike,
-    eval_data: Optional[DocumentArrayLike] = None,
+    train_data: DocumentSequence,
+    eval_data: Optional[DocumentSequence] = None,
     epochs: int = 10,
     batch_size: int = 256,
-    loss: str = 'CosineSiameseLoss',
+    loss: Union[str, BaseLoss] = 'SiameseLoss',
     learning_rate: float = 1e-3,
     optimizer: str = 'adam',
     optimizer_kwargs: Optional[Dict] = None,
@@ -46,10 +47,8 @@ def fit(
     :param batch_size: The batch size to use for training and evaluation
     :param loss: Which loss to use in training. Supported
         losses are:
-        - ``CosineSiameseLoss`` for Siamese network with cosine distance
-        - ``EuclideanSiameseLoss`` for Siamese network with eculidean distance
-        - ``CosineTripletLoss`` for Triplet network with cosine distance
-        - ``EuclideanTripletLoss`` for Triplet network with eculidean distance
+        - ``SiameseLoss`` for Siamese network with cosine distance
+        - ``TripletLoss`` for Triplet network with cosine distance
     :param learning_rate: Learning rate to use in training
     :param optimizer: Which optimizer to use in training. Supported
         values/optimizers are:

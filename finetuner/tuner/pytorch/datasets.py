@@ -1,12 +1,11 @@
-from torch.utils.data import IterableDataset
+from torch.utils.data import Dataset
 
-from ..base import BaseDataset
-from ..dataset import SiameseMixin, TripletMixin
+from ..dataset import ClassDataset, SessionDataset
 
 
-class SiameseDataset(SiameseMixin, BaseDataset, IterableDataset):
+class PytorchClassDataset(ClassDataset, Dataset):
     ...
 
 
-class TripletDataset(TripletMixin, BaseDataset, IterableDataset):
+class PytorchSessionDataset(SessionDataset, Dataset):
     ...
