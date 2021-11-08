@@ -123,13 +123,13 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         train_data: DocumentSequence,
         eval_data: Optional[DocumentSequence] = None,
         preprocess_fn: Optional[Callable] = None,
+        collate_fn: Optional[Callable] = None,
         epochs: int = 10,
         miner: Optional[BaseMiner] = None,
         batch_size: int = 256,
         num_items_per_class: int = 4,
-        collate_fn: Optional[Callable] = None,
-        learning_rate: float = 1e-3,
         optimizer: Optional[Optimizer] = None,
+        learning_rate: float = 1e-3,
         device: str = 'cpu',
         **kwargs,
     ) -> Summary:
@@ -139,17 +139,17 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         :param eval_data: Data on which to evaluate the model at the end of each epoch
         :param preprocess_fn: A pre-processing function. It should take as input the
             content of an item in the dataset and return the pre-processed content
+        :param collate_fn: The collation function to merge individual items into batch
+            inputs for the model (plus labels). Will be passed to torch ``DataLoader``
         :param epochs: Number of epochs to train the model
         :param batch_size: The batch size to use for training and evaluation
         :param num_items_per_class: Number of items from a single class to include in
             the batch. Only relevant for class datasets
-        :param collate_fn: The collation function to merge individual items into batch
-            inputs for the model (plus labels). Will be passed to torch ``DataLoader``
-        :param learning_rate: Learning rate for the default optimizer. If you
-            provide a custom optimizer, this learning rate will not apply.
         :param optimizer: The optimizer to use for training. If none is passed, an
             Adam optimizer is used by default, with learning rate specified by the
             ``learning_rate`` parameter.
+        :param learning_rate: Learning rate for the default optimizer. If you
+            provide a custom optimizer, this learning rate will not apply.
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
         """
