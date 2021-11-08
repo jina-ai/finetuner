@@ -217,7 +217,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
             )
 
         # Get miner
-        self._miner = miner if miner else self._loss.get_default_miner(train_dataset)
+        self._miner = miner or self._loss.get_default_miner(train_dataset)
 
         # Place model on device
         self.device = get_device(device)

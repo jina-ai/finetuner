@@ -38,7 +38,7 @@ class SiameseLoss(nn.Module, BaseLoss):
     The final loss is the average over losses for all pairs given by the indices.
     """
 
-    def __init__(self, distance: str = "cosine", margin: float = 1.0):
+    def __init__(self, distance: str = 'cosine', margin: float = 1.0):
         """Initialize the loss instance
 
         :param distance: The type of distance to use, avalilable options are
