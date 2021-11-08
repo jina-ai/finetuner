@@ -79,7 +79,7 @@ def fit(
         preprocess_fn=preprocess_fn,
         collate_fn=collate_fn,
         miner=miner,
-        num_items_per_class=num_items_per_class
+        num_items_per_class=num_items_per_class,
     )
 
 
