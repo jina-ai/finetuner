@@ -1,7 +1,7 @@
-from typing import Optional, TYPE_CHECKING, Type, Dict, Union
+from typing import TYPE_CHECKING, Dict, Optional, Type, Union
 
-from .base import BaseLoss
 from ..helper import AnyDNN, DocumentSequence, get_framework
+from .base import BaseLoss
 
 if TYPE_CHECKING:
     from .base import BaseTuner
@@ -47,8 +47,8 @@ def fit(
     :param batch_size: The batch size to use for training and evaluation
     :param loss: Which loss to use in training. Supported
         losses are:
-        - ``SiameseLoss`` for Siamese network with cosine distance
-        - ``TripletLoss`` for Triplet network with cosine distance
+        - ``SiameseLoss`` for Siamese network
+        - ``TripletLoss`` for Triplet network
     :param learning_rate: Learning rate to use in training
     :param optimizer: Which optimizer to use in training. Supported
         values/optimizers are:
