@@ -1,151 +1,153 @@
-from typing import List
+from typing import Tuple, Union
 
 import paddle
 import paddle.nn as nn
 import paddle.nn.functional as F
 
 from ..base import BaseLoss
+from ..dataset import ClassDataset, SessionDataset
+from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
 
 
-class CosineSiameseLoss(BaseLoss, nn.Layer):
-    """Computes the loss for a siamese network using cosine distance.
+def _take_inds(
+    matrix: paddle.Tensor, ind_one: paddle.Tensor, ind_two: paddle.Tensor
+) -> paddle.Tensor:
+    """
+    Take individual values from the matrix - here because paddle has bad support for
+    indexing
+    """
+    flat = matrix.flatten()
+    flat_ind = ind_one * matrix.shape[1] + ind_two
 
-    The loss for a pair of objects equals ``(target - cos_sim)^2``, where ``target``
-    should equal 1 when both objects belong to the same class, and to -1 when they
-    belong to different classes. The ``cos_sim`` represents the cosime similarity
-    between both objects.
+    return paddle.index_select(flat, flat_ind)
 
-    The final loss is the average over losses for all pairs of objects in the batch.
+
+def get_distance(embeddings: paddle.Tensor, distance: str) -> paddle.Tensor:
+    """Get a matrix of pairwise distances between the embedings"""
+
+    if distance == 'cosine':
+        emb_norm = F.normalize(embeddings, p=2, axis=1)
+        dists = 1 - paddle.mm(emb_norm, emb_norm.t())
+    elif distance == 'euclidean':
+        emb2 = (embeddings ** 2).sum(axis=1, keepdim=True)
+        prod = paddle.mm(embeddings, embeddings.t())
+        dists = emb2 + emb2.t() - 2 * prod
+        dists = paddle.sqrt(dists.clip(0))
+    elif distance == 'sqeuclidean':
+        emb2 = (embeddings ** 2).sum(axis=1, keepdim=True)
+        prod = paddle.mm(embeddings, embeddings.t())
+        dists = emb2 + emb2.t() - 2 * prod
+
+    return dists
+
+
+class SiameseLoss(nn.Layer, BaseLoss):
+    """Computes the loss for a siamese network.
+
+    The loss for a pair of objects equals ::
+
+        is_sim * dist + (1 - is_sim) * max(0, margin - dist)
+
+    where ``is_sim`` equals 1 if the two objects are similar, and 0 if they are not
+    similar. The ``dist`` refers to the distance between the two objects, and ``margin``
+    is a number to help bound the loss for dissimilar objects.
+
+    The final loss is the average over losses for all pairs given by the indices.
     """
 
-    arity = 2
+    def __init__(self, distance: str = 'cosine', margin: float = 1.0):
+        """Initialize the loss instance
 
-    def forward(
-        self, embeddings: List[paddle.Tensor], target: paddle.Tensor
-    ) -> paddle.Tensor:
-        """Compute the loss.
-
-        :param embeddings: Should be a list or a tuple containing two tensors:
-            - ``[N, D]`` tensor of embeddings of the first objects of the pair
-            - ``[N, D]`` tensor of embeddings of the second objects of the pair
-        :param target: A ``[N, ]`` tensor of target values
+        :param distance: The type of distance to use, avalilable options are
+            ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``
+        :param margin: The margin to use in loss calculation
         """
-        l_emb, r_emb = embeddings
-        cos_sim = F.cosine_similarity(l_emb, r_emb)
-        loss = F.mse_loss(cos_sim, target)
-        return loss
-
-
-class EuclideanSiameseLoss(BaseLoss, nn.Layer):
-    """Computes the loss for a siamese network using eculidean distance.
-
-    This loss is also known as contrastive loss.
-
-    The loss being optimized equals::
-
-        [is_sim * dist + (1 - is_sim) * max(margin - dist, 0)]^2
-
-    where ``target`` should equal 1 when both objects belong to the same class,
-    and 0 otheriwse. The ``dist`` is the euclidean distance between the embeddings of
-    the objects, and ``margin`` is some number, used here to ensure better stability
-    of training.
-
-    The final loss is the average over losses for all pairs of objects in the batch.
-    """
-
-    arity = 2
-
-    def __init__(self, margin: float = 1.0):
         super().__init__()
+        self.distance = distance
         self.margin = margin
-        self._dist = nn.PairwiseDistance(2)
 
     def forward(
-        self, embeddings: List[paddle.Tensor], target: paddle.Tensor
+        self,
+        embeddings: paddle.Tensor,
+        indices: Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor],
     ) -> paddle.Tensor:
-        """Compute the loss.
+        """Compute the loss
 
-        :param inputs: Should be a list or a tuple containing three tensors:
-            - ``[N, D]`` tensor of embeddings of the first objects of the pair
-            - ``[N, D]`` tensor of embeddings of the second objects of the pair
-        :param target: A ``[N, ]`` tensor of target values
+        :param embeddings: An ``[N, d]`` tensor of embeddings
+        :param indices: A list of tuple indices and target, where each element in the
+            list contains three elements: the indices of the two objects in the pair,
+            and their similarity (which equals 1 if they are similar, and 0 if they
+            are dissimilar)
         """
-        l_emb, r_emb = embeddings
-        eucl_dist = self._dist(l_emb, r_emb)
-        is_similar = paddle.cast(target > 0, paddle.float32)
+        ind_one, ind_two, target = indices
+        dist_matrix = get_distance(embeddings, self.distance)
+        dists = _take_inds(dist_matrix, ind_one, ind_two)
+        target = paddle.cast(target, "float32")
 
-        loss = 0.5 * paddle.square(
-            is_similar * eucl_dist + (1 - is_similar) * F.relu(self.margin - eucl_dist)
-        )
+        loss = target * dists + (1 - target) * F.relu(self.margin - dists)
+        print(loss, loss.mean())
         return loss.mean()
 
-
-class EuclideanTripletLoss(BaseLoss, nn.Layer):
-    """Compute the loss for a triplet network using euclidean distance.
-
-    The loss is computed as ``max(dist_pos - dist_neg + margin, 0)``, where ``dist_pos``
-    is the euclidean distance between the anchor embedding and positive embedding,
-    ``dist_neg`` is the euclidean distance between the anchor and negative embedding,
-    and ``margin`` represents a wedge between the desired wedge between anchor-negative
-    and anchor-positive distances.
-
-    The final loss is the average over losses for all triplets in the batch.
-    """
-
-    arity = 3
-
-    def __init__(self, margin: float = 1.0):
-        super().__init__()
-        self._margin = margin
-        self._dist = nn.PairwiseDistance(2)
-
-    def forward(
-        self, embeddings: List[paddle.Tensor], target: paddle.Tensor
-    ) -> paddle.Tensor:
-        """Compute the loss.
-
-        :param inputs: Should be a list or a tuple containing three tensors:
-            - ``[N, D]`` tensor of embeddings of the anchor objects
-            - ``[N, D]`` tensor of embeddings of the positive objects
-            - ``[N, D]`` tensor of embeddings of the negative objects
-        """
-        anchor, positive, negative = embeddings
-        dist_pos = self._dist(anchor, positive)
-        dist_neg = self._dist(anchor, negative)
-
-        return paddle.mean(F.relu(dist_pos - dist_neg + self._margin))
+    def get_default_miner(
+        self, dataset: Union[ClassDataset, SessionDataset]
+    ) -> Union[SiameseMiner, SiameseSessionMiner]:
+        if isinstance(dataset, ClassDataset):
+            return SiameseMiner()
+        elif isinstance(dataset, SessionDataset):
+            return SiameseSessionMiner()
 
 
-class CosineTripletLoss(BaseLoss, nn.Layer):
-    """Compute the loss for a triplet network using cosine distance.
+class TripletLoss(nn.Layer, BaseLoss):
+    """Compute the loss for a triplet network.
 
-    The loss is computed as ``max(dist_pos - dist_neg + margin, 0)``, where ``dist_pos``
-    is the cosine distance between the anchor embedding and positive embedding,
-    ``dist_neg`` is the cosine distance between the anchor and negative embedding, and
-    ``margin`` represents a wedge between the desired wedge between anchor-negative and
+    The loss for a single triplet equals::
+
+        max(dist_pos - dist_neg + margin, 0)
+
+    where ``dist_pos`` is the distance between the anchor embedding and positive
+    embedding, ``dist_neg`` is the distance between the anchor and negative embedding,
+    and ``margin`` represents a wedge between the desired anchor-negative and
     anchor-positive distances.
 
-    The final loss is the average over losses for all triplets in the batch.
+    The final loss is the average over losses for all triplets given by the indices.
     """
 
-    arity = 3
+    def __init__(self, distance: str = "cosine", margin: float = 1.0):
+        """Initialize the loss instance
 
-    def __init__(self, margin: float = 1.0):
+        :param distance: The type of distance to use, avalilable options are
+            ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``
+        :param margin: The margin to use in loss calculation
+        """
         super().__init__()
-        self._margin = margin
+        self.distance = distance
+        self.margin = margin
 
     def forward(
-        self, embeddings: List[paddle.Tensor], target: paddle.Tensor
+        self,
+        embeddings: paddle.Tensor,
+        indices: Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor],
     ) -> paddle.Tensor:
-        """Compute the loss.
+        """Compute the loss
 
-        :param inputs: Should be a list or a tuple containing three tensors:
-            - ``[N, D]`` tensor of embeddings of the anchor objects
-            - ``[N, D]`` tensor of embeddings of the positive objects
-            - ``[N, D]`` tensor of embeddings of the negative objects
+        :param embeddings: An ``[N, d]`` tensor of embeddings
+        :param indices: A list of tuple indices, where each element in the list
+            contains three elements: the index of anchor, positive match and negative
+            match in the embeddings tensor
         """
-        anchor, positive, negative = embeddings
-        dist_pos = 1 - F.cosine_similarity(anchor, positive)
-        dist_neg = 1 - F.cosine_similarity(anchor, negative)
+        ind_anch, ind_pos, ind_neg = indices
 
-        return paddle.mean(F.relu(dist_pos - dist_neg + self._margin))
+        dist_matrix = get_distance(embeddings, self.distance)
+        dist_pos = _take_inds(dist_matrix, ind_anch, ind_pos)
+        dist_neg = _take_inds(dist_matrix, ind_anch, ind_neg)
+        loss = F.relu(dist_pos - dist_neg + self.margin)
+
+        return loss.mean()
+
+    def get_default_miner(
+        self, dataset: Union[ClassDataset, SessionDataset]
+    ) -> Union[TripletMiner, TripletSessionMiner]:
+        if isinstance(dataset, ClassDataset):
+            return TripletMiner()
+        elif isinstance(dataset, SessionDataset):
+            return TripletSessionMiner()

@@ -1,12 +1,11 @@
-from paddle.io import IterableDataset
+from paddle.io import Dataset as PaddleDataset
 
-from ..base import BaseDataset
-from ..dataset import SiameseMixin, TripletMixin
+from ..dataset import ClassDataset, SessionDataset
 
 
-class SiameseDataset(SiameseMixin, BaseDataset, IterableDataset):
+class PaddleClassDataset(ClassDataset, PaddleDataset):
     ...
 
 
-class TripletDataset(TripletMixin, BaseDataset, IterableDataset):
+class PaddleSessionDataset(SessionDataset, PaddleDataset):
     ...

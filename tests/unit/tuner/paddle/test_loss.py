@@ -2,65 +2,57 @@ import numpy as np
 import paddle
 import pytest
 
-from finetuner.tuner.paddle.losses import (
-    CosineSiameseLoss,
-    CosineTripletLoss,
-    EuclideanSiameseLoss,
-    EuclideanTripletLoss,
-)
+from finetuner.tuner.paddle.miner import SiameseMiner, TripletMiner
+from finetuner.tuner.paddle.losses import get_distance, SiameseLoss, TripletLoss
 
-_N_BATCH = 10
-_N_DIM = 128
+N_BATCH = 10
+N_DIM = 128
+
+ALL_LOSSES = [SiameseLoss, TripletLoss]
 
 
-@pytest.mark.parametrize(
-    "loss_cls",
-    [
-        CosineSiameseLoss,
-        CosineTripletLoss,
-        EuclideanSiameseLoss,
-        EuclideanTripletLoss,
-    ],
-)
-def test_loss_output(loss_cls):
+def _get_tuples(loss, labels, embeddings):
+    dists = get_distance(embeddings, loss.distance)
+    if isinstance(loss, TripletLoss):
+        return TripletMiner().mine(labels, dists)
+    elif isinstance(loss, SiameseLoss):
+        return SiameseMiner().mine(labels, dists)
+
+
+@pytest.mark.parametrize('margin', [0.0, 0.5, 1.0])
+@pytest.mark.parametrize('distance', ['cosine', 'euclidean'])
+@pytest.mark.parametrize('loss_cls', ALL_LOSSES)
+def test_loss_output(loss_cls, distance, margin):
     """Test that we get a single positive number as output"""
-    loss = loss_cls()
+    loss = loss_cls(distance=distance, margin=margin)
 
-    target = paddle.cast(paddle.randint(0, 2, (_N_BATCH,)), dtype=paddle.float32)
-    embeddings = []
-    for _ in range(loss.arity):
-        embeddings.append(paddle.rand((_N_BATCH, _N_DIM)))
+    labels = paddle.ones((N_BATCH,))
+    labels[: N_BATCH // 2] = 0
+    embeddings = paddle.rand((N_BATCH, N_DIM))
+    tuples = _get_tuples(loss, labels, embeddings)
 
-    output = loss(embeddings, target)
+    output = loss(embeddings, tuples)
 
     assert output.ndim == output.size == 1
     assert output >= 0
 
 
-@pytest.mark.parametrize(
-    "loss_cls",
-    [
-        CosineSiameseLoss,
-        CosineTripletLoss,
-        EuclideanSiameseLoss,
-        EuclideanTripletLoss,
-    ],
-)
-def test_loss_zero_same(loss_cls):
-    """Sanity check that with equal inputs (for positive and anchor), loss is always zero"""
+@pytest.mark.parametrize('distance', ['cosine', 'euclidean'])
+@pytest.mark.parametrize('loss_cls', ALL_LOSSES)
+def test_loss_zero_same(loss_cls, distance):
+    """Sanity check that with perfectly separated embeddings, loss is zero"""
 
-    if loss_cls != CosineSiameseLoss:
-        loss = loss_cls(margin=0.0)
-    else:
-        loss = loss_cls()
+    # Might need to specialize this later
+    loss = loss_cls(distance=distance, margin=0.0)
 
-    target = paddle.ones((_N_BATCH,))
-    emb_anchor = paddle.rand((_N_BATCH, _N_DIM))
-    embeddings = [emb_anchor, emb_anchor]
-    if loss.arity == 3:
-        emb_negative = paddle.rand((_N_BATCH, _N_DIM))
-        embeddings.append(emb_negative)
+    labels = paddle.ones((N_BATCH,))
+    labels[: N_BATCH // 2] = 0
 
-    output = loss(embeddings, target)
+    embeddings = paddle.ones((N_BATCH, N_DIM))
+    embeddings[: N_BATCH // 2] *= -1
 
-    np.testing.assert_almost_equal(output.item(), 0)
+    tuples = _get_tuples(loss, labels, embeddings)
+
+    output = loss(embeddings, tuples)
+
+    np.testing.assert_almost_equal(output.item(), 0, decimal=5)
