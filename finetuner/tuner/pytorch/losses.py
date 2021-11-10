@@ -1,11 +1,10 @@
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ..base import BaseLoss
-from ..dataset import ClassDataset, SessionDataset
+from ..base import BaseLoss, BaseMiner
 from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
 
 
@@ -23,7 +22,26 @@ def get_distance(embeddings: torch.Tensor, distance: str) -> torch.Tensor:
     return dists
 
 
-class SiameseLoss(nn.Module, BaseLoss):
+class PytorchLoss(nn.Module, BaseLoss[torch.Tensor]):
+    """ Base class for all pytorch losses."""
+
+    def forward(
+        self,
+        embeddings: torch.Tensor,
+        labels: Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]],
+    ) -> torch.Tensor:
+        if self.miner is None:
+            # If labels is a tuple of tensors, this is a session dataset
+            self.miner = self.get_default_miner(isinstance(labels, (list, tuple)))
+
+        dists = get_distance(embeddings, self.distance)
+        mined_tuples = self.miner.mine(labels, dists.clone().detach())
+        loss = self.compute(embeddings, mined_tuples)
+
+        return loss
+
+
+class SiameseLoss(PytorchLoss):
     """Computes the loss for a siamese network.
 
     The loss for a pair of objects equals ::
@@ -37,18 +55,26 @@ class SiameseLoss(nn.Module, BaseLoss):
     The final loss is the average over losses for all pairs given by the indices.
     """
 
-    def __init__(self, distance: str = 'cosine', margin: float = 1.0):
+    def __init__(
+        self,
+        distance: str = 'cosine',
+        margin: float = 1.0,
+        miner: Optional[BaseMiner] = None,
+    ):
         """Initialize the loss instance
 
         :param distance: The type of distance to use, avalilable options are
             ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``
         :param margin: The margin to use in loss calculation
+        :param miner: The miner to use. If not provided, a default minuer that
+            selects all possible pairs will be used
         """
         super().__init__()
         self.distance = distance
         self.margin = margin
+        self.miner = miner
 
-    def forward(
+    def compute(
         self,
         embeddings: torch.Tensor,
         indices: Tuple[torch.Tensor, torch.Tensor, torch.Tensor],
@@ -70,15 +96,15 @@ class SiameseLoss(nn.Module, BaseLoss):
         return loss.mean()
 
     def get_default_miner(
-        self, dataset: Union[ClassDataset, SessionDataset]
+        self, is_session_dataset: bool
     ) -> Union[SiameseMiner, SiameseSessionMiner]:
-        if isinstance(dataset, ClassDataset):
+        if not is_session_dataset:
             return SiameseMiner()
-        elif isinstance(dataset, SessionDataset):
+        else:
             return SiameseSessionMiner()
 
 
-class TripletLoss(nn.Module, BaseLoss):
+class TripletLoss(PytorchLoss):
     """Compute the loss for a triplet network.
 
     The loss for a single triplet equals::
@@ -93,18 +119,26 @@ class TripletLoss(nn.Module, BaseLoss):
     The final loss is the average over losses for all triplets given by the indices.
     """
 
-    def __init__(self, distance: str = "cosine", margin: float = 1.0):
+    def __init__(
+        self,
+        distance: str = "cosine",
+        margin: float = 1.0,
+        miner: Optional[BaseMiner] = None,
+    ):
         """Initialize the loss instance
 
         :param distance: The type of distance to use, avalilable options are
             ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``
         :param margin: The margin to use in loss calculation
+        :param miner: The miner to use. If not provided, a default minuer that
+            selects all possible triplets will be used
         """
         super().__init__()
         self.distance = distance
         self.margin = margin
+        self.miner = miner
 
-    def forward(
+    def compute(
         self,
         embeddings: torch.Tensor,
         indices: Tuple[torch.Tensor, torch.Tensor, torch.Tensor],
@@ -126,9 +160,9 @@ class TripletLoss(nn.Module, BaseLoss):
         return loss.mean()
 
     def get_default_miner(
-        self, dataset: Union[ClassDataset, SessionDataset]
+        self, is_session_dataset: bool
     ) -> Union[TripletMiner, TripletSessionMiner]:
-        if isinstance(dataset, ClassDataset):
+        if not is_session_dataset:
             return TripletMiner()
-        elif isinstance(dataset, SessionDataset):
+        else:
             return TripletSessionMiner()

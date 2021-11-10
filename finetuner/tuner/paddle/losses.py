@@ -1,11 +1,10 @@
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 
 import paddle
 import paddle.nn as nn
 import paddle.nn.functional as F
 
-from ..base import BaseLoss
-from ..dataset import ClassDataset, SessionDataset
+from ..base import BaseLoss, BaseMiner
 from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
 
 
@@ -38,10 +37,29 @@ def get_distance(embeddings: paddle.Tensor, distance: str) -> paddle.Tensor:
         prod = paddle.mm(embeddings, embeddings.t())
         dists = emb2 + emb2.t() - 2 * prod
 
-    return dists
+    return dists.clip(0)
 
 
-class SiameseLoss(nn.Layer, BaseLoss):
+class PaddleLoss(nn.Layer, BaseLoss[paddle.Tensor]):
+    """ Base class for all pytorch losses."""
+
+    def forward(
+        self,
+        embeddings: paddle.Tensor,
+        labels: Union[paddle.Tensor, Tuple[paddle.Tensor, paddle.Tensor]],
+    ) -> paddle.Tensor:
+        if self.miner is None:
+            # If labels is a tuple of tensors, this is a session dataset
+            self.miner = self.get_default_miner(isinstance(labels, (list, tuple)))
+
+        dists = get_distance(embeddings, self.distance)
+        mined_tuples = self.miner.mine(labels, dists.clone().detach())
+        loss = self.compute(embeddings, mined_tuples)
+
+        return loss
+
+
+class SiameseLoss(PaddleLoss):
     """Computes the loss for a siamese network.
 
     The loss for a pair of objects equals ::
@@ -55,7 +73,12 @@ class SiameseLoss(nn.Layer, BaseLoss):
     The final loss is the average over losses for all pairs given by the indices.
     """
 
-    def __init__(self, distance: str = 'cosine', margin: float = 1.0):
+    def __init__(
+        self,
+        distance: str = 'cosine',
+        margin: float = 1.0,
+        miner: Optional[BaseMiner] = None,
+    ):
         """Initialize the loss instance
 
         :param distance: The type of distance to use, avalilable options are
@@ -65,8 +88,9 @@ class SiameseLoss(nn.Layer, BaseLoss):
         super().__init__()
         self.distance = distance
         self.margin = margin
+        self.miner = miner
 
-    def forward(
+    def compute(
         self,
         embeddings: paddle.Tensor,
         indices: Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor],
@@ -85,19 +109,18 @@ class SiameseLoss(nn.Layer, BaseLoss):
         target = paddle.cast(target, "float32")
 
         loss = target * dists + (1 - target) * F.relu(self.margin - dists)
-        print(loss, loss.mean())
         return loss.mean()
 
     def get_default_miner(
-        self, dataset: Union[ClassDataset, SessionDataset]
+        self, is_session_dataset: bool
     ) -> Union[SiameseMiner, SiameseSessionMiner]:
-        if isinstance(dataset, ClassDataset):
+        if not is_session_dataset:
             return SiameseMiner()
-        elif isinstance(dataset, SessionDataset):
+        else:
             return SiameseSessionMiner()
 
 
-class TripletLoss(nn.Layer, BaseLoss):
+class TripletLoss(PaddleLoss):
     """Compute the loss for a triplet network.
 
     The loss for a single triplet equals::
@@ -112,7 +135,12 @@ class TripletLoss(nn.Layer, BaseLoss):
     The final loss is the average over losses for all triplets given by the indices.
     """
 
-    def __init__(self, distance: str = "cosine", margin: float = 1.0):
+    def __init__(
+        self,
+        distance: str = "cosine",
+        margin: float = 1.0,
+        miner: Optional[BaseMiner] = None,
+    ):
         """Initialize the loss instance
 
         :param distance: The type of distance to use, avalilable options are
@@ -122,8 +150,9 @@ class TripletLoss(nn.Layer, BaseLoss):
         super().__init__()
         self.distance = distance
         self.margin = margin
+        self.miner = miner
 
-    def forward(
+    def compute(
         self,
         embeddings: paddle.Tensor,
         indices: Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor],
@@ -145,9 +174,9 @@ class TripletLoss(nn.Layer, BaseLoss):
         return loss.mean()
 
     def get_default_miner(
-        self, dataset: Union[ClassDataset, SessionDataset]
-    ) -> Union[TripletMiner, TripletSessionMiner]:
-        if isinstance(dataset, ClassDataset):
+        self, is_session_dataset: bool
+    ) -> Union[SiameseMiner, SiameseSessionMiner]:
+        if not is_session_dataset:
             return TripletMiner()
-        elif isinstance(dataset, SessionDataset):
+        else:
             return TripletSessionMiner()

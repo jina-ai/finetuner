@@ -132,9 +132,9 @@ class SiameseSessionMiner(BaseSessionMiner[paddle.Tensor]):
                     labels_ret.append(0 if min(left[1], right[1]) == -1 else 1)
 
         return (
-            paddle.to_tensor(ind_one),
-            paddle.to_tensor(ind_two),
-            paddle.to_tensor(labels_ret),
+            paddle.to_tensor(ind_one, place=distances.place),
+            paddle.to_tensor(ind_two, place=distances.place),
+            paddle.to_tensor(labels_ret, place=distances.place),
         )
 
 
@@ -181,7 +181,7 @@ class TripletSessionMiner(BaseSessionMiner[paddle.Tensor]):
                 neg_ind += neg_session_indices
 
         return (
-            paddle.to_tensor(anchor_ind),
-            paddle.to_tensor(pos_ind),
-            paddle.to_tensor(neg_ind),
+            paddle.to_tensor(anchor_ind, place=distances.place),
+            paddle.to_tensor(pos_ind, place=distances.place),
+            paddle.to_tensor(neg_ind, place=distances.place),
         )

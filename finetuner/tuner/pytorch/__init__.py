@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Mapping, Optional, Sequence, Union
+from typing import Callable, Dict, List, Mapping, Optional, Sequence, Union
 
 import torch
 from jina.logging.profile import ProgressBar
@@ -8,15 +8,16 @@ from torch.utils.data.dataloader import DataLoader
 
 from ... import __default_tag_key__
 from ...helper import DocumentSequence
-from ..base import BaseMiner, BaseTuner
+from ..base import BaseTuner
 from ..summary import ScalarSequence, Summary
 from . import losses
 from .datasets import PytorchClassDataset, PytorchSessionDataset
 
 
 def _to_device(
-    inputs: Union[torch.Tensor, Mapping[str, torch.Tensor]], device: torch.device
-) -> Union[torch.Tensor, Dict[str, torch.Tensor]]:
+    inputs: Union[torch.Tensor, Mapping[str, torch.Tensor], Sequence[torch.Tensor]],
+    device: torch.device,
+) -> Union[torch.Tensor, Dict[str, torch.Tensor], List[torch.Tensor]]:
     if isinstance(inputs, torch.Tensor):
         return inputs.to(device)
     elif isinstance(inputs, Mapping):
@@ -33,15 +34,29 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         elif isinstance(loss, nn.Module):
             return loss
 
-    def _get_dataset(
-        self, data: DocumentSequence, preprocess_fn: Optional[Callable]
-    ) -> Union[PytorchClassDataset, PytorchSessionDataset]:
+    def _get_data_loader(
+        self,
+        data: DocumentSequence,
+        batch_size: int,
+        num_items_per_class: int,
+        shuffle: bool,
+        preprocess_fn: Optional[Callable],
+        collate_fn: Optional[Callable],
+    ) -> DataLoader:
+        """ Get the dataloader for the dataset"""
         if __default_tag_key__ in data[0].tags:
             dataset = PytorchClassDataset(data, preprocess_fn=preprocess_fn)
         else:
             dataset = PytorchSessionDataset(data, preprocess_fn=preprocess_fn)
 
-        return dataset
+        batch_sampler = self._get_batch_sampler(
+            dataset, batch_size, num_items_per_class, shuffle
+        )
+        data_loader = DataLoader(
+            dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn
+        )
+
+        return data_loader
 
     def _get_default_optimizer(self, learning_rate: float) -> Optimizer:
         """Get the default optimizer (Adam), if none was provided by user."""
@@ -73,10 +88,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
                 # https://github.com/pytorch/pytorch/issues/60539
                 with torch.no_grad():
                     embeddings = self.embed_model(inputs)
-                    dists = losses.get_distance(embeddings, self._loss.distance)
-
-                    mined_tuples = self._miner.mine(labels, dists)
-                    loss = self._loss(embeddings, mined_tuples)
+                    loss = self._loss(embeddings, labels)
 
                 _summary += loss.item()
 
@@ -103,11 +115,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
                 labels = _to_device(labels, self.device)
 
                 embeddings = self.embed_model(inputs)
-                with torch.inference_mode():
-                    dists = losses.get_distance(embeddings, self._loss.distance)
-
-                mined_tuples = self._miner.mine(labels, dists)
-                loss = self._loss(embeddings, mined_tuples)
+                loss = self._loss(embeddings, labels)
 
                 optimizer.zero_grad()
                 loss.backward()
@@ -125,7 +133,6 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         preprocess_fn: Optional[Callable] = None,
         collate_fn: Optional[Callable] = None,
         epochs: int = 10,
-        miner: Optional[BaseMiner] = None,
         batch_size: int = 256,
         num_items_per_class: int = 4,
         optimizer: Optional[Optimizer] = None,
@@ -154,28 +161,23 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
             ``"cpu"`` and ``"cuda"`` (for GPU)
         """
         # Get dataloaders
-        train_dataset = self._get_dataset(train_data, preprocess_fn)
-        train_batch_sampler = self.get_batch_sampler(
-            train_dataset, batch_size, num_items_per_class, True
-        )
-        train_dl = DataLoader(
-            dataset=train_dataset,
-            batch_sampler=train_batch_sampler,
+        train_dl = self._get_data_loader(
+            train_data,
+            batch_size=batch_size,
+            num_items_per_class=num_items_per_class,
+            shuffle=True,
+            preprocess_fn=preprocess_fn,
             collate_fn=collate_fn,
         )
         if eval_data:
-            eval_dataset = self._get_dataset(train_data, preprocess_fn)
-            eval_batch_sampler = self.get_batch_sampler(
-                eval_dataset, batch_size, num_items_per_class, False
-            )
-            eval_dl = DataLoader(
-                dataset=eval_dataset,
-                batch_sampler=eval_batch_sampler,
+            eval_dl = self._get_data_loader(
+                eval_data,
+                batch_size=batch_size,
+                num_items_per_class=num_items_per_class,
+                shuffle=False,
+                preprocess_fn=preprocess_fn,
                 collate_fn=collate_fn,
             )
-
-        # Get miner
-        self._miner = miner or self._loss.get_default_miner(train_dataset)
 
         # Place model on device
         self.device = get_device(device)

@@ -1,6 +1,5 @@
 import abc
-import warnings
-from typing import Callable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
+from typing import Callable, Generic, List, Optional, Tuple, TypeVar, Union
 
 from .dataset import ClassDataset, SessionDataset
 from .dataset.samplers import RandomClassBatchSampler, SessionBatchSampler
@@ -59,14 +58,29 @@ class BaseSessionMiner(
         """
 
 
-class BaseLoss:
+class BaseLoss(Generic[AnyTensor]):
     distance: str
+    miner: Optional[BaseMiner]
+
+    """ Base loss class.
+
+    The subclasses should, in addition to implementing the abstract methods defined
+    here, also implement the framework-specific "forward" method, where they
+    need to first use the miner to mine indices, and then output the loss by running
+    ``compute`` on embeddings and outputs of the miner.
+    """
 
     @abc.abstractmethod
-    def get_default_miner(
-        self, dataset: Union[ClassDataset, SessionDataset]
-    ) -> BaseMiner:
-        """Get the default miner for this loss, given the datasets"""
+    def compute(
+        self,
+        embeddings: AnyTensor,
+        indices: Tuple[AnyTensor, ...],
+    ) -> AnyTensor:
+        """Compute the loss using embeddings and indices that the miner outputs"""
+
+    @abc.abstractmethod
+    def get_default_miner(self, is_session_dataset: bool) -> BaseMiner:
+        """Get the default miner for this loss, given the dataset type"""
 
 
 class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
@@ -81,11 +95,12 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         :param embed_model: Model that produces embeddings from inputs
         :param loss: Either the loss object instance, or the name of the loss function.
             Currently available losses are ``SiameseLoss`` and ``TripletLoss``
+        :param miner: Optional[BaseMiner] = None,
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
 
-    def get_batch_sampler(
+    def _get_batch_sampler(
         self,
         dataset: Union[ClassDataset, SessionDataset],
         batch_size: int,
@@ -147,18 +162,17 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         ...
 
     @abc.abstractmethod
-    def _get_dataset(
-        self, data: DocumentSequence, preprocess_fn: Callable
-    ) -> Union[ClassDataset, SessionDataset]:
-        """Get the dataset"""
+    def _get_data_loader(
+        self,
+        data: DocumentSequence,
+        batch_size: int,
+        num_items_per_class: int,
+        shuffle: bool,
+        preprocess_fn: Optional[Callable],
+        collate_fn: Optional[Callable],
+    ) -> AnyDataLoader:
+        """Get framework specific data loader from the input data."""
         ...
-
-    # @abc.abstractmethod
-    # def _get_data_loader(
-    #     self, inputs: DocumentSequence, batch_size: int, shuffle: bool
-    # ) -> AnyDataLoader:
-    #     """Get framework specific data loader from the input data."""
-    #     ...
 
     @abc.abstractmethod
     def _train(

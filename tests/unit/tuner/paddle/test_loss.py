@@ -2,21 +2,12 @@ import numpy as np
 import paddle
 import pytest
 
-from finetuner.tuner.paddle.miner import SiameseMiner, TripletMiner
-from finetuner.tuner.paddle.losses import get_distance, SiameseLoss, TripletLoss
+from finetuner.tuner.paddle.losses import SiameseLoss, TripletLoss
 
 N_BATCH = 10
 N_DIM = 128
 
 ALL_LOSSES = [SiameseLoss, TripletLoss]
-
-
-def _get_tuples(loss, labels, embeddings):
-    dists = get_distance(embeddings, loss.distance)
-    if isinstance(loss, TripletLoss):
-        return TripletMiner().mine(labels, dists)
-    elif isinstance(loss, SiameseLoss):
-        return SiameseMiner().mine(labels, dists)
 
 
 @pytest.mark.parametrize('margin', [0.0, 0.5, 1.0])
@@ -29,9 +20,8 @@ def test_loss_output(loss_cls, distance, margin):
     labels = paddle.ones((N_BATCH,))
     labels[: N_BATCH // 2] = 0
     embeddings = paddle.rand((N_BATCH, N_DIM))
-    tuples = _get_tuples(loss, labels, embeddings)
 
-    output = loss(embeddings, tuples)
+    output = loss(embeddings, labels)
 
     assert output.ndim == output.size == 1
     assert output >= 0
@@ -51,8 +41,6 @@ def test_loss_zero_same(loss_cls, distance):
     embeddings = paddle.ones((N_BATCH, N_DIM))
     embeddings[: N_BATCH // 2] *= -1
 
-    tuples = _get_tuples(loss, labels, embeddings)
-
-    output = loss(embeddings, tuples)
+    output = loss(embeddings, labels)
 
     np.testing.assert_almost_equal(output.item(), 0, decimal=5)
