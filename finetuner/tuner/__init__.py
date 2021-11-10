@@ -1,7 +1,7 @@
 from typing import Callable, Optional, Type, TYPE_CHECKING, Union
 
 from ..helper import AnyDNN, AnyOptimizer, DocumentSequence, get_framework
-from .base import BaseLoss, BaseMiner
+from .base import BaseLoss
 
 if TYPE_CHECKING:
     from .base import BaseTuner
@@ -32,7 +32,6 @@ def fit(
     preprocess_fn: Optional[Callable] = None,
     collate_fn: Optional[Callable] = None,
     epochs: int = 10,
-    miner: Optional[BaseMiner] = None,
     batch_size: int = 256,
     num_items_per_class: int = 4,
     loss: Union[str, BaseLoss] = 'SiameseLoss',
@@ -78,7 +77,6 @@ def fit(
         optimizer=optimizer,
         preprocess_fn=preprocess_fn,
         collate_fn=collate_fn,
-        miner=miner,
         num_items_per_class=num_items_per_class,
     )
 

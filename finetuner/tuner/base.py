@@ -95,7 +95,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         :param embed_model: Model that produces embeddings from inputs
         :param loss: Either the loss object instance, or the name of the loss function.
             Currently available losses are ``SiameseLoss`` and ``TripletLoss``
-        :param miner: Optional[BaseMiner] = None,
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
@@ -134,7 +133,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         eval_data: Optional[DocumentSequence] = None,
         preprocess_fn: Optional[Callable] = None,
         collate_fn: Optional[Callable] = None,
-        miner: Optional[BaseMiner] = None,
         epochs: int = 10,
         batch_size: int = 256,
         learning_rate: float = 1e-3,
