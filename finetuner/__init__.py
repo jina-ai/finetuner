@@ -6,11 +6,10 @@ __version__ = '0.1.5'
 __default_tag_key__ = 'finetuner'
 
 # define the high-level API: fit()
-from typing import Callable, Optional, overload, TYPE_CHECKING, Tuple
+from typing import Callable, Optional, overload, TYPE_CHECKING, Tuple, Union
 
 if TYPE_CHECKING:
     from .helper import AnyDNN, AnyOptimizer, DocumentSequence
-    from .tuner.base import BaseMiner
     from .tuner.summary import Summary
 
 
@@ -25,7 +24,7 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     num_items_per_class: int = 4,
-    loss: str = 'SiameseLoss',
+    loss: Union[str, AnyDNN] = 'SiameseLoss',
     optimizer: Optional['AnyOptimizer'] = None,
     learning_rate: float = 1e-3,
     device: str = 'cpu',
@@ -44,7 +43,7 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     num_items_per_class: int = 4,
-    loss: str = 'SiameseLoss',
+    loss: Union[str, AnyDNN] = 'SiameseLoss',
     optimizer: Optional['AnyOptimizer'] = None,
     learning_rate: float = 1e-3,
     device: str = 'cpu',
@@ -69,7 +68,7 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     num_items_per_class: int = 4,
-    loss: str = 'SiameseLoss',
+    loss: Union[str, AnyDNN] = 'SiameseLoss',
     optimizer: Optional['AnyOptimizer'] = None,
     learning_rate: float = 1e-3,
     device: str = 'cpu',
@@ -92,7 +91,7 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     num_items_per_class: int = 4,
-    loss: str = 'SiameseLoss',
+    loss: Union[str, AnyDNN] = 'SiameseLoss',
     optimizer: Optional['AnyOptimizer'] = None,
     learning_rate: float = 1e-3,
     device: str = 'cpu',
