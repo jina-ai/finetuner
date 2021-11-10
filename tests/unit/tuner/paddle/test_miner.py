@@ -199,22 +199,24 @@ def test_triplet_session_miner_given_insufficient_inputs(bad_labels):
     assert len(neg_ind) == 0
 
 
-# @pytest.mark.gpu
-# @pytest.mark.parametrize('miner', [SiameseMiner, TripletMiner])
-# def test_class_miner_gpu(miner, labels):
-#     m = miner()
-#     outputs = m.mine(labels.to('cuda'), fake_dists(len(labels)).to('cuda'))
+@pytest.mark.gpu
+@pytest.mark.parametrize('miner', [SiameseMiner, TripletMiner])
+def test_class_miner_gpu(miner, labels):
+    m = miner()
+    fake_dist = paddle.to_tensor(fake_dists(len(labels)), place=paddle.CUDAPlace(0))
+    outputs = m.mine(labels.to('cuda'), fake_dist)
 
-#     for x in outputs:
-#         assert x.device.type == 'cuda'
+    for x in outputs:
+        assert x.place.is_gpu_place()
 
 
-# @pytest.mark.gpu
-# @pytest.mark.parametrize('miner', [SiameseSessionMiner, TripletSessionMiner])
-# def test_session_miner_gpu(miner, session_labels):
-#     m = miner()
-#     labels = [x.to('cuda') for x in session_labels]
-#     outputs = m.mine(labels, fake_dists(len(labels[0])).to('cuda'))
+@pytest.mark.gpu
+@pytest.mark.parametrize('miner', [SiameseSessionMiner, TripletSessionMiner])
+def test_session_miner_gpu(miner, session_labels):
+    m = miner()
+    labels = [x.to('cuda') for x in session_labels]
+    fake_dist = paddle.to_tensor(fake_dists(len(labels[0])), place=paddle.CUDAPlace(0))
+    outputs = m.mine(labels, fake_dist)
 
-#     for x in outputs:
-#         assert x.device.type == 'cuda'
+    for x in outputs:
+        assert x.place.is_gpu_place()

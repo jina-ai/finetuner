@@ -26,15 +26,15 @@ def test_fit_all(tmpdir, loss):
             torch.nn.ReLU(),
             torch.nn.Linear(in_features=128, out_features=32),
         ),
-        # 'paddle': lambda: paddle.nn.Sequential(
-        #     paddle.nn.Flatten(),
-        #     paddle.nn.Linear(
-        #         in_features=28 * 28,
-        #         out_features=128,
-        #     ),
-        #     paddle.nn.ReLU(),
-        #     paddle.nn.Linear(in_features=128, out_features=32),
-        # ),
+        'paddle': lambda: paddle.nn.Sequential(
+            paddle.nn.Flatten(),
+            paddle.nn.Linear(
+                in_features=28 * 28,
+                out_features=128,
+            ),
+            paddle.nn.ReLU(),
+            paddle.nn.Linear(in_features=128, out_features=32),
+        ),
     }
 
     for kb, b in embed_models.items():

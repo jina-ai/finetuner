@@ -19,11 +19,11 @@ def _to_device(
     device,
 ) -> Union[paddle.Tensor, Dict[str, paddle.Tensor], List[paddle.Tensor]]:
     if isinstance(inputs, paddle.Tensor):
-        return inputs.to(device=device)
+        return paddle.to_tensor(inputs, place=device)
     elif isinstance(inputs, Mapping):
-        return {k: v.to(device=device) for k, v in inputs.items()}
+        return {k: paddle.to_tensor(v, place=device) for k, v in inputs.items()}
     elif isinstance(inputs, Sequence):
-        return [x.to(device=device) for x in inputs]
+        return [paddle.to_tensor(x, place=device) for x in inputs]
 
 
 class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
@@ -173,7 +173,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
 
         # Place model on device
         self.device = get_device(device)
-        self._embed_model = self._embed_model.to(device=self.device)
+        self._embed_model.to(device=self.device)
 
         # Get optimizer
         optimizer = optimizer or self._get_default_optimizer(learning_rate)
