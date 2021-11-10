@@ -105,7 +105,7 @@ class PytorchTailor(BaseTailor):
                 not output_shape
                 or len(output_shape) != 2
                 or not is_seq_int(output_shape)
-                or summary[layer]['cls_name'] in self._model.__class__.__name__
+                or summary[layer]['cls_name'] == self._model.__class__.__name__
             )
 
             if (
