@@ -44,3 +44,19 @@ def test_loss_zero_same(loss_cls, distance):
     output = loss(embeddings, labels)
 
     np.testing.assert_almost_equal(output.item(), 0, decimal=5)
+
+
+@pytest.mark.parametrize(
+    'loss_cls,indices,exp_result',
+    [
+        (SiameseLoss, [[0, 2], [1, 3], [0, 1]], 0.64142),
+        (TripletLoss, [[0, 2], [1, 3], [2, 1]], 0.9293),
+    ],
+)
+def test_compute(loss_cls, indices, exp_result):
+    """Check that the compute function returns numerically correct results"""
+
+    indices = [torch.tensor(x) for x in indices]
+    embeddings = torch.tensor([[0.1, 0.1], [0.2, 0.2], [0.4, 0.4], [0.7, 0.7]])
+    result = loss_cls(distance='euclidean').compute(embeddings, indices)
+    np.testing.assert_almost_equal(result.item(), exp_result, decimal=5)

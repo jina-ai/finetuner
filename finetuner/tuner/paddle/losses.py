@@ -41,7 +41,7 @@ def get_distance(embeddings: paddle.Tensor, distance: str) -> paddle.Tensor:
 
 
 class PaddleLoss(nn.Layer, BaseLoss[paddle.Tensor]):
-    """ Base class for all pytorch losses."""
+    """ Base class for all paddle losses."""
 
     def forward(
         self,
