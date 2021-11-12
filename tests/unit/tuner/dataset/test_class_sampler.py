@@ -51,7 +51,7 @@ def test_classes_in_batch():
         class_to_label[idx] = label
 
     sampler = RandomClassBatchSampler(labels, 20, 5)
-    assert len(sampler) == 100
+    assert len(sampler) >= 98
     for i, batch in enumerate(sampler):
         c = Counter([class_to_label[element] for element in batch])
 
@@ -68,7 +68,7 @@ def test_almost_full_coverage():
         labels += [i] * 20
 
     sampler = RandomClassBatchSampler(labels, 20, 5)
-    assert len(sampler) == 100
+    assert len(sampler) >= 98
 
     c = Counter()
     for i, batch in enumerate(sampler):
@@ -119,7 +119,7 @@ def test_cutoff1():
     """Cutoff due to last batch being < batch_size"""
     labels = [1, 1, 1, 1, 2, 2]
     sampler = RandomClassBatchSampler(labels, 4, 2)
-    assert len(sampler) == 2  # Wrong guess but ok
+    assert len(sampler) == 1
 
     all_inds = []
     for i, batch in enumerate(sampler):
@@ -139,7 +139,7 @@ def test_cutoff2():
         class_to_label[idx] = label
 
     sampler = RandomClassBatchSampler(labels, 4, 2)
-    assert len(sampler) == 3  # Wrong guess but ok
+    assert len(sampler) == 2
 
     all_inds = []
     for i, batch in enumerate(sampler):
