@@ -1,8 +1,9 @@
-from typing import Callable, Dict, List, Mapping, Optional, Sequence, Union
+from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Union
 
 import paddle
 from jina.logging.profile import ProgressBar
 from paddle import nn
+from paddle.fluid.dataloader.dataloader_iter import default_collate_fn
 from paddle.io import DataLoader
 from paddle.optimizer import Adam, Optimizer
 
@@ -44,6 +45,17 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
         collate_fn: Optional[Callable],
     ) -> DataLoader:
         """ Get the dataloader for the dataset"""
+
+        if collate_fn:
+
+            def collate_fn_all(inputs):
+                batch_content = collate_fn([x[0] for x in inputs])
+                batch_labels = default_collate_fn([x[1] for x in inputs])
+                return batch_content, batch_labels
+
+        else:
+            collate_fn_all = None
+
         if __default_tag_key__ in data[0].tags:
             dataset = PaddleClassDataset(data, preprocess_fn=preprocess_fn)
         else:
@@ -53,7 +65,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
             dataset, batch_size, num_items_per_class, shuffle
         )
         data_loader = DataLoader(
-            dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn
+            dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn_all
         )
 
         return data_loader
@@ -128,7 +140,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
         train_data: DocumentSequence,
         eval_data: Optional[DocumentSequence] = None,
         preprocess_fn: Optional[Callable] = None,
-        collate_fn: Optional[Callable] = None,
+        collate_fn: Optional[Callable[[List], Any]] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: int = 4,
@@ -141,6 +153,12 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
 
         :param train_data: Data on which to train the model
         :param eval_data: Data on which to evaluate the model at the end of each epoch
+        :param preprocess_fn: A pre-processing function. It should take as input the
+            content of an item in the dataset and return the pre-processed content
+        :param collate_fn: The collation function to merge the content of individual
+            items into a batch. Should accept a list with the content of each item,
+            and output a tensor (or a list/dict of tensors) that feed directly into the
+            embedding model
         :param epochs: Number of epochs to train the model
         :param batch_size: The batch size to use for training and evaluation
         :param learning_rate: Learning rate to use in training

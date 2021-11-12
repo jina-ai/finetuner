@@ -1,6 +1,5 @@
 import torch
 
-from torch.utils.data._utils.collate import default_collate
 from transformers import AutoModel, AutoTokenizer
 
 from finetuner.toydata import generate_qa_match
@@ -26,14 +25,13 @@ def test_fit_transformer():
 
     def collate_fn(inputs):
         batch_tokens = tokenizer(
-            [x[0] for x in inputs],
+            inputs,
             truncation=True,
             max_length=50,
             padding=True,
             return_tensors='pt',
         )
-        batch_labels = default_collate([x[1] for x in inputs])
-        return batch_tokens, batch_labels
+        return batch_tokens
 
     docs = generate_qa_match(num_neg=8, num_total=100)
     docs_eval = generate_qa_match(num_neg=8, is_testset=True, num_total=20)

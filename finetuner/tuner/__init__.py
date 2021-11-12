@@ -1,4 +1,4 @@
-from typing import Callable, Optional, Type, TYPE_CHECKING, Union
+from typing import Any, Callable, List, Optional, Type, TYPE_CHECKING, Union
 
 from ..helper import AnyDNN, AnyOptimizer, DocumentSequence, get_framework
 from .base import BaseLoss
@@ -30,7 +30,7 @@ def fit(
     train_data: DocumentSequence,
     eval_data: Optional[DocumentSequence] = None,
     preprocess_fn: Optional[Callable] = None,
-    collate_fn: Optional[Callable] = None,
+    collate_fn: Optional[Callable[[List], Any]] = None,
     epochs: int = 10,
     batch_size: int = 256,
     num_items_per_class: int = 4,
@@ -47,8 +47,10 @@ def fit(
     :param eval_data: Data on which to evaluate the model at the end of each epoch
     :param preprocess_fn: A pre-processing function. It should take as input the
         content of an item in the dataset and return the pre-processed content
-    :param collate_fn: The collation function to merge individual items into batch
-        inputs for the model (plus labels). Will be passed to torch ``DataLoader``
+    :param collate_fn: The collation function to merge the content of individual
+        items into a batch. Should accept a list with the content of each item,
+        and output a tensor (or a list/dict of tensors) that feed directly into the
+        embedding model
     :param epochs: Number of epochs to train the model
     :param batch_size: The batch size to use for training and evaluation
     :param loss: Which loss to use in training. Supported

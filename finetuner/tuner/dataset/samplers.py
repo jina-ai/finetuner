@@ -63,12 +63,20 @@ class RandomClassBatchSampler:
         for key, val in self._class_to_labels.items():
             self._cls_group_counts.append([key, ceil(len(val) / num_items_per_class)])
 
-        # Approximate (max) length
-        self._length = ceil(
-            sum([x[1] for x in self._cls_group_counts]) / self._num_classes
-        )
+        # Prepare the current batches
+        self._prepare_batches()
 
     def __iter__(self) -> Iterator[Tuple[int, ...]]:
+        batches = self._batches
+
+        # Prepare next batches - the reason they are prepared in advance is so that
+        # len() gives the correct length
+        self._prepare_batches()
+
+        # Return iterator of current batches
+        return iter(batches)
+
+    def _prepare_batches(self):
 
         # Shuffle class groups into batches, some cutoff may occur
         counts = deepcopy(self._cls_group_counts)
@@ -111,16 +119,10 @@ class RandomClassBatchSampler:
 
             batches.append(batch)
 
-        # Update length to actual one
-        self._length = len(batches)
-
-        return iter(batches)
+        self._batches = batches
 
     def __len__(self) -> int:
-        """This gives the approximage length of the dataset before ``__iter__`` is
-        called, and the actual length of the last produced list of batches after that.
-        """
-        return self._length
+        return len(self._batches)
 
 
 class SessionBatchSampler:
@@ -166,10 +168,20 @@ class SessionBatchSampler:
         for ind, (session, match_type) in enumerate(labels):
             self._sessions[session].append([ind, match_type])
 
-        # Approximate length
-        self._length = ceil(len(labels) / self._batch_size)
+        # Prepare the current batches
+        self._prepare_batches()
 
     def __iter__(self):
+        batches = self._batches
+
+        # Prepare next batches - the reason they are prepared in advance is so that
+        # len() gives the correct length
+        self._prepare_batches()
+
+        # Return iterator of current batches
+        return iter(batches)
+
+    def _prepare_batches(self):
 
         # Set up the order of sessions
         sessions = list(self._sessions.keys())
@@ -208,13 +220,7 @@ class SessionBatchSampler:
         if len(current_batch):
             batches.append(current_batch)
 
-        # Update length to actual one
-        self._length = len(batches)
-
-        return iter(batches)
+        self._batches = batches
 
     def __len__(self) -> int:
-        """This gives the approximage length of the dataset before ``__iter__`` is
-        called, and the actual length of the last produced list of batches after that.
-        """
-        return self._length
+        return len(self._batches)

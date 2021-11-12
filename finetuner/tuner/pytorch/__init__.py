@@ -1,10 +1,11 @@
-from typing import Callable, Dict, List, Mapping, Optional, Sequence, Union
+from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Union
 
 import torch
 from jina.logging.profile import ProgressBar
 from torch import nn
 from torch.optim.optimizer import Optimizer
 from torch.utils.data.dataloader import DataLoader
+from torch.utils.data._utils.collate import default_collate
 
 from ... import __default_tag_key__
 from ...helper import DocumentSequence
@@ -41,9 +42,20 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         num_items_per_class: int,
         shuffle: bool,
         preprocess_fn: Optional[Callable],
-        collate_fn: Optional[Callable],
+        collate_fn: Optional[Callable[[List], Any]],
     ) -> DataLoader:
         """ Get the dataloader for the dataset"""
+
+        if collate_fn:
+
+            def collate_fn_all(inputs):
+                batch_content = collate_fn([x[0] for x in inputs])
+                batch_labels = default_collate([x[1] for x in inputs])
+                return batch_content, batch_labels
+
+        else:
+            collate_fn_all = None
+
         if __default_tag_key__ in data[0].tags:
             dataset = PytorchClassDataset(data, preprocess_fn=preprocess_fn)
         else:
@@ -53,7 +65,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
             dataset, batch_size, num_items_per_class, shuffle
         )
         data_loader = DataLoader(
-            dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn
+            dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn_all
         )
 
         return data_loader
@@ -131,7 +143,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         train_data: DocumentSequence,
         eval_data: Optional[DocumentSequence] = None,
         preprocess_fn: Optional[Callable] = None,
-        collate_fn: Optional[Callable] = None,
+        collate_fn: Optional[Callable[[List], Any]] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: int = 4,
@@ -146,8 +158,10 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         :param eval_data: Data on which to evaluate the model at the end of each epoch
         :param preprocess_fn: A pre-processing function. It should take as input the
             content of an item in the dataset and return the pre-processed content
-        :param collate_fn: The collation function to merge individual items into batch
-            inputs for the model (plus labels). Will be passed to torch ``DataLoader``
+        :param collate_fn: The collation function to merge the content of individual
+            items into a batch. Should accept a list with the content of each item,
+            and output a tensor (or a list/dict of tensors) that feed directly into the
+            embedding model
         :param epochs: Number of epochs to train the model
         :param batch_size: The batch size to use for training and evaluation
         :param num_items_per_class: Number of items from a single class to include in
