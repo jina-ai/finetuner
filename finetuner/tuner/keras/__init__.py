@@ -14,7 +14,7 @@ from ... import __default_tag_key__
 from ...helper import DocumentSequence
 
 
-class KerasTuner(BaseTuner[tf.keras.Layer, KerasSequenceAdapter, Optimizer]):
+class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimizer]):
     def _get_loss(self, loss: Union[BaseLoss, str]) -> BaseLoss:
         """Get the loss layer."""
         if isinstance(loss, str):
