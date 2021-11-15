@@ -56,7 +56,7 @@ def test_session_data(loss, create_easy_data_session):
     # Simple model
     model = tf.keras.Sequential(
         [
-            tf.keras.layers.Flatten(input_shape=(1, 10)),
+            tf.keras.layers.Flatten(),
             tf.keras.layers.Dense(10, activation='relu'),
         ]
     )
@@ -75,7 +75,7 @@ def test_custom_optimizer(create_easy_data_session):
     # Simple model
     model = tf.keras.Sequential(
         [
-            tf.keras.layers.Flatten(input_shape=(1, 10)),
+            tf.keras.layers.Flatten(),
             tf.keras.layers.Dense(10, activation='relu'),
         ]
     )
