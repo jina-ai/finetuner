@@ -191,11 +191,9 @@ Covid QA data is a CSV that has 481 rows with the columns `question`, `answer` &
 
 To convert this dataset into match data, we build each Document to contain the following relevant information:
 
-- `.text`: the original `question` column
-- `.blob`: a fixed length `ndarray` tokenized from `.text`
+- `.text`: the `question` column
 - `.matches`: the generated positive & negative matches Document
-    - `.text`: the original `answer`/`wrong_answer` column
-    - `.blob`: a fixed length `ndarray` tokenized from `.text`
+    - `.text`: the `answer`/`wrong_answer` column
     - `.tags['finetuner']['label']`: the match label: `1` or `-1`.
 
 Matches are built with the logic below:
