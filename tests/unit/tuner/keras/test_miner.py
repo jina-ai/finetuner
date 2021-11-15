@@ -154,3 +154,43 @@ def test_siamese_session_miner_given_insufficient_inputs(session_labels, cut_ind
     assert len(ind_one) == 0
     assert len(ind_two) == 0
     assert len(label) == 0
+
+
+def test_triplet_session_miner(session_labels):
+    triplets = np.array(
+        [
+            (0, 4, 5),
+            (4, 0, 5),
+            (1, 2, 3),
+            (1, 2, 6),
+            (1, 7, 3),
+            (1, 7, 6),
+            (2, 1, 3),
+            (2, 1, 6),
+            (2, 7, 3),
+            (2, 7, 6),
+            (7, 1, 3),
+            (7, 1, 6),
+            (7, 2, 3),
+            (7, 2, 6),
+        ]
+    )
+    true_anch_ind, true_pos_ind, true_neg_ind = triplets.T
+    anch_ind, pos_ind, neg_ind = TripletSessionMiner().mine(
+        session_labels, fake_dists(len(session_labels[0]))
+    )
+
+    np.testing.assert_equal(anch_ind.numpy(), true_anch_ind)
+    np.testing.assert_equal(pos_ind.numpy(), true_pos_ind)
+    np.testing.assert_equal(neg_ind.numpy(), true_neg_ind)
+
+
+@pytest.mark.parametrize('cut_index', [0, 1])
+def test_triplet_session_miner_given_insufficient_inputs(session_labels, cut_index):
+    session_labels = [x[:cut_index] for x in session_labels]
+    anch_ind, pos_ind, neg_ind = TripletSessionMiner().mine(
+        session_labels, fake_dists(len(session_labels[0]))
+    )
+    assert len(anch_ind) == 0
+    assert len(pos_ind) == 0
+    assert len(neg_ind) == 0

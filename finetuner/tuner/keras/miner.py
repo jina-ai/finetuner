@@ -121,4 +121,33 @@ class TripletSessionMiner(BaseSessionMiner[tf.Tensor]):
         """
 
         assert len(distances) == len(labels[0]) == len(labels[1])
-        pass
+
+        sessions, match_types = [x.numpy().tolist() for x in labels]
+        anchor_ind, pos_ind, neg_ind = [], [], []
+
+        labels_index = [
+            (sess, match_type, index)
+            for index, (sess, match_type) in enumerate(zip(sessions, match_types))
+        ]
+        sorted_labels_with_index = sorted(labels_index, key=lambda x: x[0])
+
+        for _, group in groupby(sorted_labels_with_index, lambda x: x[0]):
+            anchor_pos_session_indices = []
+            neg_session_indices = []
+
+            for _, session_label, session_index in group:
+                if session_label >= 0:
+                    anchor_pos_session_indices.append(session_index)
+                else:
+                    neg_session_indices.append(session_index)
+
+            for anchor, pos in permutations(anchor_pos_session_indices, 2):
+                anchor_ind += [anchor] * len(neg_session_indices)
+                pos_ind += [pos] * len(neg_session_indices)
+                neg_ind += neg_session_indices
+
+        return (
+            tf.constant(anchor_ind),
+            tf.constant(pos_ind),
+            tf.constant(neg_ind),
+        )
