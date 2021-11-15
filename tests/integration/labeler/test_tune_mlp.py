@@ -10,12 +10,7 @@ from jina.helper import random_port
 
 os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
 
-all_test_losses = [
-    'CosineSiameseLoss',
-    'CosineTripletLoss',
-    'EuclideanSiameseLoss',
-    'EuclideanTripletLoss',
-]
+all_test_losses = ['SiameseLoss', 'TripletLoss']
 
 
 def _run(framework_name, loss, port_expose):

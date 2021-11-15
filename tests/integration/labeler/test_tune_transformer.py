@@ -29,34 +29,17 @@ class LastCellPD(paddle.nn.Layer):
 def _run(framework_name, loss, port_expose):
     from finetuner import fit
 
-    import paddle
-    import tensorflow as tf
     import torch
 
-    embed_models = {
-        'keras': lambda: tf.keras.Sequential(
-            [
-                tf.keras.layers.Embedding(input_dim=5000, output_dim=64),
-                tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
-                tf.keras.layers.Dense(32),
-            ]
-        ),
-        'pytorch': lambda: torch.nn.Sequential(
-            torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
-            torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
-            LastCellPT(),
-            torch.nn.Linear(in_features=2 * 64, out_features=32),
-        ),
-        'paddle': lambda: paddle.nn.Sequential(
-            paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),
-            paddle.nn.LSTM(64, 64, direction='bidirectional'),
-            LastCellPD(),
-            paddle.nn.Linear(in_features=2 * 64, out_features=32),
-        ),
-    }
+    model = torch.nn.Sequential(
+        torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
+        torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
+        LastCellPT(),
+        torch.nn.Linear(in_features=2 * 64, out_features=32),
+    )
 
     rv1, rv2 = fit(
-        embed_models[framework_name](),
+        model,
         generate_qa(num_total=10, num_neg=0),
         loss=loss,
         interactive=True,
@@ -67,17 +50,9 @@ def _run(framework_name, loss, port_expose):
     assert not rv2
 
 
-all_test_losses = [
-    'CosineSiameseLoss',
-    'CosineTripletLoss',
-    'EuclideanSiameseLoss',
-    'EuclideanTripletLoss',
-]
+all_test_losses = ['SiameseLoss', 'TripletLoss']
 
-# 'keras' does not work under this test setup
-# Exception ... ust be from the same graph as Tensor ...
-# TODO: add keras backend back to the test
-@pytest.mark.parametrize('framework', ['pytorch', 'paddle'])
+
 @pytest.mark.parametrize('loss', all_test_losses)
 def test_all_frameworks(framework, loss, tmpdir):
     port = random_port()

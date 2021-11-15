@@ -9,16 +9,16 @@ from jina import Flow
 from jina.logging.predefined import default_logger
 
 from .executor import FTExecutor, DataIterator
-from ..helper import AnyDNN, DocumentArrayLike
+from ..helper import AnyDNN, DocumentSequence
 
 
 def fit(
     embed_model: AnyDNN,
-    train_data: DocumentArrayLike,
+    train_data: DocumentSequence,
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
-    loss: str = 'CosineSiameseLoss',
+    loss: str = 'SiameseLoss',
     **kwargs,
 ) -> None:
     """Fit the model in an interactive UI.
@@ -38,6 +38,10 @@ def fit(
     """
     dam_path = tempfile.mkdtemp()
     stop_event = threading.Event()
+
+    # Remove all labels, as they are not needed
+    for doc in train_data:
+        doc.pop('tags')
 
     class MyExecutor(FTExecutor):
         def get_embed_model(self):
