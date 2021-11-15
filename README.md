@@ -22,8 +22,8 @@ applications.
 
 🎛 **Designed for finetuning**: a human-in-the-loop deep learning tool for leveling up your pretrained models in domain-specific neural search applications.
 
-🔱 **Powerful yet intuitive**: all you need is `finetuner.fit()` - a one-liner that unlocks rich features such as
-siamese/triplet network, interactive labeling, layer pruning, weights freezing, dimensionality reduction.
+🔱 **Powerful yet intuitive**: all you need is `finetuner.fit()` - a one-liner that unlocks rich features such as:
+training your network as siamese network using contrastive loss like Triplet Loss, interactive labeling, layer pruning, weights freezing and dimensionality reduction.
 
 ⚛️ **Framework-agnostic**: promise an identical API & user experience on PyTorch, Tensorflow/Keras and PaddlePaddle deep learning backends.
 
