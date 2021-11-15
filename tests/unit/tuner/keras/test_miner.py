@@ -194,3 +194,19 @@ def test_triplet_session_miner_given_insufficient_inputs(session_labels, cut_ind
     assert len(anch_ind) == 0
     assert len(pos_ind) == 0
     assert len(neg_ind) == 0
+
+
+@pytest.mark.gpu
+@pytest.mark.parametrize('miner', [SiameseMiner, TripletMiner])
+def test_class_miner_gpu(miner, labels):
+    with tf.device('/GPU:0'):
+        m = miner()
+        _ = m.mine(labels, fake_dists(len(labels)))
+
+
+@pytest.mark.gpu
+@pytest.mark.parametrize('miner', [SiameseSessionMiner, TripletSessionMiner])
+def test_session_miner_gpu(miner, session_labels):
+    with tf.device('/GPU:0'):
+        m = miner()
+        _ = m.mine(labels, fake_dists(len(labels[0])))
