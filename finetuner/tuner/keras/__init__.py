@@ -70,10 +70,10 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
             final_line_feed=False,
             total_length=data.get_size(),
         ) as p:
-            for inputs, label in data.get_dataset():
+            for inputs, labels in data.get_dataset():
                 with tf.GradientTape() as tape:
                     embeddings = self._embed_model(inputs)
-                    loss = self._loss([*embeddings, label])
+                    loss = self._loss([embeddings, labels])
 
                 grads = tape.gradient(loss, self._embed_model.trainable_weights)
                 optimizer.apply_gradients(
@@ -102,9 +102,9 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
             message_on_done=lambda: f'{train_loss} | {_summary}',
             total_length=data.get_size(),
         ) as p:
-            for inputs, label in data.get_dataset():
+            for inputs, labels in data.get_dataset():
                 embeddings = self._embed_model(inputs)
-                loss = self._loss([*embeddings, label])
+                loss = self._loss([embeddings, labels])
 
                 _summary += loss.numpy()
 

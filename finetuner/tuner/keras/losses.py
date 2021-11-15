@@ -32,9 +32,10 @@ class KerasLoss(tf.keras.layers.Layer, BaseLoss[tf.Tensor]):
 
     def call(
         self,
-        embeddings: tf.Tensor,
-        labels: Union[tf.Tensor, Tuple[tf.Tensor, tf.Tensor]],
+        inputs: Tuple[tf.Tensor, Union[tf.Tensor, Tuple[tf.Tensor, tf.Tensor]]],
     ) -> tf.Tensor:
+        embeddings, labels = inputs
+
         if self.miner is None:
             # If labels is a tuple of tensors, this is a session dataset
             self.miner = self.get_default_miner(isinstance(labels, (list, tuple)))
