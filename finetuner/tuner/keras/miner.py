@@ -80,7 +80,28 @@ class SiameseSessionMiner(BaseSessionMiner[tf.Tensor]):
             1) for the pair for each pair
         """
         assert len(distances) == len(labels[0]) == len(labels[1])
-        pass
+
+        sessions, match_types = [x.numpy().tolist() for x in labels]
+        ind_one, ind_two, labels_ret = [], [], []
+
+        labels_index = [
+            (sess, match_type, index)
+            for index, (sess, match_type) in enumerate(zip(sessions, match_types))
+        ]
+        sorted_labels_with_index = sorted(labels_index, key=lambda x: x[0])
+
+        for _, group in groupby(sorted_labels_with_index, lambda x: x[0]):
+            for left, right in combinations(group, 2):  # (session_id, label, ind)
+                if left[1] != -1 or right[1] != -1:
+                    ind_one.append(left[2])
+                    ind_two.append(right[2])
+                    labels_ret.append(0 if min(left[1], right[1]) == -1 else 1)
+
+        return (
+            tf.constant(ind_one),
+            tf.constant(ind_two),
+            tf.constant(labels_ret),
+        )
 
 
 class TripletSessionMiner(BaseSessionMiner[tf.Tensor]):

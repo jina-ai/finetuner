@@ -117,3 +117,40 @@ def test_triplet_miner_given_insufficient_inputs(labels, cut_index):
     assert len(anch_ind) == 0
     assert len(pos_ind) == 0
     assert len(neg_ind) == 0
+
+
+def test_siamese_session_miner(session_labels):
+    tuples = np.array(
+        [
+            (0, 4, 1),
+            (0, 5, 0),
+            (4, 5, 0),
+            (1, 2, 1),
+            (1, 3, 0),
+            (1, 6, 0),
+            (1, 7, 1),
+            (2, 3, 0),
+            (2, 6, 0),
+            (2, 7, 1),
+            (3, 7, 0),
+            (6, 7, 0),
+        ]
+    )
+    true_ind_one, true_ind_two, true_label = tuples.T
+    ind_one, ind_two, label = SiameseSessionMiner().mine(
+        session_labels, fake_dists(len(session_labels[0]))
+    )
+    np.testing.assert_equal(true_ind_one, ind_one.numpy())
+    np.testing.assert_equal(true_ind_two, ind_two.numpy())
+    np.testing.assert_equal(true_label, label.numpy())
+
+
+@pytest.mark.parametrize('cut_index', [0, 1])
+def test_siamese_session_miner_given_insufficient_inputs(session_labels, cut_index):
+    session_labels = [x[:cut_index] for x in session_labels]
+    ind_one, ind_two, label = SiameseSessionMiner().mine(
+        session_labels, fake_dists(len(session_labels[0]))
+    )
+    assert len(ind_one) == 0
+    assert len(ind_two) == 0
+    assert len(label) == 0
