@@ -5,7 +5,7 @@ import pytest
 import torch
 import torch.nn as nn
 
-from finetuner.toydata import generate_fashion_match
+from finetuner.toydata import generate_fashion
 from finetuner.tuner.pytorch import PytorchTuner
 
 
@@ -26,8 +26,8 @@ def test_simple_sequential_model(tmpdir, params, loss):
 
     # fit and save the checkpoint
     pt.fit(
-        train_data=generate_fashion_match(num_total=params['num_train']),
-        eval_data=generate_fashion_match(is_testset=True, num_total=params['num_eval']),
+        train_data=generate_fashion(num_total=params['num_train']),
+        eval_data=generate_fashion(is_testset=True, num_total=params['num_eval']),
         epochs=params['epochs'],
         batch_size=params['batch_size'],
         num_items_per_class=params['num_items_per_class'],

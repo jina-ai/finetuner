@@ -5,7 +5,7 @@ import time
 
 import pytest
 import requests
-from finetuner.toydata import generate_fashion_match
+from finetuner.toydata import generate_fashion
 from jina.helper import random_port
 
 os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
@@ -55,7 +55,7 @@ def _run(framework_name, loss, port_expose):
 
     rv1, rv2 = fit(
         embed_models[framework_name](),
-        generate_fashion_match(num_total=10, num_pos=0, num_neg=0),
+        generate_fashion(num_total=10, num_pos=0, num_neg=0),
         loss=loss,
         interactive=True,
         port_expose=port_expose,

@@ -17,6 +17,11 @@ finetuner.fit(model,
 
 This chapter introduces how to construct a `Document` in a way that Finetuner will accept.
 
+There are three different types of datasets:
+- [Unlabeled dataset](#unlabeled-dataset)
+- [Class dataset](#class-dataset) (a labeled dataset)
+- [Session dataset](#session-dataset) (a labeled dataset)
+
 ## Understand supervision
 
 Finetuner tunes a deep neural network on search tasks. In this context, the supervision comes from whether the nearest-neighbour matches are good or bad, where matches are often computed on model's embeddings. You have to label these good matches and bad matches so Finetuner can learn your feedback and improve the model. The following graph illustrates the process:
@@ -25,135 +30,133 @@ Finetuner tunes a deep neural network on search tasks. In this context, the supe
 :align: center
 ```
 
-## Required fields
+## Unlabeled dataset
 
 When using `finetuner.fit(..., interactive=True)`, you only need to provide a `DocumentArray`-like object where each `Document` object contains `.content`. This is because Finetuner will start a web frontend for interactive labeling. Hence, the supervision comes directly from you.
 
+All that the `Document`s in this dataset need is a `.content` attribute (which can be `text`, `blob` or `uri` - if you implement [your own loading](#loading-and-preprocessing)).
+
 (construct-labeled-data)=
-When using `finetuner.fit(..., interactive=False)`, your `Document` object needs to contain:
+## Labeled datasets
 
-- [`.content`](https://docs.jina.ai/fundamentals/document/document-api/#document-content): can be `.blob`, `.text`
-  or `.buffer`;
-- at least one `Document`
-  in [`.matches`](https://docs.jina.ai/fundamentals/document/document-api/#recursive-nested-document), and
-  each `Document` in `.matches` needs to contain
-    - `.content`: it should be the same data type as its parent `Document`;
-    - `.tags['finetuner']['label']`.
+When using `finetuner.fit(..., interactive=False)`, you must provide some kind of labels
+to your documents, so that the model can learn. There are two different kinds of labeled datasets that finetuner supports: a class dataset and a session dataset.
 
-In summary, you either label the matches on-the-fly or prepare the labeled data in advance.
+Regardless of which dataset format we choose, all documents need a `.content` attribute (which can be `text`, `blob` or `uri` - if you implement [your own loading](#loading-and-preprocessing)).
 
-### Matches
+### Class dataset
 
-Finetuner relies on matching data in `.matches`. To manually add a match to a `Document` object, you can do:
+In this dataset, each `Document` in the dataset has a "class" label stored under `.tags['finetuner']['label']`. The document structure is flat - no `matches` are needed.
 
-```python
-from jina import Document
+The "class" label is not necessarily related to classification - rather, it is there to denote similar `Document`s. All `Document`s with the same label are considered similar, and all `Document`s with different labels are considered dis-similar.
 
-d = Document(text='hello, world!')
-m = Document(text='hallo, welt!')
+This "class" label is used to construct batches for model training. In each batch, a number of different classes will be randomly selected, and from each class a number of `Document`s will be taken, so as to fill the batch.
 
-d.matches.append(m)
+Specifically, the size of the batch is controlled by the `batch_size` argument, and number of instances to take from each class is controlled by the `num_items_per_class`. The number of instances per batch is computed dynamically, so that the batch is full. The image below illustrates this for `batch_size=8` and `num_items_per_class=2`.
 
-print(d)
+```{figure} class-dataset.png
+:align: center
 ```
 
-```text
-{'id': '67432a92-1f9f-11ec-ac8a-1e008a366d49', 'matches': [{'id': '67432cd6-1f9f-11ec-ac8a-1e008a366d49', 'mime_type': 'text/plain', 'text': 'hallo, welt!', 'adjacency': 1}], 'mime_type': 'text/plain', 'text': 'hello, world!'}
-```
-
-Note that the match `Document` should share the same content type as its parent `Document`. The following combinations
-are not valid in Finetuner:
+Here is an example of a class dataset
 
 ```python
-from jina import Document
+from jina import Document, DocumentArray
+
+class_data = DocumentArray([
+  Document(text='some text for class 1', tags={'finetuner': {'label': 1}}),
+  Document(text='more text for class 1', tags={'finetuner': {'label': 1}}),
+  Document(text='some text for class 2', tags={'finetuner': {'label': 2}}),
+  Document(text='more text for class 2', tags={'finetuner': {'label': 2}}),
+])
+```
+
+### Session dataset
+
+In this dataset, each root `Document` in the dataset has `matches`, but no label. Instead, its matches have a label stored under `.tags['finetuner']['label']`. This label can be either `1` (denoting similarity of match to its reference `Document`) or `-1` (denoting dissimilarity of the match from its reference `Document`).
+
+This dataset is meant for cases where the relationship is only known between a small subset of documents. For example, our data could come from a search engine: given a query (which would be a root document), the results that the users clicked on are considered similar to the query (and will thus be a match with label `1`), while the results that the users did not click on are deemed dissimilar (and will thus be labeled with `-1`). Note that no assumption is made about the similarity between the "dissimilar" (labeled with `-1`) items themselves.
+
+Here the batches are simply constructed by putting together enough root documents and their matches (we call this a *session*) to fill the batch according to `batch_size` parameter. An example of a batch of size `batch_size=8` made of two sessions is show on the image below.
+
+```{figure} session-dataset.png
+:align: center
+```
+
+Here is an example of a session dataset
+
+```python
+from jina import Document, DocumentArray
+
+root_documents = DocumentArray(
+  [Document(text='trousers'), Document(text='polo shirt')]
+)
+
+root_documents[0].matches = [
+  Document(text='shorts', tags={'finetuner': {'label': 1}}),
+  Document(text='blouse', tags={'finetuner': {'label': -1}}),
+]
+root_documents[1].matches = [
+  Document(text='t-shirt', tags={'finetuner': {'label': 1}}),
+  Document(text='earrings', tags={'finetuner': {'label': -1}}),
+]
+```
+
+## Loading and preprocessing
+
+There are cases when you can not store your entire dataset into memory, and need to load
+individual items on the fly. Similarly, you may want to apply random augmentations to images
+each time they are used in a batch. For these purposes, you can pass a pre-processing function
+using `preprocess_fn` argument to the `fit` function.
+
+Let's start with an example of the first case - loading images on the fly. In this case
+we would have images stored on disk, and their paths stored in the `.uri` attribute of
+each `Document`. In `preprocess_fn` we would then load the image and return the numpy
+array.
+
+```python
 import numpy as np
+from finetuner import fit
+from jina import Document, DocumentArray
+from PIL import Image
 
-d = Document(text='hello, world!')
-m1 = Document(buffer=b'h236cf4')
-m2 = Document(blob=np.array([1, 2, 3]))
+dataset = DocumentArray([
+  Document(uri='path/to/image.jpg', tags={'finetuner': {'label': 1}}),
+  # ...
+])
 
-d.matches.append([m1, m2])
+def load_image(path: str) -> np.ndarray:
+  image = Image.open(path)
+  return np.array(image)
+
+model = ...
+fit(model, train_data=dataset, preprocess_fn=load_image)
 ```
 
-If you have two `DocumentArray` each of which is filled with `.embeddings`, then you can simply call `.match()` function
-to build matches for every Document in one-shot:
+Next, let's take a look at an example where we apply some basic image augmentation. We'll be using the [albumentations](https://albumentations.ai/) library for image augmentation in this example
 
 ```python
-from jina import DocumentArray, Document
+import albumentations as A
 import numpy as np
+from finetuner import fit
+from jina import Document, DocumentArray
 
-da1 = DocumentArray([Document(text='hello, world!', embedding=np.array([1, 2, 3])),
-                     Document(text='goodbye, world!', embedding=np.array([4, 5, 6]))])
+dataset = DocumentArray([
+  Document(blob=np.random.rand(3, 128, 128), tags={'finetuner': {'label': 1}}),
+  # ...
+])
 
-da2 = DocumentArray([Document(text='hallo, welt!', embedding=np.array([1.5, 2.5, 3.5])),
-                     Document(text='auf wiedersehen, welt!', embedding=np.array([4.5, 5.5, 6.5]))])
+def augment_image(image: np.ndarray) -> np.ndarray:
+  transform = A.Compose([
+    A.HorizontalFlip(p=0.5),
+    A.RandomBrightnessContrast(p=0.2),
+  ])
+  
+  return transform(image=image)['image']
 
-da1.match(da2)
-
-print(da1)
+model = ...
+fit(model, train_data=dataset, preprocess_fn=augment_image)
 ```
-
-```text
-DocumentArray has 2 items:
-{'id': 'a5dd3158-1f9f-11ec-9a49-1e008a366d49', 'matches': [{'id': 'a5dd3b94-1f9f-11ec-9a49-1e008a366d49', 'mime_type': 'text/plain', 'text': 'hallo, welt!', 'embedding': {'dense': {'buffer': 'AAAAAAAA+D8AAAAAAAAEQAAAAAAAAAxA', 'shape': [3], 'dtype': '<f8'}}, 'adjacency': 1, 'scores': {'cosine': {'value': 0.002585097}}}, {'id': 'a5dd3d74-1f9f-11ec-9a49-1e008a366d49', 'mime_type': 'text/plain', 'text': 'auf wiedersehen, welt!', 'embedding': {'dense': {'buffer': 'AAAAAAAAEkAAAAAAAAAWQAAAAAAAABpA', 'shape': [3], 'dtype': '<f8'}}, 'adjacency': 1, 'scores': {'cosine': {'value': 0.028714137}}}], 'mime_type': 'text/plain', 'text': 'hello, world!', 'embedding': {'dense': {'buffer': 'AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAA', 'shape': [3], 'dtype': '<i8'}}},
-{'id': 'a5dd3784-1f9f-11ec-9a49-1e008a366d49', 'matches': [{'id': 'a5dd3d74-1f9f-11ec-9a49-1e008a366d49', 'mime_type': 'text/plain', 'text': 'auf wiedersehen, welt!', 'embedding': {'dense': {'buffer': 'AAAAAAAAEkAAAAAAAAAWQAAAAAAAABpA', 'shape': [3], 'dtype': '<f8'}}, 'adjacency': 1, 'scores': {'cosine': {'value': 0.00010502179}}}, {'id': 'a5dd3b94-1f9f-11ec-9a49-1e008a366d49', 'mime_type': 'text/plain', 'text': 'hallo, welt!', 'embedding': {'dense': {'buffer': 'AAAAAAAA+D8AAAAAAAAEQAAAAAAAAAxA', 'shape': [3], 'dtype': '<f8'}}, 'adjacency': 1, 'scores': {'cosine': {'value': 0.011804931}}}], 'mime_type': 'text/plain', 'text': 'goodbye, world!', 'embedding': {'dense': {'buffer': 'BAAAAAAAAAAFAAAAAAAAAAYAAAAAAAAA', 'shape': [3], 'dtype': '<i8'}}}
-```
-
-```{tip}
-The field `.embedding` is not required by Finetuner.
-```
-
-### Labels
-
-The label represents how related a `match` is to the `Document`. It is stored in `.tags['finetuner']['label']`.
-
-In Finetuner, float number `1` is considered as a positive relation between `match` and `Document`; whereas float
-number `-1` is considered as no relation between `match` and `Document`.
-
-For example, we have four sentences:
-
-```text
-hello, world!
-hallo, welt!
-Bonjour, monde!
-goodbye, world!
-```
-
-Now to construct the matches of `Document(text='hello, world!')` for expressing that texts in different languages are
-more related to this Document than `goodbye, world`:
-
-```python
-from jina import Document
-
-d = Document(text='hello, world!')
-m1 = Document(text='hallo, welt!', tags={'finetuner': {'label': 1}})
-m2 = Document(text='Bonjour, monde!', tags={'finetuner': {'label': 1}})
-m3 = Document(text='goodbye, world!', tags={'finetuner': {'label': -1}})
-
-d.matches.extend([m1, m2, m3])
-```
-
-```text
-{'id': '0e7ec5aa-1faa-11ec-a46a-1e008a366d49', 'matches': [{'id': '0e7ec7c6-1faa-11ec-a46a-1e008a366d49', 'mime_type': 'text/plain', 'tags': {'finetuner': {'label': 1.0}}, 'text': 'hallo, welt!', 'adjacency': 1}, {'id': '0e7ecd52-1faa-11ec-a46a-1e008a366d49', 'mime_type': 'text/plain', 'tags': {'finetuner': {'label': 1.0}}, 'text': 'Bonjour, monde!', 'adjacency': 1}, {'id': '0e7ece7e-1faa-11ec-a46a-1e008a366d49', 'mime_type': 'text/plain', 'tags': {'finetuner': {'label': -1.0}}, 'text': 'goodbye, world!', 'adjacency': 1}], 'mime_type': 'text/plain', 'text': 'hello, world!'}
-```
-
-```{admonition} Is it okay to have all matches as 1, or all as -1?
-:class: hint
-
-Yes. Labels should reflect the groundtruth as-is. If a Document contains only positive matches or only negative matches, then so be it.
-
-However, if all match labels from all Documents are the same, then Finetuner cannot learn anything useful.
-```
-
-## Data source
-
-After organizing the labeled `Document` into `DocumentArray` or `DocumentArrayMemmap`, you can feed them
-into `finetuner.fit()`.
-
-But where do the labels come from? You can use Labeler, which allows you to interactively label data and tune the model at
-the same time.
-
-Otherwise, you will need to prepare labeled data on your own.
 
 ## Examples
 
@@ -171,22 +174,14 @@ grayscale image.
 :align: center
 ```
 
-To convert this dataset into match data, we build each Document to contain the following relevant information:
+This dataset is an example of class dataset - each `Document` has a class label (corresponding to one of the 10 classes). The `Document`s contain the following relevant information:
 
-- `.blob`: the image;
-- `.matches`: the generated positive and negative matches of the Document;
-    - `.blob`: the matched Document's image;
-    - `.tags['finetuner']['label']`: the match label: `1` or `-1`.
+- `.blob`: the numpy array of the image
+- `.tags['finetuner']['label']`: the class label
 
-Matches are built with the logic below:
-
-- randomly sample same-class Documents as positive matches, i.e. labeled with `1`;
-- randomly sample other-class Documents as negative matches, i.e. labeled with `-1`.
 
 (build-qa-data)=
 ### Covid QA
-
-
 
 Covid QA data is a CSV that has 481 rows with the columns `question`, `answer` & `wrong_answer`. 
 
@@ -213,7 +208,7 @@ Matches are built with the logic below:
 
 The Finetuner codebase contains two synthetic matching data generators for demo and debugging purpose:
 
-- `finetuner.toydata.generate_fashion_match()`: the generator of Fashion-MNIST matching data.
-- `finetuner.toydata.generate_qa_match()`: the generator of Covid QA matching data.
+- `finetuner.toydata.generate_fashion()`: the generator of Fashion-MNIST matching data.
+- `finetuner.toydata.generate_qa()`: the generator of Covid QA matching data.
 
 ```

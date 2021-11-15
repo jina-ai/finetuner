@@ -4,7 +4,7 @@ import torch.nn as nn
 from jina import DocumentArray, DocumentArrayMemmap
 
 from finetuner.embedding import embed
-from finetuner.toydata import generate_fashion_match
+from finetuner.toydata import generate_fashion
 from finetuner.tuner.pytorch import PytorchTuner
 
 
@@ -55,12 +55,12 @@ def test_set_embeddings_gpu(tmpdir):
         nn.ReLU(),
         nn.Linear(in_features=128, out_features=32),
     )
-    docs = DocumentArray(generate_fashion_match(num_total=100))
+    docs = DocumentArray(generate_fashion(num_total=100))
     embed(docs, embed_model, 'cuda')
     assert docs.embeddings.shape == (100, 32)
 
     # works for DAM
     dam = DocumentArrayMemmap(tmpdir)
-    dam.extend(generate_fashion_match(num_total=42))
+    dam.extend(generate_fashion(num_total=42))
     embed(dam, embed_model, 'cuda')
     assert dam.embeddings.shape == (42, 32)

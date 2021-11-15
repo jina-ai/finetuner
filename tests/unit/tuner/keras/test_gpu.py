@@ -4,7 +4,7 @@
 
 # from finetuner.tuner.keras import KerasTuner
 # from finetuner.embedding import embed
-# from finetuner.toydata import generate_fashion_match
+# from finetuner.toydata import generate_fashion
 
 # all_test_losses = [
 #     'CosineSiameseLoss',
@@ -46,12 +46,12 @@
 #             tf.keras.layers.Dense(32),
 #         ]
 #     )
-#     docs = DocumentArray(generate_fashion_match(num_total=100))
+#     docs = DocumentArray(generate_fashion(num_total=100))
 #     embed(docs, embed_model, 'cuda')
 #     assert docs.embeddings.shape == (100, 32)
 
 #     # works for DAM
 #     dam = DocumentArrayMemmap(tmpdir)
-#     dam.extend(generate_fashion_match(num_total=42))
+#     dam.extend(generate_fashion(num_total=42))
 #     embed(dam, embed_model, 'cuda')
 #     assert dam.embeddings.shape == (42, 32)

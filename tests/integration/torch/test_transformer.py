@@ -2,7 +2,7 @@ import torch
 
 from transformers import AutoModel, AutoTokenizer
 
-from finetuner.toydata import generate_qa_match
+from finetuner.toydata import generate_qa
 from finetuner.tuner.pytorch import PytorchTuner
 
 
@@ -33,8 +33,8 @@ def test_fit_transformer():
         )
         return batch_tokens
 
-    docs = generate_qa_match(num_neg=8, num_total=100)
-    docs_eval = generate_qa_match(num_neg=8, is_testset=True, num_total=20)
+    docs = generate_qa(num_neg=8, num_total=100)
+    docs_eval = generate_qa(num_neg=8, is_testset=True, num_total=20)
     model = TransformerEmbedder()
 
     tuner = PytorchTuner(model, loss='SiameseLoss')

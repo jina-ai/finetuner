@@ -12,7 +12,7 @@ from jina.logging.profile import ProgressBar
 from finetuner import __default_tag_key__
 
 
-def generate_qa_match(
+def generate_qa(
     num_total: int = 481,
     num_neg: int = 0,
     pos_value: int = 1,
@@ -108,7 +108,7 @@ def _download_qa_data(
                         yield Document(value)
 
 
-def generate_fashion_match(
+def generate_fashion(
     num_total: int = 60000,
     upsampling: int = 1,
     channels: int = 0,

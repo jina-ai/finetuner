@@ -4,7 +4,7 @@ import tensorflow as tf
 import torch
 
 import finetuner
-from finetuner.toydata import generate_fashion_match
+from finetuner.toydata import generate_fashion
 
 
 @pytest.mark.parametrize('loss', ['SiameseLoss', 'TripletLoss'])
@@ -41,8 +41,8 @@ def test_fit_all(tmpdir, loss):
         model, result = finetuner.fit(
             b(),
             loss=loss,
-            train_data=generate_fashion_match(num_total=200),
-            eval_data=generate_fashion_match(is_testset=True, num_total=100),
+            train_data=generate_fashion(num_total=200),
+            eval_data=generate_fashion(is_testset=True, num_total=100),
             batch_size=32,
             epochs=2,
         )

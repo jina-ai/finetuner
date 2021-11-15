@@ -4,8 +4,8 @@ import tensorflow as tf
 from tensorflow import keras
 
 from finetuner.tuner.keras import KerasTuner
-from finetuner.toydata import generate_fashion_match
-from finetuner.toydata import generate_qa_match
+from finetuner.toydata import generate_fashion
+from finetuner.toydata import generate_qa
 
 all_test_losses = [
     'CosineSiameseLoss',
@@ -33,10 +33,10 @@ def test_simple_sequential_model(tmpdir, params, loss):
 
     # fit and save the checkpoint
     kt.fit(
-        train_data=lambda: generate_fashion_match(
+        train_data=lambda: generate_fashion(
             num_pos=10, num_neg=10, num_total=params['num_train']
         ),
-        eval_data=lambda: generate_fashion_match(
+        eval_data=lambda: generate_fashion(
             num_pos=10, num_neg=10, num_total=params['num_eval'], is_testset=True
         ),
         epochs=params['epochs'],
@@ -67,13 +67,13 @@ def test_simple_lstm_model(tmpdir, params, loss):
 
     # fit and save the checkpoint
     kt.fit(
-        train_data=lambda: generate_qa_match(
+        train_data=lambda: generate_qa(
             num_total=params['num_train'],
             max_seq_len=params['max_seq_len'],
             num_neg=5,
             is_testset=False,
         ),
-        eval_data=lambda: generate_qa_match(
+        eval_data=lambda: generate_qa(
             num_total=params['num_eval'],
             max_seq_len=params['max_seq_len'],
             num_neg=5,

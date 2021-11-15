@@ -55,11 +55,11 @@
 3. Now feed the model and Fashion-MNIST data into Finetuner.
    ```python
    import finetuner
-   from finetuner.toydata import generate_fashion_match
+   from finetuner.toydata import generate_fashion
    
    finetuner.fit(
        embed_model,
-       generate_fashion_match, 
+       generate_fashion, 
        interactive=True)
    ```
 

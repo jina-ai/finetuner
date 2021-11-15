@@ -11,7 +11,7 @@ os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
 import paddle
 import torch
 
-from finetuner.toydata import generate_qa_match
+from finetuner.toydata import generate_qa
 
 
 class LastCellPT(torch.nn.Module):
@@ -57,7 +57,7 @@ def _run(framework_name, loss, port_expose):
 
     rv1, rv2 = fit(
         embed_models[framework_name](),
-        generate_qa_match(num_total=10, num_neg=0),
+        generate_qa(num_total=10, num_neg=0),
         loss=loss,
         interactive=True,
         port_expose=port_expose,

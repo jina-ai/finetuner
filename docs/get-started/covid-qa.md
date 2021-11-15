@@ -72,10 +72,10 @@ embed_model = paddle.nn.Sequential(
 Now prepare CovidQA data for the Finetuner. Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we first convert the data into this format.
 
 ```python
-from finetuner.toydata import generate_qa_match
+from finetuner.toydata import generate_qa
 ```
 
-`generate_qa_match` is a generator that yields every question as a `Document` object. 
+`generate_qa` is a generator that yields every question as a `Document` object. 
 It also codes and pads the question into a 100-dimensional array, which is stored in `blob`.
 
 ```bash
@@ -91,7 +91,7 @@ import finetuner
 
 finetuner.fit(
    embed_model,
-   train_data=generate_qa_match(),
+   train_data=generate_qa(),
    interactive=True)
 ```
 

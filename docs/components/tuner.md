@@ -110,17 +110,17 @@ After a model is tuned, you can save it by calling `finetuner.save(model, save_p
     ````
 
 2. Build labeled match data {ref}`according to the steps here<build-mnist-data>`. You can refer
-   to `finetuner.toydata.generate_fashion_match` for an implementation. In this example, for each `Document` we generate 10 positive matches and 10 negative matches.
+   to `finetuner.toydata.generate_fashion` for an implementation. In this example, for each `Document` we generate 10 positive matches and 10 negative matches.
 
 3. Feed the labeled data and embedding model into Finetuner:
     ```python
     import finetuner
-    from finetuner.toydata import generate_fashion_match
+    from finetuner.toydata import generate_fashion
 
     finetuner.fit(
         embed_model,
-        train_data=generate_fashion_match(num_pos=10, num_neg=10),
-        eval_data=generate_fashion_match(num_pos=10, num_neg=10, is_testset=True)
+        train_data=generate_fashion(num_pos=10, num_neg=10),
+        eval_data=generate_fashion(num_pos=10, num_neg=10, is_testset=True)
     )
     ```
 
@@ -176,18 +176,18 @@ After a model is tuned, you can save it by calling `finetuner.save(model, save_p
   ````
 
 2. Build labeled match data {ref}`according to the steps here<build-qa-data>`. You can refer
-   to `finetuner.toydata.generate_qa_match` for an implementation.
+   to `finetuner.toydata.generate_qa` for an implementation.
 
 3. Feed labeled data and the embedding model into Finetuner:
 
     ```python
     import finetuner
-    from finetuner.toydata import generate_qa_match
+    from finetuner.toydata import generate_qa
 
     finetuner.fit(
         embed_model,
-        train_data=generate_qa_match(num_neg=5),
-        eval_data=generate_qa_match(num_neg=5)
+        train_data=generate_qa(num_neg=5),
+        eval_data=generate_qa(num_neg=5)
     )
     ```
 
@@ -200,12 +200,12 @@ Tuner accepts generator as the data input. However, when using generator with `e
 
 ```python
 import finetuner
-from finetuner.toydata import generate_qa_match
+from finetuner.toydata import generate_qa
 
 finetuner.fit(
   embed_model,
-  train_data=lambda: generate_qa_match(num_neg=5),
-  eval_data=lambda: generate_qa_match(num_neg=5)
+  train_data=lambda: generate_qa(num_neg=5),
+  eval_data=lambda: generate_qa(num_neg=5)
   epochs=10
 )
 ```
