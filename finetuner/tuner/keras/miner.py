@@ -21,7 +21,21 @@ class SiameseMiner(BaseClassMiner[tf.Tensor]):
             1) for the pair for each pair
         """
         assert len(distances) == len(labels)
-        pass
+
+        l1, l2 = tf.expand_dims(labels, 1), tf.expand_dims(labels, 0)
+        matches = tf.cast(l1 == l2, tf.int32)
+        diffs = 1 - matches
+        matches = tf.experimental.numpy.triu(matches, 1)
+        diffs = tf.experimental.numpy.triu(diffs)
+
+        ind1_pos, ind2_pos = tf.unstack(tf.where(matches), axis=1)
+        ind1_neg, ind2_neg = tf.unstack(tf.where(diffs), axis=1)
+
+        ind1 = tf.concat([ind1_pos, ind1_neg], axis=0)
+        ind2 = tf.concat([ind2_pos, ind2_neg], axis=0)
+
+        target = tf.concat([tf.ones_like(ind1_pos), tf.zeros_like(ind1_neg)], axis=0)
+        return ind1, ind2, target
 
 
 class TripletMiner(BaseClassMiner[tf.Tensor]):
