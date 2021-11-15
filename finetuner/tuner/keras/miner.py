@@ -23,7 +23,7 @@ class SiameseMiner(BaseClassMiner[tf.Tensor]):
         assert len(distances) == len(labels)
 
         l1, l2 = tf.expand_dims(labels, 1), tf.expand_dims(labels, 0)
-        matches = tf.cast(l1 == l2, tf.int32)
+        matches = tf.cast(l1 == l2, tf.uint8)
         diffs = 1 - matches
         matches = tf.experimental.numpy.triu(matches, 1)
         diffs = tf.experimental.numpy.triu(diffs)
@@ -52,7 +52,15 @@ class TripletMiner(BaseClassMiner[tf.Tensor]):
             negative index of each triplet, respectively
         """
         assert len(distances) == len(labels)
-        pass
+
+        l1, l2 = tf.expand_dims(labels, 1), tf.expand_dims(labels, 0)
+        matches = tf.cast(l1 == l2, tf.uint8)
+        diffs = matches ^ 1
+
+        matches = tf.linalg.set_diag(matches, diagonal=tf.zeros_like(labels, tf.uint8))
+        triplets = tf.expand_dims(matches, 2) * tf.expand_dims(diffs, 1)
+
+        return tf.transpose(tf.where(triplets))
 
 
 class SiameseSessionMiner(BaseSessionMiner[tf.Tensor]):
