@@ -37,9 +37,7 @@ def test_doc_generator():
 @pytest.mark.parametrize('channels', [0, 1, 3])
 @pytest.mark.parametrize('upsampling', [1, 2, 4])
 def test_doc_generator_channel(channels, upsampling):
-    for d in generate_fashion(
-        channels=channels, upsampling=upsampling, num_total=10
-    ):
+    for d in generate_fashion(channels=channels, upsampling=upsampling, num_total=10):
         if channels == 0:
             assert d.blob.ndim == 2
         else:
