@@ -2,7 +2,7 @@ import pytest
 import tensorflow as tf
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def tf_gpu_config():
     tf.debugging.set_log_device_placement(True)
     gpus = tf.config.list_physical_devices('GPU')

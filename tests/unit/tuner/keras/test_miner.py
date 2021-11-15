@@ -198,7 +198,7 @@ def test_triplet_session_miner_given_insufficient_inputs(session_labels, cut_ind
 
 @pytest.mark.gpu
 @pytest.mark.parametrize('miner', [SiameseMiner, TripletMiner])
-def test_class_miner_gpu(miner, labels):
+def test_class_miner_gpu(miner, labels, tf_gpu_config):
     with tf.device('/GPU:0'):
         m = miner()
         _ = m.mine(labels, fake_dists(len(labels)))
@@ -206,7 +206,7 @@ def test_class_miner_gpu(miner, labels):
 
 @pytest.mark.gpu
 @pytest.mark.parametrize('miner', [SiameseSessionMiner, TripletSessionMiner])
-def test_session_miner_gpu(miner, session_labels):
+def test_session_miner_gpu(miner, session_labels, tf_gpu_config):
     with tf.device('/GPU:0'):
         m = miner()
         _ = m.mine(labels, fake_dists(len(labels[0])))
