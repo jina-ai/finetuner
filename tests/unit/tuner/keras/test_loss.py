@@ -24,9 +24,6 @@ def test_loss_output(loss_cls, distance, margin):
 
     output = loss(embeddings, labels)
 
-    print(output)
-    print(type(output))
-
     # assert output.ndim == 0
     assert output >= 0
 
