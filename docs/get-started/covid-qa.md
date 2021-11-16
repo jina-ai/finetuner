@@ -4,8 +4,15 @@
 This example is inspired by [`jina hello chatbot`](https://docs.jina.ai/get-started/hello-world/covid-19-chatbot/). We stronly recommend you to checkout that demo first before go through this tutorial.
 ```
 
+````{info}
+This example will only with the `pytorch` framework, as it requires the use of `transformers` package. You can install the package by using
 
-In this example, we want to "tune" the 32-dim embedding vectors from a bidirectional LSTM on Covid19 QA data, the same dataset that we are using in `jina hello chatbot`. 
+```
+pip install transformers
+```
+````
+
+In this example, we want to "tune" a transformer model on Covid19 QA data, the same dataset that we are using in `jina hello chatbot`.
 
 Precisely, "tuning" means: 
 - we set up a Jina search pipeline and will look at the top-K semantically similar questions;
@@ -16,57 +23,26 @@ Hopefully the procedure converges after several rounds and we get a tuned embedd
 
 ## Build embedding model
 
-Let's write a 2-layer MLP as our {ref}`embedding model<embedding-model>` using any of the following frameworks:
+Let's create a transformers model as our {ref}`embedding model<embedding-model>`, where we will use the `[CLS]` token as the embedding:
 
-````{tab} PyTorch
 
 ```python
 import torch
+from transformers import AutoModel
+
+TRANSFORMER_MODEL = 'sentence-transformers/paraphrase-MiniLM-L6-v2'
 
 
-class LastCell(torch.nn.Module):
-    def forward(self, x):
-        out, _ = x
-        return out[:, -1, :]
+class TransformerEmbedder(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = AutoModel.from_pretrained(TRANSFORMER_MODEL)
 
-
-embed_model = torch.nn.Sequential(
-    torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
-    torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
-    LastCell(),
-    torch.nn.Linear(in_features=2 * 64, out_features=32))
+    def forward(self, inputs):
+        out_model = self.model(**inputs)
+        cls_token = out_model.last_hidden_state[:, 0, :]
+        return cls_token
 ```
-
-````
-````{tab} Keras
-```python
-import tensorflow as tf
-
-embed_model = tf.keras.Sequential([
-    tf.keras.layers.Embedding(input_dim=5000, output_dim=64),
-    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
-    tf.keras.layers.Dense(32)])
-```
-````
-````{tab} Paddle
-```python
-import paddle
-
-
-class LastCell(paddle.nn.Layer):
-    def forward(self, x):
-        out, _ = x
-        return out[:, -1, :]
-
-
-embed_model = paddle.nn.Sequential(
-    paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),
-    paddle.nn.LSTM(64, 64, direction='bidirectional'),
-    LastCell(),
-    paddle.nn.Linear(in_features=2 * 64, out_features=32))
-```
-````
-
 ## Prepare data
 
 Now prepare CovidQA data for the Finetuner. Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we first convert the data into this format.
@@ -75,11 +51,33 @@ Now prepare CovidQA data for the Finetuner. Note that Finetuner accepts Jina `Do
 from finetuner.toydata import generate_qa
 ```
 
-`generate_qa` is a generator that yields every question as a `Document` object. 
-It also codes and pads the question into a 100-dimensional array, which is stored in `blob`.
+`generate_qa` is a generator that yields every question as a `Document` object.
 
 ```bash
-<jina.types.document.Document id=dc315d50-1bae-11ec-b32d-1e008a366d49 tags={'wrong_answer': "If you have been in...', 'answer': 'Your doctor ...'} blob={'dense': {'buffer': 'AAAAAAAAAAAAAAAA...', 'shape': [100], 'dtype': '<i8'}} at 5794172560>
+<jina.types.document.Document id=dc315d50-1bae-11ec-b32d-1e008a366d49 tags={'wrong_answer': "If you have been in...', 'answer': 'Your doctor ...'} at 5794172560>
+```
+
+Now, here each `Document` will have only a `text` attribute, but, as we know, transformers need tokens as inputs. So we need to transform the inputs into tokens before feeding them to the model.
+
+The best place to do this is when "collating" all the items together into a batch. This enables us to dynamically pad the batch to the length of the largest example in the batch, and not the maximum length allowed in the model - which makes the model run faster and consume less memory.
+
+We can do this by constructing a collation function that we will later pass to the `fit` function
+
+```{python}
+from typing import List
+from transformers import AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained(TRANSFORMER_MODEL)
+
+def collate_fn(inputs: List[str]):
+    batch_tokens = tokenizer(
+        inputs,
+        truncation=True,
+        max_length=50,
+        padding=True,
+        return_tensors='pt',
+    )
+    return batch_tokens
 ```
 
 ## Put together
@@ -91,7 +89,7 @@ import finetuner
 
 finetuner.fit(
    embed_model,
-   train_data=generate_qa(),
+   train_data=generate_qa(num_neg=8),
    interactive=True)
 ```
 
