@@ -44,7 +44,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
         preprocess_fn: Optional[Callable],
         collate_fn: Optional[Callable],
     ) -> DataLoader:
-        """ Get the dataloader for the dataset"""
+        """Get the dataloader for the dataset"""
 
         if collate_fn:
 
@@ -190,8 +190,8 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
             )
 
         # Place model on device
-        self.device = get_device(device)
-        paddle.set_device(device)
+        self.device, device_name = get_device(device)
+        paddle.set_device(device_name)
 
         # Get optimizer
         optimizer = optimizer or self._get_default_optimizer(learning_rate)
@@ -232,9 +232,9 @@ def get_device(device: str):
 
     # translate our own alias into framework-compatible ones
     if device == 'cuda':
-        return paddle.CUDAPlace(0)
+        return paddle.CUDAPlace(0), 'gpu:0'
     elif device == 'cpu':
-        return paddle.CPUPlace()
+        return paddle.CPUPlace(), 'cpu'
     else:
         raise ValueError(
             f'Device {device} not recognized, only "cuda" and "cpu" are accepted'
