@@ -26,17 +26,14 @@ class KerasDataSequence(tf.keras.utils.Sequence):
         self.batch_sampler = batch_sampler
 
         self.batches = list(iter(self.batch_sampler))
-        self.collate_fn = collate_fn
+        self.collate_fn = collate_fn or _default_collate
 
     def __getitem__(self, idx: int):
         """Get batch"""
         batch_ids = self.batches[idx]
         items = [self.dataset[bidx] for bidx in batch_ids]
 
-        if self.collate_fn:
-            content = self.collate_fn([x[0] for x in items])
-        else:
-            content = _default_collate([x[0] for x in items])
+        content = self.collate_fn([x[0] for x in items])
 
         if isinstance(items[0][1], int):
             labels = np.array([x[1] for x in items])

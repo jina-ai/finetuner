@@ -2,7 +2,7 @@ from collections import defaultdict
 from copy import deepcopy
 from math import ceil
 from random import choices, sample, shuffle
-from typing import Iterator, Sequence, Tuple
+from typing import Iterator, List, Sequence, Tuple
 
 
 class RandomClassBatchSampler:
@@ -63,18 +63,21 @@ class RandomClassBatchSampler:
         for key, val in self._class_to_labels.items():
             self._cls_group_counts.append([key, ceil(len(val) / num_items_per_class)])
 
-        # Prepare the current batches
+        # Initialize batches
+        self._index = 0
         self._prepare_batches()
 
-    def __iter__(self) -> Iterator[Tuple[int, ...]]:
-        batches = self._batches
+    def __iter__(self) -> 'RandomClassBatchSampler':
+        return self
 
-        # Prepare next batches - the reason they are prepared in advance is so that
-        # len() gives the correct length
-        self._prepare_batches()
+    def __next__(self) -> List[int]:
+        if self._index == len(self._batches):
+            self._index = 0
+            self._prepare_batches()  # Prepare for next iteration, so length is known
+            raise StopIteration
 
-        # Return iterator of current batches
-        return iter(batches)
+        self._index += 1
+        return self._batches[self._index - 1]
 
     def _prepare_batches(self):
 
@@ -168,18 +171,21 @@ class SessionBatchSampler:
         for ind, (session, match_type) in enumerate(labels):
             self._sessions[session].append([ind, match_type])
 
-        # Prepare the current batches
+        # Initialize batches
+        self._index = 0
         self._prepare_batches()
 
-    def __iter__(self):
-        batches = self._batches
+    def __iter__(self) -> 'SessionBatchSampler':
+        return self
 
-        # Prepare next batches - the reason they are prepared in advance is so that
-        # len() gives the correct length
-        self._prepare_batches()
+    def __next__(self) -> List[int]:
+        if self._index == len(self._batches):
+            self._index = 0
+            self._prepare_batches()  # Prepare for next iteration, so length is known
+            raise StopIteration
 
-        # Return iterator of current batches
-        return iter(batches)
+        self._index += 1
+        return self._batches[self._index - 1]
 
     def _prepare_batches(self):
 

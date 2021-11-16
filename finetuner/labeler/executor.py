@@ -13,7 +13,7 @@ class FTExecutor(Executor):
         self,
         dam_path: str,
         metric: str = 'cosine',
-        loss: str = 'CosineSiameseLoss',
+        loss: str = 'SiameseLoss',
         **kwargs,
     ):
         super().__init__(**kwargs)
