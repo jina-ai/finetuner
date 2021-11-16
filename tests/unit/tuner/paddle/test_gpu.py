@@ -6,12 +6,7 @@ from finetuner.embedding import embed
 from finetuner.toydata import generate_fashion
 from finetuner.tuner.paddle import PaddleTuner
 
-all_test_losses = [
-    'CosineSiameseLoss',
-    'CosineTripletLoss',
-    'EuclideanSiameseLoss',
-    'EuclideanTripletLoss',
-]
+all_test_losses = ['SiameseLoss', 'TripletLoss']
 
 
 @pytest.mark.gpu
