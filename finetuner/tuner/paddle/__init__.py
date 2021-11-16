@@ -191,7 +191,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
 
         # Place model on device
         self.device = get_device(device)
-        paddle.set_device(self.device)
+        paddle.set_device(device)
 
         # Get optimizer
         optimizer = optimizer or self._get_default_optimizer(learning_rate)
