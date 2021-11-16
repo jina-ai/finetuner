@@ -1,138 +1,138 @@
-import multiprocessing
-import os
-import random
-import time
+# import multiprocessing
+# import os
+# import random
+# import time
 
-import pytest
-import requests
-from jina.helper import random_port
+# import pytest
+# import requests
+# from jina.helper import random_port
 
-os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
-import paddle
-import torch
+# os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
+# import paddle
+# import torch
 
-from finetuner.toydata import generate_qa
-
-
-class LastCellPT(torch.nn.Module):
-    def forward(self, x):
-        out, _ = x
-        return out[:, -1, :]
+# from finetuner.toydata import generate_qa
 
 
-class LastCellPD(paddle.nn.Layer):
-    def forward(self, x):
-        out, _ = x
-        return out[:, -1, :]
+# class LastCellPT(torch.nn.Module):
+#     def forward(self, x):
+#         out, _ = x
+#         return out[:, -1, :]
 
 
-def _run(framework_name, loss, port_expose):
-    from finetuner import fit
-
-    import torch
-
-    model = torch.nn.Sequential(
-        torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
-        torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
-        LastCellPT(),
-        torch.nn.Linear(in_features=2 * 64, out_features=32),
-    )
-
-    rv1, rv2 = fit(
-        model,
-        generate_qa(num_total=10, num_neg=0),
-        loss=loss,
-        interactive=True,
-        port_expose=port_expose,
-    )
-
-    assert rv1
-    assert not rv2
+# class LastCellPD(paddle.nn.Layer):
+#     def forward(self, x):
+#         out, _ = x
+#         return out[:, -1, :]
 
 
-all_test_losses = ['SiameseLoss', 'TripletLoss']
+# def _run(framework_name, loss, port_expose):
+#     from finetuner import fit
+
+#     import torch
+
+#     model = torch.nn.Sequential(
+#         torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
+#         torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
+#         LastCellPT(),
+#         torch.nn.Linear(in_features=2 * 64, out_features=32),
+#     )
+
+#     rv1, rv2 = fit(
+#         model,
+#         generate_qa(num_total=10, num_neg=0),
+#         loss=loss,
+#         interactive=True,
+#         port_expose=port_expose,
+#     )
+
+#     assert rv1
+#     assert not rv2
 
 
-@pytest.mark.parametrize('loss', all_test_losses)
-def test_all_frameworks(framework, loss, tmpdir):
-    port = random_port()
-    p = multiprocessing.Process(
-        target=_run,
-        args=(
-            framework,
-            loss,
-            port,
-        ),
-    )
-    p.start()
-    try:
-        while True:
-            try:
-                req = requests.post(
-                    f'http://localhost:{port}/next',
-                    json={
-                        'data': [],
-                        'parameters': {
-                            'start': 0,
-                            'end': 1,
-                            'topk': 5,
-                            'sample_size': 10,
-                        },
-                    },
-                )
-                assert req.status_code == 200
-                assert req.json()['data']['docs']
-                break
-            except:
-                print('wait for ready...')
-                time.sleep(2)
+# all_test_losses = ['SiameseLoss', 'TripletLoss']
 
-        # mimic next page
-        req = requests.post(
-            f'http://localhost:{port}/next',
-            json={
-                'data': [],
-                'parameters': {'start': 0, 'end': 1, 'topk': 5, 'sample_size': 10},
-            },
-        )
-        assert req.status_code == 200
-        rj = req.json()
-        assert len(rj['data']['docs']) == 1
-        assert len(rj['data']['docs'][0]['matches']) >= 4
 
-        # mimic label & fit
-        for lbl_doc in rj['data']['docs']:
-            for m in lbl_doc['matches']:
-                m['finetuner'] = {'label': random.sample([-1, 1], 1)[0]}
+# @pytest.mark.parametrize('loss', all_test_losses)
+# def test_all_frameworks(framework, loss, tmpdir):
+#     port = random_port()
+#     p = multiprocessing.Process(
+#         target=_run,
+#         args=(
+#             framework,
+#             loss,
+#             port,
+#         ),
+#     )
+#     p.start()
+#     try:
+#         while True:
+#             try:
+#                 req = requests.post(
+#                     f'http://localhost:{port}/next',
+#                     json={
+#                         'data': [],
+#                         'parameters': {
+#                             'start': 0,
+#                             'end': 1,
+#                             'topk': 5,
+#                             'sample_size': 10,
+#                         },
+#                     },
+#                 )
+#                 assert req.status_code == 200
+#                 assert req.json()['data']['docs']
+#                 break
+#             except:
+#                 print('wait for ready...')
+#                 time.sleep(2)
 
-        req = requests.post(
-            f'http://localhost:{port}/fit',
-            json={'data': rj['data']['docs'], 'parameters': {'epochs': 10}},
-        )
-        assert req.status_code == 200
+#         # mimic next page
+#         req = requests.post(
+#             f'http://localhost:{port}/next',
+#             json={
+#                 'data': [],
+#                 'parameters': {'start': 0, 'end': 1, 'topk': 5, 'sample_size': 10},
+#             },
+#         )
+#         assert req.status_code == 200
+#         rj = req.json()
+#         assert len(rj['data']['docs']) == 1
+#         assert len(rj['data']['docs'][0]['matches']) >= 4
 
-        model_path = os.path.join(tmpdir, 'model.train')
-        req = requests.post(
-            f'http://localhost:{port}/save',
-            json={
-                'data': [],
-                'parameters': {'model_path': model_path},
-            },
-        )
-        assert req.status_code == 200
-        assert os.path.isfile(model_path)
+#         # mimic label & fit
+#         for lbl_doc in rj['data']['docs']:
+#             for m in lbl_doc['matches']:
+#                 m['finetuner'] = {'label': random.sample([-1, 1], 1)[0]}
 
-        req = requests.post(
-            f'http://localhost:{port}/terminate',
-            json={
-                'data': [],
-                'parameters': {},
-            },
-        )
-        assert req.status_code == 200
-        assert os.path.isfile(model_path)
+#         req = requests.post(
+#             f'http://localhost:{port}/fit',
+#             json={'data': rj['data']['docs'], 'parameters': {'epochs': 10}},
+#         )
+#         assert req.status_code == 200
 
-    except:
-        raise
-    finally:
-        p.terminate()
+#         model_path = os.path.join(tmpdir, 'model.train')
+#         req = requests.post(
+#             f'http://localhost:{port}/save',
+#             json={
+#                 'data': [],
+#                 'parameters': {'model_path': model_path},
+#             },
+#         )
+#         assert req.status_code == 200
+#         assert os.path.isfile(model_path)
+
+#         req = requests.post(
+#             f'http://localhost:{port}/terminate',
+#             json={
+#                 'data': [],
+#                 'parameters': {},
+#             },
+#         )
+#         assert req.status_code == 200
+#         assert os.path.isfile(model_path)
+
+#     except:
+#         raise
+#     finally:
+#         p.terminate()
