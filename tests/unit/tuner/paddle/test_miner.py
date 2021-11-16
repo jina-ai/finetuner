@@ -214,7 +214,7 @@ def test_class_miner_gpu(miner, labels):
 @pytest.mark.parametrize('miner', [SiameseSessionMiner, TripletSessionMiner])
 def test_session_miner_gpu(miner, session_labels):
     m = miner()
-    labels = [x.to('cuda') for x in session_labels]
+    labels = [paddle.to_tensor(x, place=paddle.CUDAPlace(0)) for x in session_labels]
     fake_dist = paddle.to_tensor(fake_dists(len(labels[0])), place=paddle.CUDAPlace(0))
     outputs = m.mine(labels, fake_dist)
 
