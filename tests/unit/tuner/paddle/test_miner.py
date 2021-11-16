@@ -204,7 +204,7 @@ def test_triplet_session_miner_given_insufficient_inputs(bad_labels):
 def test_class_miner_gpu(miner, labels):
     m = miner()
     fake_dist = paddle.to_tensor(fake_dists(len(labels)), place=paddle.CUDAPlace(0))
-    outputs = m.mine(labels.to('cuda'), fake_dist)
+    outputs = m.mine(paddle.to_tensor(labels, place=paddle.CUDAPlace(0)), fake_dist)
 
     for x in outputs:
         assert x.place.is_gpu_place()
