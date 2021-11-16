@@ -160,7 +160,7 @@ jobs:
           pytest -s -v -m gpu
         timeout-minutes: 20
         env:
-          TF_GPU_ALLOCATOR: cuda_malloc_async
+          TF_FORCE_GPU_ALLOW_GROWTH: true
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:
