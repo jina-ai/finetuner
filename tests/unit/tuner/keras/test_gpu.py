@@ -16,8 +16,8 @@ all_test_losses = [
 
 @pytest.mark.gpu
 @pytest.mark.parametrize('loss', all_test_losses)
-def test_gpu_keras(generate_random_triplets, loss, tf_gpu_config):
-    data = generate_random_triplets(4, 4)
+def test_gpu_keras(generate_random_data, loss, tf_gpu_config):
+    data = generate_random_data(4, 4)
     embed_model = tf.keras.models.Sequential()
     embed_model.add(tf.keras.layers.InputLayer(input_shape=(4,)))
     embed_model.add(tf.keras.layers.Dense(4))
