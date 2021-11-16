@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.0, furo 2021.11.16"/>
         <title>finetuner.helper - Finetuner 0.1.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=916d6ed8f59335acffa15474ff504849343d4c76" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.59c74d8c95b765a7fd995ac71d459ebe.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=16fb25fabf47304eee183a5e9af80b1ba98259b1" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=0af69da206d614734f649b27d4cdc2dd6c31f41d" />
     <link rel="stylesheet" type="text/css" href="../../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/docbot.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -304,7 +304,8 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.helper</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+<span></span><span class="kn">import</span> <span class="nn">importlib.util</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">TypeVar</span><span class="p">,</span>
     <span class="n">Sequence</span><span class="p">,</span>
     <span class="n">Iterator</span><span class="p">,</span>
@@ -358,14 +359,29 @@
 <span class="sd">    :return: `keras`, `torch`, `paddle` or ValueError</span>
 
 <span class="sd">    """</span>
-    <span class="k">if</span> <span class="s1">'keras'</span> <span class="ow">in</span> <span class="n">dnn_model</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">'keras'</span>
-    <span class="k">elif</span> <span class="s1">'torch'</span> <span class="ow">in</span> <span class="n">dnn_model</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>  <span class="c1"># note: cover torch and torchvision</span>
-        <span class="k">return</span> <span class="s1">'torch'</span>
-    <span class="k">elif</span> <span class="s1">'paddle'</span> <span class="ow">in</span> <span class="n">dnn_model</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">'paddle'</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'can not determine the backend of </span><span class="si">{</span><span class="n">dnn_model</span><span class="si">!r}</span><span class="s1">'</span><span class="p">)</span></div>
+
+    <span class="n">framework</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">'torch'</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">torch</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+            <span class="n">framework</span> <span class="o">=</span> <span class="s1">'torch'</span>
+    <span class="k">if</span> <span class="n">framework</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">'paddle'</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">paddle</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">,</span> <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
+            <span class="n">framework</span> <span class="o">=</span> <span class="s1">'paddle'</span>
+    <span class="k">if</span> <span class="n">framework</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">'tensorflow'</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">tensorflow</span> <span class="kn">import</span> <span class="n">keras</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">,</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
+            <span class="n">framework</span> <span class="o">=</span> <span class="s1">'keras'</span>
+
+    <span class="k">if</span> <span class="n">framework</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'can not determine the backend of </span><span class="si">{</span><span class="n">dnn_model</span><span class="si">!r}</span><span class="s1">'</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">framework</span></div>
 
 
 <div class="viewcode-block" id="is_seq_int"><a class="viewcode-back" href="../../../api/finetuner.helper/#finetuner.helper.is_seq_int">[docs]</a><span class="k">def</span> <span class="nf">is_seq_int</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -382,7 +398,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 10, 2021.
+                    Last updated on Nov 16, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
@@ -510,7 +526,7 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/scripts/main.js"></script>
+    <script src="../../../_static/scripts/furo.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>
     <script src="../../../_static/tabs.js"></script>

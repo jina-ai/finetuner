@@ -29,14 +29,14 @@
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tailor package" href="../finetuner.tailor/" /><link rel="prev" title="finetuner.labeler package" href="../finetuner.labeler/" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.0, furo 2021.11.16"/>
         <title>finetuner.labeler.executor module - Finetuner 0.1.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=916d6ed8f59335acffa15474ff504849343d4c76" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.59c74d8c95b765a7fd995ac71d459ebe.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=16fb25fabf47304eee183a5e9af80b1ba98259b1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=0af69da206d614734f649b27d4cdc2dd6c31f41d" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/docbot.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -332,7 +332,7 @@
 <span id="finetuner-labeler-executor-module"></span><h1>finetuner.labeler.executor module<a class="headerlink" href="#module-finetuner.labeler.executor" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.labeler.executor.FTExecutor">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.labeler.executor.</span></span><span class="sig-name descname"><span class="pre">FTExecutor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dam_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CosineSiameseLoss'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#FTExecutor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.FTExecutor" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.labeler.executor.</span></span><span class="sig-name descname"><span class="pre">FTExecutor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dam_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CosineSiameseLoss'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#FTExecutor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.FTExecutor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></p>
 <p><cite>metas</cite> and <cite>requests</cite> are always auto-filled with values from YAML config.</p>
 <dl class="field-list simple">
@@ -347,11 +347,11 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.labeler.executor.FTExecutor.get_embed_model">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">get_embed_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#FTExecutor.get_embed_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.FTExecutor.get_embed_model" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_embed_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#FTExecutor.get_embed_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.FTExecutor.get_embed_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.labeler.executor.FTExecutor.get_stop_event">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">get_stop_event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#FTExecutor.get_stop_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.FTExecutor.get_stop_event" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_stop_event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#FTExecutor.get_stop_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.FTExecutor.get_stop_event" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.labeler.executor.FTExecutor.embed">
@@ -371,12 +371,12 @@
 <dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="finetuner.labeler.executor.FTExecutor.requests">
-<span class="sig-name descname"><span class="pre">requests</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{'/fit':</span> <span class="pre">&lt;function</span> <span class="pre">FTExecutor.fit&gt;,</span> <span class="pre">'/next':</span> <span class="pre">&lt;function</span> <span class="pre">FTExecutor.embed&gt;,</span> <span class="pre">'/save':</span> <span class="pre">&lt;function</span> <span class="pre">FTExecutor.save&gt;,</span> <span class="pre">'/terminate':</span> <span class="pre">&lt;function</span> <span class="pre">FTExecutor.terminate&gt;}</span></em><a class="headerlink" href="#finetuner.labeler.executor.FTExecutor.requests" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">requests</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'/fit':</span> <span class="pre">&lt;function</span> <span class="pre">FTExecutor.fit&gt;,</span> <span class="pre">'/next':</span> <span class="pre">&lt;function</span> <span class="pre">FTExecutor.embed&gt;,</span> <span class="pre">'/save':</span> <span class="pre">&lt;function</span> <span class="pre">FTExecutor.save&gt;,</span> <span class="pre">'/terminate':</span> <span class="pre">&lt;function</span> <span class="pre">FTExecutor.terminate&gt;}</span></em><a class="headerlink" href="#finetuner.labeler.executor.FTExecutor.requests" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.labeler.executor.DataIterator">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.labeler.executor.</span></span><span class="sig-name descname"><span class="pre">DataIterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dam_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labeled_dam_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clear_labels_on_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#DataIterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.DataIterator" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.labeler.executor.</span></span><span class="sig-name descname"><span class="pre">DataIterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dam_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labeled_dam_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clear_labels_on_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/labeler/executor/#DataIterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.labeler.executor.DataIterator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></p>
 <p><cite>metas</cite> and <cite>requests</cite> are always auto-filled with values from YAML config.</p>
 <dl class="field-list simple">
@@ -403,7 +403,7 @@
 <dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="finetuner.labeler.executor.DataIterator.requests">
-<span class="sig-name descname"><span class="pre">requests</span></span><em class="property"> <span class="pre">=</span> <span class="pre">{'/feed':</span> <span class="pre">&lt;function</span> <span class="pre">DataIterator.store_data&gt;,</span> <span class="pre">'/fit':</span> <span class="pre">&lt;function</span> <span class="pre">DataIterator.add_fit_data&gt;,</span> <span class="pre">'/next':</span> <span class="pre">&lt;function</span> <span class="pre">DataIterator.take_batch&gt;}</span></em><a class="headerlink" href="#finetuner.labeler.executor.DataIterator.requests" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">requests</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'/feed':</span> <span class="pre">&lt;function</span> <span class="pre">DataIterator.store_data&gt;,</span> <span class="pre">'/fit':</span> <span class="pre">&lt;function</span> <span class="pre">DataIterator.add_fit_data&gt;,</span> <span class="pre">'/next':</span> <span class="pre">&lt;function</span> <span class="pre">DataIterator.take_batch&gt;}</span></em><a class="headerlink" href="#finetuner.labeler.executor.DataIterator.requests" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 </dd></dl>
 </section>
@@ -440,7 +440,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 10, 2021.
+                    Last updated on Nov 16, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
@@ -568,7 +568,7 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/scripts/main.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/tabs.js"></script>

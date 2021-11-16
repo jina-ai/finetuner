@@ -29,14 +29,14 @@
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.pytorch package" href="../finetuner.tuner.pytorch/" /><link rel="prev" title="finetuner.tuner.paddle.datasets module" href="../finetuner.tuner.paddle.datasets/" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.0, furo 2021.11.16"/>
         <title>finetuner.tuner.paddle.losses module - Finetuner 0.1.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=916d6ed8f59335acffa15474ff504849343d4c76" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.59c74d8c95b765a7fd995ac71d459ebe.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=16fb25fabf47304eee183a5e9af80b1ba98259b1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=0af69da206d614734f649b27d4cdc2dd6c31f41d" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/docbot.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -332,8 +332,8 @@
 <span id="finetuner-tuner-paddle-losses-module"></span><h1>finetuner.tuner.paddle.losses module<a class="headerlink" href="#module-finetuner.tuner.paddle.losses" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.CosineSiameseLoss">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.losses.</span></span><span class="sig-name descname"><span class="pre">CosineSiameseLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#CosineSiameseLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.CosineSiameseLoss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.nn.</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.losses.</span></span><span class="sig-name descname"><span class="pre">CosineSiameseLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#CosineSiameseLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.CosineSiameseLoss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.nn.Layer</span></code></p>
 <p>Computes the loss for a siamese network using cosine distance.</p>
 <p>The loss for a pair of objects equals <code class="docutils literal notranslate"><span class="pre">(target</span> <span class="pre">-</span> <span class="pre">cos_sim)^2</span></code>, where <code class="docutils literal notranslate"><span class="pre">target</span></code>
 should equal 1 when both objects belong to the same class, and to -1 when they
@@ -342,7 +342,7 @@ between both objects.</p>
 <p>The final loss is the average over losses for all pairs of objects in the batch.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.CosineSiameseLoss.arity">
-<span class="sig-name descname"><span class="pre">arity</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#finetuner.tuner.paddle.losses.CosineSiameseLoss.arity" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">arity</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#finetuner.tuner.paddle.losses.CosineSiameseLoss.arity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.CosineSiameseLoss.forward">
@@ -365,8 +365,8 @@ between both objects.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.EuclideanSiameseLoss">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.losses.</span></span><span class="sig-name descname"><span class="pre">EuclideanSiameseLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#EuclideanSiameseLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.EuclideanSiameseLoss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.nn.</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.losses.</span></span><span class="sig-name descname"><span class="pre">EuclideanSiameseLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#EuclideanSiameseLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.EuclideanSiameseLoss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.nn.Layer</span></code></p>
 <p>Computes the loss for a siamese network using eculidean distance.</p>
 <p>This loss is also known as contrastive loss.</p>
 <p>The loss being optimized equals:</p>
@@ -380,7 +380,7 @@ of training.</p>
 <p>The final loss is the average over losses for all pairs of objects in the batch.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.EuclideanSiameseLoss.arity">
-<span class="sig-name descname"><span class="pre">arity</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#finetuner.tuner.paddle.losses.EuclideanSiameseLoss.arity" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">arity</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#finetuner.tuner.paddle.losses.EuclideanSiameseLoss.arity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.EuclideanSiameseLoss.forward">
@@ -403,8 +403,8 @@ of training.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.EuclideanTripletLoss">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.losses.</span></span><span class="sig-name descname"><span class="pre">EuclideanTripletLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#EuclideanTripletLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.EuclideanTripletLoss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.nn.</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.losses.</span></span><span class="sig-name descname"><span class="pre">EuclideanTripletLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#EuclideanTripletLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.EuclideanTripletLoss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.nn.Layer</span></code></p>
 <p>Compute the loss for a triplet network using euclidean distance.</p>
 <p>The loss is computed as <code class="docutils literal notranslate"><span class="pre">max(dist_pos</span> <span class="pre">-</span> <span class="pre">dist_neg</span> <span class="pre">+</span> <span class="pre">margin,</span> <span class="pre">0)</span></code>, where <code class="docutils literal notranslate"><span class="pre">dist_pos</span></code>
 is the euclidean distance between the anchor embedding and positive embedding,
@@ -414,7 +414,7 @@ and anchor-positive distances.</p>
 <p>The final loss is the average over losses for all triplets in the batch.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.EuclideanTripletLoss.arity">
-<span class="sig-name descname"><span class="pre">arity</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#finetuner.tuner.paddle.losses.EuclideanTripletLoss.arity" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">arity</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#finetuner.tuner.paddle.losses.EuclideanTripletLoss.arity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.EuclideanTripletLoss.forward">
@@ -435,8 +435,8 @@ and anchor-positive distances.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.CosineTripletLoss">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.losses.</span></span><span class="sig-name descname"><span class="pre">CosineTripletLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#CosineTripletLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.CosineTripletLoss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.nn.</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.losses.</span></span><span class="sig-name descname"><span class="pre">CosineTripletLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/losses/#CosineTripletLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.losses.CosineTripletLoss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.base.BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.nn.Layer</span></code></p>
 <p>Compute the loss for a triplet network using cosine distance.</p>
 <p>The loss is computed as <code class="docutils literal notranslate"><span class="pre">max(dist_pos</span> <span class="pre">-</span> <span class="pre">dist_neg</span> <span class="pre">+</span> <span class="pre">margin,</span> <span class="pre">0)</span></code>, where <code class="docutils literal notranslate"><span class="pre">dist_pos</span></code>
 is the cosine distance between the anchor embedding and positive embedding,
@@ -446,7 +446,7 @@ anchor-positive distances.</p>
 <p>The final loss is the average over losses for all triplets in the batch.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.CosineTripletLoss.arity">
-<span class="sig-name descname"><span class="pre">arity</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#finetuner.tuner.paddle.losses.CosineTripletLoss.arity" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">arity</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#finetuner.tuner.paddle.losses.CosineTripletLoss.arity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.paddle.losses.CosineTripletLoss.forward">
@@ -499,7 +499,7 @@ anchor-positive distances.</p>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 10, 2021.
+                    Last updated on Nov 16, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
@@ -627,7 +627,7 @@ anchor-positive distances.</p>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/scripts/main.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/tabs.js"></script>
