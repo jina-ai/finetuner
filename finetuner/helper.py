@@ -1,3 +1,4 @@
+import importlib.util
 from typing import (
     TypeVar,
     Sequence,
@@ -52,14 +53,29 @@ def get_framework(dnn_model: AnyDNN) -> str:
     :return: `keras`, `torch`, `paddle` or ValueError
 
     """
-    if 'keras' in dnn_model.__module__:
-        return 'keras'
-    elif 'torch' in dnn_model.__module__:  # note: cover torch and torchvision
-        return 'torch'
-    elif 'paddle' in dnn_model.__module__:
-        return 'paddle'
-    else:
+
+    framework = None
+
+    if importlib.util.find_spec('torch'):
+        import torch
+
+        if isinstance(dnn_model, torch.nn.Module):
+            framework = 'torch'
+    if framework is None and importlib.util.find_spec('paddle'):
+        import paddle
+
+        if isinstance(dnn_model, paddle.nn.Layer):
+            framework = 'paddle'
+    if framework is None and importlib.util.find_spec('tensorflow'):
+        from tensorflow import keras
+
+        if isinstance(dnn_model, keras.layers.Layer):
+            framework = 'keras'
+
+    if framework is None:
         raise ValueError(f'can not determine the backend of {dnn_model!r}')
+
+    return framework
 
 
 def is_seq_int(tp) -> bool:
