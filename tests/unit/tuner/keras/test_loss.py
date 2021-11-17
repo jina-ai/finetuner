@@ -83,7 +83,8 @@ def test_compute_loss_given_insufficient_data(loss_cls):
     [SiameseLoss, TripletLoss],
 )
 def test_compute_loss_given_insufficient_data_gpu(loss_cls):
-    indices = [tf.constant([]) for _ in range(3)]
-    embeddings = tf.constant([[0.0, 0.1, 0.2, 0.4]])
-    with pytest.raises(ValueError):
-        loss_cls(distance='euclidean').compute(embeddings, indices)
+    with tf.device('/GPU:0'):
+        indices = [tf.constant([]) for _ in range(3)]
+        embeddings = tf.constant([[0.0, 0.1, 0.2, 0.4]])
+        with pytest.raises(ValueError):
+            loss_cls(distance='euclidean').compute(embeddings, indices)
