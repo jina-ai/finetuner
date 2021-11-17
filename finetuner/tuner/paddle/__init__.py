@@ -191,7 +191,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
 
         # Place model on device
         self.device, device_name = get_device(device)
-        paddle.set_device(device_name)
+        self._embed_model.to(device=self.device)
 
         # Get optimizer
         optimizer = optimizer or self._get_default_optimizer(learning_rate)
@@ -232,9 +232,9 @@ def get_device(device: str):
 
     # translate our own alias into framework-compatible ones
     if device == 'cuda':
-        return paddle.CUDAPlace(0), 'gpu:0'
+        return paddle.CUDAPlace(0),
     elif device == 'cpu':
-        return paddle.CPUPlace(), 'cpu'
+        return paddle.CPUPlace(),
     else:
         raise ValueError(
             f'Device {device} not recognized, only "cuda" and "cpu" are accepted'
