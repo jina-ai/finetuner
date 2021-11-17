@@ -60,3 +60,12 @@ def test_compute(loss_cls, indices, exp_result):
     embeddings = torch.tensor([[0.1, 0.1], [0.2, 0.2], [0.4, 0.4], [0.7, 0.7]])
     result = loss_cls(distance='euclidean').compute(embeddings, indices)
     np.testing.assert_almost_equal(result.item(), exp_result, decimal=5)
+
+
+def test_compute_loss_given_insufficient_data():
+    pass
+
+
+@pytest.mark.gpu
+def test_compute_loss_given_insufficient_data_gpu():
+    pass
