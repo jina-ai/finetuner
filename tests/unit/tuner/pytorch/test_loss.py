@@ -79,7 +79,7 @@ def test_compute_loss_given_insufficient_data(loss_cls):
     [SiameseLoss, TripletLoss],
 )
 def test_compute_loss_given_insufficient_data_gpu(loss_cls):
-    indices = [torch.tensor([]) for _ in range(3)]
-    embeddings = torch.tensor([[0.0, 0.1, 0.2, 0.4]])
+    indices = [torch.tensor([]).to('cuda') for _ in range(3)]
+    embeddings = torch.tensor([[0.0, 0.1, 0.2, 0.4]]).to('cuda')
     with pytest.raises(ValueError):
         loss_cls(distance='euclidean').compute(embeddings, indices)

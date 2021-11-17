@@ -79,7 +79,7 @@ def test_compute_loss_given_insufficient_data(loss_cls):
     [SiameseLoss, TripletLoss],
 )
 def test_compute_loss_given_insufficient_data_gpu(loss_cls):
-    indices = [paddle.to_tensor([]) for _ in range(3)]
-    embeddings = paddle.to_tensor([[0.0, 0.1, 0.2, 0.4]])
+    indices = [paddle.to_tensor([], place=paddle.CUDAPlace(0)) for _ in range(3)]
+    embeddings = paddle.to_tensor([[0.0, 0.1, 0.2, 0.4]], place=paddle.CUDAPlace(0))
     with pytest.raises(ValueError):
         loss_cls(distance='euclidean').compute(embeddings, indices)
