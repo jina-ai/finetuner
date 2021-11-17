@@ -63,7 +63,7 @@ The best place to do this is when "collating" all the items together into a batc
 
 We can do this by constructing a collation function that we will later pass to the `fit` function
 
-```{python}
+```python
 from typing import List
 from transformers import AutoTokenizer
 
