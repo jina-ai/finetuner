@@ -26,6 +26,14 @@ class FTExecutor(Executor):
         ...
 
     @abc.abstractmethod
+    def get_preprocess_fn(self):
+        ...
+
+    @abc.abstractmethod
+    def get_collate_fn(self):
+        ...
+
+    @abc.abstractmethod
     def get_stop_event(self):
         ...
 
@@ -42,8 +50,18 @@ class FTExecutor(Executor):
             min(len(self._all_data), int(parameters.get('sample_size', 1000)))
         )
 
-        embed(docs, self._embed_model)
-        embed(_catalog, self._embed_model)
+        embed(
+            docs,
+            self._embed_model,
+            preprocess_fn=self.get_preprocess_fn(),
+            collate_fn=self.get_collate_fn(),
+        )
+        embed(
+            _catalog,
+            self._embed_model,
+            preprocess_fn=self.get_preprocess_fn(),
+            collate_fn=self.get_collate_fn(),
+        )
 
         docs.match(
             _catalog,
@@ -61,6 +79,8 @@ class FTExecutor(Executor):
             docs,
             epochs=int(parameters.get('epochs', 10)),
             loss=self._loss,
+            preprocess_fn=self.get_preprocess_fn(),
+            collate_fn=self.get_collate_fn(),
         )
 
     @requests(on='/save')
