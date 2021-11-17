@@ -60,3 +60,26 @@ def test_compute(loss_cls, indices, exp_result):
     embeddings = torch.tensor([[0.1, 0.1], [0.2, 0.2], [0.4, 0.4], [0.7, 0.7]])
     result = loss_cls(distance='euclidean').compute(embeddings, indices)
     np.testing.assert_almost_equal(result.item(), exp_result, decimal=5)
+
+
+@pytest.mark.parametrize(
+    'loss_cls',
+    [SiameseLoss, TripletLoss],
+)
+def test_compute_loss_given_insufficient_data(loss_cls):
+    indices = [torch.tensor([]) for _ in range(3)]
+    embeddings = torch.tensor([[0.0, 0.1, 0.2, 0.4]])
+    with pytest.raises(ValueError):
+        loss_cls(distance='euclidean').compute(embeddings, indices)
+
+
+@pytest.mark.gpu
+@pytest.mark.parametrize(
+    'loss_cls',
+    [SiameseLoss, TripletLoss],
+)
+def test_compute_loss_given_insufficient_data_gpu(loss_cls):
+    indices = [torch.tensor([]).to('cuda') for _ in range(3)]
+    embeddings = torch.tensor([[0.0, 0.1, 0.2, 0.4]]).to('cuda')
+    with pytest.raises(ValueError):
+        loss_cls(distance='euclidean').compute(embeddings, indices)

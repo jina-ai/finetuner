@@ -60,3 +60,26 @@ def test_compute(loss_cls, indices, exp_result):
     embeddings = paddle.to_tensor([[0.1, 0.1], [0.2, 0.2], [0.4, 0.4], [0.7, 0.7]])
     result = loss_cls(distance='euclidean').compute(embeddings, indices)
     np.testing.assert_almost_equal(result.item(), exp_result, decimal=5)
+
+
+@pytest.mark.parametrize(
+    'loss_cls',
+    [SiameseLoss, TripletLoss],
+)
+def test_compute_loss_given_insufficient_data(loss_cls):
+    indices = [paddle.to_tensor([]) for _ in range(3)]
+    embeddings = paddle.to_tensor([[0.0, 0.1, 0.2, 0.4]])
+    with pytest.raises(ValueError):
+        loss_cls(distance='euclidean').compute(embeddings, indices)
+
+
+@pytest.mark.gpu
+@pytest.mark.parametrize(
+    'loss_cls',
+    [SiameseLoss, TripletLoss],
+)
+def test_compute_loss_given_insufficient_data_gpu(loss_cls):
+    indices = [paddle.to_tensor([], place=paddle.CUDAPlace(0)) for _ in range(3)]
+    embeddings = paddle.to_tensor([[0.0, 0.1, 0.2, 0.4]], place=paddle.CUDAPlace(0))
+    with pytest.raises(ValueError):
+        loss_cls(distance='euclidean').compute(embeddings, indices)

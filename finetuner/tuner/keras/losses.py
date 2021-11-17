@@ -6,6 +6,10 @@ from ..base import BaseLoss, BaseMiner
 from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
 
 
+def _is_tensor_empty(tensor: tf.Tensor):
+    return bool(tf.equal(tf.size(tensor), 0))
+
+
 def get_distance(embeddings: tf.Tensor, distance: str) -> tf.Tensor:
     """Get a matrix of pairwise distances between the embeddings"""
 
@@ -94,6 +98,12 @@ class SiameseLoss(KerasLoss):
             are dissimilar)
         """
         ind_one, ind_two, target = indices
+        if (
+            _is_tensor_empty(ind_one)
+            or _is_tensor_empty(ind_two)
+            or _is_tensor_empty(target)
+        ):
+            raise ValueError('Got empty tuple/triplets from your dataset.')
         dist_matrix = get_distance(embeddings, self.distance)
         ind_slice = tf.transpose([ind_one, ind_two])
         dists = tf.gather_nd(dist_matrix, indices=[ind_slice])
@@ -158,6 +168,12 @@ class TripletLoss(KerasLoss):
             match in the embeddings tensor
         """
         ind_anch, ind_pos, ind_neg = indices
+        if (
+            _is_tensor_empty(ind_anch)
+            or _is_tensor_empty(ind_pos)
+            or _is_tensor_empty(ind_neg)
+        ):
+            raise ValueError('Got empty tuple/triplets from your dataset.')
 
         dist_matrix = get_distance(embeddings, self.distance)
         ind_slice_pos = tf.transpose([ind_anch, ind_pos])

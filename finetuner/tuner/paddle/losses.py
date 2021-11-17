@@ -8,6 +8,10 @@ from ..base import BaseLoss, BaseMiner
 from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
 
 
+def _is_tensor_empty(tensor: paddle.Tensor):
+    return bool(tensor.is_empty())
+
+
 def get_distance(embeddings: paddle.Tensor, distance: str) -> paddle.Tensor:
     """Get a matrix of pairwise distances between the embedings"""
 
@@ -91,6 +95,12 @@ class SiameseLoss(PaddleLoss):
             are dissimilar)
         """
         ind_one, ind_two, target = indices
+        if (
+            _is_tensor_empty(ind_one)
+            or _is_tensor_empty(ind_two)
+            or _is_tensor_empty(target)
+        ):
+            raise ValueError('Got empty tuple/triplets from your dataset.')
         dist_matrix = get_distance(embeddings, self.distance)
         ind_slice = paddle.stack([ind_one, ind_two]).t()
         dists = paddle.gather_nd(dist_matrix, index=ind_slice)
@@ -153,6 +163,12 @@ class TripletLoss(PaddleLoss):
             match in the embeddings tensor
         """
         ind_anch, ind_pos, ind_neg = indices
+        if (
+            _is_tensor_empty(ind_anch)
+            or _is_tensor_empty(ind_pos)
+            or _is_tensor_empty(ind_neg)
+        ):
+            raise ValueError('Got empty tuple/triplets from your dataset.')
 
         dist_matrix = get_distance(embeddings, self.distance)
         ind_slice_pos = paddle.stack([ind_anch, ind_pos]).t()
