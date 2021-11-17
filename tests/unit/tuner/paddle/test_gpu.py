@@ -6,19 +6,14 @@ from finetuner.embedding import embed
 from finetuner.toydata import generate_fashion
 from finetuner.tuner.paddle import PaddleTuner
 
-all_test_losses = [
-    'CosineSiameseLoss',
-    'CosineTripletLoss',
-    'EuclideanSiameseLoss',
-    'EuclideanTripletLoss',
-]
+all_test_losses = ['SiameseLoss', 'TripletLoss']
 
 
 @pytest.mark.gpu
 @pytest.mark.parametrize('loss', all_test_losses)
-def test_gpu_paddle(generate_random_triplets, loss):
+def test_gpu_paddle(generate_random_data, loss):
 
-    data = generate_random_triplets(4, 4)
+    data = generate_random_data(40, 4)
 
     embed_model = nn.Sequential(
         nn.Linear(in_features=4, out_features=4),
@@ -26,7 +21,7 @@ def test_gpu_paddle(generate_random_triplets, loss):
 
     tuner = PaddleTuner(embed_model, loss=loss)
 
-    tuner.fit(data, data, epochs=2, batch_size=4, device='cuda')
+    tuner.fit(data, data, epochs=2, batch_size=8, device='cuda')
 
     for param in tuner.embed_model.parameters():
         assert str(param.place) == 'CUDAPlace(0)'

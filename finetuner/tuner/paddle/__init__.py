@@ -44,7 +44,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
         preprocess_fn: Optional[Callable],
         collate_fn: Optional[Callable],
     ) -> DataLoader:
-        """ Get the dataloader for the dataset"""
+        """Get the dataloader for the dataset"""
 
         if collate_fn:
 

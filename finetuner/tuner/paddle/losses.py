@@ -8,19 +8,6 @@ from ..base import BaseLoss, BaseMiner
 from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
 
 
-def _take_inds(
-    matrix: paddle.Tensor, ind_one: paddle.Tensor, ind_two: paddle.Tensor
-) -> paddle.Tensor:
-    """
-    Take individual values from the matrix - here because paddle has bad support for
-    indexing
-    """
-    flat = matrix.flatten()
-    flat_ind = ind_one * matrix.shape[1] + ind_two
-
-    return paddle.index_select(flat, flat_ind)
-
-
 def get_distance(embeddings: paddle.Tensor, distance: str) -> paddle.Tensor:
     """Get a matrix of pairwise distances between the embedings"""
 
@@ -41,7 +28,7 @@ def get_distance(embeddings: paddle.Tensor, distance: str) -> paddle.Tensor:
 
 
 class PaddleLoss(nn.Layer, BaseLoss[paddle.Tensor]):
-    """ Base class for all paddle losses."""
+    """Base class for all paddle losses."""
 
     def forward(
         self,
@@ -105,7 +92,8 @@ class SiameseLoss(PaddleLoss):
         """
         ind_one, ind_two, target = indices
         dist_matrix = get_distance(embeddings, self.distance)
-        dists = _take_inds(dist_matrix, ind_one, ind_two)
+        ind_slice = paddle.stack([ind_one, ind_two]).t()
+        dists = paddle.gather_nd(dist_matrix, index=ind_slice)
         target = paddle.cast(target, "float32")
 
         loss = target * dists + (1 - target) * F.relu(self.margin - dists)
@@ -167,8 +155,11 @@ class TripletLoss(PaddleLoss):
         ind_anch, ind_pos, ind_neg = indices
 
         dist_matrix = get_distance(embeddings, self.distance)
-        dist_pos = _take_inds(dist_matrix, ind_anch, ind_pos)
-        dist_neg = _take_inds(dist_matrix, ind_anch, ind_neg)
+        ind_slice_pos = paddle.stack([ind_anch, ind_pos]).t()
+        ind_slice_neg = paddle.stack([ind_anch, ind_neg]).t()
+
+        dist_pos = paddle.gather_nd(dist_matrix, index=ind_slice_pos)
+        dist_neg = paddle.gather_nd(dist_matrix, index=ind_slice_neg)
         loss = F.relu(dist_pos - dist_neg + self.margin)
 
         return loss.mean()

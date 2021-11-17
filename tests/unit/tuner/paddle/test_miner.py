@@ -204,7 +204,7 @@ def test_triplet_session_miner_given_insufficient_inputs(bad_labels):
 def test_class_miner_gpu(miner, labels):
     m = miner()
     fake_dist = paddle.to_tensor(fake_dists(len(labels)), place=paddle.CUDAPlace(0))
-    outputs = m.mine(labels.to('cuda'), fake_dist)
+    outputs = m.mine(paddle.to_tensor(labels, place=paddle.CUDAPlace(0)), fake_dist)
 
     for x in outputs:
         assert x.place.is_gpu_place()
@@ -214,7 +214,7 @@ def test_class_miner_gpu(miner, labels):
 @pytest.mark.parametrize('miner', [SiameseSessionMiner, TripletSessionMiner])
 def test_session_miner_gpu(miner, session_labels):
     m = miner()
-    labels = [x.to('cuda') for x in session_labels]
+    labels = [paddle.to_tensor(x, place=paddle.CUDAPlace(0)) for x in session_labels]
     fake_dist = paddle.to_tensor(fake_dists(len(labels[0])), place=paddle.CUDAPlace(0))
     outputs = m.mine(labels, fake_dist)
 

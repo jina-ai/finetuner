@@ -209,4 +209,4 @@ def test_class_miner_gpu(miner, labels, tf_gpu_config):
 def test_session_miner_gpu(miner, session_labels, tf_gpu_config):
     with tf.device('/GPU:0'):
         m = miner()
-        _ = m.mine(labels, fake_dists(len(labels[0])))
+        _ = m.mine(session_labels, fake_dists(len(session_labels[0])))
