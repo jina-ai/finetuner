@@ -23,7 +23,7 @@ def get_distance(embeddings: torch.Tensor, distance: str) -> torch.Tensor:
 
 
 class PytorchLoss(nn.Module, BaseLoss[torch.Tensor]):
-    """ Base class for all pytorch losses."""
+    """Base class for all pytorch losses."""
 
     def forward(
         self,
@@ -88,6 +88,8 @@ class SiameseLoss(PytorchLoss):
             are dissimilar)
         """
         ind_one, ind_two, target = indices
+        if ind_one.nelement() == 0 or ind_two.nelement() == 0 or target.nelement() == 0:
+            raise ValueError('Got empty tuple/triplets from your dataset.')
         dist_matrix = get_distance(embeddings, self.distance)
         dists = dist_matrix[ind_one, ind_two]
         target = target.to(torch.float32)
@@ -151,6 +153,12 @@ class TripletLoss(PytorchLoss):
             match in the embeddings tensor
         """
         ind_anch, ind_pos, ind_neg = indices
+        if (
+            ind_anch.nelement() == 0
+            or ind_pos.nelement() == 0
+            or ind_neg.nelement() == 0
+        ):
+            raise ValueError('Got empty tuple/triplets from your dataset.')
 
         dist_matrix = get_distance(embeddings, self.distance)
         dist_pos = dist_matrix[ind_anch, ind_pos]
