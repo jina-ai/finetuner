@@ -6,7 +6,7 @@ from keras.engine.data_adapter import KerasSequenceAdapter
 from tensorflow.keras.optimizers import Optimizer
 
 from . import losses
-from .datasets import KerasDataSequence
+from .data import KerasDataSequence
 from ..base import BaseTuner, BaseLoss
 from ..dataset import ClassDataset, SessionDataset
 from ..summary import ScalarSequence, Summary
