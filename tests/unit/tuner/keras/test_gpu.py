@@ -12,14 +12,14 @@ all_test_losses = ['SiameseLoss', 'TripletLoss']
 @pytest.mark.gpu
 @pytest.mark.parametrize('loss', all_test_losses)
 def test_gpu_keras(generate_random_data, loss, tf_gpu_config):
-    data = generate_random_data(4, 4)
+    data = generate_random_data(40, 4)
     embed_model = tf.keras.models.Sequential()
     embed_model.add(tf.keras.layers.InputLayer(input_shape=(4,)))
     embed_model.add(tf.keras.layers.Dense(4))
 
     tuner = KerasTuner(embed_model, loss)
 
-    tuner.fit(data, data, epochs=2, batch_size=4, device='cuda')
+    tuner.fit(data, data, epochs=2, batch_size=8, device='cuda')
 
 
 @pytest.mark.gpu
