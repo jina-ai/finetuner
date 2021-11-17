@@ -66,10 +66,24 @@ def test_compute(loss_cls, indices, exp_result):
     np.testing.assert_almost_equal(result.numpy(), exp_result, decimal=5)
 
 
-def test_compute_loss_given_insufficient_data():
-    pass
+@pytest.mark.parametrize(
+    'loss_cls',
+    [SiameseLoss, TripletLoss],
+)
+def test_compute_loss_given_insufficient_data(loss_cls):
+    indices = [tf.constant([]) for _ in range(3)]
+    embeddings = tf.constant([[0.0, 0.1, 0.2, 0.4]])
+    with pytest.raises(ValueError):
+        loss_cls(distance='euclidean').compute(embeddings, indices)
 
 
 @pytest.mark.gpu
-def test_compute_loss_given_insufficient_data_gpu():
-    pass
+@pytest.mark.parametrize(
+    'loss_cls',
+    [SiameseLoss, TripletLoss],
+)
+def test_compute_loss_given_insufficient_data_gpu(loss_cls):
+    indices = [tf.constant([]) for _ in range(3)]
+    embeddings = tf.constant([[0.0, 0.1, 0.2, 0.4]])
+    with pytest.raises(ValueError):
+        loss_cls(distance='euclidean').compute(embeddings, indices)
