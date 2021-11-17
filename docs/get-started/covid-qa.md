@@ -1,4 +1,4 @@
-# Finetuning Bi-LSTM for Question-Answering
+# Finetuning a Transformer for Question-Answering
 
 ```{tip}
 This example is inspired by [`jina hello chatbot`](https://docs.jina.ai/get-started/hello-world/covid-19-chatbot/). We stronly recommend you to checkout that demo first before go through this tutorial.
@@ -88,18 +88,15 @@ Finally, let's feed the model and the data into the Finetuner:
 import finetuner
 
 finetuner.fit(
-   embed_model,
-   train_data=generate_qa(num_neg=8),
+   TransformerEmbedder(),
+   train_data=generate_qa(),
+   collate_fn=collate_fn,
    interactive=True)
 ```
 
 ## Label interactively
 
-From the left bar, select `text` as the view.
-
-In the content, select `.tags` and then fill in `question` to tell the UI to render text from `Document.tags['question']`. 
-
-You can now label the data by mouse/keyboard. The model will get trained and improved as you are labeling.
+From the left bar, select `.text` as the Field. You can now label the data by mouse/keyboard. The model will get trained and improved as you are labeling.
 
 ```{figure} covid-labeler.gif
 :align: center
