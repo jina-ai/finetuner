@@ -146,13 +146,15 @@ tuned_model, _ = finetuner.fit(
     ```python
     from jina.types.document.generators import from_files
 
-    def data_gen():
-        for d in from_files('./img_align_celeba/*.jpg', size=100, to_dataturi=True):
-            yield (d.convert_uri_to_image_blob()
-               .set_image_blob_normalization()
-               .set_image_blob_shape(shape=(224, 224))
-               .set_image_blob_channel_axis(-1, new_channel_axis=0)  #: no need of this line if you are using tf/keras
-               )
+    # please change the file path to your data path
+    data = list(from_files('img_align_celeba/*.jpg', size=100, to_dataturi=True))
+
+    for doc in data:
+        doc.load_uri_to_image_blob(
+            height=224, width=224
+        ).set_image_blob_normalization().set_image_blob_channel_axis(
+            -1, 0
+        )  # No need for changing channel axes line if you are using tf/keras
     ```
 3. Load pretrained ResNet50 using PyTorch/Keras/Paddle:
     - PyTorch
@@ -177,7 +179,7 @@ tuned_model, _ = finetuner.fit(
     finetuner.fit(
         model=model,
         interactive=True,
-        train_data=data_gen,
+        train_data=data,
         freeze=True,
         to_embedding_model=True,
         input_size=(3, 224, 224),
