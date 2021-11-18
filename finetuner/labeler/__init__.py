@@ -45,7 +45,10 @@ def fit(
 
     # Remove all labels, as they are not needed
     for doc in train_data:
-        doc.tags.pop(__default_tag_key__, None)
+        try:
+            del doc.tags[__default_tag_key__]
+        except:
+            pass
 
     class MyExecutor(FTExecutor):
         def get_embed_model(self):
