@@ -1,7 +1,7 @@
-finetuner.tuner.paddle.miner module
+finetuner.tuner.keras.losses module
 ===================================
 
-.. automodule:: finetuner.tuner.paddle.miner
+.. automodule:: finetuner.tuner.keras.losses
    :members:
    :undoc-members:
    :show-inheritance:
