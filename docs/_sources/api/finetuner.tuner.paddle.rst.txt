@@ -9,6 +9,7 @@ Submodules
 
    finetuner.tuner.paddle.datasets
    finetuner.tuner.paddle.losses
+   finetuner.tuner.paddle.miner
 
 Module contents
 ---------------

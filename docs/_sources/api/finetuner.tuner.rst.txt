@@ -9,6 +9,7 @@ Subpackages
 
    finetuner.tuner.dataset
    finetuner.tuner.keras
+   finetuner.tuner.miner
    finetuner.tuner.paddle
    finetuner.tuner.pytorch
 

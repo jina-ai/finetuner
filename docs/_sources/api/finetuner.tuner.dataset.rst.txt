@@ -7,7 +7,6 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   finetuner.tuner.dataset.helper
    finetuner.tuner.dataset.samplers
 
 Module contents

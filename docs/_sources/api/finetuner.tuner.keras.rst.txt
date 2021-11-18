@@ -7,8 +7,9 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   finetuner.tuner.keras.datasets
+   finetuner.tuner.keras.data
    finetuner.tuner.keras.losses
+   finetuner.tuner.keras.miner
 
 Module contents
 ---------------

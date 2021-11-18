@@ -4,11 +4,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta property="og:title" content="Finetuning Bi-LSTM for Question-Answering" />
+  <meta property="og:title" content="Finetuning a Transformer for Question-Answering" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/get-started/covid-qa.html" />
   <meta property="og:site_name" content="Finetuner Documentation" />
-  <meta property="og:description" content="In this example, we want to “tune” the 32-dim embedding vectors from a bidirectional LSTM on Covid19 QA data, the same dataset that we are using in jina hello chatbot. Precisely, “tuning” means: we set up a Jina search pipeline and will look at the top-K semantically similar questions;, we accept..." />
+  <meta property="og:description" content="In this example, we want to “tune” a transformer model on Covid19 QA data, the same dataset that we are using in jina hello chatbot. Precisely, “tuning” means: we set up a Jina search pipeline and will look at the top-K semantically similar questions;, we accept or reject the results based on the..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -31,7 +31,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Finetuning Pretrained ResNet for Celebrity Face Search" href="../celeba/" /><link rel="prev" title="Finetuning MLP for Fashion Image Search" href="../fashion-mnist/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.0, furo 2021.11.16"/>
-        <title>Finetuning Bi-LSTM for Question-Answering - Finetuner 0.1.6 documentation</title>
+        <title>Finetuning a Transformer for Question-Answering - Finetuner 0.1.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=916d6ed8f59335acffa15474ff504849343d4c76" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -216,7 +216,7 @@
     <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../fashion-mnist/">Finetuning MLP for Fashion Image Search</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Finetuning Bi-LSTM for Question-Answering</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Finetuning a Transformer for Question-Answering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../celeba/">Finetuning Pretrained ResNet for Celebrity Face Search</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
@@ -248,21 +248,26 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.tuner/">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.keras.datasets/">finetuner.tuner.keras.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.keras.data/">finetuner.tuner.keras.data module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.keras.losses/">finetuner.tuner.keras.losses module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.keras.miner/">finetuner.tuner.keras.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.miner.base/">finetuner.tuner.miner.base module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.paddle.miner/">finetuner.tuner.paddle.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.pytorch.datasets/">finetuner.tuner.pytorch.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.pytorch.losses/">finetuner.tuner.pytorch.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.pytorch.miner/">finetuner.tuner.pytorch.miner module</a></li>
@@ -329,13 +334,13 @@
                         </i>
                     </label>
                 </div>
-                <section class="tex2jax_ignore mathjax_ignore" id="finetuning-bi-lstm-for-question-answering">
-<h1>Finetuning Bi-LSTM for Question-Answering<a class="headerlink" href="#finetuning-bi-lstm-for-question-answering" title="Permalink to this headline">¶</a></h1>
+                <section class="tex2jax_ignore mathjax_ignore" id="finetuning-a-transformer-for-question-answering">
+<h1>Finetuning a Transformer for Question-Answering<a class="headerlink" href="#finetuning-a-transformer-for-question-answering" title="Permalink to this headline">¶</a></h1>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>This example is inspired by <a class="reference external" href="https://docs.jina.ai/get-started/hello-world/covid-19-chatbot/"><code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">hello</span> <span class="pre">chatbot</span></code></a>. We stronly recommend you to checkout that demo first before go through this tutorial.</p>
 </div>
-<p>In this example, we want to “tune” the 32-dim embedding vectors from a bidirectional LSTM on Covid19 QA data, the same dataset that we are using in <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">hello</span> <span class="pre">chatbot</span></code>.</p>
+<p>In this example, we want to “tune” a transformer model on Covid19 QA data, the same dataset that we are using in <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">hello</span> <span class="pre">chatbot</span></code>.</p>
 <p>Precisely, “tuning” means:</p>
 <ul class="simple">
 <li><p>we set up a Jina search pipeline and will look at the top-K semantically similar questions;</p></li>
@@ -345,65 +350,52 @@
 <p>Hopefully the procedure converges after several rounds and we get a tuned embedding for better search tasks.</p>
 <section id="build-embedding-model">
 <h2>Build embedding model<a class="headerlink" href="#build-embedding-model" title="Permalink to this headline">¶</a></h2>
-<p>Let’s write a 2-layer MLP as our <span class="xref std std-ref">embedding model</span> using any of the following frameworks:</p>
-<div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">PyTorch</label><div class="tab-content docutils">
+<p>Let’s create a transformers model as our <span class="xref std std-ref">embedding model</span>, where we will use the <code class="docutils literal notranslate"><span class="pre">[CLS]</span></code> token as the embedding:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModel</span>
+
+<span class="n">TRANSFORMER_MODEL</span> <span class="o">=</span> <span class="s1">'sentence-transformers/paraphrase-MiniLM-L6-v2'</span>
 
 
-<span class="k">class</span> <span class="nc">LastCell</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="n">out</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x</span>
-        <span class="k">return</span> <span class="n">out</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+<span class="k">class</span> <span class="nc">TransformerEmbedder</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">TRANSFORMER_MODEL</span><span class="p">)</span>
 
-
-<span class="n">embed_model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
-    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_embeddings</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
-    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-    <span class="n">LastCell</span><span class="p">(),</span>
-    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="mi">64</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="n">out_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">cls_token</span> <span class="o">=</span> <span class="n">out_model</span><span class="o">.</span><span class="n">last_hidden_state</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">return</span> <span class="n">cls_token</span>
 </pre></div>
-</div>
-</div>
-<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">Keras</label><div class="tab-content docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
-
-<span class="n">embed_model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
-    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
-    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Bidirectional</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">64</span><span class="p">)),</span>
-    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">)])</span>
-</pre></div>
-</div>
-</div>
-<input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--3">Paddle</label><div class="tab-content docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">paddle</span>
-
-
-<span class="k">class</span> <span class="nc">LastCell</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="n">out</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x</span>
-        <span class="k">return</span> <span class="n">out</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
-
-
-<span class="n">embed_model</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
-    <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_embeddings</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
-    <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">'bidirectional'</span><span class="p">),</span>
-    <span class="n">LastCell</span><span class="p">(),</span>
-    <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="mi">64</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
 </div>
 </section>
 <section id="prepare-data">
 <h2>Prepare data<a class="headerlink" href="#prepare-data" title="Permalink to this headline">¶</a></h2>
 <p>Now prepare CovidQA data for the Finetuner. Note that Finetuner accepts Jina <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>/<code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>, so we first convert the data into this format.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.toydata</span> <span class="kn">import</span> <span class="n">generate_qa_match</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.toydata</span> <span class="kn">import</span> <span class="n">generate_qa</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">generate_qa_match</span></code> is a generator that yields every question as a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object.
-It also codes and pads the question into a 100-dimensional array, which is stored in <code class="docutils literal notranslate"><span class="pre">blob</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&lt;jina.types.document.Document <span class="nv">id</span><span class="o">=</span>dc315d50-1bae-11ec-b32d-1e008a366d49 <span class="nv">tags</span><span class="o">={</span><span class="s1">'wrong_answer'</span>: <span class="s2">"If you have been in...', 'answer': 'Your doctor ...'} blob={'dense': {'buffer': 'AAAAAAAAAAAAAAAA...', 'shape': [100], 'dtype': '&lt;i8'}} at 5794172560&gt;</span>
+<p><code class="docutils literal notranslate"><span class="pre">generate_qa</span></code> is a generator that yields every question as a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&lt;jina.types.document.Document <span class="nv">id</span><span class="o">=</span>dc315d50-1bae-11ec-b32d-1e008a366d49 <span class="nv">tags</span><span class="o">={</span><span class="s1">'wrong_answer'</span>: <span class="s2">"If you have been in...', 'answer': 'Your doctor ...'} at 5794172560&gt;</span>
+</pre></div>
+</div>
+<p>Now, here each <code class="docutils literal notranslate"><span class="pre">Document</span></code> will have only a <code class="docutils literal notranslate"><span class="pre">text</span></code> attribute, but, as we know, transformers need tokens as inputs. So we need to transform the inputs into tokens before feeding them to the model.</p>
+<p>The best place to do this is when “collating” all the items together into a batch. This enables us to dynamically pad the batch to the length of the largest example in the batch, and not the maximum length allowed in the model - which makes the model run faster and consume less memory.</p>
+<p>We can do this by constructing a collation function that we will later pass to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span>
+
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">TRANSFORMER_MODEL</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">collate_fn</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="n">batch_tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span>
+        <span class="n">inputs</span><span class="p">,</span>
+        <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+        <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">return_tensors</span><span class="o">=</span><span class="s1">'pt'</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">batch_tokens</span>
 </pre></div>
 </div>
 </section>
@@ -413,17 +405,16 @@ It also codes and pads the question into a 100-dimensional array, which is store
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-   <span class="n">embed_model</span><span class="p">,</span>
-   <span class="n">train_data</span><span class="o">=</span><span class="n">generate_qa_match</span><span class="p">(),</span>
+   <span class="n">TransformerEmbedder</span><span class="p">(),</span>
+   <span class="n">train_data</span><span class="o">=</span><span class="n">generate_qa</span><span class="p">(),</span>
+   <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">,</span>
    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="label-interactively">
 <h2>Label interactively<a class="headerlink" href="#label-interactively" title="Permalink to this headline">¶</a></h2>
-<p>From the left bar, select <code class="docutils literal notranslate"><span class="pre">text</span></code> as the view.</p>
-<p>In the content, select <code class="docutils literal notranslate"><span class="pre">.tags</span></code> and then fill in <code class="docutils literal notranslate"><span class="pre">question</span></code> to tell the UI to render text from <code class="docutils literal notranslate"><span class="pre">Document.tags['question']</span></code>.</p>
-<p>You can now label the data by mouse/keyboard. The model will get trained and improved as you are labeling.</p>
+<p>From the left bar, select <code class="docutils literal notranslate"><span class="pre">.text</span></code> as the Field. You can now label the data by mouse/keyboard. The model will get trained and improved as you are labeling.</p>
 <figure class="align-center">
 <img alt="../../_images/covid-labeler.gif" src="../../_images/covid-labeler.gif"/>
 </figure>
@@ -462,7 +453,7 @@ It also codes and pads the question into a 100-dimensional array, which is store
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 16, 2021.
+                    Last updated on Nov 18, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
@@ -487,7 +478,7 @@ It also codes and pads the question into a 100-dimensional array, which is store
                 <div class="toc-tree-container">
                     <div class="toc-tree">
                         <ul>
-<li><a class="reference internal" href="#">Finetuning Bi-LSTM for Question-Answering</a><ul>
+<li><a class="reference internal" href="#">Finetuning a Transformer for Question-Answering</a><ul>
 <li><a class="reference internal" href="#build-embedding-model">Build embedding model</a></li>
 <li><a class="reference internal" href="#prepare-data">Prepare data</a></li>
 <li><a class="reference internal" href="#put-together">Put together</a></li>

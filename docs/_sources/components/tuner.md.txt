@@ -25,37 +25,25 @@ Here, `embed_model` must be an {term}`embedding model`; and `train_data` must be
 
 Loss function of the Tuner can be specified via the `loss` argument of `finetuner.fit()`.
 
-By default, Tuner uses `CosineSiameseLoss` for training. You can also use other built-in losses by specifying `finetuner.fit(..., loss='...')`.
+By default, Tuner uses `SiameseLoss` (with cosince distance) for training. You can also use other built-in losses by specifying `finetuner.fit(..., loss='...')`.
 
 Let $\mathbf{x}_i$ denotes the predicted embedding for Document $i$. The built-in losses are summarized as follows:
 
-:::{dropdown} `CosineSiameseLoss`
+:::{dropdown} `SiameseLoss`
 :open:
 
 
-$$\ell_{i,j} = \big(\cos(\mathbf{x}_i, \mathbf{x}_j) - y_{i,j}\big)^2$$, where $y_{i,j}$ is the label of $\{-1, 1\}$ and $y_{i,j}=1$ represents Document $i$ and $j$ are positively related.
+$$\ell_{i,j} = \mathrm{sim}(i,j)d(\mathbf{x}_i, \mathbf{x}_j) + (1 - \mathrm{sim}(i,j))\max(m - d(\mathbf{x}_i, \mathbf{x}_j))$$,
+where $\mathrm{sim}(i,j)$ equals 1 Document $i$ and $j$ are positively related, and 0 otherwise, $d(\mathbf{x}_i, \mathbf{x}_j)$ represents the distance between $\mathbf{x}_i$ and $\mathbf{x}_j$ and $m$ is the "margin", the desired wedge between dis-similar items.
 
 :::
- 
-:::{dropdown} `EuclideanSiameseLoss`
+
+:::{dropdown} `TripletLoss`
 :open:
 
-$$\ell_{i,j}=\frac{1}{2}\big(y_{i,j}\left \|  \mathbf{x}_i-\mathbf{x}_j\right \| + (1-y_{i,j})\max(0, 1-\left \|  \mathbf{x}_i-\mathbf{x}_j\right \|)\big)^2$$, where $y_{i,j}$ is the label of $\{-1, 1\}$ and $y_{i,j}=1$ represents Document $i$ and $j$ are positively related.
-
+$$\ell_{i, p, n}=\max(0, d(\mathbf{x}_i, \mathbf{x}_p)-d(\mathbf{x}_i, \mathbf{x}_n)+m)$$, where Document $p$ and $i$ are positively related, whereas $n$ and $i$ are negatively related or unrelated, $d(\cdot, \cdot)$ representes a distance function, and $m$ is the desired distance between (wedge) between the positive and negative pairs
 :::
 
-:::{dropdown} `CosineTripletLoss`
-:open:
-
-$$\ell_{i, p, n}=\max(0, \cos(\mathbf{x}_i, \mathbf{x}_n)-\cos(\mathbf{x}_i, \mathbf{x}_p)+1)$$, where Document $p$ and $i$ are positively related, whereas $n$ and $i$ are negatively related or unrelated. 
-:::
-
-:::{dropdown} `EuclideanTripletLoss`
-:open:
-
-$$\ell_{i, p, n}=\max(0, \left \|\mathbf{x}_i, \mathbf{x}_p \right \|-\left \|\mathbf{x}_i, \mathbf{x}_n \right \|+1)$$, where Document $p$ and $i$ are positively related, whereas $n$ and $i$ are negatively related or unrelated. 
-
-:::
 
 ```{tip}
 
@@ -110,17 +98,17 @@ After a model is tuned, you can save it by calling `finetuner.save(model, save_p
     ````
 
 2. Build labeled match data {ref}`according to the steps here<build-mnist-data>`. You can refer
-   to `finetuner.toydata.generate_fashion_match` for an implementation. In this example, for each `Document` we generate 10 positive matches and 10 negative matches.
+   to `finetuner.toydata.generate_fashion` for an implementation. In this example, for each `Document` we generate 10 positive matches and 10 negative matches.
 
 3. Feed the labeled data and embedding model into Finetuner:
     ```python
     import finetuner
-    from finetuner.toydata import generate_fashion_match
+    from finetuner.toydata import generate_fashion
 
     finetuner.fit(
         embed_model,
-        train_data=generate_fashion_match(num_pos=10, num_neg=10),
-        eval_data=generate_fashion_match(num_pos=10, num_neg=10, is_testset=True)
+        train_data=generate_fashion(),
+        eval_data=generate_fashion(is_testset=True)
     )
     ```
 
@@ -129,85 +117,55 @@ After a model is tuned, you can save it by calling `finetuner.save(model, save_p
    :align: center
    ```
 
-### Tune a bidirectional LSTM on Covid QA
+### Tune a transformer model on Covid QA
 
 1. Write an embedding model:
 
-  ````{tab} PyTorch
   ```python
   import torch
-  class LastCell(torch.nn.Module):
-    def forward(self, x):
-      out, _ = x
-      return out[:, -1, :]
+  from transformers import AutoModel
 
-  embed_model = torch.nn.Sequential(
-    torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
-    torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
-    LastCell(),
-    torch.nn.Linear(in_features=2 * 64, out_features=32))
+  TRANSFORMER_MODEL = 'sentence-transformers/paraphrase-MiniLM-L6-v2'
+
+
+  class TransformerEmbedder(torch.nn.Module):
+      def __init__(self):
+          super().__init__()
+          self.model = AutoModel.from_pretrained(TRANSFORMER_MODEL)
+
+      def forward(self, inputs):
+          out_model = self.model(**inputs)
+          cls_token = out_model.last_hidden_state[:, 0, :]
+          return cls_token
   ```
-  ````
-
-  ````{tab} Keras
-  ```python
-  import tensorflow as tf
-  embed_model = tf.keras.Sequential([
-         tf.keras.layers.Embedding(input_dim=5000, output_dim=64),
-         tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
-         tf.keras.layers.Dense(32)])
-  ```
-  ````
-
-  ````{tab} Paddle
-  ```python
-  import paddle
-  class LastCell(paddle.nn.Layer):
-     def forward(self, x):
-         out, _ = x
-         return out[:, -1, :]
-
-  embed_model = paddle.nn.Sequential(
-     paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),
-     paddle.nn.LSTM(64, 64, direction='bidirectional'),
-     LastCell(),
-     paddle.nn.Linear(in_features=2 * 64, out_features=32))
-  ```
-  ````
 
 2. Build labeled match data {ref}`according to the steps here<build-qa-data>`. You can refer
-   to `finetuner.toydata.generate_qa_match` for an implementation.
+   to `finetuner.toydata.generate_qa` for an implementation.
 
 3. Feed labeled data and the embedding model into Finetuner:
 
     ```python
+    from typing import List
+
     import finetuner
-    from finetuner.toydata import generate_qa_match
+    from finetuner.toydata import generate_qa
+    from transformers import AutoTokenizer
+
+    tokenizer = AutoTokenizer.from_pretrained(TRANSFORMER_MODEL)
+
+    def collate_fn(inputs: List[str]):
+        batch_tokens = tokenizer(
+            inputs,
+            truncation=True,
+            max_length=50,
+            padding=True,
+            return_tensors='pt',
+        )
+        return batch_tokens
 
     finetuner.fit(
-        embed_model,
-        train_data=generate_qa_match(num_neg=5),
-        eval_data=generate_qa_match(num_neg=5)
+      TransformerEmbedder(),
+      train_data=generate_qa(),
+      collate_fn=collate_fn
     )
     ```
-
-   ```{figure} lstm.png
-   :align: center
-   ```
-
-````{caution}
-Tuner accepts generator as the data input. However, when using generator with `epochs > 1`, the generator will be exhausted right after the first epoch. In Python, there is no way to "reset" the generator to its "initial" position. To solve this problem, you can wrap your data generator into a lambda function as follows:
-
-```python
-import finetuner
-from finetuner.toydata import generate_qa_match
-
-finetuner.fit(
-  embed_model,
-  train_data=lambda: generate_qa_match(num_neg=5),
-  eval_data=lambda: generate_qa_match(num_neg=5)
-  epochs=10
-)
-```
-
-````

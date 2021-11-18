@@ -56,7 +56,7 @@ Note that, `model` above must be an {term}`Embedding model`.
 
 ```python
 import torch
-from finetuner.toydata import generate_qa_match
+from finetuner.toydata import generate_qa
 import finetuner
 
 class LastCell(torch.nn.Module):
@@ -72,8 +72,8 @@ embed_model = torch.nn.Sequential(
 
 model, summary = finetuner.fit(
     embed_model,
-    train_data=lambda: generate_qa_match(num_neg=5, max_seq_len=10),
-    eval_data=lambda: generate_qa_match(num_neg=5, max_seq_len=10),
+    train_data=lambda: generate_qa(num_neg=5, max_seq_len=10),
+    eval_data=lambda: generate_qa(num_neg=5, max_seq_len=10),
     epochs=3,
 )
 
@@ -109,7 +109,7 @@ summary.plot('fit.png')
 
 ```python
 from jina import DocumentArray
-all_q = DocumentArray(generate_qa_match())
+all_q = DocumentArray(generate_qa())
 finetuner.embed(all_q, model)
 print(all_q.embeddings.shape)
 ```
