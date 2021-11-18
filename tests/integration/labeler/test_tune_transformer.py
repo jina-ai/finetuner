@@ -2,92 +2,70 @@ import multiprocessing
 import os
 import random
 import time
+from typing import List
 
 import pytest
 import requests
 from jina.helper import random_port
+from transformers import AutoModel
+from transformers import AutoTokenizer
 
 os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
-import paddle
 import torch
 
-from finetuner.toydata import generate_qa_match
+from finetuner.toydata import generate_qa
+
+TRANSFORMER_MODEL = 'sentence-transformers/paraphrase-MiniLM-L6-v2'
 
 
-class LastCellPT(torch.nn.Module):
-    def forward(self, x):
-        out, _ = x
-        return out[:, -1, :]
+class TransformerEmbedder(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = AutoModel.from_pretrained(TRANSFORMER_MODEL)
+
+    def forward(self, inputs):
+        out_model = self.model(**inputs)
+        cls_token = out_model.last_hidden_state[:, 0, :]
+        return cls_token
 
 
-class LastCellPD(paddle.nn.Layer):
-    def forward(self, x):
-        out, _ = x
-        return out[:, -1, :]
-
-
-def _run(framework_name, loss, port_expose):
+def _run(loss, port_expose):
     from finetuner import fit
 
-    import paddle
-    import tensorflow as tf
-    import torch
+    tokenizer = AutoTokenizer.from_pretrained(TRANSFORMER_MODEL)
 
-    embed_models = {
-        'keras': lambda: tf.keras.Sequential(
-            [
-                tf.keras.layers.Embedding(input_dim=5000, output_dim=64),
-                tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
-                tf.keras.layers.Dense(32),
-            ]
-        ),
-        'pytorch': lambda: torch.nn.Sequential(
-            torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
-            torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
-            LastCellPT(),
-            torch.nn.Linear(in_features=2 * 64, out_features=32),
-        ),
-        'paddle': lambda: paddle.nn.Sequential(
-            paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),
-            paddle.nn.LSTM(64, 64, direction='bidirectional'),
-            LastCellPD(),
-            paddle.nn.Linear(in_features=2 * 64, out_features=32),
-        ),
-    }
+    def collate_fn(inputs: List[str]):
+        batch_tokens = tokenizer(
+            inputs,
+            truncation=True,
+            max_length=50,
+            padding=True,
+            return_tensors='pt',
+        )
+        return batch_tokens
 
     rv1, rv2 = fit(
-        embed_models[framework_name](),
-        generate_qa_match(num_total=10, num_neg=0),
+        TransformerEmbedder(),
+        generate_qa(num_total=10, num_neg=0),
         loss=loss,
         interactive=True,
         port_expose=port_expose,
+        collate_fn=collate_fn,
     )
 
     assert rv1
     assert not rv2
 
 
-all_test_losses = [
-    'CosineSiameseLoss',
-    'CosineTripletLoss',
-    'EuclideanSiameseLoss',
-    'EuclideanTripletLoss',
-]
+all_test_losses = ['SiameseLoss', 'TripletLoss']
 
-# 'keras' does not work under this test setup
-# Exception ... ust be from the same graph as Tensor ...
-# TODO: add keras backend back to the test
-@pytest.mark.parametrize('framework', ['pytorch', 'paddle'])
+
 @pytest.mark.parametrize('loss', all_test_losses)
-def test_all_frameworks(framework, loss, tmpdir):
+def test_all_frameworks(loss, tmpdir):
     port = random_port()
     p = multiprocessing.Process(
         target=_run,
-        args=(
-            framework,
-            loss,
-            port,
-        ),
+        args=(loss, port),
     )
     p.start()
     try:

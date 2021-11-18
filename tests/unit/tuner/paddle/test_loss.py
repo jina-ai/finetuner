@@ -2,65 +2,84 @@ import numpy as np
 import paddle
 import pytest
 
-from finetuner.tuner.paddle.losses import (
-    CosineSiameseLoss,
-    CosineTripletLoss,
-    EuclideanSiameseLoss,
-    EuclideanTripletLoss,
-)
+from finetuner.tuner.paddle.losses import SiameseLoss, TripletLoss
 
-_N_BATCH = 10
-_N_DIM = 128
+N_BATCH = 10
+N_DIM = 128
+
+ALL_LOSSES = [SiameseLoss, TripletLoss]
 
 
-@pytest.mark.parametrize(
-    "loss_cls",
-    [
-        CosineSiameseLoss,
-        CosineTripletLoss,
-        EuclideanSiameseLoss,
-        EuclideanTripletLoss,
-    ],
-)
-def test_loss_output(loss_cls):
+@pytest.mark.parametrize('margin', [0.0, 0.5, 1.0])
+@pytest.mark.parametrize('distance', ['cosine', 'euclidean'])
+@pytest.mark.parametrize('loss_cls', ALL_LOSSES)
+def test_loss_output(loss_cls, distance, margin):
     """Test that we get a single positive number as output"""
-    loss = loss_cls()
+    loss = loss_cls(distance=distance, margin=margin)
 
-    target = paddle.cast(paddle.randint(0, 2, (_N_BATCH,)), dtype=paddle.float32)
-    embeddings = []
-    for _ in range(loss.arity):
-        embeddings.append(paddle.rand((_N_BATCH, _N_DIM)))
+    labels = paddle.ones((N_BATCH,))
+    labels[: N_BATCH // 2] = 0
+    embeddings = paddle.rand((N_BATCH, N_DIM))
 
-    output = loss(embeddings, target)
+    output = loss(embeddings, labels)
 
     assert output.ndim == output.size == 1
     assert output >= 0
 
 
+@pytest.mark.parametrize('distance', ['cosine', 'euclidean'])
+@pytest.mark.parametrize('loss_cls', ALL_LOSSES)
+def test_loss_zero_same(loss_cls, distance):
+    """Sanity check that with perfectly separated embeddings, loss is zero"""
+
+    # Might need to specialize this later
+    loss = loss_cls(distance=distance, margin=0.0)
+
+    labels = paddle.ones((N_BATCH,))
+    labels[: N_BATCH // 2] = 0
+
+    embeddings = paddle.ones((N_BATCH, N_DIM))
+    embeddings[: N_BATCH // 2] *= -1
+
+    output = loss(embeddings, labels)
+
+    np.testing.assert_almost_equal(output.item(), 0, decimal=5)
+
+
 @pytest.mark.parametrize(
-    "loss_cls",
+    'loss_cls,indices,exp_result',
     [
-        CosineSiameseLoss,
-        CosineTripletLoss,
-        EuclideanSiameseLoss,
-        EuclideanTripletLoss,
+        (SiameseLoss, [[0, 2], [1, 3], [0, 1]], 0.64142),
+        (TripletLoss, [[0, 2], [1, 3], [2, 1]], 0.9293),
     ],
 )
-def test_loss_zero_same(loss_cls):
-    """Sanity check that with equal inputs (for positive and anchor), loss is always zero"""
+def test_compute(loss_cls, indices, exp_result):
+    """Check that the compute function returns numerically correct results"""
 
-    if loss_cls != CosineSiameseLoss:
-        loss = loss_cls(margin=0.0)
-    else:
-        loss = loss_cls()
+    indices = [paddle.to_tensor(x) for x in indices]
+    embeddings = paddle.to_tensor([[0.1, 0.1], [0.2, 0.2], [0.4, 0.4], [0.7, 0.7]])
+    result = loss_cls(distance='euclidean').compute(embeddings, indices)
+    np.testing.assert_almost_equal(result.item(), exp_result, decimal=5)
 
-    target = paddle.ones((_N_BATCH,))
-    emb_anchor = paddle.rand((_N_BATCH, _N_DIM))
-    embeddings = [emb_anchor, emb_anchor]
-    if loss.arity == 3:
-        emb_negative = paddle.rand((_N_BATCH, _N_DIM))
-        embeddings.append(emb_negative)
 
-    output = loss(embeddings, target)
+@pytest.mark.parametrize(
+    'loss_cls',
+    [SiameseLoss, TripletLoss],
+)
+def test_compute_loss_given_insufficient_data(loss_cls):
+    indices = [paddle.to_tensor([]) for _ in range(3)]
+    embeddings = paddle.to_tensor([[0.0, 0.1, 0.2, 0.4]])
+    with pytest.raises(ValueError):
+        loss_cls(distance='euclidean').compute(embeddings, indices)
 
-    np.testing.assert_almost_equal(output.item(), 0)
+
+@pytest.mark.gpu
+@pytest.mark.parametrize(
+    'loss_cls',
+    [SiameseLoss, TripletLoss],
+)
+def test_compute_loss_given_insufficient_data_gpu(loss_cls):
+    indices = [paddle.to_tensor([], place=paddle.CUDAPlace(0)) for _ in range(3)]
+    embeddings = paddle.to_tensor([[0.0, 0.1, 0.2, 0.4]], place=paddle.CUDAPlace(0))
+    with pytest.raises(ValueError):
+        loss_cls(distance='euclidean').compute(embeddings, indices)

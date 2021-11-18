@@ -1,143 +1,176 @@
-from typing import List
+from typing import Optional, Tuple, Union
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ..base import BaseLoss
+from ..base import BaseLoss, BaseMiner
+from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
 
 
-class CosineSiameseLoss(BaseLoss, nn.Module):
-    """Computes the loss for a siamese network using cosine distance.
+def get_distance(embeddings: torch.Tensor, distance: str) -> torch.Tensor:
+    """Get a matrix of pairwise distances between the embedings"""
 
-    The loss for a pair of objects equals ``(target - cos_sim)^2``, where ``target``
-    should equal 1 when both objects belong to the same class, and to -1 when they
-    belong to different classes. The ``cos_sim`` represents the cosime similarity
-    between both objects.
+    if distance == 'cosine':
+        emb_norm = F.normalize(embeddings, p=2, dim=1)
+        dists = 1 - torch.mm(emb_norm, emb_norm.transpose(0, 1))
+    elif distance == 'euclidean':
+        dists = torch.cdist(embeddings, embeddings, p=2)
+    elif distance == 'sqeuclidean':
+        dists = torch.cdist(embeddings, embeddings, p=2) ** 2
 
-    The final loss is the average over losses for all pairs of objects in the batch.
-    """
+    return dists
 
-    arity = 2
+
+class PytorchLoss(nn.Module, BaseLoss[torch.Tensor]):
+    """Base class for all pytorch losses."""
 
     def forward(
-        self, embeddings: List[torch.Tensor], target: torch.Tensor
+        self,
+        embeddings: torch.Tensor,
+        labels: Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]],
     ) -> torch.Tensor:
-        """Compute the loss.
+        if self.miner is None:
+            # If labels is a tuple of tensors, this is a session dataset
+            self.miner = self.get_default_miner(isinstance(labels, (list, tuple)))
 
-        :param embeddings: Should be a list or a tuple containing two tensors:
-            - ``[N, D]`` tensor of embeddings of the first objects of the pair
-            - ``[N, D]`` tensor of embeddings of the second object of the pair
-        :param target: A ``[N, ]`` tensor of target values
-        """
-        l_emb, r_emb = embeddings
-        cos_sim = F.cosine_similarity(l_emb, r_emb)
-        loss = F.mse_loss(cos_sim, target)
+        dists = get_distance(embeddings, self.distance)
+        mined_tuples = self.miner.mine(labels, dists.clone().detach())
+        loss = self.compute(embeddings, mined_tuples)
+
         return loss
 
 
-class EuclideanSiameseLoss(BaseLoss, nn.Module):
-    """Computes the loss for a siamese network using eculidean distance.
+class SiameseLoss(PytorchLoss):
+    """Computes the loss for a siamese network.
 
-    This loss is also known as contrastive loss.
+    The loss for a pair of objects equals ::
 
-    The loss being optimized equals::
+        is_sim * dist + (1 - is_sim) * max(0, margin - dist)
 
-        [is_sim * dist + (1 - is_sim) * max(margin - dist, 0)]^2
+    where ``is_sim`` equals 1 if the two objects are similar, and 0 if they are not
+    similar. The ``dist`` refers to the distance between the two objects, and ``margin``
+    is a number to help bound the loss for dissimilar objects.
 
-    where ``target`` should equal 1 when both objects belong to the same class,
-    and 0 otheriwse. The ``dist`` is the euclidean distance between the embeddings of
-    the objects, and ``margin`` is some number, used here to ensure better stability
-    of training.
-
-    The final loss is the average over losses for all pairs of objects in the batch.
+    The final loss is the average over losses for all pairs given by the indices.
     """
 
-    arity = 2
+    def __init__(
+        self,
+        distance: str = 'cosine',
+        margin: float = 1.0,
+        miner: Optional[BaseMiner] = None,
+    ):
+        """Initialize the loss instance
 
-    def __init__(self, margin: float = 1.0):
-        super().__init__()
-        self.margin = margin
-
-    def forward(
-        self, embeddings: List[torch.Tensor], target: torch.Tensor
-    ) -> torch.Tensor:
-        """Compute the loss.
-
-        :param inputs: Should be a list or a tuple containing three tensors:
-            - ``[N, D]`` tensor of embeddings of the first objects of the pair
-            - ``[N, D]`` tensor of embeddings of the second objects of the pair
-        :param target: A ``[N, ]`` tensor of target values
+        :param distance: The type of distance to use, avalilable options are
+            ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``
+        :param margin: The margin to use in loss calculation
+        :param miner: The miner to use. If not provided, a default minuer that
+            selects all possible pairs will be used
         """
-        l_emb, r_emb = embeddings
-        eucl_dist = F.pairwise_distance(l_emb, r_emb, p=2)
-        is_similar = (target > 0).to(torch.float32)
+        super().__init__()
+        self.distance = distance
+        self.margin = margin
+        self.miner = miner
 
-        loss = 0.5 * torch.square(
-            is_similar * eucl_dist + (1 - is_similar) * F.relu(self.margin - eucl_dist)
-        )
+    def compute(
+        self,
+        embeddings: torch.Tensor,
+        indices: Tuple[torch.Tensor, torch.Tensor, torch.Tensor],
+    ) -> torch.Tensor:
+        """Compute the loss
+
+        :param embeddings: An ``[N, d]`` tensor of embeddings
+        :param indices: A list of tuple indices and target, where each element in the
+            list contains three elements: the indices of the two objects in the pair,
+            and their similarity (which equals 1 if they are similar, and 0 if they
+            are dissimilar)
+        """
+        ind_one, ind_two, target = indices
+        if ind_one.nelement() == 0 or ind_two.nelement() == 0 or target.nelement() == 0:
+            raise ValueError('Got empty tuple/triplets from your dataset.')
+        dist_matrix = get_distance(embeddings, self.distance)
+        dists = dist_matrix[ind_one, ind_two]
+        target = target.to(torch.float32)
+
+        loss = target * dists + (1 - target) * F.relu(self.margin - dists)
         return loss.mean()
 
-
-class EuclideanTripletLoss(BaseLoss, nn.Module):
-    """Compute the loss for a triplet network using euclidean distance.
-
-    The loss is computed as ``max(dist_pos - dist_neg + margin, 0)``, where ``dist_pos``
-    is the euclidean distance between the anchor embedding and positive embedding,
-    ``dist_neg`` is the euclidean distance between the anchor and negative embedding,
-    and ``margin`` represents a wedge between the desired wedge between anchor-negative
-    and anchor-positive distances.
-
-    The final loss is the average over losses for all triplets in the batch.
-    """
-
-    arity = 3
-
-    def __init__(self, margin: float = 1.0):
-        super().__init__()
-        self._margin = margin
-
-    def forward(
-        self, embeddings: List[torch.Tensor], target: torch.Tensor
-    ) -> torch.Tensor:
-        """Compute the loss.
-
-        :param inputs: Should be a list or a tuple containing three tensors:
-            - ``[N, D]`` tensor of embeddings of the anchor objects
-            - ``[N, D]`` tensor of embeddings of the positive objects
-            - ``[N, D]`` tensor of embeddings of the negative objects
-        """
-        anchor, positive, negative = embeddings
-        dist_pos = F.pairwise_distance(anchor, positive, p=2)
-        dist_neg = F.pairwise_distance(anchor, negative, p=2)
-
-        return torch.mean(F.relu(dist_pos - dist_neg + self._margin))
+    def get_default_miner(
+        self, is_session_dataset: bool
+    ) -> Union[SiameseMiner, SiameseSessionMiner]:
+        if not is_session_dataset:
+            return SiameseMiner()
+        else:
+            return SiameseSessionMiner()
 
 
-class CosineTripletLoss(EuclideanTripletLoss):
-    """Compute the loss for a triplet network using cosine distance.
+class TripletLoss(PytorchLoss):
+    """Compute the loss for a triplet network.
 
-    The loss is computed as ``max(dist_pos - dist_neg + margin, 0)``, where ``dist_pos``
-    is the cosine distance between the anchor embedding and positive embedding,
-    ``dist_neg`` is the cosine distance between the anchor and negative embedding, and
-    ``margin`` represents a wedge between the desired wedge between anchor-negative and
+    The loss for a single triplet equals::
+
+        max(dist_pos - dist_neg + margin, 0)
+
+    where ``dist_pos`` is the distance between the anchor embedding and positive
+    embedding, ``dist_neg`` is the distance between the anchor and negative embedding,
+    and ``margin`` represents a wedge between the desired anchor-negative and
     anchor-positive distances.
 
-    The final loss is the average over losses for all triplets in the batch.
+    The final loss is the average over losses for all triplets given by the indices.
     """
 
-    def forward(
-        self, embeddings: List[torch.Tensor], target: torch.Tensor
-    ) -> torch.Tensor:
-        """Compute the loss.
+    def __init__(
+        self,
+        distance: str = "cosine",
+        margin: float = 1.0,
+        miner: Optional[BaseMiner] = None,
+    ):
+        """Initialize the loss instance
 
-        :param inputs: Should be a list or a tuple containing three tensors:
-            - ``[N, D]`` tensor of embeddings of the anchor objects
-            - ``[N, D]`` tensor of embeddings of the positive objects
-            - ``[N, D]`` tensor of embeddings of the negative objects
+        :param distance: The type of distance to use, avalilable options are
+            ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``
+        :param margin: The margin to use in loss calculation
+        :param miner: The miner to use. If not provided, a default minuer that
+            selects all possible triplets will be used
         """
-        anchor, positive, negative = embeddings
-        dist_pos = 1 - F.cosine_similarity(anchor, positive)
-        dist_neg = 1 - F.cosine_similarity(anchor, negative)
+        super().__init__()
+        self.distance = distance
+        self.margin = margin
+        self.miner = miner
 
-        return torch.mean(F.relu(dist_pos - dist_neg + self._margin))
+    def compute(
+        self,
+        embeddings: torch.Tensor,
+        indices: Tuple[torch.Tensor, torch.Tensor, torch.Tensor],
+    ) -> torch.Tensor:
+        """Compute the loss
+
+        :param embeddings: An ``[N, d]`` tensor of embeddings
+        :param indices: A list of tuple indices, where each element in the list
+            contains three elements: the index of anchor, positive match and negative
+            match in the embeddings tensor
+        """
+        ind_anch, ind_pos, ind_neg = indices
+        if (
+            ind_anch.nelement() == 0
+            or ind_pos.nelement() == 0
+            or ind_neg.nelement() == 0
+        ):
+            raise ValueError('Got empty tuple/triplets from your dataset.')
+
+        dist_matrix = get_distance(embeddings, self.distance)
+        dist_pos = dist_matrix[ind_anch, ind_pos]
+        dist_neg = dist_matrix[ind_anch, ind_neg]
+        loss = F.relu(dist_pos - dist_neg + self.margin)
+
+        return loss.mean()
+
+    def get_default_miner(
+        self, is_session_dataset: bool
+    ) -> Union[TripletMiner, TripletSessionMiner]:
+        if not is_session_dataset:
+            return TripletMiner()
+        else:
+            return TripletSessionMiner()

@@ -18,8 +18,8 @@ def embed_model():
     )
 
 
-def test_tail_and_tune(embed_model, create_easy_data):
-    data, _ = create_easy_data(10, 128, 1000)
+def test_tail_and_tune(embed_model, create_easy_data_session):
+    data, _ = create_easy_data_session(10, 128, 1000)
     model, rv = fit(
         model=embed_model,
         train_data=data,

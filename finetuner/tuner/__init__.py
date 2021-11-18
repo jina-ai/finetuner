@@ -1,6 +1,7 @@
-from typing import Optional, TYPE_CHECKING, Type, Dict
+from typing import Any, Callable, List, Optional, Type, TYPE_CHECKING, Union
 
-from ..helper import AnyDNN, DocumentArrayLike, get_framework
+from ..helper import AnyDNN, AnyOptimizer, DocumentSequence, get_framework
+from .base import BaseLoss
 
 if TYPE_CHECKING:
     from .base import BaseTuner
@@ -26,14 +27,16 @@ def _get_tuner_class(dnn_model: AnyDNN) -> Type['BaseTuner']:
 
 def fit(
     embed_model: AnyDNN,
-    train_data: DocumentArrayLike,
-    eval_data: Optional[DocumentArrayLike] = None,
+    train_data: DocumentSequence,
+    eval_data: Optional[DocumentSequence] = None,
+    preprocess_fn: Optional[Callable] = None,
+    collate_fn: Optional[Callable[[List], Any]] = None,
     epochs: int = 10,
     batch_size: int = 256,
-    loss: str = 'CosineSiameseLoss',
+    num_items_per_class: int = 4,
+    loss: Union[str, BaseLoss] = 'SiameseLoss',
+    optimizer: Optional[AnyOptimizer] = None,
     learning_rate: float = 1e-3,
-    optimizer: str = 'adam',
-    optimizer_kwargs: Optional[Dict] = None,
     device: str = 'cpu',
     **kwargs,
 ) -> 'Summary':
@@ -42,33 +45,25 @@ def fit(
     :param embed_model: an embedding model
     :param train_data: Data on which to train the model
     :param eval_data: Data on which to evaluate the model at the end of each epoch
+    :param preprocess_fn: A pre-processing function. It should take as input the
+        content of an item in the dataset and return the pre-processed content
+    :param collate_fn: The collation function to merge the content of individual
+        items into a batch. Should accept a list with the content of each item,
+        and output a tensor (or a list/dict of tensors) that feed directly into the
+        embedding model
     :param epochs: Number of epochs to train the model
     :param batch_size: The batch size to use for training and evaluation
     :param loss: Which loss to use in training. Supported
         losses are:
-        - ``CosineSiameseLoss`` for Siamese network with cosine distance
-        - ``EuclideanSiameseLoss`` for Siamese network with eculidean distance
-        - ``CosineTripletLoss`` for Triplet network with cosine distance
-        - ``EuclideanTripletLoss`` for Triplet network with eculidean distance
-    :param learning_rate: Learning rate to use in training
-    :param optimizer: Which optimizer to use in training. Supported
-        values/optimizers are:
-        - ``"adam"`` for the Adam optimizer
-        - ``"rmsprop"`` for the RMSProp optimizer
-        - ``"sgd"`` for the SGD optimizer with momentum
-    :param optimizer_kwargs: Keyword arguments to pass to the optimizer. The
-        supported arguments, togethere with their defailt values, are:
-        - ``"adam"``:  ``{'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-08}``
-        - ``"rmsprop"``::
-
-            {
-                'rho': 0.99,
-                'momentum': 0.0,
-                'epsilon': 1e-08,
-                'centered': False,
-            }
-
-        - ``"sgd"``: ``{'momentum': 0.0, 'nesterov': False}``
+        - ``SiameseLoss`` for Siamese network
+        - ``TripletLoss`` for Triplet network
+    :param num_items_per_class: Number of items from a single class to include in
+        the batch. Only relevant for class datasets
+    :param learning_rate: Learning rate for the default optimizer. If you
+        provide a custom optimizer, this learning rate will not apply.
+    :param optimizer: The optimizer to use for training. If none is passed, an
+        Adam optimizer is used by default, with learning rate specified by the
+        ``learning_rate`` parameter.
     :param device: The device to which to move the model. Supported options are
         ``"cpu"`` and ``"cuda"`` (for GPU)
     """
@@ -82,7 +77,9 @@ def fit(
         device=device,
         learning_rate=learning_rate,
         optimizer=optimizer,
-        optimizer_kwargs=optimizer_kwargs,
+        preprocess_fn=preprocess_fn,
+        collate_fn=collate_fn,
+        num_items_per_class=num_items_per_class,
     )
 
 

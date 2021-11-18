@@ -1,8 +1,7 @@
 import numpy as np
 import pytest
-from jina import Document, DocumentArray
-
 from finetuner import __default_tag_key__
+from jina import Document, DocumentArray
 
 
 @pytest.fixture
@@ -12,19 +11,54 @@ def params():
         'output_dim': 8,
         'epochs': 2,
         'batch_size': 256,
+        'num_items_per_class': 32,
         'feature_dim': 32,
         'learning_rate': 0.01,
         'num_train': 1000,
         'num_eval': 1000,
         'num_predict': 100,
-        'max_seq_len': 10,
     }
 
 
 @pytest.fixture
-def create_easy_data():
+def create_easy_data_class():
+    def create_easy_data_fn(n_cls: int, dim: int):
+        """Creates a class dataset from random vectors.
+
+        Works as follows:
+        - for each class, create two random vectors - so that each one has a positive
+            sample as well. This will create 2 * n_cls unique random vectors, from
+            which we build the dataset
+
+        Note that there is no relationship between these vectors - they are all randomly
+        generated. The purpose of this dataset is to verify that over-parametrized
+        models can properly separate (or bring together) these random vectors, thus
+        confirming that our training method works.
+        """
+        # Fix random seed so we can debug on data, if needed
+        rng = np.random.default_rng(42)
+
+        # Create random class vectors
+        rand_vecs = rng.uniform(size=(2 * n_cls, dim)).astype(np.float32)
+        labels = []
+        for i in range(n_cls):
+            labels += [i, i]
+
+        docs = []
+        for vec, label in zip(rand_vecs, labels):
+            docs.append(
+                Document(blob=vec, tags={__default_tag_key__: {'label': label}})
+            )
+
+        return docs, rand_vecs
+
+    return create_easy_data_fn
+
+
+@pytest.fixture
+def create_easy_data_session():
     def create_easy_data_fn(n_cls: int, dim: int, n_sample: int):
-        """Creates a dataset from random vectors.
+        """Creates a session dataset from random vectors.
 
         Works as follows:
         - for each class, create two random vectors - so that each one has a positive

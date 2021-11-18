@@ -1,67 +1,85 @@
-from typing import Dict, Optional, Union, List
+from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Union
 
 import paddle
 from jina.logging.profile import ProgressBar
+from paddle import nn
+from paddle.fluid.dataloader.dataloader_iter import default_collate_fn
 from paddle.io import DataLoader
-from paddle.optimizer import Optimizer
+from paddle.optimizer import Adam, Optimizer
 
-from . import losses, datasets
-from ..base import BaseTuner, BaseLoss
-from ..dataset.helper import get_dataset
+from ... import __default_tag_key__
+from ...helper import DocumentSequence
+from ..base import BaseTuner
 from ..summary import ScalarSequence, Summary
-from ...helper import DocumentArrayLike, AnyDataLoader
+from . import losses
+from .datasets import PaddleClassDataset, PaddleSessionDataset
 
 
-class PaddleTuner(BaseTuner):
-    def _get_loss(self, loss: Union[BaseLoss, str]) -> BaseLoss:
+def _to_device(
+    inputs: Union[paddle.Tensor, Mapping[str, paddle.Tensor], Sequence[paddle.Tensor]],
+    device,
+) -> Union[paddle.Tensor, Dict[str, paddle.Tensor], List[paddle.Tensor]]:
+    if isinstance(inputs, paddle.Tensor):
+        return paddle.to_tensor(inputs, place=device)
+    elif isinstance(inputs, Mapping):
+        return {k: paddle.to_tensor(v, place=device) for k, v in inputs.items()}
+    elif isinstance(inputs, Sequence):
+        return [paddle.to_tensor(x, place=device) for x in inputs]
+
+
+class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
+    def _get_loss(self, loss: Union[nn.Layer, str]) -> nn.Layer:
         """Get the loss layer."""
         if isinstance(loss, str):
             return getattr(losses, loss)()
-        elif isinstance(loss, BaseLoss):
+        elif isinstance(loss, nn.Layer):
             return loss
 
     def _get_data_loader(
-        self, inputs: DocumentArrayLike, batch_size: int, shuffle: bool
-    ) -> AnyDataLoader:
-        """Get the paddle ``DataLoader`` from the input data."""
-        ds = get_dataset(datasets, self.arity)
-        return DataLoader(
-            dataset=ds(inputs=inputs),
-            batch_size=batch_size,
-            shuffle=shuffle,
+        self,
+        data: DocumentSequence,
+        batch_size: int,
+        num_items_per_class: int,
+        shuffle: bool,
+        preprocess_fn: Optional[Callable],
+        collate_fn: Optional[Callable],
+    ) -> DataLoader:
+        """Get the dataloader for the dataset"""
+
+        if collate_fn:
+
+            def collate_fn_all(inputs):
+                batch_content = collate_fn([x[0] for x in inputs])
+                batch_labels = default_collate_fn([x[1] for x in inputs])
+                return batch_content, batch_labels
+
+        else:
+            collate_fn_all = None
+
+        if __default_tag_key__ in data[0].tags:
+            dataset = PaddleClassDataset(data, preprocess_fn=preprocess_fn)
+        else:
+            dataset = PaddleSessionDataset(data, preprocess_fn=preprocess_fn)
+
+        batch_sampler = self._get_batch_sampler(
+            dataset, batch_size, num_items_per_class, shuffle
+        )
+        data_loader = DataLoader(
+            dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn_all
         )
 
-    def _get_optimizer(
-        self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
-    ) -> Optimizer:
-        """Get the optimizer for training."""
+        return data_loader
 
-        params = self._embed_model.parameters()
-        optimizer_kwargs = self._get_optimizer_kwargs(optimizer, optimizer_kwargs)
+    def _get_default_optimizer(self, learning_rate: float) -> Optimizer:
+        """Get the default optimizer (Adam), if none was provided by user."""
 
-        if optimizer == 'adam':
-            return paddle.optimizer.Adam(
-                parameters=params,
-                learning_rate=learning_rate,
-                beta1=optimizer_kwargs['beta_1'],
-                beta2=optimizer_kwargs['beta_2'],
-                epsilon=optimizer_kwargs['epsilon'],
-            )
-        elif optimizer == 'rmsprop':
-            return paddle.optimizer.RMSProp(
-                parameters=params, learning_rate=learning_rate, **optimizer_kwargs
-            )
-        elif optimizer == 'sgd':
-            return paddle.optimizer.Momentum(
-                parameters=params,
-                learning_rate=learning_rate,
-                momentum=optimizer_kwargs['momentum'],
-                use_nesterov=optimizer_kwargs['nesterov'],
-            )
+        return Adam(
+            parameters=self._embed_model.parameters(), learning_rate=learning_rate
+        )
 
     def _eval(
         self,
-        data: AnyDataLoader,
+        data: DataLoader,
         description: str = 'Evaluating',
         train_loss: Optional[ScalarSequence] = None,
     ) -> ScalarSequence:
@@ -74,22 +92,22 @@ class PaddleTuner(BaseTuner):
         with ProgressBar(
             description,
             message_on_done=lambda: f'{train_loss} | {_summary}',
-            total_length=self._eval_data_len,
+            total_length=len(data),
         ) as p:
-            self._eval_data_len = 0
-            for inputs, label in data:
-                embeddings = [self._embed_model(inpt) for inpt in inputs]
-                loss = self._loss(embeddings, label)
+            for inputs, labels in data:
+                inputs = _to_device(inputs, self.device)
+                labels = _to_device(labels, self.device)
 
+                embeddings = self.embed_model(inputs)
+                loss = self._loss(embeddings, labels)
                 _summary += loss.item()
 
                 p.update(message=str(_summary))
-                self._eval_data_len += 1
 
         return _summary
 
     def _train(
-        self, data: AnyDataLoader, optimizer: Optimizer, description: str
+        self, data: DataLoader, optimizer: Optimizer, description: str
     ) -> ScalarSequence:
         """Train the model on given labeled data"""
 
@@ -100,34 +118,34 @@ class PaddleTuner(BaseTuner):
             description,
             message_on_done=_summary.__str__,
             final_line_feed=False,
-            total_length=self._train_data_len,
+            total_length=len(data),
         ) as p:
-            self._train_data_len = 0
-            for inputs, label in data:
-                # forward step
-                embeddings = [self._embed_model(inpt) for inpt in inputs]
-                loss = self._loss(embeddings, label)
+            for inputs, labels in data:
+                inputs = _to_device(inputs, self.device)
+                labels = _to_device(labels, self.device)
+
+                embeddings = self.embed_model(inputs)
+                loss = self._loss(embeddings, labels)
 
                 optimizer.clear_grad()
-
                 loss.backward()
                 optimizer.step()
 
                 _summary += loss.item()
-
                 p.update(message=str(_summary))
-                self._train_data_len += 1
         return _summary
 
     def fit(
         self,
-        train_data: DocumentArrayLike,
-        eval_data: Optional[DocumentArrayLike] = None,
+        train_data: DocumentSequence,
+        eval_data: Optional[DocumentSequence] = None,
+        preprocess_fn: Optional[Callable] = None,
+        collate_fn: Optional[Callable[[List], Any]] = None,
         epochs: int = 10,
         batch_size: int = 256,
+        num_items_per_class: int = 4,
+        optimizer: Optional[Optimizer] = None,
         learning_rate: float = 1e-3,
-        optimizer: str = 'adam',
-        optimizer_kwargs: Optional[Dict] = None,
         device: str = 'cpu',
         **kwargs,
     ) -> Summary:
@@ -135,55 +153,61 @@ class PaddleTuner(BaseTuner):
 
         :param train_data: Data on which to train the model
         :param eval_data: Data on which to evaluate the model at the end of each epoch
+        :param preprocess_fn: A pre-processing function. It should take as input the
+            content of an item in the dataset and return the pre-processed content
+        :param collate_fn: The collation function to merge the content of individual
+            items into a batch. Should accept a list with the content of each item,
+            and output a tensor (or a list/dict of tensors) that feed directly into the
+            embedding model
         :param epochs: Number of epochs to train the model
         :param batch_size: The batch size to use for training and evaluation
         :param learning_rate: Learning rate to use in training
-        :param optimizer: Which optimizer to use in training. Supported
-            values/optimizers are:
-            - ``"adam"`` for the Adam optimizer
-            - ``"rmsprop"`` for the RMSProp optimizer
-            - ``"sgd"`` for the SGD optimizer with momentum
-        :param optimizer_kwargs: Keyword arguments to pass to the optimizer. The
-            supported arguments, togethere with their defailt values, are:
-            - ``"adam"``:  ``{'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-08}``
-            - ``"rmsprop"``::
-
-                {
-                    'rho': 0.99,
-                    'momentum': 0.0,
-                    'epsilon': 1e-08,
-                    'centered': False,
-                }
-
-            - ``"sgd"``: ``{'momentum': 0.0, 'nesterov': False}``
+        :param optimizer: The optimizer to use for training. If none is passed, an
+            Adam optimizer is used by default, with learning rate specified by the
+            ``learning_rate`` parameter.
+        :param learning_rate: Learning rate for the default optimizer. If you
+            provide a custom optimizer, this learning rate will not apply.
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
         """
+        # Get dataloaders
+        train_dl = self._get_data_loader(
+            train_data,
+            batch_size=batch_size,
+            num_items_per_class=num_items_per_class,
+            shuffle=True,
+            preprocess_fn=preprocess_fn,
+            collate_fn=collate_fn,
+        )
+        if eval_data:
+            eval_dl = self._get_data_loader(
+                eval_data,
+                batch_size=batch_size,
+                num_items_per_class=num_items_per_class,
+                shuffle=False,
+                preprocess_fn=preprocess_fn,
+                collate_fn=collate_fn,
+            )
 
-        get_device(device)  #: this actually sets the device in Paddle
+        # Place model on device
+        self.device = get_device(device)
+        self._embed_model.to(device=self.device)
 
-        _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
+        # Get optimizer
+        optimizer = optimizer or self._get_default_optimizer(learning_rate)
 
         m_train_loss = ScalarSequence('train')
         m_eval_loss = ScalarSequence('eval')
-
         for epoch in range(epochs):
-            _data = self._get_data_loader(
-                inputs=train_data, batch_size=batch_size, shuffle=False
-            )
             lt = self._train(
-                _data,
-                _optimizer,
+                train_dl,
+                optimizer,
                 description=f'Epoch {epoch + 1}/{epochs}',
             )
             m_train_loss += lt
 
             if eval_data:
-                _data = self._get_data_loader(
-                    inputs=eval_data, batch_size=batch_size, shuffle=False
-                )
-
-                le = self._eval(_data, train_loss=m_train_loss)
+                le = self._eval(eval_dl, train_loss=m_train_loss)
                 m_eval_loss += le
 
         return Summary(m_train_loss, m_eval_loss)
@@ -208,8 +232,10 @@ def get_device(device: str):
 
     # translate our own alias into framework-compatible ones
     if device == 'cuda':
-        paddle.set_device('gpu:0')
+        return paddle.CUDAPlace(0)
     elif device == 'cpu':
-        paddle.set_device('cpu')
+        return paddle.CPUPlace()
     else:
-        paddle.set_device(device)
+        raise ValueError(
+            f'Device {device} not recognized, only "cuda" and "cpu" are accepted'
+        )

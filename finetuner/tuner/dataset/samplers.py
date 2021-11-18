@@ -2,7 +2,7 @@ from collections import defaultdict
 from copy import deepcopy
 from math import ceil
 from random import choices, sample, shuffle
-from typing import Iterator, Sequence, Tuple
+from typing import Iterator, List, Sequence, Tuple
 
 
 class RandomClassBatchSampler:
@@ -50,7 +50,7 @@ class RandomClassBatchSampler:
         if len(set(labels)) < self._num_classes:
             raise ValueError(
                 'Number of distinct classes in labels must be larger or equal than'
-                'numbers of classes in a batch'
+                ' numbers of classes in a batch'
             )
 
         # Get mapping of labels (classes) and their positions
@@ -63,12 +63,23 @@ class RandomClassBatchSampler:
         for key, val in self._class_to_labels.items():
             self._cls_group_counts.append([key, ceil(len(val) / num_items_per_class)])
 
-        # Approximate (max) length
-        self._length = ceil(
-            sum([x[1] for x in self._cls_group_counts]) / self._num_classes
-        )
+        # Initialize batches
+        self._index = 0
+        self._prepare_batches()
 
-    def __iter__(self) -> Iterator[Tuple[int, ...]]:
+    def __iter__(self) -> 'RandomClassBatchSampler':
+        return self
+
+    def __next__(self) -> List[int]:
+        if self._index == len(self._batches):
+            self._index = 0
+            self._prepare_batches()  # Prepare for next iteration, so length is known
+            raise StopIteration
+
+        self._index += 1
+        return self._batches[self._index - 1]
+
+    def _prepare_batches(self):
 
         # Shuffle class groups into batches, some cutoff may occur
         counts = deepcopy(self._cls_group_counts)
@@ -111,16 +122,10 @@ class RandomClassBatchSampler:
 
             batches.append(batch)
 
-        # Update length to actual one
-        self._length = len(batches)
-
-        return iter(batches)
+        self._batches = batches
 
     def __len__(self) -> int:
-        """This gives the approximage length of the dataset before ``__iter__`` is
-        called, and the actual length of the last produced list of batches after that.
-        """
-        return self._length
+        return len(self._batches)
 
 
 class SessionBatchSampler:
@@ -166,10 +171,23 @@ class SessionBatchSampler:
         for ind, (session, match_type) in enumerate(labels):
             self._sessions[session].append([ind, match_type])
 
-        # Approximate length
-        self._length = ceil(len(labels) / self._batch_size)
+        # Initialize batches
+        self._index = 0
+        self._prepare_batches()
 
-    def __iter__(self):
+    def __iter__(self) -> 'SessionBatchSampler':
+        return self
+
+    def __next__(self) -> List[int]:
+        if self._index == len(self._batches):
+            self._index = 0
+            self._prepare_batches()  # Prepare for next iteration, so length is known
+            raise StopIteration
+
+        self._index += 1
+        return self._batches[self._index - 1]
+
+    def _prepare_batches(self):
 
         # Set up the order of sessions
         sessions = list(self._sessions.keys())
@@ -208,13 +226,7 @@ class SessionBatchSampler:
         if len(current_batch):
             batches.append(current_batch)
 
-        # Update length to actual one
-        self._length = len(batches)
-
-        return iter(batches)
+        self._batches = batches
 
     def __len__(self) -> int:
-        """This gives the approximage length of the dataset before ``__iter__`` is
-        called, and the actual length of the last produced list of batches after that.
-        """
-        return self._length
+        return len(self._batches)

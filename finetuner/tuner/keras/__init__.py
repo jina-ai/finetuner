@@ -1,18 +1,20 @@
-from typing import Dict, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 
 import tensorflow as tf
 from jina.logging.profile import ProgressBar
-from tensorflow import keras
+from keras.engine.data_adapter import KerasSequenceAdapter
 from tensorflow.keras.optimizers import Optimizer
 
-from . import losses, datasets
+from . import losses
+from .data import KerasDataSequence
 from ..base import BaseTuner, BaseLoss
-from ..dataset.helper import get_dataset
+from ..dataset import ClassDataset, SessionDataset
 from ..summary import ScalarSequence, Summary
-from ...helper import DocumentArrayLike, AnyDataLoader
+from ... import __default_tag_key__
+from ...helper import DocumentSequence
 
 
-class KerasTuner(BaseTuner):
+class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimizer]):
     def _get_loss(self, loss: Union[BaseLoss, str]) -> BaseLoss:
         """Get the loss layer."""
         if isinstance(loss, str):
@@ -21,49 +23,43 @@ class KerasTuner(BaseTuner):
             return loss
 
     def _get_data_loader(
-        self, inputs: DocumentArrayLike, batch_size: int, shuffle: bool
-    ) -> AnyDataLoader:
-        """Get tensorflow ``Dataset`` from the input data."""
+        self,
+        data: DocumentSequence,
+        batch_size: int,
+        num_items_per_class: int,
+        shuffle: bool,
+        preprocess_fn: Optional[Callable],
+        collate_fn: Optional[Callable[[List], Any]],
+    ) -> KerasSequenceAdapter:
+        """Get the dataloader for the dataset
 
-        ds = get_dataset(datasets, self.arity)
-        input_shape = self.embed_model.input_shape[1:]
+        In this case, since there is no true dataloader in keras, we are returning
+        the adapter, which can produce the dataset that yields batches.
+        """
 
-        tf_data = tf.data.Dataset.from_generator(
-            lambda: ds(inputs),
-            output_signature=(
-                tuple(
-                    tf.TensorSpec(shape=input_shape, dtype=tf.float32)
-                    for _ in range(self.arity)
-                ),
-                tf.TensorSpec(shape=(), dtype=tf.float32),
-            ),
+        if __default_tag_key__ in data[0].tags:
+            dataset = ClassDataset(data, preprocess_fn=preprocess_fn)
+        else:
+            dataset = SessionDataset(data, preprocess_fn=preprocess_fn)
+
+        batch_sampler = self._get_batch_sampler(
+            dataset, batch_size, num_items_per_class, shuffle
         )
 
-        if shuffle:
-            tf_data = tf_data.shuffle(buffer_size=4096)
+        sequence = KerasDataSequence(
+            dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn
+        )
 
-        return tf_data.batch(batch_size)
+        adapter = KerasSequenceAdapter(sequence)
+        return adapter
 
-    def _get_optimizer(
-        self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
-    ) -> Optimizer:
-        """Get the optimizer for training."""
+    def _get_default_optimizer(self, learning_rate: float) -> Optimizer:
+        """Get the default optimizer (Adam), if none was provided by user."""
 
-        optimizer_kwargs = self._get_optimizer_kwargs(optimizer, optimizer_kwargs)
-
-        if optimizer == 'adam':
-            return keras.optimizers.Adam(
-                learning_rate=learning_rate, **optimizer_kwargs
-            )
-        elif optimizer == 'rmsprop':
-            return keras.optimizers.RMSprop(
-                learning_rate=learning_rate, **optimizer_kwargs
-            )
-        elif optimizer == 'sgd':
-            return keras.optimizers.SGD(learning_rate=learning_rate, **optimizer_kwargs)
+        return tf.keras.optimizers.Adam(learning_rate=learning_rate)
 
     def _train(
-        self, data: AnyDataLoader, optimizer: Optimizer, description: str
+        self, data: KerasSequenceAdapter, optimizer: Optimizer, description: str
     ) -> ScalarSequence:
         """Train the model on given labeled data"""
 
@@ -72,13 +68,12 @@ class KerasTuner(BaseTuner):
             description,
             message_on_done=_summary.__str__,
             final_line_feed=False,
-            total_length=self._train_data_len,
+            total_length=data.get_size(),
         ) as p:
-            self._train_data_len = 0
-            for inputs, label in data:
+            for inputs, labels in data.get_dataset():
                 with tf.GradientTape() as tape:
-                    embeddings = [self._embed_model(inpt) for inpt in inputs]
-                    loss = self._loss([*embeddings, label])
+                    embeddings = self._embed_model(inputs)
+                    loss = self._loss(embeddings, labels)
 
                 grads = tape.gradient(loss, self._embed_model.trainable_weights)
                 optimizer.apply_gradients(
@@ -88,13 +83,13 @@ class KerasTuner(BaseTuner):
                 _summary += loss.numpy()
 
                 p.update(message=str(_summary))
-                self._train_data_len += 1
 
+        data.on_epoch_end()  # To re-create batches
         return _summary
 
     def _eval(
         self,
-        data: AnyDataLoader,
+        data: KerasSequenceAdapter,
         description: str = 'Evaluating',
         train_loss: Optional[ScalarSequence] = None,
     ) -> ScalarSequence:
@@ -105,29 +100,30 @@ class KerasTuner(BaseTuner):
         with ProgressBar(
             description,
             message_on_done=lambda: f'{train_loss} | {_summary}',
-            total_length=self._eval_data_len,
+            total_length=data.get_size(),
         ) as p:
-            self._eval_data_len = 0
-            for inputs, label in data:
-                embeddings = [self._embed_model(inpt) for inpt in inputs]
-                loss = self._loss([*embeddings, label])
+            for inputs, labels in data.get_dataset():
+                embeddings = self._embed_model(inputs)
+                loss = self._loss(embeddings, labels)
 
                 _summary += loss.numpy()
 
                 p.update(message=str(_summary))
-                self._eval_data_len += 1
 
+        data.on_epoch_end()  # To re-create batches
         return _summary
 
     def fit(
         self,
-        train_data: DocumentArrayLike,
-        eval_data: Optional[DocumentArrayLike] = None,
+        train_data: DocumentSequence,
+        eval_data: Optional[DocumentSequence] = None,
+        preprocess_fn: Optional[Callable] = None,
+        collate_fn: Optional[Callable[[List], Any]] = None,
         epochs: int = 10,
         batch_size: int = 256,
+        num_items_per_class: int = 4,
+        optimizer: Optional[Optimizer] = None,
         learning_rate: float = 1e-3,
-        optimizer: str = 'adam',
-        optimizer_kwargs: Optional[Dict] = None,
         device: str = 'cpu',
         **kwargs,
     ) -> Summary:
@@ -135,56 +131,59 @@ class KerasTuner(BaseTuner):
 
         :param train_data: Data on which to train the model
         :param eval_data: Data on which to evaluate the model at the end of each epoch
+        :param preprocess_fn: A pre-processing function. It should take as input the
+            content of an item in the dataset and return the pre-processed content
+        :param collate_fn: The collation function to merge the content of individual
+            items into a batch. Should accept a list with the content of each item,
+            and output a tensor (or a list/dict of tensors) that feed directly into the
+            embedding model
         :param epochs: Number of epochs to train the model
         :param batch_size: The batch size to use for training and evaluation
-        :param learning_rate: Learning rate to use in training
-        :param optimizer: Which optimizer to use in training. Supported
-            values/optimizers are:
-            - ``"adam"`` for the Adam optimizer
-            - ``"rmsprop"`` for the RMSProp optimizer
-            - ``"sgd"`` for the SGD optimizer with momentum
-        :param optimizer_kwargs: Keyword arguments to pass to the optimizer. The
-            supported arguments, togethere with their defailt values, are:
-            - ``"adam"``:  ``{'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-08}``
-            - ``"rmsprop"``::
-
-                {
-                    'rho': 0.99,
-                    'momentum': 0.0,
-                    'epsilon': 1e-08,
-                    'centered': False,
-                }
-
-            - ``"sgd"``: ``{'momentum': 0.0, 'nesterov': False}``
+        :param num_items_per_class: Number of items from a single class to include in
+            the batch. Only relevant for class datasets
+        :param optimizer: The optimizer to use for training. If none is passed, an
+            Adam optimizer is used by default, with learning rate specified by the
+            ``learning_rate`` parameter.
+        :param learning_rate: Learning rate for the default optimizer. If you
+            provide a custom optimizer, this learning rate will not apply.
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
         """
 
-        _train_data = self._get_data_loader(
-            inputs=train_data, batch_size=batch_size, shuffle=False
+        # Get dataloaders
+        train_dl = self._get_data_loader(
+            train_data,
+            batch_size=batch_size,
+            num_items_per_class=num_items_per_class,
+            shuffle=True,
+            preprocess_fn=preprocess_fn,
+            collate_fn=collate_fn,
         )
-
         if eval_data:
-            _eval_data = self._get_data_loader(
-                inputs=eval_data, batch_size=batch_size, shuffle=False
+            eval_dl = self._get_data_loader(
+                eval_data,
+                batch_size=batch_size,
+                num_items_per_class=num_items_per_class,
+                shuffle=False,
+                preprocess_fn=preprocess_fn,
+                collate_fn=collate_fn,
             )
 
-        _optimizer = self._get_optimizer(optimizer, optimizer_kwargs, learning_rate)
+        optimizer = optimizer or self._get_default_optimizer(learning_rate)
 
         m_train_loss = ScalarSequence('train')
         m_eval_loss = ScalarSequence('eval')
-
         with get_device(device):
             for epoch in range(epochs):
                 lt = self._train(
-                    _train_data,
-                    _optimizer,
+                    train_dl,
+                    optimizer,
                     description=f'Epoch {epoch + 1}/{epochs}',
                 )
                 m_train_loss += lt
 
                 if eval_data:
-                    le = self._eval(_eval_data, train_loss=m_train_loss)
+                    le = self._eval(eval_dl, train_loss=m_train_loss)
                     m_eval_loss += le
 
         return Summary(m_train_loss, m_eval_loss)

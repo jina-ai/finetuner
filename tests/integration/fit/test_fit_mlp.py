@@ -1,19 +1,14 @@
 import paddle
+import pytest
 import tensorflow as tf
 import torch
 
 import finetuner
-from finetuner.toydata import generate_fashion_match
-
-all_test_losses = [
-    'CosineSiameseLoss',
-    'CosineTripletLoss',
-    'EuclideanSiameseLoss',
-    'EuclideanTripletLoss',
-]
+from finetuner.toydata import generate_fashion
 
 
-def test_fit_all(tmpdir):
+@pytest.mark.parametrize('loss', ['SiameseLoss', 'TripletLoss'])
+def test_fit_all(tmpdir, loss):
     embed_models = {
         'keras': lambda: tf.keras.Sequential(
             [
@@ -43,17 +38,13 @@ def test_fit_all(tmpdir):
     }
 
     for kb, b in embed_models.items():
-        for h in all_test_losses:
-            model, result = finetuner.fit(
-                b(),
-                loss=h,
-                train_data=lambda: generate_fashion_match(
-                    num_neg=10, num_pos=10, num_total=100
-                ),
-                eval_data=lambda: generate_fashion_match(
-                    num_neg=10, num_pos=10, num_total=100, is_testset=True
-                ),
-                epochs=2,
-            )
-            assert model
-            result.save(tmpdir / f'result-{kb}-{h}.json')
+        model, result = finetuner.fit(
+            b(),
+            loss=loss,
+            train_data=generate_fashion(num_total=200),
+            eval_data=generate_fashion(is_testset=True, num_total=100),
+            batch_size=32,
+            epochs=2,
+        )
+        assert model
+        result.save(tmpdir / f'result-{kb}-{loss}.json')

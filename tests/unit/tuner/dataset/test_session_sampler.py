@@ -48,7 +48,7 @@ def test_repeat_session(batch_size, sessions, batches):
     labels = create_labels(SESSION_SIZE, sessions)
     sampler = SessionBatchSampler(labels, batch_size)
 
-    assert len(sampler) == ceil(SESSION_SIZE * sessions / batch_size)
+    assert len(sampler) == batches
 
     all_inds = set()
     for i, batch in enumerate(sampler):
@@ -72,7 +72,7 @@ def test_session_larger_than_batch():
     labels = create_labels(SESSION_SIZE, SESSIONS)
     sampler = SessionBatchSampler(labels, BATCH_SIZE)
 
-    assert len(sampler) == ceil(SESSION_SIZE * SESSIONS / BATCH_SIZE)
+    assert len(sampler) == BATCHES
 
     all_inds = set()
     for i, batch in enumerate(sampler):

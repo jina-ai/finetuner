@@ -1,5 +1,4 @@
 import abc
-import itertools
 from typing import Any, Callable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
 
 import numpy as np
@@ -38,7 +37,7 @@ class ClassDataset(BaseDataset[int]):
         docs: DocumentSequence,
         preprocess_fn: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
     ):
-        """Create the :class:`ClassDataset` instance.
+        """Create the dataset instance.
 
         :param docs: The documents for the dataset. Each document is expected to have
             - a content (only blob or text are accepted currently)
@@ -103,7 +102,7 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
         docs: DocumentSequence,
         preprocess_fn: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
     ):
-        """Create the :class:`SessionDataset` instance.
+        """Create the dataset instance.
 
         :param docs: The documents for the dataset. Each document is expected to have
             - a content (only blob or text are accepted currently)
@@ -138,7 +137,7 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
                         ' When using ClassDataset all documents need this tag'
                     )
 
-                self._labels.append((i, tag))
+                self._labels.append((i, int(tag)))
                 num_docs += 1
 
     def __getitem__(self, ind: int) -> Tuple[Union[str, np.ndarray], Tuple[int, int]]:
@@ -170,27 +169,3 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
         a negative input (match)
         """
         return self._labels
-
-
-class SiameseMixin:
-    def __iter__(self):
-        for d in self._inputs:
-            d_blob = d.blob
-            for m in d.matches:
-                yield (d_blob, m.blob), np.float32(m.tags[__default_tag_key__]['label'])
-
-
-class TripletMixin:
-    def __iter__(self):
-        for d in self._inputs:
-            anchor = d.blob
-            positives = []
-            negatives = []
-            for m in d.matches:
-                if m.tags[__default_tag_key__]['label'] > 0:
-                    positives.append(m.blob)
-                else:
-                    negatives.append(m.blob)
-
-            for p, n in itertools.product(positives, negatives):
-                yield (anchor, p, n), np.float32(0)

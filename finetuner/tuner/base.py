@@ -1,112 +1,101 @@
 import abc
-import warnings
-from typing import (
-    Generator,
-    Optional,
-    Union,
-    Tuple,
-    List,
-    Dict,
-)
+from typing import Callable, Generic, List, Optional, Tuple, Union
 
-from ..helper import AnyDNN, AnyTensor, AnyDataLoader, AnyOptimizer, DocumentArrayLike
+from .dataset import ClassDataset, SessionDataset
+from .dataset.samplers import RandomClassBatchSampler, SessionBatchSampler
+from .miner.base import BaseMiner
 from .summary import Summary
+from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyTensor, DocumentSequence
 
 
-class BaseLoss:
-    arity: int
+class BaseLoss(Generic[AnyTensor]):
+    distance: str
+    miner: Optional[BaseMiner]
+
+    """ Base loss class.
+
+    The subclasses should, in addition to implementing the abstract methods defined
+    here, also implement the framework-specific "forward" method, where they
+    need to first use the miner to mine indices, and then output the loss by running
+    ``compute`` on embeddings and outputs of the miner.
+    """
+
+    @abc.abstractmethod
+    def compute(
+        self,
+        embeddings: AnyTensor,
+        indices: Tuple[AnyTensor, ...],
+    ) -> AnyTensor:
+        """Compute the loss using embeddings and indices that the miner outputs"""
+
+    @abc.abstractmethod
+    def get_default_miner(self, is_session_dataset: bool) -> BaseMiner:
+        """Get the default miner for this loss, given the dataset type"""
 
 
-class BaseTuner(abc.ABC):
+class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
     def __init__(
         self,
         embed_model: Optional[AnyDNN] = None,
-        loss: Union[AnyDNN, str] = 'CosineSiameseLoss',
+        loss: Union[BaseLoss, str] = 'SiameseLoss',
         **kwargs,
     ):
         """Create the tuner instance.
 
         :param embed_model: Model that produces embeddings from inputs
         :param loss: Either the loss object instance, or the name of the loss function.
-            Currently available losses are ``CosineSiameseLoss``,
-            ``EuclideanSiameseLoss``, ``EuclideanTripletLoss`` and ``CosineTripletLoss``
+            Currently available losses are ``SiameseLoss`` and ``TripletLoss``
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
-        self._train_data_len = 0
-        self._eval_data_len = 0
 
-    def _get_optimizer_kwargs(self, optimizer: str, custom_kwargs: Optional[Dict]):
-        """Merges user-provided optimizer kwargs with default ones."""
+    def _get_batch_sampler(
+        self,
+        dataset: Union[ClassDataset, SessionDataset],
+        batch_size: int,
+        num_items_per_class: int,
+        shuffle: bool,
+    ) -> Union[RandomClassBatchSampler, SessionBatchSampler]:
+        """Get the batch sampler"""
 
-        DEFAULT_OPTIMIZER_KWARGS = {
-            'adam': {'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-08},
-            'rmsprop': {
-                'rho': 0.99,
-                'momentum': 0.0,
-                'epsilon': 1e-08,
-                'centered': False,
-            },
-            'sgd': {'momentum': 0.0, 'nesterov': False},
-        }
-
-        try:
-            opt_kwargs = DEFAULT_OPTIMIZER_KWARGS[optimizer]
-        except KeyError:
-            raise ValueError(
-                f'Optimizer "{optimizer}" not supported, the supported'
-                ' optimizers are "adam", "rmsprop" and "sgd"'
+        if isinstance(dataset, ClassDataset):
+            batch_sampler = RandomClassBatchSampler(
+                dataset.labels, batch_size, num_items_per_class
             )
+        elif isinstance(dataset, SessionDataset):
+            batch_sampler = SessionBatchSampler(dataset.labels, batch_size, shuffle)
 
-        # Raise warning for non-existing keys passed
-        custom_kwargs = custom_kwargs or {}
-        extra_args = set(custom_kwargs.keys()) - set(opt_kwargs.keys())
-        if extra_args:
-            warnings.warn(
-                f'The following arguments are not valid for the optimizer {optimizer}:'
-                f' {extra_args}'
-            )
-
-        # Update only existing keys
-        opt_kwargs.update((k, v) for k, v in custom_kwargs.items() if k in opt_kwargs)
-
-        return opt_kwargs
+        return batch_sampler
 
     @property
     def embed_model(self) -> AnyDNN:
         """Get the base model of this object."""
         return self._embed_model
 
-    @property
-    def arity(self) -> int:
-        """Get the arity of this object.
-
-        For example,
-            - ``arity = 2`` corresponds to the siamese network;
-            - ``arity = 3`` corresponds to the triplet network.
-        """
-        return self._loss.arity
-
     @abc.abstractmethod
-    def _get_optimizer(
-        self, optimizer: str, optimizer_kwargs: Optional[dict], learning_rate: float
-    ) -> AnyOptimizer:
-        """Get the optimizer for training."""
+    def _get_default_optimizer(self, learning_rate: float) -> AnyOptimizer:
+        """Get the default optimizer (Adam), if none was provided by user."""
 
     @abc.abstractmethod
     def fit(
         self,
-        train_data: DocumentArrayLike,
-        eval_data: Optional[DocumentArrayLike] = None,
+        train_data: DocumentSequence,
+        eval_data: Optional[DocumentSequence] = None,
+        preprocess_fn: Optional[Callable] = None,
+        collate_fn: Optional[Callable] = None,
         epochs: int = 10,
         batch_size: int = 256,
+        learning_rate: float = 1e-3,
+        optimizer: Optional[AnyOptimizer] = None,
+        device: str = 'cpu',
         *args,
         **kwargs,
     ) -> Summary:
         """Fit the :py:attr:`.embed_model` on labeled data.
 
-        Note that fitting changes the weights in :py:attr:`.embed_model` in-place. This allows one to consecutively
-        call :py:func:`.fit` multiple times with different configs or data to get better models.
+        Note that fitting changes the weights in :py:attr:`.embed_model` in-place. This
+        allows one to consecutively call :py:func:`.fit` multiple times with different
+        configs or data to get better models.
         """
         ...
 
@@ -116,13 +105,19 @@ class BaseTuner(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def _get_loss(self, loss: Union[str, BaseLoss]) -> BaseLoss:
+    def _get_loss(self, loss: Union[str, AnyDNN]) -> AnyDNN:
         """Get the loss layer."""
         ...
 
     @abc.abstractmethod
     def _get_data_loader(
-        self, inputs: DocumentArrayLike, batch_size: int, shuffle: bool
+        self,
+        data: DocumentSequence,
+        batch_size: int,
+        num_items_per_class: int,
+        shuffle: bool,
+        preprocess_fn: Optional[Callable],
+        collate_fn: Optional[Callable],
     ) -> AnyDataLoader:
         """Get framework specific data loader from the input data."""
         ...
@@ -139,27 +134,4 @@ class BaseTuner(abc.ABC):
         self, data: AnyDataLoader, description: str = 'Evaluating'
     ) -> Tuple[List, List]:
         """Evaluate the model on given labeled data"""
-        ...
-
-
-class BaseDataset:
-    def __init__(
-        self,
-        inputs: DocumentArrayLike,
-    ):
-        super().__init__()
-        self._inputs = inputs() if callable(inputs) else inputs
-
-
-class BaseMiner(abc.ABC):
-    @abc.abstractmethod
-    def mine(
-        self, embeddings: List[AnyTensor], labels: List[int]
-    ) -> List[Tuple[int, ...]]:
-        """Generate tuples/triplets from input embeddings and labels.
-
-        :param embeddings: embeddings from model, should be a list of Tensor objects.
-        :param labels: labels of each embeddings, embeddings with same label indicates same class.
-        :return: tuple/triplet of label indices.
-        """
         ...
