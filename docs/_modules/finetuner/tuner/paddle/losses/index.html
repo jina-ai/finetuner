@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.0, furo 2021.11.16"/>
-        <title>finetuner.tuner.paddle.losses - Finetuner 0.1.6 documentation</title>
+        <title>finetuner.tuner.paddle.losses - Finetuner 0.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=916d6ed8f59335acffa15474ff504849343d4c76" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">Finetuner 0.1.6 documentation</div>
+                <div class="brand">Finetuner 0.2.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -315,8 +315,8 @@
 <span class="kn">import</span> <span class="nn">paddle.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">paddle.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 
-<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseLoss</span><span class="p">,</span> <span class="n">BaseMiner</span>
 <span class="kn">from</span> <span class="nn">.miner</span> <span class="kn">import</span> <span class="n">SiameseMiner</span><span class="p">,</span> <span class="n">SiameseSessionMiner</span><span class="p">,</span> <span class="n">TripletMiner</span><span class="p">,</span> <span class="n">TripletSessionMiner</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseLoss</span><span class="p">,</span> <span class="n">BaseMiner</span>
 
 
 <span class="k">def</span> <span class="nf">_is_tensor_empty</span><span class="p">(</span><span class="n">tensor</span><span class="p">:</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
