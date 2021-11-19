@@ -12,11 +12,11 @@ from .helper import get_framework
 
 def embed(
     docs: Union['DocumentArray', 'DocumentArrayMemmap'],
-    embed_model: AnyDNN,
+    embed_model: 'AnyDNN',
     device: str = 'cpu',
     batch_size: int = 256,
     preprocess_fn: Optional[Callable[['DocumentContentType'], 'T']] = None,
-    collate_fn: Optional[Callable[[List['T']], AnyTensor]] = None,
+    collate_fn: Optional[Callable[[List['T']], 'AnyTensor']] = None,
 ) -> None:
     """Fill the embedding of Documents inplace by using `embed_model`
 
@@ -43,12 +43,12 @@ def embed(
 
 
 def _set_embeddings_keras(
-    docs: Union[DocumentArray, DocumentArrayMemmap],
-    embed_model: AnyDNN,
+    docs: Union['DocumentArray', 'DocumentArrayMemmap'],
+    embed_model: 'AnyDNN',
     device: str = 'cpu',
     batch_size: int = 256,
     preprocess_fn: Optional[Callable[['DocumentContentType'], 'T']] = None,
-    collate_fn: Optional[Callable[[List['T']], AnyTensor]] = None,
+    collate_fn: Optional[Callable[[List['T']], 'AnyTensor']] = None,
 ):
     from .tuner.keras import get_device
 
@@ -65,12 +65,12 @@ def _set_embeddings_keras(
 
 
 def _set_embeddings_torch(
-    docs: Union[DocumentArray, DocumentArrayMemmap],
-    embed_model: AnyDNN,
+    docs: Union['DocumentArray', 'DocumentArrayMemmap'],
+    embed_model: 'AnyDNN',
     device: str = 'cpu',
     batch_size: int = 256,
     preprocess_fn: Optional[Callable[['DocumentContentType'], 'T']] = None,
-    collate_fn: Optional[Callable[[List['T']], AnyTensor]] = None,
+    collate_fn: Optional[Callable[[List['T']], 'AnyTensor']] = None,
 ):
     from .tuner.pytorch import get_device
 
@@ -99,8 +99,8 @@ def _set_embeddings_paddle(
     embed_model,
     device: str = 'cpu',
     batch_size: int = 256,
-    preprocess_fn: Optional[Callable] = None,
-    collate_fn: Optional[Callable] = None,
+    preprocess_fn: Optional[Callable[['DocumentContentType'], 'T']] = None,
+    collate_fn: Optional[Callable[[List['T']], 'AnyTensor']] = None,
 ):
     from .tuner.paddle import get_device
 
