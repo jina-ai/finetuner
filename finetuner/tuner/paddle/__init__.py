@@ -7,12 +7,12 @@ from paddle.fluid.dataloader.dataloader_iter import default_collate_fn
 from paddle.io import DataLoader
 from paddle.optimizer import Adam, Optimizer
 
-from ... import __default_tag_key__
-from ...helper import DocumentSequence
-from ..base import BaseTuner
-from ..summary import ScalarSequence, Summary
 from . import losses
 from .datasets import PaddleClassDataset, PaddleSessionDataset
+from ..base import BaseTuner
+from ..summary import ScalarSequence, Summary
+from ... import __default_tag_key__
+from ...helper import DocumentSequence
 
 
 def _to_device(

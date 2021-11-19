@@ -1,6 +1,5 @@
-from typing import List, Tuple
-
 from itertools import combinations, groupby, permutations
+from typing import List, Tuple
 
 
 def get_session_pairs(

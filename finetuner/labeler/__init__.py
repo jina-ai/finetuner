@@ -9,8 +9,8 @@ from jina import Flow
 from jina.logging.predefined import default_logger
 
 from .executor import FTExecutor, DataIterator
-from ..helper import AnyDNN, DocumentSequence
 from .. import __default_tag_key__
+from ..helper import AnyDNN, DocumentSequence
 
 
 def fit(

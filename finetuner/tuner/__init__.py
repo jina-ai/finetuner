@@ -1,7 +1,7 @@
 from typing import Any, Callable, List, Optional, Type, TYPE_CHECKING, Union
 
-from ..helper import AnyDNN, AnyOptimizer, DocumentSequence, get_framework
 from .base import BaseLoss
+from ..helper import AnyDNN, AnyOptimizer, DocumentSequence, get_framework
 
 if TYPE_CHECKING:
     from .base import BaseTuner

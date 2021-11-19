@@ -3,7 +3,6 @@ from typing import Generic, Tuple, TypeVar
 
 from ...helper import AnyTensor
 
-
 LabelType = TypeVar('LabelType')
 
 

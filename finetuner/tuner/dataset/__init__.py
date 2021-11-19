@@ -6,7 +6,6 @@ import numpy as np
 from ... import __default_tag_key__
 from ...helper import DocumentSequence
 
-
 AnyLabel = TypeVar('AnyLabel')
 
 

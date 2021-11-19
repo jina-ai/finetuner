@@ -4,15 +4,15 @@ import torch
 from jina.logging.profile import ProgressBar
 from torch import nn
 from torch.optim.optimizer import Optimizer
-from torch.utils.data.dataloader import DataLoader
 from torch.utils.data._utils.collate import default_collate
+from torch.utils.data.dataloader import DataLoader
 
-from ... import __default_tag_key__
-from ...helper import DocumentSequence
-from ..base import BaseTuner
-from ..summary import ScalarSequence, Summary
 from . import losses
 from .datasets import PytorchClassDataset, PytorchSessionDataset
+from ..base import BaseTuner
+from ..summary import ScalarSequence, Summary
+from ... import __default_tag_key__
+from ...helper import DocumentSequence
 
 
 def _to_device(

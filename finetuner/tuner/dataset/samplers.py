@@ -2,7 +2,7 @@ from collections import defaultdict
 from copy import deepcopy
 from math import ceil
 from random import choices, sample, shuffle
-from typing import Iterator, List, Sequence, Tuple
+from typing import List, Sequence, Tuple
 
 
 class RandomClassBatchSampler:

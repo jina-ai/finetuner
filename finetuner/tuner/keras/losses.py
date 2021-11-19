@@ -2,8 +2,8 @@ from typing import Optional, Tuple, Union
 
 import tensorflow as tf
 
-from ..base import BaseLoss, BaseMiner
 from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
+from ..base import BaseLoss, BaseMiner
 
 
 def _is_tensor_empty(tensor: tf.Tensor):
@@ -39,7 +39,6 @@ class KerasLoss(tf.keras.layers.Layer, BaseLoss[tf.Tensor]):
         embeddings: tf.Tensor,
         labels: Union[tf.Tensor, Tuple[tf.Tensor, tf.Tensor]],
     ) -> tf.Tensor:
-
         if self.miner is None:
             # If labels is a tuple of tensors, this is a session dataset
             self.miner = self.get_default_miner(isinstance(labels, (list, tuple)))

@@ -4,8 +4,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ..base import BaseLoss, BaseMiner
 from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
+from ..base import BaseLoss, BaseMiner
 
 
 def get_distance(embeddings: torch.Tensor, distance: str) -> torch.Tensor:
