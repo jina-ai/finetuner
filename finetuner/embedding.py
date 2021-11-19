@@ -116,7 +116,7 @@ def _set_embeddings_paddle(
     embed_model.eval()
     for b in docs.batch(batch_size):
         inputs = [preprocess_fn(x.content) for x in b]
-        batch_inputs = collate_fn(inputs).to(device=device)
+        batch_inputs = paddle.to_tensor(collate_fn(inputs), place=device)
         b.embeddings = embed_model(batch_inputs).numpy()
     if is_training_before:
         embed_model.train()
