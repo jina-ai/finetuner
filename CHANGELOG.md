@@ -7,6 +7,7 @@
 
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -300,4 +301,35 @@ The changes of each release is tracked by this file.
 
  - [[```e1a73434```](https://github.com/jina-ai/finetuner/commit/e1a734346a69c8763072fa43b536224363cb8509)] __-__ __labeler__: add component for audio matches (#185) (*Roshan Jossy*)
  - [[```717f06a0```](https://github.com/jina-ai/finetuner/commit/717f06a06ecb97eebc54b4448e865dbd4adc24e0)] __-__ __version__: the next version will be 0.1.5 (*Jina Dev Bot*)
+
+<a name=release-note-0-2-0></a>
+## Release Note (`0.2.0`)
+
+> Release time: 2021-11-19 14:22:57
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Yanlong Wang,  Tadej Svetina,  Wang Bo,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```f920fe25```](https://github.com/jina-ai/finetuner/commit/f920fe257d2a709e9ff9015188040cce242b5cdf)] __-__ reformat pipeline (#192) (*Tadej Svetina*)
+
+### 🐞 Bug fixes
+
+ - [[```fe67bb92```](https://github.com/jina-ai/finetuner/commit/fe67bb92610f40c6b6ec2c1949338c806c6b2277)] __-__ docs celeba (#211) (*Tadej Svetina*)
+ - [[```e0f81474```](https://github.com/jina-ai/finetuner/commit/e0f814746dd0352febc698171903c6e3d59cc51c)] __-__ make get_framework robust (#207) (*Tadej Svetina*)
+ - [[```376f4028```](https://github.com/jina-ai/finetuner/commit/376f4028e9df679e5fa573b045c152bc4333d0e7)] __-__ __tailor__: fix to emebdding model (#196) (*Wang Bo*)
+
+### 📗 Documentation
+
+ - [[```0a67481d```](https://github.com/jina-ai/finetuner/commit/0a67481d8a043019ec74a8a1a8267b32de4c1473)] __-__ fix doc-bot style during load (#212) (*Yanlong Wang*)
+
+### 🍹 Other Improvements
+
+ - [[```c6041fde```](https://github.com/jina-ai/finetuner/commit/c6041fde2bddf74d50922a3a55c3bff14ff17f46)] __-__ __version__: set next version to 0.2.0 (*Han Xiao*)
+ - [[```20eb41c2```](https://github.com/jina-ai/finetuner/commit/20eb41c2e0504d2781ca3fd7d915b97aa0118129)] __-__ __style__: fix coding style optimize imports (*Han Xiao*)
+ - [[```6539237b```](https://github.com/jina-ai/finetuner/commit/6539237befd25205707d134dbd4aa3897b13ea3d)] __-__ __version__: the next version will be 0.1.6 (*Jina Dev Bot*)
 
