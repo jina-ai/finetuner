@@ -1,18 +1,24 @@
-from typing import Callable, Optional, Union
+from typing import Callable, Optional, Union, List, TYPE_CHECKING, TypeVar
 
 import numpy as np
-from jina import DocumentArray, DocumentArrayMemmap
 
-from .helper import AnyDNN, get_framework
+if TYPE_CHECKING:
+    from jina import DocumentArray, DocumentArrayMemmap
+    from jina.types.document import DocumentContentType
+    from .helper import AnyDNN, AnyTensor
+
+from .helper import get_framework
+
+T = TypeVar('T')
 
 
 def embed(
-    docs: Union[DocumentArray, DocumentArrayMemmap],
-    embed_model: AnyDNN,
+    docs: Union['DocumentArray', 'DocumentArrayMemmap'],
+    embed_model: 'AnyDNN',
     device: str = 'cpu',
     batch_size: int = 256,
-    preprocess_fn: Optional[Callable] = None,
-    collate_fn: Optional[Callable] = None,
+    preprocess_fn: Optional[Callable[['DocumentContentType'], T]] = None,
+    collate_fn: Optional[Callable[[List[T]], 'AnyTensor']] = None,
 ) -> None:
     """Fill the embedding of Documents inplace by using `embed_model`
 
@@ -21,6 +27,12 @@ def embed(
     :param device: the computational device for `embed_model`, can be either
         `cpu` or `cuda`.
     :param batch_size: number of Documents in a batch for embedding
+    :param preprocess_fn: A pre-processing function. It should take as input the
+        content of an item in the dataset and return the pre-processed content
+    :param collate_fn: The collation function to merge the content of individual
+        items into a batch. Should accept a list with the content of each item,
+        and output a tensor (or a list/dict of tensors) that feed directly into the
+        embedding model
     """
 
     if not preprocess_fn:
@@ -33,12 +45,12 @@ def embed(
 
 
 def _set_embeddings_keras(
-    docs: Union[DocumentArray, DocumentArrayMemmap],
-    embed_model: AnyDNN,
+    docs: Union['DocumentArray', 'DocumentArrayMemmap'],
+    embed_model: 'AnyDNN',
     device: str = 'cpu',
     batch_size: int = 256,
-    preprocess_fn: Optional[Callable] = None,
-    collate_fn: Optional[Callable] = None,
+    preprocess_fn: Optional[Callable[['DocumentContentType'], T]] = None,
+    collate_fn: Optional[Callable[[List[T]], 'AnyTensor']] = None,
 ):
     from .tuner.keras import get_device
 
@@ -55,12 +67,12 @@ def _set_embeddings_keras(
 
 
 def _set_embeddings_torch(
-    docs: Union[DocumentArray, DocumentArrayMemmap],
-    embed_model: AnyDNN,
+    docs: Union['DocumentArray', 'DocumentArrayMemmap'],
+    embed_model: 'AnyDNN',
     device: str = 'cpu',
     batch_size: int = 256,
-    preprocess_fn: Optional[Callable] = None,
-    collate_fn: Optional[Callable] = None,
+    preprocess_fn: Optional[Callable[['DocumentContentType'], T]] = None,
+    collate_fn: Optional[Callable[[List[T]], 'AnyTensor']] = None,
 ):
     from .tuner.pytorch import get_device
 
@@ -89,8 +101,8 @@ def _set_embeddings_paddle(
     embed_model,
     device: str = 'cpu',
     batch_size: int = 256,
-    preprocess_fn: Optional[Callable] = None,
-    collate_fn: Optional[Callable] = None,
+    preprocess_fn: Optional[Callable[['DocumentContentType'], T]] = None,
+    collate_fn: Optional[Callable[[List[T]], 'AnyTensor']] = None,
 ):
     from .tuner.paddle import get_device
 
