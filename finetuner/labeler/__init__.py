@@ -36,8 +36,12 @@ def fit(
         losses are:
         - ``SiameseLoss`` for Siamese network with cosine distance
         - ``TripletLoss`` for Triplet network with cosine distance
-    :param preprocess_fn:
-    :param collate_fn:
+        :param preprocess_fn: A pre-processing function. It should take as input the
+            content of an item in the dataset and return the pre-processed content
+        :param collate_fn: The collation function to merge the content of individual
+            items into a batch. Should accept a list with the content of each item,
+            and output a tensor (or a list/dict of tensors) that feed directly into the
+            embedding model
     :param kwargs: Additional keyword arguments.
     """
     dam_path = tempfile.mkdtemp()
