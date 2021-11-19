@@ -21,6 +21,12 @@ def embed(
     :param device: the computational device for `embed_model`, can be either
         `cpu` or `cuda`.
     :param batch_size: number of Documents in a batch for embedding
+    :param preprocess_fn: A pre-processing function. It should take as input the
+        content of an item in the dataset and return the pre-processed content
+    :param collate_fn: The collation function to merge the content of individual
+        items into a batch. Should accept a list with the content of each item,
+        and output a tensor (or a list/dict of tensors) that feed directly into the
+        embedding model
     """
 
     if not preprocess_fn:
