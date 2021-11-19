@@ -1,18 +1,22 @@
-from typing import Callable, Optional, Union
+from typing import Callable, Optional, Union, List, TYPE_CHECKING
 
 import numpy as np
-from jina import DocumentArray, DocumentArrayMemmap
 
-from .helper import AnyDNN, get_framework
+if TYPE_CHECKING:
+    from jina import DocumentArray, DocumentArrayMemmap
+    from jina.types.document import DocumentContentType
+    from .helper import AnyDNN, AnyTensor, T
+
+from .helper import get_framework
 
 
 def embed(
-    docs: Union[DocumentArray, DocumentArrayMemmap],
+    docs: Union['DocumentArray', 'DocumentArrayMemmap'],
     embed_model: AnyDNN,
     device: str = 'cpu',
     batch_size: int = 256,
-    preprocess_fn: Optional[Callable] = None,
-    collate_fn: Optional[Callable] = None,
+    preprocess_fn: Optional[Callable[['DocumentContentType'], 'T']] = None,
+    collate_fn: Optional[Callable[[List['T']], AnyTensor]] = None,
 ) -> None:
     """Fill the embedding of Documents inplace by using `embed_model`
 
@@ -43,8 +47,8 @@ def _set_embeddings_keras(
     embed_model: AnyDNN,
     device: str = 'cpu',
     batch_size: int = 256,
-    preprocess_fn: Optional[Callable] = None,
-    collate_fn: Optional[Callable] = None,
+    preprocess_fn: Optional[Callable[['DocumentContentType'], 'T']] = None,
+    collate_fn: Optional[Callable[[List['T']], AnyTensor]] = None,
 ):
     from .tuner.keras import get_device
 
@@ -65,8 +69,8 @@ def _set_embeddings_torch(
     embed_model: AnyDNN,
     device: str = 'cpu',
     batch_size: int = 256,
-    preprocess_fn: Optional[Callable] = None,
-    collate_fn: Optional[Callable] = None,
+    preprocess_fn: Optional[Callable[['DocumentContentType'], 'T']] = None,
+    collate_fn: Optional[Callable[[List['T']], AnyTensor]] = None,
 ):
     from .tuner.pytorch import get_device
 
@@ -112,7 +116,7 @@ def _set_embeddings_paddle(
     embed_model.eval()
     for b in docs.batch(batch_size):
         inputs = [preprocess_fn(x.content) for x in b]
-        batch_inputs = paddle.to_tensor(collate_fn(inputs), place=device)
+        batch_inputs = collate_fn(inputs).to(device=device)
         b.embeddings = embed_model(batch_inputs).numpy()
     if is_training_before:
         embed_model.train()

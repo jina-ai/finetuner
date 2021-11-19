@@ -34,6 +34,8 @@ LayerInfoType = List[
     Dict[str, Any]
 ]  #: The type of embedding layer information used in Tailor
 
+T = TypeVar('T')
+
 
 def get_framework(dnn_model: AnyDNN) -> str:
     """Return the framework that enpowers a DNN model.
