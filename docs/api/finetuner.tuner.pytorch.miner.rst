@@ -1,7 +1,7 @@
-finetuner.tuner.paddle.losses module
+finetuner.tuner.pytorch.miner module
 ====================================
 
-.. automodule:: finetuner.tuner.paddle.losses
+.. automodule:: finetuner.tuner.pytorch.miner
    :members:
    :undoc-members:
    :show-inheritance:

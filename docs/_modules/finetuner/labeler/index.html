@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.0, furo 2021.11.16"/>
-        <title>finetuner.labeler - Finetuner 0.2.0 documentation</title>
+        <title>finetuner.labeler - Finetuner 0.2.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=916d6ed8f59335acffa15474ff504849343d4c76" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">Finetuner 0.2.0 documentation</div>
+                <div class="brand">Finetuner 0.2.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -347,8 +347,12 @@
 <span class="sd">        losses are:</span>
 <span class="sd">        - ``SiameseLoss`` for Siamese network with cosine distance</span>
 <span class="sd">        - ``TripletLoss`` for Triplet network with cosine distance</span>
-<span class="sd">    :param preprocess_fn:</span>
-<span class="sd">    :param collate_fn:</span>
+<span class="sd">    :param preprocess_fn: A pre-processing function. It should take as input the</span>
+<span class="sd">        content of an item in the dataset and return the pre-processed content</span>
+<span class="sd">    :param collate_fn: The collation function to merge the content of individual</span>
+<span class="sd">        items into a batch. Should accept a list with the content of each item,</span>
+<span class="sd">        and output a tensor (or a list/dict of tensors) that feed directly into the</span>
+<span class="sd">        embedding model</span>
 <span class="sd">    :param kwargs: Additional keyword arguments.</span>
 <span class="sd">    """</span>
     <span class="n">dam_path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
