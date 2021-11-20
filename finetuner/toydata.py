@@ -188,7 +188,7 @@ def generate_fashion(
         doc = Document(
             content=raw_img,
             tags={
-                __default_tag_key__: {'label': int(lbl)},
+                __default_tag_key__: int(lbl),
             },
         )
         doc.convert_image_blob_to_uri()

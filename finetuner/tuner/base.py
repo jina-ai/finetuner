@@ -57,8 +57,8 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
 
+    @staticmethod
     def _get_batch_sampler(
-        self,
         dataset: Union[ClassDataset, SessionDataset],
         batch_size: int,
         shuffle: bool,
@@ -72,6 +72,11 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
             )
         elif isinstance(dataset, SessionDataset):
             batch_sampler = SessionBatchSampler(dataset.labels, batch_size, shuffle)
+        else:
+            raise TypeError(
+                f'`dataset` must be either {type(SessionDataset)} or {type(ClassDataset)}, '
+                f'but receiving {type(dataset)}'
+            )
 
         return batch_sampler
 
