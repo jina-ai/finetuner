@@ -146,7 +146,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         collate_fn: Optional[Callable[[List], Any]] = None,
         epochs: int = 10,
         batch_size: int = 256,
-        num_items_per_class: int = 4,
+        num_items_per_class: Optional[int] = None,
         optimizer: Optional[Optimizer] = None,
         learning_rate: float = 1e-3,
         device: str = 'cpu',
