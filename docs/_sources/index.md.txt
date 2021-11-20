@@ -255,6 +255,7 @@ Learn more about {term}`Tailor`, {term}`Tuner` and {term}`Labeler`.
 :caption: Get Started
 :hidden:
 
+get-started/swiss-roll/index
 get-started/fashion-mnist
 get-started/covid-qa
 get-started/celeba
