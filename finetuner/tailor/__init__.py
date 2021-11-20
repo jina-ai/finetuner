@@ -1,12 +1,13 @@
 from typing import Optional, Tuple, TYPE_CHECKING, Type
 
-from ..helper import get_framework, AnyDNN
+from ..helper import get_framework
 
 if TYPE_CHECKING:
     from .base import BaseTailor
+    from ...helper import AnyDNN
 
 
-def _get_tailor_class(dnn_model: AnyDNN) -> Type['BaseTailor']:
+def _get_tailor_class(dnn_model: 'AnyDNN') -> Type['BaseTailor']:
     f_type = get_framework(dnn_model)
 
     if f_type == 'keras':
@@ -24,14 +25,14 @@ def _get_tailor_class(dnn_model: AnyDNN) -> Type['BaseTailor']:
 
 
 def to_embedding_model(
-    model: AnyDNN,
+    model: 'AnyDNN',
     layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
     **kwargs
-) -> AnyDNN:
+) -> 'AnyDNN':
     """Convert a general model from :py:attr:`.model` to an embedding model.
 
     :param model: The DNN model to be converted.
@@ -51,10 +52,10 @@ def to_embedding_model(
 
 
 def display(
-    model: AnyDNN,
+    model: 'AnyDNN',
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
-) -> AnyDNN:
+) -> None:
     """Display the model architecture from :py:attr:`.summary` in a table.
 
     :param model: The DNN model to display.
@@ -63,4 +64,4 @@ def display(
     """
     ft = _get_tailor_class(model)
 
-    return ft(model, input_size, input_dtype).display()
+    ft(model, input_size, input_dtype).display()

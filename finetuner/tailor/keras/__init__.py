@@ -1,16 +1,18 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Dense
 
 from ..base import BaseTailor
-from ...helper import LayerInfoType, AnyDNN
+
+if TYPE_CHECKING:
+    from ...helper import LayerInfoType, AnyDNN
 
 
 class KerasTailor(BaseTailor):
     """Tailor class for Keras DNN models."""
 
-    def summary(self, skip_identity_layer: bool = False) -> LayerInfoType:
+    def summary(self, skip_identity_layer: bool = False) -> 'LayerInfoType':
         """Interpret the DNN model and produce model information.
 
         :param skip_identity_layer: If skip identity layer.
@@ -74,7 +76,7 @@ class KerasTailor(BaseTailor):
         layer_name: Optional[str] = None,
         output_dim: Optional[int] = None,
         freeze: bool = False,
-    ) -> AnyDNN:
+    ) -> 'AnyDNN':
 
         """Convert a general model from :py:attr:`.model` to an embedding model.
 

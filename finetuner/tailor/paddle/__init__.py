@@ -1,14 +1,17 @@
 import copy
 import warnings
 from collections import OrderedDict
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 import numpy as np
 import paddle
 from paddle import nn, Tensor
 
 from ..base import BaseTailor
-from ...helper import is_seq_int, LayerInfoType, AnyDNN
+from ...helper import is_seq_int
+
+if TYPE_CHECKING:
+    from ...helper import LayerInfoType, AnyDNN
 
 
 class PaddleTailor(BaseTailor):
@@ -18,7 +21,7 @@ class PaddleTailor(BaseTailor):
         To use this class, you need to set ``input_size`` and ``input_dtype`` in :py:meth:`.__init__`
     """
 
-    def summary(self, skip_identity_layer: bool = False) -> LayerInfoType:
+    def summary(self, skip_identity_layer: bool = False) -> 'LayerInfoType':
         """Interpret the DNN model and produce model information.
 
         :param skip_identity_layer: If skip identity layer.
@@ -138,7 +141,7 @@ class PaddleTailor(BaseTailor):
         layer_name: Optional[str] = None,
         output_dim: Optional[int] = None,
         freeze: bool = False,
-    ) -> AnyDNN:
+    ) -> 'AnyDNN':
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
         :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
