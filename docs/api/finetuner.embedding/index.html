@@ -347,9 +347,9 @@
 <li><p><strong>device</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the computational device for <cite>embed_model</cite>, can be either
 <cite>cpu</cite> or <cite>cuda</cite>.</p></li>
 <li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – number of Documents in a batch for embedding</p></li>
-<li><p><strong>preprocess_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>], ~T]]) – A pre-processing function. It should take as input the
+<li><p><strong>preprocess_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – A pre-processing function. It should take as input the
 content of an item in the dataset and return the pre-processed content</p></li>
-<li><p><strong>collate_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[~T]], <code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]]) – The collation function to merge the content of individual
+<li><p><strong>collate_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – The collation function to merge the content of individual
 items into a batch. Should accept a list with the content of each item,
 and output a tensor (or a list/dict of tensors) that feed directly into the
 embedding model</p></li>
@@ -394,7 +394,7 @@ embedding model</p></li>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 19, 2021.
+                    Last updated on Nov 20, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

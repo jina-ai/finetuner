@@ -309,17 +309,17 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.helper</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">importlib.util</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">TypeVar</span><span class="p">,</span>
     <span class="n">Sequence</span><span class="p">,</span>
     <span class="n">Iterator</span><span class="p">,</span>
     <span class="n">List</span><span class="p">,</span>
     <span class="n">Dict</span><span class="p">,</span>
     <span class="n">Any</span><span class="p">,</span>
+    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">DocumentArrayMemmap</span>
 
 <span class="n">AnyDNN</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span>
     <span class="s1">'AnyDNN'</span>
@@ -333,20 +333,34 @@
 <span class="n">AnyOptimizer</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span>
     <span class="s1">'AnyOptimizer'</span>
 <span class="p">)</span>  <span class="c1">#: The type of any implementation of an optimizer for training the model</span>
-<span class="n">DocumentSequence</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span>
-    <span class="s1">'DocumentSequence'</span><span class="p">,</span>
-    <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span>
-    <span class="n">DocumentArray</span><span class="p">,</span>
-    <span class="n">DocumentArrayMemmap</span><span class="p">,</span>
-    <span class="n">Iterator</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span>
-<span class="p">)</span>  <span class="c1">#: The type of any sequence of Document</span>
-
-<span class="n">LayerInfoType</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span>
-    <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
-<span class="p">]</span>  <span class="c1">#: The type of embedding layer information used in Tailor</span>
 
 
-<div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../../api/finetuner.helper/#finetuner.helper.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">DocumentArrayMemmap</span>
+    <span class="kn">from</span> <span class="nn">jina.types.document.mixins.content</span> <span class="kn">import</span> <span class="n">DocumentContentType</span>
+
+    <span class="n">DocumentSequence</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span>
+        <span class="s1">'DocumentSequence'</span><span class="p">,</span>
+        <span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span>
+        <span class="n">DocumentArray</span><span class="p">,</span>
+        <span class="n">DocumentArrayMemmap</span><span class="p">,</span>
+        <span class="n">Iterator</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span>
+    <span class="p">)</span>  <span class="c1">#: The type of any sequence of Document</span>
+
+    <span class="n">LayerInfoType</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span>
+        <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">]</span>  <span class="c1">#: The type of embedding layer information used in Tailor</span>
+
+    <span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">'T'</span><span class="p">)</span>  <span class="c1">#: Generic type</span>
+
+    <span class="n">PreprocFnType</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[</span>
+        <span class="p">[</span><span class="n">DocumentContentType</span><span class="p">],</span> <span class="n">T</span>
+    <span class="p">]</span>  <span class="c1">#: The type of preprocessing function</span>
+
+    <span class="n">CollateFnType</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">]],</span> <span class="n">AnyTensor</span><span class="p">]</span>  <span class="c1">#: The type of collate function</span>
+
+
+<div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../../api/finetuner.helper/#finetuner.helper.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">"""Return the framework that enpowers a DNN model.</span>
 
 <span class="sd">    .. note::</span>
@@ -358,6 +372,7 @@
 <span class="sd">    :return: `keras`, `torch`, `paddle` or ValueError</span>
 
 <span class="sd">    """</span>
+    <span class="kn">import</span> <span class="nn">importlib.util</span>
 
     <span class="n">framework</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -397,7 +412,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 19, 2021.
+                    Last updated on Nov 20, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

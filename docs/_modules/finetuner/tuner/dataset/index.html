@@ -310,12 +310,25 @@
                 </div>
                 <h1>Source code for finetuner.tuner.dataset</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">Generic</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">TypeVar</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
+    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">__default_tag_key__</span>
-<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">DocumentSequence</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">DocumentSequence</span>
 
 <span class="n">AnyLabel</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">'AnyLabel'</span><span class="p">)</span>
 
@@ -344,14 +357,14 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">docs</span><span class="p">:</span> <span class="n">DocumentSequence</span><span class="p">,</span>
+        <span class="n">docs</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
         <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">"""Create the dataset instance.</span>
 
 <span class="sd">        :param docs: The documents for the dataset. Each document is expected to have</span>
 <span class="sd">            - a content (only blob or text are accepted currently)</span>
-<span class="sd">            - a class label, saved under ``tags['finetuner']['label']``. This class</span>
+<span class="sd">            - a class label, saved under ``tags['finetuner__label']``. This class</span>
 <span class="sd">              label should be an integer or a string</span>
 <span class="sd">        :param preprocess_fn: A pre-processing function. It should take as input the</span>
 <span class="sd">            content of an item in the dataset (currently only text of blob are</span>
@@ -365,13 +378,13 @@
         <span class="n">max_label</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_docs</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">tag</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">][</span><span class="s1">'label'</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">__default_tag_key__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                    <span class="s1">'The tag ["finetuner"]["label"] was not found in a document.'</span>
-                    <span class="s1">' When using ClassDataset all documents need this tag'</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+                    <span class="sa">f</span><span class="s1">'The tag `</span><span class="si">{</span><span class="n">__default_tag_key__</span><span class="si">}</span><span class="s1">` was not found in a document.'</span>
+                    <span class="sa">f</span><span class="s1">' When using </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1"> all documents need this tag.'</span>
+                <span class="p">)</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">]</span>
+
             <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag_labels_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -409,7 +422,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">docs</span><span class="p">:</span> <span class="n">DocumentSequence</span><span class="p">,</span>
+        <span class="n">docs</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
         <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">"""Create the dataset instance.</span>
@@ -417,7 +430,7 @@
 <span class="sd">        :param docs: The documents for the dataset. Each document is expected to have</span>
 <span class="sd">            - a content (only blob or text are accepted currently)</span>
 <span class="sd">            - matches, which should also have content, as well a label, stored under</span>
-<span class="sd">                ``tags['finetuner']['label']``, which be either 1 or -1, denoting</span>
+<span class="sd">                ``tags['finetuner__label']``, which be either 1 or -1, denoting</span>
 <span class="sd">                whether the match is a positive or negative input in relation to the</span>
 <span class="sd">                anchor document</span>
 <span class="sd">        :param preprocess_fn: A pre-processing function. It should take as input the</span>
@@ -439,13 +452,13 @@
 
             <span class="k">for</span> <span class="n">match_ind</span><span class="p">,</span> <span class="n">match</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_locations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">match_ind</span><span class="p">))</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">tag</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">][</span><span class="s1">'label'</span><span class="p">]</span>
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">__default_tag_key__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">match</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                        <span class="s1">'The tag ["finetuner"]["label"] was not found in a document.'</span>
-                        <span class="s1">' When using ClassDataset all documents need this tag'</span>
+                        <span class="sa">f</span><span class="s1">'The tag `</span><span class="si">{</span><span class="n">__default_tag_key__</span><span class="si">}</span><span class="s1">` was not found in a document.'</span>
+                        <span class="sa">f</span><span class="s1">' When using </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1"> all documents need this tag'</span>
                     <span class="p">)</span>
+
+                <span class="n">tag</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">]</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">tag</span><span class="p">)))</span>
                 <span class="n">num_docs</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -490,7 +503,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 19, 2021.
+                    Last updated on Nov 20, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

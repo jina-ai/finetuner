@@ -313,20 +313,23 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
 
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseTailor</span>
-<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">is_seq_int</span><span class="p">,</span> <span class="n">LayerInfoType</span><span class="p">,</span> <span class="n">AnyDNN</span>
+<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">is_seq_int</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">LayerInfoType</span><span class="p">,</span> <span class="n">AnyDNN</span>
 
 
 <div class="viewcode-block" id="PytorchTailor"><a class="viewcode-back" href="../../../../api/finetuner.tailor.pytorch/#finetuner.tailor.pytorch.PytorchTailor">[docs]</a><span class="k">class</span> <span class="nc">PytorchTailor</span><span class="p">(</span><span class="n">BaseTailor</span><span class="p">):</span>
     <span class="sd">"""Tailor class for PyTorch DNN models"""</span>
 
-<div class="viewcode-block" id="PytorchTailor.summary"><a class="viewcode-back" href="../../../../api/finetuner.tailor.pytorch/#finetuner.tailor.pytorch.PytorchTailor.summary">[docs]</a>    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skip_identity_layer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayerInfoType</span><span class="p">:</span>
+<div class="viewcode-block" id="PytorchTailor.summary"><a class="viewcode-back" href="../../../../api/finetuner.tailor.pytorch/#finetuner.tailor.pytorch.PytorchTailor.summary">[docs]</a>    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skip_identity_layer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'LayerInfoType'</span><span class="p">:</span>
         <span class="sd">"""Interpret the DNN model and produce model information.</span>
 
 <span class="sd">        :param skip_identity_layer: If skip identity layer.</span>
@@ -444,7 +447,7 @@
         <span class="n">layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'AnyDNN'</span><span class="p">:</span>
         <span class="sd">"""Convert a general model from :py:attr:`.model` to an embedding model.</span>
 
 <span class="sd">        :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer</span>
@@ -544,7 +547,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 19, 2021.
+                    Last updated on Nov 20, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

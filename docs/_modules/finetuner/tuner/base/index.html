@@ -310,13 +310,21 @@
                 </div>
                 <h1>Source code for finetuner.tuner.base</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">.dataset</span> <span class="kn">import</span> <span class="n">ClassDataset</span><span class="p">,</span> <span class="n">SessionDataset</span>
 <span class="kn">from</span> <span class="nn">.dataset.samplers</span> <span class="kn">import</span> <span class="n">RandomClassBatchSampler</span><span class="p">,</span> <span class="n">SessionBatchSampler</span>
 <span class="kn">from</span> <span class="nn">.miner.base</span> <span class="kn">import</span> <span class="n">BaseMiner</span>
 <span class="kn">from</span> <span class="nn">.summary</span> <span class="kn">import</span> <span class="n">Summary</span>
-<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDataLoader</span><span class="p">,</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">AnyOptimizer</span><span class="p">,</span> <span class="n">AnyTensor</span><span class="p">,</span> <span class="n">DocumentSequence</span>
+
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDataLoader</span><span class="p">,</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">AnyOptimizer</span><span class="p">,</span> <span class="n">AnyTensor</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="p">(</span>
+        <span class="n">DocumentSequence</span><span class="p">,</span>
+        <span class="n">PreprocFnType</span><span class="p">,</span>
+        <span class="n">CollateFnType</span><span class="p">,</span>
+    <span class="p">)</span>
 
 
 <div class="viewcode-block" id="BaseLoss"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseLoss">[docs]</a><span class="k">class</span> <span class="nc">BaseLoss</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">AnyTensor</span><span class="p">]):</span>
@@ -360,12 +368,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span> <span class="o">=</span> <span class="n">embed_model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_loss</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
 
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_batch_sampler</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
         <span class="n">dataset</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ClassDataset</span><span class="p">,</span> <span class="n">SessionDataset</span><span class="p">],</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">num_items_per_class</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">num_items_per_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">RandomClassBatchSampler</span><span class="p">,</span> <span class="n">SessionBatchSampler</span><span class="p">]:</span>
         <span class="sd">"""Get the batch sampler"""</span>
 
@@ -375,6 +383,11 @@
             <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">SessionDataset</span><span class="p">):</span>
             <span class="n">batch_sampler</span> <span class="o">=</span> <span class="n">SessionBatchSampler</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'`dataset` must be either </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">SessionDataset</span><span class="p">)</span><span class="si">}</span><span class="s1"> or </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">ClassDataset</span><span class="p">)</span><span class="si">}</span><span class="s1">, '</span>
+                <span class="sa">f</span><span class="s1">'but receiving </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">batch_sampler</span>
 
@@ -390,15 +403,15 @@
 <div class="viewcode-block" id="BaseTuner.fit"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.fit">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">train_data</span><span class="p">:</span> <span class="n">DocumentSequence</span><span class="p">,</span>
-        <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DocumentSequence</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
+        <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentSequence'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
         <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
         <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyOptimizer</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
+        <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'PreprocFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'CollateFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Summary</span><span class="p">:</span>
@@ -423,12 +436,12 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_get_data_loader</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">data</span><span class="p">:</span> <span class="n">DocumentSequence</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">num_items_per_class</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-        <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">],</span>
-        <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">],</span>
+        <span class="n">num_items_per_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'PreprocFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'CollateFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDataLoader</span><span class="p">:</span>
         <span class="sd">"""Get framework specific data loader from the input data."""</span>
         <span class="o">...</span>
@@ -457,7 +470,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 19, 2021.
+                    Last updated on Nov 20, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

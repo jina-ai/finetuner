@@ -372,7 +372,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>~AnyDNN</em>) – The DNN model to be converted.</p></li>
+<li><p><strong>model</strong> (<em>AnyDNN</em>) – The DNN model to be converted.</p></li>
 <li><p><strong>layer_name</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – the name of the layer that is used for output embeddings. All layers <em>after</em> that layer
 will be removed. When set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, then the last layer listed in <a class="reference internal" href="../finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.embedding_layers" title="finetuner.tailor.base.BaseTailor.embedding_layers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding_layers</span></code></a> will be used.
 To see all available names you can check <code class="docutils literal notranslate"><span class="pre">name</span></code> field of <a class="reference internal" href="../finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.embedding_layers" title="finetuner.tailor.base.BaseTailor.embedding_layers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding_layers</span></code></a>.</p></li>
@@ -383,7 +383,7 @@ To see all available names you can check <code class="docutils literal notransla
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>~AnyDNN</p>
+<dd class="field-even"><p>AnyDNN</p>
 </dd>
 </dl>
 </dd></dl>
@@ -394,13 +394,13 @@ To see all available names you can check <code class="docutils literal notransla
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>~AnyDNN</em>) – The DNN model to display.</p></li>
+<li><p><strong>model</strong> (<em>AnyDNN</em>) – The DNN model to display.</p></li>
 <li><p><strong>input_size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, …]]) – The input size of the DNN model.</p></li>
 <li><p><strong>input_dtype</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The input data type of the DNN model.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>~AnyDNN</p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -439,7 +439,7 @@ To see all available names you can check <code class="docutils literal notransla
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 19, 2021.
+                    Last updated on Nov 20, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

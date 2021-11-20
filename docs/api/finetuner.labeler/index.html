@@ -353,8 +353,8 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>embed_model</strong> (<em>~AnyDNN</em>) – The embedding model to fine-tune</p></li>
-<li><p><strong>train_data</strong> (<em>~DocumentSequence</em>) – Data on which to train the model</p></li>
+<li><p><strong>embed_model</strong> (<em>AnyDNN</em>) – The embedding model to fine-tune</p></li>
+<li><p><strong>train_data</strong> (<em>DocumentSequence</em>) – Data on which to train the model</p></li>
 <li><p><strong>clear_labels_on_start</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If set True, will remove all labeled data.</p></li>
 <li><p><strong>port_expose</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The port to expose.</p></li>
 <li><p><strong>runtime_backend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The parallel backend of the runtime inside the Pea, either
@@ -363,9 +363,9 @@
 losses are:
 - <code class="docutils literal notranslate"><span class="pre">SiameseLoss</span></code> for Siamese network with cosine distance
 - <code class="docutils literal notranslate"><span class="pre">TripletLoss</span></code> for Triplet network with cosine distance</p></li>
-<li><p><strong>preprocess_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>]) – A pre-processing function. It should take as input the
+<li><p><strong>preprocess_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – A pre-processing function. It should take as input the
 content of an item in the dataset and return the pre-processed content</p></li>
-<li><p><strong>collate_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>]) – The collation function to merge the content of individual
+<li><p><strong>collate_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – The collation function to merge the content of individual
 items into a batch. Should accept a list with the content of each item,
 and output a tensor (or a list/dict of tensors) that feed directly into the
 embedding model</p></li>
@@ -412,7 +412,7 @@ embedding model</p></li>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 19, 2021.
+                    Last updated on Nov 20, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

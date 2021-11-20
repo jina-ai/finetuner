@@ -340,7 +340,7 @@
 <span class="sig-prename descclassname"><span class="pre">finetuner.toydata.</span></span><span class="sig-name descname"><span class="pre">generate_qa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_total</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">481</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_neg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_testset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/toydata/#generate_qa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.toydata.generate_qa" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a generator of QA data with synthetic negative matches.</p>
 <p>Each document in the array will have the text saved as <code class="docutils literal notranslate"><span class="pre">text</span></code> attribute, and
-matches will have the label saved as a tag under <code class="docutils literal notranslate"><span class="pre">tags['finetuner']['label']</span></code>.</p>
+matches will have the label saved as a tag under <code class="docutils literal notranslate"><span class="pre">tags['finetuner__label']</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -362,7 +362,7 @@ matches will have the label saved as a tag under <code class="docutils literal n
 <span class="sig-prename descclassname"><span class="pre">finetuner.toydata.</span></span><span class="sig-name descname"><span class="pre">generate_fashion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_total</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upsampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_testset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download_proxy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/toydata/#generate_fashion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.toydata.generate_fashion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a Generator of fashion-mnist Documents.</p>
 <p>Each document in the array will have the image content saved as <code class="docutils literal notranslate"><span class="pre">blob</span></code>, and
-the label saved as a tag under <code class="docutils literal notranslate"><span class="pre">tags['finetuner']['label']</span></code>.</p>
+the label saved as a tag under <code class="docutils literal notranslate"><span class="pre">tags['finetuner__label']</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -405,7 +405,7 @@ channel axis should be 1.</p></li>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 19, 2021.
+                    Last updated on Nov 20, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

@@ -313,7 +313,7 @@
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">choices</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">shuffle</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
 
 
 <div class="viewcode-block" id="RandomClassBatchSampler"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.dataset.samplers/#finetuner.tuner.dataset.samplers.RandomClassBatchSampler">[docs]</a><span class="k">class</span> <span class="nc">RandomClassBatchSampler</span><span class="p">:</span>
@@ -330,7 +330,10 @@
 <span class="sd">    """</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_items_per_class</span><span class="p">:</span> <span class="nb">int</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_items_per_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">"""Construct the batch sample.</span>
 
@@ -342,27 +345,19 @@
 <span class="sd">            ``num_items_per_class`` is 4, the batch will consist of 4 items for each of</span>
 <span class="sd">            the 5 classes.</span>
 <span class="sd">        """</span>
-        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'batch_size must be a positive integer'</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">num_items_per_class</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'num_items_per_class must be a positive integer'</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">%</span> <span class="n">num_items_per_class</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'`batch_size` must be greater than 0'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">num_items_per_class</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num_items_per_class</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">'batch_size must be a multiple of num_items_per_class,'</span>
-                <span class="sa">f</span><span class="s1">' got batch_size=</span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s1"> and'</span>
-                <span class="sa">f</span><span class="s1">' num_items_per_class=</span><span class="si">{</span><span class="n">num_items_per_class</span><span class="si">}</span><span class="s1">'</span>
+                <span class="s1">'`num_items_per_class` must be either None or greater than 0'</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_num_items_per_class</span> <span class="o">=</span> <span class="n">num_items_per_class</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_num_classes</span> <span class="o">=</span> <span class="n">batch_size</span> <span class="o">//</span> <span class="n">num_items_per_class</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_classes</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">'Number of distinct classes in labels must be larger or equal than'</span>
-                <span class="s1">' numbers of classes in a batch'</span>
-            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_items_per_class</span> <span class="o">=</span> <span class="n">num_items_per_class</span> <span class="ow">or</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="mi">1</span><span class="p">,</span> <span class="n">batch_size</span> <span class="o">//</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_classes</span> <span class="o">=</span> <span class="n">batch_size</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_items_per_class</span>
 
         <span class="c1"># Get mapping of labels (classes) and their positions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_class_to_labels</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -372,7 +367,9 @@
         <span class="c1"># Get class groups (ids to use in batches)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cls_group_counts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_class_to_labels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cls_group_counts</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">key</span><span class="p">,</span> <span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_items_per_class</span><span class="p">)])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cls_group_counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_items_per_class</span><span class="p">)]</span>
+            <span class="p">)</span>
 
         <span class="c1"># Initialize batches</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="mi">0</span>
@@ -412,9 +409,7 @@
 
         <span class="c1"># Shuffle all labels within class, get extra samples to fill the batch</span>
         <span class="n">class_to_labels</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_class_to_labels</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">class_to_labels</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="n">key_labels</span> <span class="o">=</span> <span class="n">class_to_labels</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">key_labels</span> <span class="ow">in</span> <span class="n">class_to_labels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">missing_items</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_num_items_per_class</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">key_labels</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_items_per_class</span>
             <span class="p">)</span>
@@ -552,7 +547,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 19, 2021.
+                    Last updated on Nov 20, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

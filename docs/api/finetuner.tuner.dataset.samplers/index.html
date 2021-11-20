@@ -337,7 +337,7 @@
 <span id="finetuner-tuner-dataset-samplers-module"></span><h1>finetuner.tuner.dataset.samplers module<a class="headerlink" href="#module-finetuner.tuner.dataset.samplers" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.tuner.dataset.samplers.RandomClassBatchSampler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.dataset.samplers.</span></span><span class="sig-name descname"><span class="pre">RandomClassBatchSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_items_per_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/dataset/samplers/#RandomClassBatchSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.dataset.samplers.RandomClassBatchSampler" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.dataset.samplers.</span></span><span class="sig-name descname"><span class="pre">RandomClassBatchSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_items_per_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/dataset/samplers/#RandomClassBatchSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.dataset.samplers.RandomClassBatchSampler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A batch sampler that fills the batch with an equal number of items from each
 class.</p>
@@ -354,7 +354,7 @@ classes to fill the batch - in this case some items do not get used in that epoc
 <li><p><strong>labels</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – A sequence of items labels, each label should be an integer
 denoting the class of the item</p></li>
 <li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – How many items to include in a batch</p></li>
-<li><p><strong>num_items_per_class</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – How many items per class (unique labels) to include
+<li><p><strong>num_items_per_class</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – How many items per class (unique labels) to include
 in a batch. For example, if <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> is 20, and
 <code class="docutils literal notranslate"><span class="pre">num_items_per_class</span></code> is 4, the batch will consist of 4 items for each of
 the 5 classes.</p></li>
@@ -426,7 +426,7 @@ sessions which is given by <code class="docutils literal notranslate"><span clas
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 19, 2021.
+                    Last updated on Nov 20, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

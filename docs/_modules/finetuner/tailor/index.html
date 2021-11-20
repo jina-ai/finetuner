@@ -311,13 +311,14 @@
                 <h1>Source code for finetuner.tailor</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Type</span>
 
-<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">get_framework</span><span class="p">,</span> <span class="n">AnyDNN</span>
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">get_framework</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseTailor</span>
+    <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span>
 
 
-<span class="k">def</span> <span class="nf">_get_tailor_class</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'BaseTailor'</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">_get_tailor_class</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'BaseTailor'</span><span class="p">]:</span>
     <span class="n">f_type</span> <span class="o">=</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">f_type</span> <span class="o">==</span> <span class="s1">'keras'</span><span class="p">:</span>
@@ -335,14 +336,14 @@
 
 
 <div class="viewcode-block" id="to_embedding_model"><a class="viewcode-back" href="../../../api/finetuner.tailor/#finetuner.tailor.to_embedding_model">[docs]</a><span class="k">def</span> <span class="nf">to_embedding_model</span><span class="p">(</span>
-    <span class="n">model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span>
+    <span class="n">model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>
     <span class="n">layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">input_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">input_dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'float32'</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'AnyDNN'</span><span class="p">:</span>
     <span class="sd">"""Convert a general model from :py:attr:`.model` to an embedding model.</span>
 
 <span class="sd">    :param model: The DNN model to be converted.</span>
@@ -362,10 +363,10 @@
 
 
 <div class="viewcode-block" id="display"><a class="viewcode-back" href="../../../api/finetuner.tailor/#finetuner.tailor.display">[docs]</a><span class="k">def</span> <span class="nf">display</span><span class="p">(</span>
-    <span class="n">model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">,</span>
+    <span class="n">model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>
     <span class="n">input_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">input_dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'float32'</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">"""Display the model architecture from :py:attr:`.summary` in a table.</span>
 
 <span class="sd">    :param model: The DNN model to display.</span>
@@ -374,7 +375,7 @@
 <span class="sd">    """</span>
     <span class="n">ft</span> <span class="o">=</span> <span class="n">_get_tailor_class</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">ft</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">input_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">display</span><span class="p">()</span></div>
+    <span class="n">ft</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">input_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">display</span><span class="p">()</span></div>
 </pre></div>
             </article>
             <footer>
@@ -386,7 +387,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 19, 2021.
+                    Last updated on Nov 20, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

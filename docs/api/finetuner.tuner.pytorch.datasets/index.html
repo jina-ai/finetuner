@@ -343,9 +343,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>docs</strong> (<em>~DocumentSequence</em>) – <p>The documents for the dataset. Each document is expected to have
+<li><p><strong>docs</strong> (<em>DocumentSequence</em>) – <p>The documents for the dataset. Each document is expected to have
 - a content (only blob or text are accepted currently)
-- a class label, saved under <code class="docutils literal notranslate"><span class="pre">tags['finetuner']['label']</span></code>. This class</p>
+- a class label, saved under <code class="docutils literal notranslate"><span class="pre">tags['finetuner__label']</span></code>. This class</p>
 <blockquote>
 <div><p>label should be an integer or a string</p>
 </div></blockquote>
@@ -365,11 +365,11 @@ accepted).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>docs</strong> (<em>~DocumentSequence</em>) – <p>The documents for the dataset. Each document is expected to have
+<li><p><strong>docs</strong> (<em>DocumentSequence</em>) – <p>The documents for the dataset. Each document is expected to have
 - a content (only blob or text are accepted currently)
 - matches, which should also have content, as well a label, stored under</p>
 <blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">tags['finetuner']['label']</span></code>, which be either 1 or -1, denoting
+<div><p><code class="docutils literal notranslate"><span class="pre">tags['finetuner__label']</span></code>, which be either 1 or -1, denoting
 whether the match is a positive or negative input in relation to the
 anchor document</p>
 </div></blockquote>
@@ -415,7 +415,7 @@ accepted).</p></li>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 19, 2021.
+                    Last updated on Nov 20, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

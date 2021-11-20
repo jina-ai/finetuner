@@ -314,13 +314,19 @@
 <span class="c1"># NOTE: this represents the NEXT release version</span>
 <span class="n">__version__</span> <span class="o">=</span> <span class="s1">'0.2.1'</span>
 
-<span class="n">__default_tag_key__</span> <span class="o">=</span> <span class="s1">'finetuner'</span>
+<span class="n">__default_tag_key__</span> <span class="o">=</span> <span class="s1">'finetuner_label'</span>
 
 <span class="c1"># define the high-level API: fit()</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">overload</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">overload</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">AnyOptimizer</span><span class="p">,</span> <span class="n">DocumentSequence</span>
+    <span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="p">(</span>
+        <span class="n">AnyDNN</span><span class="p">,</span>
+        <span class="n">AnyOptimizer</span><span class="p">,</span>
+        <span class="n">DocumentSequence</span><span class="p">,</span>
+        <span class="n">PreprocFnType</span><span class="p">,</span>
+        <span class="n">CollateFnType</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="kn">from</span> <span class="nn">.tuner.summary</span> <span class="kn">import</span> <span class="n">Summary</span>
 
 
@@ -330,15 +336,15 @@
     <span class="n">model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>  <span class="c1">#: must be an embedding model</span>
     <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
     <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentSequence'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
-    <span class="n">num_items_per_class</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
     <span class="n">loss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">'AnyDNN'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'SiameseLoss'</span><span class="p">,</span>
     <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'AnyOptimizer'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
+    <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'PreprocFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'CollateFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">num_items_per_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">'AnyDNN'</span><span class="p">,</span> <span class="s1">'Summary'</span><span class="p">]:</span>
     <span class="o">...</span>
 
@@ -349,15 +355,15 @@
     <span class="n">model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>
     <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
     <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentSequence'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
-    <span class="n">num_items_per_class</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
     <span class="n">loss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">'AnyDNN'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'SiameseLoss'</span><span class="p">,</span>
     <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'AnyOptimizer'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
+    <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'PreprocFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'CollateFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">num_items_per_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">to_embedding_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1">#: below are tailor args</span>
     <span class="n">input_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">input_dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'float32'</span><span class="p">,</span>
@@ -374,15 +380,15 @@
     <span class="n">model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>  <span class="c1">#: must be an embedding model</span>
     <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
     <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentSequence'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
-    <span class="n">num_items_per_class</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
     <span class="n">loss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">'AnyDNN'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'SiameseLoss'</span><span class="p">,</span>
     <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'AnyOptimizer'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
+    <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'PreprocFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'CollateFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">num_items_per_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">interactive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1">#: below are labeler args</span>
     <span class="n">clear_labels_on_start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">port_expose</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -397,15 +403,15 @@
     <span class="n">model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>
     <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
     <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentSequence'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
-    <span class="n">num_items_per_class</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
     <span class="n">loss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">'AnyDNN'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'SiameseLoss'</span><span class="p">,</span>
     <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'AnyOptimizer'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
+    <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'PreprocFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'CollateFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">num_items_per_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">interactive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1">#: below are labeler args</span>
     <span class="n">clear_labels_on_start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">port_expose</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -453,7 +459,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 19, 2021.
+                    Last updated on Nov 20, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
