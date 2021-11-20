@@ -3,7 +3,7 @@
 # NOTE: this represents the NEXT release version
 __version__ = '0.2.1'
 
-__default_tag_key__ = 'finetuner'
+__default_tag_key__ = 'finetuner_label'
 
 # define the high-level API: fit()
 from typing import Optional, overload, TYPE_CHECKING, Tuple, Union

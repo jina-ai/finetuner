@@ -5,7 +5,7 @@ from jina import Document, DocumentArray, DocumentArrayMemmap
 
 
 def _label(cls):
-    return {__default_tag_key__: {'label': cls}}
+    return {__default_tag_key__: cls}
 
 
 def test_empty_docarray():
@@ -21,7 +21,7 @@ def test_empty_list():
 def test_no_class_label():
     data = DocumentArray([Document(text='text', matches=[Document(text='text')])])
 
-    with pytest.raises(KeyError, match=r'The tag \["finetuner"\]\["label"\]'):
+    with pytest.raises(KeyError, match=rf'The tag `{__default_tag_key__}`'):
         _ = SessionDataset(data)
 
 

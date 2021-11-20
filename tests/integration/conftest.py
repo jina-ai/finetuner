@@ -46,9 +46,7 @@ def create_easy_data_class():
 
         docs = []
         for vec, label in zip(rand_vecs, labels):
-            docs.append(
-                Document(blob=vec, tags={__default_tag_key__: {'label': label}})
-            )
+            docs.append(Document(blob=vec, tags={__default_tag_key__: label}))
 
         return docs, rand_vecs
 
@@ -92,9 +90,7 @@ def create_easy_data_session():
 
             d = Document(blob=rand_vecs[anchor_ind])
             d.matches.append(
-                Document(
-                    blob=rand_vecs[pos_ind], tags={__default_tag_key__: {'label': 1}}
-                )
+                Document(blob=rand_vecs[pos_ind], tags={__default_tag_key__: 1})
             )
 
             neg_inds = [j for j in range(2 * n_cls) if j not in [anchor_ind, pos_ind]]
@@ -102,7 +98,7 @@ def create_easy_data_session():
                 d.matches.append(
                     Document(
                         blob=rand_vecs[neg_ind],
-                        tags={__default_tag_key__: {'label': -1}},
+                        tags={__default_tag_key__: -1},
                     )
                 )
 

@@ -6,6 +6,7 @@ import time
 import pytest
 import requests
 from finetuner.toydata import generate_fashion
+from finetuner import __default_tag_key__
 from jina.helper import random_port
 
 os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
@@ -116,7 +117,7 @@ def test_all_frameworks(framework, loss, tmpdir):
         # mimic label & fit
         for lbl_doc in rj['data']['docs']:
             for m in lbl_doc['matches']:
-                m['finetuner'] = {'label': random.sample([-1, 1], 1)[0]}
+                m[__default_tag_key__] = random.sample([-1, 1], 1)[0]
 
         req = requests.post(
             f'http://localhost:{port}/fit',

@@ -1,16 +1,14 @@
 import abc
-from typing import (
-    Optional,
-    Tuple,
-)
+from typing import Optional, Tuple, TYPE_CHECKING
 
-from ..helper import AnyDNN, LayerInfoType
+if TYPE_CHECKING:
+    from ..helper import AnyDNN, LayerInfoType
 
 
 class BaseTailor(abc.ABC):
     def __init__(
         self,
-        model: AnyDNN,
+        model: 'AnyDNN',
         input_size: Optional[Tuple[int, ...]] = None,
         input_dtype: str = 'float32',
     ):
@@ -36,7 +34,7 @@ class BaseTailor(abc.ABC):
         layer_name: Optional[str] = None,
         output_dim: Optional[int] = None,
         freeze: bool = False,
-    ) -> AnyDNN:
+    ) -> 'AnyDNN':
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
         :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
@@ -49,7 +47,7 @@ class BaseTailor(abc.ABC):
         ...
 
     @property
-    def embedding_layers(self) -> LayerInfoType:
+    def embedding_layers(self) -> 'LayerInfoType':
         """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
 
         :return: layers info as Dict.
@@ -58,7 +56,7 @@ class BaseTailor(abc.ABC):
         return [_l for _l in _layers if _l['is_embedding_layer']]
 
     @abc.abstractmethod
-    def summary(self, include_identity_layer: bool = False) -> LayerInfoType:
+    def summary(self, include_identity_layer: bool = False) -> 'LayerInfoType':
         """The summary of the model architecture. To list all potential embedding layers, use :py:attr:`.embedding_layers`.
 
         :param include_identity_layer: if set, then identity layers are included and returned.

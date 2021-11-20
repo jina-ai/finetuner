@@ -1,7 +1,7 @@
 from typing import Optional, Type, TYPE_CHECKING, Union
 
 from .base import BaseLoss
-
+from ..helper import get_framework
 
 if TYPE_CHECKING:
     from .base import BaseTuner
@@ -12,7 +12,6 @@ if TYPE_CHECKING:
         DocumentSequence,
         PreprocFnType,
         CollateFnType,
-        get_framework,
     )
 
 

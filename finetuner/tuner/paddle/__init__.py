@@ -64,7 +64,10 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
             dataset = PaddleSessionDataset(data, preprocess_fn=preprocess_fn)
 
         batch_sampler = self._get_batch_sampler(
-            dataset, batch_size, num_items_per_class, shuffle
+            dataset,
+            batch_size,
+            shuffle=shuffle,
+            num_items_per_class=num_items_per_class,
         )
         data_loader = DataLoader(
             dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn_all
