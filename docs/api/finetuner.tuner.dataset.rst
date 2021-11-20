@@ -1,5 +1,5 @@
-finetuner.tuner.miner package
-=============================
+finetuner.tuner.dataset package
+===============================
 
 Submodules
 ----------
@@ -7,12 +7,12 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   finetuner.tuner.miner.base
+   finetuner.tuner.dataset.samplers
 
 Module contents
 ---------------
 
-.. automodule:: finetuner.tuner.miner
+.. automodule:: finetuner.tuner.dataset
    :members:
    :undoc-members:
    :show-inheritance:
