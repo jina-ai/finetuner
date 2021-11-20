@@ -6,24 +6,14 @@ from finetuner.tuner.dataset.samplers import RandomClassBatchSampler
 
 @pytest.mark.parametrize("batch_size", [-1, 0])
 def test_wrong_batch_size(batch_size: int):
-    with pytest.raises(ValueError, match="batch_size must be a positive"):
+    with pytest.raises(ValueError, match="batch_size"):
         RandomClassBatchSampler([0, 1], batch_size, 1)
 
 
 @pytest.mark.parametrize("num_items_per_class", [-1, 0])
 def test_wrong_num_items_per_class(num_items_per_class: int):
-    with pytest.raises(ValueError, match="num_items_per_class must be a positive"):
+    with pytest.raises(ValueError, match="num_items_per_class"):
         RandomClassBatchSampler([0, 1], 1, num_items_per_class)
-
-
-def test_batch_size_num_items_per_class_not_divisible1():
-    with pytest.raises(ValueError, match="batch_size must be a multiple"):
-        RandomClassBatchSampler([0, 1], 1, 2)
-
-
-def test_batch_size_num_items_per_class_not_divisible2():
-    with pytest.raises(ValueError, match="batch_size must be a multiple"):
-        RandomClassBatchSampler([0, 1], 3, 2)
 
 
 def test_normal_case():

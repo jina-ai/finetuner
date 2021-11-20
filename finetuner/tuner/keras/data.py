@@ -1,9 +1,11 @@
-from typing import Any, Callable, List, Mapping, Optional, Sequence, Union
+from typing import List, Mapping, Optional, Sequence, Union, TYPE_CHECKING
 
 import numpy as np
 import tensorflow as tf
 
-from ..dataset import ClassDataset, SessionDataset
+if TYPE_CHECKING:
+    from ..dataset import ClassDataset, SessionDataset
+    from ...helper import CollateFnType
 
 
 def _default_collate(content: List):
@@ -19,8 +21,8 @@ class KerasDataSequence(tf.keras.utils.Sequence):
     def __init__(
         self,
         batch_sampler,
-        dataset: Union[ClassDataset, SessionDataset],
-        collate_fn: Optional[Callable[[List], Any]],
+        dataset: Union['ClassDataset', 'SessionDataset'],
+        collate_fn: Optional['CollateFnType'] = None,
     ):
         self.dataset = dataset
         self.batch_sampler = batch_sampler

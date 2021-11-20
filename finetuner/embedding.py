@@ -1,15 +1,12 @@
-from typing import Callable, Optional, Union, List, TYPE_CHECKING, TypeVar
+from typing import Union, TYPE_CHECKING, TypeVar, Optional
 
 import numpy as np
 
 if TYPE_CHECKING:
     from jina import DocumentArray, DocumentArrayMemmap
-    from jina.types.document import DocumentContentType
-    from .helper import AnyDNN, AnyTensor
+    from .helper import AnyDNN, PreprocFnType, CollateFnType
 
 from .helper import get_framework
-
-T = TypeVar('T')
 
 
 def embed(
@@ -17,8 +14,8 @@ def embed(
     embed_model: 'AnyDNN',
     device: str = 'cpu',
     batch_size: int = 256,
-    preprocess_fn: Optional[Callable[['DocumentContentType'], T]] = None,
-    collate_fn: Optional[Callable[[List[T]], 'AnyTensor']] = None,
+    preprocess_fn: Optional['PreprocFnType'] = None,
+    collate_fn: Optional['CollateFnType'] = None,
 ) -> None:
     """Fill the embedding of Documents inplace by using `embed_model`
 
@@ -49,8 +46,8 @@ def _set_embeddings_keras(
     embed_model: 'AnyDNN',
     device: str = 'cpu',
     batch_size: int = 256,
-    preprocess_fn: Optional[Callable[['DocumentContentType'], T]] = None,
-    collate_fn: Optional[Callable[[List[T]], 'AnyTensor']] = None,
+    preprocess_fn: Optional['PreprocFnType'] = None,
+    collate_fn: Optional['CollateFnType'] = None,
 ):
     from .tuner.keras import get_device
 
@@ -71,8 +68,8 @@ def _set_embeddings_torch(
     embed_model: 'AnyDNN',
     device: str = 'cpu',
     batch_size: int = 256,
-    preprocess_fn: Optional[Callable[['DocumentContentType'], T]] = None,
-    collate_fn: Optional[Callable[[List[T]], 'AnyTensor']] = None,
+    preprocess_fn: Optional['PreprocFnType'] = None,
+    collate_fn: Optional['CollateFnType'] = None,
 ):
     from .tuner.pytorch import get_device
 
@@ -101,8 +98,8 @@ def _set_embeddings_paddle(
     embed_model,
     device: str = 'cpu',
     batch_size: int = 256,
-    preprocess_fn: Optional[Callable[['DocumentContentType'], T]] = None,
-    collate_fn: Optional[Callable[[List[T]], 'AnyTensor']] = None,
+    preprocess_fn: Optional['PreprocFnType'] = None,
+    collate_fn: Optional['CollateFnType'] = None,
 ):
     from .tuner.paddle import get_device
 

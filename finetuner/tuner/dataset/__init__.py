@@ -1,10 +1,23 @@
 import abc
-from typing import Any, Callable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Generic,
+    List,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+    TYPE_CHECKING,
+)
 
 import numpy as np
 
 from ... import __default_tag_key__
-from ...helper import DocumentSequence
+
+if TYPE_CHECKING:
+    from ...helper import DocumentSequence
 
 AnyLabel = TypeVar('AnyLabel')
 
@@ -33,14 +46,14 @@ class ClassDataset(BaseDataset[int]):
 
     def __init__(
         self,
-        docs: DocumentSequence,
+        docs: 'DocumentSequence',
         preprocess_fn: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
     ):
         """Create the dataset instance.
 
         :param docs: The documents for the dataset. Each document is expected to have
             - a content (only blob or text are accepted currently)
-            - a class label, saved under ``tags['finetuner']['label']``. This class
+            - a class label, saved under ``tags['finetuner__label']``. This class
               label should be an integer or a string
         :param preprocess_fn: A pre-processing function. It should take as input the
             content of an item in the dataset (currently only text of blob are
@@ -54,13 +67,13 @@ class ClassDataset(BaseDataset[int]):
         max_label = 0
 
         for doc in self._docs:
-            try:
-                tag = doc.tags[__default_tag_key__]['label']
-            except KeyError as e:
+            if __default_tag_key__ not in doc.tags:
                 raise KeyError(
-                    'The tag ["finetuner"]["label"] was not found in a document.'
-                    ' When using ClassDataset all documents need this tag'
-                ) from e
+                    f'The tag `{__default_tag_key__}` was not found in a document.'
+                    f' When using {type(self)} all documents need this tag.'
+                )
+            tag = doc.tags[__default_tag_key__]
+
             label = self._tag_labels_dict.get(tag)
 
             if label is None:
@@ -98,7 +111,7 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
 
     def __init__(
         self,
-        docs: DocumentSequence,
+        docs: 'DocumentSequence',
         preprocess_fn: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
     ):
         """Create the dataset instance.
@@ -106,7 +119,7 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
         :param docs: The documents for the dataset. Each document is expected to have
             - a content (only blob or text are accepted currently)
             - matches, which should also have content, as well a label, stored under
-                ``tags['finetuner']['label']``, which be either 1 or -1, denoting
+                ``tags['finetuner__label']``, which be either 1 or -1, denoting
                 whether the match is a positive or negative input in relation to the
                 anchor document
         :param preprocess_fn: A pre-processing function. It should take as input the
@@ -128,13 +141,13 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
 
             for match_ind, match in enumerate(doc.matches):
                 self._locations.append((i, match_ind))
-                try:
-                    tag = match.tags[__default_tag_key__]['label']
-                except KeyError:
+                if __default_tag_key__ not in match.tags:
                     raise KeyError(
-                        'The tag ["finetuner"]["label"] was not found in a document.'
-                        ' When using ClassDataset all documents need this tag'
+                        f'The tag `{__default_tag_key__}` was not found in a document.'
+                        f' When using {type(self)} all documents need this tag'
                     )
+
+                tag = match.tags[__default_tag_key__]
 
                 self._labels.append((i, int(tag)))
                 num_docs += 1

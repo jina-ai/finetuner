@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence, Union
 
 import torch
 from jina.logging.profile import ProgressBar
@@ -12,7 +12,9 @@ from .datasets import PytorchClassDataset, PytorchSessionDataset
 from ..base import BaseTuner
 from ..summary import ScalarSequence, Summary
 from ... import __default_tag_key__
-from ...helper import DocumentSequence
+
+if TYPE_CHECKING:
+    from ...helper import DocumentSequence, PreprocFnType, CollateFnType
 
 
 def _to_device(
@@ -37,12 +39,12 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
     def _get_data_loader(
         self,
-        data: DocumentSequence,
+        data: 'DocumentSequence',
         batch_size: int,
-        num_items_per_class: int,
         shuffle: bool,
-        preprocess_fn: Optional[Callable],
-        collate_fn: Optional[Callable[[List], Any]],
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
+        num_items_per_class: Optional[int] = None,
     ) -> DataLoader:
         """ Get the dataloader for the dataset"""
 
@@ -62,7 +64,10 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
             dataset = PytorchSessionDataset(data, preprocess_fn=preprocess_fn)
 
         batch_sampler = self._get_batch_sampler(
-            dataset, batch_size, num_items_per_class, shuffle
+            dataset,
+            batch_size,
+            shuffle=shuffle,
+            num_items_per_class=num_items_per_class,
         )
         data_loader = DataLoader(
             dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn_all
@@ -140,16 +145,16 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
     def fit(
         self,
-        train_data: DocumentSequence,
-        eval_data: Optional[DocumentSequence] = None,
-        preprocess_fn: Optional[Callable] = None,
-        collate_fn: Optional[Callable[[List], Any]] = None,
+        train_data: 'DocumentSequence',
+        eval_data: Optional['DocumentSequence'] = None,
         epochs: int = 10,
         batch_size: int = 256,
-        num_items_per_class: int = 4,
+        num_items_per_class: Optional[int] = None,
         optimizer: Optional[Optimizer] = None,
         learning_rate: float = 1e-3,
         device: str = 'cpu',
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
         **kwargs,
     ) -> Summary:
         """Finetune the model on the training data.

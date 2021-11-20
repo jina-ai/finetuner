@@ -22,7 +22,7 @@ def generate_qa(
     """Get a generator of QA data with synthetic negative matches.
 
     Each document in the array will have the text saved as ``text`` attribute, and
-    matches will have the label saved as a tag under ``tags['finetuner']['label']``.
+    matches will have the label saved as a tag under ``tags['finetuner__label']``.
 
     :param num_total: the total number of documents to return
     :param num_neg: the number of negative matches per document
@@ -38,12 +38,10 @@ def generate_qa(
             break
 
         d.text = d.tags['question']
-        m_p = Document(
-            text=d.tags['answer'], tags={__default_tag_key__: {'label': pos_value}}
-        )
+        m_p = Document(text=d.tags['answer'], tags={__default_tag_key__: pos_value})
         m_n = Document(
             text=d.tags['wrong_answer'],
-            tags={__default_tag_key__: {'label': neg_value}},
+            tags={__default_tag_key__: neg_value},
         )
 
         if num_neg > 0:
@@ -56,7 +54,7 @@ def generate_qa(
                     if n_d.id != d.id:
                         new_nd = Document(
                             text=n_d.tags['answer'],
-                            tags={__default_tag_key__: {'label': neg_value}},
+                            tags={__default_tag_key__: neg_value},
                         )
 
                         d.matches.append(new_nd)
@@ -119,7 +117,7 @@ def generate_fashion(
     """Get a Generator of fashion-mnist Documents.
 
     Each document in the array will have the image content saved as ``blob``, and
-    the label saved as a tag under ``tags['finetuner']['label']``.
+    the label saved as a tag under ``tags['finetuner__label']``.
 
     :param num_total: the total number of documents to return
     :param upsampling: the rescale factor, must be integer and >=1. It rescales the
@@ -190,7 +188,7 @@ def generate_fashion(
         doc = Document(
             content=raw_img,
             tags={
-                __default_tag_key__: {'label': int(lbl)},
+                __default_tag_key__: int(lbl),
             },
         )
         doc.convert_image_blob_to_uri()

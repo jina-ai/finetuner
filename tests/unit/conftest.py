@@ -13,7 +13,7 @@ def generate_random_data():
         for i in range(n):
             d = Document(
                 blob=np.random.rand(dim).astype(np.float32),
-                tags={__default_tag_key__: {'label': i % n_cls}},
+                tags={__default_tag_key__: i % n_cls},
             )
             docs.append(d)
         return docs
@@ -37,11 +37,11 @@ def generate_random_session_data():
                 [
                     Document(
                         blob=np.random.rand(dim).astype(np.float32),
-                        tags={__default_tag_key__: {'label': 1}},
+                        tags={__default_tag_key__: 1},
                     ),
                     Document(
                         blob=np.random.rand(dim).astype(np.float32),
-                        tags={__default_tag_key__: {'label': -1}},
+                        tags={__default_tag_key__: -1},
                     ),
                 ]
             )

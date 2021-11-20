@@ -2,20 +2,23 @@ import copy
 import warnings
 from collections import OrderedDict
 from copy import deepcopy
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 import numpy as np
 import torch
 from torch import nn
 
 from ..base import BaseTailor
-from ...helper import is_seq_int, LayerInfoType, AnyDNN
+from ...helper import is_seq_int
+
+if TYPE_CHECKING:
+    from ...helper import LayerInfoType, AnyDNN
 
 
 class PytorchTailor(BaseTailor):
     """Tailor class for PyTorch DNN models"""
 
-    def summary(self, skip_identity_layer: bool = False) -> LayerInfoType:
+    def summary(self, skip_identity_layer: bool = False) -> 'LayerInfoType':
         """Interpret the DNN model and produce model information.
 
         :param skip_identity_layer: If skip identity layer.
@@ -133,7 +136,7 @@ class PytorchTailor(BaseTailor):
         layer_name: Optional[str] = None,
         output_dim: Optional[int] = None,
         freeze: bool = False,
-    ) -> AnyDNN:
+    ) -> 'AnyDNN':
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
         :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer

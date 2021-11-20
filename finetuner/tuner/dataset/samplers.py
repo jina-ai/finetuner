@@ -2,7 +2,7 @@ from collections import defaultdict
 from copy import deepcopy
 from math import ceil
 from random import choices, sample, shuffle
-from typing import List, Sequence, Tuple
+from typing import List, Sequence, Tuple, Optional
 
 
 class RandomClassBatchSampler:
@@ -19,7 +19,10 @@ class RandomClassBatchSampler:
     """
 
     def __init__(
-        self, labels: Sequence[int], batch_size: int, num_items_per_class: int
+        self,
+        labels: Sequence[int],
+        batch_size: int,
+        num_items_per_class: Optional[int] = None,
     ):
         """Construct the batch sample.
 
@@ -31,27 +34,19 @@ class RandomClassBatchSampler:
             ``num_items_per_class`` is 4, the batch will consist of 4 items for each of
             the 5 classes.
         """
-        if batch_size <= 0:
-            raise ValueError('batch_size must be a positive integer')
-        if num_items_per_class <= 0:
-            raise ValueError('num_items_per_class must be a positive integer')
 
-        if batch_size % num_items_per_class != 0:
+        if batch_size < 1:
+            raise ValueError('`batch_size` must be greater than 0')
+        if num_items_per_class is not None and num_items_per_class < 1:
             raise ValueError(
-                'batch_size must be a multiple of num_items_per_class,'
-                f' got batch_size={batch_size} and'
-                f' num_items_per_class={num_items_per_class}'
+                '`num_items_per_class` must be either None or greater than 0'
             )
 
-        self._num_items_per_class = num_items_per_class
         self._batch_size = batch_size
-        self._num_classes = batch_size // num_items_per_class
-
-        if len(set(labels)) < self._num_classes:
-            raise ValueError(
-                'Number of distinct classes in labels must be larger or equal than'
-                ' numbers of classes in a batch'
-            )
+        self._num_items_per_class = num_items_per_class or max(
+            1, batch_size // len(set(labels))
+        )
+        self._num_classes = batch_size // self._num_items_per_class
 
         # Get mapping of labels (classes) and their positions
         self._class_to_labels = defaultdict(list)
@@ -61,7 +56,9 @@ class RandomClassBatchSampler:
         # Get class groups (ids to use in batches)
         self._cls_group_counts = []
         for key, val in self._class_to_labels.items():
-            self._cls_group_counts.append([key, ceil(len(val) / num_items_per_class)])
+            self._cls_group_counts.append(
+                [key, ceil(len(val) / self._num_items_per_class)]
+            )
 
         # Initialize batches
         self._index = 0
@@ -101,9 +98,7 @@ class RandomClassBatchSampler:
 
         # Shuffle all labels within class, get extra samples to fill the batch
         class_to_labels = deepcopy(self._class_to_labels)
-        for key in list(class_to_labels.keys()):
-            key_labels = class_to_labels[key]
-
+        for key, key_labels in class_to_labels.items():
             missing_items = (
                 self._num_items_per_class - len(key_labels) % self._num_items_per_class
             )

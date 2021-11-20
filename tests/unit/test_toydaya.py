@@ -31,7 +31,7 @@ def test_train_test_qa_generator():
 
 def test_doc_generator():
     for d in generate_fashion(num_total=1000):
-        assert d.tags[__default_tag_key__]['label'] is not None
+        assert d.tags[__default_tag_key__] is not None
 
 
 @pytest.mark.parametrize('channels', [0, 1, 3])
@@ -66,7 +66,7 @@ def test_generate_qa_doc_match(pos_value, neg_value, num_neg):
         num_neg=num_neg, pos_value=pos_value, neg_value=neg_value, num_total=10
     ):
         assert len(d.matches) == 1 + num_neg
-        all_labels = [int(d.tags[__default_tag_key__]['label']) for d in d.matches]
+        all_labels = [int(d.tags[__default_tag_key__]) for d in d.matches]
         assert all_labels.count(pos_value) == 1
         assert all_labels.count(neg_value) == num_neg
         assert d.content_type == 'text'
