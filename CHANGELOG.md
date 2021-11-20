@@ -8,6 +8,7 @@
 
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -332,4 +333,29 @@ The changes of each release is tracked by this file.
  - [[```c6041fde```](https://github.com/jina-ai/finetuner/commit/c6041fde2bddf74d50922a3a55c3bff14ff17f46)] __-__ __version__: set next version to 0.2.0 (*Han Xiao*)
  - [[```20eb41c2```](https://github.com/jina-ai/finetuner/commit/20eb41c2e0504d2781ca3fd7d915b97aa0118129)] __-__ __style__: fix coding style optimize imports (*Han Xiao*)
  - [[```6539237b```](https://github.com/jina-ai/finetuner/commit/6539237befd25205707d134dbd4aa3897b13ea3d)] __-__ __version__: the next version will be 0.1.6 (*Jina Dev Bot*)
+
+<a name=release-note-0-2-1></a>
+## Release Note (`0.2.1`)
+
+> Release time: 2021-11-20 19:39:37
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Tadej Svetina,  Jina Dev Bot,  🙇
+
+
+### 🧼 Code Refactoring
+
+ - [[```d70546ac```](https://github.com/jina-ai/finetuner/commit/d70546acb791c54538fbc571db7eced60aa91bb3)] __-__ __sampling__: make num_items_per_class optional (#214) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```acc6e388```](https://github.com/jina-ai/finetuner/commit/acc6e3886be15f3a34c99b03ac736ca378511d66)] __-__ __tutorial__: add swiss roll tutorial (*Han Xiao*)
+ - [[```8748e9ee```](https://github.com/jina-ai/finetuner/commit/8748e9ee2878c8b050d21b2eecbc80d86d1c1b54)] __-__ __labeler__: fix docstring (#213) (*Tadej Svetina*)
+
+### 🍹 Other Improvements
+
+ - [[```23d8ca80```](https://github.com/jina-ai/finetuner/commit/23d8ca80eb7b6a571204c6afc65387af9cc6eadc)] __-__ remove notebook from static (*Han Xiao*)
+ - [[```5b0b9a1d```](https://github.com/jina-ai/finetuner/commit/5b0b9a1da7a07e0f3b4772184c9fd16ba72ef504)] __-__ __version__: the next version will be 0.2.1 (*Jina Dev Bot*)
 
