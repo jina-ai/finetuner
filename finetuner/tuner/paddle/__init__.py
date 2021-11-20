@@ -141,14 +141,14 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
         self,
         train_data: 'DocumentSequence',
         eval_data: Optional['DocumentSequence'] = None,
-        preprocess_fn: Optional['PreprocFnType'] = None,
-        collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
         optimizer: Optional[Optimizer] = None,
         learning_rate: float = 1e-3,
         device: str = 'cpu',
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
         **kwargs,
     ) -> Summary:
         """Finetune the model on the training data.

@@ -9,22 +9,25 @@ from typing import (
     Callable,
 )
 
+
+AnyDNN = TypeVar(
+    'AnyDNN'
+)  #: The type of any implementation of a Deep Neural Network object
+AnyTensor = TypeVar(
+    'AnyTensor'
+)  #: The type of any implementation of an tensor for model tuning
+AnyDataLoader = TypeVar(
+    'AnyDataLoader'
+)  #: The type of any implementation of a data loader
+AnyOptimizer = TypeVar(
+    'AnyOptimizer'
+)  #: The type of any implementation of an optimizer for training the model
+
+
 if TYPE_CHECKING:
     from jina import Document, DocumentArray, DocumentArrayMemmap
     from jina.types.document.mixins.content import DocumentContentType
 
-    AnyDNN = TypeVar(
-        'AnyDNN'
-    )  #: The type of any implementation of a Deep Neural Network object
-    AnyTensor = TypeVar(
-        'AnyTensor'
-    )  #: The type of any implementation of an tensor for model tuning
-    AnyDataLoader = TypeVar(
-        'AnyDataLoader'
-    )  #: The type of any implementation of a data loader
-    AnyOptimizer = TypeVar(
-        'AnyOptimizer'
-    )  #: The type of any implementation of an optimizer for training the model
     DocumentSequence = TypeVar(
         'DocumentSequence',
         Sequence[Document],
