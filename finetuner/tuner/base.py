@@ -1,11 +1,19 @@
 import abc
-from typing import Callable, Generic, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Generic, List, Optional, Tuple, Union
 
 from .dataset import ClassDataset, SessionDataset
 from .dataset.samplers import RandomClassBatchSampler, SessionBatchSampler
 from .miner.base import BaseMiner
 from .summary import Summary
-from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyTensor, DocumentSequence
+
+from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyTensor
+
+if TYPE_CHECKING:
+    from ..helper import (
+        DocumentSequence,
+        PreprocFnType,
+        CollateFnType,
+    )
 
 
 class BaseLoss(Generic[AnyTensor]):
@@ -53,8 +61,8 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         self,
         dataset: Union[ClassDataset, SessionDataset],
         batch_size: int,
-        num_items_per_class: int,
         shuffle: bool,
+        num_items_per_class: Optional[int] = None,
     ) -> Union[RandomClassBatchSampler, SessionBatchSampler]:
         """Get the batch sampler"""
 
@@ -79,10 +87,10 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
     @abc.abstractmethod
     def fit(
         self,
-        train_data: DocumentSequence,
-        eval_data: Optional[DocumentSequence] = None,
-        preprocess_fn: Optional[Callable] = None,
-        collate_fn: Optional[Callable] = None,
+        train_data: 'DocumentSequence',
+        eval_data: Optional['DocumentSequence'] = None,
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         learning_rate: float = 1e-3,
@@ -112,12 +120,12 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
     @abc.abstractmethod
     def _get_data_loader(
         self,
-        data: DocumentSequence,
+        data: 'DocumentSequence',
         batch_size: int,
-        num_items_per_class: int,
         shuffle: bool,
-        preprocess_fn: Optional[Callable],
-        collate_fn: Optional[Callable],
+        num_items_per_class: Optional[int] = None,
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
     ) -> AnyDataLoader:
         """Get framework specific data loader from the input data."""
         ...

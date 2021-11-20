@@ -1,14 +1,22 @@
-from typing import Any, Callable, List, Optional, Type, TYPE_CHECKING, Union
+from typing import Optional, Type, TYPE_CHECKING, Union
 
 from .base import BaseLoss
-from ..helper import AnyDNN, AnyOptimizer, DocumentSequence, get_framework
+
 
 if TYPE_CHECKING:
     from .base import BaseTuner
     from .summary import Summary
+    from ..helper import (
+        AnyDNN,
+        AnyOptimizer,
+        DocumentSequence,
+        PreprocFnType,
+        CollateFnType,
+        get_framework,
+    )
 
 
-def _get_tuner_class(dnn_model: AnyDNN) -> Type['BaseTuner']:
+def _get_tuner_class(dnn_model: 'AnyDNN') -> Type['BaseTuner']:
     f_type = get_framework(dnn_model)
 
     if f_type == 'keras':
@@ -26,16 +34,16 @@ def _get_tuner_class(dnn_model: AnyDNN) -> Type['BaseTuner']:
 
 
 def fit(
-    embed_model: AnyDNN,
-    train_data: DocumentSequence,
-    eval_data: Optional[DocumentSequence] = None,
-    preprocess_fn: Optional[Callable] = None,
-    collate_fn: Optional[Callable[[List], Any]] = None,
+    embed_model: 'AnyDNN',
+    train_data: 'DocumentSequence',
+    eval_data: Optional['DocumentSequence'] = None,
+    preprocess_fn: Optional['PreprocFnType'] = None,
+    collate_fn: Optional['CollateFnType'] = None,
     epochs: int = 10,
     batch_size: int = 256,
-    num_items_per_class: int = 4,
+    num_items_per_class: Optional[int] = None,
     loss: Union[str, BaseLoss] = 'SiameseLoss',
-    optimizer: Optional[AnyOptimizer] = None,
+    optimizer: Optional['AnyOptimizer'] = None,
     learning_rate: float = 1e-3,
     device: str = 'cpu',
     **kwargs,
@@ -83,7 +91,7 @@ def fit(
     )
 
 
-def save(embed_model: AnyDNN, model_path: str, *args, **kwargs) -> None:
+def save(embed_model: 'AnyDNN', model_path: str, *args, **kwargs) -> None:
     """Save the embedding model.
 
     :param embed_model: The embedding model to save

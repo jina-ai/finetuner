@@ -1,4 +1,3 @@
-import importlib.util
 from typing import (
     TypeVar,
     Sequence,
@@ -6,36 +5,48 @@ from typing import (
     List,
     Dict,
     Any,
+    TYPE_CHECKING,
+    Callable,
 )
 
-from jina import Document, DocumentArray, DocumentArrayMemmap
+if TYPE_CHECKING:
+    from jina import Document, DocumentArray, DocumentArrayMemmap
+    from jina.types.document.mixins.content import DocumentContentType
 
-AnyDNN = TypeVar(
-    'AnyDNN'
-)  #: The type of any implementation of a Deep Neural Network object
-AnyTensor = TypeVar(
-    'AnyTensor'
-)  #: The type of any implementation of an tensor for model tuning
-AnyDataLoader = TypeVar(
-    'AnyDataLoader'
-)  #: The type of any implementation of a data loader
-AnyOptimizer = TypeVar(
-    'AnyOptimizer'
-)  #: The type of any implementation of an optimizer for training the model
-DocumentSequence = TypeVar(
-    'DocumentSequence',
-    Sequence[Document],
-    DocumentArray,
-    DocumentArrayMemmap,
-    Iterator[Document],
-)  #: The type of any sequence of Document
+    AnyDNN = TypeVar(
+        'AnyDNN'
+    )  #: The type of any implementation of a Deep Neural Network object
+    AnyTensor = TypeVar(
+        'AnyTensor'
+    )  #: The type of any implementation of an tensor for model tuning
+    AnyDataLoader = TypeVar(
+        'AnyDataLoader'
+    )  #: The type of any implementation of a data loader
+    AnyOptimizer = TypeVar(
+        'AnyOptimizer'
+    )  #: The type of any implementation of an optimizer for training the model
+    DocumentSequence = TypeVar(
+        'DocumentSequence',
+        Sequence[Document],
+        DocumentArray,
+        DocumentArrayMemmap,
+        Iterator[Document],
+    )  #: The type of any sequence of Document
 
-LayerInfoType = List[
-    Dict[str, Any]
-]  #: The type of embedding layer information used in Tailor
+    LayerInfoType = List[
+        Dict[str, Any]
+    ]  #: The type of embedding layer information used in Tailor
+
+    T = TypeVar('T')  #: Generic type
+
+    PreprocFnType = Callable[
+        [DocumentContentType], T
+    ]  #: The type of preprocessing function
+
+    CollateFnType = Callable[[List[T]], AnyTensor]  #: The type of collate function
 
 
-def get_framework(dnn_model: AnyDNN) -> str:
+def get_framework(dnn_model: 'AnyDNN') -> str:
     """Return the framework that enpowers a DNN model.
 
     .. note::
@@ -47,6 +58,7 @@ def get_framework(dnn_model: AnyDNN) -> str:
     :return: `keras`, `torch`, `paddle` or ValueError
 
     """
+    import importlib.util
 
     framework = None
 

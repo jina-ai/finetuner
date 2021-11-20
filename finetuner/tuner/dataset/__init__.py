@@ -1,10 +1,23 @@
 import abc
-from typing import Any, Callable, Dict, Generic, List, Optional, Tuple, TypeVar, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Generic,
+    List,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+    TYPE_CHECKING,
+)
 
 import numpy as np
 
 from ... import __default_tag_key__
-from ...helper import DocumentSequence
+
+if TYPE_CHECKING:
+    from ...helper import DocumentSequence
 
 AnyLabel = TypeVar('AnyLabel')
 
@@ -33,7 +46,7 @@ class ClassDataset(BaseDataset[int]):
 
     def __init__(
         self,
-        docs: DocumentSequence,
+        docs: 'DocumentSequence',
         preprocess_fn: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
     ):
         """Create the dataset instance.
@@ -98,7 +111,7 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
 
     def __init__(
         self,
-        docs: DocumentSequence,
+        docs: 'DocumentSequence',
         preprocess_fn: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
     ):
         """Create the dataset instance.

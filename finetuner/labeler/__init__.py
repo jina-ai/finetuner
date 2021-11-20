@@ -2,7 +2,7 @@ import os
 import tempfile
 import threading
 import webbrowser
-from typing import Callable, Optional
+from typing import Optional, TYPE_CHECKING
 
 import jina.helper
 from jina import Flow
@@ -10,18 +10,20 @@ from jina.logging.predefined import default_logger
 
 from .executor import FTExecutor, DataIterator
 from .. import __default_tag_key__
-from ..helper import AnyDNN, DocumentSequence
+
+if TYPE_CHECKING:
+    from ..helper import AnyDNN, DocumentSequence, PreprocFnType, CollateFnType
 
 
 def fit(
-    embed_model: AnyDNN,
-    train_data: DocumentSequence,
+    embed_model: 'AnyDNN',
+    train_data: 'DocumentSequence',
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
     loss: str = 'SiameseLoss',
-    preprocess_fn: Optional[Callable] = None,
-    collate_fn: Optional[Callable] = None,
+    preprocess_fn: Optional['PreprocFnType'] = None,
+    collate_fn: Optional['CollateFnType'] = None,
     **kwargs,
 ) -> None:
     """Fit the model in an interactive UI.

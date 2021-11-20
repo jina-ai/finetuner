@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Optional, Union
+from typing import Optional, Union, TYPE_CHECKING
 
 import tensorflow as tf
 from jina.logging.profile import ProgressBar
@@ -11,7 +11,9 @@ from ..base import BaseTuner, BaseLoss
 from ..dataset import ClassDataset, SessionDataset
 from ..summary import ScalarSequence, Summary
 from ... import __default_tag_key__
-from ...helper import DocumentSequence
+
+if TYPE_CHECKING:
+    from ...helper import DocumentSequence, PreprocFnType, CollateFnType
 
 
 class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimizer]):
@@ -24,12 +26,12 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
 
     def _get_data_loader(
         self,
-        data: DocumentSequence,
+        data: 'DocumentSequence',
         batch_size: int,
-        num_items_per_class: int,
         shuffle: bool,
-        preprocess_fn: Optional[Callable],
-        collate_fn: Optional[Callable[[List], Any]],
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
+        num_items_per_class: Optional[int] = None,
     ) -> KerasSequenceAdapter:
         """Get the dataloader for the dataset
 
@@ -115,13 +117,13 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
 
     def fit(
         self,
-        train_data: DocumentSequence,
-        eval_data: Optional[DocumentSequence] = None,
-        preprocess_fn: Optional[Callable] = None,
-        collate_fn: Optional[Callable[[List], Any]] = None,
+        train_data: 'DocumentSequence',
+        eval_data: Optional['DocumentSequence'] = None,
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
         batch_size: int = 256,
-        num_items_per_class: int = 4,
+        num_items_per_class: Optional[int] = None,
         optimizer: Optional[Optimizer] = None,
         learning_rate: float = 1e-3,
         device: str = 'cpu',

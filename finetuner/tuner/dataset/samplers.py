@@ -43,10 +43,10 @@ class RandomClassBatchSampler:
             )
 
         self._batch_size = batch_size
-        self._num_classes = len(set(labels))
         self._num_items_per_class = num_items_per_class or max(
-            1, batch_size // self._num_classes
+            1, batch_size // len(set(labels))
         )
+        self._num_classes = batch_size // self._num_items_per_class
 
         # Get mapping of labels (classes) and their positions
         self._class_to_labels = defaultdict(list)
