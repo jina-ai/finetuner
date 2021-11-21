@@ -127,8 +127,8 @@ def test_custom_document_sequence_input():
 
 
 def test_preprocess_fn():
-    def preprocess(x: str):
-        return x + '_new'
+    def preprocess(d: Document):
+        d.text += '_new'
 
     data = [Document(text='text1'), Document(text='text2')]
     data[0].matches = DocumentArray(

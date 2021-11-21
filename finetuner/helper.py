@@ -7,6 +7,8 @@ from typing import (
     Any,
     TYPE_CHECKING,
     Callable,
+    Optional,
+    Union,
 )
 
 
@@ -27,6 +29,7 @@ AnyOptimizer = TypeVar(
 if TYPE_CHECKING:
     from jina import Document, DocumentArray, DocumentArrayMemmap
     from jina.types.document.mixins.content import DocumentContentType
+    from jina.types.ndarray import ArrayType
 
     DocumentSequence = TypeVar(
         'DocumentSequence',
@@ -43,10 +46,12 @@ if TYPE_CHECKING:
     T = TypeVar('T')  #: Generic type
 
     PreprocFnType = Callable[
-        [DocumentContentType], T
+        [Document], Optional[Document]
     ]  #: The type of preprocessing function
 
-    CollateFnType = Callable[[List[T]], AnyTensor]  #: The type of collate function
+    CollateFnType = Callable[
+        [Union[Sequence[DocumentContentType], ArrayType]], AnyTensor
+    ]  #: The type of collate function
 
 
 def get_framework(dnn_model: 'AnyDNN') -> str:
