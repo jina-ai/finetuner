@@ -17,7 +17,7 @@ import numpy as np
 from ... import __default_tag_key__
 
 if TYPE_CHECKING:
-    from ...helper import DocumentSequence
+    from ...helper import DocumentSequence, PreprocFnType, DocumentContentType
 
 AnyLabel = TypeVar('AnyLabel')
 
@@ -47,7 +47,7 @@ class ClassDataset(BaseDataset[int]):
     def __init__(
         self,
         docs: 'DocumentSequence',
-        preprocess_fn: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
+        preprocess_fn: Optional['PreprocFnType'] = None,
     ):
         """Create the dataset instance.
 
@@ -83,18 +83,19 @@ class ClassDataset(BaseDataset[int]):
 
             self._labels.append(label)
 
-    def __getitem__(self, ind: int) -> Tuple[Union[np.ndarray, str], int]:
+    def __getitem__(self, ind: int) -> Tuple['DocumentContentType', int]:
         """
         Get the (preprocessed) content and label for the item at ``ind`` index in the
         dataset.
         """
-        content = self._docs[ind].content
+
+        d = self._docs[ind]
+        if self._preprocess_fn:
+            d = self._preprocess_fn(d) or d
+
         label = self._labels[ind]
 
-        if self._preprocess_fn:
-            content = self._preprocess_fn(content)
-
-        return (content, label)
+        return (d.content, label)
 
     @property
     def labels(self) -> List[int]:
@@ -112,7 +113,7 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
     def __init__(
         self,
         docs: 'DocumentSequence',
-        preprocess_fn: Optional[Callable[[Union[str, np.ndarray]], Any]] = None,
+        preprocess_fn: Optional['PreprocFnType'] = None,
     ):
         """Create the dataset instance.
 
@@ -152,7 +153,7 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
                 self._labels.append((i, int(tag)))
                 num_docs += 1
 
-    def __getitem__(self, ind: int) -> Tuple[Union[str, np.ndarray], Tuple[int, int]]:
+    def __getitem__(self, ind: int) -> Tuple['DocumentContentType', Tuple[int, int]]:
         """
         Get the (preprocessed) content and label for the item at ``ind`` index in the
         dataset.
@@ -160,16 +161,16 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
         doc_ind, match_ind = self._locations[ind]
 
         if match_ind != -1:
-            content = self._docs[doc_ind].matches[match_ind].content
+            d = self._docs[doc_ind].matches[match_ind]
         else:
-            content = self._docs[doc_ind].content
+            d = self._docs[doc_ind]
+
+        if self._preprocess_fn:
+            d = self._preprocess_fn(d) or d
 
         label = self._labels[ind]
 
-        if self._preprocess_fn is not None:
-            content = self._preprocess_fn(content)
-
-        return (content, label)
+        return (d.content, label)
 
     @property
     def labels(self) -> List[Tuple[int, int]]:

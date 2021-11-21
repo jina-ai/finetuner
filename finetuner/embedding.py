@@ -1,4 +1,4 @@
-from typing import Union, TYPE_CHECKING, TypeVar, Optional
+from typing import Union, TYPE_CHECKING, Optional
 
 import numpy as np
 
@@ -7,6 +7,20 @@ if TYPE_CHECKING:
     from .helper import AnyDNN, PreprocFnType, CollateFnType
 
 from .helper import get_framework
+
+
+def _apply2batch(docs: 'DocumentArray', fn: 'PreprocFnType') -> 'DocumentArray':
+    da = []
+    for d in docs:
+        d_new = fn(d)
+        if d_new is not None:
+            da.append(d_new)
+    if da:
+        from jina import DocumentArray
+
+        return DocumentArray(da)
+    else:
+        return docs
 
 
 def embed(
@@ -32,9 +46,6 @@ def embed(
         embedding model
     """
 
-    if not preprocess_fn:
-        preprocess_fn = lambda x: x  # noqa
-
     fm = get_framework(embed_model)
     globals()[f'_set_embeddings_{fm}'](
         docs, embed_model, device, batch_size, preprocess_fn, collate_fn
@@ -57,9 +68,9 @@ def _set_embeddings_keras(
     device = get_device(device)
     with device:
         for b in docs.batch(batch_size):
-            inputs = [preprocess_fn(x.content) for x in b]
-            batch_inputs = collate_fn(inputs)
-
+            if preprocess_fn:
+                b = _apply2batch(b, preprocess_fn)
+            batch_inputs = collate_fn(b.contents)
             b.embeddings = embed_model(batch_inputs, training=False).numpy()
 
 
@@ -85,9 +96,9 @@ def _set_embeddings_torch(
     embed_model.eval()
     with torch.inference_mode():
         for b in docs.batch(batch_size):
-            inputs = [preprocess_fn(x.content) for x in b]
-            batch_inputs = collate_fn(inputs).to(device)
-
+            if preprocess_fn:
+                b = _apply2batch(b, preprocess_fn)
+            batch_inputs = collate_fn(b.contents).to(device)
             b.embeddings = embed_model(batch_inputs).cpu().detach().numpy()
     if is_training_before:
         embed_model.train()
@@ -108,14 +119,15 @@ def _set_embeddings_paddle(
     import paddle
 
     if not collate_fn:
-        collate_fn = lambda x: paddle.to_tensor(inputs, place=device)  # noqa
+        collate_fn = lambda x: paddle.to_tensor(x, place=device)  # noqa
 
     is_training_before = embed_model.training
     embed_model.to(device=device)
     embed_model.eval()
     for b in docs.batch(batch_size):
-        inputs = [preprocess_fn(x.content) for x in b]
-        batch_inputs = paddle.to_tensor(collate_fn(inputs), place=device)
+        if preprocess_fn:
+            b = _apply2batch(b, preprocess_fn)
+        batch_inputs = paddle.to_tensor(collate_fn(b.contents), place=device)
         b.embeddings = embed_model(batch_inputs).numpy()
     if is_training_before:
         embed_model.train()
