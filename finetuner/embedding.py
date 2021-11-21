@@ -9,12 +9,10 @@ if TYPE_CHECKING:
 from .helper import get_framework
 
 
-def _apply2batch(
-    docs: 'DocumentArray', preprocess_fn: 'PreprocFnType'
-) -> 'DocumentArray':
+def _apply2batch(docs: 'DocumentArray', fn: 'PreprocFnType') -> 'DocumentArray':
     da = []
     for d in docs:
-        d_new = preprocess_fn(d)
+        d_new = fn(d)
         if d_new is not None:
             da.append(d_new)
     if da:
@@ -121,7 +119,7 @@ def _set_embeddings_paddle(
     import paddle
 
     if not collate_fn:
-        collate_fn = lambda x: paddle.to_tensor(inputs, place=device)  # noqa
+        collate_fn = lambda x: paddle.to_tensor(x, place=device)  # noqa
 
     is_training_before = embed_model.training
     embed_model.to(device=device)
