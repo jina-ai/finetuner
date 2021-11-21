@@ -9,6 +9,7 @@
 
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -358,4 +359,28 @@ The changes of each release is tracked by this file.
 
  - [[```23d8ca80```](https://github.com/jina-ai/finetuner/commit/23d8ca80eb7b6a571204c6afc65387af9cc6eadc)] __-__ remove notebook from static (*Han Xiao*)
  - [[```5b0b9a1d```](https://github.com/jina-ai/finetuner/commit/5b0b9a1da7a07e0f3b4772184c9fd16ba72ef504)] __-__ __version__: the next version will be 0.2.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-2-2></a>
+## Release Note (`0.2.2`)
+
+> Release time: 2021-11-21 21:14:37
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Yanlong Wang,  Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```89511dc9```](https://github.com/jina-ai/finetuner/commit/89511dc9b3e3ba63ed6a2bdeeec6cf9d2ff97768)] __-__ docbot overflow and scrolling (#216) (*Yanlong Wang*)
+
+### 🧼 Code Refactoring
+
+ - [[```7778855e```](https://github.com/jina-ai/finetuner/commit/7778855ef1d7f467a2b21b72dd6e99932504b975)] __-__ __dataset__: make preprocess_fn work on document (#215) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```55e0888e```](https://github.com/jina-ai/finetuner/commit/55e0888ebcf9937d6fe2ca95c7713c394b54cb26)] __-__ fix readme (*Han Xiao*)
+ - [[```dc526452```](https://github.com/jina-ai/finetuner/commit/dc526452fc5773a5591672c38aad538c5403d986)] __-__ __version__: the next version will be 0.2.2 (*Jina Dev Bot*)
 
