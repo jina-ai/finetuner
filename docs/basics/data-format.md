@@ -146,13 +146,13 @@ dataset = DocumentArray([
   # ...
 ])
 
-def augment_image(image: np.ndarray) -> np.ndarray:
+def augment_image(doc: Document) -> np.ndarray:
   transform = A.Compose([
     A.HorizontalFlip(p=0.5),
     A.RandomBrightnessContrast(p=0.2),
   ])
   
-  return transform(image=image)['image']
+  return transform(image=doc.blob)['image']
 
 model = ...
 fit(model, train_data=dataset, preprocess_fn=augment_image)
