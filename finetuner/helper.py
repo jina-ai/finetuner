@@ -45,9 +45,7 @@ if TYPE_CHECKING:
 
     T = TypeVar('T')  #: Generic type
 
-    PreprocFnType = Callable[
-        [Document], Optional[Document]
-    ]  #: The type of preprocessing function
+    PreprocFnType = Callable[[Document], Any]  #: The type of preprocessing function
 
     CollateFnType = Callable[
         [Union[Sequence[DocumentContentType], ArrayType]], AnyTensor

@@ -118,8 +118,7 @@ def test_custom_document_sequence_input(labels):
 def test_preprocess_fn():
     def preprocess(d: Document):
         _d = Document(d, copy=True)
-        _d.text += '_new'
-        return _d
+        return _d.text + '_new'
 
     data = [
         Document(text='text1', tags=_class(1)),

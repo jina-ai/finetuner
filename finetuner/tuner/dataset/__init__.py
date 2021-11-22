@@ -91,11 +91,11 @@ class ClassDataset(BaseDataset[int]):
 
         d = self._docs[ind]
         if self._preprocess_fn:
-            d = self._preprocess_fn(d) or d
+            content = self._preprocess_fn(d)
 
         label = self._labels[ind]
 
-        return (d.content, label)
+        return (content, label)
 
     @property
     def labels(self) -> List[int]:
@@ -166,11 +166,11 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
             d = self._docs[doc_ind]
 
         if self._preprocess_fn:
-            d = self._preprocess_fn(d) or d
+            content = self._preprocess_fn(d)
 
         label = self._labels[ind]
 
-        return (d.content, label)
+        return (content, label)
 
     @property
     def labels(self) -> List[Tuple[int, int]]:
