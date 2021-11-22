@@ -92,6 +92,8 @@ class ClassDataset(BaseDataset[int]):
         d = self._docs[ind]
         if self._preprocess_fn:
             content = self._preprocess_fn(d)
+        else:
+            content = d.content
 
         label = self._labels[ind]
 
@@ -167,6 +169,8 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
 
         if self._preprocess_fn:
             content = self._preprocess_fn(d)
+        else:
+            content = d.content
 
         label = self._labels[ind]
 
