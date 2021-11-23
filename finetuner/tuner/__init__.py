@@ -52,8 +52,10 @@ def fit(
     :param embed_model: an embedding model
     :param train_data: Data on which to train the model
     :param eval_data: Data on which to evaluate the model at the end of each epoch
-    :param preprocess_fn: A pre-processing function. It should take as input the
-        content of an item in the dataset and return the pre-processed content
+    :param preprocess_fn: A pre-processing function, to apply pre-processing to
+        documents on the fly. It should take as input the document in the dataset,
+        and output whatever content the framework-specific dataloader (and model) would
+        accept.
     :param collate_fn: The collation function to merge the content of individual
         items into a batch. Should accept a list with the content of each item,
         and output a tensor (or a list/dict of tensors) that feed directly into the

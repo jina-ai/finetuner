@@ -55,9 +55,10 @@ class ClassDataset(BaseDataset[int]):
             - a content (only blob or text are accepted currently)
             - a class label, saved under ``tags['finetuner__label']``. This class
               label should be an integer or a string
-        :param preprocess_fn: A pre-processing function. It should take as input the
-            content of an item in the dataset (currently only text of blob are
-            accepted).
+        :param preprocess_fn: A pre-processing function, to apply pre-processing to
+            documents on the fly. It should take as input the document in the dataset,
+            and output whatever content the framework-specific dataloader (and model)
+            would accept.
         """
         self._docs = docs
         self._preprocess_fn = preprocess_fn
@@ -125,9 +126,10 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
                 ``tags['finetuner__label']``, which be either 1 or -1, denoting
                 whether the match is a positive or negative input in relation to the
                 anchor document
-        :param preprocess_fn: A pre-processing function. It should take as input the
-            content of an item in the dataset (currently only text of blob are
-            accepted).
+        :param preprocess_fn: A pre-processing function, to apply pre-processing to
+            documents on the fly. It should take as input the document in the dataset,
+            and output whatever content the framework-specific dataloader (and model)
+            would accept.
         """
         self._docs = docs
         self._preprocess_fn = preprocess_fn
