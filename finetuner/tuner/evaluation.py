@@ -1,31 +1,38 @@
-from typing import TYPE_CHECKING, Optional, Dict, Callable
+from typing import TYPE_CHECKING, Optional, List
 from jina import Document, DocumentArray
+
+from .metrics import METRICS
 from .. import __default_tag_key__
+from ..helper import AnyDNN
 from ..embedding import embed
-from . import metrices
 
 if TYPE_CHECKING:
     from ..helper import AnyDNN
 
-METRICS = {'ndcg': metrices.ndcg_at_n, 'hits': metrices.hits_at_n}
 
-
-class Evalutor:
+class Evaluator:
     def __init__(
         self,
         eval_data,
         catalog,
         embed_model: Optional[AnyDNN] = None,
         override_original: bool = False,
-        metrices: Optional[Dict[str:Callable]] = None,
+        metrics: Optional[List[str]] = None,
         limit: int = 20,
     ):
-        if metrices is None:
-            metrices = METRICS
-        self._metrices = metrices
+        if metrics:
+            self._metrics = {}
+            for metric in metrics:
+                if metric not in METRICS:
+                    raise ValueError(f"Unknown metric '{metric}'")
+                self._metrics[metric] = METRICS[metric]
+        else:
+            self._metrics = METRICS
+
         self._embed_model = embed_model
         self._eval_data = eval_data
         self._catalog = catalog
+        self._override_original = override_original
         self._summary_docs = self._parse_eval_docs()
         self._limit = limit
 
