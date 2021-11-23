@@ -1,7 +1,7 @@
-finetuner.labeler.executor module
+finetuner.tuner.keras.data module
 =================================
 
-.. automodule:: finetuner.labeler.executor
+.. automodule:: finetuner.tuner.keras.data
    :members:
    :undoc-members:
    :show-inheritance:

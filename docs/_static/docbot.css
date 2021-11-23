@@ -151,6 +151,14 @@
   bottom: -20px;
   position: absolute;
   left: 20px;
+
+  display: flex;
+  justify-content: space-between;
+  width: calc(100% - 20px - 12px)
+}
+
+.answer-reference {
+  white-space: nowrap;
 }
 
 .answer-reference:after {
