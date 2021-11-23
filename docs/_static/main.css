@@ -126,3 +126,15 @@ body[data-theme="auto"] .only-light-line {
 body[data-theme="auto"] .only-dark-line {
     display: none !important;
 }
+
+#versions {
+    font-size: .7em;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #fff;
+    background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+    border-color: var(--color-background-border);
+    margin: 1em;
+    outline: none;
+    text-align: center;
+}
