@@ -1,5 +1,5 @@
-# Unlabeled dataset
+# Unlabeled Dataset
 
-When using `finetuner.fit(..., interactive=True)`, you only need to provide a `DocumentArray`-like object where each `Document` object contains `.content`. This is because Finetuner will start a web frontend for interactive labeling. Hence, the supervision comes directly from you.
+An unlabeled dataset is a plain `DocumentArray`.
 
-All that the `Document`s in this dataset need is a `.content` attribute (which can be `text`, `blob` or `uri` - if you implement [your own loading](#loading-and-preprocessing)).
+You can use {term}`labeler` to build a {ref}`session-dataset` from it. You only need to provide a `DocumentArray`-like object where each `Document` object contains `.content`, and then call `finetuner.fit(..., interactive=True)`. Finetuner will start a web frontend for interactive labeling.

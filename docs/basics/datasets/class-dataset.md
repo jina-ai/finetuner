@@ -1,14 +1,16 @@
-# Class Dataset Format
+# Class Dataset
 
-A class dataset is a `DocumentArray`, in which each `Document` has a discrete label stored under `.tags['finetuner_label']`, e.g. `red/black/white/yellow`, `shirt/tops/hats`.
+A {class}`~fintuner.tuner.dataset.ClassDataset` is a `DocumentArray`, in which each `Document` has a discrete label stored under `.tags['finetuner_label']`, e.g. `red/black/white/yellow`, `shirt/tops/hats`.
 
-The label is not necessarily related to classification - rather, it is there to denote similar `Document`s. That is, all `Document`s with the same label are considered similar, and all `Document`s with different labels are considered dis-similar.
+Note, the label is not necessarily related to classification - rather, it is there to denote similar `Document`s. That is, all `Document`s with the same label are considered similar, and all `Document`s with different labels are considered dis-similar.
 
-Comparing to {term}`session dataset`, the Document has a flat structure - no `matches` are needed. This is very convenient for those datasets have explicit/implicit labels, no conversion or heavy processing is required.  
+Comparing to {ref}`session-dataset`, here the Document has a flat structure - no `matches` are needed. This is very convenient for those datasets have explicit/implicit labels, no conversion or heavy processing is required.  
 
-## Training-time behavior
+## Batch building
 
-During training, this "class" label is used to construct batches in a two-step sampling procedure. In each batch, a number of different classes will be randomly sampled, and from each class a number of `Document`s will be sampled to fill the batch.
+A `ClassDataset` works with {class}`~fintuner.tuner.dataset.ClassSampler`. 
+
+The "class" label is used to construct batches in a two-step  procedure. First, a number of different classes will be randomly sampled, and then from each class a number of `Document`s will be sampled to fill the batch.
 
 Specifically, the size of the batch is controlled by the `batch_size` argument, The number of instances per class is computed dynamically, so that the batch is full. The image below illustrates this for `batch_size=8` and `num_items_per_class=2`.
 
@@ -19,22 +21,20 @@ Specifically, the size of the batch is controlled by the `batch_size` argument, 
 
 ## Examples
 
+### Toy example
 Here is an example of a toy class dataset
 
 ```python
 from jina import DocumentArray, Document
 
-from finetuner.tuner.dataset import ClassDataset
-from finetuner.tuner.dataset.samplers import RandomClassBatchSampler
+from finetuner.tuner.dataset import ClassDataset, ClassSampler
 
 labels = [1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3]
-ds1 = ClassDataset(
-    DocumentArray(
-        [Document(id=str(idx), tags={'finetuner_label': idx}) for idx in labels]
-    )
+ds = DocumentArray(
+    [Document(id=str(idx), tags={'finetuner_label': idx}) for idx in labels]
 )
 
-for b in RandomClassBatchSampler(ds1.labels, 2):
+for b in ClassSampler(ClassDataset(ds).labels, batch_size=2):
     print(b)
 ```
 
@@ -49,6 +49,8 @@ for b in RandomClassBatchSampler(ds1.labels, 2):
 We got 5 batches. One can see that the sampler tries its best effort to pick an item from each class and form a batch.
 
 (build-mnist-data)=
+### Fashion-MNIST data
+
 Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. Each image is a single channel 28x28 grayscale image.
 
 

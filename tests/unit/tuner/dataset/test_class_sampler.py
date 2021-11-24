@@ -1,24 +1,24 @@
 from collections import Counter
 
 import pytest
-from finetuner.tuner.dataset.samplers import RandomClassBatchSampler
+from finetuner.tuner.dataset.samplers import ClassSampler
 
 
 @pytest.mark.parametrize("batch_size", [-1, 0])
 def test_wrong_batch_size(batch_size: int):
     with pytest.raises(ValueError, match="batch_size"):
-        RandomClassBatchSampler([0, 1], batch_size, 1)
+        ClassSampler([0, 1], batch_size, 1)
 
 
 @pytest.mark.parametrize("num_items_per_class", [-1, 0])
 def test_wrong_num_items_per_class(num_items_per_class: int):
     with pytest.raises(ValueError, match="num_items_per_class"):
-        RandomClassBatchSampler([0, 1], 1, num_items_per_class)
+        ClassSampler([0, 1], 1, num_items_per_class)
 
 
 def test_normal_case():
     labels = [1, 1, 2, 2, 3, 3, 4, 4]
-    sampler = RandomClassBatchSampler(labels, 4, 2)
+    sampler = ClassSampler(labels, 4, 2)
     assert len(sampler) == 2
 
     all_inds = []
@@ -40,7 +40,7 @@ def test_classes_in_batch():
     for idx, label in enumerate(labels):
         class_to_label[idx] = label
 
-    sampler = RandomClassBatchSampler(labels, 20, 5)
+    sampler = ClassSampler(labels, 20, 5)
     assert len(sampler) >= 98
     for i, batch in enumerate(sampler):
         c = Counter([class_to_label[element] for element in batch])
@@ -57,7 +57,7 @@ def test_almost_full_coverage():
     for i in range(100):
         labels += [i] * 20
 
-    sampler = RandomClassBatchSampler(labels, 20, 5)
+    sampler = ClassSampler(labels, 20, 5)
     assert len(sampler) >= 98
 
     c = Counter()
@@ -72,7 +72,7 @@ def test_almost_full_coverage():
 def test_label_repetition1():
     """Test that elements from class get repeated to fill the batch"""
     labels = [1, 1, 1, 2, 2]
-    sampler = RandomClassBatchSampler(labels, 6, 3)
+    sampler = ClassSampler(labels, 6, 3)
     assert len(sampler) == 1
 
     all_inds = []
@@ -89,7 +89,7 @@ def test_label_repetition1():
 @pytest.mark.parametrize('num_items_per_class', [4, 2])
 def test_label_repetition2(num_items_per_class):
     labels = [1, 1, 1, 1, 2, 2, 2]
-    sampler = RandomClassBatchSampler(labels, 4, num_items_per_class)
+    sampler = ClassSampler(labels, 4, num_items_per_class)
     assert len(sampler) == 2
 
     all_inds = []
@@ -108,7 +108,7 @@ def test_label_repetition2(num_items_per_class):
 def test_cutoff1():
     """Cutoff due to last batch being < batch_size"""
     labels = [1, 1, 1, 1, 2, 2]
-    sampler = RandomClassBatchSampler(labels, 4, 2)
+    sampler = ClassSampler(labels, 4, 2)
     assert len(sampler) == 1
 
     all_inds = []
@@ -128,7 +128,7 @@ def test_cutoff2():
     for idx, label in enumerate(labels):
         class_to_label[idx] = label
 
-    sampler = RandomClassBatchSampler(labels, 4, 2)
+    sampler = ClassSampler(labels, 4, 2)
     assert len(sampler) == 2
 
     all_inds = []

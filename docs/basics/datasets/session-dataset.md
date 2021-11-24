@@ -1,86 +1,73 @@
-# Session dataset
+(session-dataset)=
+# Session Dataset
 
-In this dataset, each root `Document` in the dataset has `matches`, but no label. Instead, its matches have a label stored under `.tags['finetuner_label']`. This label can be either `1` (denoting similarity of match to its reference `Document`) or `-1` (denoting dissimilarity of the match from its reference `Document`).
+A {class}`~fintuner.tuner.dataset.SessionDataset` is a `DocumentArray`, in which each Document has `matches` Document. The labels are stored under matched Document's `.tags['finetuner_label']`. The label can be either `1` (denoting similarity of match to its parent `Document`) or `-1` (denoting dissimilarity of the match from its parent `Document`).
 
-This dataset is meant for cases where the relationship is only known between a small subset of documents. For example, our data could come from a search engine: given a query (which would be a root document), the results that the users clicked on are considered similar to the query (and will thus be a match with label `1`), while the results that the users did not click on are deemed dissimilar (and will thus be labeled with `-1`). Note that no assumption is made about the similarity between the "dissimilar" (labeled with `-1`) items themselves.
+The word "session" comes from the scenario where a user's click-through introduces an implicit yes/no on the relevance, hence an interactive session. 
+
+## Batch construction
+
+A `SessionDataset` works with {class}`~fintuner.tuner.dataset.SessionSampler`. 
 
 Here the batches are simply constructed by putting together enough root documents and their matches (we call this a *session*) to fill the batch according to `batch_size` parameter. An example of a batch of size `batch_size=8` made of two sessions is show on the image below.
 
-```{figure} session-dataset.png
+```{figure} ../session-dataset.png
 :align: center
 ```
+
+
+## Examples
+
+### Toy example
+
 
 Here is an example of a session dataset
 
 ```python
 from jina import Document, DocumentArray
 
-root_documents = DocumentArray(
-  [Document(text='trousers'), Document(text='polo shirt')]
+from finetuner.tuner.dataset import SessionDataset, SessionSampler
+
+ds = DocumentArray(
+    [Document(id='0'), Document(id='1')]
 )
 
-root_documents[0].matches = [
-  Document(text='shorts', tags={'finetuner': {'label': 1}}),
-  Document(text='blouse', tags={'finetuner': {'label': -1}}),
+ds[0].matches = [
+    Document(id='2', tags={'finetuner_label': 1}),
+    Document(id='3', tags={'finetuner_label': -1}),
 ]
-root_documents[1].matches = [
-  Document(text='t-shirt', tags={'finetuner': {'label': 1}}),
-  Document(text='earrings', tags={'finetuner': {'label': -1}}),
+ds[1].matches = [
+    Document(id='4', tags={'finetuner_label': 1}),
+    Document(id='5', tags={'finetuner_label': -1}),
 ]
+
+for b in SessionSampler(SessionDataset(ds).labels, batch_size=2):
+    print(b)
 ```
 
-## Loading and preprocessing
 
-There are cases when you can not store your entire dataset into memory, and need to load
-individual items on the fly. Similarly, you may want to apply random augmentations to images
-each time they are used in a batch. For these purposes, you can pass a pre-processing function
-using `preprocess_fn` argument to the `fit` function.
-
-Let's start with an example of the first case - loading images on the fly. In this case
-we would have images stored on disk, and their paths stored in the `.uri` attribute of
-each `Document`. In `preprocess_fn` we would then load the image and return the numpy
-array.
-
-```python
-import numpy as np
-from finetuner import fit
-from jina import Document, DocumentArray
-from PIL import Image
-
-dataset = DocumentArray([
-  Document(uri='path/to/image.jpg', tags={'finetuner': {'label': 1}}),
-  # ...
-])
-
-def load_image(path: str) -> np.ndarray:
-  image = Image.open(path)
-  return np.array(image)
-
-model = ...
-fit(model, train_data=dataset, preprocess_fn=load_image)
+```text
+[0, 2]
+[3, 4]
 ```
 
-Next, let's take a look at an example where we apply some basic image augmentation. We'll be using the [albumentations](https://albumentations.ai/) library for image augmentation in this example
+(build-qa-data)=
+### Covid QA data
 
-```python
-import albumentations as A
-import numpy as np
-from finetuner import fit
-from jina import Document, DocumentArray
+Covid QA data is a CSV that has 481 rows with the columns `question`, `answer` & `wrong_answer`. 
 
-dataset = DocumentArray([
-  Document(blob=np.random.rand(3, 128, 128), tags={'finetuner': {'label': 1}}),
-  # ...
-])
-
-def augment_image(doc: Document) -> np.ndarray:
-  transform = A.Compose([
-    A.HorizontalFlip(p=0.5),
-    A.RandomBrightnessContrast(p=0.2),
-  ])
-  
-  return transform(image=doc.blob)['image']
-
-model = ...
-fit(model, train_data=dataset, preprocess_fn=augment_image)
+```{figure} ../covid-qa-data.png
+:align: center
 ```
+
+To convert this dataset into a `SessionDataset`, we build each Document to contain the following relevant information:
+
+- `.text`: the `question` column
+- `.matches`: the generated positive & negative matches Document
+    - `.text`: the `answer`/`wrong_answer` column
+    - `.tags['finetuner_label']`: the match label: `1` or `-1`.
+
+Matches are built with the logic below:
+
+- only allows 1 positive match per Document, it is taken from the `answer` column;
+- always include `wrong_answer` column as the negative match. Then sample other documents' answer as negative matches.
