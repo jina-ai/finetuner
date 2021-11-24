@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.tuner.dataset.html" />
   <meta property="og:site_name" content="Finetuner 0.2.3 Documentation" />
-  <meta property="og:description" content="Submodules: finetuner.tuner.dataset.samplers module. Module contents:" />
+  <meta property="og:description" content="Submodules: finetuner.tuner.dataset.base module, finetuner.tuner.dataset.datasets module, finetuner.tuner.dataset.samplers module. Module contents:" />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner 0.2.3 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -28,7 +28,7 @@
 </script>
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="finetuner.tuner.dataset.samplers module" href="finetuner.tuner.dataset.samplers.html" /><link rel="prev" title="finetuner.tuner package" href="finetuner.tuner.html" />
+    <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="finetuner.tuner.dataset.base module" href="finetuner.tuner.dataset.base.html" /><link rel="prev" title="finetuner.tuner package" href="finetuner.tuner.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.0, furo 2021.11.23"/>
         <title>finetuner.tuner.dataset package - Finetuner 0.2.3 documentation</title>
@@ -260,7 +260,12 @@
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../basics/fit.html">One-liner <code class="docutils literal notranslate"><span class="pre">fit()</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics/data-format.html">Data Format</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../basics/data-format.html">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../basics/datasets/class-dataset.html">Class Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basics/datasets/session-dataset.html">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basics/datasets/unlabeled-dataset.html">Unlabeled Dataset</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Components</span></p>
@@ -272,40 +277,42 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul class="current">
-<li class="toctree-l1 current has-children"><a class="reference internal" href="finetuner.html">finetuner package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 has-children"><a class="reference internal" href="finetuner.labeler.html">finetuner.labeler package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="finetuner.html">finetuner package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="finetuner.labeler.html">finetuner.labeler package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="finetuner.labeler.executor.html">finetuner.labeler.executor module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="finetuner.tailor.html">finetuner.tailor package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="finetuner.tailor.html">finetuner.tailor package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="finetuner.tailor.keras.html">finetuner.tailor.keras package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="finetuner.tailor.paddle.html">finetuner.tailor.paddle package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="finetuner.tailor.pytorch.html">finetuner.tailor.pytorch package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="finetuner.tailor.base.html">finetuner.tailor.base module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 current has-children"><a class="reference internal" href="finetuner.tuner.html">finetuner.tuner package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3 current has-children current-page"><a class="current reference internal" href="#">finetuner.tuner.dataset package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="finetuner.tuner.html">finetuner.tuner package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current has-children current-page"><a class="current reference internal" href="#">finetuner.tuner.dataset package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="finetuner.tuner.dataset.base.html">finetuner.tuner.dataset.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="finetuner.tuner.dataset.datasets.html">finetuner.tuner.dataset.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="finetuner.tuner.dataset.samplers.html">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="finetuner.tuner.keras.html">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="finetuner.tuner.keras.html">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="finetuner.tuner.keras.data.html">finetuner.tuner.keras.data module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="finetuner.tuner.keras.losses.html">finetuner.tuner.keras.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="finetuner.tuner.keras.miner.html">finetuner.tuner.keras.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="finetuner.tuner.miner.html">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="finetuner.tuner.miner.html">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="finetuner.tuner.miner.base.html">finetuner.tuner.miner.base module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="finetuner.tuner.paddle.html">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="finetuner.tuner.paddle.html">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="finetuner.tuner.paddle.datasets.html">finetuner.tuner.paddle.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="finetuner.tuner.paddle.losses.html">finetuner.tuner.paddle.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="finetuner.tuner.paddle.miner.html">finetuner.tuner.paddle.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="finetuner.tuner.pytorch.html">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="finetuner.tuner.pytorch.html">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="finetuner.tuner.pytorch.datasets.html">finetuner.tuner.pytorch.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="finetuner.tuner.pytorch.losses.html">finetuner.tuner.pytorch.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="finetuner.tuner.pytorch.miner.html">finetuner.tuner.pytorch.miner module</a></li>
@@ -378,103 +385,14 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="finetuner.tuner.dataset.base.html">finetuner.tuner.dataset.base module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="finetuner.tuner.dataset.datasets.html">finetuner.tuner.dataset.datasets module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="finetuner.tuner.dataset.samplers.html">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </div>
 </section>
 <section id="module-finetuner.tuner.dataset">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-finetuner.tuner.dataset" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.dataset.BaseDataset">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.dataset.</span></span><span class="sig-name descname"><span class="pre">BaseDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/finetuner/tuner/dataset.html#BaseDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.dataset.BaseDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">finetuner.tuner.dataset.AnyLabel</span></code>]</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="finetuner.tuner.dataset.BaseDataset.labels">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">labels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">finetuner.tuner.dataset.AnyLabel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#finetuner.tuner.dataset.BaseDataset.labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the list of labels for all items in the dataset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[~AnyLabel]</p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.dataset.ClassDataset">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.dataset.</span></span><span class="sig-name descname"><span class="pre">ClassDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/finetuner/tuner/dataset.html#ClassDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.dataset.ClassDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#finetuner.tuner.dataset.BaseDataset" title="finetuner.tuner.dataset.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.dataset.BaseDataset</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
-<p>Dataset for enapsulating data where each item has a class label.</p>
-<p>Create the dataset instance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>docs</strong> (<em>DocumentSequence</em>) – <p>The documents for the dataset. Each document is expected to have
-- a content (only blob or text are accepted currently)
-- a class label, saved under <code class="docutils literal notranslate"><span class="pre">tags['finetuner__label']</span></code>. This class</p>
-<blockquote>
-<div><p>label should be an integer or a string</p>
-</div></blockquote>
-</p></li>
-<li><p><strong>preprocess_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – A pre-processing function, to apply pre-processing to
-documents on the fly. It should take as input the document in the dataset,
-and output whatever content the framework-specific dataloader (and model)
-would accept.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="finetuner.tuner.dataset.ClassDataset.labels">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">labels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#finetuner.tuner.dataset.ClassDataset.labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the list of integer labels for all items in the dataset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.dataset.SessionDataset">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.dataset.</span></span><span class="sig-name descname"><span class="pre">SessionDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/finetuner/tuner/dataset.html#SessionDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.dataset.SessionDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#finetuner.tuner.dataset.BaseDataset" title="finetuner.tuner.dataset.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.dataset.BaseDataset</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</p>
-<p>Dataset for enapsulating data that comes in batches of “sessions”.</p>
-<p>A session here is supposed to mean an anchor document, together with a set of
-matches, which may be either positive or negative inputs.</p>
-<p>Create the dataset instance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>docs</strong> (<em>DocumentSequence</em>) – <p>The documents for the dataset. Each document is expected to have
-- a content (only blob or text are accepted currently)
-- matches, which should also have content, as well a label, stored under</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">tags['finetuner__label']</span></code>, which be either 1 or -1, denoting
-whether the match is a positive or negative input in relation to the
-anchor document</p>
-</div></blockquote>
-</p></li>
-<li><p><strong>preprocess_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – A pre-processing function, to apply pre-processing to
-documents on the fly. It should take as input the document in the dataset,
-and output whatever content the framework-specific dataloader (and model)
-would accept.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="finetuner.tuner.dataset.SessionDataset.labels">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">labels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#finetuner.tuner.dataset.SessionDataset.labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the list of labels for all items in the dataset.</p>
-<p>A label consists of two integers, the session ID (index of root document in
-original document array), and the type, which is 0 if the document is the
-anchor (root) document, 1 if it is a positive input (match), and -1 if it is
-a negative input (match)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
 </section>
 </section>
 
@@ -482,12 +400,12 @@ a negative input (match)</p>
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="finetuner.tuner.dataset.samplers.html">
+                    <a class="next-page" href="finetuner.tuner.dataset.base.html">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">finetuner.tuner.dataset.samplers module</div>
+                            <div class="title">finetuner.tuner.dataset.base module</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
