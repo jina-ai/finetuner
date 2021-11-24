@@ -2,10 +2,12 @@ from collections import defaultdict
 from copy import deepcopy
 from math import ceil
 from random import choices, sample, shuffle
-from typing import List, Sequence, Tuple, Optional
+from typing import Sequence, Tuple, Optional
+
+from finetuner.tuner.dataset.base import BaseSampler
 
 
-class RandomClassBatchSampler:
+class ClassSampler(BaseSampler):
     """A batch sampler that fills the batch with an equal number of items from each
     class.
 
@@ -35,14 +37,11 @@ class RandomClassBatchSampler:
             the 5 classes.
         """
 
-        if batch_size < 1:
-            raise ValueError('`batch_size` must be greater than 0')
         if num_items_per_class is not None and num_items_per_class < 1:
             raise ValueError(
                 '`num_items_per_class` must be either None or greater than 0'
             )
 
-        self._batch_size = batch_size
         self._num_items_per_class = num_items_per_class or max(
             1, batch_size // len(set(labels))
         )
@@ -60,21 +59,7 @@ class RandomClassBatchSampler:
                 [key, ceil(len(val) / self._num_items_per_class)]
             )
 
-        # Initialize batches
-        self._index = 0
-        self._prepare_batches()
-
-    def __iter__(self) -> 'RandomClassBatchSampler':
-        return self
-
-    def __next__(self) -> List[int]:
-        if self._index == len(self._batches):
-            self._index = 0
-            self._prepare_batches()  # Prepare for next iteration, so length is known
-            raise StopIteration
-
-        self._index += 1
-        return self._batches[self._index - 1]
+        super().__init__(labels, batch_size)
 
     def _prepare_batches(self):
 
@@ -119,11 +104,8 @@ class RandomClassBatchSampler:
 
         self._batches = batches
 
-    def __len__(self) -> int:
-        return len(self._batches)
 
-
-class SessionBatchSampler:
+class SessionSampler(BaseSampler):
     """A batch sampler that fills the batch with items with items from as many sessions
     as possible.
 
@@ -154,33 +136,13 @@ class SessionBatchSampler:
             sessions which is given by ``labels``.
         """
 
-        if batch_size <= 0:
-            raise ValueError('batch_size must be a positive integer')
-
-        self._labels = labels
-        self._batch_size = batch_size
         self._shuffle = shuffle
-
         # The locations and types of labels for each session
         self._sessions = defaultdict(list)
         for ind, (session, match_type) in enumerate(labels):
             self._sessions[session].append([ind, match_type])
 
-        # Initialize batches
-        self._index = 0
-        self._prepare_batches()
-
-    def __iter__(self) -> 'SessionBatchSampler':
-        return self
-
-    def __next__(self) -> List[int]:
-        if self._index == len(self._batches):
-            self._index = 0
-            self._prepare_batches()  # Prepare for next iteration, so length is known
-            raise StopIteration
-
-        self._index += 1
-        return self._batches[self._index - 1]
+        super().__init__(labels, batch_size)
 
     def _prepare_batches(self):
 
@@ -222,6 +184,3 @@ class SessionBatchSampler:
             batches.append(current_batch)
 
         self._batches = batches
-
-    def __len__(self) -> int:
-        return len(self._batches)

@@ -2,7 +2,7 @@ import abc
 from typing import TYPE_CHECKING, Generic, List, Optional, Tuple, Union
 
 from .dataset import ClassDataset, SessionDataset
-from .dataset.samplers import RandomClassBatchSampler, SessionBatchSampler
+from .dataset.samplers import ClassSampler, SessionSampler
 from .miner.base import BaseMiner
 from .summary import Summary
 
@@ -63,15 +63,15 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         batch_size: int,
         shuffle: bool,
         num_items_per_class: Optional[int] = None,
-    ) -> Union[RandomClassBatchSampler, SessionBatchSampler]:
+    ) -> Union[ClassSampler, SessionSampler]:
         """Get the batch sampler"""
 
         if isinstance(dataset, ClassDataset):
-            batch_sampler = RandomClassBatchSampler(
+            batch_sampler = ClassSampler(
                 dataset.labels, batch_size, num_items_per_class
             )
         elif isinstance(dataset, SessionDataset):
-            batch_sampler = SessionBatchSampler(dataset.labels, batch_size, shuffle)
+            batch_sampler = SessionSampler(dataset.labels, batch_size, shuffle)
         else:
             raise TypeError(
                 f'`dataset` must be either {type(SessionDataset)} or {type(ClassDataset)}, '

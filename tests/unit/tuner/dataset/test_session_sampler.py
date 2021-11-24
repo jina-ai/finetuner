@@ -1,7 +1,7 @@
 from math import ceil
 
 import pytest
-from finetuner.tuner.dataset.samplers import SessionBatchSampler
+from finetuner.tuner.dataset.samplers import SessionSampler
 
 
 def create_labels(session_size, num_sessions):
@@ -18,7 +18,7 @@ def create_labels(session_size, num_sessions):
 @pytest.mark.parametrize("batch_size", [-1, 0])
 def test_wrong_batch_size(batch_size: int):
     with pytest.raises(ValueError, match="batch_size must be a positive"):
-        SessionBatchSampler([(0, 0), (0, 1)], batch_size)
+        SessionSampler([(0, 0), (0, 1)], batch_size)
 
 
 @pytest.mark.parametrize('batch_size', [3, 6, 9])
@@ -27,7 +27,7 @@ def test_normal(batch_size):
     SESSIONS = 18
     SESSION_SIZE = 3
     labels = create_labels(SESSION_SIZE, SESSIONS)
-    sampler = SessionBatchSampler(labels, batch_size)
+    sampler = SessionSampler(labels, batch_size)
     assert len(sampler) == SESSION_SIZE * SESSIONS / batch_size
 
     all_inds = set()
@@ -46,7 +46,7 @@ def test_repeat_session(batch_size, sessions, batches):
     """Some session gets repeated as it does not fit entirely into the batch"""
     SESSION_SIZE = 3
     labels = create_labels(SESSION_SIZE, sessions)
-    sampler = SessionBatchSampler(labels, batch_size)
+    sampler = SessionSampler(labels, batch_size)
 
     assert len(sampler) == batches
 
@@ -70,7 +70,7 @@ def test_session_larger_than_batch():
     SESSIONS = 3
     BATCHES = 3
     labels = create_labels(SESSION_SIZE, SESSIONS)
-    sampler = SessionBatchSampler(labels, BATCH_SIZE)
+    sampler = SessionSampler(labels, BATCH_SIZE)
 
     assert len(sampler) == BATCHES
 
