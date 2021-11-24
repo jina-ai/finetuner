@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/basics/datasets/session-dataset.html" />
   <meta property="og:site_name" content="Finetuner 0.2.3 Documentation" />
-  <meta property="og:description" content="A SessionDataset is a DocumentArray, in which each Document has matches Document. The labels are stored under matched Document’s.tags['finetuner_label']. The label can be either 1(denoting similarity of match to its parent Document) or-1(denoting dissimilarity of the match from its parent Documen..." />
+  <meta property="og:description" content="A datsetsSessionDataset is a DocumentArray, in which each Document has matches Document. The labels are stored under matched Document’s.tags['finetuner_label']. The label can be either 1(denoting similarity of match to its parent Document) or-1(denoting dissimilarity of the match from its parent ..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner 0.2.3 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -202,45 +202,43 @@
     <img class="sidebar-logo only-light" src="../../_static/logo-light.svg" alt="Light Logo"/>
     <img class="sidebar-logo only-dark" src="../../_static/logo-dark.svg" alt="Dark Logo"/>
   </div>
-  <div class="sd-text-center">
+  <div class="sd-d-flex-row">
   <a class="github-button" href="https://github.com/jina-ai/finetuner" data-icon="octicon-star" data-show-count="true" aria-label="Star jina-ai/finetuner on GitHub">Star</a>
-  </div>
-  <div class="sd-text-center">
-    <select id="versions" onChange="window.location.href=this.value">
-              
+  <select id="versions" onChange="window.location.href=this.value">
+    
+        
           
-            
-              <option value="session-dataset.html" selected }} >main</option>
-            
-                  
+            <option value="session-dataset.html" selected }} >main</option>
           
-            
-            
-              <option value="../../../index.html" }} >latest(v0.2.2)</option>
-            
-                  
+        
+        
           
-            
-              <option value="../../../v0.2.1/index.html" }} >v0.2.1</option>
-            
-                  
           
-            
-              <option value="../../../v0.2.0/index.html" }} >v0.2.0</option>
-            
-                  
+            <option value="../../../index.html" }} >latest(v0.2.2)</option>
           
-            
-              <option value="../../../v0.1.5/index.html" }} >v0.1.5</option>
-            
-                  
+        
+        
           
-            
-              <option value="../../../v0.1.4/index.html" }} >v0.1.4</option>
-            
+            <option value="../../../v0.2.1/index.html" }} >v0.2.1</option>
           
-      
-    </select>
+        
+        
+          
+            <option value="../../../v0.2.0/index.html" }} >v0.2.0</option>
+          
+        
+        
+          
+            <option value="../../../v0.1.5/index.html" }} >v0.1.5</option>
+          
+        
+        
+          
+            <option value="../../../v0.1.4/index.html" }} >v0.1.4</option>
+          
+        
+    
+  </select>
   </div>
   
   
@@ -381,11 +379,11 @@
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="session-dataset">
 <span id="id1"></span><h1>Session Dataset<a class="headerlink" href="#session-dataset" title="Permalink to this headline">¶</a></h1>
-<p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">SessionDataset</span></code> is a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>, in which each Document has <code class="docutils literal notranslate"><span class="pre">matches</span></code> Document. The labels are stored under matched Document’s <code class="docutils literal notranslate"><span class="pre">.tags['finetuner_label']</span></code>. The label can be either <code class="docutils literal notranslate"><span class="pre">1</span></code> (denoting similarity of match to its parent <code class="docutils literal notranslate"><span class="pre">Document</span></code>) or <code class="docutils literal notranslate"><span class="pre">-1</span></code> (denoting dissimilarity of the match from its parent <code class="docutils literal notranslate"><span class="pre">Document</span></code>).</p>
+<p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">datsetsSessionDataset</span></code> is a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>, in which each Document has <code class="docutils literal notranslate"><span class="pre">matches</span></code> Document. The labels are stored under matched Document’s <code class="docutils literal notranslate"><span class="pre">.tags['finetuner_label']</span></code>. The label can be either <code class="docutils literal notranslate"><span class="pre">1</span></code> (denoting similarity of match to its parent <code class="docutils literal notranslate"><span class="pre">Document</span></code>) or <code class="docutils literal notranslate"><span class="pre">-1</span></code> (denoting dissimilarity of the match from its parent <code class="docutils literal notranslate"><span class="pre">Document</span></code>).</p>
 <p>The word “session” comes from the scenario where a user’s click-through introduces an implicit yes/no on the relevance, hence an interactive session.</p>
 <section id="batch-construction">
 <h2>Batch construction<a class="headerlink" href="#batch-construction" title="Permalink to this headline">¶</a></h2>
-<p>A <code class="docutils literal notranslate"><span class="pre">SessionDataset</span></code> works with <code class="xref py py-class docutils literal notranslate"><span class="pre">SessionSampler</span></code>.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">SessionDataset</span></code> works with <code class="xref py py-class docutils literal notranslate"><span class="pre">datsetsSessionSampler</span></code>.</p>
 <p>Here the batches are simply constructed by putting together enough root documents and their matches (we call this a <em>session</em>) to fill the batch according to <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> parameter. An example of a batch of size <code class="docutils literal notranslate"><span class="pre">batch_size=8</span></code> made of two sessions is show on the image below.</p>
 <figure class="align-center">
 <img alt="../../_images/session-dataset.png" src="../../_images/session-dataset.png"/>
