@@ -10,6 +10,7 @@
 
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -383,4 +384,34 @@ The changes of each release is tracked by this file.
 
  - [[```55e0888e```](https://github.com/jina-ai/finetuner/commit/55e0888ebcf9937d6fe2ca95c7713c394b54cb26)] __-__ fix readme (*Han Xiao*)
  - [[```dc526452```](https://github.com/jina-ai/finetuner/commit/dc526452fc5773a5591672c38aad538c5403d986)] __-__ __version__: the next version will be 0.2.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-2-3></a>
+## Release Note (`0.2.3`)
+
+> Release time: 2021-11-24 14:08:12
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Deepankar Mahapatro,  Yanlong Wang,  Tadej Svetina,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```88f37a29```](https://github.com/jina-ai/finetuner/commit/88f37a29a215a303d5e9ab0bf1f4ee77caf46079)] __-__ __docbot__: feedback tooltip ui style (#222) (*Yanlong Wang*)
+
+### 🧼 Code Refactoring
+
+ - [[```2d9e9d72```](https://github.com/jina-ai/finetuner/commit/2d9e9d72c194b109678ea9394282a3ccff8808a9)] __-__ __dataset__: make preprocess_fn return any (#217) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```62214aa2```](https://github.com/jina-ai/finetuner/commit/62214aa25dea8f334379ca0b732400f4b3951b22)] __-__ fix css layout of versions (*Han Xiao*)
+ - [[```08336e87```](https://github.com/jina-ai/finetuner/commit/08336e874bf185f158545c6a25e21614e62b7d16)] __-__ __dataset__: restructure docs on datasets (#226) (*Han Xiao*)
+ - [[```6e5934ba```](https://github.com/jina-ai/finetuner/commit/6e5934ba526fe283e5f2ab4d03bb67c5dab53f7c)] __-__ versioning (#225) (*Deepankar Mahapatro*)
+ - [[```97639dac```](https://github.com/jina-ai/finetuner/commit/97639dac402e290f6c023ac9e6312c9dc5988874)] __-__ improve docstring for preprocess_fn (#221) (*Tadej Svetina*)
+
+### 🍹 Other Improvements
+
+ - [[```670adbe0```](https://github.com/jina-ai/finetuner/commit/670adbe008ff32eaeb6acdefa05288a8daa76d81)] __-__ __version__: the next version will be 0.2.3 (*Jina Dev Bot*)
 
