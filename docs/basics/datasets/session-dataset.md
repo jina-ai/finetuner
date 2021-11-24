@@ -29,27 +29,30 @@ from jina import Document, DocumentArray
 from finetuner.tuner.dataset import SessionDataset, SessionSampler
 
 ds = DocumentArray(
-    [Document(id='0'), Document(id='1')]
+    [Document(content='shirt'), Document(content='shoe')]
 )
 
 ds[0].matches = [
-    Document(id='2', tags={'finetuner_label': 1}),
-    Document(id='3', tags={'finetuner_label': -1}),
+    Document(content='red shirt', tags={'finetuner_label': 1}),
+    Document(content='red shoe', tags={'finetuner_label': -1}),
 ]
 ds[1].matches = [
-    Document(id='4', tags={'finetuner_label': 1}),
-    Document(id='5', tags={'finetuner_label': -1}),
+    Document(content='black shoe', tags={'finetuner_label': 1}),
+    Document(content='black pants', tags={'finetuner_label': -1}),
 ]
 
-for b in SessionSampler(SessionDataset(ds).labels, batch_size=2):
-    print(b)
+sds = SessionDataset(ds)
+for b in SessionSampler(sds.labels, batch_size=2):
+    print([sds[bb] for bb in b])
 ```
 
 
 ```text
-[0, 2]
-[3, 4]
+[('shirt', (0, 0)), ('red shoe', (0, -1))]
+[('shoe', (1, 0)), ('black pants', (1, -1))]
 ```
+
+We got 2 batches here.
 
 (build-qa-data)=
 ### Covid QA data

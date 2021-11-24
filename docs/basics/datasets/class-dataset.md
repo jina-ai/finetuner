@@ -25,28 +25,34 @@ Specifically, the size of the batch is controlled by the `batch_size` argument, 
 Here is an example of a toy class dataset
 
 ```python
+import random
+
 from jina import DocumentArray, Document
 
 from finetuner.tuner.dataset import ClassDataset, ClassSampler
 
+contents = ['shirt'] * 2 + ['shoe'] * 6 + ['pants'] * 4
+contents = [random.sample(['green', 'red', 'yellow'], k=1)[0] + ' ' + c for c in contents]
 labels = [1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3]
 ds = DocumentArray(
-    [Document(id=str(idx), tags={'finetuner_label': idx}) for idx in labels]
+    [Document(content=c, tags={'finetuner_label': l}) for c, l in zip(contents, labels)]
 )
 
-for b in ClassSampler(ClassDataset(ds).labels, batch_size=2):
-    print(b)
+cds = ClassDataset(ds)
+for b in ClassSampler(cds.labels, batch_size=2):
+    print([cds[bb] for bb in b])
 ```
 
 ```text
-[8, 4]
-[6, 0]
-[9, 3]
-[1, 5]
-[7, 2]
+[('red shirt', 0), ('red shoe', 1)]
+[('yellow shoe', 2), ('red shoe', 1)]
+[('yellow pants', 2), ('red shirt', 0)]
+[('yellow shoe', 1), ('red pants', 2)]
+[('yellow shoe', 1), ('green pants', 2)]
+[('red pants', 2), ('yellow shoe', 1)]
 ```
 
-We got 5 batches. One can see that the sampler tries its best effort to pick an item from each class and form a batch.
+We got 6 batches. One can see that the sampler tries its best effort to pick an item from each class and form a batch.
 
 (build-mnist-data)=
 ### Fashion-MNIST data

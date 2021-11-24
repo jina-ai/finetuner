@@ -110,12 +110,9 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
         self._locations: List[Tuple[int, int]] = []
         self._labels: List[Tuple[int, int]] = []
 
-        num_docs = 0
         for i, doc in enumerate(self._docs):
             self._locations.append((i, -1))
             self._labels.append((i, 0))  # 0 is label for the anchor
-
-            num_docs += 1
 
             for match_ind, match in enumerate(doc.matches):
                 self._locations.append((i, match_ind))
@@ -128,7 +125,6 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
                 tag = match.tags[__default_tag_key__]
 
                 self._labels.append((i, int(tag)))
-                num_docs += 1
 
     def __getitem__(self, ind: int) -> Tuple['DocumentContentType', Tuple[int, int]]:
         """
@@ -149,7 +145,7 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
 
         label = self._labels[ind]
 
-        return (content, label)
+        return content, label
 
     @property
     def labels(self) -> List[Tuple[int, int]]:
