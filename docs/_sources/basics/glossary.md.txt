@@ -14,10 +14,10 @@ Labeled dataset
     A `DocumentArray`-like object, filled with `Document`s with `.content`, where documents also contain some kind of labeles that can be used for training an {term}`embedding model`.
     
 Class dataset
-    A kind of {term}`labeled dataset`, where each `Document` has a class label stored in `.tags['finetuner']['label']`, and does not have `.matches`
+    A kind of {term}`labeled dataset`, where each `Document` has a class label stored in `.tags['finetuner_label']`, and does not have `.matches`
 
 Session dataset
-    A kind of {term}`labeled dataset`, where each root `Document` contains `.matches` and no label; its matches contain label saved under `.tags['finetuner']['label']`. That label can be either 1 (for a match similar to its reference `Document`) or -1 (for match dissimilar from its reference `Document`)
+    A kind of {term}`labeled dataset`, where each root `Document` contains `.matches` and no label; its matches contain label saved under `.tags['finetuner_label']`. That label can be either 1 (for a match similar to its reference `Document`) or -1 (for match dissimilar from its reference `Document`)
 
 Tuner
     A component in Finetuner. Given an {term}`embedding model` and {term}`labeled dataset`, it trains the model to fit the data.

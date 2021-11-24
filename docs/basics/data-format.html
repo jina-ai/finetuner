@@ -7,10 +7,10 @@
   <meta property="og:title" content="Data Format" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/basics/data-format.html" />
-  <meta property="og:site_name" content="Finetuner 0.2.2 Documentation" />
+  <meta property="og:site_name" content="Finetuner 0.2.3 Documentation" />
   <meta property="og:description" content="Finetuner uses Jina Document as the primitive data type. In particular, DocumentArray and DocumentArrayMemap are the input data type in the high-level finetuner.fit() API. This means, your training dataset and evaluation dataset should be stored in DocumentArray or DocumentArrayMemap, where each ..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
-  <meta property="og:image:alt" content="Finetuner 0.2.2 Documentation" />
+  <meta property="og:image:alt" content="Finetuner 0.2.3 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -28,10 +28,10 @@
 </script>
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Glossary" href="glossary.html" /><link rel="prev" title="One-liner fit()" href="fit.html" />
+    <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Class Dataset" href="datasets/class-dataset.html" /><link rel="prev" title="One-liner fit()" href="fit.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.0, furo 2021.11.23"/>
-        <title>Data Format - Finetuner 0.2.2 documentation</title>
+        <title>Data Format - Finetuner 0.2.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -165,7 +165,7 @@
         </div>
         <div class="header-center">
             <a href="../index.html">
-                <div class="brand">Finetuner 0.2.2 documentation</div>
+                <div class="brand">Finetuner 0.2.3 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -208,13 +208,13 @@
     
         
           
-            <option value="../../main/basics/data-format.html" }} >main</option>
+          
+            <option value="data-format.html" selected }} >latest (v0.2.3)</option>
           
         
         
           
-          
-            <option value="data-format.html" selected }} >latest (v0.2.2)</option>
+            <option value="../../v0.2.2/basics/data-format.html" }} >v0.2.2</option>
           
         
         
@@ -230,11 +230,6 @@
         
           
             <option value="../../v0.1.5/basics/data-format.html" }} >v0.1.5</option>
-          
-        
-        
-          
-            <option value="../../v0.1.4/basics/data-format.html" }} >v0.1.4</option>
           
         
     
@@ -258,7 +253,12 @@
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="fit.html">One-liner <code class="docutils literal notranslate"><span class="pre">fit()</span></code></a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Data Format</a></li>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Data Format</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="datasets/class-dataset.html">Class Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datasets/session-dataset.html">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datasets/unlabeled-dataset.html">Unlabeled Dataset</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Components</span></p>
@@ -270,40 +270,42 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/finetuner.html">finetuner package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../api/finetuner.labeler.html">finetuner.labeler package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/finetuner.html">finetuner package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/finetuner.labeler.html">finetuner.labeler package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/finetuner.labeler.executor.html">finetuner.labeler.executor module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../api/finetuner.tailor.html">finetuner.tailor package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/finetuner.tailor.html">finetuner.tailor package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/finetuner.tailor.keras.html">finetuner.tailor.keras package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/finetuner.tailor.paddle.html">finetuner.tailor.paddle package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/finetuner.tailor.pytorch.html">finetuner.tailor.pytorch package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/finetuner.tailor.base.html">finetuner.tailor.base module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../api/finetuner.tuner.html">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.dataset.html">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/finetuner.tuner.html">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.dataset.html">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.dataset.base.html">finetuner.tuner.dataset.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.dataset.datasets.html">finetuner.tuner.dataset.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.dataset.samplers.html">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.keras.html">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.keras.html">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.keras.data.html">finetuner.tuner.keras.data module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.keras.losses.html">finetuner.tuner.keras.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.keras.miner.html">finetuner.tuner.keras.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.miner.html">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.miner.html">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.miner.base.html">finetuner.tuner.miner.base module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.paddle.html">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.paddle.html">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.paddle.datasets.html">finetuner.tuner.paddle.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.paddle.losses.html">finetuner.tuner.paddle.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.paddle.miner.html">finetuner.tuner.paddle.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.pytorch.html">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.pytorch.html">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.pytorch.datasets.html">finetuner.tuner.pytorch.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.pytorch.losses.html">finetuner.tuner.pytorch.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.pytorch.miner.html">finetuner.tuner.pytorch.miner module</a></li>
@@ -386,81 +388,27 @@ or <code class="docutils literal notranslate"><span class="pre">DocumentArrayMem
 </div>
 <p>This chapter introduces how to construct a <code class="docutils literal notranslate"><span class="pre">Document</span></code> in a way that Finetuner will accept.</p>
 <p>There are three different types of datasets:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="#unlabeled-dataset">Unlabeled dataset</a></p></li>
-<li><p><a class="reference external" href="#class-dataset">Class dataset</a> (a labeled dataset)</p></li>
-<li><p><a class="reference external" href="#session-dataset">Session dataset</a> (a labeled dataset)</p></li>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="datasets/class-dataset.html">Class Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets/session-dataset.html">Session Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets/unlabeled-dataset.html">Unlabeled Dataset</a></li>
 </ul>
-<section id="understand-supervision">
-<h2>Understand supervision<a class="headerlink" href="#understand-supervision" title="Permalink to this headline">¶</a></h2>
-<p>Finetuner tunes a deep neural network on search tasks. In this context, the supervision comes from whether the nearest-neighbour matches are good or bad, where matches are often computed on model’s embeddings. You have to label these good matches and bad matches so Finetuner can learn your feedback and improve the model. The following graph illustrates the process:</p>
-<figure class="align-center">
-<img alt="../_images/tuner-journey.svg" src="../_images/tuner-journey.svg"/></figure>
-</section>
-<section id="unlabeled-dataset">
-<h2>Unlabeled dataset<a class="headerlink" href="#unlabeled-dataset" title="Permalink to this headline">¶</a></h2>
-<p>When using <code class="docutils literal notranslate"><span class="pre">finetuner.fit(...,</span> <span class="pre">interactive=True)</span></code>, you only need to provide a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>-like object where each <code class="docutils literal notranslate"><span class="pre">Document</span></code> object contains <code class="docutils literal notranslate"><span class="pre">.content</span></code>. This is because Finetuner will start a web frontend for interactive labeling. Hence, the supervision comes directly from you.</p>
-<p>All that the <code class="docutils literal notranslate"><span class="pre">Document</span></code>s in this dataset need is a <code class="docutils literal notranslate"><span class="pre">.content</span></code> attribute (which can be <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">blob</span></code> or <code class="docutils literal notranslate"><span class="pre">uri</span></code> - if you implement <a class="reference external" href="#loading-and-preprocessing">your own loading</a>).</p>
-</section>
-<section id="labeled-datasets">
-<span id="construct-labeled-data"></span><h2>Labeled datasets<a class="headerlink" href="#labeled-datasets" title="Permalink to this headline">¶</a></h2>
-<p>When using <code class="docutils literal notranslate"><span class="pre">finetuner.fit(...,</span> <span class="pre">interactive=False)</span></code>, you must provide some kind of labels
-to your documents, so that the model can learn. There are two different kinds of labeled datasets that finetuner supports: a class dataset and a session dataset.</p>
-<p>Regardless of which dataset format we choose, all documents need a <code class="docutils literal notranslate"><span class="pre">.content</span></code> attribute (which can be <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">blob</span></code> or <code class="docutils literal notranslate"><span class="pre">uri</span></code> - if you implement <a class="reference external" href="#loading-and-preprocessing">your own loading</a>).</p>
-<section id="class-dataset">
-<h3>Class dataset<a class="headerlink" href="#class-dataset" title="Permalink to this headline">¶</a></h3>
-<p>In this dataset, each <code class="docutils literal notranslate"><span class="pre">Document</span></code> in the dataset has a “class” label stored under <code class="docutils literal notranslate"><span class="pre">.tags['finetuner']['label']</span></code>. The document structure is flat - no <code class="docutils literal notranslate"><span class="pre">matches</span></code> are needed.</p>
-<p>The “class” label is not necessarily related to classification - rather, it is there to denote similar <code class="docutils literal notranslate"><span class="pre">Document</span></code>s. All <code class="docutils literal notranslate"><span class="pre">Document</span></code>s with the same label are considered similar, and all <code class="docutils literal notranslate"><span class="pre">Document</span></code>s with different labels are considered dis-similar.</p>
-<p>This “class” label is used to construct batches for model training. In each batch, a number of different classes will be randomly selected, and from each class a number of <code class="docutils literal notranslate"><span class="pre">Document</span></code>s will be taken, so as to fill the batch.</p>
-<p>Specifically, the size of the batch is controlled by the <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> argument, and number of instances to take from each class is controlled by the <code class="docutils literal notranslate"><span class="pre">num_items_per_class</span></code>. The number of instances per batch is computed dynamically, so that the batch is full. The image below illustrates this for <code class="docutils literal notranslate"><span class="pre">batch_size=8</span></code> and <code class="docutils literal notranslate"><span class="pre">num_items_per_class=2</span></code>.</p>
-<figure class="align-center">
-<img alt="../_images/class-dataset.png" src="../_images/class-dataset.png"/>
-</figure>
-<p>Here is an example of a class dataset</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
-
-<span class="n">class_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'some text for class 1'</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'more text for class 1'</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'some text for class 2'</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="mi">2</span><span class="p">}}),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'more text for class 2'</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="mi">2</span><span class="p">}}),</span>
-<span class="p">])</span>
-</pre></div>
 </div>
-</section>
-<section id="session-dataset">
-<h3>Session dataset<a class="headerlink" href="#session-dataset" title="Permalink to this headline">¶</a></h3>
-<p>In this dataset, each root <code class="docutils literal notranslate"><span class="pre">Document</span></code> in the dataset has <code class="docutils literal notranslate"><span class="pre">matches</span></code>, but no label. Instead, its matches have a label stored under <code class="docutils literal notranslate"><span class="pre">.tags['finetuner']['label']</span></code>. This label can be either <code class="docutils literal notranslate"><span class="pre">1</span></code> (denoting similarity of match to its reference <code class="docutils literal notranslate"><span class="pre">Document</span></code>) or <code class="docutils literal notranslate"><span class="pre">-1</span></code> (denoting dissimilarity of the match from its reference <code class="docutils literal notranslate"><span class="pre">Document</span></code>).</p>
-<p>This dataset is meant for cases where the relationship is only known between a small subset of documents. For example, our data could come from a search engine: given a query (which would be a root document), the results that the users clicked on are considered similar to the query (and will thus be a match with label <code class="docutils literal notranslate"><span class="pre">1</span></code>), while the results that the users did not click on are deemed dissimilar (and will thus be labeled with <code class="docutils literal notranslate"><span class="pre">-1</span></code>). Note that no assumption is made about the similarity between the “dissimilar” (labeled with <code class="docutils literal notranslate"><span class="pre">-1</span></code>) items themselves.</p>
-<p>Here the batches are simply constructed by putting together enough root documents and their matches (we call this a <em>session</em>) to fill the batch according to <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> parameter. An example of a batch of size <code class="docutils literal notranslate"><span class="pre">batch_size=8</span></code> made of two sessions is show on the image below.</p>
-<figure class="align-center">
-<img alt="../_images/session-dataset.png" src="../_images/session-dataset.png"/>
-</figure>
-<p>Here is an example of a session dataset</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
-
-<span class="n">root_documents</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
-  <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'trousers'</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'polo shirt'</span><span class="p">)]</span>
-<span class="p">)</span>
-
-<span class="n">root_documents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span> <span class="o">=</span> <span class="p">[</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'shorts'</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'blouse'</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}}),</span>
-<span class="p">]</span>
-<span class="n">root_documents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span> <span class="o">=</span> <span class="p">[</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'t-shirt'</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'earrings'</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}}),</span>
-<span class="p">]</span>
-</pre></div>
+<section id="lazy-loading">
+<h2>Lazy loading<a class="headerlink" href="#lazy-loading" title="Permalink to this headline">¶</a></h2>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>We recommend to keep the input <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> as simple as possible, e.g. only fill essential fields such as <code class="docutils literal notranslate"><span class="pre">.uri</span></code>. The data loading and heavylifting work should be done via <code class="docutils literal notranslate"><span class="pre">preprocess_fn</span></code> in an on-demand manner.</p>
 </div>
-</section>
-</section>
-<section id="loading-and-preprocessing">
-<h2>Loading and preprocessing<a class="headerlink" href="#loading-and-preprocessing" title="Permalink to this headline">¶</a></h2>
-<p>There are cases when you can not store your entire dataset into memory, and need to load
-individual items on the fly. Similarly, you may want to apply random augmentations to images
-each time they are used in a batch. For these purposes, you can pass a pre-processing function
-using <code class="docutils literal notranslate"><span class="pre">preprocess_fn</span></code> argument to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function.</p>
+<p>Regardless of which dataset format we choose, all Documents need to have a non-empty <code class="docutils literal notranslate"><span class="pre">.content</span></code> attribute. Either you fill in <code class="docutils literal notranslate"><span class="pre">DocumentArray.contents</span></code> in advance, or load them on-demand.</p>
+<p>When working with a big dataset, loading data on-demand is more favorable as  you can not store your entire dataset into memory, . Moreover, you may want to apply random augmentations to images
+each time they are used in a batch, whereas you can’t prepare those augmentations in advance. For these purposes, you can use <code class="docutils literal notranslate"><span class="pre">preprocess_fn</span></code> argument of the <code class="docutils literal notranslate"><span class="pre">Dataset</span></code>. This argument is universally available from low-level <code class="docutils literal notranslate"><span class="pre">ClassDataset</span></code> and <code class="docutils literal notranslate"><span class="pre">SessionDataset</span></code> up to the top most level <code class="docutils literal notranslate"><span class="pre">finetuner.fit</span></code> API.</p>
+<p>Let’s see some examples.</p>
+<section id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<section id="load-image-on-the-fly">
+<h4>Load image on the fly<a class="headerlink" href="#load-image-on-the-fly" title="Permalink to this headline">¶</a></h4>
 <p>Let’s start with an example of the first case - loading images on the fly. In this case
 we would have images stored on disk, and their paths stored in the <code class="docutils literal notranslate"><span class="pre">.uri</span></code> attribute of
 each <code class="docutils literal notranslate"><span class="pre">Document</span></code>. In <code class="docutils literal notranslate"><span class="pre">preprocess_fn</span></code> we would then load the image and return the numpy
@@ -468,21 +416,23 @@ array.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">finetuner</span> <span class="kn">import</span> <span class="n">fit</span>
 <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
-<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 
 <span class="n">dataset</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">'path/to/image.jpg'</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}),</span>
+  <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">'path/to/image.jpg'</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner_label'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}),</span>
   <span class="c1"># ...</span>
 <span class="p">])</span>
 
-<span class="k">def</span> <span class="nf">load_image</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-  <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">load_image</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Document</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">d</span><span class="o">.</span><span class="n">load_uri_to_image_blob</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">d</span><span class="o">.</span><span class="n">blob</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="o">...</span>
 <span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_data</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span> <span class="n">preprocess_fn</span><span class="o">=</span><span class="n">load_image</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="image-augmentation">
+<h4>Image augmentation<a class="headerlink" href="#image-augmentation" title="Permalink to this headline">¶</a></h4>
 <p>Next, let’s take a look at an example where we apply some basic image augmentation. We’ll be using the <a class="reference external" href="https://albumentations.ai/">albumentations</a> library for image augmentation in this example</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">albumentations</span> <span class="k">as</span> <span class="nn">A</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -490,69 +440,23 @@ array.</p>
 <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
 <span class="n">dataset</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">blob</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}),</span>
+  <span class="n">Document</span><span class="p">(</span><span class="n">blob</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'finetuner_label'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}),</span>
   <span class="c1"># ...</span>
 <span class="p">])</span>
 
-<span class="k">def</span> <span class="nf">augment_image</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">augment_image</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Document</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
   <span class="n">transform</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
     <span class="n">A</span><span class="o">.</span><span class="n">HorizontalFlip</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
     <span class="n">A</span><span class="o">.</span><span class="n">RandomBrightnessContrast</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.2</span><span class="p">),</span>
   <span class="p">])</span>
   
-  <span class="k">return</span> <span class="n">transform</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">)[</span><span class="s1">'image'</span><span class="p">]</span>
+  <span class="k">return</span> <span class="n">transform</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">blob</span><span class="p">)[</span><span class="s1">'image'</span><span class="p">]</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="o">...</span>
 <span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_data</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span> <span class="n">preprocess_fn</span><span class="o">=</span><span class="n">augment_image</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
-<p>Here are some examples for generating synthetic matching data for Finetuner. You can learn how the constructions are
-made here.</p>
-<section id="fashion-mnist">
-<span id="build-mnist-data"></span><h3>Fashion-MNIST<a class="headerlink" href="#fashion-mnist" title="Permalink to this headline">¶</a></h3>
-<p>Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. Each image is a single channel 28x28
-grayscale image.</p>
-<figure class="align-center">
-<img alt="../_images/fashion-mnist-sprite.png" src="../_images/fashion-mnist-sprite.png"/>
-</figure>
-<p>This dataset is an example of class dataset - each <code class="docutils literal notranslate"><span class="pre">Document</span></code> has a class label (corresponding to one of the 10 classes). The <code class="docutils literal notranslate"><span class="pre">Document</span></code>s contain the following relevant information:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">.blob</span></code>: the numpy array of the image</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.tags['finetuner']['label']</span></code>: the class label</p></li>
-</ul>
-</section>
-<section id="covid-qa">
-<span id="build-qa-data"></span><h3>Covid QA<a class="headerlink" href="#covid-qa" title="Permalink to this headline">¶</a></h3>
-<p>Covid QA data is a CSV that has 481 rows with the columns <code class="docutils literal notranslate"><span class="pre">question</span></code>, <code class="docutils literal notranslate"><span class="pre">answer</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">wrong_answer</span></code>.</p>
-<figure class="align-center">
-<img alt="../_images/covid-qa-data.png" src="../_images/covid-qa-data.png"/>
-</figure>
-<p>To convert this dataset into match data, we build each Document to contain the following relevant information:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">.text</span></code>: the <code class="docutils literal notranslate"><span class="pre">question</span></code> column</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.matches</span></code>: the generated positive &amp; negative matches Document</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">.text</span></code>: the <code class="docutils literal notranslate"><span class="pre">answer</span></code>/<code class="docutils literal notranslate"><span class="pre">wrong_answer</span></code> column</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.tags['finetuner']['label']</span></code>: the match label: <code class="docutils literal notranslate"><span class="pre">1</span></code> or <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p></li>
-</ul>
-</li>
-</ul>
-<p>Matches are built with the logic below:</p>
-<ul class="simple">
-<li><p>only allows 1 positive match per Document, it is taken from the <code class="docutils literal notranslate"><span class="pre">answer</span></code> column;</p></li>
-<li><p>always include <code class="docutils literal notranslate"><span class="pre">wrong_answer</span></code> column as the negative match. Then sample other documents’ answer as negative matches.</p></li>
-</ul>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>The Finetuner codebase contains two synthetic matching data generators for demo and debugging purpose:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">finetuner.toydata.generate_fashion()</span></code>: the generator of Fashion-MNIST matching data.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">finetuner.toydata.generate_qa()</span></code>: the generator of Covid QA matching data.</p></li>
-</ul>
-</div>
 </section>
 </section>
 </section>
@@ -561,12 +465,12 @@ grayscale image.</p>
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="glossary.html">
+                    <a class="next-page" href="datasets/class-dataset.html">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">Glossary</div>
+                            <div class="title">Class Dataset</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
@@ -615,17 +519,12 @@ grayscale image.</p>
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">Data Format</a><ul>
-<li><a class="reference internal" href="#understand-supervision">Understand supervision</a></li>
-<li><a class="reference internal" href="#unlabeled-dataset">Unlabeled dataset</a></li>
-<li><a class="reference internal" href="#labeled-datasets">Labeled datasets</a><ul>
-<li><a class="reference internal" href="#class-dataset">Class dataset</a></li>
-<li><a class="reference internal" href="#session-dataset">Session dataset</a></li>
+<li><a class="reference internal" href="#lazy-loading">Lazy loading</a><ul>
+<li><a class="reference internal" href="#examples">Examples</a><ul>
+<li><a class="reference internal" href="#load-image-on-the-fly">Load image on the fly</a></li>
+<li><a class="reference internal" href="#image-augmentation">Image augmentation</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#loading-and-preprocessing">Loading and preprocessing</a></li>
-<li><a class="reference internal" href="#examples">Examples</a><ul>
-<li><a class="reference internal" href="#fashion-mnist">Fashion-MNIST</a></li>
-<li><a class="reference internal" href="#covid-qa">Covid QA</a></li>
 </ul>
 </li>
 </ul>
