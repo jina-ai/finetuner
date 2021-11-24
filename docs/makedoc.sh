@@ -34,5 +34,5 @@ echo -e "Latest Finetuner Version: ${LATEST_FINETUNER_VERSION}"
 echo -e "Branches to whitelist: ${SMV_BRANCH_WHITELIST}"
 echo -e "Tags to whitelist: ${SMV_TAG_WHITELIST}"
 
-sphinx-multiversion . ${BUILD_DIR}
+sphinx-multiversion . ${BUILD_DIR} -b dirhtml
 mv -v _build/dirhtml/${LATEST_FINETUNER_VERSION}/* _build/dirhtml
