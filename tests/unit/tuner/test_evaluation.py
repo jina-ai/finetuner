@@ -4,6 +4,7 @@ import numpy as np
 
 from jina import Document, DocumentArray
 from finetuner import __default_tag_key__
+from finetuner.tuner.metrics import METRICS
 from finetuner.tuner.evaluation import Evaluator
 
 
@@ -70,6 +71,13 @@ def test__parse_eval_docs(embed_model, eval_data, catalog):
             ]
             == 1
         )
+
+
+def test_list_available_metrics(embed_model, eval_data, catalog):
+    """
+    Test the listing of available metrics
+    """
+    assert Evaluator.list_available_metrics() == list(METRICS.keys())
 
 
 def test_evaluator_perfect_scores(embed_model, eval_data, catalog):

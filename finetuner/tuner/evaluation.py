@@ -100,6 +100,13 @@ class Evaluator:
 
         return means
 
+    @classmethod
+    def list_available_metrics(cls) -> List[str]:
+        """
+        List available metrics
+        """
+        return list(METRICS.keys())
+
     def evaluate(self, label: str = 'metrics') -> Dict[str, float]:
         """
         Run evaluation
