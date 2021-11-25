@@ -16,7 +16,6 @@ if TYPE_CHECKING:
         PreprocFnType,
         CollateFnType,
     )
-    from .tuner.summary import Summary
 
 
 # fit interface generated from Tuner
@@ -34,7 +33,7 @@ def fit(
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
     num_items_per_class: Optional[int] = None,
-) -> Tuple['AnyDNN', 'Summary']:
+) -> 'AnyDNN':
     ...
 
 
@@ -59,7 +58,7 @@ def fit(
     layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
-) -> Tuple['AnyDNN', 'Summary']:
+) -> 'AnyDNN':
     ...
 
 
@@ -82,7 +81,7 @@ def fit(
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
-) -> Tuple['AnyDNN', None]:
+) -> 'AnyDNN':
     ...
 
 
@@ -111,13 +110,11 @@ def fit(
     layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
-) -> Tuple['AnyDNN', None]:
+) -> 'AnyDNN':
     ...
 
 
-def fit(
-    model: 'AnyDNN', train_data: 'DocumentSequence', *args, **kwargs
-) -> Tuple['AnyDNN', Optional['Summary']]:
+def fit(model: 'AnyDNN', train_data: 'DocumentSequence', *args, **kwargs) -> 'AnyDNN':
     if kwargs.get('to_embedding_model', False):
         from .tailor import to_embedding_model
 
@@ -126,11 +123,13 @@ def fit(
     if kwargs.get('interactive', False):
         from .labeler import fit
 
-        return model, fit(model, train_data, *args, **kwargs)
+        fit(model, train_data, *args, **kwargs)
+        return model
     else:
         from .tuner import fit
 
-        return model, fit(model, train_data, *args, **kwargs)
+        fit(model, train_data, *args, **kwargs)
+        return model
 
 
 # level them up to the top-level

@@ -1,7 +1,6 @@
 from typing import Optional, Union, TYPE_CHECKING
 
 import tensorflow as tf
-from jina.logging.profile import ProgressBar
 from keras.engine.data_adapter import KerasSequenceAdapter
 from tensorflow.keras.optimizers import Optimizer
 
@@ -9,7 +8,7 @@ from . import losses
 from .data import KerasDataSequence
 from ..base import BaseTuner, BaseLoss
 from ..dataset import ClassDataset, SessionDataset
-from ..summary import ScalarSequence, Summary
+from ..state import TunerState
 from ... import __default_tag_key__
 
 if TYPE_CHECKING:
@@ -62,60 +61,41 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
 
         return tf.keras.optimizers.Adam(learning_rate=learning_rate)
 
-    def _train(
-        self, data: KerasSequenceAdapter, optimizer: Optimizer, description: str
-    ) -> ScalarSequence:
+    def _train(self, data: KerasSequenceAdapter):
         """Train the model on given labeled data"""
 
-        _summary = ScalarSequence('Train Loss')
-        with ProgressBar(
-            description,
-            message_on_done=_summary.__str__,
-            final_line_feed=False,
-            total_length=data.get_size(),
-        ) as p:
-            for inputs, labels in data.get_dataset():
-                with tf.GradientTape() as tape:
-                    embeddings = self._embed_model(inputs)
-                    loss = self._loss(embeddings, labels)
+        for idx, (inputs, labels) in enumerate(data.get_dataset()):
+            self.state.batch_index = idx
+            self._trigger_callbacks('on_train_batch_begin')
 
-                grads = tape.gradient(loss, self._embed_model.trainable_weights)
-                optimizer.apply_gradients(
-                    zip(grads, self._embed_model.trainable_weights)
-                )
-
-                _summary += loss.numpy()
-
-                p.update(message=str(_summary))
-
-        data.on_epoch_end()  # To re-create batches
-        return _summary
-
-    def _eval(
-        self,
-        data: KerasSequenceAdapter,
-        description: str = 'Evaluating',
-        train_loss: Optional[ScalarSequence] = None,
-    ) -> ScalarSequence:
-        """Evaluate the model on given labeled data"""
-
-        _summary = ScalarSequence('Eval Loss')
-
-        with ProgressBar(
-            description,
-            message_on_done=lambda: f'{train_loss} | {_summary}',
-            total_length=data.get_size(),
-        ) as p:
-            for inputs, labels in data.get_dataset():
+            with tf.GradientTape() as tape:
                 embeddings = self._embed_model(inputs)
                 loss = self._loss(embeddings, labels)
 
-                _summary += loss.numpy()
+            grads = tape.gradient(loss, self._embed_model.trainable_weights)
+            self._optimizer.apply_gradients(
+                zip(grads, self._embed_model.trainable_weights)
+            )
 
-                p.update(message=str(_summary))
+            self.state.current_loss = loss.numpy()
+            self._trigger_callbacks('on_train_batch_end')
 
         data.on_epoch_end()  # To re-create batches
-        return _summary
+
+    def _eval(self, data: KerasSequenceAdapter):
+        """Evaluate the model on given labeled data"""
+
+        for idx, (inputs, labels) in enumerate(data.get_dataset()):
+            self.state.batch_index = idx
+            self._trigger_callbacks('on_val_batch_begin')
+
+            embeddings = self._embed_model(inputs)
+            loss = self._loss(embeddings, labels)
+
+            self.state.current_loss = loss.numpy()
+            self._trigger_callbacks('on_val_batch_end')
+
+        data.on_epoch_end()  # To re-create batches
 
     def fit(
         self,
@@ -124,15 +104,12 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        optimizer: Optional[Optimizer] = None,
-        learning_rate: float = 1e-3,
         device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         **kwargs,
-    ) -> Summary:
+    ):
         """Finetune the model on the training data.
-
         :param train_data: Data on which to train the model
         :param eval_data: Data on which to evaluate the model at the end of each epoch
         :param preprocess_fn: A pre-processing function. It should take as input the
@@ -145,11 +122,6 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
         :param batch_size: The batch size to use for training and evaluation
         :param num_items_per_class: Number of items from a single class to include in
             the batch. Only relevant for class datasets
-        :param optimizer: The optimizer to use for training. If none is passed, an
-            Adam optimizer is used by default, with learning rate specified by the
-            ``learning_rate`` parameter.
-        :param learning_rate: Learning rate for the default optimizer. If you
-            provide a custom optimizer, this learning rate will not apply.
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
         """
@@ -173,24 +145,31 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
                 collate_fn=collate_fn,
             )
 
-        optimizer = optimizer or self._get_default_optimizer(learning_rate)
+        self.state = TunerState(num_epochs=epochs)
+        self._trigger_callbacks('on_fit_begin')
 
-        m_train_loss = ScalarSequence('train')
-        m_eval_loss = ScalarSequence('eval')
         with get_device(device):
             for epoch in range(epochs):
-                lt = self._train(
-                    train_dl,
-                    optimizer,
-                    description=f'Epoch {epoch + 1}/{epochs}',
-                )
-                m_train_loss += lt
+
+                # Setting here as re-shuffling can change number of batches
+                self.state.epoch = epoch
+                self.state.num_batches_train = train_dl.get_size()
+
+                self._trigger_callbacks('on_epoch_begin')
+
+                self._trigger_callbacks('on_train_begin')
+                self._train(train_dl)
+                self._trigger_callbacks('on_train_end')
 
                 if eval_data:
-                    le = self._eval(eval_dl, train_loss=m_train_loss)
-                    m_eval_loss += le
+                    self.state.num_batches_val = eval_dl.get_size()
+                    self._trigger_callbacks('on_val_begin')
+                    self._eval(eval_dl)
+                    self._trigger_callbacks('on_val_end')
 
-        return Summary(m_train_loss, m_eval_loss)
+                self._trigger_callbacks('on_epoch_end')
+
+            self._trigger_callbacks('on_fit_end')
 
     def save(self, *args, **kwargs):
         """Save the embedding model.
