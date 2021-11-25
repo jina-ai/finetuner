@@ -1,7 +1,7 @@
 import copy
 import warnings
 from collections import OrderedDict
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, List, TYPE_CHECKING
 
 import numpy as np
 import paddle
@@ -141,6 +141,7 @@ class PaddleTailor(BaseTailor):
         layer_name: Optional[str] = None,
         output_dim: Optional[int] = None,
         freeze: bool = False,
+        freeze_layers: Optional[List[str]] = None,
     ) -> 'AnyDNN':
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
@@ -148,13 +149,13 @@ class PaddleTailor(BaseTailor):
             will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
             To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
         :param output_dim: the dimensionality of the embedding output.
-        :param freeze: if set, then freeze all weights of the original model.
+        :param freeze: if set, then freeze weights of a model. If :py:attr:`freeze_layers` is defined, only freeze layers in :py:attr:`freeze_layers`.
+        :param freeze_layers: if set, then freeze specific layers.
         :return: Converted embedding model.
         """
         model = copy.deepcopy(self._model)
-
+        _all_embed_layers = {l['name']: l for l in self.embedding_layers}
         if layer_name:
-            _all_embed_layers = {l['name']: l for l in self.embedding_layers}
             try:
                 _embed_layer = _all_embed_layers[layer_name]
             except KeyError as e:
@@ -165,7 +166,12 @@ class PaddleTailor(BaseTailor):
             # when not given, using the last layer
             _embed_layer = self.embedding_layers[-1]
 
-        if freeze:
+        if freeze and freeze_layers:
+            # freeze specific layers defined in `freeze_layers`
+            for layer_name, param in zip(_all_embed_layers, model.parameters()):
+                if layer_name in freeze_layers:
+                    param.trainable = False
+        if freeze and not freeze_layers:
             for param in model.parameters():
                 param.trainable = False
 
