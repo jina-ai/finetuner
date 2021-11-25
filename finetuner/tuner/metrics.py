@@ -23,7 +23,9 @@ def _doc_to_relevance(doc: Document) -> Tuple[List[int], int]:
     :return: the relevance vector and the total number of relevant documents.
     """
     targets: Dict[str, int] = doc.tags[__default_tag_key__]['targets']
-    return [targets.get(match.id, 0) for match in doc.matches], len(targets)
+    return [
+        targets[match.id] if match.id in targets else 0 for match in doc.matches
+    ], len(targets)
 
 
 """Metric computation methods, wrappers over metrics in jina.math.evaluation"""
