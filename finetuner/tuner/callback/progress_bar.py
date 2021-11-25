@@ -41,7 +41,7 @@ class ProgressBarCallback(BaseCallback):
 
         val_loss_str = ''
         if self.prev_val_loss:
-            val_loss_str = f' | val_loss: {self.prev_val_loss:.3f}'
+            val_loss_str = f' • val_loss: {self.prev_val_loss:.3f}'
 
         return train_loss_str + val_loss_str
 
@@ -56,11 +56,13 @@ class ProgressBarCallback(BaseCallback):
         self.pbar = Progress(
             SpinnerColumn(),
             '[progress.description]{task.description}',
-            BarColumn(),
-            '[progress.percentage]{task.percentage:>3.0f}%',
+            BarColumn(
+                style='dark_green', complete_style='green', finished_style='yellow'
+            ),
+            '[progress.percentage]{task.completed}/{task.total}',
             TimeRemainingColumn(),
             TimeElapsedColumn(),
-            '|',
+            '•',
             TextColumn('{task.fields[metrics]}'),
         )
         self.pbar.start()
