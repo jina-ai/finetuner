@@ -36,9 +36,7 @@ class KerasTailor(BaseTailor):
             output_shape = _get_output_shape(layer)
             input_shape = _get_input_shape(layer)
             is_embedding_layer = not (
-                not output_shape
-                or len(output_shape) != 2
-                or not isinstance(output_shape[-1], int)
+                not output_shape or not isinstance(output_shape[-1], int)
             )
 
             if not layer.built and not getattr(layer, '_is_graph_network', False):
