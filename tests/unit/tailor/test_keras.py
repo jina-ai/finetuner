@@ -186,6 +186,42 @@ def test_freeze(model, freeze):
             assert layer.trainable
 
 
+@pytest.mark.parametrize(
+    'model, layer_name, input_size, input_dtype, freeze_layers',
+    [
+        ('dense_model', 10, (128,), 'float32', ['linear_1', 'linear_5']),
+        ('simple_cnn_model', 2, (1, 28, 28), 'float32', ['conv2d_1', 'maxpool2d_5']),
+        (
+            'vgg16_cnn_model',
+            4,
+            (3, 224, 224),
+            'float32',
+            ['conv2d_27', 'maxpool2d_31', 'adaptiveavgpool2d_32'],
+        ),
+        ('stacked_lstm', 10, (128,), 'int64', ['linear_layer_1', 'linear_layer_2']),
+        ('bidirectional_lstm', 5, (128,), 'int64', ['lastcell_3', 'linear_4']),
+    ],
+    indirect=['model'],
+)
+def test_freeze_given_freeze_layers(
+    model, layer_name, input_size, input_dtype, freeze_layers
+):
+    pytorch_tailor = KerasTailor(
+        model=model,
+        input_size=input_size,
+        input_dtype=input_dtype,
+    )
+    model = pytorch_tailor.to_embedding_model(
+        freeze=True, output_dim=2, freeze_layers=freeze_layers
+    )
+    for layer, param in zip(pytorch_tailor.embedding_layers, model.layers):
+        layer_name = layer['name']
+        if layer_name in freeze_layers:
+            assert param.trainable == False
+        else:
+            assert param.trainable == True
+
+
 def test_keras_model_parser():
     user_model = tf.keras.Sequential(
         [
