@@ -34,7 +34,7 @@ class ProgressBarCallback(BaseCallback):
     @property
     def train_loss_str(self) -> str:
         train_loss_str = ''
-        if self.mean_loss:
+        if self.mean_loss is not None:
             train_loss_str = f'loss: {self.mean_loss:.3f}'
         else:
             train_loss_str = 'loss: -.---'
@@ -47,7 +47,7 @@ class ProgressBarCallback(BaseCallback):
 
     @property
     def val_loss_str(self) -> str:
-        if self.mean_loss:
+        if self.mean_loss is not None:
             return f'loss: {self.mean_loss:.3f}'
         else:
             return 'loss: -.---'
