@@ -1,5 +1,5 @@
 import abc
-from typing import TYPE_CHECKING, ContextManager, Generic, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Generic, List, Optional, Tuple, Union
 
 from .callback.base import BaseCallback
 from .callback.progress_bar import ProgressBarCallback
