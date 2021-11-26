@@ -4,9 +4,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta property="og:title" content="finetuner.tuner.summary module" />
+  <meta property="og:title" content="finetuner.tuner.callback.base module" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.tuner.summary.html" />
+  <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.tuner.callback.base.html" />
   <meta property="og:site_name" content="Finetuner 0.2.5 Documentation" />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner 0.2.5 Documentation" />
@@ -27,10 +27,10 @@
 </script>
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.embedding module" href="../finetuner.embedding/" /><link rel="prev" title="finetuner.tuner.base module" href="../finetuner.tuner.base/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.callback.progress_bar module" href="../finetuner.tuner.callback.progress_bar/" /><link rel="prev" title="finetuner.tuner.callback package" href="../finetuner.tuner.callback/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.0, furo 2021.11.23"/>
-        <title>finetuner.tuner.summary module - Finetuner 0.2.5 documentation</title>
+        <title>finetuner.tuner.callback.base module - Finetuner 0.2.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -207,7 +207,7 @@
     
         
           
-            <option value="finetuner.tuner.summary.html" selected >main</option>
+            <option value="finetuner.tuner.callback.base.html" selected >main</option>
           
         
         
@@ -287,36 +287,41 @@
 </ul>
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="../finetuner.tuner/">finetuner.tuner package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 current has-children"><a class="reference internal" href="../finetuner.tuner.callback/">finetuner.tuner.callback package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">finetuner.tuner.callback.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.keras.data/">finetuner.tuner.keras.data module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.keras.losses/">finetuner.tuner.keras.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.keras.miner/">finetuner.tuner.keras.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.miner.base/">finetuner.tuner.miner.base module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.miner/">finetuner.tuner.paddle.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.pytorch.datasets/">finetuner.tuner.pytorch.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.pytorch.losses/">finetuner.tuner.pytorch.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.pytorch.miner/">finetuner.tuner.pytorch.miner module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.base/">finetuner.tuner.base module</a></li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">finetuner.tuner.summary module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.state/">finetuner.tuner.state module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.embedding/">finetuner.embedding module</a></li>
@@ -376,73 +381,84 @@
                         </i>
                     </label>
                 </div>
-                <section id="module-finetuner.tuner.summary">
-<span id="finetuner-tuner-summary-module"></span><h1>finetuner.tuner.summary module<a class="headerlink" href="#module-finetuner.tuner.summary" title="Permalink to this headline">¶</a></h1>
-<dl class="py data">
-<dt class="sig sig-object py" id="finetuner.tuner.summary.NumericType">
-<span class="sig-prename descclassname"><span class="pre">finetuner.tuner.summary.</span></span><span class="sig-name descname"><span class="pre">NumericType</span></span><a class="headerlink" href="#finetuner.tuner.summary.NumericType" title="Permalink to this definition">¶</a></dt>
-<dd><p>The type of numerics including numpy data type</p>
-<p>alias of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.number</span></code>]</p>
-</dd></dl>
+                <section id="module-finetuner.tuner.callback.base">
+<span id="finetuner-tuner-callback-base-module"></span><h1>finetuner.tuner.callback.base module<a class="headerlink" href="#module-finetuner.tuner.callback.base" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.summary.ScalarSequence">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.summary.</span></span><span class="sig-name descname"><span class="pre">ScalarSequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/summary/#ScalarSequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.summary.ScalarSequence" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Create a record for storing a list of scalar values e.g. losses/metrics</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the name of that record</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="finetuner.tuner.callback.base.BaseCallback">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.callback.base.</span></span><span class="sig-name descname"><span class="pre">BaseCallback</span></span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/base/#BaseCallback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.base.BaseCallback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>The base callback class.</p>
+<p>This class defines the different callback methods that can be overriden, however
+there is no method that the subclass would be required to override.</p>
+<p>The callback instance should be passed to the tuner in the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method, in a list
+that contains all callbacks and is passed to the <code class="docutils literal notranslate"><span class="pre">callbacks</span></code> argument.</p>
+<p>All methods receive the tuner instance to which the callback has been added as an
+argument. The most relevant property of the tuner instance is the <code class="docutils literal notranslate"><span class="pre">state</span></code>, which
+is an instance of <code class="docutils literal notranslate"><span class="pre">TunerState</span></code> and contains relevant training statistics, such as
+current loss, epoch number, number of batches and batch number.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.summary.ScalarSequence.floats">
-<span class="sig-name descname"><span class="pre">floats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/summary/#ScalarSequence.floats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.summary.ScalarSequence.floats" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all numbers as a list of Python native float</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">number</span></code>]]</p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.summary.Summary">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.summary.</span></span><span class="sig-name descname"><span class="pre">Summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">records</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/summary/#Summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.summary.Summary" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Create a collection of summaries.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.summary.Summary.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/summary/#Summary.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.summary.Summary.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Store all summary into a JSON file</p>
+<dt class="sig sig-object py" id="finetuner.tuner.callback.base.BaseCallback.on_fit_begin">
+<span class="sig-name descname"><span class="pre">on_fit_begin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/base/#BaseCallback.on_fit_begin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.base.BaseCallback.on_fit_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the start of the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method call, after all setup has been done,
+but before the training has started.</p>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.summary.Summary.dict">
-<span class="sig-name descname"><span class="pre">dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/summary/#Summary.dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.summary.Summary.dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all summaries as a Dictionary, where key is the name and value is the record</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">number</span></code>]]]</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="finetuner.tuner.callback.base.BaseCallback.on_epoch_begin">
+<span class="sig-name descname"><span class="pre">on_epoch_begin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/base/#BaseCallback.on_epoch_begin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.base.BaseCallback.on_epoch_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the start of an epoch.</p>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.summary.Summary.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_plot_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/summary/#Summary.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.summary.Summary.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot all records in the summary into one plot.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This function requires <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> to be installed.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>output</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Optional path to store the visualization. If not given, show in UI</p></li>
-<li><p><strong>max_plot_points</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of points to plot. When the actual number of plots is larger than
-given number, then a linspace sampling is conducted first to get the actual number of points for plotting.</p></li>
-<li><p><strong>kwargs</strong> – extra kwargs pass to matplotlib.plot</p></li>
-</ul>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="finetuner.tuner.callback.base.BaseCallback.on_train_epoch_begin">
+<span class="sig-name descname"><span class="pre">on_train_epoch_begin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/base/#BaseCallback.on_train_epoch_begin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.base.BaseCallback.on_train_epoch_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the begining of training part of the epoch.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.callback.base.BaseCallback.on_train_batch_begin">
+<span class="sig-name descname"><span class="pre">on_train_batch_begin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/base/#BaseCallback.on_train_batch_begin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.base.BaseCallback.on_train_batch_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the start of a training batch, after the data for the batch has
+already been loaded.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.callback.base.BaseCallback.on_train_batch_end">
+<span class="sig-name descname"><span class="pre">on_train_batch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/base/#BaseCallback.on_train_batch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.base.BaseCallback.on_train_batch_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the end of a training batch, after the backward pass.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.callback.base.BaseCallback.on_train_epoch_end">
+<span class="sig-name descname"><span class="pre">on_train_epoch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/base/#BaseCallback.on_train_epoch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.base.BaseCallback.on_train_epoch_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the end of training part of the epoch.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.callback.base.BaseCallback.on_val_begin">
+<span class="sig-name descname"><span class="pre">on_val_begin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/base/#BaseCallback.on_val_begin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.base.BaseCallback.on_val_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the start of the evaluation.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.callback.base.BaseCallback.on_val_batch_begin">
+<span class="sig-name descname"><span class="pre">on_val_batch_begin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/base/#BaseCallback.on_val_batch_begin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.base.BaseCallback.on_val_batch_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the start of the evaluation.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.callback.base.BaseCallback.on_val_batch_end">
+<span class="sig-name descname"><span class="pre">on_val_batch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/base/#BaseCallback.on_val_batch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.base.BaseCallback.on_val_batch_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the start of the evaluation batch, after the batch data has already
+been loaded.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.callback.base.BaseCallback.on_val_end">
+<span class="sig-name descname"><span class="pre">on_val_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/base/#BaseCallback.on_val_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.base.BaseCallback.on_val_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the end of the evaluation batch.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.callback.base.BaseCallback.on_epoch_end">
+<span class="sig-name descname"><span class="pre">on_epoch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/base/#BaseCallback.on_epoch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.base.BaseCallback.on_epoch_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the end of an epoch, after both training and validation (or just
+training if no validaton is provided).</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.callback.base.BaseCallback.on_fit_end">
+<span class="sig-name descname"><span class="pre">on_fit_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/base/#BaseCallback.on_fit_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.base.BaseCallback.on_fit_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the end of the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method call, after finishing all the epochs.</p>
 </dd></dl>
 </dd></dl>
 </section>
@@ -451,18 +467,18 @@ given number, then a linspace sampling is conducted first to get the actual numb
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../finetuner.embedding/">
+                    <a class="next-page" href="../finetuner.tuner.callback.progress_bar/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">finetuner.embedding module</div>
+                            <div class="title">finetuner.tuner.callback.progress_bar module</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../finetuner.tuner.base/">
+                    <a class="prev-page" href="../finetuner.tuner.callback/">
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -471,7 +487,7 @@ given number, then a linspace sampling is conducted first to get the actual numb
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">finetuner.tuner.base module</div>
+                            <div class="title">finetuner.tuner.callback package</div>
                             
                         </div>
                     </a>

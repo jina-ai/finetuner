@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.tuner.html" />
   <meta property="og:site_name" content="Finetuner 0.2.5 Documentation" />
-  <meta property="og:description" content="Subpackages: finetuner.tuner.dataset package- Submodules- finetuner.tuner.dataset.base module, finetuner.tuner.dataset.datasets module, finetuner.tuner.dataset.samplers module., Module contents., finetuner.tuner.keras package- Submodules- finetuner.tuner.keras.data module, finetuner.tuner.keras.l..." />
+  <meta property="og:description" content="Subpackages: finetuner.tuner.callback package- Submodules- finetuner.tuner.callback.base module, finetuner.tuner.callback.progress_bar module., Module contents., finetuner.tuner.dataset package- Submodules- finetuner.tuner.dataset.base module, finetuner.tuner.dataset.datasets module, finetuner.tu..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner 0.2.5 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -28,7 +28,7 @@
 </script>
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.dataset package" href="../finetuner.tuner.dataset/" /><link rel="prev" title="finetuner.tailor.base module" href="../finetuner.tailor.base/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.callback package" href="../finetuner.tuner.callback/" /><link rel="prev" title="finetuner.tailor.base module" href="../finetuner.tailor.base/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.0, furo 2021.11.23"/>
         <title>finetuner.tuner package - Finetuner 0.2.5 documentation</title>
@@ -288,36 +288,41 @@
 </ul>
 </li>
 <li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">finetuner.tuner package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.callback/">finetuner.tuner.callback package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.keras.data/">finetuner.tuner.keras.data module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.keras.losses/">finetuner.tuner.keras.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.keras.miner/">finetuner.tuner.keras.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.miner.base/">finetuner.tuner.miner.base module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.miner/">finetuner.tuner.paddle.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.pytorch.datasets/">finetuner.tuner.pytorch.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.pytorch.losses/">finetuner.tuner.pytorch.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.pytorch.miner/">finetuner.tuner.pytorch.miner module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.base/">finetuner.tuner.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.state/">finetuner.tuner.state module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.embedding/">finetuner.embedding module</a></li>
@@ -383,6 +388,15 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../finetuner.tuner.callback/">finetuner.tuner.callback package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.tuner.callback/#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.tuner.callback/#module-finetuner.tuner.callback">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.tuner.dataset/#submodules">Submodules</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
@@ -439,7 +453,7 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../finetuner.tuner.base/">finetuner.tuner.base module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../finetuner.tuner.state/">finetuner.tuner.state module</a></li>
 </ul>
 </div>
 </section>
@@ -480,9 +494,6 @@ Adam optimizer is used by default, with learning rate specified by the
 <code class="docutils literal notranslate"><span class="pre">"cpu"</span></code> and <code class="docutils literal notranslate"><span class="pre">"cuda"</span></code> (for GPU)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../finetuner.tuner.summary/#finetuner.tuner.summary.Summary" title="finetuner.tuner.summary.Summary">Summary</a></p>
-</dd>
 </dl>
 </dd></dl>
 <dl class="py function">
@@ -511,12 +522,12 @@ method</p></li>
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../finetuner.tuner.dataset/">
+                    <a class="next-page" href="../finetuner.tuner.callback/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">finetuner.tuner.dataset package</div>
+                            <div class="title">finetuner.tuner.callback package</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
