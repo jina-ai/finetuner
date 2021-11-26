@@ -78,22 +78,21 @@ class Evaluator:
         """
         Convert the evaluation docs to the internal representation used by the Evaluator
         """
-        to_be_scored_docs = DocumentArray()
+        summmary_docs = DocumentArray()
         for doc in self._eval_data:
             relevancies = [
-                (m.id, m.tags[__default_tag_key__]['label'])
+                (m.id, m.tags[__default_tag_key__])
                 for m in doc.matches
-                if m.tags[__default_tag_key__]['label'] > 0
+                if m.tags[__default_tag_key__] > 0
             ]
-            sorted_relevancies = sorted(relevancies, key=lambda x: x[1])
-
-            d = Document(
+            relevancies = sorted(relevancies, key=lambda x: x[1])
+            summmary_doc = Document(
                 id=doc.id,
-                tags={__default_tag_key__: {'targets': dict(sorted_relevancies)}},
+                tags={__default_tag_key__: {'targets': dict(relevancies)}},
             )
-            to_be_scored_docs.append(d)
+            summmary_docs.append(summmary_doc)
 
-        return to_be_scored_docs
+        return summmary_docs
 
     def _score_docs(self) -> None:
         """
@@ -155,6 +154,7 @@ class Evaluator:
                 # write value to doc
                 if label not in self._eval_data[doc.id].tags[__default_tag_key__]:
                     self._eval_data[doc.id].tags[__default_tag_key__][label] = {}
+
                 self._eval_data[doc.id].tags[__default_tag_key__][label][name] = value
 
         # get the metric averages

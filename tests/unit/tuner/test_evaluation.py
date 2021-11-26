@@ -36,7 +36,7 @@ def eval_data():
         doc = Document(
             id=str(i),
             blob=np.array([i]),
-            matches=[Document(id=str(i), tags={__default_tag_key__: {'label': 1}})],
+            matches=[Document(id=str(i), tags={__default_tag_key__: 1})],
         )
         data.append(doc)
     return data
