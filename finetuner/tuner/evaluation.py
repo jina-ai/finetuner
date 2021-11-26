@@ -15,7 +15,6 @@ class Evaluator:
         eval_data: 'DocumentSequence',
         catalog: 'DocumentSequence',
         embed_model: Optional['AnyDNN'] = None,
-        metrics: Optional[List[str]] = None,
         distance_metric: str = 'cosine',
         limit: int = 20,
     ):
@@ -26,21 +25,11 @@ class Evaluator:
             ``doc.matches`` and relevance scores under ``doc.tags[__default_tag_key__]['label']``
         :param catalog: a sequence of documents, against whist the eval docs will be matched.
         :param embed_model: the embedding model to use, in order to extract document representations.
-        :param metrics: an optional list of str identifiers specifying the metrics that will be computed. If
-            ``None`` is given, all available metrics will be calculated.
         :param distance_metric: which distance metric to use when matching documents
         :param limit: limit the number of results during matching.
         :return: None.
         """
-        if metrics:
-            self._metrics = {}
-            for metric in metrics:
-                if metric not in METRICS:
-                    raise ValueError(f"Unknown metric '{metric}'")
-                self._metrics[metric] = METRICS[metric]
-        else:
-            self._metrics = METRICS
-
+        self._metrics = METRICS
         self._embed_model = embed_model
         self._eval_data = eval_data
         self._catalog = catalog
