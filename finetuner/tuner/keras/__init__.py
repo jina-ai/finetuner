@@ -104,6 +104,8 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
+        optimizer: Optional[Optimizer] = None,
+        learning_rate: float = 1e-3,
         device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
@@ -122,6 +124,11 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
         :param batch_size: The batch size to use for training and evaluation
         :param num_items_per_class: Number of items from a single class to include in
             the batch. Only relevant for class datasets
+        :param optimizer: The optimizer to use for training. If none is passed, an
+            Adam optimizer is used by default, with learning rate specified by the
+            ``learning_rate`` parameter.
+        :param learning_rate: Learning rate for the default optimizer. If you
+            provide a custom optimizer, this learning rate will not apply.
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
         """
@@ -145,6 +152,10 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
                 collate_fn=collate_fn,
             )
 
+        # Create optimizer
+        self._optimizer = optimizer or self._get_default_optimizer(learning_rate)
+
+        # Set state
         self.state = TunerState(num_epochs=epochs)
         self._trigger_callbacks('on_fit_begin')
 
@@ -154,6 +165,7 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
                 # Setting here as re-shuffling can change number of batches
                 self.state.epoch = epoch
                 self.state.num_batches_train = train_dl.get_size()
+                self.state.batch_index = 0
 
                 self._trigger_callbacks('on_epoch_begin')
 
@@ -163,6 +175,8 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
 
                 if eval_data:
                     self.state.num_batches_val = eval_dl.get_size()
+                    self.state.batch_index = 0
+
                     self._trigger_callbacks('on_val_begin')
                     self._eval(eval_dl)
                     self._trigger_callbacks('on_val_end')

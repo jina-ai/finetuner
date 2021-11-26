@@ -50,8 +50,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         self,
         embed_model: Optional[AnyDNN] = None,
         loss: Union[BaseLoss, str] = 'SiameseLoss',
-        optimizer: Optional[AnyOptimizer] = None,
-        learning_rate: float = 1e-3,
         callbacks: Optional[List[BaseCallback]] = None,
         **kwargs,
     ):
@@ -60,17 +58,11 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         :param embed_model: Model that produces embeddings from inputs
         :param loss: Either the loss object instance, or the name of the loss function.
             Currently available losses are ``SiameseLoss`` and ``TripletLoss``
-        :param optimizer: The optimizer to use for training. If none is passed, an
-            Adam optimizer is used by default, with learning rate specified by the
-            ``learning_rate`` parameter.
-        :param learning_rate: Learning rate for the default optimizer. If you
-            provide a custom optimizer, this learning rate will not apply.
         :param callbacks: A list of callbacks. The progress bar callback
             will be pre-prended to this list.
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
-        self._optimizer = optimizer or self._get_default_optimizer(learning_rate)
 
         callbacks = callbacks or []
         self._callbacks = [ProgressBarCallback()] + callbacks

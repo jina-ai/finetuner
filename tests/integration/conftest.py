@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 from finetuner import __default_tag_key__
+from finetuner.tuner.callback.base import BaseCallback
 from jina import Document, DocumentArray
 
 
@@ -106,3 +107,104 @@ def create_easy_data_session():
         return triplets, rand_vecs
 
     return create_easy_data_fn
+
+
+class RecordCallback(BaseCallback):
+    def __init__(self):
+        self.calls = []
+        self.epochs = []
+        self.batch_idx = []
+        self.num_epochs = []
+        self.num_batches_train = []
+        self.num_batches_val = []
+
+    def _record(self, tuner):
+        self.epochs.append(tuner.state.epoch)
+        self.batch_idx.append(tuner.state.batch_index)
+        self.num_epochs.append(tuner.state.num_epochs)
+        self.num_batches_train.append(tuner.state.num_batches_train)
+        self.num_batches_val.append(tuner.state.num_batches_val)
+
+    def on_fit_begin(self, tuner):
+        self.calls.append('on_fit_begin')
+        self._record(tuner)
+
+    def on_epoch_begin(self, tuner):
+        self.calls.append('on_epoch_begin')
+        self._record(tuner)
+
+    def on_train_begin(self, tuner):
+        self.calls.append('on_train_begin')
+        self._record(tuner)
+
+    def on_train_batch_begin(self, tuner):
+        self.calls.append('on_train_batch_begin')
+        self._record(tuner)
+
+    def on_train_batch_end(self, tuner):
+        self.calls.append('on_train_batch_end')
+        self._record(tuner)
+
+    def on_train_end(self, tuner):
+        self.calls.append('on_train_end')
+        self._record(tuner)
+
+    def on_val_begin(self, tuner):
+        self.calls.append('on_val_begin')
+        self._record(tuner)
+
+    def on_val_batch_begin(self, tuner):
+        self.calls.append('on_val_batch_begin')
+        self._record(tuner)
+
+    def on_val_batch_end(self, tuner):
+        self.calls.append('on_val_batch_end')
+        self._record(tuner)
+
+    def on_val_end(self, tuner):
+        self.calls.append('on_val_end')
+        self._record(tuner)
+
+    def on_epoch_end(self, tuner):
+        self.calls.append('on_epoch_end')
+        self._record(tuner)
+
+    def on_fit_end(self, tuner):
+        self.calls.append('on_fit_end')
+        self._record(tuner)
+
+
+@pytest.fixture
+def expected_results():
+    """
+    Expected results (calls, epochs, batches, number of epochs and number of batches
+    for train and eval) when doing 2 epochs, with 2 train and 1 eval batch
+    """
+    return [
+        ('on_fit_begin', 0, 0, 2, 0, 0),
+        ('on_epoch_begin', 0, 0, 2, 2, 0),
+        ('on_train_begin', 0, 0, 2, 2, 0),
+        ('on_train_batch_begin', 0, 0, 2, 2, 0),
+        ('on_train_batch_end', 0, 0, 2, 2, 0),
+        ('on_train_batch_begin', 0, 1, 2, 2, 0),
+        ('on_train_batch_end', 0, 1, 2, 2, 0),
+        ('on_train_end', 0, 1, 2, 2, 0),
+        ('on_val_begin', 0, 0, 2, 2, 1),
+        ('on_val_batch_begin', 0, 0, 2, 2, 1),
+        ('on_val_batch_end', 0, 0, 2, 2, 1),
+        ('on_val_end', 0, 0, 2, 2, 1),
+        ('on_epoch_end', 0, 0, 2, 2, 1),
+        ('on_epoch_begin', 1, 0, 2, 2, 1),
+        ('on_train_begin', 1, 0, 2, 2, 1),
+        ('on_train_batch_begin', 1, 0, 2, 2, 1),
+        ('on_train_batch_end', 1, 0, 2, 2, 1),
+        ('on_train_batch_begin', 1, 1, 2, 2, 1),
+        ('on_train_batch_end', 1, 1, 2, 2, 1),
+        ('on_train_end', 1, 1, 2, 2, 1),
+        ('on_val_begin', 1, 0, 2, 2, 1),
+        ('on_val_batch_begin', 1, 0, 2, 2, 1),
+        ('on_val_batch_end', 1, 0, 2, 2, 1),
+        ('on_val_end', 1, 0, 2, 2, 1),
+        ('on_epoch_end', 1, 0, 2, 2, 1),
+        ('on_fit_end', 1, 0, 2, 2, 1),
+    ]
