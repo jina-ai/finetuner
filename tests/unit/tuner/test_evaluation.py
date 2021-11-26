@@ -50,12 +50,12 @@ def catalog():
     )
 
 
-def test__parse_eval_docs(embed_model, eval_data, catalog):
+def test_parse_eval_docs(embed_model, eval_data, catalog):
     """
     Test the evaluator when the matching limit is set 1. We expect all metrics == 1.0
     """
     evaluator = Evaluator(
-        eval_data, catalog, embed_model, limit=1, distance_metric='euclidean'
+        eval_data, catalog, embed_model, limit=1, distance='euclidean'
     )
     to_be_scored_docs = evaluator._parse_eval_docs()
     for eval_doc, to_be_scored_doc in zip(eval_data, to_be_scored_docs):
@@ -85,7 +85,7 @@ def test_evaluator_perfect_scores(embed_model, eval_data, catalog):
     Test the evaluator when the matching limit is set 1. We expect all metrics == 1.0
     """
     evaluator = Evaluator(
-        eval_data, catalog, embed_model, limit=1, distance_metric='euclidean'
+        eval_data, catalog, embed_model, limit=1, distance='euclidean'
     )
     metrics = evaluator.evaluate(label='foo')
     for _, v in metrics.items():
@@ -101,7 +101,7 @@ def test_evaluator_half_precision(embed_model, eval_data, catalog):
     precision == 0.5 and f1score == 2/3
     """
     evaluator = Evaluator(
-        eval_data, catalog, embed_model, limit=2, distance_metric='euclidean'
+        eval_data, catalog, embed_model, limit=2, distance='euclidean'
     )
     metrics = evaluator.evaluate(label='foo')
     for k, v in metrics.items():

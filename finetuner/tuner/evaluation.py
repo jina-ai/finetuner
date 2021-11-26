@@ -38,25 +38,26 @@ class Evaluator:
         eval_data: 'DocumentSequence',
         catalog: 'DocumentSequence',
         embed_model: Optional['AnyDNN'] = None,
-        distance_metric: str = 'cosine',
+        distance: str = 'cosine',
         limit: int = 20,
     ):
         """
         Build an Evaluator object that can be used to evaluate an embedding model on a retrieval task
 
-        :param eval_data: a sequence of documents. Each document should contain ground truth matches under
+        :param eval_data: A sequence of documents. Each document should contain ground truth matches under
             ``doc.matches`` and relevance scores under ``doc.tags[__default_tag_key__]['label']``
-        :param catalog: a sequence of documents, against whist the eval docs will be matched.
-        :param embed_model: the embedding model to use, in order to extract document representations.
-        :param distance_metric: which distance metric to use when matching documents
-        :param limit: limit the number of results during matching.
+        :param catalog: A sequence of documents, against which the eval docs will be matched.
+        :param embed_model: The embedding model to use, in order to extract document representations.
+        :param distance: The type of distance to use when matching docs, avalilable options are
+            ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``
+        :param limit: Limit the number of results during matching.
         :return: None.
         """
         self._embed_model = embed_model
         self._eval_data = eval_data
         self._catalog = catalog
         self._summary_docs = self._parse_eval_docs()
-        self._distance_metric = distance_metric
+        self._distance = distance
         self._limit = limit
 
     @staticmethod
@@ -66,7 +67,7 @@ class Evaluator:
         :param doc: A Jina document. The matched document identifiers, predicted by the search system, are expected to
             be under ``doc.matches``. The expected documents identifiers along with the relevance scores, given by the
             user as matching ground truth, should be under ``doc.tags[finetuner.__default_tag_key__]['targets']``.
-        :return: the relevance vector and the total number of relevant documents.
+        :return: The relevance vector and the total number of relevant documents.
         """
         targets: Dict[str, int] = doc.tags[__default_tag_key__]['targets']
         return [
@@ -108,7 +109,7 @@ class Evaluator:
             doc.matches.clear()
 
         self._summary_docs.match(
-            self._catalog, limit=self._limit, metric=self._distance_metric
+            self._catalog, limit=self._limit, metric=self._distance
         )
 
     def _get_mean_metrics(self, label: str = 'metrics') -> Dict[str, float]:
