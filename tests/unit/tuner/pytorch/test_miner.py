@@ -5,6 +5,7 @@ import torch
 from finetuner.tuner.pytorch.miner import (
     SiameseMiner,
     TripletMiner,
+    TripletEasyHardMiner,
     SiameseSessionMiner,
     TripletSessionMiner,
 )
@@ -95,6 +96,45 @@ def test_triplet_miner(labels):
     )
     true_anch_ind, true_pos_ind, true_neg_ind = triplets.T
     anch_ind, pos_ind, neg_ind = TripletMiner().mine(labels, fake_dists(len(labels)))
+
+    np.testing.assert_equal(anch_ind.numpy(), true_anch_ind)
+    np.testing.assert_equal(pos_ind.numpy(), true_pos_ind)
+    np.testing.assert_equal(neg_ind.numpy(), true_neg_ind)
+
+
+def test_triplet_easy_hard_miner(labels):
+    triplets = np.array(
+        [
+            (0, 2, 1),
+            (0, 2, 3),
+            (0, 2, 4),
+            (0, 2, 5),
+            (1, 3, 0),
+            (1, 3, 2),
+            (1, 3, 4),
+            (1, 3, 5),
+            (2, 0, 1),
+            (2, 0, 3),
+            (2, 0, 4),
+            (2, 0, 5),
+            (3, 1, 0),
+            (3, 1, 2),
+            (3, 1, 4),
+            (3, 1, 5),
+            (4, 5, 0),
+            (4, 5, 1),
+            (4, 5, 2),
+            (4, 5, 3),
+            (5, 4, 0),
+            (5, 4, 1),
+            (5, 4, 2),
+            (5, 4, 3),
+        ]
+    )
+    true_anch_ind, true_pos_ind, true_neg_ind = triplets.T
+    anch_ind, pos_ind, neg_ind = TripletEasyHardMiner(neg_strategy="semihard").mine(
+        labels, fake_dists(len(labels))
+    )
 
     np.testing.assert_equal(anch_ind.numpy(), true_anch_ind)
     np.testing.assert_equal(pos_ind.numpy(), true_pos_ind)
