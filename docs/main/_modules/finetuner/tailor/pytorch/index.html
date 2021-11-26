@@ -356,7 +356,7 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
@@ -490,6 +490,7 @@
         <span class="n">layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">freeze_layers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'AnyDNN'</span><span class="p">:</span>
         <span class="sd">"""Convert a general model from :py:attr:`.model` to an embedding model.</span>
 
@@ -497,14 +498,14 @@
 <span class="sd">            will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.</span>
 <span class="sd">            To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.</span>
 <span class="sd">        :param output_dim: the dimensionality of the embedding output.</span>
-<span class="sd">        :param freeze: if set, then freeze all weights of the original model.</span>
+<span class="sd">        :param freeze: if set, then freeze weights of a model. If :py:attr:`freeze_layers` is defined, only freeze layers in :py:attr:`freeze_layers`.</span>
+<span class="sd">        :param freeze_layers: if set, then freeze specific layers.</span>
 <span class="sd">        :return: Converted embedding model.</span>
 <span class="sd">        """</span>
 
         <span class="n">model</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">)</span>
-
+        <span class="n">_all_embed_layers</span> <span class="o">=</span> <span class="p">{</span><span class="n">l</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]:</span> <span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layers</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">layer_name</span><span class="p">:</span>
-            <span class="n">_all_embed_layers</span> <span class="o">=</span> <span class="p">{</span><span class="n">l</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]:</span> <span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layers</span><span class="p">}</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">_embed_layer</span> <span class="o">=</span> <span class="n">_all_embed_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -515,7 +516,13 @@
             <span class="c1"># when not given, using the last layer</span>
             <span class="n">_embed_layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">freeze</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">freeze</span> <span class="ow">and</span> <span class="n">freeze_layers</span><span class="p">:</span>
+            <span class="c1"># freeze specific layers defined in `freeze_layers`</span>
+            <span class="k">for</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">_all_embed_layers</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">freeze_layers</span><span class="p">:</span>
+                    <span class="n">param</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">freeze</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">freeze_layers</span><span class="p">:</span>
+            <span class="c1"># freeze all layers</span>
             <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
                 <span class="n">param</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -590,7 +597,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 24, 2021.
+                    Last updated on Nov 26, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
