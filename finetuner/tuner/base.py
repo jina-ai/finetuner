@@ -112,6 +112,8 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
+        optimizer: Optional[AnyOptimizer] = None,
+        learning_rate: float = 1e-3,
         device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
@@ -131,6 +133,11 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         :param batch_size: The batch size to use for training and evaluation
         :param num_items_per_class: Number of items from a single class to include in
             the batch. Only relevant for class datasets
+        :param optimizer: The optimizer to use for training. If none is passed, an
+            Adam optimizer is used by default, with learning rate specified by the
+            ``learning_rate`` parameter.
+        :param learning_rate: Learning rate for the default optimizer. If you
+            provide a custom optimizer, this learning rate will not apply.
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
         """
