@@ -69,7 +69,7 @@ class ProgressBarCallback(BaseCallback):
         self.train_pbar_id = self.pbar.add_task('Training', visible=False, start=False)
         self.eval_pbar_id = self.pbar.add_task('Evaluating', visible=False, start=False)
 
-    def on_train_begin(self, tuner: 'BaseTuner'):
+    def on_train_epoch_begin(self, tuner: 'BaseTuner'):
         """
         Called at the begining of training part of the epoch.
         """

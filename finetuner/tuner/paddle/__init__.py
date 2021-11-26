@@ -196,9 +196,9 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
 
             self._trigger_callbacks('on_epoch_begin')
 
-            self._trigger_callbacks('on_train_begin')
+            self._trigger_callbacks('on_train_epoch_begin')
             self._train(train_dl)
-            self._trigger_callbacks('on_train_end')
+            self._trigger_callbacks('on_train_epoch_end')
 
             if eval_data:
                 self.state.num_batches_val = len(eval_dl)

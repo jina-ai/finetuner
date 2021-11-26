@@ -31,7 +31,7 @@ class BaseCallback(ABC):
         Called at the start of an epoch.
         """
 
-    def on_train_begin(self, tuner: 'BaseTuner'):
+    def on_train_epoch_begin(self, tuner: 'BaseTuner'):
         """
         Called at the begining of training part of the epoch.
         """
@@ -47,7 +47,7 @@ class BaseCallback(ABC):
         Called at the end of a training batch, after the backward pass.
         """
 
-    def on_train_end(self, tuner: 'BaseTuner'):
+    def on_train_epoch_end(self, tuner: 'BaseTuner'):
         """
         Called at the end of training part of the epoch.
         """

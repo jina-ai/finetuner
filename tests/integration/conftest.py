@@ -133,8 +133,8 @@ class RecordCallback(BaseCallback):
         self.calls.append('on_epoch_begin')
         self._record(tuner)
 
-    def on_train_begin(self, tuner):
-        self.calls.append('on_train_begin')
+    def on_train_epoch_begin(self, tuner):
+        self.calls.append('on_train_epoch_begin')
         self._record(tuner)
 
     def on_train_batch_begin(self, tuner):
@@ -145,8 +145,8 @@ class RecordCallback(BaseCallback):
         self.calls.append('on_train_batch_end')
         self._record(tuner)
 
-    def on_train_end(self, tuner):
-        self.calls.append('on_train_end')
+    def on_train_epoch_end(self, tuner):
+        self.calls.append('on_train_epoch_end')
         self._record(tuner)
 
     def on_val_begin(self, tuner):
@@ -183,24 +183,24 @@ def expected_results():
     return [
         ('on_fit_begin', 0, 0, 2, 0, 0),
         ('on_epoch_begin', 0, 0, 2, 2, 0),
-        ('on_train_begin', 0, 0, 2, 2, 0),
+        ('on_train_epoch_begin', 0, 0, 2, 2, 0),
         ('on_train_batch_begin', 0, 0, 2, 2, 0),
         ('on_train_batch_end', 0, 0, 2, 2, 0),
         ('on_train_batch_begin', 0, 1, 2, 2, 0),
         ('on_train_batch_end', 0, 1, 2, 2, 0),
-        ('on_train_end', 0, 1, 2, 2, 0),
+        ('on_train_epoch_end', 0, 1, 2, 2, 0),
         ('on_val_begin', 0, 0, 2, 2, 1),
         ('on_val_batch_begin', 0, 0, 2, 2, 1),
         ('on_val_batch_end', 0, 0, 2, 2, 1),
         ('on_val_end', 0, 0, 2, 2, 1),
         ('on_epoch_end', 0, 0, 2, 2, 1),
         ('on_epoch_begin', 1, 0, 2, 2, 1),
-        ('on_train_begin', 1, 0, 2, 2, 1),
+        ('on_train_epoch_begin', 1, 0, 2, 2, 1),
         ('on_train_batch_begin', 1, 0, 2, 2, 1),
         ('on_train_batch_end', 1, 0, 2, 2, 1),
         ('on_train_batch_begin', 1, 1, 2, 2, 1),
         ('on_train_batch_end', 1, 1, 2, 2, 1),
-        ('on_train_end', 1, 1, 2, 2, 1),
+        ('on_train_epoch_end', 1, 1, 2, 2, 1),
         ('on_val_begin', 1, 0, 2, 2, 1),
         ('on_val_batch_begin', 1, 0, 2, 2, 1),
         ('on_val_batch_end', 1, 0, 2, 2, 1),
