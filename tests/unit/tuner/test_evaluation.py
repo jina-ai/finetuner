@@ -4,7 +4,7 @@ import numpy as np
 
 from jina import Document, DocumentArray
 from finetuner import __default_tag_key__
-from finetuner.tuner.metrics import METRICS
+from finetuner.tuner.evaluation import METRICS
 from finetuner.tuner.evaluation import Evaluator
 
 

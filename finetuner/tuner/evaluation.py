@@ -1,12 +1,35 @@
-from typing import TYPE_CHECKING, Optional, List, Dict
+from typing import TYPE_CHECKING, Optional, List, Dict, Tuple
 from jina import Document, DocumentArray
+from jina.math.evaluation import (
+    r_precision,
+    precision_at_k,
+    recall_at_k,
+    f1_score_at_k,
+    hit_at_k,
+    average_precision,
+    reciprocal_rank,
+    dcg_at_k,
+    ndcg_at_k,
+)
 
-from .metrics import METRICS
 from .. import __default_tag_key__
 from ..embedding import embed
 
 if TYPE_CHECKING:
     from ..helper import AnyDNN, DocumentSequence
+
+
+METRICS = {
+    "r_precision": r_precision,
+    "precision": precision_at_k,
+    "recall": recall_at_k,
+    "f1score": f1_score_at_k,
+    "average_precision": average_precision,
+    "hit": hit_at_k,
+    "reciprocal_rank": reciprocal_rank,
+    "dcg": dcg_at_k,
+    "ndcg": ndcg_at_k,
+}
 
 
 class Evaluator:
@@ -29,13 +52,26 @@ class Evaluator:
         :param limit: limit the number of results during matching.
         :return: None.
         """
-        self._metrics = METRICS
         self._embed_model = embed_model
         self._eval_data = eval_data
         self._catalog = catalog
         self._summary_docs = self._parse_eval_docs()
         self._distance_metric = distance_metric
         self._limit = limit
+
+    @staticmethod
+    def _doc_to_relevance(doc: Document) -> Tuple[List[int], int]:
+        """
+        Convert a Jina document to a relevance representation
+        :param doc: A Jina document. The matched document identifiers, predicted by the search system, are expected to
+            be under ``doc.matches``. The expected documents identifiers along with the relevance scores, given by the
+            user as matching ground truth, should be under ``doc.tags[finetuner.__default_tag_key__]['targets']``.
+        :return: the relevance vector and the total number of relevant documents.
+        """
+        targets: Dict[str, int] = doc.tags[__default_tag_key__]['targets']
+        return [
+            targets[match.id] if match.id in targets else 0 for match in doc.matches
+        ], len(targets)
 
     def _parse_eval_docs(self) -> DocumentArray:
         """
@@ -80,7 +116,7 @@ class Evaluator:
         Compute the mean metric values across the evaluation docs
         """
         means = {}
-        for name, _ in self._metrics.items():
+        for name, _ in METRICS.items():
             values = [
                 self._eval_data[doc.id].tags[__default_tag_key__][label][name]
                 for doc in self._summary_docs
@@ -108,10 +144,13 @@ class Evaluator:
         # iterate through the available metrics
         # for each metric iterate through the docs, calculate the metric and write the result
         # to the doc
-        for name, func in self._metrics.items():
+        for name, func in METRICS.items():
             for doc in self._summary_docs:
+                rel, max_rel = self._doc_to_relevance(doc)
                 # compute metric value
-                value = func(doc)
+                value = (
+                    func(rel, max_rel) if name in ["recall", "f1score"] else func(rel)
+                )
                 # write value to doc
                 if label not in self._eval_data[doc.id].tags[__default_tag_key__]:
                     self._eval_data[doc.id].tags[__default_tag_key__][label] = {}
