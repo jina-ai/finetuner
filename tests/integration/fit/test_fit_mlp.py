@@ -38,7 +38,7 @@ def test_fit_all(tmpdir, loss):
     }
 
     for kb, b in embed_models.items():
-        model, result = finetuner.fit(
+        model = finetuner.fit(
             b(),
             loss=loss,
             train_data=generate_fashion(num_total=200),
@@ -47,4 +47,3 @@ def test_fit_all(tmpdir, loss):
             epochs=2,
         )
         assert model
-        result.save(tmpdir / f'result-{kb}-{loss}.json')

@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence, Union
 
 import torch
-from jina.logging.profile import ProgressBar
 from torch import nn
 from torch.optim.optimizer import Optimizer
 from torch.utils.data._utils.collate import default_collate
@@ -10,7 +9,7 @@ from torch.utils.data.dataloader import DataLoader
 from . import losses
 from .datasets import PytorchClassDataset, PytorchSessionDataset
 from ..base import BaseTuner
-from ..summary import ScalarSequence, Summary
+from ..state import TunerState
 from ... import __default_tag_key__
 
 if TYPE_CHECKING:
@@ -80,68 +79,47 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
         return torch.optim.Adam(self._embed_model.parameters(), lr=learning_rate)
 
-    def _eval(
-        self,
-        data: DataLoader,
-        description: str = 'Evaluating',
-        train_loss: Optional[ScalarSequence] = None,
-    ) -> ScalarSequence:
+    def _eval(self, data: DataLoader):
         """Evaluate the model on given labeled data"""
 
         self._embed_model.eval()
 
-        _summary = ScalarSequence('Eval Loss')
+        for idx, (inputs, labels) in enumerate(data):
+            self.state.batch_index = idx
+            self._trigger_callbacks('on_val_batch_begin')
 
-        with ProgressBar(
-            description,
-            message_on_done=lambda: f'{train_loss} | {_summary}',
-            total_length=len(data),
-        ) as p:
-            for inputs, labels in data:
-                inputs = _to_device(inputs, self.device)
-                labels = _to_device(labels, self.device)
+            inputs = _to_device(inputs, self.device)
+            labels = _to_device(labels, self.device)
 
-                # Can not use inference mode due to (when having too many triplets)
-                # https://github.com/pytorch/pytorch/issues/60539
-                with torch.no_grad():
-                    embeddings = self.embed_model(inputs)
-                    loss = self._loss(embeddings, labels)
+            with torch.no_grad():
+                embeddings = self.embed_model(inputs)
+                loss = self._loss(embeddings, labels)
 
-                _summary += loss.item()
+            self.state.current_loss = loss.item()
+            self._trigger_callbacks('on_val_batch_end')
 
-                p.update(message=str(_summary))
-
-        return _summary
-
-    def _train(
-        self, data: DataLoader, optimizer: Optimizer, description: str
-    ) -> ScalarSequence:
+    def _train(self, data: DataLoader):
         """Train the model on given labeled data"""
 
         self._embed_model.train()
 
-        _summary = ScalarSequence('Train Loss')
-        with ProgressBar(
-            description,
-            message_on_done=_summary.__str__,
-            final_line_feed=False,
-            total_length=len(data),
-        ) as p:
-            for inputs, labels in data:
-                inputs = _to_device(inputs, self.device)
-                labels = _to_device(labels, self.device)
+        for idx, (inputs, labels) in enumerate(data):
+            self.state.batch_index = idx
+            self._trigger_callbacks('on_train_batch_begin')
 
-                embeddings = self.embed_model(inputs)
-                loss = self._loss(embeddings, labels)
+            inputs = _to_device(inputs, self.device)
+            labels = _to_device(labels, self.device)
 
-                optimizer.zero_grad()
-                loss.backward()
-                optimizer.step()
+            embeddings = self.embed_model(inputs)
+            loss = self._loss(embeddings, labels)
 
-                _summary += loss.item()
-                p.update(message=str(_summary))
+            self._optimizer.zero_grad()
+            loss.backward()
+            self._optimizer.step()
 
-        return _summary
+            self.state.current_loss = loss.item()
+
+            self._trigger_callbacks('on_train_batch_end')
 
     def fit(
         self,
@@ -156,9 +134,8 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         **kwargs,
-    ) -> Summary:
+    ):
         """Finetune the model on the training data.
-
         :param train_data: Data on which to train the model
         :param eval_data: Data on which to evaluate the model at the end of each epoch
         :param preprocess_fn: A pre-processing function. It should take as input the
@@ -202,24 +179,37 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         self.device = get_device(device)
         self._embed_model = self._embed_model.to(self.device)
 
-        # Get optimizer
-        optimizer = optimizer or self._get_default_optimizer(learning_rate)
+        # Create optimizer
+        self._optimizer = optimizer or self._get_default_optimizer(learning_rate)
 
-        m_train_loss = ScalarSequence('train')
-        m_eval_loss = ScalarSequence('eval')
+        # Set state
+        self.state = TunerState(num_epochs=epochs)
+        self._trigger_callbacks('on_fit_begin')
+
         for epoch in range(epochs):
-            lt = self._train(
-                train_dl,
-                optimizer,
-                description=f'Epoch {epoch + 1}/{epochs}',
-            )
-            m_train_loss += lt
+
+            # Setting here as re-shuffling can change number of batches
+            self.state.epoch = epoch
+            self.state.num_batches_train = len(train_dl)
+            self.state.batch_index = 0
+
+            self._trigger_callbacks('on_epoch_begin')
+
+            self._trigger_callbacks('on_train_epoch_begin')
+            self._train(train_dl)
+            self._trigger_callbacks('on_train_epoch_end')
 
             if eval_data:
-                le = self._eval(eval_dl, train_loss=m_train_loss)
-                m_eval_loss += le
+                self.state.num_batches_val = len(eval_dl)
+                self.state.batch_index = 0
 
-        return Summary(m_train_loss, m_eval_loss)
+                self._trigger_callbacks('on_val_begin')
+                self._eval(eval_dl)
+                self._trigger_callbacks('on_val_end')
+
+            self._trigger_callbacks('on_epoch_end')
+
+        self._trigger_callbacks('on_fit_end')
 
     def save(self, *args, **kwargs):
         """Save the embedding model.

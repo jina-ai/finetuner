@@ -5,7 +5,6 @@ from ..helper import get_framework
 
 if TYPE_CHECKING:
     from .base import BaseTuner
-    from .summary import Summary
     from ..helper import (
         AnyDNN,
         AnyOptimizer,
@@ -46,7 +45,7 @@ def fit(
     learning_rate: float = 1e-3,
     device: str = 'cpu',
     **kwargs,
-) -> 'Summary':
+):
     """Finetune the model on the training data.
 
     :param embed_model: an embedding model
@@ -78,7 +77,7 @@ def fit(
     """
     ft = _get_tuner_class(embed_model)
 
-    return ft(embed_model, loss=loss).fit(
+    ft(embed_model, loss=loss).fit(
         train_data,
         eval_data,
         epochs=epochs,
