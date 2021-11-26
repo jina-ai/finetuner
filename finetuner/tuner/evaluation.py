@@ -45,7 +45,8 @@ class Evaluator:
         Build an Evaluator object that can be used to evaluate an embedding model on a retrieval task
 
         :param eval_data: A sequence of documents. Each document should contain ground truth matches under
-            ``doc.matches`` and relevance scores under ``doc.tags[__default_tag_key__]['label']``
+            ``doc.matches`` and relevance scores under ``doc.tags[finetuner.__default_tag_key__]`` for each
+            match.
         :param catalog: A sequence of documents, against which the eval docs will be matched.
         :param embed_model: The embedding model to use, in order to extract document representations.
         :param distance: The type of distance to use when matching docs, avalilable options are
