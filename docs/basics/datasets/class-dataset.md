@@ -1,6 +1,6 @@
 # Class Dataset
 
-A {class}`~fintuner.tuner.dataset.datsetsClassDataset` is a `DocumentArray`, in which each `Document` has a discrete label stored under `.tags['finetuner_label']`, e.g. `red/black/white/yellow`, `shirt/tops/hats`.
+A {class}`~fintuner.tuner.dataset.ClassDataset` is a `DocumentArray`, in which each `Document` has a discrete label stored under `.tags['finetuner_label']`, e.g. `red/black/white/yellow`, `shirt/tops/hats`.
 
 Note, the label is not necessarily related to classification - rather, it is there to denote similar `Document`s. That is, all `Document`s with the same label are considered similar, and all `Document`s with different labels are considered dis-similar.
 
@@ -8,7 +8,7 @@ Comparing to {ref}`session-dataset`, here the Document has a flat structure - no
 
 ## Batch building
 
-A `ClassDataset` works with {class}`~fintuner.tuner.dataset.datsetsClassSampler`. 
+A `ClassDataset` works with {class}`~fintuner.tuner.dataset.ClassSampler`. 
 
 The "class" label is used to construct batches in a two-step  procedure. First, a number of different classes will be randomly sampled, and then from each class a number of `Document`s will be sampled to fill the batch.
 
