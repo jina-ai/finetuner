@@ -73,33 +73,6 @@ class TripletHardMiner(TripletMiner):
     def __init__(self, strategies=["hard"]):
         self.strategies = strategies
 
-    def _update_matches(
-        self,
-        match_mat: torch.Tensor,
-        dist_mat: torch.Tensor,
-        semihard_tsh: torch.Tensor = None,
-    ):
-        _filter = self._get_filter_function(self.pos_strategy)
-        per_row_max_vals = _filter(match_mat * dist_mat, semihard_tsh)
-        return per_row_max_vals * match_mat
-
-    def _update_diffs(
-        self,
-        diff_mat: torch.Tensor,
-        dist_mat: torch.Tensor,
-        semihard_tsh: torch.Tensor = None,
-    ):
-        return
-
-    def _get_per_row_max(
-        self, dist_mat: torch.Tensor, semihard_tsh: torch.Tensor = None
-    ):
-        if semihard_tsh is not None:
-            dist_mat[dist_mat > semihard_tsh] = 0
-
-        non_zero_rows = torch.any(dist_mat != 0, dim=1)
-        return torch.max(dist_mat, dim=1, keepdim=True)[0], non_zero_rows
-
     def _get_per_row_min(
         self, dist_mat: torch.Tensor, semihard_tsh: torch.Tensor = None
     ):
@@ -113,17 +86,6 @@ class TripletHardMiner(TripletMiner):
             dist_mat[dist_mat < semihard_tsh] = float("inf")
 
         return torch.min(dist_mat, dim=1, keepdim=True)[0]
-
-    def _get_filter_function(self, strategy: str):
-        if strategy in ["hard", "semihard"]:
-            return self._get_per_row_min
-        elif strategy in "easy":
-            return self._get_per_row_max
-        else:
-            raise ValueError(
-                f'Positive and negative strategies have to be one of '
-                '[`easy`, `semihard`, `hard`], but was: {strategy}'
-            )
 
     def mine(
         self, labels: torch.Tensor, distances: torch.Tensor
@@ -144,7 +106,7 @@ class TripletHardMiner(TripletMiner):
         np.random.seed(1234)
         distances = torch.Tensor(np.round_(np.random.random((6, 6)), 1))
         distances -= distances * torch.eye(len(distances))
-        triplets_super = super().mine(labels, distances)
+
         assert len(distances) == len(labels)
 
         labels1, labels2 = labels.unsqueeze(1), labels.unsqueeze(0)
@@ -152,17 +114,11 @@ class TripletHardMiner(TripletMiner):
         diffs = matches ^ 1
 
         matches.fill_diagonal_(0)
-        triplets = matches.unsqueeze(2) * diffs.unsqueeze(1)
 
         # Get all d(a, p)
         d_a_p = matches * distances
         # Get all d(a, n)
         d_a_n = diffs * distances
-
-        triplets = torch.where(triplets)
-        triplet_idxs = torch.concat(triplets).view(3, len(triplets[0]))
-        # pos_distances = d_a_p[triplets[0], triplets[1]]
-        # neg_distances = d_a_n[triplets[0], triplets[2]]
 
         match_mask = torch.zeros_like(distances).bool()
         diff_mask = torch.zeros_like(distances).bool()
@@ -198,9 +154,9 @@ class TripletHardMiner(TripletMiner):
             neg_mask = pos_distances < d_a_n
             diff_mask = torch.logical_or(diff_mask, neg_mask)
 
-        import pdb
-
-        pdb.set_trace()
+        diffs = diffs * diff_mask
+        matches = matches * match_mask
+        triplets = matches.unsqueeze(2) * diffs.unsqueeze(1)
 
         return torch.where(triplets)
 
