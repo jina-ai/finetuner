@@ -69,10 +69,9 @@ class TripletMiner(BaseClassMiner[torch.Tensor]):
         return torch.where(triplets)
 
 
-class TripletEasyHardMiner(TripletMiner):
-    def __init__(self, pos_strategy: str = "hard", neg_strategy: str = "hard"):
-        self.pos_strategy = pos_strategy
-        self.neg_strategy = neg_strategy
+class TripletHardMiner(TripletMiner):
+    def __init__(self, strategies=["hard"]):
+        self.strategies = strategies
 
     def _update_matches(
         self,
@@ -93,29 +92,27 @@ class TripletEasyHardMiner(TripletMiner):
         return
 
     def _get_per_row_max(
-        self, masked_dist_mat: torch.Tensor, semihard_tsh: torch.Tensor = None
+        self, dist_mat: torch.Tensor, semihard_tsh: torch.Tensor = None
     ):
         if semihard_tsh is not None:
-            masked_dist_mat[masked_dist_mat > semihard_tsh] = 0
+            dist_mat[dist_mat > semihard_tsh] = 0
 
-        return torch.max(masked_dist_mat, dim=1, keepdim=True)[0]
+        non_zero_rows = torch.any(dist_mat != 0, dim=1)
+        return torch.max(dist_mat, dim=1, keepdim=True)[0], non_zero_rows
 
     def _get_per_row_min(
-        self, masked_dist_mat: torch.Tensor, semihard_tsh: torch.Tensor = None
+        self, dist_mat: torch.Tensor, semihard_tsh: torch.Tensor = None
     ):
-        non_zero_mask = masked_dist_mat > 0
+        non_zero_mask = dist_mat > 0
 
         # Prevent wrong neg. samples from being extracted
-        row_max = torch.max(masked_dist_mat, dim=1, keepdim=True)[0]
-        masked_dist_mat += (row_max + 1) * torch.logical_not(non_zero_mask)
+        row_max = torch.max(dist_mat, dim=1, keepdim=True)[0]
+        dist_mat += (row_max + 1) * torch.logical_not(non_zero_mask)
 
         if semihard_tsh is not None:
-            masked_dist_mat[masked_dist_mat < semihard_tsh] = float("inf")
-        import pdb
+            dist_mat[dist_mat < semihard_tsh] = float("inf")
 
-        pdb.set_trace()
-
-        return torch.min(masked_dist_mat, dim=1, keepdim=True)
+        return torch.min(dist_mat, dim=1, keepdim=True)[0]
 
     def _get_filter_function(self, strategy: str):
         if strategy in ["hard", "semihard"]:
@@ -158,16 +155,49 @@ class TripletEasyHardMiner(TripletMiner):
         triplets = matches.unsqueeze(2) * diffs.unsqueeze(1)
 
         # Get all d(a, p)
-        d_a_p = torch.multiply(matches, distances)
+        d_a_p = matches * distances
         # Get all d(a, n)
-        d_a_n = torch.multiply(diffs, distances)
+        d_a_n = diffs * distances
 
         triplets = torch.where(triplets)
         triplet_idxs = torch.concat(triplets).view(3, len(triplets[0]))
-        pos_distances = d_a_p[triplets[0], triplets[1]]
-        neg_distances = d_a_n[triplets[0], triplets[2]]
+        # pos_distances = d_a_p[triplets[0], triplets[1]]
+        # neg_distances = d_a_n[triplets[0], triplets[2]]
 
-        per_row_min = self._get_per_row_min(distances * diffs, None)
+        match_mask = torch.zeros_like(distances).bool()
+        diff_mask = torch.zeros_like(distances).bool()
+
+        if "hard" in self.strategies:
+            # Get hardest negative samples
+            neg_distances = self._get_per_row_min(diffs * distances)
+            neg_mask = neg_distances == d_a_n
+            diff_mask = torch.logical_or(diff_mask, neg_mask)
+
+            # Get all pos samples with larger distance than neg one
+            pos_mask = neg_distances < d_a_p
+            match_mask = torch.logical_or(match_mask, pos_mask)
+
+        if "semihard" in self.strategies:
+            # Get hardest negative sample
+            neg_distances = self._get_per_row_min(diffs * distances)
+            neg_mask = neg_distances < d_a_n
+            diff_mask = torch.logical_or(diff_mask, neg_mask)
+
+            # Get hardest pos samples that are further than neg samples
+            pos_distances = self._get_per_row_min(d_a_p, neg_distances)
+            pos_mask = pos_distances == d_a_p
+            match_mask = torch.logical_or(match_mask, pos_mask)
+
+        if "easy" in self.strategies:
+            # Get easy positive sample
+            pos_distances, _ = self._get_per_row_min(matches * distances)
+            pos_mask = pos_distances == d_a_p
+            match_mask = torch.logical_or(match_mask, pos_mask)
+
+            # Get easy negative samples, further away than pos sample
+            neg_mask = pos_distances < d_a_n
+            diff_mask = torch.logical_or(diff_mask, neg_mask)
+
         import pdb
 
         pdb.set_trace()
