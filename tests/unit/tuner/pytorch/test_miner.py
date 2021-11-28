@@ -132,10 +132,9 @@ def test_triplet_easy_hard_miner(labels):
         ]
     )
     true_anch_ind, true_pos_ind, true_neg_ind = triplets.T
-    anch_ind, pos_ind, neg_ind = TripletHardMiner(
-        strategies=["semihard", "semihard"]
-    ).mine(labels, fake_dists(len(labels)))
-
+    anch_ind, pos_ind, neg_ind = TripletHardMiner(strategy="semihard").mine(
+        labels, fake_dists(len(labels))
+    )
     np.testing.assert_equal(anch_ind.numpy(), true_anch_ind)
     np.testing.assert_equal(pos_ind.numpy(), true_pos_ind)
     np.testing.assert_equal(neg_ind.numpy(), true_neg_ind)

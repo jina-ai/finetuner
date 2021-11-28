@@ -70,8 +70,8 @@ class TripletMiner(BaseClassMiner[torch.Tensor]):
 
 
 class TripletHardMiner(TripletMiner):
-    def __init__(self, strategies=["hard"]):
-        self.strategies = strategies
+    def __init__(self, strategy="hard"):
+        self.strategy = strategy
 
     def _get_per_row_min(
         self, dist_mat: torch.Tensor, semihard_tsh: torch.Tensor = None
@@ -123,7 +123,7 @@ class TripletHardMiner(TripletMiner):
         match_mask = torch.zeros_like(distances).bool()
         diff_mask = torch.zeros_like(distances).bool()
 
-        if "hard" in self.strategies:
+        if self.strategy == "hard":
             # Get hardest negative samples
             neg_distances = self._get_per_row_min(diffs * distances)
             neg_mask = neg_distances == d_a_n
@@ -133,7 +133,7 @@ class TripletHardMiner(TripletMiner):
             pos_mask = neg_distances < d_a_p
             match_mask = torch.logical_or(match_mask, pos_mask)
 
-        if "semihard" in self.strategies:
+        elif self.strategy == "semihard":
             # Get hardest negative sample
             neg_distances = self._get_per_row_min(diffs * distances)
             neg_mask = neg_distances < d_a_n
@@ -144,7 +144,7 @@ class TripletHardMiner(TripletMiner):
             pos_mask = pos_distances == d_a_p
             match_mask = torch.logical_or(match_mask, pos_mask)
 
-        if "easy" in self.strategies:
+        elif self.strategy == "easy":
             # Get easy positive sample
             pos_distances, _ = self._get_per_row_min(matches * distances)
             pos_mask = pos_distances == d_a_p
