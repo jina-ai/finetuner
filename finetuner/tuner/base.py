@@ -1,10 +1,12 @@
 import abc
 from typing import TYPE_CHECKING, Generic, List, Optional, Tuple, Union
 
+from .callback.base import BaseCallback
+from .callback.progress_bar import ProgressBarCallback
 from .dataset import ClassDataset, SessionDataset
 from .dataset.samplers import ClassSampler, SessionSampler
 from .miner.base import BaseMiner
-from .summary import Summary
+from .state import TunerState
 
 from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyTensor
 
@@ -42,10 +44,13 @@ class BaseLoss(Generic[AnyTensor]):
 
 
 class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
+    state: TunerState
+
     def __init__(
         self,
         embed_model: Optional[AnyDNN] = None,
         loss: Union[BaseLoss, str] = 'SiameseLoss',
+        callbacks: Optional[List[BaseCallback]] = None,
         **kwargs,
     ):
         """Create the tuner instance.
@@ -53,9 +58,14 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         :param embed_model: Model that produces embeddings from inputs
         :param loss: Either the loss object instance, or the name of the loss function.
             Currently available losses are ``SiameseLoss`` and ``TripletLoss``
+        :param callbacks: A list of callbacks. The progress bar callback
+            will be pre-prended to this list.
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
+
+        callbacks = callbacks or []
+        self._callbacks = [ProgressBarCallback()] + callbacks
 
     @staticmethod
     def _get_batch_sampler(
@@ -80,6 +90,11 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
 
         return batch_sampler
 
+    def _trigger_callbacks(self, method: str):
+        """Trigger the specified method on all callbacks"""
+        for callback in self._callbacks:
+            getattr(callback, method)(self)
+
     @property
     def embed_model(self) -> AnyDNN:
         """Get the base model of this object."""
@@ -96,21 +111,36 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         eval_data: Optional['DocumentSequence'] = None,
         epochs: int = 10,
         batch_size: int = 256,
-        learning_rate: float = 1e-3,
+        num_items_per_class: Optional[int] = None,
         optimizer: Optional[AnyOptimizer] = None,
+        learning_rate: float = 1e-3,
         device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
-        *args,
         **kwargs,
-    ) -> Summary:
-        """Fit the :py:attr:`.embed_model` on labeled data.
+    ):
+        """Finetune the model on the training data.
 
-        Note that fitting changes the weights in :py:attr:`.embed_model` in-place. This
-        allows one to consecutively call :py:func:`.fit` multiple times with different
-        configs or data to get better models.
+        :param train_data: Data on which to train the model
+        :param eval_data: Data on which to evaluate the model at the end of each epoch
+        :param preprocess_fn: A pre-processing function. It should take as input the
+            content of an item in the dataset and return the pre-processed content
+        :param collate_fn: The collation function to merge the content of individual
+            items into a batch. Should accept a list with the content of each item,
+            and output a tensor (or a list/dict of tensors) that feed directly into the
+            embedding model
+        :param epochs: Number of epochs to train the model
+        :param batch_size: The batch size to use for training and evaluation
+        :param num_items_per_class: Number of items from a single class to include in
+            the batch. Only relevant for class datasets
+        :param optimizer: The optimizer to use for training. If none is passed, an
+            Adam optimizer is used by default, with learning rate specified by the
+            ``learning_rate`` parameter.
+        :param learning_rate: Learning rate for the default optimizer. If you
+            provide a custom optimizer, this learning rate will not apply.
+        :param device: The device to which to move the model. Supported options are
+            ``"cpu"`` and ``"cuda"`` (for GPU)
         """
-        ...
 
     @abc.abstractmethod
     def save(self, *args, **kwargs):
@@ -136,15 +166,11 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         ...
 
     @abc.abstractmethod
-    def _train(
-        self, data: AnyDataLoader, optimizer, description: str
-    ) -> Tuple[List, List]:
+    def _train(self, data: AnyDataLoader):
         """Train the model on given labeled data"""
         ...
 
     @abc.abstractmethod
-    def _eval(
-        self, data: AnyDataLoader, description: str = 'Evaluating'
-    ) -> Tuple[List, List]:
+    def _eval(self, data: AnyDataLoader):
         """Evaluate the model on given labeled data"""
         ...

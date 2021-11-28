@@ -11,6 +11,7 @@
 
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -414,4 +415,24 @@ The changes of each release is tracked by this file.
 ### 🍹 Other Improvements
 
  - [[```670adbe0```](https://github.com/jina-ai/finetuner/commit/670adbe008ff32eaeb6acdefa05288a8daa76d81)] __-__ __version__: the next version will be 0.2.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-2-4></a>
+## Release Note (`0.2.4`)
+
+> Release time: 2021-11-24 16:13:58
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 📗 Documentation
+
+ - [[```b7ff2920```](https://github.com/jina-ai/finetuner/commit/b7ff29201e33f768e028e773116238cafd6a48c4)] __-__ fix doc gen (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```67c66fe4```](https://github.com/jina-ai/finetuner/commit/67c66fe43bc3fd868d1e6001c97f78c853932a6a)] __-__ bump jina min req. version (*Han Xiao*)
+ - [[```c39f2a2b```](https://github.com/jina-ai/finetuner/commit/c39f2a2b91653f3ebe44f7e53dea4b989a58f475)] __-__ __version__: the next version will be 0.2.4 (*Jina Dev Bot*)
 
