@@ -7,17 +7,17 @@ import finetuner
 from finetuner.toydata import generate_fashion
 
 
-@pytest.mark.parametrize('loss', ['SiameseLoss', 'TripletLoss'])
+@pytest.mark.parametrize("loss", ["SiameseLoss", "TripletLoss"])
 def test_fit_all(tmpdir, loss):
     embed_models = {
-        'keras': lambda: tf.keras.Sequential(
+        "keras": lambda: tf.keras.Sequential(
             [
                 tf.keras.layers.Flatten(input_shape=(28, 28)),
-                tf.keras.layers.Dense(128, activation='relu'),
+                tf.keras.layers.Dense(128, activation="relu"),
                 tf.keras.layers.Dense(32),
             ]
         ),
-        'pytorch': lambda: torch.nn.Sequential(
+        "pytorch": lambda: torch.nn.Sequential(
             torch.nn.Flatten(),
             torch.nn.Linear(
                 in_features=28 * 28,
@@ -26,7 +26,7 @@ def test_fit_all(tmpdir, loss):
             torch.nn.ReLU(),
             torch.nn.Linear(in_features=128, out_features=32),
         ),
-        'paddle': lambda: paddle.nn.Sequential(
+        "paddle": lambda: paddle.nn.Sequential(
             paddle.nn.Flatten(),
             paddle.nn.Linear(
                 in_features=28 * 28,

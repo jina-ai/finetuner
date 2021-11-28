@@ -8,11 +8,11 @@ from finetuner.toydata import generate_fashion
 from finetuner.tuner.pytorch import PytorchTuner
 
 
-all_test_losses = ['SiameseLoss', 'TripletLoss']
+all_test_losses = ["SiameseLoss", "TripletLoss"]
 
 
 @pytest.mark.gpu
-@pytest.mark.parametrize('loss', all_test_losses)
+@pytest.mark.parametrize("loss", all_test_losses)
 def test_gpu(generate_random_data, loss):
 
     data = generate_random_data(40, 4)
@@ -21,14 +21,14 @@ def test_gpu(generate_random_data, loss):
 
     # Run quick training - mainly makes sure no errors appear, and that the model is
     # moved to GPU
-    tuner.fit(data, data, epochs=2, batch_size=8, device='cuda')
+    tuner.fit(data, data, epochs=2, batch_size=8, device="cuda")
 
     # Test the model was moved (by checking one of its parameters)
-    assert next(embed_model.parameters()).device.type == 'cuda'
+    assert next(embed_model.parameters()).device.type == "cuda"
 
 
 @pytest.mark.gpu
-@pytest.mark.parametrize('loss', all_test_losses)
+@pytest.mark.parametrize("loss", all_test_losses)
 def test_gpu_session(generate_random_session_data, loss):
 
     data = generate_random_session_data(40, 4)
@@ -37,10 +37,10 @@ def test_gpu_session(generate_random_session_data, loss):
 
     # Run quick training - mainly makes sure no errors appear, and that the model is
     # moved to GPU
-    tuner.fit(data, data, epochs=2, batch_size=9, device='cuda')
+    tuner.fit(data, data, epochs=2, batch_size=9, device="cuda")
 
     # Test the model was moved (by checking one of its parameters)
-    assert next(embed_model.parameters()).device.type == 'cuda'
+    assert next(embed_model.parameters()).device.type == "cuda"
 
 
 @pytest.mark.gpu
@@ -56,11 +56,11 @@ def test_set_embeddings_gpu(tmpdir):
         nn.Linear(in_features=128, out_features=32),
     )
     docs = DocumentArray(generate_fashion(num_total=100))
-    embed(docs, embed_model, 'cuda')
+    embed(docs, embed_model, "cuda")
     assert docs.embeddings.shape == (100, 32)
 
     # works for DAM
     dam = DocumentArrayMemmap(tmpdir)
     dam.extend(generate_fashion(num_total=42))
-    embed(dam, embed_model, 'cuda')
+    embed(dam, embed_model, "cuda")
     assert dam.embeddings.shape == (42, 32)

@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class KerasTailor(BaseTailor):
     """Tailor class for Keras DNN models."""
 
-    def summary(self, skip_identity_layer: bool = False) -> 'LayerInfoType':
+    def summary(self, skip_identity_layer: bool = False) -> "LayerInfoType":
         """Interpret the DNN model and produce model information.
 
         :param skip_identity_layer: If skip identity layer.
@@ -41,7 +41,7 @@ class KerasTailor(BaseTailor):
                 or not isinstance(output_shape[-1], int)
             )
 
-            if not layer.built and not getattr(layer, '_is_graph_network', False):
+            if not layer.built and not getattr(layer, "_is_graph_network", False):
                 # If a subclassed model has a layer that is not called in Model.call, the
                 # layer will not be built and we cannot call layer.count_params().
                 params = 0
@@ -54,19 +54,19 @@ class KerasTailor(BaseTailor):
 
             results.append(
                 {
-                    'name': layer.name,
-                    'cls_name': layer.__class__.__name__,
-                    'input_shape': input_shape,
-                    'output_shape': output_shape,
-                    'output_shape_display': list(output_shape[1:]),
-                    'output_features': output_shape[
+                    "name": layer.name,
+                    "cls_name": layer.__class__.__name__,
+                    "input_shape": input_shape,
+                    "output_shape": output_shape,
+                    "output_shape_display": list(output_shape[1:]),
+                    "output_features": output_shape[
                         -1
                     ],  #: this only makes sense when is_embedding_layer is True
-                    'nb_params': params,
-                    'layer_idx': idx,
-                    'module_name': layer.name,  # duplicate as `name` to make different backends consistent
-                    'is_embedding_layer': is_embedding_layer,
-                    'trainable': layer.trainable if params else False,
+                    "nb_params": params,
+                    "layer_idx": idx,
+                    "module_name": layer.name,  # duplicate as `name` to make different backends consistent
+                    "is_embedding_layer": is_embedding_layer,
+                    "trainable": layer.trainable if params else False,
                 }
             )
         return results
@@ -77,7 +77,7 @@ class KerasTailor(BaseTailor):
         output_dim: Optional[int] = None,
         freeze: bool = False,
         freeze_layers: Optional[List[str]] = None,
-    ) -> 'AnyDNN':
+    ) -> "AnyDNN":
 
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
@@ -89,19 +89,19 @@ class KerasTailor(BaseTailor):
         :param freeze_layers: if set, then freeze specific layers.
         :return: Converted embedding model.
         """
-        _all_embed_layers = {l['name']: l for l in self.embedding_layers}
+        _all_embed_layers = {l["name"]: l for l in self.embedding_layers}
         if layer_name:
             try:
                 _embed_layer = _all_embed_layers[layer_name]
             except KeyError as e:
                 raise KeyError(
-                    f'`embedding_layer_name` must be one of {_all_embed_layers.keys()}, given {layer_name}'
+                    f"`embedding_layer_name` must be one of {_all_embed_layers.keys()}, given {layer_name}"
                 ) from e
         else:
             # when not given, using the last layer
             _embed_layer = self.embedding_layers[-1]
 
-        index = _embed_layer['layer_idx']
+        index = _embed_layer["layer_idx"]
 
         if output_dim:
             out = Dense(output_dim)(self._model.layers[index].output)

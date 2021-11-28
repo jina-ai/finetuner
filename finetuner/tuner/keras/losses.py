@@ -13,17 +13,17 @@ def _is_tensor_empty(tensor: tf.Tensor):
 def get_distance(embeddings: tf.Tensor, distance: str) -> tf.Tensor:
     """Get a matrix of pairwise distances between the embeddings"""
 
-    if distance == 'cosine':
+    if distance == "cosine":
         emb_norm, _ = tf.linalg.normalize(embeddings, ord=2, axis=1)
         dists = 1 - tf.linalg.matmul(emb_norm, tf.transpose(emb_norm))
-    elif distance == 'euclidean':
+    elif distance == "euclidean":
         embed = tf.reduce_sum(embeddings ** 2, axis=1, keepdims=True)
         prod = tf.linalg.matmul(embeddings, tf.transpose(embeddings))
         dists = embed + tf.transpose(embed) - 2 * prod
         dists = tf.sqrt(
             tf.clip_by_value(dists, clip_value_min=0, clip_value_max=tf.float64.max)
         )
-    elif distance == 'sqeuclidean':
+    elif distance == "sqeuclidean":
         embed = tf.reduce_sum(embeddings ** 2, axis=1, keepdims=True)
         prod = tf.linalg.matmul(embeddings, tf.transpose(embeddings))
         dists = embed + tf.transpose(embed) - 2 * prod
@@ -66,7 +66,7 @@ class SiameseLoss(KerasLoss):
 
     def __init__(
         self,
-        distance: str = 'cosine',
+        distance: str = "cosine",
         margin: float = 1.0,
         miner: Optional[BaseMiner] = None,
     ):
@@ -102,7 +102,7 @@ class SiameseLoss(KerasLoss):
             or _is_tensor_empty(ind_two)
             or _is_tensor_empty(target)
         ):
-            raise ValueError('Got empty tuple/triplets from your dataset.')
+            raise ValueError("Got empty tuple/triplets from your dataset.")
         dist_matrix = get_distance(embeddings, self.distance)
         ind_slice = tf.transpose([ind_one, ind_two])
         dists = tf.gather_nd(dist_matrix, indices=[ind_slice])
@@ -172,7 +172,7 @@ class TripletLoss(KerasLoss):
             or _is_tensor_empty(ind_pos)
             or _is_tensor_empty(ind_neg)
         ):
-            raise ValueError('Got empty tuple/triplets from your dataset.')
+            raise ValueError("Got empty tuple/triplets from your dataset.")
 
         dist_matrix = get_distance(embeddings, self.distance)
         ind_slice_pos = tf.transpose([ind_anch, ind_pos])

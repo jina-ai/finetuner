@@ -37,10 +37,10 @@ def generate_qa(
         if i >= num_total:
             break
 
-        d.text = d.tags['question']
-        m_p = Document(text=d.tags['answer'], tags={__default_tag_key__: pos_value})
+        d.text = d.tags["question"]
+        m_p = Document(text=d.tags["answer"], tags={__default_tag_key__: pos_value})
         m_n = Document(
-            text=d.tags['wrong_answer'],
+            text=d.tags["wrong_answer"],
             tags={__default_tag_key__: neg_value},
         )
 
@@ -53,7 +53,7 @@ def generate_qa(
                 for n_d in sampled_docs:
                     if n_d.id != d.id:
                         new_nd = Document(
-                            text=n_d.tags['answer'],
+                            text=n_d.tags["answer"],
                             tags={__default_tag_key__: neg_value},
                         )
 
@@ -68,32 +68,32 @@ def generate_qa(
 def _download_qa_data(
     download_proxy=None, is_testset: Optional[bool] = False, **kwargs
 ) -> Generator[Document, None, None]:
-    download_dir = './data'
+    download_dir = "./data"
     Path(download_dir).mkdir(parents=True, exist_ok=True)
 
     targets = {
-        'covid-csv': {
-            'url': 'https://static.jina.ai/chatbot/dataset.csv',
-            'filename': os.path.join(download_dir, 'dataset.csv'),
+        "covid-csv": {
+            "url": "https://static.jina.ai/chatbot/dataset.csv",
+            "filename": os.path.join(download_dir, "dataset.csv"),
         }
     }
 
     opener = urllib.request.build_opener()
-    opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+    opener.addheaders = [("User-agent", "Mozilla/5.0")]
     if download_proxy:
         proxy = urllib.request.ProxyHandler(
-            {'http': download_proxy, 'https': download_proxy}
+            {"http": download_proxy, "https": download_proxy}
         )
         opener.add_handler(proxy)
     urllib.request.install_opener(opener)
-    with ProgressBar('download chatbot data') as t:
+    with ProgressBar("download chatbot data") as t:
         for k, v in targets.items():
-            if not os.path.exists(v['filename']):
+            if not os.path.exists(v["filename"]):
                 urllib.request.urlretrieve(
-                    v['url'], v['filename'], reporthook=lambda *x: t.update(0.01)
+                    v["url"], v["filename"], reporthook=lambda *x: t.update(0.01)
                 )
 
-        with open(targets['covid-csv']['filename']) as fp:
+        with open(targets["covid-csv"]["filename"]) as fp:
             lines = csv.DictReader(fp)
             for idx, value in enumerate(lines):
                 if is_testset is None:
@@ -128,59 +128,59 @@ def generate_fashion(
         channel axis should be 1.
     :param is_testset: If to generate test data
     """
-    download_dir = './data'
+    download_dir = "./data"
     Path(download_dir).mkdir(parents=True, exist_ok=True)
 
     targets = {
-        'index-labels': {
-            'url': 'http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-labels-idx1-ubyte.gz',
-            'filename': os.path.join(download_dir, 'index-labels'),
+        "index-labels": {
+            "url": "http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-labels-idx1-ubyte.gz",
+            "filename": os.path.join(download_dir, "index-labels"),
         },
-        'query-labels': {
-            'url': 'http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz',
-            'filename': os.path.join(download_dir, 'query-labels'),
+        "query-labels": {
+            "url": "http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz",
+            "filename": os.path.join(download_dir, "query-labels"),
         },
-        'index': {
-            'url': 'http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-images-idx3-ubyte.gz',
-            'filename': os.path.join(download_dir, 'index-original'),
+        "index": {
+            "url": "http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-images-idx3-ubyte.gz",
+            "filename": os.path.join(download_dir, "index-original"),
         },
-        'query': {
-            'url': 'http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-images-idx3-ubyte.gz',
-            'filename': os.path.join(download_dir, 'query-original'),
+        "query": {
+            "url": "http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-images-idx3-ubyte.gz",
+            "filename": os.path.join(download_dir, "query-original"),
         },
     }
 
     opener = urllib.request.build_opener()
-    opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+    opener.addheaders = [("User-agent", "Mozilla/5.0")]
     if download_proxy:
         proxy = urllib.request.ProxyHandler(
-            {'http': download_proxy, 'https': download_proxy}
+            {"http": download_proxy, "https": download_proxy}
         )
         opener.add_handler(proxy)
     urllib.request.install_opener(opener)
-    with ProgressBar('download fashion-mnist') as t:
+    with ProgressBar("download fashion-mnist") as t:
         for k, v in targets.items():
-            if not os.path.exists(v['filename']):
+            if not os.path.exists(v["filename"]):
                 urllib.request.urlretrieve(
-                    v['url'], v['filename'], reporthook=lambda *x: t.update(0.01)
+                    v["url"], v["filename"], reporthook=lambda *x: t.update(0.01)
                 )
-            if k == 'index-labels' or k == 'query-labels':
-                v['data'] = _load_labels(v['filename'])
-            if k == 'index' or k == 'query':
-                v['data'] = _load_mnist(
-                    v['filename'],
+            if k == "index-labels" or k == "query-labels":
+                v["data"] = _load_labels(v["filename"])
+            if k == "index" or k == "query":
+                v["data"] = _load_mnist(
+                    v["filename"],
                     upsampling=upsampling,
                     channels=channels,
                     channel_axis=channel_axis,
                 )
     if is_testset:
-        partition = 'query'
+        partition = "query"
     else:
-        partition = 'index'
+        partition = "index"
 
     docs = DocumentArray()
     for i, (raw_img, lbl) in enumerate(
-        zip(targets[partition]['data'], targets[f'{partition}-labels']['data'])
+        zip(targets[partition]["data"], targets[f"{partition}-labels"]["data"])
     ):
         if i >= num_total:
             break
@@ -217,7 +217,7 @@ def _load_mnist(path, upsampling: int = 1, channels: int = 0, channel_axis=-1):
         channel_axis = upsampling_axes[channel_axis]
     upsampling_axes.remove(channel_axis)
 
-    with gzip.open(path, 'rb') as fp:
+    with gzip.open(path, "rb") as fp:
         r = np.frombuffer(fp.read(), dtype=np.uint8, offset=16).reshape([-1, 28, 28])
         if channels > 0:
             r = np.stack((r,) * channels, axis=channel_axis)
@@ -235,5 +235,5 @@ def _load_labels(path: str):
     :param path: path of labels
     :return: labels in np.array
     """
-    with gzip.open(path, 'rb') as fp:
+    with gzip.open(path, "rb") as fp:
         return np.frombuffer(fp.read(), dtype=np.uint8, offset=8).reshape([-1, 1])

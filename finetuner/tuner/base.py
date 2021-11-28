@@ -49,7 +49,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
     def __init__(
         self,
         embed_model: Optional[AnyDNN] = None,
-        loss: Union[BaseLoss, str] = 'SiameseLoss',
+        loss: Union[BaseLoss, str] = "SiameseLoss",
         callbacks: Optional[List[BaseCallback]] = None,
         **kwargs,
     ):
@@ -84,8 +84,8 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
             batch_sampler = SessionSampler(dataset.labels, batch_size, shuffle)
         else:
             raise TypeError(
-                f'`dataset` must be either {type(SessionDataset)} or {type(ClassDataset)}, '
-                f'but receiving {type(dataset)}'
+                f"`dataset` must be either {type(SessionDataset)} or {type(ClassDataset)}, "
+                f"but receiving {type(dataset)}"
             )
 
         return batch_sampler
@@ -107,16 +107,16 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
     @abc.abstractmethod
     def fit(
         self,
-        train_data: 'DocumentSequence',
-        eval_data: Optional['DocumentSequence'] = None,
+        train_data: "DocumentSequence",
+        eval_data: Optional["DocumentSequence"] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
         optimizer: Optional[AnyOptimizer] = None,
         learning_rate: float = 1e-3,
-        device: str = 'cpu',
-        preprocess_fn: Optional['PreprocFnType'] = None,
-        collate_fn: Optional['CollateFnType'] = None,
+        device: str = "cpu",
+        preprocess_fn: Optional["PreprocFnType"] = None,
+        collate_fn: Optional["CollateFnType"] = None,
         **kwargs,
     ):
         """Finetune the model on the training data.
@@ -155,12 +155,12 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
     @abc.abstractmethod
     def _get_data_loader(
         self,
-        data: 'DocumentSequence',
+        data: "DocumentSequence",
         batch_size: int,
         shuffle: bool,
         num_items_per_class: Optional[int] = None,
-        preprocess_fn: Optional['PreprocFnType'] = None,
-        collate_fn: Optional['CollateFnType'] = None,
+        preprocess_fn: Optional["PreprocFnType"] = None,
+        collate_fn: Optional["CollateFnType"] = None,
     ) -> AnyDataLoader:
         """Get framework specific data loader from the input data."""
         ...

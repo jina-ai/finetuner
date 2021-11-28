@@ -24,9 +24,9 @@ def model(dim):
     return tf.keras.Sequential(
         [
             tf.keras.layers.Flatten(input_shape=(dim,)),
-            tf.keras.layers.Dense(64, activation='relu'),
-            tf.keras.layers.Dense(64, activation='relu'),
-            tf.keras.layers.Dense(64, activation='relu'),
+            tf.keras.layers.Dense(64, activation="relu"),
+            tf.keras.layers.Dense(64, activation="relu"),
+            tf.keras.layers.Dense(64, activation="relu"),
             tf.keras.layers.Dense(32),
         ]
     )
@@ -35,11 +35,11 @@ def model(dim):
 @pytest.mark.parametrize(
     "n_cls,dim,n_samples,n_epochs,batch_size,loss,distance",
     [
-        (5, 10, 100, 10, 25, TripletLoss, 'euclidean'),
-        (5, 10, 100, 5, 25, TripletLoss, 'cosine'),
+        (5, 10, 100, 10, 25, TripletLoss, "euclidean"),
+        (5, 10, 100, 5, 25, TripletLoss, "cosine"),
         # Siamese needs more time to converge
-        (5, 10, 1000, 5, 256, SiameseLoss, 'euclidean'),
-        (5, 10, 1000, 5, 256, SiameseLoss, 'cosine'),
+        (5, 10, 1000, 5, 256, SiameseLoss, "euclidean"),
+        (5, 10, 1000, 5, 256, SiameseLoss, "cosine"),
     ],
 )
 def test_overfit_keras_session(
@@ -79,11 +79,11 @@ def test_overfit_keras_session(
 @pytest.mark.parametrize(
     "n_cls,dim,n_epochs,loss,distance",
     [
-        (5, 10, 50, TripletLoss, 'euclidean'),
-        (5, 10, 100, TripletLoss, 'cosine'),
+        (5, 10, 50, TripletLoss, "euclidean"),
+        (5, 10, 100, TripletLoss, "cosine"),
         # Siamese needs more time to converge
-        (5, 10, 100, SiameseLoss, 'euclidean'),
-        (5, 10, 100, SiameseLoss, 'cosine'),
+        (5, 10, 100, SiameseLoss, "euclidean"),
+        (5, 10, 100, SiameseLoss, "cosine"),
     ],
 )
 def test_overfit_keras_class(

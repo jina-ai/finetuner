@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 from .helper import get_framework
 
 
-def _apply2batch(docs: 'DocumentArray', fn: 'PreprocFnType') -> 'DocumentArray':
+def _apply2batch(docs: "DocumentArray", fn: "PreprocFnType") -> "DocumentArray":
     da = []
     for d in docs:
         d_new = fn(d)
@@ -24,12 +24,12 @@ def _apply2batch(docs: 'DocumentArray', fn: 'PreprocFnType') -> 'DocumentArray':
 
 
 def embed(
-    docs: Union['DocumentArray', 'DocumentArrayMemmap'],
-    embed_model: 'AnyDNN',
-    device: str = 'cpu',
+    docs: Union["DocumentArray", "DocumentArrayMemmap"],
+    embed_model: "AnyDNN",
+    device: str = "cpu",
     batch_size: int = 256,
-    preprocess_fn: Optional['PreprocFnType'] = None,
-    collate_fn: Optional['CollateFnType'] = None,
+    preprocess_fn: Optional["PreprocFnType"] = None,
+    collate_fn: Optional["CollateFnType"] = None,
 ) -> None:
     """Fill the embedding of Documents inplace by using `embed_model`
 
@@ -48,18 +48,18 @@ def embed(
     """
 
     fm = get_framework(embed_model)
-    globals()[f'_set_embeddings_{fm}'](
+    globals()[f"_set_embeddings_{fm}"](
         docs, embed_model, device, batch_size, preprocess_fn, collate_fn
     )
 
 
 def _set_embeddings_keras(
-    docs: Union['DocumentArray', 'DocumentArrayMemmap'],
-    embed_model: 'AnyDNN',
-    device: str = 'cpu',
+    docs: Union["DocumentArray", "DocumentArrayMemmap"],
+    embed_model: "AnyDNN",
+    device: str = "cpu",
     batch_size: int = 256,
-    preprocess_fn: Optional['PreprocFnType'] = None,
-    collate_fn: Optional['CollateFnType'] = None,
+    preprocess_fn: Optional["PreprocFnType"] = None,
+    collate_fn: Optional["CollateFnType"] = None,
 ):
     from .tuner.keras import get_device
 
@@ -76,12 +76,12 @@ def _set_embeddings_keras(
 
 
 def _set_embeddings_torch(
-    docs: Union['DocumentArray', 'DocumentArrayMemmap'],
-    embed_model: 'AnyDNN',
-    device: str = 'cpu',
+    docs: Union["DocumentArray", "DocumentArrayMemmap"],
+    embed_model: "AnyDNN",
+    device: str = "cpu",
     batch_size: int = 256,
-    preprocess_fn: Optional['PreprocFnType'] = None,
-    collate_fn: Optional['CollateFnType'] = None,
+    preprocess_fn: Optional["PreprocFnType"] = None,
+    collate_fn: Optional["CollateFnType"] = None,
 ):
     from .tuner.pytorch import get_device
 
@@ -108,10 +108,10 @@ def _set_embeddings_torch(
 def _set_embeddings_paddle(
     docs,
     embed_model,
-    device: str = 'cpu',
+    device: str = "cpu",
     batch_size: int = 256,
-    preprocess_fn: Optional['PreprocFnType'] = None,
-    collate_fn: Optional['CollateFnType'] = None,
+    preprocess_fn: Optional["PreprocFnType"] = None,
+    collate_fn: Optional["CollateFnType"] = None,
 ):
     from .tuner.paddle import get_device
 

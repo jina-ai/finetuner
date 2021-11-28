@@ -14,36 +14,36 @@ if TYPE_CHECKING:
     )
 
 
-def _get_tuner_class(dnn_model: 'AnyDNN') -> Type['BaseTuner']:
+def _get_tuner_class(dnn_model: "AnyDNN") -> Type["BaseTuner"]:
     f_type = get_framework(dnn_model)
 
-    if f_type == 'keras':
+    if f_type == "keras":
         from .keras import KerasTuner
 
         return KerasTuner
-    elif f_type == 'torch':
+    elif f_type == "torch":
         from .pytorch import PytorchTuner
 
         return PytorchTuner
-    elif f_type == 'paddle':
+    elif f_type == "paddle":
         from .paddle import PaddleTuner
 
         return PaddleTuner
 
 
 def fit(
-    embed_model: 'AnyDNN',
-    train_data: 'DocumentSequence',
-    eval_data: Optional['DocumentSequence'] = None,
-    preprocess_fn: Optional['PreprocFnType'] = None,
-    collate_fn: Optional['CollateFnType'] = None,
+    embed_model: "AnyDNN",
+    train_data: "DocumentSequence",
+    eval_data: Optional["DocumentSequence"] = None,
+    preprocess_fn: Optional["PreprocFnType"] = None,
+    collate_fn: Optional["CollateFnType"] = None,
     epochs: int = 10,
     batch_size: int = 256,
     num_items_per_class: Optional[int] = None,
-    loss: Union[str, BaseLoss] = 'SiameseLoss',
-    optimizer: Optional['AnyOptimizer'] = None,
+    loss: Union[str, BaseLoss] = "SiameseLoss",
+    optimizer: Optional["AnyOptimizer"] = None,
     learning_rate: float = 1e-3,
-    device: str = 'cpu',
+    device: str = "cpu",
     **kwargs,
 ):
     """Finetune the model on the training data.
@@ -91,7 +91,7 @@ def fit(
     )
 
 
-def save(embed_model: 'AnyDNN', model_path: str, *args, **kwargs) -> None:
+def save(embed_model: "AnyDNN", model_path: str, *args, **kwargs) -> None:
     """Save the embedding model.
 
     :param embed_model: The embedding model to save

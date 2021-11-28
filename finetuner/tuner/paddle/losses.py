@@ -15,15 +15,15 @@ def _is_tensor_empty(tensor: paddle.Tensor):
 def get_distance(embeddings: paddle.Tensor, distance: str) -> paddle.Tensor:
     """Get a matrix of pairwise distances between the embedings"""
 
-    if distance == 'cosine':
+    if distance == "cosine":
         emb_norm = F.normalize(embeddings, p=2, axis=1)
         dists = 1 - paddle.mm(emb_norm, emb_norm.t())
-    elif distance == 'euclidean':
+    elif distance == "euclidean":
         emb2 = (embeddings ** 2).sum(axis=1, keepdim=True)
         prod = paddle.mm(embeddings, embeddings.t())
         dists = emb2 + emb2.t() - 2 * prod
         dists = paddle.sqrt(dists.clip(0))
-    elif distance == 'sqeuclidean':
+    elif distance == "sqeuclidean":
         emb2 = (embeddings ** 2).sum(axis=1, keepdim=True)
         prod = paddle.mm(embeddings, embeddings.t())
         dists = emb2 + emb2.t() - 2 * prod
@@ -66,7 +66,7 @@ class SiameseLoss(PaddleLoss):
 
     def __init__(
         self,
-        distance: str = 'cosine',
+        distance: str = "cosine",
         margin: float = 1.0,
         miner: Optional[BaseMiner] = None,
     ):
@@ -100,7 +100,7 @@ class SiameseLoss(PaddleLoss):
             or _is_tensor_empty(ind_two)
             or _is_tensor_empty(target)
         ):
-            raise ValueError('Got empty tuple/triplets from your dataset.')
+            raise ValueError("Got empty tuple/triplets from your dataset.")
         dist_matrix = get_distance(embeddings, self.distance)
         ind_slice = paddle.stack([ind_one, ind_two]).t()
         dists = paddle.gather_nd(dist_matrix, index=ind_slice)
@@ -168,7 +168,7 @@ class TripletLoss(PaddleLoss):
             or _is_tensor_empty(ind_pos)
             or _is_tensor_empty(ind_neg)
         ):
-            raise ValueError('Got empty tuple/triplets from your dataset.')
+            raise ValueError("Got empty tuple/triplets from your dataset.")
 
         dist_matrix = get_distance(embeddings, self.distance)
         ind_slice_pos = paddle.stack([ind_anch, ind_pos]).t()

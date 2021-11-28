@@ -21,7 +21,7 @@ class PaddleTailor(BaseTailor):
         To use this class, you need to set ``input_size`` and ``input_dtype`` in :py:meth:`.__init__`
     """
 
-    def summary(self, skip_identity_layer: bool = False) -> 'LayerInfoType':
+    def summary(self, skip_identity_layer: bool = False) -> "LayerInfoType":
         """Interpret the DNN model and produce model information.
 
         :param skip_identity_layer: If skip identity layer.
@@ -29,7 +29,7 @@ class PaddleTailor(BaseTailor):
         """
         if not self._input_size:
             raise ValueError(
-                f'{self.__class__} requires a valid `input_size`, but receiving {self._input_size}'
+                f"{self.__class__} requires a valid `input_size`, but receiving {self._input_size}"
             )
 
         user_model = copy.deepcopy(self._model)
@@ -50,18 +50,18 @@ class PaddleTailor(BaseTailor):
         def register_hook(layer):
             def hook(layer, input, output):
 
-                class_name = str(layer.__class__).split('.')[-1].split("'")[0]
+                class_name = str(layer.__class__).split(".")[-1].split("'")[0]
 
                 layer_idx = len(summary)
 
-                m_key = f'{class_name.lower()}_{layer_idx + 1}'
+                m_key = f"{class_name.lower()}_{layer_idx + 1}"
 
                 summary[m_key] = OrderedDict()
-                summary[m_key]['cls_name'] = layer.__class__.__name__
-                summary[m_key]['name'] = m_key
-                summary[m_key]['input_shape'] = _get_shape(input)
-                summary[m_key]['output_shape'] = _get_shape(output)
-                summary[m_key]['module_name'] = layer.name
+                summary[m_key]["cls_name"] = layer.__class__.__name__
+                summary[m_key]["name"] = m_key
+                summary[m_key]["input_shape"] = _get_shape(input)
+                summary[m_key]["output_shape"] = _get_shape(output)
+                summary[m_key]["module_name"] = layer.name
 
                 params = 0
                 if paddle.in_dynamic_mode():
@@ -72,8 +72,8 @@ class PaddleTailor(BaseTailor):
                 for k, v in layer_state_dict.items():
                     params += np.prod(v.shape)
 
-                summary[m_key]['nb_params'] = params
-                summary[m_key]['trainable'] = any(
+                summary[m_key]["nb_params"] = params
+                summary[m_key]["trainable"] = any(
                     l.trainable for _, l in layer_state_dict.items()
                 )
 
@@ -84,7 +84,7 @@ class PaddleTailor(BaseTailor):
             ):
                 hooks.append(layer.register_forward_post_hook(hook))
             # For rnn, gru and lstm layer
-            elif hasattr(layer, 'could_use_cudnn') and layer.could_use_cudnn:
+            elif hasattr(layer, "could_use_cudnn") and layer.could_use_cudnn:
                 hooks.append(layer.register_forward_post_hook(hook))
 
         x = [
@@ -108,19 +108,19 @@ class PaddleTailor(BaseTailor):
 
         results = []
         for idx, layer in enumerate(summary):
-            output_shape = summary[layer]['output_shape']
-            input_shape = summary[layer]['input_shape']
+            output_shape = summary[layer]["output_shape"]
+            input_shape = summary[layer]["input_shape"]
             is_embedding_layer = not (
                 not output_shape
                 or len(output_shape) != 2
                 or not is_seq_int(output_shape)
-                or summary[layer]['cls_name'] == self._model.__class__.__name__
+                or summary[layer]["cls_name"] == self._model.__class__.__name__
             )
 
             if (
                 skip_identity_layer
                 and output_shape == input_shape
-                and not summary[layer]['nb_params']
+                and not summary[layer]["nb_params"]
             ):
                 # not an effective layer, often a wrapper/identity layer
                 continue
@@ -128,10 +128,10 @@ class PaddleTailor(BaseTailor):
             results.append(
                 {
                     **summary[layer],
-                    'output_features': output_shape[-1],
-                    'output_shape_display': output_shape[1:],
-                    'layer_idx': idx,
-                    'is_embedding_layer': is_embedding_layer,
+                    "output_features": output_shape[-1],
+                    "output_shape_display": output_shape[1:],
+                    "layer_idx": idx,
+                    "is_embedding_layer": is_embedding_layer,
                 }
             )
         return results
@@ -142,7 +142,7 @@ class PaddleTailor(BaseTailor):
         output_dim: Optional[int] = None,
         freeze: bool = False,
         freeze_layers: Optional[List[str]] = None,
-    ) -> 'AnyDNN':
+    ) -> "AnyDNN":
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
         :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
@@ -154,13 +154,13 @@ class PaddleTailor(BaseTailor):
         :return: Converted embedding model.
         """
         model = copy.deepcopy(self._model)
-        _all_embed_layers = {l['name']: l for l in self.embedding_layers}
+        _all_embed_layers = {l["name"]: l for l in self.embedding_layers}
         if layer_name:
             try:
                 _embed_layer = _all_embed_layers[layer_name]
             except KeyError as e:
                 raise KeyError(
-                    f'`embedding_layer_name` must be one of {_all_embed_layers.keys()}, given {layer_name}'
+                    f"`embedding_layer_name` must be one of {_all_embed_layers.keys()}, given {layer_name}"
                 ) from e
         else:
             # when not given, using the last layer
@@ -178,7 +178,7 @@ class PaddleTailor(BaseTailor):
         _relative_idx_to_embedding_layer = None
         _is_dense_layer_added = False
         for name, module in model.named_sublayers():
-            if name == _embed_layer['module_name']:
+            if name == _embed_layer["module_name"]:
                 _relative_idx_to_embedding_layer = 0
 
                 # corner-case
@@ -187,9 +187,9 @@ class PaddleTailor(BaseTailor):
                         param.trainable = True
                     else:
                         warnings.warn(
-                            'The current configs results in a non-parametric model, '
-                            'which is no trainable. '
-                            'You may need to specify `output_dim` or `embedding_layer_name`.'
+                            "The current configs results in a non-parametric model, "
+                            "which is no trainable. "
+                            "You may need to specify `output_dim` or `embedding_layer_name`."
                         )
 
             if (
@@ -198,7 +198,7 @@ class PaddleTailor(BaseTailor):
             ):
                 if _relative_idx_to_embedding_layer == 1 and output_dim:
                     replaced_layer = nn.Linear(
-                        in_features=_embed_layer['output_features'],
+                        in_features=_embed_layer["output_features"],
                         out_features=output_dim,
                     )
                     _is_dense_layer_added = True
@@ -206,9 +206,9 @@ class PaddleTailor(BaseTailor):
                     replaced_layer = _Identity()
 
                 if (
-                    '.' in name
+                    "." in name
                 ):  # Note: in torchvision, nested layer names are named with '.' e.g. classifier.0
-                    nested_module, layer = name.split('.')
+                    nested_module, layer = name.split(".")
                     setattr(getattr(model, nested_module), layer, replaced_layer)
                 else:
                     setattr(model, name, replaced_layer)
@@ -220,7 +220,7 @@ class PaddleTailor(BaseTailor):
             # the dense layer needs to be added after the last layer
             model = _LinearAtLast(
                 model,
-                in_features=_embed_layer['output_features'],
+                in_features=_embed_layer["output_features"],
                 out_features=output_dim,
             )
 

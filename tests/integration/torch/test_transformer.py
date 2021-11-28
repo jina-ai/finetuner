@@ -6,7 +6,7 @@ from finetuner.toydata import generate_qa
 from finetuner.tuner.pytorch import PytorchTuner
 
 
-TRANSFORMER_MODEL = 'sentence-transformers/paraphrase-MiniLM-L6-v2'
+TRANSFORMER_MODEL = "sentence-transformers/paraphrase-MiniLM-L6-v2"
 
 
 class TransformerEmbedder(torch.nn.Module):
@@ -29,7 +29,7 @@ def test_fit_transformer():
             truncation=True,
             max_length=50,
             padding=True,
-            return_tensors='pt',
+            return_tensors="pt",
         )
         return batch_tokens
 
@@ -37,5 +37,5 @@ def test_fit_transformer():
     docs_eval = generate_qa(num_neg=8, is_testset=True, num_total=20)
     model = TransformerEmbedder()
 
-    tuner = PytorchTuner(model, loss='SiameseLoss')
+    tuner = PytorchTuner(model, loss="SiameseLoss")
     tuner.fit(docs, docs_eval, collate_fn=collate_fn, batch_size=30, epochs=2)

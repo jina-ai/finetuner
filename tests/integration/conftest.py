@@ -8,16 +8,16 @@ from jina import Document, DocumentArray
 @pytest.fixture
 def params():
     return {
-        'input_dim': 28,
-        'output_dim': 8,
-        'epochs': 2,
-        'batch_size': 256,
-        'num_items_per_class': 32,
-        'feature_dim': 32,
-        'learning_rate': 0.01,
-        'num_train': 1000,
-        'num_eval': 1000,
-        'num_predict': 100,
+        "input_dim": 28,
+        "output_dim": 8,
+        "epochs": 2,
+        "batch_size": 256,
+        "num_items_per_class": 32,
+        "feature_dim": 32,
+        "learning_rate": 0.01,
+        "num_train": 1000,
+        "num_eval": 1000,
+        "num_predict": 100,
     }
 
 
@@ -126,51 +126,51 @@ class RecordCallback(BaseCallback):
         self.num_batches_val.append(tuner.state.num_batches_val)
 
     def on_fit_begin(self, tuner):
-        self.calls.append('on_fit_begin')
+        self.calls.append("on_fit_begin")
         self._record(tuner)
 
     def on_epoch_begin(self, tuner):
-        self.calls.append('on_epoch_begin')
+        self.calls.append("on_epoch_begin")
         self._record(tuner)
 
     def on_train_epoch_begin(self, tuner):
-        self.calls.append('on_train_epoch_begin')
+        self.calls.append("on_train_epoch_begin")
         self._record(tuner)
 
     def on_train_batch_begin(self, tuner):
-        self.calls.append('on_train_batch_begin')
+        self.calls.append("on_train_batch_begin")
         self._record(tuner)
 
     def on_train_batch_end(self, tuner):
-        self.calls.append('on_train_batch_end')
+        self.calls.append("on_train_batch_end")
         self._record(tuner)
 
     def on_train_epoch_end(self, tuner):
-        self.calls.append('on_train_epoch_end')
+        self.calls.append("on_train_epoch_end")
         self._record(tuner)
 
     def on_val_begin(self, tuner):
-        self.calls.append('on_val_begin')
+        self.calls.append("on_val_begin")
         self._record(tuner)
 
     def on_val_batch_begin(self, tuner):
-        self.calls.append('on_val_batch_begin')
+        self.calls.append("on_val_batch_begin")
         self._record(tuner)
 
     def on_val_batch_end(self, tuner):
-        self.calls.append('on_val_batch_end')
+        self.calls.append("on_val_batch_end")
         self._record(tuner)
 
     def on_val_end(self, tuner):
-        self.calls.append('on_val_end')
+        self.calls.append("on_val_end")
         self._record(tuner)
 
     def on_epoch_end(self, tuner):
-        self.calls.append('on_epoch_end')
+        self.calls.append("on_epoch_end")
         self._record(tuner)
 
     def on_fit_end(self, tuner):
-        self.calls.append('on_fit_end')
+        self.calls.append("on_fit_end")
         self._record(tuner)
 
 
@@ -181,30 +181,30 @@ def expected_results():
     for train and eval) when doing 2 epochs, with 2 train and 1 eval batch
     """
     return [
-        ('on_fit_begin', 0, 0, 2, 0, 0),
-        ('on_epoch_begin', 0, 0, 2, 2, 0),
-        ('on_train_epoch_begin', 0, 0, 2, 2, 0),
-        ('on_train_batch_begin', 0, 0, 2, 2, 0),
-        ('on_train_batch_end', 0, 0, 2, 2, 0),
-        ('on_train_batch_begin', 0, 1, 2, 2, 0),
-        ('on_train_batch_end', 0, 1, 2, 2, 0),
-        ('on_train_epoch_end', 0, 1, 2, 2, 0),
-        ('on_val_begin', 0, 0, 2, 2, 1),
-        ('on_val_batch_begin', 0, 0, 2, 2, 1),
-        ('on_val_batch_end', 0, 0, 2, 2, 1),
-        ('on_val_end', 0, 0, 2, 2, 1),
-        ('on_epoch_end', 0, 0, 2, 2, 1),
-        ('on_epoch_begin', 1, 0, 2, 2, 1),
-        ('on_train_epoch_begin', 1, 0, 2, 2, 1),
-        ('on_train_batch_begin', 1, 0, 2, 2, 1),
-        ('on_train_batch_end', 1, 0, 2, 2, 1),
-        ('on_train_batch_begin', 1, 1, 2, 2, 1),
-        ('on_train_batch_end', 1, 1, 2, 2, 1),
-        ('on_train_epoch_end', 1, 1, 2, 2, 1),
-        ('on_val_begin', 1, 0, 2, 2, 1),
-        ('on_val_batch_begin', 1, 0, 2, 2, 1),
-        ('on_val_batch_end', 1, 0, 2, 2, 1),
-        ('on_val_end', 1, 0, 2, 2, 1),
-        ('on_epoch_end', 1, 0, 2, 2, 1),
-        ('on_fit_end', 1, 0, 2, 2, 1),
+        ("on_fit_begin", 0, 0, 2, 0, 0),
+        ("on_epoch_begin", 0, 0, 2, 2, 0),
+        ("on_train_epoch_begin", 0, 0, 2, 2, 0),
+        ("on_train_batch_begin", 0, 0, 2, 2, 0),
+        ("on_train_batch_end", 0, 0, 2, 2, 0),
+        ("on_train_batch_begin", 0, 1, 2, 2, 0),
+        ("on_train_batch_end", 0, 1, 2, 2, 0),
+        ("on_train_epoch_end", 0, 1, 2, 2, 0),
+        ("on_val_begin", 0, 0, 2, 2, 1),
+        ("on_val_batch_begin", 0, 0, 2, 2, 1),
+        ("on_val_batch_end", 0, 0, 2, 2, 1),
+        ("on_val_end", 0, 0, 2, 2, 1),
+        ("on_epoch_end", 0, 0, 2, 2, 1),
+        ("on_epoch_begin", 1, 0, 2, 2, 1),
+        ("on_train_epoch_begin", 1, 0, 2, 2, 1),
+        ("on_train_batch_begin", 1, 0, 2, 2, 1),
+        ("on_train_batch_end", 1, 0, 2, 2, 1),
+        ("on_train_batch_begin", 1, 1, 2, 2, 1),
+        ("on_train_batch_end", 1, 1, 2, 2, 1),
+        ("on_train_epoch_end", 1, 1, 2, 2, 1),
+        ("on_val_begin", 1, 0, 2, 2, 1),
+        ("on_val_batch_begin", 1, 0, 2, 2, 1),
+        ("on_val_batch_end", 1, 0, 2, 2, 1),
+        ("on_val_end", 1, 0, 2, 2, 1),
+        ("on_epoch_end", 1, 0, 2, 2, 1),
+        ("on_fit_end", 1, 0, 2, 2, 1),
     ]

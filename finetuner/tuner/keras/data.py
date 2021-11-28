@@ -21,8 +21,8 @@ class KerasDataSequence(tf.keras.utils.Sequence):
     def __init__(
         self,
         batch_sampler,
-        dataset: Union['ClassDataset', 'SessionDataset'],
-        collate_fn: Optional['CollateFnType'] = None,
+        dataset: Union["ClassDataset", "SessionDataset"],
+        collate_fn: Optional["CollateFnType"] = None,
     ):
         self.dataset = dataset
         self.batch_sampler = batch_sampler

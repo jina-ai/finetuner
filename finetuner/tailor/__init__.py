@@ -7,32 +7,32 @@ if TYPE_CHECKING:
     from ...helper import AnyDNN
 
 
-def _get_tailor_class(dnn_model: 'AnyDNN') -> Type['BaseTailor']:
+def _get_tailor_class(dnn_model: "AnyDNN") -> Type["BaseTailor"]:
     f_type = get_framework(dnn_model)
 
-    if f_type == 'keras':
+    if f_type == "keras":
         from .keras import KerasTailor
 
         return KerasTailor
-    elif f_type == 'torch':
+    elif f_type == "torch":
         from .pytorch import PytorchTailor
 
         return PytorchTailor
-    elif f_type == 'paddle':
+    elif f_type == "paddle":
         from .paddle import PaddleTailor
 
         return PaddleTailor
 
 
 def to_embedding_model(
-    model: 'AnyDNN',
+    model: "AnyDNN",
     layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
     input_size: Optional[Tuple[int, ...]] = None,
-    input_dtype: str = 'float32',
+    input_dtype: str = "float32",
     **kwargs
-) -> 'AnyDNN':
+) -> "AnyDNN":
     """Convert a general model from :py:attr:`.model` to an embedding model.
 
     :param model: The DNN model to be converted.
@@ -52,9 +52,9 @@ def to_embedding_model(
 
 
 def display(
-    model: 'AnyDNN',
+    model: "AnyDNN",
     input_size: Optional[Tuple[int, ...]] = None,
-    input_dtype: str = 'float32',
+    input_dtype: str = "float32",
 ) -> None:
     """Display the model architecture from :py:attr:`.summary` in a table.
 

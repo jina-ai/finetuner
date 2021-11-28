@@ -6,7 +6,7 @@ from ..miner import get_session_pairs, get_session_triplets
 from ..miner.base import BaseClassMiner, BaseSessionMiner
 
 
-def _empty_tensor(dtype: str = 'int64') -> paddle.Tensor:
+def _empty_tensor(dtype: str = "int64") -> paddle.Tensor:
     return paddle.to_tensor([], dtype=dtype)
 
 
@@ -31,7 +31,7 @@ class SiameseMiner(BaseClassMiner[paddle.Tensor]):
             return _empty_tensor(), _empty_tensor(), _empty_tensor()
 
         l1, l2 = labels.unsqueeze(1), labels.unsqueeze(0)
-        matches = paddle.cast(l1 == l2, 'int32')
+        matches = paddle.cast(l1 == l2, "int32")
         diffs = 1 - matches
         matches = paddle.triu(matches, 1)
         diffs = paddle.triu(diffs)
@@ -83,7 +83,7 @@ class TripletMiner(BaseClassMiner[paddle.Tensor]):
             return _empty_tensor(), _empty_tensor(), _empty_tensor()
 
         labels1, labels2 = labels.unsqueeze(1), labels.unsqueeze(0)
-        matches = paddle.cast(labels1 == labels2, 'int32')
+        matches = paddle.cast(labels1 == labels2, "int32")
         diffs = 1 - matches
 
         matches = paddle.tril(matches, -1) + paddle.triu(matches, 1)

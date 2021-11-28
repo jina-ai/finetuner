@@ -6,11 +6,11 @@ from finetuner.embedding import embed
 from finetuner.toydata import generate_fashion
 from finetuner.tuner.paddle import PaddleTuner
 
-all_test_losses = ['SiameseLoss', 'TripletLoss']
+all_test_losses = ["SiameseLoss", "TripletLoss"]
 
 
 @pytest.mark.gpu
-@pytest.mark.parametrize('loss', all_test_losses)
+@pytest.mark.parametrize("loss", all_test_losses)
 def test_gpu_paddle(generate_random_data, loss):
 
     data = generate_random_data(40, 4)
@@ -21,10 +21,10 @@ def test_gpu_paddle(generate_random_data, loss):
 
     tuner = PaddleTuner(embed_model, loss=loss)
 
-    tuner.fit(data, data, epochs=2, batch_size=8, device='cuda')
+    tuner.fit(data, data, epochs=2, batch_size=8, device="cuda")
 
     for param in tuner.embed_model.parameters():
-        assert str(param.place) == 'CUDAPlace(0)'
+        assert str(param.place) == "CUDAPlace(0)"
 
 
 @pytest.mark.gpu
@@ -40,11 +40,11 @@ def test_set_embeddings_gpu(tmpdir):
         nn.Linear(in_features=128, out_features=32),
     )
     docs = DocumentArray(generate_fashion(num_total=100))
-    embed(docs, embed_model, 'cuda')
+    embed(docs, embed_model, "cuda")
     assert docs.embeddings.shape == (100, 32)
 
     # works for DAM
     dam = DocumentArrayMemmap(tmpdir)
     dam.extend(generate_fashion(num_total=42))
-    embed(dam, embed_model, 'cuda')
+    embed(dam, embed_model, "cuda")
     assert dam.embeddings.shape == (42, 32)

@@ -15,12 +15,12 @@ if TYPE_CHECKING:
 
 
 class ClassDataset(BaseDataset[int]):
-    """ Dataset for enapsulating data where each item has a class label."""
+    """Dataset for enapsulating data where each item has a class label."""
 
     def __init__(
         self,
-        docs: 'DocumentSequence',
-        preprocess_fn: Optional['PreprocFnType'] = None,
+        docs: "DocumentSequence",
+        preprocess_fn: Optional["PreprocFnType"] = None,
     ):
         """Create the dataset instance.
 
@@ -43,8 +43,8 @@ class ClassDataset(BaseDataset[int]):
         for doc in self._docs:
             if __default_tag_key__ not in doc.tags:
                 raise KeyError(
-                    f'The tag `{__default_tag_key__}` was not found in a document.'
-                    f' When using {type(self)} all documents need this tag.'
+                    f"The tag `{__default_tag_key__}` was not found in a document."
+                    f" When using {type(self)} all documents need this tag."
                 )
             tag = doc.tags[__default_tag_key__]
 
@@ -57,7 +57,7 @@ class ClassDataset(BaseDataset[int]):
 
             self._labels.append(label)
 
-    def __getitem__(self, ind: int) -> Tuple['DocumentContentType', int]:
+    def __getitem__(self, ind: int) -> Tuple["DocumentContentType", int]:
         """
         Get the (preprocessed) content and label for the item at ``ind`` index in the
         dataset.
@@ -75,7 +75,7 @@ class ClassDataset(BaseDataset[int]):
 
     @property
     def labels(self) -> List[int]:
-        """ Get the list of integer labels for all items in the dataset."""
+        """Get the list of integer labels for all items in the dataset."""
         return self._labels
 
 
@@ -88,8 +88,8 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
 
     def __init__(
         self,
-        docs: 'DocumentSequence',
-        preprocess_fn: Optional['PreprocFnType'] = None,
+        docs: "DocumentSequence",
+        preprocess_fn: Optional["PreprocFnType"] = None,
     ):
         """Create the dataset instance.
 
@@ -118,15 +118,15 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
                 self._locations.append((i, match_ind))
                 if __default_tag_key__ not in match.tags:
                     raise KeyError(
-                        f'The tag `{__default_tag_key__}` was not found in a document.'
-                        f' When using {type(self)} all documents need this tag'
+                        f"The tag `{__default_tag_key__}` was not found in a document."
+                        f" When using {type(self)} all documents need this tag"
                     )
 
                 tag = match.tags[__default_tag_key__]
 
                 self._labels.append((i, int(tag)))
 
-    def __getitem__(self, ind: int) -> Tuple['DocumentContentType', Tuple[int, int]]:
+    def __getitem__(self, ind: int) -> Tuple["DocumentContentType", Tuple[int, int]]:
         """
         Get the (preprocessed) content and label for the item at ``ind`` index in the
         dataset.

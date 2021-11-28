@@ -19,24 +19,24 @@ def test_empty_list():
 
 
 def test_no_class_label():
-    data = DocumentArray([Document(text='text', matches=[Document(text='text')])])
+    data = DocumentArray([Document(text="text", matches=[Document(text="text")])])
 
-    with pytest.raises(KeyError, match=rf'The tag `{__default_tag_key__}`'):
+    with pytest.raises(KeyError, match=rf"The tag `{__default_tag_key__}`"):
         _ = SessionDataset(data)
 
 
 def test_da_input():
-    data = DocumentArray([Document(text='text1'), Document(text='text2')])
+    data = DocumentArray([Document(text="text1"), Document(text="text2")])
     data[0].matches = DocumentArray(
         [
-            Document(text='text1a', tags=_label(-1)),
-            Document(text='text1b', tags=_label(1)),
+            Document(text="text1a", tags=_label(-1)),
+            Document(text="text1b", tags=_label(1)),
         ]
     )
 
     ds = SessionDataset(data)
 
-    contents = ['text1', 'text1a', 'text1b', 'text2']
+    contents = ["text1", "text1a", "text1b", "text2"]
     labels = [(0, 0), (0, -1), (0, 1), (1, 0)]
 
     assert len(ds) == 4
@@ -49,17 +49,17 @@ def test_da_input():
 
 def test_dam_input(tmp_path):
     data = DocumentArrayMemmap(tmp_path)
-    data.extend([Document(text='text1'), Document(text='text2')])
+    data.extend([Document(text="text1"), Document(text="text2")])
     data[0].matches = DocumentArray(
         [
-            Document(text='text1a', tags=_label(-1)),
-            Document(text='text1b', tags=_label(1)),
+            Document(text="text1a", tags=_label(-1)),
+            Document(text="text1b", tags=_label(1)),
         ]
     )
 
     ds = SessionDataset(data)
 
-    contents = ['text1', 'text1a', 'text1b', 'text2']
+    contents = ["text1", "text1a", "text1b", "text2"]
     labels = [(0, 0), (0, -1), (0, 1), (1, 0)]
 
     assert len(ds) == 4
@@ -71,17 +71,17 @@ def test_dam_input(tmp_path):
 
 
 def test_list_input():
-    data = [Document(text='text1'), Document(text='text2')]
+    data = [Document(text="text1"), Document(text="text2")]
     data[0].matches = DocumentArray(
         [
-            Document(text='text1a', tags=_label(-1)),
-            Document(text='text1b', tags=_label(1)),
+            Document(text="text1a", tags=_label(-1)),
+            Document(text="text1b", tags=_label(1)),
         ]
     )
 
     ds = SessionDataset(data)
 
-    contents = ['text1', 'text1a', 'text1b', 'text2']
+    contents = ["text1", "text1a", "text1b", "text2"]
     labels = [(0, 0), (0, -1), (0, 1), (1, 0)]
 
     assert len(ds) == 4
@@ -106,16 +106,16 @@ def test_custom_document_sequence_input():
         def __getitem__(self, ind: int) -> Document:
             return self.data[ind]
 
-    data = MySequence([Document(text='text1'), Document(text='text2')])
+    data = MySequence([Document(text="text1"), Document(text="text2")])
     data[0].matches = DocumentArray(
         [
-            Document(text='text1a', tags=_label(-1)),
-            Document(text='text1b', tags=_label(1)),
+            Document(text="text1a", tags=_label(-1)),
+            Document(text="text1b", tags=_label(1)),
         ]
     )
     ds = SessionDataset(data)
 
-    contents = ['text1', 'text1a', 'text1b', 'text2']
+    contents = ["text1", "text1a", "text1b", "text2"]
     labels = [(0, 0), (0, -1), (0, 1), (1, 0)]
 
     assert len(ds) == 4
@@ -128,17 +128,17 @@ def test_custom_document_sequence_input():
 
 def test_preprocess_fn():
     def preprocess(d: Document):
-        return d.text + '_new'
+        return d.text + "_new"
 
-    data = [Document(text='text1'), Document(text='text2')]
+    data = [Document(text="text1"), Document(text="text2")]
     data[0].matches = DocumentArray(
         [
-            Document(text='text1a', tags=_label(-1)),
-            Document(text='text1b', tags=_label(1)),
+            Document(text="text1a", tags=_label(-1)),
+            Document(text="text1b", tags=_label(1)),
         ]
     )
     ds = SessionDataset(data, preprocess_fn=preprocess)
 
-    new_contents = ['text1_new', 'text1a_new', 'text1b_new', 'text2_new']
+    new_contents = ["text1_new", "text1a_new", "text1b_new", "text2_new"]
     for (content, _), new_content in zip(ds, new_contents):
         assert content == new_content

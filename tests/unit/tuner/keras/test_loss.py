@@ -10,9 +10,9 @@ N_DIM = 128
 ALL_LOSSES = [SiameseLoss, TripletLoss]
 
 
-@pytest.mark.parametrize('margin', [0.0, 0.5, 1.0])
-@pytest.mark.parametrize('distance', ['cosine', 'euclidean'])
-@pytest.mark.parametrize('loss_cls', ALL_LOSSES)
+@pytest.mark.parametrize("margin", [0.0, 0.5, 1.0])
+@pytest.mark.parametrize("distance", ["cosine", "euclidean"])
+@pytest.mark.parametrize("loss_cls", ALL_LOSSES)
 def test_loss_output(loss_cls, distance, margin):
     """Test that we get a single positive number as output"""
     loss = loss_cls(distance=distance, margin=margin)
@@ -28,8 +28,8 @@ def test_loss_output(loss_cls, distance, margin):
     assert output >= 0
 
 
-@pytest.mark.parametrize('distance', ['cosine', 'euclidean'])
-@pytest.mark.parametrize('loss_cls', ALL_LOSSES)
+@pytest.mark.parametrize("distance", ["cosine", "euclidean"])
+@pytest.mark.parametrize("loss_cls", ALL_LOSSES)
 def test_loss_zero_same(loss_cls, distance):
     """Sanity check that with perfectly separated embeddings, loss is zero"""
 
@@ -51,7 +51,7 @@ def test_loss_zero_same(loss_cls, distance):
 
 
 @pytest.mark.parametrize(
-    'loss_cls,indices,exp_result',
+    "loss_cls,indices,exp_result",
     [
         (SiameseLoss, [[0, 2], [1, 3], [0, 1]], 0.64142),
         (TripletLoss, [[0, 2], [1, 3], [2, 1]], 0.9293),
@@ -62,29 +62,29 @@ def test_compute(loss_cls, indices, exp_result):
 
     indices = [tf.constant(x) for x in indices]
     embeddings = tf.constant([[0.1, 0.1], [0.2, 0.2], [0.4, 0.4], [0.7, 0.7]])
-    result = loss_cls(distance='euclidean').compute(embeddings, indices)
+    result = loss_cls(distance="euclidean").compute(embeddings, indices)
     np.testing.assert_almost_equal(result.numpy(), exp_result, decimal=5)
 
 
 @pytest.mark.parametrize(
-    'loss_cls',
+    "loss_cls",
     [SiameseLoss, TripletLoss],
 )
 def test_compute_loss_given_insufficient_data(loss_cls):
     indices = [tf.constant([]) for _ in range(3)]
     embeddings = tf.constant([[0.0, 0.1, 0.2, 0.4]])
     with pytest.raises(ValueError):
-        loss_cls(distance='euclidean').compute(embeddings, indices)
+        loss_cls(distance="euclidean").compute(embeddings, indices)
 
 
 @pytest.mark.gpu
 @pytest.mark.parametrize(
-    'loss_cls',
+    "loss_cls",
     [SiameseLoss, TripletLoss],
 )
 def test_compute_loss_given_insufficient_data_gpu(loss_cls):
-    with tf.device('/GPU:0'):
+    with tf.device("/GPU:0"):
         indices = [tf.constant([]) for _ in range(3)]
         embeddings = tf.constant([[0.0, 0.1, 0.2, 0.4]])
         with pytest.raises(ValueError):
-            loss_cls(distance='euclidean').compute(embeddings, indices)
+            loss_cls(distance="euclidean").compute(embeddings, indices)

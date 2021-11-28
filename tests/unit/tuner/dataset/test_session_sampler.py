@@ -21,7 +21,7 @@ def test_wrong_batch_size(batch_size: int):
         SessionSampler([(0, 0), (0, 1)], batch_size)
 
 
-@pytest.mark.parametrize('batch_size', [3, 6, 9])
+@pytest.mark.parametrize("batch_size", [3, 6, 9])
 def test_normal(batch_size):
     """Test with no cutoff needed"""
     SESSIONS = 18
@@ -40,7 +40,7 @@ def test_normal(batch_size):
 
 
 @pytest.mark.parametrize(
-    'batch_size,sessions,batches', [(4, 20, 20), (5, 20, 20), (7, 20, 10)]
+    "batch_size,sessions,batches", [(4, 20, 20), (5, 20, 20), (7, 20, 10)]
 )
 def test_repeat_session(batch_size, sessions, batches):
     """Some session gets repeated as it does not fit entirely into the batch"""

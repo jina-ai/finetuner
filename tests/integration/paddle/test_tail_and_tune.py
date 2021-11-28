@@ -27,7 +27,7 @@ def test_tail_and_tune(embed_model, create_easy_data_session):
         to_embedding_model=True,
         input_size=(128,),
         output_dim=16,
-        layer_name='linear_4',
+        layer_name="linear_4",
     )
     assert model
     assert model != embed_model

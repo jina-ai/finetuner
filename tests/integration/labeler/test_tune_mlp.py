@@ -9,9 +9,9 @@ from finetuner.toydata import generate_fashion
 from finetuner import __default_tag_key__
 from jina.helper import random_port
 
-os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
+os.environ["JINA_LOG_LEVEL"] = "DEBUG"
 
-all_test_losses = ['SiameseLoss', 'TripletLoss']
+all_test_losses = ["SiameseLoss", "TripletLoss"]
 
 
 def _run(framework_name, loss, port_expose):
@@ -22,14 +22,14 @@ def _run(framework_name, loss, port_expose):
     import torch
 
     embed_models = {
-        'keras': lambda: tf.keras.Sequential(
+        "keras": lambda: tf.keras.Sequential(
             [
                 tf.keras.layers.Flatten(input_shape=(28, 28)),
-                tf.keras.layers.Dense(128, activation='relu'),
+                tf.keras.layers.Dense(128, activation="relu"),
                 tf.keras.layers.Dense(32),
             ]
         ),
-        'pytorch': lambda: torch.nn.Sequential(
+        "pytorch": lambda: torch.nn.Sequential(
             torch.nn.Flatten(),
             torch.nn.Linear(
                 in_features=28 * 28,
@@ -38,7 +38,7 @@ def _run(framework_name, loss, port_expose):
             torch.nn.ReLU(),
             torch.nn.Linear(in_features=128, out_features=32),
         ),
-        'paddle': lambda: paddle.nn.Sequential(
+        "paddle": lambda: paddle.nn.Sequential(
             paddle.nn.Flatten(),
             paddle.nn.Linear(
                 in_features=28 * 28,
@@ -64,8 +64,8 @@ def _run(framework_name, loss, port_expose):
 # 'keras' does not work under this test setup
 # Exception ... ust be from the same graph as Tensor ...
 # TODO: add keras backend back to the test
-@pytest.mark.parametrize('framework', ['pytorch', 'paddle'])
-@pytest.mark.parametrize('loss', all_test_losses)
+@pytest.mark.parametrize("framework", ["pytorch", "paddle"])
+@pytest.mark.parametrize("loss", all_test_losses)
 def test_all_frameworks(framework, loss, tmpdir):
     port = random_port()
     p = multiprocessing.Process(
@@ -81,66 +81,66 @@ def test_all_frameworks(framework, loss, tmpdir):
         while True:
             try:
                 req = requests.post(
-                    f'http://localhost:{port}/next',
+                    f"http://localhost:{port}/next",
                     json={
-                        'data': [],
-                        'parameters': {
-                            'start': 0,
-                            'end': 1,
-                            'topk': 5,
-                            'sample_size': 10,
+                        "data": [],
+                        "parameters": {
+                            "start": 0,
+                            "end": 1,
+                            "topk": 5,
+                            "sample_size": 10,
                         },
                     },
                 )
                 assert req.status_code == 200
-                assert req.json()['data']['docs']
+                assert req.json()["data"]["docs"]
                 break
             except:
-                print('wait for ready...')
+                print("wait for ready...")
                 time.sleep(2)
 
         # mimic next page
         req = requests.post(
-            f'http://localhost:{port}/next',
+            f"http://localhost:{port}/next",
             json={
-                'data': [],
-                'parameters': {'start': 0, 'end': 1, 'topk': 5, 'sample_size': 10},
+                "data": [],
+                "parameters": {"start": 0, "end": 1, "topk": 5, "sample_size": 10},
             },
         )
         assert req.status_code == 200
         rj = req.json()
-        assert len(rj['data']['docs']) == 1
-        assert len(rj['data']['docs'][0]['matches']) >= 4
+        assert len(rj["data"]["docs"]) == 1
+        assert len(rj["data"]["docs"][0]["matches"]) >= 4
 
         time.sleep(1)
-        print('test fit...')
+        print("test fit...")
         # mimic label & fit
-        for lbl_doc in rj['data']['docs']:
-            for m in lbl_doc['matches']:
+        for lbl_doc in rj["data"]["docs"]:
+            for m in lbl_doc["matches"]:
                 m[__default_tag_key__] = random.sample([-1, 1], 1)[0]
 
         req = requests.post(
-            f'http://localhost:{port}/fit',
-            json={'data': rj['data']['docs'], 'parameters': {'epochs': 10}},
+            f"http://localhost:{port}/fit",
+            json={"data": rj["data"]["docs"], "parameters": {"epochs": 10}},
         )
         assert req.status_code == 200
 
-        model_path = os.path.join(tmpdir, 'model.train')
+        model_path = os.path.join(tmpdir, "model.train")
         req = requests.post(
-            f'http://localhost:{port}/save',
+            f"http://localhost:{port}/save",
             json={
-                'data': [],
-                'parameters': {'model_path': model_path},
+                "data": [],
+                "parameters": {"model_path": model_path},
             },
         )
         assert req.status_code == 200
         assert os.path.isfile(model_path)
 
         req = requests.post(
-            f'http://localhost:{port}/terminate',
+            f"http://localhost:{port}/terminate",
             json={
-                'data': [],
-                'parameters': {},
+                "data": [],
+                "parameters": {},
             },
         )
         assert req.status_code == 200

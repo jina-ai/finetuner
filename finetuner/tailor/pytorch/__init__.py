@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class PytorchTailor(BaseTailor):
     """Tailor class for PyTorch DNN models"""
 
-    def summary(self, skip_identity_layer: bool = False) -> 'LayerInfoType':
+    def summary(self, skip_identity_layer: bool = False) -> "LayerInfoType":
         """Interpret the DNN model and produce model information.
 
         :param skip_identity_layer: If skip identity layer.
@@ -26,7 +26,7 @@ class PytorchTailor(BaseTailor):
         """
         if not self._input_size:
             raise ValueError(
-                f'{self.__class__} requires a valid `input_size`, but receiving {self._input_size}'
+                f"{self.__class__} requires a valid `input_size`, but receiving {self._input_size}"
             )
 
         user_model = deepcopy(self._model)
@@ -47,31 +47,31 @@ class PytorchTailor(BaseTailor):
         def register_hook(module):
             def hook(module, input, output):
 
-                class_name = str(module.__class__).split('.')[-1].split("'")[0]
+                class_name = str(module.__class__).split(".")[-1].split("'")[0]
 
                 module_idx = len(summary)
 
-                m_key = f'{class_name.lower()}_{module_idx + 1}'
+                m_key = f"{class_name.lower()}_{module_idx + 1}"
                 summary[m_key] = OrderedDict()
-                summary[m_key]['cls_name'] = module.__class__.__name__
-                summary[m_key]['name'] = m_key
-                summary[m_key]['output_shape'] = _get_shape(output)
-                summary[m_key]['input_shape'] = _get_shape(input)
-                summary[m_key]['module_name'] = module.name
+                summary[m_key]["cls_name"] = module.__class__.__name__
+                summary[m_key]["name"] = m_key
+                summary[m_key]["output_shape"] = _get_shape(output)
+                summary[m_key]["input_shape"] = _get_shape(input)
+                summary[m_key]["module_name"] = module.name
 
                 params = 0
-                summary[m_key]['trainable'] = False
-                if hasattr(module, 'weight') and hasattr(module.weight, 'size'):
+                summary[m_key]["trainable"] = False
+                if hasattr(module, "weight") and hasattr(module.weight, "size"):
                     params += np.prod(list(module.weight.size()))
-                    summary[m_key]['trainable'] = module.weight.requires_grad
-                if hasattr(module, 'bias') and hasattr(module.bias, 'size'):
+                    summary[m_key]["trainable"] = module.weight.requires_grad
+                if hasattr(module, "bias") and hasattr(module.bias, "size"):
                     params += np.prod(list(module.bias.size()))
-                if hasattr(module, 'all_weights'):
+                if hasattr(module, "all_weights"):
                     params += sum(
                         np.prod(ww.size()) for w in module.all_weights for ww in w
                     )
 
-                summary[m_key]['nb_params'] = params
+                summary[m_key]["nb_params"] = params
 
             if (
                 not isinstance(module, nn.Sequential)
@@ -102,19 +102,19 @@ class PytorchTailor(BaseTailor):
 
         results = []
         for idx, layer in enumerate(summary):
-            output_shape = summary[layer]['output_shape']
-            input_shape = summary[layer]['input_shape']
+            output_shape = summary[layer]["output_shape"]
+            input_shape = summary[layer]["input_shape"]
             is_embedding_layer = not (
                 not output_shape
                 or len(output_shape) != 2
                 or not is_seq_int(output_shape)
-                or summary[layer]['cls_name'] == self._model.__class__.__name__
+                or summary[layer]["cls_name"] == self._model.__class__.__name__
             )
 
             if (
                 skip_identity_layer
                 and output_shape == input_shape
-                and not summary[layer]['nb_params']
+                and not summary[layer]["nb_params"]
             ):
                 # not an effective layer, often a wrapper/identity layer
                 continue
@@ -122,10 +122,10 @@ class PytorchTailor(BaseTailor):
             results.append(
                 {
                     **summary[layer],
-                    'output_features': output_shape[-1],
-                    'output_shape_display': output_shape[1:],
-                    'layer_idx': idx,
-                    'is_embedding_layer': is_embedding_layer,
+                    "output_features": output_shape[-1],
+                    "output_shape_display": output_shape[1:],
+                    "layer_idx": idx,
+                    "is_embedding_layer": is_embedding_layer,
                 }
             )
 
@@ -137,7 +137,7 @@ class PytorchTailor(BaseTailor):
         output_dim: Optional[int] = None,
         freeze: bool = False,
         freeze_layers: Optional[List[str]] = None,
-    ) -> 'AnyDNN':
+    ) -> "AnyDNN":
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
         :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
@@ -150,13 +150,13 @@ class PytorchTailor(BaseTailor):
         """
 
         model = copy.deepcopy(self._model)
-        _all_embed_layers = {l['name']: l for l in self.embedding_layers}
+        _all_embed_layers = {l["name"]: l for l in self.embedding_layers}
         if layer_name:
             try:
                 _embed_layer = _all_embed_layers[layer_name]
             except KeyError as e:
                 raise KeyError(
-                    f'`embedding_layer_name` must be one of {_all_embed_layers.keys()}, given {layer_name}'
+                    f"`embedding_layer_name` must be one of {_all_embed_layers.keys()}, given {layer_name}"
                 ) from e
         else:
             # when not given, using the last layer
@@ -175,7 +175,7 @@ class PytorchTailor(BaseTailor):
         _relative_idx_to_embedding_layer = None
         _is_dense_layer_added = False
         for name, module in model.named_modules():
-            if name == _embed_layer['module_name']:
+            if name == _embed_layer["module_name"]:
                 _relative_idx_to_embedding_layer = 0
 
                 # corner-case
@@ -184,9 +184,9 @@ class PytorchTailor(BaseTailor):
                         param.requires_grad = True
                     else:
                         warnings.warn(
-                            'The current configs results in a non-parametric model, '
-                            'which is no trainable. '
-                            'You may need to specify `output_dim` or `embedding_layer_name`.'
+                            "The current configs results in a non-parametric model, "
+                            "which is no trainable. "
+                            "You may need to specify `output_dim` or `embedding_layer_name`."
                         )
 
             if (
@@ -195,7 +195,7 @@ class PytorchTailor(BaseTailor):
             ):
                 if _relative_idx_to_embedding_layer == 1 and output_dim:
                     replaced_layer = nn.Linear(
-                        in_features=_embed_layer['output_features'],
+                        in_features=_embed_layer["output_features"],
                         out_features=output_dim,
                     )
                     _is_dense_layer_added = True
@@ -203,9 +203,9 @@ class PytorchTailor(BaseTailor):
                     replaced_layer = nn.Identity()
 
                 if (
-                    '.' in name
+                    "." in name
                 ):  # Note: in torchvision, nested layer names are named with '.' e.g. classifier.0
-                    nested_module, layer = name.split('.')
+                    nested_module, layer = name.split(".")
                     setattr(getattr(model, nested_module), layer, replaced_layer)
                 else:
                     setattr(model, name, replaced_layer)
@@ -217,7 +217,7 @@ class PytorchTailor(BaseTailor):
             # the dense layer needs to be added after the last layer
             model = _LinearAtLast(
                 model,
-                in_features=_embed_layer['output_features'],
+                in_features=_embed_layer["output_features"],
                 out_features=output_dim,
             )
 

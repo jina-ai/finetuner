@@ -3,55 +3,55 @@ import re
 import sys
 from os import path
 
-sys.path.insert(0, path.abspath('..'))
+sys.path.insert(0, path.abspath(".."))
 
-project = 'Finetuner'
-slug = re.sub(r'\W+', '-', project.lower())
-author = 'Jina AI'
-copyright = 'Jina AI Limited. All rights reserved.'
-source_suffix = ['.rst', '.md']
-master_doc = 'index'
-language = 'en'
-repo_dir = '../'
+project = "Finetuner"
+slug = re.sub(r"\W+", "-", project.lower())
+author = "Jina AI"
+copyright = "Jina AI Limited. All rights reserved."
+source_suffix = [".rst", ".md"]
+master_doc = "index"
+language = "en"
+repo_dir = "../"
 
 try:
-    if 'JINA_VERSION' not in os.environ:
-        pkg_name = 'finetuner'
-        libinfo_py = path.join(repo_dir, pkg_name, '__init__.py')
-        libinfo_content = open(libinfo_py, 'r').readlines()
+    if "JINA_VERSION" not in os.environ:
+        pkg_name = "finetuner"
+        libinfo_py = path.join(repo_dir, pkg_name, "__init__.py")
+        libinfo_content = open(libinfo_py, "r").readlines()
         version_line = [
-            l.strip() for l in libinfo_content if l.startswith('__version__')
+            l.strip() for l in libinfo_content if l.startswith("__version__")
         ][0]
         exec(version_line)
     else:
-        __version__ = os.environ['JINA_VERSION']
+        __version__ = os.environ["JINA_VERSION"]
 except FileNotFoundError:
-    __version__ = '0.0.0'
+    __version__ = "0.0.0"
 
 version = __version__
 release = __version__
 
-templates_path = ['_templates']
+templates_path = ["_templates"]
 exclude_patterns = [
-    '_build',
-    'Thumbs.db',
-    '.DS_Store',
-    'tests',
-    'page_templates',
-    '.github',
+    "_build",
+    "Thumbs.db",
+    ".DS_Store",
+    "tests",
+    "page_templates",
+    ".github",
 ]
-pygments_style = 'rainbow_dash'
-html_theme = 'furo'
+pygments_style = "rainbow_dash"
+html_theme = "furo"
 
-base_url = '/'
-html_baseurl = 'https://finetuner.jina.ai'
-sitemap_url_scheme = '{link}'
+base_url = "/"
+html_baseurl = "https://finetuner.jina.ai"
+sitemap_url_scheme = "{link}"
 sitemap_locales = [None]
 sitemap_filename = "sitemap.xml"
 
 html_theme_options = {
-    'light_logo': 'logo-light.svg',
-    'dark_logo': 'logo-dark.svg',
+    "light_logo": "logo-light.svg",
+    "dark_logo": "logo-dark.svg",
     "sidebar_hide_name": True,
     "light_css_variables": {
         "color-brand-primary": "#009191",
@@ -63,48 +63,48 @@ html_theme_options = {
     },
 }
 
-html_static_path = ['_static']
-html_extra_path = ['html_extra']
+html_static_path = ["_static"]
+html_extra_path = ["html_extra"]
 html_css_files = [
-    'main.css',
-    'docbot.css',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css',
+    "main.css",
+    "docbot.css",
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css",
 ]
-html_js_files = ['https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js', 'docbot.js']
+html_js_files = ["https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js", "docbot.js"]
 htmlhelp_basename = slug
 html_show_sourcelink = False
-html_favicon = '_static/favicon.png'
+html_favicon = "_static/favicon.png"
 
-latex_documents = [(master_doc, f'{slug}.tex', project, author, 'manual')]
+latex_documents = [(master_doc, f"{slug}.tex", project, author, "manual")]
 man_pages = [(master_doc, slug, project, [author], 1)]
 texinfo_documents = [
-    (master_doc, slug, project, author, slug, project, 'Miscellaneous')
+    (master_doc, slug, project, author, slug, project, "Miscellaneous")
 ]
 epub_title = project
-epub_exclude_files = ['search.html']
+epub_exclude_files = ["search.html"]
 
 # -- Extension configuration -------------------------------------------------
 
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx_autodoc_typehints',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.coverage',
-    'sphinxcontrib.apidoc',
-    'sphinxarg.ext',
-    'sphinx_markdown_tables',
-    'sphinx_copybutton',
-    'sphinx_sitemap',
-    'sphinx.ext.intersphinx',
-    'sphinxext.opengraph',
-    'notfound.extension',
-    'myst_parser',
-    'sphinx_design',
-    'sphinx_inline_tabs',
-    'sphinx_multiversion',
+    "sphinx.ext.autodoc",
+    "sphinx_autodoc_typehints",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.coverage",
+    "sphinxcontrib.apidoc",
+    "sphinxarg.ext",
+    "sphinx_markdown_tables",
+    "sphinx_copybutton",
+    "sphinx_sitemap",
+    "sphinx.ext.intersphinx",
+    "sphinxext.opengraph",
+    "notfound.extension",
+    "myst_parser",
+    "sphinx_design",
+    "sphinx_inline_tabs",
+    "sphinx_multiversion",
 ]
 
-myst_enable_extensions = ['colon_fence', 'dollarmath']
+myst_enable_extensions = ["colon_fence", "dollarmath"]
 myst_dmath_double_inline = True
 
 # -- Custom 404 page
@@ -112,63 +112,65 @@ myst_dmath_double_inline = True
 # sphinx-notfound-page
 # https://github.com/readthedocs/sphinx-notfound-page
 notfound_context = {
-    'title': 'Page Not Found',
-    'body': '''
+    "title": "Page Not Found",
+    "body": """
 <h1>Page Not Found</h1>
 <p>Oops, we couldn't find that page. </p>
 <p>You can try using the search box or check our menu on the left hand side of this page.</p>
 
 <p>If neither of those options work, please create a Github issue ticket <a href="https://github.com/jina-ai/finetuner/">here</a>, and one of our team will respond.</p>
 
-''',
+""",
 }
 notfound_no_urls_prefix = True
 
 apidoc_module_dir = repo_dir
-apidoc_output_dir = 'api'
-apidoc_excluded_paths = ['tests', 'legacy', 'hub', 'toy*', 'setup.py']
+apidoc_output_dir = "api"
+apidoc_excluded_paths = ["tests", "legacy", "hub", "toy*", "setup.py"]
 apidoc_separate_modules = True
-apidoc_extra_args = ['-t', 'template/']
-autodoc_member_order = 'bysource'
+apidoc_extra_args = ["-t", "template/"]
+autodoc_member_order = "bysource"
 autodoc_mock_imports = [
-    'argparse',
-    'numpy',
-    'np',
-    'tensorflow',
-    'torch',
-    'scipy',
-    'keras',
-    'paddle',
+    "argparse",
+    "numpy",
+    "np",
+    "tensorflow",
+    "torch",
+    "scipy",
+    "keras",
+    "paddle",
 ]
-autoclass_content = 'both'
+autoclass_content = "both"
 set_type_checking_flag = False
-html_last_updated_fmt = ''
+html_last_updated_fmt = ""
 nitpicky = True
-nitpick_ignore = [('py:class', 'type')]
+nitpick_ignore = [("py:class", "type")]
 linkcheck_ignore = [
     # Avoid link check on local uri
-    'http://0.0.0.0:*',
-    'pods/encode.yml',
-    'https://github.com/jina-ai/jina/commit/*',
-    '.github/*',
-    'extra-requirements.txt',
-    'fastentrypoints.py' '../../101',
-    '../../102',
-    'http://www.twinsun.com/tz/tz-link.htm',  # Broken link from pytz library
-    'https://urllib3.readthedocs.io/en/latest/contrib.html#google-app-engine',  # Broken link from urllib3 library
-    'https://linuxize.com/post/how-to-add-swap-space-on-ubuntu-20-04/',
+    "http://0.0.0.0:*",
+    "pods/encode.yml",
+    "https://github.com/jina-ai/jina/commit/*",
+    ".github/*",
+    "extra-requirements.txt",
+    "fastentrypoints.py" "../../101",
+    "../../102",
+    "http://www.twinsun.com/tz/tz-link.htm",  # Broken link from pytz library
+    "https://urllib3.readthedocs.io/en/latest/contrib.html#google-app-engine",  # Broken link from urllib3 library
+    "https://linuxize.com/post/how-to-add-swap-space-on-ubuntu-20-04/",
     # This link works but gets 403 error on linkcheck
 ]
 linkcheck_timeout = 20
 linkcheck_retries = 2
 linkcheck_anchors = False
 
-ogp_site_url = 'https://finetuner.jina.ai/'
-ogp_image = 'https://finetuner.jina.ai/_static/banner.png'
+ogp_site_url = "https://finetuner.jina.ai/"
+ogp_image = "https://finetuner.jina.ai/_static/banner.png"
 ogp_use_first_image = False
 ogp_description_length = 300
-ogp_type = 'website'
-ogp_site_name = f'Finetuner {os.environ.get("SPHINX_MULTIVERSION_VERSION", version)} Documentation'
+ogp_type = "website"
+ogp_site_name = (
+    f'Finetuner {os.environ.get("SPHINX_MULTIVERSION_VERSION", version)} Documentation'
+)
 
 ogp_custom_meta_tags = [
     '<meta name="twitter:card" content="summary_large_image">',
@@ -176,7 +178,7 @@ ogp_custom_meta_tags = [
     '<meta name="twitter:creator" content="@JinaAI_">',
     '<meta name="description" content="Finetuner allows one to finetune any deep neural network for better embedding on search tasks.">',
     '<meta property="og:description" content="Finetuner allows one to finetune any deep neural network for better embedding on search tasks.">',
-    '''
+    """
     <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-1ESRNDCK35"></script>
 <script>
@@ -188,23 +190,25 @@ ogp_custom_meta_tags = [
 </script>
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    ''',
+    """,
 ]
 
+
 def smv_config(string: str):
-    return r'^{}$'.format(string.strip().replace(' ', '|'))
+    return r"^{}$".format(string.strip().replace(" ", "|"))
+
 
 html_context = {
-    'latest_finetuner_version': os.environ.get('LATEST_FINETUNER_VERSION', 'main')
+    "latest_finetuner_version": os.environ.get("LATEST_FINETUNER_VERSION", "main")
 }
-smv_tag_whitelist = smv_config(os.environ.get('SMV_TAG_WHITELIST', 'v2.4.7'))
-smv_branch_whitelist = smv_config(os.environ.get('SMV_BRANCH_WHITELIST', 'main'))
+smv_tag_whitelist = smv_config(os.environ.get("SMV_TAG_WHITELIST", "v2.4.7"))
+smv_branch_whitelist = smv_config(os.environ.get("SMV_BRANCH_WHITELIST", "main"))
 smv_remote_whitelist = None
 
 
 def add_server_address(app):
     # This makes variable `server_address` available to docbot.js
-    server_address = app.config['server_address']
+    server_address = app.config["server_address"]
     js_text = "var server_address = '%s';" % server_address
     app.add_js_file(None, body=js_text)
 
@@ -215,31 +219,31 @@ def setup(app):
     from sphinx.locale import _
 
     app.add_object_type(
-        'confval',
-        'confval',
-        objname='configuration value',
-        indextemplate='pair: %s; configuration value',
+        "confval",
+        "confval",
+        objname="configuration value",
+        indextemplate="pair: %s; configuration value",
         doc_field_types=[
             PyField(
-                'type',
-                label=_('Type'),
+                "type",
+                label=_("Type"),
                 has_arg=False,
-                names=('type',),
-                bodyrolename='class',
+                names=("type",),
+                bodyrolename="class",
             ),
             Field(
-                'default',
-                label=_('Default'),
+                "default",
+                label=_("Default"),
                 has_arg=False,
-                names=('default',),
+                names=("default",),
             ),
         ],
     )
     app.add_config_value(
-        name='server_address',
+        name="server_address",
         default=os.getenv(
-            'FINETUNER_DOCSBOT_SERVER', 'https://finetuner-docsbot.jina.ai'
+            "FINETUNER_DOCSBOT_SERVER", "https://finetuner-docsbot.jina.ai"
         ),
-        rebuild='',
+        rebuild="",
     )
-    app.connect('builder-inited', add_server_address)
+    app.connect("builder-inited", add_server_address)

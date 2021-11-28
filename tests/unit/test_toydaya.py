@@ -8,9 +8,9 @@ from finetuner.toydata import generate_qa, generate_fashion
 def test_qa_data_generator():
     qa_docs = generate_qa(num_total=10)
     for d in qa_docs:
-        assert d.tags['question']
-        assert d.tags['answer']
-        assert d.tags['wrong_answer']
+        assert d.tags["question"]
+        assert d.tags["answer"]
+        assert d.tags["wrong_answer"]
 
 
 def test_train_test_generator():
@@ -34,8 +34,8 @@ def test_doc_generator():
         assert d.tags[__default_tag_key__] is not None
 
 
-@pytest.mark.parametrize('channels', [0, 1, 3])
-@pytest.mark.parametrize('upsampling', [1, 2, 4])
+@pytest.mark.parametrize("channels", [0, 1, 3])
+@pytest.mark.parametrize("upsampling", [1, 2, 4])
 def test_doc_generator_channel(channels, upsampling):
     for d in generate_fashion(channels=channels, upsampling=upsampling, num_total=10):
         if channels == 0:
@@ -59,8 +59,8 @@ def test_qa_documentarray():
     assert len(da[0].matches) == 4
 
 
-@pytest.mark.parametrize('pos_value, neg_value', [(1, 0), (1, -1)])
-@pytest.mark.parametrize('num_neg', [1, 2, 10])
+@pytest.mark.parametrize("pos_value, neg_value", [(1, 0), (1, -1)])
+@pytest.mark.parametrize("num_neg", [1, 2, 10])
 def test_generate_qa_doc_match(pos_value, neg_value, num_neg):
     for d in generate_qa(
         num_neg=num_neg, pos_value=pos_value, neg_value=neg_value, num_total=10
@@ -69,4 +69,4 @@ def test_generate_qa_doc_match(pos_value, neg_value, num_neg):
         all_labels = [int(d.tags[__default_tag_key__]) for d in d.matches]
         assert all_labels.count(pos_value) == 1
         assert all_labels.count(neg_value) == num_neg
-        assert d.content_type == 'text'
+        assert d.content_type == "text"

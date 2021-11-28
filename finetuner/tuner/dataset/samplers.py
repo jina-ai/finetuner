@@ -39,7 +39,7 @@ class ClassSampler(BaseSampler):
 
         if num_items_per_class is not None and num_items_per_class < 1:
             raise ValueError(
-                '`num_items_per_class` must be either None or greater than 0'
+                "`num_items_per_class` must be either None or greater than 0"
             )
 
         self._num_items_per_class = num_items_per_class or max(

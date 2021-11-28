@@ -9,28 +9,28 @@ from finetuner.toydata import generate_fashion
 from finetuner.tuner.paddle import PaddleTuner
 
 
-@pytest.mark.parametrize('loss', ['TripletLoss', 'SiameseLoss'])
+@pytest.mark.parametrize("loss", ["TripletLoss", "SiameseLoss"])
 def test_simple_sequential_model(tmpdir, params, loss):
     user_model = nn.Sequential(
         nn.Flatten(),
         nn.Linear(
-            in_features=params['input_dim'] * params['input_dim'],
-            out_features=params['feature_dim'],
+            in_features=params["input_dim"] * params["input_dim"],
+            out_features=params["feature_dim"],
         ),
         nn.ReLU(),
-        nn.Linear(in_features=params['feature_dim'], out_features=params['output_dim']),
+        nn.Linear(in_features=params["feature_dim"], out_features=params["output_dim"]),
     )
-    model_path = os.path.join(tmpdir, 'trained.pth')
+    model_path = os.path.join(tmpdir, "trained.pth")
 
     pt = PaddleTuner(user_model, loss=loss)
 
     # fit and save the checkpoint
     pt.fit(
-        train_data=generate_fashion(num_total=params['num_train']),
-        eval_data=generate_fashion(is_testset=True, num_total=params['num_eval']),
-        epochs=params['epochs'],
-        batch_size=params['batch_size'],
-        num_items_per_class=params['num_items_per_class'],
+        train_data=generate_fashion(num_total=params["num_train"]),
+        eval_data=generate_fashion(is_testset=True, num_total=params["num_eval"]),
+        epochs=params["epochs"],
+        batch_size=params["batch_size"],
+        num_items_per_class=params["num_items_per_class"],
     )
     pt.save(model_path)
 
@@ -39,14 +39,14 @@ def test_simple_sequential_model(tmpdir, params, loss):
     user_model.eval()
     inputs = paddle.to_tensor(
         np.random.random(
-            [params['num_predict'], params['input_dim'], params['input_dim']]
+            [params["num_predict"], params["input_dim"], params["input_dim"]]
         ).astype(np.float32)
     )
     r = user_model(inputs)
-    assert r.shape == [params['num_predict'], params['output_dim']]
+    assert r.shape == [params["num_predict"], params["output_dim"]]
 
 
-@pytest.mark.parametrize('loss', ['TripletLoss', 'SiameseLoss'])
+@pytest.mark.parametrize("loss", ["TripletLoss", "SiameseLoss"])
 def test_session_data(loss, create_easy_data_session):
     """Test with session dataset"""
 
@@ -73,5 +73,5 @@ def test_custom_optimizer(create_easy_data_session):
     optimizer = paddle.optimizer.SGD(parameters=model.parameters(), learning_rate=1e-3)
 
     # Train
-    tuner = PaddleTuner(model, loss='TripletLoss')
+    tuner = PaddleTuner(model, loss="TripletLoss")
     tuner.fit(train_data=data, epochs=2, batch_size=10, optimizer=optimizer)

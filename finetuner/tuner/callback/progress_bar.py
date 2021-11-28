@@ -33,43 +33,43 @@ class ProgressBarCallback(BaseCallback):
 
     @property
     def train_loss_str(self) -> str:
-        train_loss_str = ''
+        train_loss_str = ""
         if self.mean_loss is not None:
-            train_loss_str = f'loss: {self.mean_loss:.3f}'
+            train_loss_str = f"loss: {self.mean_loss:.3f}"
         else:
-            train_loss_str = 'loss: -.---'
+            train_loss_str = "loss: -.---"
 
-        val_loss_str = ''
+        val_loss_str = ""
         if self.prev_val_loss:
-            val_loss_str = f' • val_loss: {self.prev_val_loss:.3f}'
+            val_loss_str = f" • val_loss: {self.prev_val_loss:.3f}"
 
         return train_loss_str + val_loss_str
 
     @property
     def val_loss_str(self) -> str:
         if self.mean_loss is not None:
-            return f'loss: {self.mean_loss:.3f}'
+            return f"loss: {self.mean_loss:.3f}"
         else:
-            return 'loss: -.---'
+            return "loss: -.---"
 
-    def on_fit_begin(self, tuner: 'BaseTuner'):
+    def on_fit_begin(self, tuner: "BaseTuner"):
         self.pbar = Progress(
             SpinnerColumn(),
-            '[progress.description]{task.description}',
+            "[progress.description]{task.description}",
             BarColumn(
-                style='dark_green', complete_style='green', finished_style='yellow'
+                style="dark_green", complete_style="green", finished_style="yellow"
             ),
-            '[progress.percentage]{task.completed}/{task.total}',
+            "[progress.percentage]{task.completed}/{task.total}",
             TimeRemainingColumn(),
             TimeElapsedColumn(),
-            '•',
-            TextColumn('{task.fields[metrics]}'),
+            "•",
+            TextColumn("{task.fields[metrics]}"),
         )
         self.pbar.start()
-        self.train_pbar_id = self.pbar.add_task('Training', visible=False, start=False)
-        self.eval_pbar_id = self.pbar.add_task('Evaluating', visible=False, start=False)
+        self.train_pbar_id = self.pbar.add_task("Training", visible=False, start=False)
+        self.eval_pbar_id = self.pbar.add_task("Evaluating", visible=False, start=False)
 
-    def on_train_epoch_begin(self, tuner: 'BaseTuner'):
+    def on_train_epoch_begin(self, tuner: "BaseTuner"):
         """
         Called at the begining of training part of the epoch.
         """
@@ -77,13 +77,13 @@ class ProgressBarCallback(BaseCallback):
         self.pbar.reset(
             self.train_pbar_id,
             visible=True,
-            description=f'Training [{tuner.state.epoch+1}/{tuner.state.num_epochs}]',
+            description=f"Training [{tuner.state.epoch+1}/{tuner.state.num_epochs}]",
             total=tuner.state.num_batches_train,
             completed=0,
             metrics=self.train_loss_str,
         )
 
-    def on_train_batch_end(self, tuner: 'BaseTuner'):
+    def on_train_batch_end(self, tuner: "BaseTuner"):
         """
         Called at the end of a training batch, after the backward pass.
         """
@@ -92,7 +92,7 @@ class ProgressBarCallback(BaseCallback):
             task_id=self.train_pbar_id, advance=1, metrics=self.train_loss_str
         )
 
-    def on_val_begin(self, tuner: 'BaseTuner'):
+    def on_val_begin(self, tuner: "BaseTuner"):
         """
         Called at the start of the evaluation.
         """
@@ -100,13 +100,13 @@ class ProgressBarCallback(BaseCallback):
         self.pbar.reset(
             self.eval_pbar_id,
             visible=True,
-            description='Evaluating',
+            description="Evaluating",
             total=tuner.state.num_batches_val,
             completed=0,
             metrics=self.val_loss_str,
         )
 
-    def on_val_batch_end(self, tuner: 'BaseTuner'):
+    def on_val_batch_end(self, tuner: "BaseTuner"):
         """
         Called at the start of the evaluation batch, after the batch data has already
         been loaded.
@@ -117,12 +117,12 @@ class ProgressBarCallback(BaseCallback):
             task_id=self.eval_pbar_id, advance=1, metrics=self.val_loss_str
         )
 
-    def on_val_end(self, tuner: 'BaseTuner'):
+    def on_val_end(self, tuner: "BaseTuner"):
         """
         Called at the end of the evaluation batch.
         """
         self.prev_val_loss = self.mean_loss
         self.pbar.update(task_id=self.eval_pbar_id, visible=False)
 
-    def on_fit_end(self, tuner: 'BaseTuner'):
+    def on_fit_end(self, tuner: "BaseTuner"):
         self.pbar.stop()

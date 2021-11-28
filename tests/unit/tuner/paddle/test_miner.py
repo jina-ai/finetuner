@@ -55,7 +55,7 @@ def test_siamese_miner(labels):
     np.testing.assert_equal(true_label, label.numpy())
 
 
-@pytest.mark.parametrize('labels_bad', [paddle.to_tensor([1]), paddle.to_tensor([])])
+@pytest.mark.parametrize("labels_bad", [paddle.to_tensor([1]), paddle.to_tensor([])])
 def test_siamese_miner_given_insufficient_inputs(labels_bad):
     ind_one, ind_two, label = SiameseMiner().mine(
         labels_bad, fake_dists(len(labels_bad))
@@ -102,7 +102,7 @@ def test_triplet_miner(labels):
     np.testing.assert_equal(neg_ind.numpy(), true_neg_ind)
 
 
-@pytest.mark.parametrize('bad_labels', [paddle.to_tensor([1]), paddle.to_tensor([])])
+@pytest.mark.parametrize("bad_labels", [paddle.to_tensor([1]), paddle.to_tensor([])])
 def test_triplet_miner_given_insufficient_inputs(bad_labels):
     anch_ind, pos_ind, neg_ind = TripletMiner().mine(
         bad_labels, fake_dists(len(bad_labels))
@@ -139,7 +139,7 @@ def test_siamese_session_miner(session_labels):
 
 
 @pytest.mark.parametrize(
-    'bad_labels',
+    "bad_labels",
     [
         [paddle.to_tensor([1]), paddle.to_tensor([1])],
         [paddle.to_tensor([]), paddle.to_tensor([])],
@@ -184,7 +184,7 @@ def test_triplet_session_miner(session_labels):
 
 
 @pytest.mark.parametrize(
-    'bad_labels',
+    "bad_labels",
     [
         [paddle.to_tensor([1]), paddle.to_tensor([1])],
         [paddle.to_tensor([]), paddle.to_tensor([])],
@@ -200,7 +200,7 @@ def test_triplet_session_miner_given_insufficient_inputs(bad_labels):
 
 
 @pytest.mark.gpu
-@pytest.mark.parametrize('miner', [SiameseMiner, TripletMiner])
+@pytest.mark.parametrize("miner", [SiameseMiner, TripletMiner])
 def test_class_miner_gpu(miner, labels):
     m = miner()
     fake_dist = paddle.to_tensor(fake_dists(len(labels)), place=paddle.CUDAPlace(0))
@@ -211,7 +211,7 @@ def test_class_miner_gpu(miner, labels):
 
 
 @pytest.mark.gpu
-@pytest.mark.parametrize('miner', [SiameseSessionMiner, TripletSessionMiner])
+@pytest.mark.parametrize("miner", [SiameseSessionMiner, TripletSessionMiner])
 def test_session_miner_gpu(miner, session_labels):
     m = miner()
     labels = [paddle.to_tensor(x, place=paddle.CUDAPlace(0)) for x in session_labels]

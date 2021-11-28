@@ -11,12 +11,12 @@ from ..base import BaseLoss, BaseMiner
 def get_distance(embeddings: torch.Tensor, distance: str) -> torch.Tensor:
     """Get a matrix of pairwise distances between the embedings"""
 
-    if distance == 'cosine':
+    if distance == "cosine":
         emb_norm = F.normalize(embeddings, p=2, dim=1)
         dists = 1 - torch.mm(emb_norm, emb_norm.transpose(0, 1))
-    elif distance == 'euclidean':
+    elif distance == "euclidean":
         dists = torch.cdist(embeddings, embeddings, p=2)
-    elif distance == 'sqeuclidean':
+    elif distance == "sqeuclidean":
         dists = torch.cdist(embeddings, embeddings, p=2) ** 2
 
     return dists
@@ -57,7 +57,7 @@ class SiameseLoss(PytorchLoss):
 
     def __init__(
         self,
-        distance: str = 'cosine',
+        distance: str = "cosine",
         margin: float = 1.0,
         miner: Optional[BaseMiner] = None,
     ):
@@ -89,7 +89,7 @@ class SiameseLoss(PytorchLoss):
         """
         ind_one, ind_two, target = indices
         if ind_one.nelement() == 0 or ind_two.nelement() == 0 or target.nelement() == 0:
-            raise ValueError('Got empty tuple/triplets from your dataset.')
+            raise ValueError("Got empty tuple/triplets from your dataset.")
         dist_matrix = get_distance(embeddings, self.distance)
         dists = dist_matrix[ind_one, ind_two]
         target = target.to(torch.float32)
@@ -158,7 +158,7 @@ class TripletLoss(PytorchLoss):
             or ind_pos.nelement() == 0
             or ind_neg.nelement() == 0
         ):
-            raise ValueError('Got empty tuple/triplets from your dataset.')
+            raise ValueError("Got empty tuple/triplets from your dataset.")
 
         dist_matrix = get_distance(embeddings, self.distance)
         dist_pos = dist_matrix[ind_anch, ind_pos]

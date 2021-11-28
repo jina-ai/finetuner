@@ -9,14 +9,14 @@ from finetuner.embedding import embed
 from finetuner.toydata import generate_fashion
 
 embed_models = {
-    'keras': lambda: tf.keras.Sequential(
+    "keras": lambda: tf.keras.Sequential(
         [
             tf.keras.layers.Flatten(input_shape=(28, 28)),
-            tf.keras.layers.Dense(128, activation='relu'),
+            tf.keras.layers.Dense(128, activation="relu"),
             tf.keras.layers.Dense(32),
         ]
     ),
-    'pytorch': lambda: torch.nn.Sequential(
+    "pytorch": lambda: torch.nn.Sequential(
         torch.nn.Flatten(),
         torch.nn.Linear(
             in_features=28 * 28,
@@ -25,7 +25,7 @@ embed_models = {
         torch.nn.ReLU(),
         torch.nn.Linear(in_features=128, out_features=32),
     ),
-    'paddle': lambda: paddle.nn.Sequential(
+    "paddle": lambda: paddle.nn.Sequential(
         paddle.nn.Flatten(),
         paddle.nn.Linear(
             in_features=28 * 28,
@@ -37,19 +37,19 @@ embed_models = {
 }
 
 random_embed_models = {
-    'keras': lambda: tf.keras.Sequential(
+    "keras": lambda: tf.keras.Sequential(
         [tf.keras.layers.Dropout(0.5), tf.keras.layers.BatchNormalization()]
     ),
-    'pytorch': lambda: torch.nn.Sequential(
+    "pytorch": lambda: torch.nn.Sequential(
         torch.nn.Dropout(0.5), torch.nn.BatchNorm1d(128)
     ),
-    'paddle': lambda: paddle.nn.Sequential(
+    "paddle": lambda: paddle.nn.Sequential(
         paddle.nn.Dropout(0.5), paddle.nn.BatchNorm1D(128)
     ),
 }
 
 
-@pytest.mark.parametrize('framework', ['keras', 'pytorch', 'paddle'])
+@pytest.mark.parametrize("framework", ["keras", "pytorch", "paddle"])
 def test_embedding_on_random_network(framework):
     docs = DocumentArray([Document() for _ in range(2)])
     docs.blobs = np.random.random([2, 128]).astype(np.float32)
@@ -74,7 +74,7 @@ def test_embedding_on_random_network(framework):
     np.testing.assert_array_almost_equal(docs.embeddings, embed1)
 
 
-@pytest.mark.parametrize('framework', ['keras', 'pytorch', 'paddle'])
+@pytest.mark.parametrize("framework", ["keras", "pytorch", "paddle"])
 def test_set_embeddings(framework, tmpdir):
     # works for DA
     embed_model = embed_models[framework]()

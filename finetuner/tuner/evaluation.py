@@ -35,10 +35,10 @@ METRICS = {
 class Evaluator:
     def __init__(
         self,
-        eval_data: 'DocumentSequence',
-        catalog: 'DocumentSequence',
-        embed_model: Optional['AnyDNN'] = None,
-        distance: str = 'cosine',
+        eval_data: "DocumentSequence",
+        catalog: "DocumentSequence",
+        embed_model: Optional["AnyDNN"] = None,
+        distance: str = "cosine",
         limit: int = 20,
     ):
         """
@@ -70,7 +70,7 @@ class Evaluator:
             user as matching ground truth, should be under ``doc.tags[finetuner.__default_tag_key__]['targets']``.
         :return: The relevance vector and the total number of relevant documents.
         """
-        targets: Dict[str, int] = doc.tags[__default_tag_key__]['targets']
+        targets: Dict[str, int] = doc.tags[__default_tag_key__]["targets"]
         return [
             targets[match.id] if match.id in targets else 0 for match in doc.matches
         ], len(targets)
@@ -89,7 +89,7 @@ class Evaluator:
             relevancies = sorted(relevancies, key=lambda x: x[1])
             summmary_doc = Document(
                 id=doc.id,
-                tags={__default_tag_key__: {'targets': dict(relevancies)}},
+                tags={__default_tag_key__: {"targets": dict(relevancies)}},
             )
             summmary_docs.append(summmary_doc)
 
@@ -112,7 +112,7 @@ class Evaluator:
             self._catalog, limit=self._limit, metric=self._distance
         )
 
-    def _get_mean_metrics(self, label: str = 'metrics') -> Dict[str, float]:
+    def _get_mean_metrics(self, label: str = "metrics") -> Dict[str, float]:
         """
         Compute the mean metric values across the evaluation docs
         """
@@ -133,7 +133,7 @@ class Evaluator:
         """
         return list(METRICS.keys())
 
-    def evaluate(self, label: str = 'metrics') -> Dict[str, float]:
+    def evaluate(self, label: str = "metrics") -> Dict[str, float]:
         """
         Run evaluation
         :param label: Per document metrics are written in each evaluation document under

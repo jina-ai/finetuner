@@ -86,7 +86,7 @@ def test_label_repetition1():
     assert c[3] + c[4] == 3
 
 
-@pytest.mark.parametrize('num_items_per_class', [4, 2])
+@pytest.mark.parametrize("num_items_per_class", [4, 2])
 def test_label_repetition2(num_items_per_class):
     labels = [1, 1, 1, 1, 2, 2, 2]
     sampler = ClassSampler(labels, 4, num_items_per_class)

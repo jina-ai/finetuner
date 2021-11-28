@@ -4,7 +4,7 @@ from finetuner.tailor import display
 
 
 def get_mlp(framework):
-    if framework == 'pytorch':
+    if framework == "pytorch":
         import torch
 
         return torch.nn.Sequential(
@@ -13,17 +13,17 @@ def get_mlp(framework):
             torch.nn.ReLU(),
             torch.nn.Linear(in_features=128, out_features=32),
         )
-    elif framework == 'keras':
+    elif framework == "keras":
         import tensorflow as tf
 
         return tf.keras.Sequential(
             [
                 tf.keras.layers.Flatten(input_shape=(28, 28)),
-                tf.keras.layers.Dense(128, activation='relu'),
+                tf.keras.layers.Dense(128, activation="relu"),
                 tf.keras.layers.Dense(32),
             ]
         )
-    elif framework == 'paddle':
+    elif framework == "paddle":
         import paddle
 
         return paddle.nn.Sequential(
@@ -35,36 +35,36 @@ def get_mlp(framework):
 
 
 def get_mlp_display(framework):
-    if framework == 'pytorch':
-        return '''
+    if framework == "pytorch":
+        return """
   name        output_shape_display   nb_params   trainable  
  ────────────────────────────────────────────────────────── 
   flatten_1   [784]                  0           False      
   linear_2    [128]                  100480      True       
   relu_3      [128]                  0           False      
   linear_4    [32]                   4128        True       
-    '''
-    elif framework == 'paddle':
-        return '''
+    """
+    elif framework == "paddle":
+        return """
   name        output_shape_display   nb_params   trainable  
  ────────────────────────────────────────────────────────── 
   flatten_1   [784]                  0           False      
   linear_2    [128]                  100480      True       
   relu_3      [128]                  0           False      
   linear_4    [32]                   4128        True       
-       '''
-    elif framework == 'keras':
-        return '''
+       """
+    elif framework == "keras":
+        return """
   name      output_shape_display   nb_params   trainable  
  ──────────────────────────────────────────────────────── 
   flatten   [784]                  0           False      
   dense     [128]                  100480      True       
   dense_1   [32]                   4128        True       
-           '''
+           """
 
 
 def get_lstm(framework):
-    if framework == 'pytorch':
+    if framework == "pytorch":
         import torch
 
         class LastCell(torch.nn.Module):
@@ -79,7 +79,7 @@ def get_lstm(framework):
             torch.nn.Linear(in_features=2 * 64, out_features=32),
         )
         return model
-    elif framework == 'keras':
+    elif framework == "keras":
         import tensorflow as tf
 
         model = tf.keras.Sequential(
@@ -90,7 +90,7 @@ def get_lstm(framework):
             ]
         )
         return model
-    elif framework == 'paddle':
+    elif framework == "paddle":
         import paddle
 
         class LastCell(paddle.nn.Layer):
@@ -100,7 +100,7 @@ def get_lstm(framework):
 
         model = paddle.nn.Sequential(
             paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),
-            paddle.nn.LSTM(64, 64, direction='bidirectional'),
+            paddle.nn.LSTM(64, 64, direction="bidirectional"),
             LastCell(),
             paddle.nn.Linear(in_features=2 * 64, out_features=32),
         )
@@ -108,44 +108,44 @@ def get_lstm(framework):
 
 
 def get_lstm_display(framework):
-    if framework == 'pytorch':
-        return '''
+    if framework == "pytorch":
+        return """
   name          output_shape_display         nb_params   trainable  
  ────────────────────────────────────────────────────────────────── 
   embedding_1   [100, 64]                    320000      True       
   lstm_2        [[[2, 2, 64], [2, 2, 64]]]   66560       False      
   lastcell_3    [128]                        0           False      
   linear_4      [32]                         4128        True       
-    '''
-    elif framework == 'paddle':
-        return '''
+    """
+    elif framework == "paddle":
+        return """
   name          output_shape_display         nb_params   trainable  
  ────────────────────────────────────────────────────────────────── 
   embedding_1   [100, 64]                    320000      True       
   lstm_2        [[[2, 2, 64], [2, 2, 64]]]   66560       True       
   lastcell_3    [128]                        0           False      
   linear_4      [32]                         4128        True       
-       '''
-    elif framework == 'keras':
-        return '''
+       """
+    elif framework == "keras":
+        return """
   name            output_shape_display   nb_params   trainable  
  ────────────────────────────────────────────────────────────── 
   embedding       [None, 64]             320000      True       
   bidirectional   [128]                  66048       True       
   dense           [32]                   4128        True       
-           '''
+           """
 
 
 def get_vgg(framework):
-    if framework == 'pytorch':
+    if framework == "pytorch":
         import torchvision.models as models
 
         model = models.vgg16()
-    elif framework == 'keras':
+    elif framework == "keras":
         import tensorflow as tf
 
         model = tf.keras.applications.vgg16.VGG16()
-    elif framework == 'paddle':
+    elif framework == "paddle":
         import paddle
 
         model = paddle.vision.models.vgg16(pretrained=False)
@@ -155,8 +155,8 @@ def get_vgg(framework):
 
 
 def get_vgg_display(framework):
-    if framework == 'pytorch':
-        return '''
+    if framework == "pytorch":
+        return """
   name                   output_shape_display   nb_params   trainable  
  ───────────────────────────────────────────────────────────────────── 
   conv2d_1               [64, 224, 224]         1792        True       
@@ -198,9 +198,9 @@ def get_vgg_display(framework):
   relu_37                [4096]                 0           False      
   dropout_38             [4096]                 0           False      
   linear_39              [1000]                 4097000     True       
-       '''
-    elif framework == 'paddle':
-        return '''
+       """
+    elif framework == "paddle":
+        return """
   name                   output_shape_display   nb_params   trainable  
  ───────────────────────────────────────────────────────────────────── 
   conv2d_1               [64, 224, 224]         1792        True       
@@ -242,9 +242,9 @@ def get_vgg_display(framework):
   relu_37                [4096]                 0           False      
   dropout_38             [4096]                 0           False      
   linear_39              [1000]                 4097000     True       
-          '''
-    elif framework == 'keras':
-        return '''
+          """
+    elif framework == "keras":
+        return """
   name           output_shape_display   nb_params   trainable  
  ───────────────────────────────────────────────────────────── 
   input_1        []                     0           False      
@@ -270,10 +270,10 @@ def get_vgg_display(framework):
   fc1            [4096]                 102764544   True       
   fc2            [4096]                 16781312    True       
   predictions    [1000]                 4097000     True        
-              '''
+              """
 
 
-@pytest.mark.parametrize('framework', ('paddle', 'pytorch', 'keras'))
+@pytest.mark.parametrize("framework", ("paddle", "pytorch", "keras"))
 def test_display_mlp_original(framework, capsys):
     model = get_mlp(framework)
     _display = get_mlp_display(framework)
@@ -281,15 +281,15 @@ def test_display_mlp_original(framework, capsys):
     assert _display.strip() in capsys.readouterr().out.strip()
 
 
-@pytest.mark.parametrize('framework', ('paddle', 'pytorch', 'keras'))
+@pytest.mark.parametrize("framework", ("paddle", "pytorch", "keras"))
 def test_display_lstm_original(framework, capsys):
     model = get_lstm(framework)
     _display = get_lstm_display(framework)
-    display(model, input_size=(100,), input_dtype='int64')
+    display(model, input_size=(100,), input_dtype="int64")
     assert _display.strip() in capsys.readouterr().out.strip()
 
 
-@pytest.mark.parametrize('framework', ('paddle', 'pytorch', 'keras'))
+@pytest.mark.parametrize("framework", ("paddle", "pytorch", "keras"))
 def test_display_vgg_original(framework, capsys):
     model = get_vgg(framework)
     _display = get_vgg_display(framework)

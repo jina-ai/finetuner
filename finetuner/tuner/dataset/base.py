@@ -6,20 +6,20 @@ import numpy as np
 if TYPE_CHECKING:
     from finetuner.helper import T
 
-AnyLabel = TypeVar('AnyLabel')
+AnyLabel = TypeVar("AnyLabel")
 
 
 class BaseSampler(abc.ABC):
     def __init__(self, labels: Sequence[AnyLabel], batch_size: int):
         if batch_size <= 0:
-            raise ValueError('batch_size must be a positive integer')
+            raise ValueError("batch_size must be a positive integer")
 
         self._labels = labels
         self._batch_size = batch_size
         self._batches = []
         self._index = 0
 
-    def __iter__(self: 'T') -> 'T':
+    def __iter__(self: "T") -> "T":
         return self
 
     def __next__(self) -> List[int]:
@@ -57,7 +57,7 @@ class BaseDataset(abc.ABC, Generic[AnyLabel]):
 
     @property
     def labels(self) -> List[AnyLabel]:
-        """ Get the list of labels for all items in the dataset."""
+        """Get the list of labels for all items in the dataset."""
         return self._labels
 
     def __len__(self) -> int:

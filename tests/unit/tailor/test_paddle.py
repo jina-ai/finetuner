@@ -87,7 +87,7 @@ def bidirectional_lstm():
 
     return nn.Sequential(
         nn.Embedding(num_embeddings=5000, embedding_dim=64),
-        nn.LSTM(64, 64, direction='bidirectional'),
+        nn.LSTM(64, 64, direction="bidirectional"),
         LastCell(),
         nn.Linear(in_features=128, out_features=32),
     )
@@ -95,11 +95,11 @@ def bidirectional_lstm():
 
 @pytest.fixture(
     params=[
-        'dense_model',
-        'simple_cnn_model',
-        'vgg16_cnn_model',
-        'stacked_lstm',
-        'bidirectional_lstm',
+        "dense_model",
+        "simple_cnn_model",
+        "vgg16_cnn_model",
+        "stacked_lstm",
+        "bidirectional_lstm",
     ]
 )
 def model(request):
@@ -107,25 +107,25 @@ def model(request):
 
 
 @pytest.mark.parametrize(
-    'model, layer_name, input_size, input_dtype',
+    "model, layer_name, input_size, input_dtype",
     [
-        ('dense_model', 'random_name', (128,), 'float32'),
+        ("dense_model", "random_name", (128,), "float32"),
         (
-            'simple_cnn_model',
-            'random_name',
+            "simple_cnn_model",
+            "random_name",
             (1, 28, 28),
-            'float32',
+            "float32",
         ),
         (
-            'vgg16_cnn_model',
-            'random_name',
+            "vgg16_cnn_model",
+            "random_name",
             (3, 224, 224),
-            'float32',
+            "float32",
         ),
-        ('stacked_lstm', 'random_name', (128,), 'int64'),
-        ('bidirectional_lstm', 'random_name', (128,), 'int64'),
+        ("stacked_lstm", "random_name", (128,), "int64"),
+        ("bidirectional_lstm", "random_name", (128,), "int64"),
     ],
-    indirect=['model'],
+    indirect=["model"],
 )
 def test_trim_fail_given_unexpected_layer_idx(
     model, layer_name, input_size, input_dtype
@@ -140,27 +140,27 @@ def test_trim_fail_given_unexpected_layer_idx(
 
 
 @pytest.mark.parametrize(
-    'model, layer_name, input_size, input_dtype',
+    "model, layer_name, input_size, input_dtype",
     [
-        ('dense_model', 10, (128,), 'float32'),
+        ("dense_model", 10, (128,), "float32"),
         (
-            'simple_cnn_model',
+            "simple_cnn_model",
             2,
             (1, 28, 28),
-            'float32',
+            "float32",
         ),
         (
-            'vgg16_cnn_model',
+            "vgg16_cnn_model",
             4,
             (3, 224, 224),
-            'float32',
+            "float32",
         ),
-        ('stacked_lstm', 10, (128,), 'int64'),
-        ('bidirectional_lstm', 5, (128,), 'int64'),
+        ("stacked_lstm", 10, (128,), "int64"),
+        ("bidirectional_lstm", 5, (128,), "int64"),
     ],
-    indirect=['model'],
+    indirect=["model"],
 )
-@pytest.mark.parametrize('freeze', [True, False])
+@pytest.mark.parametrize("freeze", [True, False])
 def test_freeze(model, layer_name, input_size, input_dtype, freeze):
     paddle_tailor = PaddleTailor(
         model=model,
@@ -175,21 +175,21 @@ def test_freeze(model, layer_name, input_size, input_dtype, freeze):
 
 
 @pytest.mark.parametrize(
-    'model, layer_name, input_size, input_dtype, freeze_layers',
+    "model, layer_name, input_size, input_dtype, freeze_layers",
     [
-        ('dense_model', 10, (128,), 'float32', ['linear_1', 'linear_5']),
-        ('simple_cnn_model', 2, (1, 28, 28), 'float32', ['conv2d_1', 'maxpool2d_5']),
+        ("dense_model", 10, (128,), "float32", ["linear_1", "linear_5"]),
+        ("simple_cnn_model", 2, (1, 28, 28), "float32", ["conv2d_1", "maxpool2d_5"]),
         (
-            'vgg16_cnn_model',
+            "vgg16_cnn_model",
             4,
             (3, 224, 224),
-            'float32',
-            ['conv2d_27', 'maxpool2d_31', 'adaptiveavgpool2d_32'],
+            "float32",
+            ["conv2d_27", "maxpool2d_31", "adaptiveavgpool2d_32"],
         ),
-        ('stacked_lstm', 10, (128,), 'int64', ['linear_layer_1', 'linear_layer_2']),
-        ('bidirectional_lstm', 5, (128,), 'int64', ['lastcell_3', 'linear_4']),
+        ("stacked_lstm", 10, (128,), "int64", ["linear_layer_1", "linear_layer_2"]),
+        ("bidirectional_lstm", 5, (128,), "int64", ["lastcell_3", "linear_4"]),
     ],
-    indirect=['model'],
+    indirect=["model"],
 )
 def test_freeze_given_freeze_layers(
     model, layer_name, input_size, input_dtype, freeze_layers
@@ -203,7 +203,7 @@ def test_freeze_given_freeze_layers(
         freeze=True, output_dim=2, freeze_layers=freeze_layers
     )
     for layer, param in zip(pytorch_tailor.embedding_layers, model.parameters()):
-        layer_name = layer['name']
+        layer_name = layer["name"]
         if layer_name in freeze_layers:
             assert param.trainable == False
         else:
@@ -211,48 +211,48 @@ def test_freeze_given_freeze_layers(
 
 
 @pytest.mark.parametrize(
-    'model, layer_name, input_size, input_, input_dtype, expected_output_shape',
+    "model, layer_name, input_size, input_, input_dtype, expected_output_shape",
     [
-        ('dense_model', 'linear_7', (128,), (1, 128), 'float32', [1, 10]),
+        ("dense_model", "linear_7", (128,), (1, 128), "float32", [1, 10]),
         (
-            'simple_cnn_model',
-            'dropout_9',
+            "simple_cnn_model",
+            "dropout_9",
             (1, 28, 28),
             (1, 1, 28, 28),
-            'float32',
+            "float32",
             [1, 128],
         ),
         (
-            'vgg16_cnn_model',
-            'linear_36',
+            "vgg16_cnn_model",
+            "linear_36",
             (3, 224, 224),
             (1, 3, 224, 224),
-            'float32',
+            "float32",
             [1, 4096],
         ),
-        ('stacked_lstm', 'linear_3', (128,), (1, 128), 'int64', [1, 256]),
-        ('bidirectional_lstm', 'linear_4', (128,), (1, 128), 'int64', [1, 32]),
-        ('dense_model', None, (128,), (1, 128), 'float32', [1, 10]),
+        ("stacked_lstm", "linear_3", (128,), (1, 128), "int64", [1, 256]),
+        ("bidirectional_lstm", "linear_4", (128,), (1, 128), "int64", [1, 32]),
+        ("dense_model", None, (128,), (1, 128), "float32", [1, 10]),
         (
-            'simple_cnn_model',
+            "simple_cnn_model",
             None,
             (1, 28, 28),
             (1, 1, 28, 28),
-            'float32',
+            "float32",
             [1, 10],
         ),
         (
-            'vgg16_cnn_model',
+            "vgg16_cnn_model",
             None,
             (3, 224, 224),
             (1, 3, 224, 224),
-            'float32',
+            "float32",
             [1, 1000],
         ),
-        ('stacked_lstm', None, (128,), (1, 128), 'int64', [1, 5]),
-        ('bidirectional_lstm', None, (128,), (1, 128), 'int64', [1, 32]),
+        ("stacked_lstm", None, (128,), (1, 128), "int64", [1, 5]),
+        ("bidirectional_lstm", None, (128,), (1, 128), "int64", [1, 32]),
     ],
-    indirect=['model'],
+    indirect=["model"],
 )
 def test_to_embedding_model(
     model, layer_name, input_size, input_, input_dtype, expected_output_shape
@@ -273,24 +273,24 @@ def test_to_embedding_model(
 def test_paddle_lstm_model_parser():
     user_model = paddle.nn.Sequential(
         paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),
-        paddle.nn.LSTM(64, 64, direction='bidirectional'),
+        paddle.nn.LSTM(64, 64, direction="bidirectional"),
         LastCellPD(),
         paddle.nn.Linear(in_features=2 * 64, out_features=32),
     )
     paddle_tailor = PaddleTailor(
         model=user_model,
         input_size=(5000,),
-        input_dtype='int64',
+        input_dtype="int64",
     )
     r = paddle_tailor.embedding_layers
     assert len(r) == 2
 
     # flat layer can be a nonparametric candidate
-    assert r[0]['output_features'] == 128
-    assert r[0]['nb_params'] == 0
+    assert r[0]["output_features"] == 128
+    assert r[0]["nb_params"] == 0
 
-    assert r[1]['output_features'] == 32
-    assert r[1]['nb_params'] == 4128
+    assert r[1]["output_features"] == 32
+    assert r[1]["nb_params"] == 4128
 
 
 def test_paddle_mlp_model_parser():
@@ -306,21 +306,21 @@ def test_paddle_mlp_model_parser():
     paddle_tailor = PaddleTailor(
         model=user_model,
         input_size=(28, 28),
-        input_dtype='float32',
+        input_dtype="float32",
     )
     r = paddle_tailor.embedding_layers
     assert len(r) == 4
 
     # flat layer can be a nonparametric candidate
-    assert r[0]['output_features'] == 784
-    assert r[0]['nb_params'] == 0
+    assert r[0]["output_features"] == 784
+    assert r[0]["nb_params"] == 0
 
-    assert r[1]['output_features'] == 128
-    assert r[1]['nb_params'] == 100480
+    assert r[1]["output_features"] == 128
+    assert r[1]["nb_params"] == 100480
 
     # relu layer is a nonparametric candidate
-    assert r[2]['output_features'] == 128
-    assert r[2]['nb_params'] == 0
+    assert r[2]["output_features"] == 128
+    assert r[2]["nb_params"] == 0
 
-    assert r[3]['output_features'] == 32
-    assert r[3]['nb_params'] == 4128
+    assert r[3]["output_features"] == 32
+    assert r[3]["nb_params"] == 4128

@@ -3,7 +3,7 @@ from typing import Generic, Tuple, TypeVar
 
 from ...helper import AnyTensor
 
-LabelType = TypeVar('LabelType')
+LabelType = TypeVar("LabelType")
 
 
 class BaseMiner(abc.ABC, Generic[AnyTensor, LabelType]):

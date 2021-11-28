@@ -9,10 +9,10 @@ from finetuner.tailor.keras import KerasTailor
 def dense_model():
     model = tf.keras.models.Sequential()
     model.add(tf.keras.layers.InputLayer(input_shape=(128,)))  # (None, 128)
-    model.add(tf.keras.layers.Dense(128, activation='relu'))  # (None, 128)
-    model.add(tf.keras.layers.Dense(64, activation='relu'))  # (None, 64)
-    model.add(tf.keras.layers.Dense(32, activation='relu'))  # (None, 32)
-    model.add(tf.keras.layers.Dense(10, activation='softmax'))  # (None, 10)
+    model.add(tf.keras.layers.Dense(128, activation="relu"))  # (None, 128)
+    model.add(tf.keras.layers.Dense(64, activation="relu"))  # (None, 64)
+    model.add(tf.keras.layers.Dense(32, activation="relu"))  # (None, 32)
+    model.add(tf.keras.layers.Dense(10, activation="softmax"))  # (None, 10)
     return model
 
 
@@ -20,14 +20,14 @@ def dense_model():
 def simple_cnn_model():
     model = tf.keras.models.Sequential()
     model.add(tf.keras.layers.InputLayer(input_shape=(28, 28, 1)))
-    model.add(tf.keras.layers.Conv2D(32, 3, (1, 1), activation='relu'))
-    model.add(tf.keras.layers.Conv2D(64, 3, (1, 1), activation='relu'))
+    model.add(tf.keras.layers.Conv2D(32, 3, (1, 1), activation="relu"))
+    model.add(tf.keras.layers.Conv2D(64, 3, (1, 1), activation="relu"))
     model.add(tf.keras.layers.MaxPool2D(2))
     model.add(tf.keras.layers.Dropout(0.25))
     model.add(tf.keras.layers.Flatten())
     model.add(tf.keras.layers.Dense(128))
     model.add(tf.keras.layers.Dropout(0.25))
-    model.add(tf.keras.layers.Dense(10, activation='softmax'))
+    model.add(tf.keras.layers.Dense(10, activation="softmax"))
     return model
 
 
@@ -47,8 +47,8 @@ def stacked_lstm():
     model.add(
         tf.keras.layers.LSTM(256, return_sequences=False)
     )  # this layer will be considered as candidate layer
-    model.add(tf.keras.layers.Dense(256, activation='relu'))
-    model.add(tf.keras.layers.Dense(5, activation='softmax'))
+    model.add(tf.keras.layers.Dense(256, activation="relu"))
+    model.add(tf.keras.layers.Dense(5, activation="softmax"))
     return model
 
 
@@ -65,11 +65,11 @@ def bidirectional_lstm():
 
 @pytest.fixture(
     params=[
-        'dense_model',
-        'simple_cnn_model',
-        'vgg16_cnn_model',
-        'stacked_lstm',
-        'bidirectional_lstm',
+        "dense_model",
+        "simple_cnn_model",
+        "vgg16_cnn_model",
+        "stacked_lstm",
+        "bidirectional_lstm",
     ]
 )
 def model(request):
@@ -77,15 +77,15 @@ def model(request):
 
 
 @pytest.mark.parametrize(
-    'model, layer_name',
+    "model, layer_name",
     [
-        ('dense_model', 'random_name'),
-        ('simple_cnn_model', 'random_name'),
-        ('vgg16_cnn_model', 'random_name'),
-        ('stacked_lstm', 'random_name'),
-        ('bidirectional_lstm', 'random_name'),
+        ("dense_model", "random_name"),
+        ("simple_cnn_model", "random_name"),
+        ("vgg16_cnn_model", "random_name"),
+        ("stacked_lstm", "random_name"),
+        ("bidirectional_lstm", "random_name"),
     ],
-    indirect=['model'],
+    indirect=["model"],
 )
 def test_trim_fail_given_unexpected_layer_name(model, layer_name):
     with pytest.raises(KeyError):
@@ -94,20 +94,20 @@ def test_trim_fail_given_unexpected_layer_name(model, layer_name):
 
 
 @pytest.mark.parametrize(
-    'model, layer_name, expected_output_shape',
+    "model, layer_name, expected_output_shape",
     [
-        ('dense_model', 'dense_3', (None, 10)),
-        ('simple_cnn_model', 'dense', (None, 128)),
-        ('vgg16_cnn_model', 'fc2', (None, 4096)),
-        ('stacked_lstm', 'dense', (None, 256)),
-        ('bidirectional_lstm', 'dense', (None, 32)),
-        ('dense_model', None, (None, 10)),
-        ('simple_cnn_model', None, (None, 10)),
-        ('vgg16_cnn_model', None, (None, 1000)),
-        ('stacked_lstm', None, (None, 5)),
-        ('bidirectional_lstm', None, (None, 32)),
+        ("dense_model", "dense_3", (None, 10)),
+        ("simple_cnn_model", "dense", (None, 128)),
+        ("vgg16_cnn_model", "fc2", (None, 4096)),
+        ("stacked_lstm", "dense", (None, 256)),
+        ("bidirectional_lstm", "dense", (None, 32)),
+        ("dense_model", None, (None, 10)),
+        ("simple_cnn_model", None, (None, 10)),
+        ("vgg16_cnn_model", None, (None, 1000)),
+        ("stacked_lstm", None, (None, 5)),
+        ("bidirectional_lstm", None, (None, 32)),
     ],
-    indirect=['model'],
+    indirect=["model"],
 )
 def test_to_embedding_model(model, layer_name, expected_output_shape):
     keras_tailor = KerasTailor(model)
@@ -118,33 +118,33 @@ def test_to_embedding_model(model, layer_name, expected_output_shape):
 def test_weights_preserved_given_pretrained_model(vgg16_cnn_model):
     weights = vgg16_cnn_model.layers[0].get_weights()
     keras_tailor = KerasTailor(vgg16_cnn_model)
-    vgg16_cnn_model = keras_tailor.to_embedding_model(layer_name='fc2')
+    vgg16_cnn_model = keras_tailor.to_embedding_model(layer_name="fc2")
     weights_after_convert = vgg16_cnn_model.layers[0].get_weights()
     np.testing.assert_array_equal(weights, weights_after_convert)
 
 
 @pytest.mark.parametrize(
-    'model, layer_name, output_dim, expected_output_shape',
+    "model, layer_name, output_dim, expected_output_shape",
     [
-        ('dense_model', 'dense_3', None, (None, 10)),
-        ('simple_cnn_model', 'dense', None, (None, 128)),
-        ('vgg16_cnn_model', 'fc2', None, (None, 4096)),
-        ('stacked_lstm', 'dense', None, (None, 256)),
-        ('bidirectional_lstm', 'dense', None, (None, 32)),
+        ("dense_model", "dense_3", None, (None, 10)),
+        ("simple_cnn_model", "dense", None, (None, 128)),
+        ("vgg16_cnn_model", "fc2", None, (None, 4096)),
+        ("stacked_lstm", "dense", None, (None, 256)),
+        ("bidirectional_lstm", "dense", None, (None, 32)),
         # no layer name no output dim
-        ('dense_model', None, None, (None, 10)),
-        ('simple_cnn_model', None, None, (None, 10)),
-        ('vgg16_cnn_model', None, None, (None, 1000)),
-        ('stacked_lstm', None, None, (None, 5)),
-        ('bidirectional_lstm', None, None, (None, 32)),
+        ("dense_model", None, None, (None, 10)),
+        ("simple_cnn_model", None, None, (None, 10)),
+        ("vgg16_cnn_model", None, None, (None, 1000)),
+        ("stacked_lstm", None, None, (None, 5)),
+        ("bidirectional_lstm", None, None, (None, 32)),
         # with output dim
-        ('dense_model', 'dense_3', 16, (None, 16)),
-        ('simple_cnn_model', 'dense', 1024, (None, 1024)),
-        ('vgg16_cnn_model', 'fc2', 1024, (None, 1024)),
-        ('stacked_lstm', 'dense', 128, (None, 128)),
-        ('bidirectional_lstm', 'dense', 256, (None, 256)),
+        ("dense_model", "dense_3", 16, (None, 16)),
+        ("simple_cnn_model", "dense", 1024, (None, 1024)),
+        ("vgg16_cnn_model", "fc2", 1024, (None, 1024)),
+        ("stacked_lstm", "dense", 128, (None, 128)),
+        ("bidirectional_lstm", "dense", 256, (None, 256)),
     ],
-    indirect=['model'],
+    indirect=["model"],
 )
 def test_attach_dense_layer(model, layer_name, output_dim, expected_output_shape):
     keras_tailor = KerasTailor(model)
@@ -160,17 +160,17 @@ def test_attach_dense_layer(model, layer_name, output_dim, expected_output_shape
 
 
 @pytest.mark.parametrize(
-    'model',
+    "model",
     [
-        'dense_model',
-        'simple_cnn_model',
-        'vgg16_cnn_model',
-        'stacked_lstm',
-        'bidirectional_lstm',
+        "dense_model",
+        "simple_cnn_model",
+        "vgg16_cnn_model",
+        "stacked_lstm",
+        "bidirectional_lstm",
     ],
-    indirect=['model'],
+    indirect=["model"],
 )
-@pytest.mark.parametrize('freeze', [True, False])
+@pytest.mark.parametrize("freeze", [True, False])
 def test_freeze(model, freeze):
     keras_tailor = KerasTailor(model)
     for layer in model.layers:
@@ -187,21 +187,21 @@ def test_freeze(model, freeze):
 
 
 @pytest.mark.parametrize(
-    'model, layer_name, input_size, input_dtype, freeze_layers',
+    "model, layer_name, input_size, input_dtype, freeze_layers",
     [
-        ('dense_model', 10, (128,), 'float32', ['linear_1', 'linear_5']),
-        ('simple_cnn_model', 2, (1, 28, 28), 'float32', ['conv2d_1', 'maxpool2d_5']),
+        ("dense_model", 10, (128,), "float32", ["linear_1", "linear_5"]),
+        ("simple_cnn_model", 2, (1, 28, 28), "float32", ["conv2d_1", "maxpool2d_5"]),
         (
-            'vgg16_cnn_model',
+            "vgg16_cnn_model",
             4,
             (3, 224, 224),
-            'float32',
-            ['conv2d_27', 'maxpool2d_31', 'adaptiveavgpool2d_32'],
+            "float32",
+            ["conv2d_27", "maxpool2d_31", "adaptiveavgpool2d_32"],
         ),
-        ('stacked_lstm', 10, (128,), 'int64', ['linear_layer_1', 'linear_layer_2']),
-        ('bidirectional_lstm', 5, (128,), 'int64', ['lastcell_3', 'linear_4']),
+        ("stacked_lstm", 10, (128,), "int64", ["linear_layer_1", "linear_layer_2"]),
+        ("bidirectional_lstm", 5, (128,), "int64", ["lastcell_3", "linear_4"]),
     ],
-    indirect=['model'],
+    indirect=["model"],
 )
 def test_freeze_given_freeze_layers(
     model, layer_name, input_size, input_dtype, freeze_layers
@@ -215,7 +215,7 @@ def test_freeze_given_freeze_layers(
         freeze=True, output_dim=2, freeze_layers=freeze_layers
     )
     for layer, param in zip(pytorch_tailor.embedding_layers, model.layers):
-        layer_name = layer['name']
+        layer_name = layer["name"]
         if layer_name in freeze_layers:
             assert param.trainable == False
         else:
@@ -225,9 +225,9 @@ def test_freeze_given_freeze_layers(
 def test_keras_model_parser():
     user_model = tf.keras.Sequential(
         [
-            tf.keras.layers.Flatten(input_shape=(28, 28), name='l1'),
-            tf.keras.layers.Dense(128, activation='relu', name='l2'),
-            tf.keras.layers.Dense(32, name='l3'),
+            tf.keras.layers.Flatten(input_shape=(28, 28), name="l1"),
+            tf.keras.layers.Dense(128, activation="relu", name="l2"),
+            tf.keras.layers.Dense(32, name="l3"),
         ]
     )
 
@@ -235,15 +235,15 @@ def test_keras_model_parser():
 
     r = keras_tailor.embedding_layers
     assert len(r) == 3
-    assert r[0]['name'] == 'l1'
-    assert r[1]['name'] == 'l2'
-    assert r[2]['name'] == 'l3'
+    assert r[0]["name"] == "l1"
+    assert r[1]["name"] == "l2"
+    assert r[2]["name"] == "l3"
 
-    assert r[0]['output_features'] == 784
-    assert r[0]['nb_params'] == 0
+    assert r[0]["output_features"] == 784
+    assert r[0]["nb_params"] == 0
 
-    assert r[1]['output_features'] == 128
-    assert r[1]['nb_params'] == 100480
+    assert r[1]["output_features"] == 128
+    assert r[1]["nb_params"] == 100480
 
-    assert r[2]['output_features'] == 32
-    assert r[2]['nb_params'] == 4128
+    assert r[2]["output_features"] == 32
+    assert r[2]["nb_params"] == 4128

@@ -9,30 +9,30 @@ from finetuner.toydata import generate_fashion
 from finetuner.tuner.keras import KerasTuner
 
 
-@pytest.mark.parametrize('loss', ['TripletLoss', 'SiameseLoss'])
+@pytest.mark.parametrize("loss", ["TripletLoss", "SiameseLoss"])
 def test_simple_sequential_model(tmpdir, params, loss):
     user_model = tf.keras.Sequential(
         [
             tf.keras.layers.Flatten(
-                input_shape=(params['input_dim'], params['input_dim'])
+                input_shape=(params["input_dim"], params["input_dim"])
             ),
-            tf.keras.layers.Dense(params['feature_dim'], activation='relu'),
+            tf.keras.layers.Dense(params["feature_dim"], activation="relu"),
             tf.keras.layers.Dense(
-                params['output_dim'],
+                params["output_dim"],
             ),
         ]
     )
-    model_path = os.path.join(tmpdir, 'trained.kt')
+    model_path = os.path.join(tmpdir, "trained.kt")
 
     kt = KerasTuner(user_model, loss=loss)
 
     # fit and save the checkpoint
     kt.fit(
-        train_data=generate_fashion(num_total=params['num_train']),
-        eval_data=generate_fashion(is_testset=True, num_total=params['num_eval']),
-        epochs=params['epochs'],
-        batch_size=params['batch_size'],
-        num_items_per_class=params['num_items_per_class'],
+        train_data=generate_fashion(num_total=params["num_train"]),
+        eval_data=generate_fashion(is_testset=True, num_total=params["num_eval"]),
+        epochs=params["epochs"],
+        batch_size=params["batch_size"],
+        num_items_per_class=params["num_items_per_class"],
     )
     kt.save(model_path)
 
@@ -40,13 +40,13 @@ def test_simple_sequential_model(tmpdir, params, loss):
     embedding_model = keras.models.load_model(model_path)
     r = embedding_model.predict(
         np.random.random(
-            [params['num_predict'], params['input_dim'], params['input_dim']]
+            [params["num_predict"], params["input_dim"], params["input_dim"]]
         )
     )
-    assert r.shape == (params['num_predict'], params['output_dim'])
+    assert r.shape == (params["num_predict"], params["output_dim"])
 
 
-@pytest.mark.parametrize('loss', ['TripletLoss', 'SiameseLoss'])
+@pytest.mark.parametrize("loss", ["TripletLoss", "SiameseLoss"])
 def test_session_data(loss, create_easy_data_session):
     """Test with session dataset"""
 
@@ -57,7 +57,7 @@ def test_session_data(loss, create_easy_data_session):
     model = tf.keras.Sequential(
         [
             tf.keras.layers.Flatten(),
-            tf.keras.layers.Dense(10, activation='relu'),
+            tf.keras.layers.Dense(10, activation="relu"),
         ]
     )
 
@@ -76,12 +76,12 @@ def test_custom_optimizer(create_easy_data_session):
     model = tf.keras.Sequential(
         [
             tf.keras.layers.Flatten(),
-            tf.keras.layers.Dense(10, activation='relu'),
+            tf.keras.layers.Dense(10, activation="relu"),
         ]
     )
 
     optimizer = tf.keras.optimizers.SGD(learning_rate=1e-3)
 
     # Train
-    tuner = KerasTuner(model, loss='TripletLoss')
+    tuner = KerasTuner(model, loss="TripletLoss")
     tuner.fit(train_data=data, epochs=2, batch_size=10, optimizer=optimizer)

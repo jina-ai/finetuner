@@ -10,7 +10,7 @@ def test_basic_callback(generate_random_data, expected_results):
     model = tf.keras.Sequential(
         [
             tf.keras.layers.Flatten(),
-            tf.keras.layers.Dense(10, activation='relu'),
+            tf.keras.layers.Dense(10, activation="relu"),
         ]
     )
 

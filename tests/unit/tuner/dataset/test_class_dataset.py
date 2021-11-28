@@ -19,19 +19,19 @@ def test_empty_list():
 
 
 def test_no_class_label():
-    data = DocumentArray([Document(text='text')])
+    data = DocumentArray([Document(text="text")])
 
-    with pytest.raises(KeyError, match=rf'The tag `{__default_tag_key__}`'):
+    with pytest.raises(KeyError, match=rf"The tag `{__default_tag_key__}`"):
         _ = ClassDataset(data)
 
 
-@pytest.mark.parametrize('labels', ([1, 2, 1], ['1', '2', '1']))
+@pytest.mark.parametrize("labels", ([1, 2, 1], ["1", "2", "1"]))
 def test_da_input(labels):
     data = DocumentArray(
         [
-            Document(text='text1', tags=_class(labels[0])),
-            Document(text='text2', tags=_class(labels[1])),
-            Document(text='text1a', tags=_class(labels[2])),
+            Document(text="text1", tags=_class(labels[0])),
+            Document(text="text2", tags=_class(labels[1])),
+            Document(text="text1a", tags=_class(labels[2])),
         ]
     )
 
@@ -45,14 +45,14 @@ def test_da_input(labels):
         assert ds[i][1] == [0, 1, 0][i]
 
 
-@pytest.mark.parametrize('labels', ([1, 2, 1], ['1', '2', '1']))
+@pytest.mark.parametrize("labels", ([1, 2, 1], ["1", "2", "1"]))
 def test_dam_input(tmp_path, labels):
     data = DocumentArrayMemmap(tmp_path)
     data.extend(
         [
-            Document(text='text1', tags=_class(labels[0])),
-            Document(text='text2', tags=_class(labels[1])),
-            Document(text='text1a', tags=_class(labels[2])),
+            Document(text="text1", tags=_class(labels[0])),
+            Document(text="text2", tags=_class(labels[1])),
+            Document(text="text1a", tags=_class(labels[2])),
         ]
     )
 
@@ -66,12 +66,12 @@ def test_dam_input(tmp_path, labels):
         assert ds[i][1] == [0, 1, 0][i]
 
 
-@pytest.mark.parametrize('labels', ([1, 2, 1], ['1', '2', '1']))
+@pytest.mark.parametrize("labels", ([1, 2, 1], ["1", "2", "1"]))
 def test_list_input(labels):
     data = [
-        Document(text='text1', tags=_class(labels[0])),
-        Document(text='text2', tags=_class(labels[1])),
-        Document(text='text1a', tags=_class(labels[2])),
+        Document(text="text1", tags=_class(labels[0])),
+        Document(text="text2", tags=_class(labels[1])),
+        Document(text="text1a", tags=_class(labels[2])),
     ]
 
     ds = ClassDataset(data)
@@ -84,7 +84,7 @@ def test_list_input(labels):
         assert ds[i][1] == [0, 1, 0][i]
 
 
-@pytest.mark.parametrize('labels', ([1, 2, 1], ['1', '2', '1']))
+@pytest.mark.parametrize("labels", ([1, 2, 1], ["1", "2", "1"]))
 def test_custom_document_sequence_input(labels):
     """Test that we really support Sequence[Document], and not
     only lists/tuples"""
@@ -100,9 +100,9 @@ def test_custom_document_sequence_input(labels):
             return self.data[ind]
 
     docs = [
-        Document(text='text1', tags=_class(labels[0])),
-        Document(text='text2', tags=_class(labels[1])),
-        Document(text='text1a', tags=_class(labels[2])),
+        Document(text="text1", tags=_class(labels[0])),
+        Document(text="text2", tags=_class(labels[1])),
+        Document(text="text1a", tags=_class(labels[2])),
     ]
     data = MySequence(docs)
     ds = ClassDataset(data)
@@ -118,13 +118,13 @@ def test_custom_document_sequence_input(labels):
 def test_preprocess_fn():
     def preprocess(d: Document):
         _d = Document(d, copy=True)
-        return _d.text + '_new'
+        return _d.text + "_new"
 
     data = [
-        Document(text='text1', tags=_class(1)),
-        Document(text='text2', tags=_class(2)),
-        Document(text='text1a', tags=_class(1)),
+        Document(text="text1", tags=_class(1)),
+        Document(text="text2", tags=_class(2)),
+        Document(text="text1a", tags=_class(1)),
     ]
     ds = ClassDataset(data, preprocess_fn=preprocess)
     for (content, _), doc in zip(ds, data):
-        assert content == doc.text + '_new'
+        assert content == doc.text + "_new"

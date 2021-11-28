@@ -8,9 +8,9 @@ if TYPE_CHECKING:
 class BaseTailor(abc.ABC):
     def __init__(
         self,
-        model: 'AnyDNN',
+        model: "AnyDNN",
         input_size: Optional[Tuple[int, ...]] = None,
-        input_dtype: str = 'float32',
+        input_dtype: str = "float32",
     ):
         """Tailor converts a general DNN model into an embedding model.
 
@@ -34,7 +34,7 @@ class BaseTailor(abc.ABC):
         layer_name: Optional[str] = None,
         output_dim: Optional[int] = None,
         freeze: bool = False,
-    ) -> 'AnyDNN':
+    ) -> "AnyDNN":
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
         :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
@@ -47,16 +47,16 @@ class BaseTailor(abc.ABC):
         ...
 
     @property
-    def embedding_layers(self) -> 'LayerInfoType':
+    def embedding_layers(self) -> "LayerInfoType":
         """Get all dense layers that can be used as embedding layer from the :py:attr:`.model`.
 
         :return: layers info as Dict.
         """
         _layers = self.summary()
-        return [_l for _l in _layers if _l['is_embedding_layer']]
+        return [_l for _l in _layers if _l["is_embedding_layer"]]
 
     @abc.abstractmethod
-    def summary(self, include_identity_layer: bool = False) -> 'LayerInfoType':
+    def summary(self, include_identity_layer: bool = False) -> "LayerInfoType":
         """The summary of the model architecture. To list all potential embedding layers, use :py:attr:`.embedding_layers`.
 
         :param include_identity_layer: if set, then identity layers are included and returned.
@@ -75,16 +75,16 @@ class BaseTailor(abc.ABC):
 
         _summary = self.summary(*args, **kwargs)
         table = Table(box=box.SIMPLE)
-        cols = ['name', 'output_shape_display', 'nb_params', 'trainable']
+        cols = ["name", "output_shape_display", "nb_params", "trainable"]
         for k in cols:
             table.add_column(k)
         for s in _summary:
             style = None
-            if s['is_embedding_layer']:
-                style = 'green'
+            if s["is_embedding_layer"]:
+                style = "green"
             table.add_row(*map(str, (s[v] for v in cols)), style=style)
         print(
             table,
-            '[green]Green[/green] layers can be used as embedding layers, '
-            'whose [b]name[/b] can be used as [b]layer_name[/b] in to_embedding_model(...).',
+            "[green]Green[/green] layers can be used as embedding layers, "
+            "whose [b]name[/b] can be used as [b]layer_name[/b] in to_embedding_model(...).",
         )

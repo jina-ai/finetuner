@@ -13,16 +13,16 @@ from typing import (
 
 
 AnyDNN = TypeVar(
-    'AnyDNN'
+    "AnyDNN"
 )  #: The type of any implementation of a Deep Neural Network object
 AnyTensor = TypeVar(
-    'AnyTensor'
+    "AnyTensor"
 )  #: The type of any implementation of an tensor for model tuning
 AnyDataLoader = TypeVar(
-    'AnyDataLoader'
+    "AnyDataLoader"
 )  #: The type of any implementation of a data loader
 AnyOptimizer = TypeVar(
-    'AnyOptimizer'
+    "AnyOptimizer"
 )  #: The type of any implementation of an optimizer for training the model
 
 
@@ -32,7 +32,7 @@ if TYPE_CHECKING:
     from jina.types.ndarray import ArrayType
 
     DocumentSequence = TypeVar(
-        'DocumentSequence',
+        "DocumentSequence",
         Sequence[Document],
         DocumentArray,
         DocumentArrayMemmap,
@@ -43,7 +43,7 @@ if TYPE_CHECKING:
         Dict[str, Any]
     ]  #: The type of embedding layer information used in Tailor
 
-    T = TypeVar('T')  #: Generic type
+    T = TypeVar("T")  #: Generic type
 
     PreprocFnType = Callable[[Document], Any]  #: The type of preprocessing function
 
@@ -52,7 +52,7 @@ if TYPE_CHECKING:
     ]  #: The type of collate function
 
 
-def get_framework(dnn_model: 'AnyDNN') -> str:
+def get_framework(dnn_model: "AnyDNN") -> str:
     """Return the framework that enpowers a DNN model.
 
     .. note::
@@ -68,24 +68,24 @@ def get_framework(dnn_model: 'AnyDNN') -> str:
 
     framework = None
 
-    if importlib.util.find_spec('torch'):
+    if importlib.util.find_spec("torch"):
         import torch
 
         if isinstance(dnn_model, torch.nn.Module):
-            framework = 'torch'
-    if framework is None and importlib.util.find_spec('paddle'):
+            framework = "torch"
+    if framework is None and importlib.util.find_spec("paddle"):
         import paddle
 
         if isinstance(dnn_model, paddle.nn.Layer):
-            framework = 'paddle'
-    if framework is None and importlib.util.find_spec('tensorflow'):
+            framework = "paddle"
+    if framework is None and importlib.util.find_spec("tensorflow"):
         from tensorflow import keras
 
         if isinstance(dnn_model, keras.layers.Layer):
-            framework = 'keras'
+            framework = "keras"
 
     if framework is None:
-        raise ValueError(f'can not determine the backend of {dnn_model!r}')
+        raise ValueError(f"can not determine the backend of {dnn_model!r}")
 
     return framework
 

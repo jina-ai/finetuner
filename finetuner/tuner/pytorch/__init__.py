@@ -38,14 +38,14 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
     def _get_data_loader(
         self,
-        data: 'DocumentSequence',
+        data: "DocumentSequence",
         batch_size: int,
         shuffle: bool,
-        preprocess_fn: Optional['PreprocFnType'] = None,
-        collate_fn: Optional['CollateFnType'] = None,
+        preprocess_fn: Optional["PreprocFnType"] = None,
+        collate_fn: Optional["CollateFnType"] = None,
         num_items_per_class: Optional[int] = None,
     ) -> DataLoader:
-        """ Get the dataloader for the dataset"""
+        """Get the dataloader for the dataset"""
 
         if collate_fn:
 
@@ -86,7 +86,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
         for idx, (inputs, labels) in enumerate(data):
             self.state.batch_index = idx
-            self._trigger_callbacks('on_val_batch_begin')
+            self._trigger_callbacks("on_val_batch_begin")
 
             inputs = _to_device(inputs, self.device)
             labels = _to_device(labels, self.device)
@@ -96,7 +96,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
                 loss = self._loss(embeddings, labels)
 
             self.state.current_loss = loss.item()
-            self._trigger_callbacks('on_val_batch_end')
+            self._trigger_callbacks("on_val_batch_end")
 
     def _train(self, data: DataLoader):
         """Train the model on given labeled data"""
@@ -105,7 +105,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
         for idx, (inputs, labels) in enumerate(data):
             self.state.batch_index = idx
-            self._trigger_callbacks('on_train_batch_begin')
+            self._trigger_callbacks("on_train_batch_begin")
 
             inputs = _to_device(inputs, self.device)
             labels = _to_device(labels, self.device)
@@ -119,20 +119,20 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
             self.state.current_loss = loss.item()
 
-            self._trigger_callbacks('on_train_batch_end')
+            self._trigger_callbacks("on_train_batch_end")
 
     def fit(
         self,
-        train_data: 'DocumentSequence',
-        eval_data: Optional['DocumentSequence'] = None,
+        train_data: "DocumentSequence",
+        eval_data: Optional["DocumentSequence"] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
         optimizer: Optional[Optimizer] = None,
         learning_rate: float = 1e-3,
-        device: str = 'cpu',
-        preprocess_fn: Optional['PreprocFnType'] = None,
-        collate_fn: Optional['CollateFnType'] = None,
+        device: str = "cpu",
+        preprocess_fn: Optional["PreprocFnType"] = None,
+        collate_fn: Optional["CollateFnType"] = None,
         **kwargs,
     ):
         """Finetune the model on the training data.
@@ -184,7 +184,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
         # Set state
         self.state = TunerState(num_epochs=epochs)
-        self._trigger_callbacks('on_fit_begin')
+        self._trigger_callbacks("on_fit_begin")
 
         for epoch in range(epochs):
 
@@ -193,23 +193,23 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
             self.state.num_batches_train = len(train_dl)
             self.state.batch_index = 0
 
-            self._trigger_callbacks('on_epoch_begin')
+            self._trigger_callbacks("on_epoch_begin")
 
-            self._trigger_callbacks('on_train_epoch_begin')
+            self._trigger_callbacks("on_train_epoch_begin")
             self._train(train_dl)
-            self._trigger_callbacks('on_train_epoch_end')
+            self._trigger_callbacks("on_train_epoch_end")
 
             if eval_data:
                 self.state.num_batches_val = len(eval_dl)
                 self.state.batch_index = 0
 
-                self._trigger_callbacks('on_val_begin')
+                self._trigger_callbacks("on_val_begin")
                 self._eval(eval_dl)
-                self._trigger_callbacks('on_val_end')
+                self._trigger_callbacks("on_val_end")
 
-            self._trigger_callbacks('on_epoch_end')
+            self._trigger_callbacks("on_epoch_end")
 
-        self._trigger_callbacks('on_fit_end')
+        self._trigger_callbacks("on_fit_end")
 
     def save(self, *args, **kwargs):
         """Save the embedding model.

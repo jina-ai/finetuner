@@ -25,11 +25,11 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
 
     def _get_data_loader(
         self,
-        data: 'DocumentSequence',
+        data: "DocumentSequence",
         batch_size: int,
         shuffle: bool,
-        preprocess_fn: Optional['PreprocFnType'] = None,
-        collate_fn: Optional['CollateFnType'] = None,
+        preprocess_fn: Optional["PreprocFnType"] = None,
+        collate_fn: Optional["CollateFnType"] = None,
         num_items_per_class: Optional[int] = None,
     ) -> KerasSequenceAdapter:
         """Get the dataloader for the dataset
@@ -66,7 +66,7 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
 
         for idx, (inputs, labels) in enumerate(data.get_dataset()):
             self.state.batch_index = idx
-            self._trigger_callbacks('on_train_batch_begin')
+            self._trigger_callbacks("on_train_batch_begin")
 
             with tf.GradientTape() as tape:
                 embeddings = self._embed_model(inputs)
@@ -78,7 +78,7 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
             )
 
             self.state.current_loss = loss.numpy()
-            self._trigger_callbacks('on_train_batch_end')
+            self._trigger_callbacks("on_train_batch_end")
 
         data.on_epoch_end()  # To re-create batches
 
@@ -87,28 +87,28 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
 
         for idx, (inputs, labels) in enumerate(data.get_dataset()):
             self.state.batch_index = idx
-            self._trigger_callbacks('on_val_batch_begin')
+            self._trigger_callbacks("on_val_batch_begin")
 
             embeddings = self._embed_model(inputs)
             loss = self._loss(embeddings, labels)
 
             self.state.current_loss = loss.numpy()
-            self._trigger_callbacks('on_val_batch_end')
+            self._trigger_callbacks("on_val_batch_end")
 
         data.on_epoch_end()  # To re-create batches
 
     def fit(
         self,
-        train_data: 'DocumentSequence',
-        eval_data: Optional['DocumentSequence'] = None,
+        train_data: "DocumentSequence",
+        eval_data: Optional["DocumentSequence"] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
         optimizer: Optional[Optimizer] = None,
         learning_rate: float = 1e-3,
-        device: str = 'cpu',
-        preprocess_fn: Optional['PreprocFnType'] = None,
-        collate_fn: Optional['CollateFnType'] = None,
+        device: str = "cpu",
+        preprocess_fn: Optional["PreprocFnType"] = None,
+        collate_fn: Optional["CollateFnType"] = None,
         **kwargs,
     ):
         """Finetune the model on the training data.
@@ -157,7 +157,7 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
 
         # Set state
         self.state = TunerState(num_epochs=epochs)
-        self._trigger_callbacks('on_fit_begin')
+        self._trigger_callbacks("on_fit_begin")
 
         with get_device(device):
             for epoch in range(epochs):
@@ -167,23 +167,23 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
                 self.state.num_batches_train = train_dl.get_size()
                 self.state.batch_index = 0
 
-                self._trigger_callbacks('on_epoch_begin')
+                self._trigger_callbacks("on_epoch_begin")
 
-                self._trigger_callbacks('on_train_epoch_begin')
+                self._trigger_callbacks("on_train_epoch_begin")
                 self._train(train_dl)
-                self._trigger_callbacks('on_train_epoch_end')
+                self._trigger_callbacks("on_train_epoch_end")
 
                 if eval_data:
                     self.state.num_batches_val = eval_dl.get_size()
                     self.state.batch_index = 0
 
-                    self._trigger_callbacks('on_val_begin')
+                    self._trigger_callbacks("on_val_begin")
                     self._eval(eval_dl)
-                    self._trigger_callbacks('on_val_end')
+                    self._trigger_callbacks("on_val_end")
 
-                self._trigger_callbacks('on_epoch_end')
+                self._trigger_callbacks("on_epoch_end")
 
-            self._trigger_callbacks('on_fit_end')
+            self._trigger_callbacks("on_fit_end")
 
     def save(self, *args, **kwargs):
         """Save the embedding model.
@@ -206,8 +206,8 @@ def get_device(device: str):
     """
 
     # translate our own alias into framework-compatible ones
-    if device == 'cuda':
-        device = '/GPU:0'
-    elif device == 'cpu':
-        device = '/CPU:0'
+    if device == "cuda":
+        device = "/GPU:0"
+    elif device == "cpu":
+        device = "/CPU:0"
     return tf.device(device)
