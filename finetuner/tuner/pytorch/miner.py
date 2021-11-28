@@ -120,42 +120,36 @@ class TripletHardMiner(TripletMiner):
         # Get all d(a, n)
         d_a_n = diffs * distances
 
-        match_mask = torch.zeros_like(distances).bool()
-        diff_mask = torch.zeros_like(distances).bool()
-
         if self.strategy == "hard":
             # Get hardest negative samples
             neg_distances = self._get_per_row_min(diffs * distances)
             neg_mask = neg_distances == d_a_n
-            diff_mask = torch.logical_or(diff_mask, neg_mask)
-
+            diffs *= neg_mask
             # Get all pos samples with larger distance than neg one
             pos_mask = neg_distances < d_a_p
-            match_mask = torch.logical_or(match_mask, pos_mask)
+            matches *= pos_mask
 
         elif self.strategy == "semihard":
             # Get hardest negative sample
             neg_distances = self._get_per_row_min(diffs * distances)
             neg_mask = neg_distances < d_a_n
-            diff_mask = torch.logical_or(diff_mask, neg_mask)
+            diffs *= neg_mask
 
             # Get hardest pos samples that are further than neg samples
             pos_distances = self._get_per_row_min(d_a_p, neg_distances)
             pos_mask = pos_distances == d_a_p
-            match_mask = torch.logical_or(match_mask, pos_mask)
+            matches *= pos_mask
 
         elif self.strategy == "easy":
             # Get easy positive sample
             pos_distances, _ = self._get_per_row_min(matches * distances)
             pos_mask = pos_distances == d_a_p
-            match_mask = torch.logical_or(match_mask, pos_mask)
+            matches *= pos_mask
 
             # Get easy negative samples, further away than pos sample
             neg_mask = pos_distances < d_a_n
-            diff_mask = torch.logical_or(diff_mask, neg_mask)
+            diffs *= neg_mask
 
-        diffs = diffs * diff_mask
-        matches = matches * match_mask
         triplets = matches.unsqueeze(2) * diffs.unsqueeze(1)
 
         return torch.where(triplets)
