@@ -6,7 +6,7 @@ __version__ = '0.2.5'
 __default_tag_key__ = 'finetuner_label'
 
 # define the high-level API: fit()
-from typing import Optional, overload, TYPE_CHECKING, Tuple, Union
+from typing import Optional, overload, TYPE_CHECKING, Tuple, Union, List
 
 if TYPE_CHECKING:
     from .helper import (
@@ -58,6 +58,7 @@ def fit(
     layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
+    freeze_layers: Optional[List[str]] = None,
 ) -> 'AnyDNN':
     ...
 
@@ -110,6 +111,7 @@ def fit(
     layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
+    freeze_layers: Optional[List[str]] = None,
 ) -> 'AnyDNN':
     ...
 
