@@ -85,8 +85,6 @@ class TripletEasyHardMiner(TripletMiner):
         if semihard_tsh is not None:
             dist_mat[dist_mat < semihard_tsh] = float('inf')
 
-        # There could be inf in the min here
-        # => account for that
         non_inf_rows = torch.all(dist_mat == float('inf'), dim=1)
         return torch.min(dist_mat, dim=1, keepdim=True)[0], non_inf_rows
 
