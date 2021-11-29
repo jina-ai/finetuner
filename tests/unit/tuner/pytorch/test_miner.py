@@ -140,7 +140,7 @@ def test_triplet_easy_hard_miner(labels):
     np.testing.assert_equal(neg_ind.numpy(), true_neg_ind)
 
 
-@pytest.mark.parametrize("cut_index", [0, 1])
+@pytest.mark.parametrize('cut_index', [0, 1])
 def test_triplet_miner_given_insufficient_inputs(labels, cut_index):
     labels = labels[:cut_index]
     anch_ind, pos_ind, neg_ind = TripletMiner().mine(labels, fake_dists(len(labels)))
