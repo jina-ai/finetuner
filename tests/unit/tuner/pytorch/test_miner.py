@@ -5,6 +5,7 @@ import torch
 from finetuner.tuner.pytorch.miner import (
     SiameseMiner,
     TripletMiner,
+    TripletHardMiner,
     SiameseSessionMiner,
     TripletSessionMiner,
 )
@@ -55,7 +56,7 @@ def test_siamese_miner(labels):
     np.testing.assert_equal(true_label, label.numpy())
 
 
-@pytest.mark.parametrize('cut_index', [0, 1])
+@pytest.mark.parametrize("cut_index", [0, 1])
 def test_siamese_miner_given_insufficient_inputs(labels, cut_index):
     labels = labels[:cut_index]
     ind_one, ind_two, label = SiameseMiner().mine(labels, fake_dists(len(labels)))
@@ -101,7 +102,45 @@ def test_triplet_miner(labels):
     np.testing.assert_equal(neg_ind.numpy(), true_neg_ind)
 
 
-@pytest.mark.parametrize('cut_index', [0, 1])
+def test_triplet_easy_hard_miner(labels):
+    triplets = np.array(
+        [
+            (0, 2, 1),
+            (0, 2, 3),
+            (0, 2, 4),
+            (0, 2, 5),
+            (1, 3, 0),
+            (1, 3, 2),
+            (1, 3, 4),
+            (1, 3, 5),
+            (2, 0, 1),
+            (2, 0, 3),
+            (2, 0, 4),
+            (2, 0, 5),
+            (3, 1, 0),
+            (3, 1, 2),
+            (3, 1, 4),
+            (3, 1, 5),
+            (4, 5, 0),
+            (4, 5, 1),
+            (4, 5, 2),
+            (4, 5, 3),
+            (5, 4, 0),
+            (5, 4, 1),
+            (5, 4, 2),
+            (5, 4, 3),
+        ]
+    )
+    true_anch_ind, true_pos_ind, true_neg_ind = triplets.T
+    anch_ind, pos_ind, neg_ind = TripletHardMiner(strategy='semihard').mine(
+        labels, fake_dists(len(labels))
+    )
+    np.testing.assert_equal(anch_ind.numpy(), true_anch_ind)
+    np.testing.assert_equal(pos_ind.numpy(), true_pos_ind)
+    np.testing.assert_equal(neg_ind.numpy(), true_neg_ind)
+
+
+@pytest.mark.parametrize("cut_index", [0, 1])
 def test_triplet_miner_given_insufficient_inputs(labels, cut_index):
     labels = labels[:cut_index]
     anch_ind, pos_ind, neg_ind = TripletMiner().mine(labels, fake_dists(len(labels)))
@@ -136,7 +175,7 @@ def test_siamese_session_miner(session_labels):
     np.testing.assert_equal(true_label, label.numpy())
 
 
-@pytest.mark.parametrize('cut_index', [0, 1])
+@pytest.mark.parametrize("cut_index", [0, 1])
 def test_siamese_session_miner_given_insufficient_inputs(session_labels, cut_index):
     session_labels = [x[:cut_index] for x in session_labels]
     ind_one, ind_two, label = SiameseSessionMiner().mine(
@@ -176,7 +215,7 @@ def test_triplet_session_miner(session_labels):
     np.testing.assert_equal(neg_ind.numpy(), true_neg_ind)
 
 
-@pytest.mark.parametrize('cut_index', [0, 1])
+@pytest.mark.parametrize("cut_index", [0, 1])
 def test_triplet_session_miner_given_insufficient_inputs(session_labels, cut_index):
     session_labels = [x[:cut_index] for x in session_labels]
     anch_ind, pos_ind, neg_ind = TripletSessionMiner().mine(
@@ -188,21 +227,21 @@ def test_triplet_session_miner_given_insufficient_inputs(session_labels, cut_ind
 
 
 @pytest.mark.gpu
-@pytest.mark.parametrize('miner', [SiameseMiner, TripletMiner])
+@pytest.mark.parametrize("miner", [SiameseMiner, TripletMiner])
 def test_class_miner_gpu(miner, labels):
     m = miner()
-    outputs = m.mine(labels.to('cuda'), fake_dists(len(labels)).to('cuda'))
+    outputs = m.mine(labels.to("cuda"), fake_dists(len(labels)).to("cuda"))
 
     for x in outputs:
-        assert x.device.type == 'cuda'
+        assert x.device.type == "cuda"
 
 
 @pytest.mark.gpu
-@pytest.mark.parametrize('miner', [SiameseSessionMiner, TripletSessionMiner])
+@pytest.mark.parametrize("miner", [SiameseSessionMiner, TripletSessionMiner])
 def test_session_miner_gpu(miner, session_labels):
     m = miner()
-    labels = [x.to('cuda') for x in session_labels]
-    outputs = m.mine(labels, fake_dists(len(labels[0])).to('cuda'))
+    labels = [x.to("cuda") for x in session_labels]
+    outputs = m.mine(labels, fake_dists(len(labels[0])).to("cuda"))
 
     for x in outputs:
-        assert x.device.type == 'cuda'
+        assert x.device.type == "cuda"
