@@ -4,7 +4,7 @@ from jina import Document, DocumentArray
 from finetuner.tuner.pytorch.datasets import PytorchClassDataset, PytorchSessionDataset
 
 
-def test_pytorch_dataset_blob_writable_given_classdataset():
+def test_pytorch_blob_writable_given_classdataset():
     da = DocumentArray()
     da.append(Document(blob=np.random.rand(3, 224, 224), tags={'finetuner_label': 1}))
     # for performance reason, in jina core, blob is an immutable object.
@@ -14,7 +14,7 @@ def test_pytorch_dataset_blob_writable_given_classdataset():
     assert content.flags['WRITEABLE'] == True
 
 
-def test_pytorch_dataset_blob_writable_given_sessiondataset():
+def test_pytorch_blob_writable_given_sessiondataset():
     da = DocumentArray()
     doc = Document(blob=np.random.rand(3, 224, 224))
     doc.matches.append(
