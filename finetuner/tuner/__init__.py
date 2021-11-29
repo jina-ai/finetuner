@@ -1,10 +1,11 @@
-from typing import Optional, Type, TYPE_CHECKING, Union
+from typing import List, Optional, Type, TYPE_CHECKING, Union
 
 from .base import BaseLoss
 from ..helper import get_framework
 
 if TYPE_CHECKING:
     from .base import BaseTuner
+    from .callback import BaseCallback
     from ..helper import (
         AnyDNN,
         AnyOptimizer,
@@ -44,6 +45,7 @@ def fit(
     optimizer: Optional['AnyOptimizer'] = None,
     learning_rate: float = 1e-3,
     device: str = 'cpu',
+    callbacks: Optional[List['BaseCallback']] = None,
     **kwargs,
 ):
     """Finetune the model on the training data.
@@ -74,10 +76,12 @@ def fit(
         ``learning_rate`` parameter.
     :param device: The device to which to move the model. Supported options are
         ``"cpu"`` and ``"cuda"`` (for GPU)
+    :param callbacks: A list of callbacks. The progress bar callback
+        will be pre-prended to this list.
     """
     ft = _get_tuner_class(embed_model)
 
-    ft(embed_model, loss=loss).fit(
+    ft(embed_model, loss=loss, callbacks=callbacks).fit(
         train_data,
         eval_data,
         epochs=epochs,
