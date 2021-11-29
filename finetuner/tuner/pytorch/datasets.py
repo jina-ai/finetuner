@@ -11,7 +11,8 @@ if TYPE_CHECKING:
 
 
 def _make_blob_writable(content):
-    if isinstance(content, np.ndarray) and (content.flags['WRITEABLE'] == False):
+    if isinstance(content, np.ndarray):
+        # jina blob is immutable, see content.flags['WRITEABLE']
         return deepcopy(content)
     return content
 
