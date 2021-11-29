@@ -201,9 +201,12 @@
     <img class="sidebar-logo only-light" src="../../_static/logo-light.svg" alt="Light Logo"/>
     <img class="sidebar-logo only-dark" src="../../_static/logo-dark.svg" alt="Dark Logo"/>
   </div>
-  <div class="sd-d-flex-row">
-  <a class="github-button" href="https://github.com/jina-ai/finetuner" data-icon="octicon-star" data-show-count="true" aria-label="Star jina-ai/finetuner on GitHub">Star</a>
-  <select id="versions" onChange="window.location.href=this.value">
+  
+  
+</a>
+<div class="sd-d-flex-row sd-align-major-spaced">
+  <a class="github-button" href="https://github.com/jina-ai/finetuner" data-icon="octicon-star" data-show-count="true" aria-label="Star jina-ai/finetuner on GitHub" style="opacity: 0;">Star</a>
+  <select onChange="window.location.href=this.value" class="version-select">
     
         
           
@@ -213,7 +216,7 @@
         
           
           
-            <option value="finetuner.tuner.miner.base.html" selected >latest (v0.2.4)</option>
+            <option value="finetuner.tuner.miner.base.html" selected="selected" >latest (v0.2.4)</option>
           
         
         
@@ -238,10 +241,7 @@
         
     
   </select>
-  </div>
-  
-  
-</a><form class="sidebar-search-container" method="get" action="../../search/" role="search">
+</div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
