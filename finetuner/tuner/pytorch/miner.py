@@ -85,7 +85,10 @@ class TripletHardMiner(TripletMiner):
         if semihard_tsh is not None:
             dist_mat[dist_mat < semihard_tsh] = float("inf")
 
-        return torch.min(dist_mat, dim=1, keepdim=True)[0]
+        # There could be inf in the min here
+        # => account for that
+        non_inf_rows = torch.all(dist_mat == float("inf"), dim=1)
+        return torch.min(dist_mat, dim=1, keepdim=True)[0], non_inf_rows
 
     def mine(
         self, labels: torch.Tensor, distances: torch.Tensor
@@ -122,7 +125,7 @@ class TripletHardMiner(TripletMiner):
 
         if self.strategy == "hard":
             # Get hardest negative samples
-            neg_distances = self._get_per_row_min(diffs * distances)
+            neg_distances, _ = self._get_per_row_min(diffs * distances)
             neg_mask = neg_distances == d_a_n
             diffs *= neg_mask
             # Get all pos samples with larger distance than neg one
@@ -131,14 +134,17 @@ class TripletHardMiner(TripletMiner):
 
         elif self.strategy == "semihard":
             # Get hardest negative sample
-            neg_distances = self._get_per_row_min(diffs * distances)
+            neg_distances, _ = self._get_per_row_min(diffs * distances)
             neg_mask = neg_distances < d_a_n
             diffs *= neg_mask
 
             # Get hardest pos samples that are further than neg samples
-            pos_distances = self._get_per_row_min(d_a_p, neg_distances)
+            pos_distances, invalid_row_mask = self._get_per_row_min(
+                matches * distances, neg_distances
+            )
             pos_mask = pos_distances == d_a_p
             matches *= pos_mask
+            matches[invalid_row_mask] = 0
 
         elif self.strategy == "easy":
             # Get easy positive sample
