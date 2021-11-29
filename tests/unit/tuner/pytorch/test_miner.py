@@ -230,18 +230,18 @@ def test_triplet_session_miner_given_insufficient_inputs(session_labels, cut_ind
 @pytest.mark.parametrize("miner", [SiameseMiner, TripletMiner])
 def test_class_miner_gpu(miner, labels):
     m = miner()
-    outputs = m.mine(labels.to("cuda"), fake_dists(len(labels)).to("cuda"))
+    outputs = m.mine(labels.to('cuda'), fake_dists(len(labels)).to('cuda'))
 
     for x in outputs:
-        assert x.device.type == "cuda"
+        assert x.device.type == 'cuda'
 
 
 @pytest.mark.gpu
 @pytest.mark.parametrize("miner", [SiameseSessionMiner, TripletSessionMiner])
 def test_session_miner_gpu(miner, session_labels):
     m = miner()
-    labels = [x.to("cuda") for x in session_labels]
-    outputs = m.mine(labels, fake_dists(len(labels[0])).to("cuda"))
+    labels = [x.to('cuda') for x in session_labels]
+    outputs = m.mine(labels, fake_dists(len(labels[0])).to('cuda'))
 
     for x in outputs:
-        assert x.device.type == "cuda"
+        assert x.device.type == 'cuda'
