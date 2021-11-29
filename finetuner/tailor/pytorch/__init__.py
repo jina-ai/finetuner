@@ -2,6 +2,7 @@ import copy
 import warnings
 from collections import OrderedDict
 from copy import deepcopy
+from functools import reduce
 from typing import Optional, List, TYPE_CHECKING
 
 import numpy as np
@@ -82,7 +83,7 @@ class PytorchTailor(BaseTailor):
 
         # batch_size of 2 for batchnorm
         x = [
-            torch.rand(2, *in_size).type(dt)
+            torch.rand(1, *in_size).type(dt)
             for in_size, dt in zip(self._input_size, dtypes)
         ]
 
@@ -172,11 +173,11 @@ class PytorchTailor(BaseTailor):
                 param.requires_grad = False
 
         _relative_idx_to_embedding_layer = None
-        _is_dense_layer_added = False
+        _embedding_layer_output_shape = None
         for name, module in model.named_modules():
             if name == _embed_layer['module_name']:
                 _relative_idx_to_embedding_layer = 0
-
+                _embedding_layer_output_shape = _embed_layer['output_shape']
                 # corner-case
                 if not output_dim and not layer_name:
                     for param in module.parameters():
@@ -192,15 +193,7 @@ class PytorchTailor(BaseTailor):
                 _relative_idx_to_embedding_layer
                 and _relative_idx_to_embedding_layer >= 1
             ):
-                if _relative_idx_to_embedding_layer == 1 and output_dim:
-                    replaced_layer = nn.Linear(
-                        in_features=_embed_layer['output_features'],
-                        out_features=output_dim,
-                    )
-                    _is_dense_layer_added = True
-                else:
-                    replaced_layer = nn.Identity()
-
+                replaced_layer = nn.Identity()
                 if (
                     '.' in name
                 ):  # Note: in torchvision, nested layer names are named with '.' e.g. classifier.0
@@ -212,22 +205,34 @@ class PytorchTailor(BaseTailor):
             if _relative_idx_to_embedding_layer is not None:
                 _relative_idx_to_embedding_layer += 1
 
-        if output_dim and not _is_dense_layer_added:
-            # the dense layer needs to be added after the last layer
-            model = _LinearAtLast(
-                model,
-                in_features=_embed_layer['output_features'],
-                out_features=output_dim,
-            )
+        _needs_flatten = False
+        if _embedding_layer_output_shape == 1:
+            in_features = _embed_layer['output_features']
+        else:
+            # in feature is the dim of flattened layers.
+            _needs_flatten = True
+            in_features = reduce(lambda x, y: x * y, _embedding_layer_output_shape)
+
+        model = _LinearAtLast(
+            model,
+            _needs_flatten,
+            in_features=in_features,
+            out_features=1024,
+        )
 
         return model
 
 
 class _LinearAtLast(nn.Module):
-    def __init__(self, model, *args, **kwargs):
+    def __init__(self, model, needs_flatten, *args, **kwargs):
         super().__init__()
         self._model = model
+        self._needs_flatten = needs_flatten
+        self._flatten = nn.Flatten()
         self._linear = nn.Linear(*args, **kwargs)
 
     def forward(self, input_):
-        return self._linear(self._model(input_))
+        if self._needs_flatten:
+            return self._linear(self._flatten(self._model(input_)))
+        else:
+            return self._linear(self._model(input_))
