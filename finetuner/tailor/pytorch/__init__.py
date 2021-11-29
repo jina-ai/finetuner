@@ -133,17 +133,17 @@ class PytorchTailor(BaseTailor):
 
     def to_embedding_model(
         self,
+        output_dim: int,
         layer_name: Optional[str] = None,
-        output_dim: Optional[int] = None,
         freeze: bool = False,
         freeze_layers: Optional[List[str]] = None,
     ) -> 'AnyDNN':
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
+        :param output_dim: the dimensionality of the embedding output.
         :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
             will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
             To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
-        :param output_dim: the dimensionality of the embedding output.
         :param freeze: if set, then freeze weights of a model. If :py:attr:`freeze_layers` is defined, only freeze layers in :py:attr:`freeze_layers`.
         :param freeze_layers: if set, then freeze specific layers.
         :return: Converted embedding model.
@@ -217,7 +217,7 @@ class PytorchTailor(BaseTailor):
             model,
             _needs_flatten,
             in_features=in_features,
-            out_features=1024,
+            out_features=output_dim,
         )
 
         return model
