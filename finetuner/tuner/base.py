@@ -63,8 +63,10 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
 
+        print(callbacks)
         callbacks = callbacks or []
         self._callbacks = [ProgressBarCallback()] + callbacks
+        print(self._callbacks)
 
     @staticmethod
     def _get_batch_sampler(

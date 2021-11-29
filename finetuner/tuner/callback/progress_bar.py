@@ -92,6 +92,10 @@ class ProgressBarCallback(BaseCallback):
             task_id=self.train_pbar_id, advance=1, metrics=self.train_loss_str
         )
 
+        from time import sleep
+
+        sleep(0.5)
+
     def on_val_begin(self, tuner: 'BaseTuner'):
         """
         Called at the start of the evaluation.
@@ -116,6 +120,10 @@ class ProgressBarCallback(BaseCallback):
         self.pbar.update(
             task_id=self.eval_pbar_id, advance=1, metrics=self.val_loss_str
         )
+
+        from time import sleep
+
+        sleep(0.5)
 
     def on_val_end(self, tuner: 'BaseTuner'):
         """
