@@ -57,7 +57,10 @@ class WandBLogger(BaseCallback):
         Called at the end of the evaluation batch.
         """
         avg_loss = np.mean(self._val_losses)
-        self.wandb_logger.log(data={'val_loss': avg_loss}, step=self._train_step)
+        self.wandb_logger.log(
+            data={'val_loss': avg_loss, 'epoch': tuner.state.epoch},
+            step=self._train_step,
+        )
         self._val_losses = []
 
     def on_fit_end(self, tuner: 'BaseTuner'):
