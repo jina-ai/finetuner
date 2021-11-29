@@ -5,7 +5,7 @@ import torch
 from finetuner.tuner.pytorch.miner import (
     SiameseMiner,
     TripletMiner,
-    TripletHardMiner,
+    TripletEasyHardMiner,
     SiameseSessionMiner,
     TripletSessionMiner,
 )
@@ -132,7 +132,7 @@ def test_triplet_easy_hard_miner(labels):
         ]
     )
     true_anch_ind, true_pos_ind, true_neg_ind = triplets.T
-    anch_ind, pos_ind, neg_ind = TripletHardMiner(strategy='semihard').mine(
+    anch_ind, pos_ind, neg_ind = TripletEasyHardMiner(strategy='semihard').mine(
         labels, fake_dists(len(labels))
     )
     np.testing.assert_equal(anch_ind.numpy(), true_anch_ind)

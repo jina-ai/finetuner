@@ -69,7 +69,7 @@ class TripletMiner(BaseClassMiner[torch.Tensor]):
         return torch.where(triplets)
 
 
-class TripletHardMiner(TripletMiner):
+class TripletEasyHardMiner(TripletMiner):
     def __init__(self, strategy="hard"):
         self.strategy = strategy
 
