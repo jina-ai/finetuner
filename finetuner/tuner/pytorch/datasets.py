@@ -1,10 +1,13 @@
-from typing import Tuple
 from copy import deepcopy
+from typing import Tuple, TYPE_CHECKING
 
 import numpy as np
 from torch.utils.data import Dataset as PytorchDataset
 
 from ..dataset import ClassDataset, SessionDataset
+
+if TYPE_CHECKING:
+    from jina.types.document.mixins.content import DocumentContentType
 
 
 class PytorchClassDataset(ClassDataset, PytorchDataset):
