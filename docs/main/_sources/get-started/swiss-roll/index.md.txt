@@ -64,7 +64,7 @@ da = DocumentArray.empty(len(X))
 da.blobs = X.astype(np.float32)
 ```
 
-Now let's consider our 3D coordinates as the embedding space. And then we randomly take a point as the queyr and search for its 300 nearest neighbours based on the Cosine distance:
+Now let's consider our 3D coordinates as the embedding space. And then we randomly take a point as the query and search for its 300 nearest neighbours based on the Cosine distance:
 
 ```python
 da.embeddings = da.blobs
@@ -87,11 +87,11 @@ To validate if Finetuner works or not, we need to design an experiment to show: 
 
 First, we need to design a supervision, which says some points should be together.
 
-Let's use the depth-axis `X[,:1]` and cut it into 5 parts. Points that fall into each part are labeled accordingly.
+Let's use the depth-axis `X[:, 1]` and cut it into 5 parts. Points that fall into each part are labeled accordingly.
 
 ```python
 bins = np.linspace(0, 1, 5)
-label_y = np.digitize(minmax_norm(X[:,1]), bins)
+label_y = np.digitize(minmax_norm(X[:, 1]), bins)
 ```
 
 Let's look at how does this partition our dataset. 

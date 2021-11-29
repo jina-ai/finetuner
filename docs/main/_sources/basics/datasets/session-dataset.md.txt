@@ -1,15 +1,15 @@
 (session-dataset)=
 # Session Dataset
 
-A {class}`~fintuner.tuner.dataset.datsetsSessionDataset` is a `DocumentArray`, in which each Document has `matches` Document. The labels are stored under matched Document's `.tags['finetuner_label']`. The label can be either `1` (denoting similarity of match to its parent `Document`) or `-1` (denoting dissimilarity of the match from its parent `Document`).
+A {class}`~fintuner.tuner.dataset.SessionDataset` is a `DocumentArray`, in which each Document has `matches` Document. The labels are stored under matched Document's `.tags['finetuner_label']`. The label can be either `1` (denoting similarity of match to its parent `Document`) or `-1` (denoting dissimilarity of the match from its parent `Document`).
 
 The word "session" comes from the scenario where a user's click-through introduces an implicit yes/no on the relevance, hence an interactive session. 
 
 ## Batch construction
 
-A `SessionDataset` works with {class}`~fintuner.tuner.dataset.datsetsSessionSampler`. 
+A `SessionDataset` works with {class}`~fintuner.tuner.dataset.SessionSampler`. 
 
-Here the batches are simply constructed by putting together enough root documents and their matches (we call this a *session*) to fill the batch according to `batch_size` parameter. An example of a batch of size `batch_size=8` made of two sessions is show on the image below.
+Here the batches are simply constructed by putting together enough root documents and their matches (we call this a *session*) to fill the batch according to `batch_size` parameter. An example of a batch of size `batch_size=8` made of two sessions is show on the image below. `0` denotes the root document.
 
 ```{figure} ../session-dataset.png
 :align: center

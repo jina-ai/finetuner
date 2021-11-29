@@ -30,7 +30,7 @@
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Finetuning MLP for Fashion Image Search" href="../fashion-mnist/" /><link rel="prev" title="Welcome to Finetuner!" href="../../" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.0, furo 2021.11.23"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.1, furo 2021.11.23"/>
         <title>Finetuning MLP on Swiss Roll Dataset - Finetuner 0.2.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
@@ -443,7 +443,7 @@ Code for plotting<div class="sd-summary-down docutils">
 <span class="n">da</span><span class="o">.</span><span class="n">blobs</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Now let’s consider our 3D coordinates as the embedding space. And then we randomly take a point as the queyr and search for its 300 nearest neighbours based on the Cosine distance:</p>
+<p>Now let’s consider our 3D coordinates as the embedding space. And then we randomly take a point as the query and search for its 300 nearest neighbours based on the Cosine distance:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">blobs</span>
 
 <span class="n">q</span> <span class="o">=</span> <span class="n">da</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
@@ -460,9 +460,9 @@ Code for plotting<div class="sd-summary-down docutils">
 <h2>Warp the space by following the roll<a class="headerlink" href="#warp-the-space-by-following-the-roll" title="Permalink to this headline">¶</a></h2>
 <p>To validate if Finetuner works or not, we need to design an experiment to show: <strong>when keep telling Finetuner that some points need to be “closer”, if Finetuner can eventually come up with a model that gives the desired embedding.</strong> This is the logic that guides our experiment design.</p>
 <p>First, we need to design a supervision, which says some points should be together.</p>
-<p>Let’s use the depth-axis <code class="docutils literal notranslate"><span class="pre">X[,:1]</span></code> and cut it into 5 parts. Points that fall into each part are labeled accordingly.</p>
+<p>Let’s use the depth-axis <code class="docutils literal notranslate"><span class="pre">X[:,</span> <span class="pre">1]</span></code> and cut it into 5 parts. Points that fall into each part are labeled accordingly.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-<span class="n">label_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">minmax_norm</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]),</span> <span class="n">bins</span><span class="p">)</span>
+<span class="n">label_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">minmax_norm</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">bins</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Let’s look at how does this partition our dataset.</p>
@@ -579,7 +579,7 @@ Code for plotting<div class="sd-summary-down docutils">
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 26, 2021.
+                    Last updated on Nov 29, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
