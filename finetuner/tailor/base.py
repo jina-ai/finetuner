@@ -80,11 +80,17 @@ class BaseTailor(abc.ABC):
             table.add_column(k)
         for s in _summary:
             style = None
-            if s['is_embedding_layer']:
-                style = 'green'
+            if s['trainable']:
+                style = 'bright_green'
+            elif not s['trainable']:
+                style = 'cyan'
+            if 'identity' in s['name']:
+                style = 'bright_black'
             table.add_row(*map(str, (s[v] for v in cols)), style=style)
         print(
             table,
-            '[green]Green[/green] layers can be used as embedding layers, '
-            'whose [b]name[/b] can be used as [b]layer_name[/b] in to_embedding_model(...).',
+            '[green]Green[/green] layers are trainable layers, '
+            '[cyan]Cyan[/cyan] layers are non-trainable layers or freezed layers.\n'
+            '[bright_black]Gray[/bright_black] layers indicates this layer has been replaced as an Identity layer which has no impact on model traning and inference.\n'
+            'Use to_embedding_model(...) to create embedding model.',
         )

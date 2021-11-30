@@ -144,7 +144,7 @@ class PytorchTailor(BaseTailor):
             To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
         :param freeze: if set, then freeze weights of a model. If :py:attr:`freeze_layers` is defined, only freeze layers in :py:attr:`freeze_layers`.
         :param freeze_layers: if set, then freeze specific layers.
-        :param bottleneck_net: Attach a bottleneck net at the end of model, this module is trainable.
+        :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.
         :return: Converted embedding model.
         """
 
@@ -192,9 +192,9 @@ class PytorchTailor(BaseTailor):
             if _relative_idx_to_embedding_layer is not None:
                 _relative_idx_to_embedding_layer += 1
 
-        model = nn.Sequential(
-            model,
-            bottleneck_net,
-        )
-
+        if bottleneck_net:
+            return nn.Sequential(
+                model,
+                bottleneck_net,
+            )
         return model
