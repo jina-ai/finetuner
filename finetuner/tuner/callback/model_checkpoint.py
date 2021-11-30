@@ -1,14 +1,30 @@
-from typing import List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from .base import BaseCallback
 import os
 import numpy as np
 from jina.logging import logger
+from finetuner.helper import get_framework
 
 if TYPE_CHECKING:
     from ..base import BaseTuner
 
 
 class ModelCheckpointCallback(BaseCallback):
+    """
+    Callback to save model at some frequency (epochs or batchs)
+    `ModelCheckepointCallback` is used in conjunction with training
+    using `finetuner.fit()`
+
+    A few options this callback provides include:
+    - Whether to only keep the model that has achieved the "best performance" so
+        far, or whether to save the model at the end of every epoch regardless of
+        performance.
+    - Definition of 'best'; which quantity to monitor and whether it should be
+        maximized or minimized.
+    - The frequency it should save at. Currently, the callback supports saving at
+        the end of every epoch, or after a fixed number of training batches.
+    """
+
     def __init__(
         self,
         filepath='/home/aziz/Desktop/jina/finetuner/checkpoints',
@@ -18,6 +34,23 @@ class ModelCheckpointCallback(BaseCallback):
         verbose=0,
         mode='auto',
     ):
+        """
+        :param filepath: string or `PathLike`, path to save the model file.
+        :param save_best_only: if `save_best_only=True` only the best model
+        model will be saved according to the quantity monitored
+        :param monitor: if `monitor='loss'` best bodel saved will be according
+        to the training loss, if `monitor='val_loss'` best model saved will be
+        according to the validation loss
+        :param save_freq: `'epoch'`  or integer. Defines whether to save the model
+        after every epoch or after N batches.
+        :param mode: one of {'auto', 'min', 'max'}. If `save_best_only=True`, the
+        decision to overwrite the current save file is made based on either
+        the maximization or the minimization of the monitored quantity.
+        For `val_acc`, this should be `max`, for `val_loss` this should be
+        `min`, etc. In `auto` mode, the mode is set to `max` if the quantities
+        monitored are 'acc' or start with 'fmeasure' and are set to `min` for
+        the rest of the quantities.
+        """
 
         self.filepath = filepath
         self.save_freq = save_freq
@@ -46,16 +79,31 @@ class ModelCheckpointCallback(BaseCallback):
                 self.best = np.Inf
 
     def on_train_batch_end(self, tuner: 'BaseTuner'):
-        if not self.save_freq == 'epoch':
+        """
+        Called at the end of the training batch.
+        """
+        if self.save_freq != 'epoch':
             self._save_model(tuner)
 
     def on_train_epoch_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of the training epoch.
+        """
         if self.monitor == 'loss':
             self._save_model(tuner)
 
     def on_val_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of the validation epoch.
+        """
         if self.monitor == "val_loss":
             self._save_model(tuner)
+
+    def on_fit_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of training.
+        """
+        self._save_model(tuner)
 
     def _save_model(self, tuner):
         if self.save_best_only:
@@ -68,9 +116,18 @@ class ModelCheckpointCallback(BaseCallback):
             else:
                 if self.monitor_op(current, self.best):
                     self.best = current
-                    tuner.save(self._get_file_path(tuner))
+                    self._save_model_framework(tuner)
         else:
-            tuner.save(self._get_file_path(tuner))
+            self._save_model_framework(tuner)
+
+    def _save_model_framework(self, tuner):
+        """saves the model depending on its framework"""
+        if get_framework(tuner.embed_model) == 'keras':
+            tuner.save(filepath=self._get_file_path(tuner))
+        elif get_framework(tuner.embed_model) == 'torch':
+            tuner.save(f=os.path.join(self._get_file_path(tuner), 'model.pth'))
+        elif get_framework(tuner.embed_model) == 'paddle':
+            tuner.save(path=os.path.join(self._get_file_path(tuner), 'model'))
 
     def _get_file_path(self, tuner):
         """Returns the file path for checkpoint."""
@@ -84,15 +141,13 @@ class ModelCheckpointCallback(BaseCallback):
             elif self.save_freq == 'epoch':
                 file_path = os.path.join(
                     self.filepath,
-                    "saved_model_epoch_{:02d}_loss_{:0.2f}".format(
-                        tuner.state.epoch + 1, tuner.state.current_loss[0]
-                    ),
+                    "saved_model_epoch_{:02d}".format(tuner.state.epoch + 1),
                 )
             else:
                 file_path = os.path.join(
                     self.filepath,
                     "saved_model_batch{:02d}_loss_{:0.2f}".format(
-                        tuner.state.batch_index, tuner.state.current_loss[0]
+                        tuner.state.batch_index
                     ),
                 )
         except KeyError as e:
