@@ -6,9 +6,10 @@ __version__ = '0.2.5'
 __default_tag_key__ = 'finetuner_label'
 
 # define the high-level API: fit()
-from typing import Optional, overload, TYPE_CHECKING, Tuple, Union
+from typing import List, Optional, overload, TYPE_CHECKING, Tuple, Union
 
 if TYPE_CHECKING:
+    from .tuner.callback import BaseCallback
     from .helper import (
         AnyDNN,
         AnyOptimizer,
@@ -33,6 +34,7 @@ def fit(
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
     num_items_per_class: Optional[int] = None,
+    callbacks: Optional[List['BaseCallback']] = None,
 ) -> 'AnyDNN':
     ...
 
@@ -52,12 +54,14 @@ def fit(
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
     num_items_per_class: Optional[int] = None,
+    callbacks: Optional[List['BaseCallback']] = None,
     to_embedding_model: bool = True,  #: below are tailor args
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
     layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
+    freeze_layers: Optional[List[str]] = None,
 ) -> 'AnyDNN':
     ...
 
@@ -77,6 +81,7 @@ def fit(
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
     num_items_per_class: Optional[int] = None,
+    callbacks: Optional[List['BaseCallback']] = None,
     interactive: bool = True,  #: below are labeler args
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
@@ -100,6 +105,7 @@ def fit(
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
     num_items_per_class: Optional[int] = None,
+    callbacks: Optional[List['BaseCallback']] = None,
     interactive: bool = True,  #: below are labeler args
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
@@ -110,6 +116,7 @@ def fit(
     layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
+    freeze_layers: Optional[List[str]] = None,
 ) -> 'AnyDNN':
     ...
 
