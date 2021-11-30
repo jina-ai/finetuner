@@ -1,8 +1,5 @@
-import pdb
-from cProfile import label
-from multiprocessing.sharedctypes import Value
 import numpy as np
-from typing import Tuple
+from typing import Optional, Tuple
 from numpy.lib.function_base import diff
 
 import torch
@@ -81,9 +78,12 @@ class BaseClassEasyHardMiner:
         self.strategy = strategy
 
     def _get_per_row_min(
-        self, dist_mat: torch.Tensor, semihard_tsh: torch.Tensor = None
+        self, dist_mat: torch.Tensor, semihard_tsh: Optional[torch.Tensor] = None
     ):
         non_zero_mask = dist_mat > 0
+
+        if len(dist_mat) == 0:
+            return dist_mat, torch.empty((), dtype=torch.bool)
 
         # Prevent wrong neg. samples from being extracted
         row_max = torch.max(dist_mat, dim=1, keepdim=True)[0]
@@ -111,18 +111,18 @@ class BaseClassEasyHardMiner:
             match_mat *= pos_mask
 
         elif self.strategy == 'semihard':
-            # Get hardest negative sample
-            neg_distances, _ = self._get_per_row_min(diff_mat * dist_mat)
-            neg_mask = neg_distances < d_a_n
-            diff_mat *= neg_mask
-
-            # Get hardest pos samples that are further than neg samples
-            pos_distances, invalid_row_mask = self._get_per_row_min(
-                match_mat * dist_mat, neg_distances
-            )
+            # Get closest positive sample
+            pos_distances, _ = self._get_per_row_min(match_mat * dist_mat)
             pos_mask = pos_distances == d_a_p
             match_mat *= pos_mask
-            match_mat[invalid_row_mask] = 0
+
+            # Get hardest neg samples that are further than samples
+            neg_distances, invalid_row_mask = self._get_per_row_min(
+                diff_mat * dist_mat, pos_distances
+            )
+            neg_mask = neg_distances == d_a_n
+            diff_mat *= neg_mask
+            diff_mat[invalid_row_mask] = 0
 
         elif self.strategy == 'easy':
             # Get easy positive sample
@@ -152,14 +152,6 @@ class TripletEasyHardMiner(BaseClassMiner[torch.Tensor], BaseClassEasyHardMiner)
         :return: three 1D tensors, holding the anchor index, positive index and
             negative index of each triplet, respectively
         """
-        # distances = torch.Tensor(
-        #     np.array([[0, 184, 222], [184, 0, 45], [222, 45, 0]])
-        # )  # distances[:3, :3]
-        # labels = labels[:3]
-        np.random.seed(1234)
-        distances = torch.Tensor(np.round_(np.random.random((6, 6)), 1))
-        distances -= distances * torch.eye(len(distances))
-
         assert len(distances) == len(labels)
 
         labels1, labels2 = labels.unsqueeze(1), labels.unsqueeze(0)
@@ -167,7 +159,6 @@ class TripletEasyHardMiner(BaseClassMiner[torch.Tensor], BaseClassEasyHardMiner)
         diffs = matches ^ 1
 
         matches.fill_diagonal_(0)
-
         matches, diffs = self.apply_strategy(matches, diffs, distances)
         triplets = matches.unsqueeze(2) * diffs.unsqueeze(1)
 
