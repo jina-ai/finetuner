@@ -1,4 +1,4 @@
-from typing import List, Optional, Type, TYPE_CHECKING, Union
+from typing import Callable, List, Optional, Type, TYPE_CHECKING, Tuple, Union
 
 from .base import BaseLoss
 from ..helper import get_framework
@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from ..helper import (
         AnyDNN,
         AnyOptimizer,
+        AnyScheduler,
         DocumentSequence,
         PreprocFnType,
         CollateFnType,
@@ -42,8 +43,13 @@ def fit(
     batch_size: int = 256,
     num_items_per_class: Optional[int] = None,
     loss: Union[str, BaseLoss] = 'SiameseLoss',
-    optimizer: Optional['AnyOptimizer'] = None,
+    configure_optimizer: Optional[
+        Callable[
+            ['AnyDNN'], Union['AnyOptimizer', Tuple['AnyOptimizer', 'AnyScheduler']]
+        ]
+    ] = None,
     learning_rate: float = 1e-3,
+    scheduler_step: str = 'batch',
     device: str = 'cpu',
     callbacks: Optional[List['BaseCallback']] = None,
     **kwargs,
@@ -69,11 +75,14 @@ def fit(
         - ``TripletLoss`` for Triplet network
     :param num_items_per_class: Number of items from a single class to include in
         the batch. Only relevant for class datasets
+    :param configure_optimizer: A function that allows you to provide a custom
+        optimizer and learning rate. The function should take one input - the
+        embedding model, and return either just an optimizer or a tuple of an
+        optimizer and a learning rate scheduler.
     :param learning_rate: Learning rate for the default optimizer. If you
         provide a custom optimizer, this learning rate will not apply.
-    :param optimizer: The optimizer to use for training. If none is passed, an
-        Adam optimizer is used by default, with learning rate specified by the
-        ``learning_rate`` parameter.
+    :param scheduler_step: At which interval should the learning rate sheduler's
+        step function be called. Valid options are "batch" and "epoch".
     :param device: The device to which to move the model. Supported options are
         ``"cpu"`` and ``"cuda"`` (for GPU)
     :param callbacks: A list of callbacks. The progress bar callback
@@ -81,14 +90,19 @@ def fit(
     """
     ft = _get_tuner_class(embed_model)
 
-    ft(embed_model, loss=loss, callbacks=callbacks).fit(
+    ft(
+        embed_model,
+        loss=loss,
+        callbacks=callbacks,
+        configure_optimizer=configure_optimizer,
+        learning_rate=learning_rate,
+        scheduler_step=scheduler_step,
+    ).fit(
         train_data,
         eval_data,
         epochs=epochs,
         batch_size=batch_size,
         device=device,
-        learning_rate=learning_rate,
-        optimizer=optimizer,
         preprocess_fn=preprocess_fn,
         collate_fn=collate_fn,
         num_items_per_class=num_items_per_class,

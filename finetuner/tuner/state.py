@@ -15,4 +15,4 @@ class TunerState:
     batch_index: int = 0
     current_loss: float = 0.0
 
-    learning_rates: Dict[str, float] = field(default_factory=lambda x: {})
+    learning_rates: Dict[str, float] = field(default_factory=lambda: {})

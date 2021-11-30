@@ -49,7 +49,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         self,
         embed_model: Optional[AnyDNN] = None,
         loss: Union[BaseLoss, str] = 'SiameseLoss',
-        configure_optimizers: Optional[
+        configure_optimizer: Optional[
             Callable[[AnyDNN], Union[AnyOptimizer, Tuple[AnyOptimizer, AnyScheduler]]]
         ] = None,
         learning_rate: float = 1e-3,
@@ -62,7 +62,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         :param embed_model: Model that produces embeddings from inputs
         :param loss: Either the loss object instance, or the name of the loss function.
             Currently available losses are ``SiameseLoss`` and ``TripletLoss``
-        :param configure_optimizers: A function that allows you to provide a custom
+        :param configure_optimizer: A function that allows you to provide a custom
             optimizer and learning rate. The function should take one input - the
             embedding model, and return either just an optimizer or a tuple of an
             optimizer and a learning rate scheduler.
@@ -75,7 +75,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
-        self._configure_optimizers = configure_optimizers
+        self._configure_optimizer = configure_optimizer
         self._learning_rate_default = learning_rate
         self._scheduler_step = scheduler_step
         self._scheduler = None

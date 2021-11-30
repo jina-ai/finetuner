@@ -1,8 +1,8 @@
-from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence, Union
 
 import torch
 from torch import nn
-from torch.optim.lr_scheduler import _LRScheduler, ConstantLR
+from torch.optim.lr_scheduler import _LRScheduler
 from torch.optim.optimizer import Optimizer
 from torch.utils.data._utils.collate import default_collate
 from torch.utils.data.dataloader import DataLoader
@@ -29,7 +29,7 @@ def _to_device(
         return [x.to(device) for x in inputs]
 
 
-class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
+class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
     def _get_loss(self, loss: Union[nn.Module, str]) -> nn.Module:
         """Get the loss layer."""
         if isinstance(loss, str):
@@ -75,9 +75,9 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
         return data_loader
 
-    def _default_configure_optimizers(self, model: nn.Module) -> Optimizer:
+    def _default_configure_optimizer(self, model: nn.Module) -> Optimizer:
         """Get the default Adam optimizer"""
-        optimizer = torch.optim.Adam(model, lr=self._learning_rate_default)
+        optimizer = torch.optim.Adam(model.parameters(), lr=self._learning_rate_default)
         return optimizer
 
     def _get_default_optimizer(self, learning_rate: float) -> Optimizer:
@@ -187,15 +187,15 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         self._embed_model = self._embed_model.to(self.device)
 
         # Create optimizer (and scheduler)
-        if self._configure_optimizers:
-            res = self._configure_optimizers(self._embed_model)
+        if self._configure_optimizer:
+            res = self._configure_optimizer(self._embed_model)
             if isinstance(res, tuple):
                 self._optimizer = res[0]
                 self._scheduler = res[1]
             else:
                 self._optimizer = res
         else:
-            self._optimizer = self._default_configure_optimizers(self._embed_model)
+            self._optimizer = self._default_configure_optimizer(self._embed_model)
 
         # Set state
         self.state = TunerState(num_epochs=epochs)
