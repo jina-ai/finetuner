@@ -238,7 +238,7 @@ def test_freeze(model, layer_name, input_size, input_dtype, freeze):
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = pytorch_tailor.to_embedding_model(freeze=freeze, output_dim=2)
+    model = pytorch_tailor.to_embedding_model(freeze=freeze)
     if freeze:
         assert len(set(param.requires_grad for param in model.parameters())) == 2
     else:
@@ -270,9 +270,7 @@ def test_freeze_given_freeze_layers(
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = pytorch_tailor.to_embedding_model(
-        freeze=True, output_dim=2, freeze_layers=freeze_layers
-    )
+    model = pytorch_tailor.to_embedding_model(freeze=True, freeze_layers=freeze_layers)
     for layer, param in zip(pytorch_tailor.embedding_layers, model.parameters()):
         layer_name = layer['name']
         if layer_name in freeze_layers:
