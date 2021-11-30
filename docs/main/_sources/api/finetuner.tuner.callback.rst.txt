@@ -9,6 +9,7 @@ Submodules
 
    finetuner.tuner.callback.base
    finetuner.tuner.callback.progress_bar
+   finetuner.tuner.callback.wandb_logger
 
 Module contents
 ---------------
