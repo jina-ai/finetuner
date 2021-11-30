@@ -61,6 +61,7 @@ def fit(
     layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
+    freeze_layers: Optional[List[str]] = None,
 ) -> 'AnyDNN':
     ...
 
@@ -115,6 +116,7 @@ def fit(
     layer_name: Optional[str] = None,
     output_dim: Optional[int] = None,
     freeze: bool = False,
+    freeze_layers: Optional[List[str]] = None,
 ) -> 'AnyDNN':
     ...
 
