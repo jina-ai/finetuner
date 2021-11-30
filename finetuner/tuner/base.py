@@ -1,5 +1,5 @@
 import abc
-from typing import TYPE_CHECKING, Generic, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Callable, Generic, List, Optional, Tuple, Union
 
 from .callback.base import BaseCallback
 from .callback.progress_bar import ProgressBarCallback
@@ -8,7 +8,7 @@ from .dataset.samplers import ClassSampler, SessionSampler
 from .miner.base import BaseMiner
 from .state import TunerState
 
-from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyTensor
+from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyScheduler, AnyTensor
 
 if TYPE_CHECKING:
     from ..helper import (
@@ -43,13 +43,18 @@ class BaseLoss(Generic[AnyTensor]):
         """Get the default miner for this loss, given the dataset type"""
 
 
-class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
+class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnyScheduler]):
     state: TunerState
 
     def __init__(
         self,
         embed_model: Optional[AnyDNN] = None,
         loss: Union[BaseLoss, str] = 'SiameseLoss',
+        configure_optimizers: Optional[
+            Callable[[AnyDNN], Union[AnyOptimizer, Tuple[AnyOptimizer, AnyScheduler]]]
+        ] = None,
+        learning_rate: float = 1e-3,
+        scheduler_step: str = 'batch',
         callbacks: Optional[List[BaseCallback]] = None,
         **kwargs,
     ):
@@ -58,11 +63,23 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         :param embed_model: Model that produces embeddings from inputs
         :param loss: Either the loss object instance, or the name of the loss function.
             Currently available losses are ``SiameseLoss`` and ``TripletLoss``
+        :param configure_optimizers: A function that allows you to provide a custom
+            optimizer and learning rate. The function should take one input - the
+            embedding model, and return either just an optimizer or a tuple of an
+            optimizer and a learning rate scheduler.
+        :param learning_rate: Learning rate for the default optimizer. If you
+            provide a custom optimizer, this learning rate will not apply.
+        :param scheduler_step: At which interval should the learning rate sheduler's
+            step function be called. Valid options are "batch" and "epoch".
         :param callbacks: A list of callbacks. The progress bar callback
             will be pre-prended to this list.
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
+        self._configure_optimizers = configure_optimizers
+        self._learning_rate_default = learning_rate
+        self._scheduler_step = scheduler_step
+        self._scheduler = None
 
         callbacks = callbacks or []
         self._callbacks = [ProgressBarCallback()] + callbacks
@@ -84,8 +101,8 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
             batch_sampler = SessionSampler(dataset.labels, batch_size, shuffle)
         else:
             raise TypeError(
-                f'`dataset` must be either {type(SessionDataset)} or {type(ClassDataset)}, '
-                f'but receiving {type(dataset)}'
+                f'`dataset` must be either {type(SessionDataset)} or'
+                f' {type(ClassDataset)}, but receiving {type(dataset)}'
             )
 
         return batch_sampler
@@ -112,8 +129,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        optimizer: Optional[AnyOptimizer] = None,
-        learning_rate: float = 1e-3,
         device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
@@ -133,11 +148,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         :param batch_size: The batch size to use for training and evaluation
         :param num_items_per_class: Number of items from a single class to include in
             the batch. Only relevant for class datasets
-        :param optimizer: The optimizer to use for training. If none is passed, an
-            Adam optimizer is used by default, with learning rate specified by the
-            ``learning_rate`` parameter.
-        :param learning_rate: Learning rate for the default optimizer. If you
-            provide a custom optimizer, this learning rate will not apply.
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
         """

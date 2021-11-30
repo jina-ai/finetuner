@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Dict
 
 
 @dataclass
@@ -13,3 +14,5 @@ class TunerState:
 
     batch_index: int = 0
     current_loss: float = 0.0
+
+    learning_rates: Dict[str, float] = field(default_factory=lambda x: {})
