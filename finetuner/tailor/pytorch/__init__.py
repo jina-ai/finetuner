@@ -1,9 +1,6 @@
 import copy
-import warnings
 from collections import OrderedDict
-from copy import deepcopy
-from functools import reduce
-from typing import Optional, List, TYPE_CHECKING
+from typing import Optional, List, TYPE_CHECKING, Union
 
 import numpy as np
 import torch
@@ -30,7 +27,7 @@ class PytorchTailor(BaseTailor):
                 f'{self.__class__} requires a valid `input_size`, but receiving {self._input_size}'
             )
 
-        user_model = deepcopy(self._model)
+        user_model = copy.deepcopy(self._model)
         dtypes = [getattr(torch, self._input_dtype)] * len(self._input_size)
         depth = len(list(user_model.modules()))
         for name, module in user_model.named_modules():
@@ -133,8 +130,8 @@ class PytorchTailor(BaseTailor):
     def to_embedding_model(
         self,
         layer_name: Optional[str] = None,
-        freeze: bool = False,
-        freeze_layers: Optional[List[str]] = None,
+        freeze: Union[bool, List[str]] = False,
+        pooling: Optional[str] = None,
         bottleneck_net: Optional[nn.Module] = None,
     ) -> 'AnyDNN':
         """Convert a general model from :py:attr:`.model` to an embedding model.
@@ -142,8 +139,8 @@ class PytorchTailor(BaseTailor):
         :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
             will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
             To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
-        :param freeze: if set, then freeze weights of a model. If :py:attr:`freeze_layers` is defined, only freeze layers in :py:attr:`freeze_layers`.
-        :param freeze_layers: if set, then freeze specific layers.
+        :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.
+        :param pooling: apply pooling at the end of the :py:`attr`:`layer_name`. Options are `max`, `avg`, `gem`.
         :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.
         :return: Converted embedding model.
         """
@@ -161,26 +158,27 @@ class PytorchTailor(BaseTailor):
             # when not given, using the last layer
             _embed_layer = self.embedding_layers[-1]
 
-        if freeze and freeze_layers:
+        if isinstance(freeze, list):
             # freeze specific layers defined in `freeze_layers`
             for layer_name, param in zip(_all_embed_layers, model.parameters()):
-                if layer_name in freeze_layers:
+                if layer_name in freeze:
                     param.requires_grad = False
-        if freeze and not freeze_layers:
+        elif isinstance(freeze, bool) and freeze is True:
             # freeze all layers, not including bottleneck module
             for param in model.parameters():
                 param.requires_grad = False
 
+        _embed_layer_output_shape = 0
         _relative_idx_to_embedding_layer = None
         for name, module in model.named_modules():
             if name == _embed_layer['module_name']:
                 _relative_idx_to_embedding_layer = 0
-
+                _embed_layer_output_shape = _embed_layer['output_shape']
             if (
                 _relative_idx_to_embedding_layer
                 and _relative_idx_to_embedding_layer >= 1
             ):
-                replaced_layer = nn.Identity()
+                replaced_layer = nn.Identity(_embed_layer_output_shape)
                 if (
                     '.' in name
                 ):  # Note: in torchvision, nested layer names are named with '.' e.g. classifier.0
