@@ -191,7 +191,6 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
             res = self._configure_optimizer(self._embed_model)
             if isinstance(res, tuple):
                 self._optimizer, self._scheduler = res
-                self._scheduler = res[1]
             else:
                 self._optimizer = res
         else:
