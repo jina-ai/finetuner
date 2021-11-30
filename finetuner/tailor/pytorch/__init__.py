@@ -81,7 +81,6 @@ class PytorchTailor(BaseTailor):
             ):
                 hooks.append(module.register_forward_hook(hook))
 
-        # batch_size of 2 for batchnorm
         x = [
             torch.rand(1, *in_size).type(dt)
             for in_size, dt in zip(self._input_size, dtypes)
@@ -133,19 +132,19 @@ class PytorchTailor(BaseTailor):
 
     def to_embedding_model(
         self,
-        output_dim: int,
         layer_name: Optional[str] = None,
         freeze: bool = False,
         freeze_layers: Optional[List[str]] = None,
+        bottleneck_net: Optional[nn.Module] = None,
     ) -> 'AnyDNN':
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
-        :param output_dim: the dimensionality of the embedding output.
         :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
             will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
             To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
         :param freeze: if set, then freeze weights of a model. If :py:attr:`freeze_layers` is defined, only freeze layers in :py:attr:`freeze_layers`.
         :param freeze_layers: if set, then freeze specific layers.
+        :param bottleneck_net: Attach a bottleneck net at the end of model, this module is trainable.
         :return: Converted embedding model.
         """
 
@@ -168,26 +167,14 @@ class PytorchTailor(BaseTailor):
                 if layer_name in freeze_layers:
                     param.requires_grad = False
         if freeze and not freeze_layers:
-            # freeze all layers
+            # freeze all layers, not including bottleneck module
             for param in model.parameters():
                 param.requires_grad = False
 
         _relative_idx_to_embedding_layer = None
-        _embedding_layer_output_shape = None
         for name, module in model.named_modules():
             if name == _embed_layer['module_name']:
                 _relative_idx_to_embedding_layer = 0
-                _embedding_layer_output_shape = _embed_layer['output_shape']
-                # corner-case
-                if not output_dim and not layer_name:
-                    for param in module.parameters():
-                        param.requires_grad = True
-                    else:
-                        warnings.warn(
-                            'The current configs results in a non-parametric model, '
-                            'which is no trainable. '
-                            'You may need to specify `output_dim` or `embedding_layer_name`.'
-                        )
 
             if (
                 _relative_idx_to_embedding_layer
@@ -205,34 +192,9 @@ class PytorchTailor(BaseTailor):
             if _relative_idx_to_embedding_layer is not None:
                 _relative_idx_to_embedding_layer += 1
 
-        _needs_flatten = False
-        if _embedding_layer_output_shape == 1:
-            in_features = _embed_layer['output_features']
-        else:
-            # in feature is the dim of flattened layers.
-            _needs_flatten = True
-            in_features = reduce(lambda x, y: x * y, _embedding_layer_output_shape)
-
-        model = _LinearAtLast(
+        model = nn.Sequential(
             model,
-            _needs_flatten,
-            in_features=in_features,
-            out_features=output_dim,
+            bottleneck_net,
         )
 
         return model
-
-
-class _LinearAtLast(nn.Module):
-    def __init__(self, model, needs_flatten, *args, **kwargs):
-        super().__init__()
-        self._model = model
-        self._needs_flatten = needs_flatten
-        self._flatten = nn.Flatten()
-        self._linear = nn.Linear(*args, **kwargs)
-
-    def forward(self, input_):
-        if self._needs_flatten:
-            return self._linear(self._flatten(self._model(input_)))
-        else:
-            return self._linear(self._model(input_))
