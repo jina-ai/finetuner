@@ -191,6 +191,10 @@ class SiameseEasyHardMiner(BaseClassMiner[torch.Tensor], BaseClassEasyHardMiner)
         matches.triu_(1)
         diffs.triu_()
 
+        print(distances)
+        print(labels)
+        print(matches)
+        print(diffs)
         matches, diffs = self.apply_strategy(matches, diffs, distances)
 
         ind1_pos, ind2_pos = torch.where(matches)

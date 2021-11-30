@@ -3,6 +3,7 @@ import pytest
 import torch
 
 from finetuner.tuner.pytorch.miner import (
+    SiameseEasyHardMiner,
     SiameseMiner,
     TripletMiner,
     TripletEasyHardMiner,
@@ -107,6 +108,49 @@ def test_siamese_miner(labels, dummy_tuples):
     np.testing.assert_equal(true_label, label.numpy())
 
 
+def test_siamese_easy_hard_miner_hard(labels, dummy_distances):
+
+    true_ind_one, true_ind_two, true_label = np.array(
+        ((1, 4, 0, 1, 2, 3), (3, 5, 1, 2, 3, 4), (1, 1, 0, 0, 0, 0))
+    )
+    ind_one, ind_two, label = SiameseEasyHardMiner(strategy='hard').mine(
+        labels, dummy_distances
+    )
+    np.testing.assert_equal(true_ind_one, ind_one.numpy())
+    np.testing.assert_equal(true_ind_two, ind_two.numpy())
+    np.testing.assert_equal(true_label, label.numpy())
+
+
+def test_siamese_easy_hard_miner_semihard(labels, dummy_distances):
+
+    true_ind_one, true_ind_two, true_label = np.array(
+        ((0, 1, 4, 0, 1, 1, 2, 3), (2, 3, 5, 1, 4, 5, 3, 4), (1, 1, 1, 0, 0, 0, 0, 0))
+    )
+    ind_one, ind_two, label = SiameseEasyHardMiner(strategy='semihard').mine(
+        labels, dummy_distances
+    )
+    np.testing.assert_equal(true_ind_one, ind_one.numpy())
+    np.testing.assert_equal(true_ind_two, ind_two.numpy())
+    np.testing.assert_equal(true_label, label.numpy())
+
+
+def test_siamese_easy_hard_miner_easy(labels, dummy_distances):
+
+    true_ind_one, true_ind_two, true_label = np.array(
+        (
+            (0, 1, 4, 0, 0, 0, 0, 1, 1, 2, 2, 2, 3, 3),
+            (2, 3, 5, 1, 3, 4, 5, 4, 5, 3, 4, 5, 4, 5),
+            (1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+        )
+    )
+    ind_one, ind_two, label = SiameseEasyHardMiner(strategy='easy').mine(
+        labels, dummy_distances
+    )
+    np.testing.assert_equal(true_ind_one, ind_one.numpy())
+    np.testing.assert_equal(true_ind_two, ind_two.numpy())
+    np.testing.assert_equal(true_label, label.numpy())
+
+
 @pytest.mark.parametrize('cut_index', [0, 1])
 def test_siamese_miner_given_insufficient_inputs(labels, cut_index):
     labels = labels[:cut_index]
@@ -175,21 +219,21 @@ def test_triplet_easy_hard_miner_given_insufficient_inputs(
     labels = labels[:cut_index]
     dummy_distances = dummy_distances[:cut_index, :cut_index]
     hard_anch_ind, hard_pos_ind, hard_neg_ind = TripletEasyHardMiner(
-        strategy="hard"
+        strategy='hard'
     ).mine(labels, dummy_distances)
     assert len(hard_anch_ind) == 0
     assert len(hard_pos_ind) == 0
     assert len(hard_neg_ind) == 0
 
     semihard_anch_ind, semihard_pos_ind, semihard_neg_ind = TripletEasyHardMiner(
-        strategy="semihard"
+        strategy='semihard'
     ).mine(labels, dummy_distances)
     assert len(semihard_anch_ind) == 0
     assert len(semihard_pos_ind) == 0
     assert len(semihard_neg_ind) == 0
 
     easy_anch_ind, easy_pos_ind, easy_neg_ind = TripletEasyHardMiner(
-        strategy="easy"
+        strategy='easy'
     ).mine(labels, dummy_distances)
     assert len(easy_anch_ind) == 0
     assert len(easy_pos_ind) == 0
