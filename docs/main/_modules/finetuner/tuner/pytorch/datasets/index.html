@@ -358,17 +358,37 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.tuner.pytorch.datasets</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span> <span class="k">as</span> <span class="n">PytorchDataset</span>
+<span></span><span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span> <span class="k">as</span> <span class="n">PytorchDataset</span>
 
 <span class="kn">from</span> <span class="nn">..dataset</span> <span class="kn">import</span> <span class="n">ClassDataset</span><span class="p">,</span> <span class="n">SessionDataset</span>
 
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">jina.types.document.mixins.content</span> <span class="kn">import</span> <span class="n">DocumentContentType</span>
+
+
+<span class="k">def</span> <span class="nf">_make_blob_writable</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="c1"># jina blob is immutable, see content.flags['WRITEABLE']</span>
+        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">content</span>
+
 
 <div class="viewcode-block" id="PytorchClassDataset"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.datasets/#finetuner.tuner.pytorch.datasets.PytorchClassDataset">[docs]</a><span class="k">class</span> <span class="nc">PytorchClassDataset</span><span class="p">(</span><span class="n">ClassDataset</span><span class="p">,</span> <span class="n">PytorchDataset</span><span class="p">):</span>
-    <span class="o">...</span></div>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">'DocumentContentType'</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="n">content</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">_make_blob_writable</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PytorchSessionDataset"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.datasets/#finetuner.tuner.pytorch.datasets.PytorchSessionDataset">[docs]</a><span class="k">class</span> <span class="nc">PytorchSessionDataset</span><span class="p">(</span><span class="n">SessionDataset</span><span class="p">,</span> <span class="n">PytorchDataset</span><span class="p">):</span>
-    <span class="o">...</span></div>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">'DocumentContentType'</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="n">content</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">_make_blob_writable</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span></div>
 </pre></div>
             </article>
             <footer>
@@ -380,7 +400,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Nov 29, 2021.
+                    Last updated on Nov 30, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
