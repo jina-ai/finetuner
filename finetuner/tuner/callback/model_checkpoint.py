@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from .base import BaseCallback
 import os
 import numpy as np
@@ -27,12 +27,11 @@ class ModelCheckpointCallback(BaseCallback):
 
     def __init__(
         self,
-        filepath='/home/aziz/Desktop/jina/finetuner/checkpoints',
-        save_best_only=False,
-        monitor='val_loss',
-        save_freq='epoch',
-        verbose=0,
-        mode='auto',
+        filepath: str = '/home/aziz/Desktop/jina/finetuner/checkpoints',
+        save_best_only: Optional[bool] = False,
+        monitor: Optional[str] = 'val_loss',
+        save_freq: Optional[str] = 'epoch',
+        mode: Optional[str] ='auto',
     ):
         """
         :param filepath: string or `PathLike`, path to save the model file.
@@ -56,7 +55,6 @@ class ModelCheckpointCallback(BaseCallback):
         self.save_freq = save_freq
         self.save_best_only = save_best_only
         self.monitor = monitor
-        self.verbose = verbose
 
         if mode not in ['auto', 'min', 'max']:
             logger.warning(
@@ -121,7 +119,9 @@ class ModelCheckpointCallback(BaseCallback):
             self._save_model_framework(tuner)
 
     def _save_model_framework(self, tuner):
-        """saves the model depending on its framework"""
+        """
+        Saves the model depending on its framework.
+        """
         if get_framework(tuner.embed_model) == 'keras':
             tuner.save(filepath=self._get_file_path(tuner))
         elif get_framework(tuner.embed_model) == 'torch':
@@ -130,7 +130,9 @@ class ModelCheckpointCallback(BaseCallback):
             tuner.save(path=os.path.join(self._get_file_path(tuner), 'model'))
 
     def _get_file_path(self, tuner):
-        """Returns the file path for checkpoint."""
+        """
+        Returns the file path for checkpoint.
+        """
 
         try:
             if self.save_best_only:
@@ -146,7 +148,7 @@ class ModelCheckpointCallback(BaseCallback):
             else:
                 file_path = os.path.join(
                     self.filepath,
-                    "saved_model_batch{:02d}_loss_{:0.2f}".format(
+                    "saved_model_batch{:02d}".format(
                         tuner.state.batch_index
                     ),
                 )
