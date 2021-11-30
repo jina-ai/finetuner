@@ -31,7 +31,7 @@ class ModelCheckpointCallback(BaseCallback):
         save_best_only: Optional[bool] = False,
         monitor: Optional[str] = 'val_loss',
         save_freq: Optional[str] = 'epoch',
-        mode: Optional[str] ='auto',
+        mode: Optional[str] = 'auto',
     ):
         """
         :param filepath: string or `PathLike`, path to save the model file.
@@ -148,9 +148,7 @@ class ModelCheckpointCallback(BaseCallback):
             else:
                 file_path = os.path.join(
                     self.filepath,
-                    "saved_model_batch{:02d}".format(
-                        tuner.state.batch_index
-                    ),
+                    "saved_model_batch{:02d}".format(tuner.state.batch_index),
                 )
         except KeyError as e:
             raise KeyError(
