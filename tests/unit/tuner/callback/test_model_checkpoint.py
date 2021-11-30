@@ -1,17 +1,28 @@
-import os
-from numpy.lib.npyio import save
-
 import pytest
+import tensorflow as tf
 import torch
-import numpy as np
-
-import finetuner
-from finetuner.tuner.callback import BestModelCheckpoint, TrainingCheckpoint
+import paddle
+from finetuner.tuner.callback import ModelCheckpointCallback
 from finetuner.tuner.base import BaseTuner
+import finetuner
 from finetuner.toydata import generate_fashion
+import os
+import tempfile
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
+def keras_model() -> BaseTuner:
+    embed_model = tf.keras.Sequential(
+        [
+            tf.keras.layers.Flatten(input_shape=(28, 28)),
+            tf.keras.layers.Dense(128, activation='relu'),
+            tf.keras.layers.Dense(32),
+        ]
+    )
+    return embed_model
+
+
+@pytest.fixture(scope="module")
 def pytorch_model() -> BaseTuner:
     embed_model = torch.nn.Sequential(
         torch.nn.Flatten(),
@@ -25,58 +36,77 @@ def pytorch_model() -> BaseTuner:
     return embed_model
 
 
-def test_save_best_only(pytorch_model: BaseTuner, tmpdir):
-
-    finetuner.fit(
-        pytorch_model,
-        epochs=1,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[BestModelCheckpoint(save_dir=tmpdir)],
+@pytest.fixture(scope="module")
+def paddle_model() -> BaseTuner:
+    embed_model = paddle.nn.Sequential(
+        paddle.nn.Flatten(),
+        paddle.nn.Linear(
+            in_features=28 * 28,
+            out_features=128,
+        ),
+        paddle.nn.ReLU(),
+        paddle.nn.Linear(in_features=128, out_features=32),
     )
-
-    assert os.listdir(tmpdir) == ['best_model_val_loss']
-
-
-@pytest.mark.parametrize(
-    'mode, monitor, operation, best',
-    (
-        ('min', 'val_loss', np.less, np.Inf),
-        ('max', 'val_loss', np.greater, -np.Inf),
-        ('auto', 'val_loss', np.less, np.Inf),
-        ('max', 'acc', np.greater, -np.Inf),
-        ('somethingelse', 'acc', np.greater, -np.Inf),
-    ),
-)
-def test_mode(mode: str, monitor: str, operation, best, tmpdir):
-
-    checkpoint = BestModelCheckpoint(save_dir=tmpdir, mode=mode, monitor=monitor)
-    assert checkpoint._monitor_op == operation
-    assert checkpoint._best == best
+    return embed_model
 
 
-def test_mandatory_save_dir(pytorch_model: BaseTuner):
-    with pytest.raises(ValueError, match='parameter is mandatory'):
+def test_keras_model(keras_model: BaseTuner):
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        finetuner.fit(
+            keras_model,
+            epochs=1,
+            train_data=generate_fashion(num_total=1000),
+            eval_data=generate_fashion(is_testset=True, num_total=200),
+            callbacks=[ModelCheckpointCallback(tmpdirname)],
+        )
+
+        assert os.listdir(tmpdirname) == ['saved_model_epoch_01']
+        assert set(os.listdir(os.path.join(tmpdirname, 'saved_model_epoch_01'))) == {
+            'variables',
+            'assets',
+            'keras_metadata.pb',
+            'saved_model.pb',
+        }
+
+
+def test_pytorch_model(pytorch_model: BaseTuner):
+    with tempfile.TemporaryDirectory() as tmpdirname:
         finetuner.fit(
             pytorch_model,
             epochs=1,
             train_data=generate_fashion(num_total=1000),
             eval_data=generate_fashion(is_testset=True, num_total=200),
-            callbacks=[TrainingCheckpoint()],
+            callbacks=[ModelCheckpointCallback(filepath=tmpdirname)],
         )
 
+        assert os.listdir(tmpdirname) == ['saved_model_epoch_01']
 
-def test_both_checkpoints(pytorch_model: BaseTuner, tmpdir):
 
-    finetuner.fit(
-        pytorch_model,
-        epochs=1,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[
-            BestModelCheckpoint(save_dir=tmpdir),
-            TrainingCheckpoint(save_dir=tmpdir),
-        ],
-    )
+def test_paddle_model(paddle_model: BaseTuner):
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        finetuner.fit(
+            paddle_model,
+            epochs=1,
+            train_data=generate_fashion(num_total=1000),
+            eval_data=generate_fashion(is_testset=True, num_total=200),
+            callbacks=[ModelCheckpointCallback(filepath=tmpdirname)],
+        )
 
-    assert set(os.listdir(tmpdir)) == {'best_model_val_loss', 'saved_model_epoch_01'}
+        assert os.listdir(tmpdirname) == ['saved_model_epoch_01']
+        assert os.listdir(os.path.join(tmpdirname, 'saved_model_epoch_01')) == ['model']
+
+
+def test_save_best_only(pytorch_model: BaseTuner):
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        finetuner.fit(
+            pytorch_model,
+            epochs=1,
+            train_data=generate_fashion(num_total=1000),
+            eval_data=generate_fashion(is_testset=True, num_total=200),
+            callbacks=[
+                ModelCheckpointCallback(filepath=tmpdirname, save_best_only=True)
+            ],
+        )
+
+        assert os.listdir(tmpdirname) == ['best_model']
