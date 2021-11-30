@@ -270,7 +270,7 @@ def test_freeze_given_freeze_layers(
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = pytorch_tailor.to_embedding_model(freeze=True, freeze_layers=freeze_layers)
+    model = pytorch_tailor.to_embedding_model(freeze=freeze_layers)
     for layer, param in zip(pytorch_tailor.embedding_layers, model.parameters()):
         layer_name = layer['name']
         if layer_name in freeze_layers:
