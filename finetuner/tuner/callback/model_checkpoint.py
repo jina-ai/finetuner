@@ -125,7 +125,7 @@ class ModelCheckpointCallback(BaseCallback):
         if get_framework(tuner.embed_model) == 'keras':
             tuner.save(filepath=self._get_file_path(tuner))
         elif get_framework(tuner.embed_model) == 'torch':
-            tuner.save(f=os.path.join(self._get_file_path(tuner), 'model.pth'))
+            tuner.save(f=os.path.join(self._get_file_path(tuner)))
         elif get_framework(tuner.embed_model) == 'paddle':
             tuner.save(path=os.path.join(self._get_file_path(tuner), 'model'))
 
