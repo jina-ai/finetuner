@@ -61,12 +61,12 @@ def test_keras_model(keras_model: BaseTuner):
         )
 
         assert os.listdir(tmpdirname) == ['saved_model_epoch_01']
-        assert os.listdir(os.path.join(tmpdirname, 'saved_model_epoch_01')) == [
+        assert set(os.listdir(os.path.join(tmpdirname, 'saved_model_epoch_01'))) == {
             'variables',
             'assets',
             'keras_metadata.pb',
             'saved_model.pb',
-        ]
+        }
 
 
 def test_pytorch_model(pytorch_model: BaseTuner):
