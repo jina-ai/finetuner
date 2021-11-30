@@ -1,8 +1,7 @@
 import abc
 from typing import TYPE_CHECKING, Generic, List, Optional, Tuple, Union
 
-from .callback.base import BaseCallback
-from .callback.progress_bar import ProgressBarCallback
+from .callback import BaseCallback, ProgressBarCallback
 from .dataset import ClassDataset, SessionDataset
 from .dataset.samplers import ClassSampler, SessionSampler
 from .miner.base import BaseMiner
