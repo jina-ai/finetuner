@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING, Optional
 from .base import BaseCallback
 import os
 import numpy as np
-from jina.logging import logger
 from finetuner.helper import get_framework
+from jina.logging.logger import JinaLogger
 
 if TYPE_CHECKING:
     from ..base import BaseTuner
@@ -30,7 +30,6 @@ class ModelCheckpointCallback(BaseCallback):
         filepath: str = None,
         save_best_only: Optional[bool] = False,
         monitor: Optional[str] = 'val_loss',
-        save_freq: Optional[str] = 'epoch',
         mode: Optional[str] = 'auto',
     ):
         """
@@ -40,8 +39,6 @@ class ModelCheckpointCallback(BaseCallback):
         :param monitor: if `monitor='loss'` best bodel saved will be according
         to the training loss, if `monitor='val_loss'` best model saved will be
         according to the validation loss
-        :param save_freq: `'epoch'`  or integer. Defines whether to save the model
-        after every epoch or after N batches.
         :param mode: one of {'auto', 'min', 'max'}. If `save_best_only=True`, the
         decision to overwrite the current save file is made based on either
         the maximization or the minimization of the monitored quantity.
@@ -50,14 +47,17 @@ class ModelCheckpointCallback(BaseCallback):
         monitored are 'acc' or start with 'fmeasure' and are set to `min` for
         the rest of the quantities.
         """
-
+        self.logger = JinaLogger(self.__class__.__name__)
         self.filepath = filepath
-        self.save_freq = save_freq
         self.save_best_only = save_best_only
         self.monitor = monitor
+        if not filepath:
+            raise ValueError(
+                '``filepath`` parameter is mandatory. Pass it in parameters'
+            )
 
         if mode not in ['auto', 'min', 'max']:
-            logger.warning(
+            self.logger.warning(
                 'ModelCheckpoint mode %s is unknown, ' 'fallback to auto mode.', mode
             )
             mode = 'auto'
@@ -76,13 +76,6 @@ class ModelCheckpointCallback(BaseCallback):
                 self.monitor_op = np.less
                 self.best = np.Inf
 
-    def on_train_batch_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the end of the training batch.
-        """
-        if self.save_freq != 'epoch':
-            self._save_model(tuner)
-
     def on_train_epoch_end(self, tuner: 'BaseTuner'):
         """
         Called at the end of the training epoch.
@@ -97,17 +90,11 @@ class ModelCheckpointCallback(BaseCallback):
         if self.monitor == "val_loss":
             self._save_model(tuner)
 
-    def on_fit_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the end of training.
-        """
-        self._save_model(tuner)
-
     def _save_model(self, tuner):
         if self.save_best_only:
             current = tuner.state.current_loss
             if current is None:
-                logger.warning(
+                self.logger.warning(
                     'Can save best model only with %s available, ' 'skipping.',
                     self.monitor,
                 )
@@ -134,25 +121,14 @@ class ModelCheckpointCallback(BaseCallback):
         Returns the file path for checkpoint.
         """
 
-        try:
-            if self.save_best_only:
-                file_path = os.path.join(
-                    self.filepath,
-                    "best_model",
-                )
-            elif self.save_freq == 'epoch':
-                file_path = os.path.join(
-                    self.filepath,
-                    "saved_model_epoch_{:02d}".format(tuner.state.epoch + 1),
-                )
-            else:
-                file_path = os.path.join(
-                    self.filepath,
-                    "saved_model_batch{:02d}".format(tuner.state.batch_index),
-                )
-        except KeyError as e:
-            raise KeyError(
-                f'Failed to format this callback filepath: "{self.filepath}". '
-                f'Reason: {e}'
+        if self.save_best_only:
+            file_path = os.path.join(
+                self.filepath,
+                "best_model",
+            )
+        else:
+            file_path = os.path.join(
+                self.filepath,
+                "saved_model_epoch_{:02d}".format(tuner.state.epoch + 1),
             )
         return file_path

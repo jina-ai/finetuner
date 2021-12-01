@@ -151,3 +151,27 @@ def test_mode_auto_max():
         )
         assert checkpoint.monitor_op == np.greater
         assert checkpoint.best == -np.Inf
+
+
+def test_mode_auto_fallback():
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        checkpoint = ModelCheckpointCallback(
+            filepath=tmpdirname,
+            save_best_only=True,
+            mode="somethingelse",
+            monitor="acc",
+        )
+        assert checkpoint.monitor_op == np.greater
+        assert checkpoint.best == -np.Inf
+
+
+def test_mandatory_filepath(pytorch_model: BaseTuner):
+    with pytest.raises(ValueError, match="parameter is mandatory"):
+        finetuner.fit(
+            pytorch_model,
+            epochs=1,
+            train_data=generate_fashion(num_total=1000),
+            eval_data=generate_fashion(is_testset=True, num_total=200),
+            callbacks=[ModelCheckpointCallback()],
+        )
