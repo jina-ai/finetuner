@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class ModelCheckpointCallback(BaseCallback):
     """
-    Callback to save model at some frequency (epochs or batchs)
+    Callback to save model at every epoch or the best model across all epochs
     `ModelCheckepointCallback` is used in conjunction with training
     using `finetuner.fit()`
 
@@ -87,7 +87,7 @@ class ModelCheckpointCallback(BaseCallback):
         """
         Called at the end of the validation epoch.
         """
-        if self.monitor == "val_loss":
+        if self.monitor == 'val_loss':
             self._save_model(tuner)
 
     def _save_model(self, tuner):
@@ -124,11 +124,11 @@ class ModelCheckpointCallback(BaseCallback):
         if self.save_best_only:
             file_path = os.path.join(
                 self.filepath,
-                "best_model",
+                'best_model',
             )
         else:
             file_path = os.path.join(
                 self.filepath,
-                "saved_model_epoch_{:02d}".format(tuner.state.epoch + 1),
+                'saved_model_epoch_{:02d}'.format(tuner.state.epoch + 1),
             )
         return file_path
