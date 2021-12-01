@@ -8,6 +8,7 @@ import finetuner
 from finetuner.toydata import generate_fashion
 import os
 import tempfile
+import numpy as np
 
 
 @pytest.fixture(scope="module")
@@ -110,3 +111,43 @@ def test_save_best_only(pytorch_model: BaseTuner):
         )
 
         assert os.listdir(tmpdirname) == ['best_model']
+
+
+def test_mode_min():
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        checkpoint = ModelCheckpointCallback(
+            filepath=tmpdirname, save_best_only=True, mode="min"
+        )
+        assert checkpoint.monitor_op == np.less
+        assert checkpoint.best == np.Inf
+
+
+def test_mode_max():
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        checkpoint = ModelCheckpointCallback(
+            filepath=tmpdirname, save_best_only=True, mode="max"
+        )
+        assert checkpoint.monitor_op == np.greater
+        assert checkpoint.best == -np.Inf
+
+
+def test_mode_auto_min():
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        checkpoint = ModelCheckpointCallback(
+            filepath=tmpdirname, save_best_only=True, mode="auto"
+        )
+        assert checkpoint.monitor_op == np.less
+        assert checkpoint.best == np.Inf
+
+
+def test_mode_auto_max():
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        checkpoint = ModelCheckpointCallback(
+            filepath=tmpdirname, save_best_only=True, mode="auto", monitor="acc"
+        )
+        assert checkpoint.monitor_op == np.greater
+        assert checkpoint.best == -np.Inf
