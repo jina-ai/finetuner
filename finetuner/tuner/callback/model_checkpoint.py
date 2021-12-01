@@ -47,60 +47,66 @@ class ModelCheckpointCallback(BaseCallback):
         monitored are 'acc' or start with 'fmeasure' and are set to `min` for
         the rest of the quantities.
         """
-        self.logger = JinaLogger(self.__class__.__name__)
-        self.filepath = filepath
-        self.save_best_only = save_best_only
-        self.monitor = monitor
+        self.__logger = JinaLogger(self.__class__.__name__)
+        self.__filepath = filepath
+        self.__save_best_only = save_best_only
+        self.__monitor = monitor
         if not filepath:
             raise ValueError(
                 '``filepath`` parameter is mandatory. Pass it in parameters'
             )
 
         if mode not in ['auto', 'min', 'max']:
-            self.logger.warning(
+            self.__logger.warning(
                 'ModelCheckpoint mode %s is unknown, ' 'fallback to auto mode.', mode
             )
             mode = 'auto'
 
         if mode == 'min':
-            self.monitor_op = np.less
-            self.best = np.Inf
+            self.__monitor_op = np.less
+            self.__best = np.Inf
         elif mode == 'max':
-            self.monitor_op = np.greater
-            self.best = -np.Inf
+            self.__monitor_op = np.greater
+            self.__best = -np.Inf
         else:
-            if 'acc' in self.monitor or self.monitor.startswith('fmeasure'):
-                self.monitor_op = np.greater
-                self.best = -np.Inf
+            if 'acc' in self.__monitor or self.__monitor.startswith('fmeasure'):
+                self.__monitor_op = np.greater
+                self.__best = -np.Inf
             else:
-                self.monitor_op = np.less
-                self.best = np.Inf
+                self.__monitor_op = np.less
+                self.__best = np.Inf
+
+    def get_monitor_op(self):
+        return self.__monitor_op
+
+    def get_best(self):
+        return self.__best
 
     def on_train_epoch_end(self, tuner: 'BaseTuner'):
         """
         Called at the end of the training epoch.
         """
-        if self.monitor == 'loss':
+        if self.__monitor == 'loss':
             self._save_model(tuner)
 
     def on_val_end(self, tuner: 'BaseTuner'):
         """
         Called at the end of the validation epoch.
         """
-        if self.monitor == 'val_loss':
+        if self.__monitor == 'val_loss':
             self._save_model(tuner)
 
     def _save_model(self, tuner):
-        if self.save_best_only:
+        if self.__save_best_only:
             current = tuner.state.current_loss
             if current is None:
-                self.logger.warning(
+                self.__logger.warning(
                     'Can save best model only with %s available, ' 'skipping.',
                     self.monitor,
                 )
             else:
-                if self.monitor_op(current, self.best):
-                    self.best = current
+                if self.__monitor_op(current, self.__best):
+                    self.__best = current
                     self._save_model_framework(tuner)
         else:
             self._save_model_framework(tuner)
@@ -121,14 +127,14 @@ class ModelCheckpointCallback(BaseCallback):
         Returns the file path for checkpoint.
         """
 
-        if self.save_best_only:
+        if self.__save_best_only:
             file_path = os.path.join(
-                self.filepath,
+                self.__filepath,
                 'best_model',
             )
         else:
             file_path = os.path.join(
-                self.filepath,
+                self.__filepath,
                 'saved_model_epoch_{:02d}'.format(tuner.state.epoch + 1),
             )
         return file_path
