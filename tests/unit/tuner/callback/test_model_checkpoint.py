@@ -7,8 +7,10 @@ from finetuner.tuner.base import BaseTuner
 import finetuner
 from finetuner.toydata import generate_fashion
 import os
-import tempfile
 import numpy as np
+from finetuner.tuner.pytorch import PytorchTuner
+from finetuner.tuner.keras import KerasTuner
+from finetuner.tuner.state import TunerState
 
 
 @pytest.fixture(scope="module")
@@ -51,119 +53,109 @@ def paddle_model() -> BaseTuner:
     return embed_model
 
 
-def test_keras_model(keras_model: BaseTuner):
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        finetuner.fit(
-            keras_model,
-            epochs=1,
-            train_data=generate_fashion(num_total=1000),
-            eval_data=generate_fashion(is_testset=True, num_total=200),
-            callbacks=[ModelCheckpointCallback(tmpdirname)],
-        )
+def test_keras_model(keras_model: BaseTuner, tmpdir):
+    finetuner.fit(
+        keras_model,
+        epochs=1,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[ModelCheckpointCallback(tmpdir)],
+    )
 
-        assert os.listdir(tmpdirname) == ['saved_model_epoch_01']
-        assert set(os.listdir(os.path.join(tmpdirname, 'saved_model_epoch_01'))) == {
-            'variables',
-            'assets',
-            'keras_metadata.pb',
-            'saved_model.pb',
-        }
-
-
-def test_pytorch_model(pytorch_model: BaseTuner):
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        finetuner.fit(
-            pytorch_model,
-            epochs=1,
-            train_data=generate_fashion(num_total=1000),
-            eval_data=generate_fashion(is_testset=True, num_total=200),
-            callbacks=[ModelCheckpointCallback(filepath=tmpdirname)],
-        )
-
-        assert os.listdir(tmpdirname) == ['saved_model_epoch_01']
+    assert os.listdir(tmpdir) == ['saved_model_epoch_01']
+    assert set(os.listdir(os.path.join(tmpdir, 'saved_model_epoch_01'))) == {
+        'variables',
+        'assets',
+        'keras_metadata.pb',
+        'saved_model.pb',
+    }
 
 
-def test_paddle_model(paddle_model: BaseTuner):
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        finetuner.fit(
-            paddle_model,
-            epochs=1,
-            train_data=generate_fashion(num_total=1000),
-            eval_data=generate_fashion(is_testset=True, num_total=200),
-            callbacks=[ModelCheckpointCallback(filepath=tmpdirname)],
-        )
+def test_pytorch_model(pytorch_model: BaseTuner, tmpdir):
 
-        assert os.listdir(tmpdirname) == ['saved_model_epoch_01']
-        assert os.listdir(os.path.join(tmpdirname, 'saved_model_epoch_01')) == ['model']
+    finetuner.fit(
+        pytorch_model,
+        epochs=1,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[ModelCheckpointCallback(filepath=tmpdir)],
+    )
 
-
-def test_save_best_only(pytorch_model: BaseTuner):
-
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        finetuner.fit(
-            pytorch_model,
-            epochs=1,
-            train_data=generate_fashion(num_total=1000),
-            eval_data=generate_fashion(is_testset=True, num_total=200),
-            callbacks=[
-                ModelCheckpointCallback(filepath=tmpdirname, save_best_only=True)
-            ],
-        )
-
-        assert os.listdir(tmpdirname) == ['best_model']
+    assert os.listdir(tmpdir) == ['saved_model_epoch_01']
 
 
-def test_mode_min():
+def test_paddle_model(paddle_model: BaseTuner, tmpdir):
+    finetuner.fit(
+        paddle_model,
+        epochs=1,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[ModelCheckpointCallback(filepath=tmpdir)],
+    )
 
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        checkpoint = ModelCheckpointCallback(
-            filepath=tmpdirname, save_best_only=True, mode="min"
-        )
-        assert checkpoint.monitor_op == np.less
-        assert checkpoint.best == np.Inf
-
-
-def test_mode_max():
-
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        checkpoint = ModelCheckpointCallback(
-            filepath=tmpdirname, save_best_only=True, mode="max"
-        )
-        assert checkpoint.monitor_op == np.greater
-        assert checkpoint.best == -np.Inf
+    assert os.listdir(tmpdir) == ['saved_model_epoch_01']
+    assert os.listdir(os.path.join(tmpdir, 'saved_model_epoch_01')) == ['model']
 
 
-def test_mode_auto_min():
+def test_save_best_only(pytorch_model: BaseTuner, tmpdir):
 
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        checkpoint = ModelCheckpointCallback(
-            filepath=tmpdirname, save_best_only=True, mode="auto"
-        )
-        assert checkpoint.monitor_op == np.less
-        assert checkpoint.best == np.Inf
+    finetuner.fit(
+        pytorch_model,
+        epochs=1,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[ModelCheckpointCallback(filepath=tmpdir, save_best_only=True)],
+    )
 
-
-def test_mode_auto_max():
-
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        checkpoint = ModelCheckpointCallback(
-            filepath=tmpdirname, save_best_only=True, mode="auto", monitor="acc"
-        )
-        assert checkpoint.monitor_op == np.greater
-        assert checkpoint.best == -np.Inf
+    assert os.listdir(tmpdir) == ['best_model']
 
 
-def test_mode_auto_fallback():
+def test_mode_min(tmpdir):
 
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        checkpoint = ModelCheckpointCallback(
-            filepath=tmpdirname,
-            save_best_only=True,
-            mode="somethingelse",
-            monitor="acc",
-        )
-        assert checkpoint.monitor_op == np.greater
-        assert checkpoint.best == -np.Inf
+    checkpoint = ModelCheckpointCallback(
+        filepath=tmpdir, save_best_only=True, mode="min"
+    )
+    assert checkpoint.get_monitor_op() == np.less
+    assert checkpoint.get_best() == np.Inf
+
+
+def test_mode_max(tmpdir):
+
+    checkpoint = ModelCheckpointCallback(
+        filepath=tmpdir, save_best_only=True, mode="max"
+    )
+    assert checkpoint.get_monitor_op() == np.greater
+    assert checkpoint.get_best() == -np.Inf
+
+
+def test_mode_auto_min(tmpdir):
+
+    checkpoint = ModelCheckpointCallback(
+        filepath=tmpdir, save_best_only=True, mode="auto"
+    )
+    assert checkpoint.get_monitor_op() == np.less
+    assert checkpoint.get_best() == np.Inf
+
+
+def test_mode_auto_max(tmpdir):
+
+    checkpoint = ModelCheckpointCallback(
+        filepath=tmpdir, save_best_only=True, mode="auto", monitor="acc"
+    )
+    assert checkpoint.get_monitor_op() == np.greater
+    assert checkpoint.get_best() == -np.Inf
+
+
+def test_mode_auto_fallback(tmpdir):
+
+    checkpoint = ModelCheckpointCallback(
+        filepath=tmpdir,
+        save_best_only=True,
+        mode="somethingelse",
+        monitor="acc",
+    )
+    assert checkpoint.get_monitor_op() == np.greater
+    assert checkpoint.get_best() == -np.Inf
 
 
 def test_mandatory_filepath(pytorch_model: BaseTuner):
@@ -175,3 +167,31 @@ def test_mandatory_filepath(pytorch_model: BaseTuner):
             eval_data=generate_fashion(is_testset=True, num_total=200),
             callbacks=[ModelCheckpointCallback()],
         )
+
+
+def test_epoch_end(pytorch_model: BaseTuner, tmpdir):
+    checkpoint = ModelCheckpointCallback(filepath=tmpdir, monitor="loss")
+
+    tuner = PytorchTuner(embed_model=pytorch_model)
+    tuner.state = TunerState(epoch=0, batch_index=2, current_loss=1.1)
+
+    checkpoint.on_train_epoch_end(tuner)
+
+    assert os.listdir(tmpdir) == ['saved_model_epoch_01']
+
+
+def test_val_end(keras_model: BaseTuner, tmpdir):
+    checkpoint = ModelCheckpointCallback(filepath=tmpdir, monitor="val_loss")
+
+    tuner = KerasTuner(embed_model=keras_model)
+    tuner.state = TunerState(epoch=2, batch_index=2, current_loss=1.1)
+
+    checkpoint.on_val_end(tuner)
+
+    assert os.listdir(tmpdir) == ['saved_model_epoch_03']
+    assert set(os.listdir(os.path.join(tmpdir, 'saved_model_epoch_03'))) == {
+        'variables',
+        'assets',
+        'keras_metadata.pb',
+        'saved_model.pb',
+    }
