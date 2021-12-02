@@ -108,14 +108,14 @@ def test_siamese_miner(labels, dummy_tuples):
     np.testing.assert_equal(true_label, label.numpy())
 
 
-def test_siamese_easy_hard_miner_hard(labels, dummy_distances):
+def test_siamese_easy_hard_miner_hard_hard(labels, dummy_distances):
 
     true_ind_one, true_ind_two, true_label = np.array(
         ((1, 4, 0, 1, 2, 3), (3, 5, 1, 2, 3, 4), (1, 1, 0, 0, 0, 0))
     )
-    ind_one, ind_two, label = SiameseEasyHardMiner(strategy='hard').mine(
-        labels, dummy_distances
-    )
+    ind_one, ind_two, label = SiameseEasyHardMiner(
+        pos_strategy='hard', neg_strategy='hard'
+    ).mine(labels, dummy_distances)
     np.testing.assert_equal(true_ind_one, ind_one.numpy())
     np.testing.assert_equal(true_ind_two, ind_two.numpy())
     np.testing.assert_equal(true_label, label.numpy())
@@ -170,16 +170,57 @@ def test_triplet_miner(labels, dummy_triplets):
     np.testing.assert_equal(neg_ind.numpy(), true_neg_ind)
 
 
-def test_triplet_easy_hard_miner_hard(labels, dummy_distances):
+def test_triplet_easy_hard_miner_hard_hard(labels, dummy_distances):
     true_anch_ind, true_pos_ind, true_neg_ind = np.array(
-        ((1, 2, 3), (3, 0, 1), (2, 1, 4))
+        # These are the hardest closest positive and the furthest negative
+        ((0, 1, 2, 3, 4, 5), (2, 3, 0, 1, 5, 4), (3, 4, 4, 0, 0, 1))
     )
-    anch_ind, pos_ind, neg_ind = TripletEasyHardMiner(strategy='hard').mine(
-        labels, dummy_distances
-    )
+    anch_ind, pos_ind, neg_ind = TripletEasyHardMiner(
+        pos_strategy='hard', neg_strategy='hard'
+    ).mine(labels, dummy_distances)
     np.testing.assert_equal(anch_ind.numpy(), true_anch_ind)
     np.testing.assert_equal(pos_ind.numpy(), true_pos_ind)
     np.testing.assert_equal(neg_ind.numpy(), true_neg_ind)
+
+
+def test_triplet_easy_hard_miner_hard_easy(labels, dummy_distances):
+    true_anch_ind, true_pos_ind, true_neg_ind = np.array(
+        # These are the hardest closest negative and the furthest positive
+        ((0, 1, 2, 3, 4, 5), (2, 3, 0, 1, 5, 4), (1, 2, 1, 0, 0, 1))
+    )
+    anch_ind, pos_ind, neg_ind = TripletEasyHardMiner(
+        pos_strategy='hard', neg_strategy='easy'
+    ).mine(labels, dummy_distances)
+    import pdb
+
+    pdb.set_trace()
+    np.testing.assert_equal(anch_ind.numpy(), true_anch_ind)
+    np.testing.assert_equal(pos_ind.numpy(), true_pos_ind)
+    np.testing.assert_equal(neg_ind.numpy(), true_neg_ind)
+
+    # Dist mat
+    # [0., 4., 3., 7., 7., 6.],
+    # [4., 0., 2., 5., 7., 7.],
+    # [3., 2., 0., 5., 6., 6.],
+    # [7., 5., 5., 0., 3., 5.],
+    # [7., 7., 6., 3., 0., 3.],
+    # [6., 7., 6., 5., 3., 0.]
+
+    # matches
+    # [0, 0, 1, 0, 0, 0],
+    # [0, 0, 0, 1, 0, 0],
+    # [1, 0, 0, 0, 0, 0],
+    # [0, 1, 0, 0, 0, 0],
+    # [0, 0, 0, 0, 0, 1],
+    # [0, 0, 0, 0, 1, 0]]
+
+    # diffs
+    # [0, 1, 0, 1, 1, 1],
+    # [1, 0, 1, 0, 1, 1],
+    # [0, 1, 0, 1, 1, 1],
+    # [1, 0, 1, 0, 1, 1],
+    # [1, 1, 1, 1, 0, 0],
+    # [1, 1, 1, 1, 0, 0]
 
 
 def test_triplet_easy_hard_miner_semihard(labels, dummy_distances):

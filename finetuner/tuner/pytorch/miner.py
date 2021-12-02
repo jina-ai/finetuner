@@ -3,6 +3,7 @@ from typing import Optional, Tuple
 from numpy.lib.function_base import diff
 
 import torch
+from torch._C import Value
 from torch.nn.modules import distance
 
 from ..miner import get_session_pairs, get_session_triplets
@@ -68,77 +69,119 @@ class TripletMiner(BaseClassMiner[torch.Tensor]):
         return torch.where(triplets)
 
 
-class BaseClassEasyHardMiner:
-    def __init__(self, strategy: str = "hard") -> None:
-        if strategy not in ['easy', 'semihard', 'hard']:
-            raise ValueError(
-                f'The strategy has to be one of easy, semihard and hard, but '
-                'was: {strategy}'
-            )
-        self.strategy = strategy
+def apply_strategy(pos_strategy, neg_strategy, match_mat, diff_mat, dist_mat):
+
+    allowed_strategies = ['easy', 'semihard', 'hard', 'all']
+    if pos_strategy not in allowed_strategies or neg_strategy not in allowed_strategies:
+        raise ValueError(
+            f'The strategy has to be one of all, easy, semihard, and hard, but '
+            'was: {strategy}'
+        )
+    elif pos_strategy == 'semihard' and neg_strategy == 'semihard':
+        raise ValueError(
+            'Positive and negative strategy cannot both be set to semihard.'
+        )
+    elif (pos_strategy == 'all' and neg_strategy == 'semihard') or (
+        pos_strategy == 'semihard' and neg_strategy == 'all'
+    ):
+        raise ValueError(
+            'When one strategy is set to semihard, the other cannot be set to hard.'
+        )
 
     def _get_per_row_min(
-        self, dist_mat: torch.Tensor, semihard_tsh: Optional[torch.Tensor] = None
+        dist_mat: torch.Tensor, semihard_tsh: Optional[torch.Tensor] = None
     ):
-        non_zero_mask = dist_mat > 0
+        zero_element_mask = torch.logical_not(dist_mat > 0)
 
         if len(dist_mat) == 0:
             return dist_mat, torch.empty((), dtype=torch.bool)
 
-        # Prevent wrong neg. samples from being extracted
+        # Set zeros to max value, so they are not extracted as row minimum
         row_max = torch.max(dist_mat, dim=1, keepdim=True)[0]
-        dist_mat += (row_max + 1) * torch.logical_not(non_zero_mask)
+        dist_mat += (row_max + 1) * zero_element_mask
 
         if semihard_tsh is not None:
             dist_mat[dist_mat < semihard_tsh] = float('inf')
 
         non_inf_rows = torch.all(dist_mat == float('inf'), dim=1)
-        return torch.min(dist_mat, dim=1, keepdim=True)[0], non_inf_rows
+        return torch.min(dist_mat, dim=1, keepdim=True), non_inf_rows
 
-    def apply_strategy(self, match_mat, diff_mat, dist_mat):
+    def _get_per_row_max(
+        dist_mat: torch.Tensor, semihard_tsh: Optional[torch.Tensor] = None
+    ):
+
+        if len(dist_mat) == 0:
+            return dist_mat, torch.empty((), dtype=torch.bool)
+
+        if semihard_tsh is not None:
+            dist_mat[dist_mat > semihard_tsh] = 0
+
+        non_zero_rows = torch.all(dist_mat != 0, dim=1)
+        return torch.max(dist_mat, dim=1, keepdim=True), non_zero_rows
+
+    def _update_dist_mat(dist_mat, indices):
+        keep_mask = torch.zeros_like(dist_mat)
+        keep_mask[range(keep_mask.shape[0]), indices.squeeze()] = 1
+        # Mask and return the distance matrix
+        return dist_mat * keep_mask
+
+    def _get_mine_func(strategy: str):
+        if strategy in ['hard', 'semihard']:
+            return _get_per_row_min
+        else:
+            return _get_per_row_max
+
+    def update_pos_mat(match_mat, dist_mat, pos_strategy, semihard_tsh=None):
+
         # Get all d(a, p)
         d_a_p = match_mat * dist_mat
+
+        mine_func = _get_mine_func(pos_strategy)
+        (pos_dists, min_max_indices), invalid_row_mask = mine_func(d_a_p, semihard_tsh)
+        match_mat[invalid_row_mask] = 0
+        return _update_dist_mat(match_mat, min_max_indices), pos_dists
+
+    def update_neg_mat(diff_mat, dist_mat, neg_strategy, semihard_tsh=None):
         # Get all d(a, n)
         d_a_n = diff_mat * dist_mat
 
-        if self.strategy == 'hard':
-            # Get hardest negative samples
-            neg_distances, _ = self._get_per_row_min(diff_mat * dist_mat)
-            neg_mask = neg_distances == d_a_n
-            diff_mat *= neg_mask
-            # Get all pos samples with larger distance than neg one
-            pos_mask = neg_distances < d_a_p
-            match_mat *= pos_mask
+        # Neg. needs to be handled in opposite fashion than pos. strategy
+        print(neg_strategy, "kjsdhflksjdhfkldjhsf")
+        neg_strategy = 'easy' if neg_strategy in ('hard', 'semihard') else 'hard'
+        mine_func = _get_mine_func(neg_strategy)
+        (neg_dists, min_max_indices), invalid_row_mask = mine_func(d_a_n, semihard_tsh)
+        diff_mat[invalid_row_mask] = 0
+        return _update_dist_mat(diff_mat, min_max_indices), neg_dists
 
-        elif self.strategy == 'semihard':
-            # Get closest positive sample
-            pos_distances, _ = self._get_per_row_min(match_mat * dist_mat)
-            pos_mask = pos_distances == d_a_p
-            match_mat *= pos_mask
+    # Impossible combinations:
+    # both cannot be semihard
+    # If one is semihard, the other cannot be all
 
-            # Get hardest neg samples that are further than samples
-            neg_distances, invalid_row_mask = self._get_per_row_min(
-                diff_mat * dist_mat, pos_distances
-            )
-            neg_mask = neg_distances == d_a_n
-            diff_mat *= neg_mask
-            diff_mat[invalid_row_mask] = 0
+    # pos:
+    # Hard -> Easy, hard, all
+    # Semihard -> get next furthest neg
+    # Easy -> Easy, hard, all
+    if pos_strategy == 'semihard' and neg_strategy != 'all':
 
-        elif self.strategy == 'easy':
-            # Get easy positive sample
-            pos_distances, _ = self._get_per_row_min(match_mat * dist_mat)
-            pos_mask = pos_distances == d_a_p
-            match_mat *= pos_mask
+        diff_mat, neg_dists = update_neg_mat(diff_mat, dist_mat, neg_strategy)
+        match_mat, _ = update_pos_mat(match_mat, dist_mat, pos_strategy, neg_dists)
+    elif pos_strategy != 'all' and neg_strategy == 'semihard':
 
-            # Get easy negative samples, further away than pos sample
-            neg_mask = pos_distances < d_a_n
-            diff_mat *= neg_mask
-        return match_mat, diff_mat
+        match_mat, pos_dists = update_pos_mat(match_mat, dist_mat, pos_strategy)
+        diff_mat, _ = update_neg_mat(diff_mat, dist_mat, neg_strategy, pos_dists)
+    else:
+        if pos_strategy != 'all':
+            match_mat, _ = update_pos_mat(match_mat, dist_mat, pos_strategy)
+        if neg_strategy != 'all':
+            diff_mat, _ = update_neg_mat(diff_mat, dist_mat, neg_strategy)
+
+    return match_mat, diff_mat
 
 
-class TripletEasyHardMiner(BaseClassMiner[torch.Tensor], BaseClassEasyHardMiner):
-    def __init__(self, strategy="hard"):
-        BaseClassEasyHardMiner.__init__(self, strategy)
+class TripletEasyHardMiner(BaseClassMiner[torch.Tensor]):
+    def __init__(self, pos_strategy='hard', neg_strategy='hard'):
+        self.pos_strategy = pos_strategy
+        self.neg_strategy = neg_strategy
 
     def mine(
         self, labels: torch.Tensor, distances: torch.Tensor
@@ -159,15 +202,18 @@ class TripletEasyHardMiner(BaseClassMiner[torch.Tensor], BaseClassEasyHardMiner)
         diffs = matches ^ 1
 
         matches.fill_diagonal_(0)
-        matches, diffs = self.apply_strategy(matches, diffs, distances)
+        matches, diffs = apply_strategy(
+            self.pos_strategy, self.neg_strategy, matches, diffs, distances
+        )
         triplets = matches.unsqueeze(2) * diffs.unsqueeze(1)
 
         return torch.where(triplets)
 
 
-class SiameseEasyHardMiner(BaseClassMiner[torch.Tensor], BaseClassEasyHardMiner):
-    def __init__(self, strategy: str = 'hard'):
-        BaseClassEasyHardMiner.__init__(self, strategy)
+class SiameseEasyHardMiner(BaseClassMiner[torch.Tensor]):
+    def __init__(self, pos_strategy: str = 'hard', neg_strategy: str = 'hard'):
+        self.pos_strategy = pos_strategy
+        self.neg_strategy = neg_strategy
 
     def mine(
         self, labels: torch.Tensor, distances: torch.Tensor
@@ -191,11 +237,9 @@ class SiameseEasyHardMiner(BaseClassMiner[torch.Tensor], BaseClassEasyHardMiner)
         matches.triu_(1)
         diffs.triu_()
 
-        print(distances)
-        print(labels)
-        print(matches)
-        print(diffs)
-        matches, diffs = self.apply_strategy(matches, diffs, distances)
+        matches, diffs = apply_strategy(
+            self.pos_strategy, self.neg_strategy, matches, diffs, distances
+        )
 
         ind1_pos, ind2_pos = torch.where(matches)
         ind1_neg, ind2_neg = torch.where(diffs)
