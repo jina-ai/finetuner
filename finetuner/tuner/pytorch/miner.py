@@ -127,9 +127,9 @@ def apply_strategy(pos_strategy, neg_strategy, match_mat, diff_mat, dist_mat):
 
     def _get_mine_func(strategy: str):
         if strategy in ['hard', 'semihard']:
-            return _get_per_row_min
-        else:
             return _get_per_row_max
+        else:
+            return _get_per_row_min
 
     def update_pos_mat(match_mat, dist_mat, pos_strategy, semihard_tsh=None):
 
