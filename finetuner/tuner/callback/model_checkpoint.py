@@ -1,9 +1,10 @@
-from typing import TYPE_CHECKING, Optional
-from .base import BaseCallback
 import os
+from typing import TYPE_CHECKING, Optional
 import numpy as np
-from finetuner.helper import get_framework
 from jina.logging.logger import JinaLogger
+from finetuner.helper import get_framework
+from .base import BaseCallback
+
 
 if TYPE_CHECKING:
     from ..base import BaseTuner
