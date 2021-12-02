@@ -94,14 +94,16 @@ def apply_strategy(pos_strategy, neg_strategy, match_mat, diff_mat, dist_mat):
         zero_element_mask = torch.logical_not(dist_mat > 0)
 
         if len(dist_mat) == 0:
-            return dist_mat, torch.empty((), dtype=torch.bool)
+            return (torch.empty(()), torch.empty((), dtype=torch.bool)), torch.empty(
+                (), dtype=torch.bool
+            )
 
         # Set zeros to max value, so they are not extracted as row minimum
         row_max = torch.max(dist_mat, dim=1, keepdim=True)[0]
         dist_mat += (row_max + 1) * zero_element_mask
 
         if semihard_tsh is not None:
-            dist_mat[dist_mat < semihard_tsh] = float('inf')
+            dist_mat[dist_mat <= semihard_tsh] = float('inf')
 
         non_inf_rows = torch.all(dist_mat == float('inf'), dim=1)
         return torch.min(dist_mat, dim=1, keepdim=True), non_inf_rows
@@ -111,10 +113,12 @@ def apply_strategy(pos_strategy, neg_strategy, match_mat, diff_mat, dist_mat):
     ):
 
         if len(dist_mat) == 0:
-            return dist_mat, torch.empty((), dtype=torch.bool)
+            return (torch.empty(()), torch.empty((), dtype=torch.bool)), torch.empty(
+                (), dtype=torch.bool
+            )
 
         if semihard_tsh is not None:
-            dist_mat[dist_mat > semihard_tsh] = 0
+            dist_mat[dist_mat >= semihard_tsh] = 0
 
         non_zero_rows = torch.all(dist_mat != 0, dim=1)
         return torch.max(dist_mat, dim=1, keepdim=True), non_zero_rows
@@ -132,7 +136,6 @@ def apply_strategy(pos_strategy, neg_strategy, match_mat, diff_mat, dist_mat):
             return _get_per_row_min
 
     def update_pos_mat(match_mat, dist_mat, pos_strategy, semihard_tsh=None):
-
         # Get all d(a, p)
         d_a_p = match_mat * dist_mat
 
@@ -146,21 +149,12 @@ def apply_strategy(pos_strategy, neg_strategy, match_mat, diff_mat, dist_mat):
         d_a_n = diff_mat * dist_mat
 
         # Neg. needs to be handled in opposite fashion than pos. strategy
-        print(neg_strategy, "kjsdhflksjdhfkldjhsf")
         neg_strategy = 'easy' if neg_strategy in ('hard', 'semihard') else 'hard'
         mine_func = _get_mine_func(neg_strategy)
         (neg_dists, min_max_indices), invalid_row_mask = mine_func(d_a_n, semihard_tsh)
         diff_mat[invalid_row_mask] = 0
         return _update_dist_mat(diff_mat, min_max_indices), neg_dists
 
-    # Impossible combinations:
-    # both cannot be semihard
-    # If one is semihard, the other cannot be all
-
-    # pos:
-    # Hard -> Easy, hard, all
-    # Semihard -> get next furthest neg
-    # Easy -> Easy, hard, all
     if pos_strategy == 'semihard' and neg_strategy != 'all':
 
         diff_mat, neg_dists = update_neg_mat(diff_mat, dist_mat, neg_strategy)
@@ -176,38 +170,6 @@ def apply_strategy(pos_strategy, neg_strategy, match_mat, diff_mat, dist_mat):
             diff_mat, _ = update_neg_mat(diff_mat, dist_mat, neg_strategy)
 
     return match_mat, diff_mat
-
-
-class TripletEasyHardMiner(BaseClassMiner[torch.Tensor]):
-    def __init__(self, pos_strategy='hard', neg_strategy='hard'):
-        self.pos_strategy = pos_strategy
-        self.neg_strategy = neg_strategy
-
-    def mine(
-        self, labels: torch.Tensor, distances: torch.Tensor
-    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        """Generate all possible triplets.
-
-        :param labels: A 1D tensor of item labels (classes)
-        :param distances: A tensor matrix of pairwise distance between each two item
-            embeddings
-
-        :return: three 1D tensors, holding the anchor index, positive index and
-            negative index of each triplet, respectively
-        """
-        assert len(distances) == len(labels)
-
-        labels1, labels2 = labels.unsqueeze(1), labels.unsqueeze(0)
-        matches = (labels1 == labels2).byte()
-        diffs = matches ^ 1
-
-        matches.fill_diagonal_(0)
-        matches, diffs = apply_strategy(
-            self.pos_strategy, self.neg_strategy, matches, diffs, distances
-        )
-        triplets = matches.unsqueeze(2) * diffs.unsqueeze(1)
-
-        return torch.where(triplets)
 
 
 class SiameseEasyHardMiner(BaseClassMiner[torch.Tensor]):
@@ -249,6 +211,40 @@ class SiameseEasyHardMiner(BaseClassMiner[torch.Tensor]):
         target = torch.cat([torch.ones_like(ind1_pos), torch.zeros_like(ind1_neg)])
 
         return ind1, ind2, target
+
+
+class TripletEasyHardMiner(BaseClassMiner[torch.Tensor]):
+    def __init__(self, pos_strategy='hard', neg_strategy='hard'):
+        self.pos_strategy = pos_strategy
+        self.neg_strategy = neg_strategy
+
+    def mine(
+        self, labels: torch.Tensor, distances: torch.Tensor
+    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        """Generate all possible triplets.
+
+        :param labels: A 1D tensor of item labels (classes)
+        :param distances: A tensor matrix of pairwise distance between each two item
+            embeddings
+
+        :return: three 1D tensors, holding the anchor index, positive index and
+            negative index of each triplet, respectively
+        """
+        assert len(distances) == len(labels)
+
+        labels1, labels2 = labels.unsqueeze(1), labels.unsqueeze(0)
+        matches = (labels1 == labels2).byte()
+        diffs = matches ^ 1
+
+        matches.fill_diagonal_(0)
+        print(distances)
+        print(matches)
+        matches, diffs = apply_strategy(
+            self.pos_strategy, self.neg_strategy, matches, diffs, distances
+        )
+        triplets = matches.unsqueeze(2) * diffs.unsqueeze(1)
+
+        return torch.where(triplets)
 
 
 class SiameseSessionMiner(BaseSessionMiner[torch.Tensor]):
