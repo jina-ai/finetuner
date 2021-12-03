@@ -60,7 +60,7 @@ class ModelCheckpoint(BaseCallback):
             )
 
         if mode not in ['auto', 'min', 'max']:
-            self.__logger.warning(
+            self._logger.warning(
                 'ModelCheckpoint mode %s is unknown, ' 'fallback to auto mode.', mode
             )
             mode = 'auto'
@@ -72,7 +72,7 @@ class ModelCheckpoint(BaseCallback):
             self._monitor_op = np.greater
             self._best = -np.Inf
         else:
-            if 'acc' in self.__monitor or self.__monitor.startswith('fmeasure'):
+            if 'acc' in self._monitor or self._monitor.startswith('fmeasure'):
                 self._monitor_op = np.greater
                 self._best = -np.Inf
             else:
@@ -106,9 +106,9 @@ class ModelCheckpoint(BaseCallback):
             else:
                 current = tuner.state.train_loss
             if current is None:
-                self.__logger.warning(
+                self._logger.warning(
                     'Can save best model only with %s available, ' 'skipping.',
-                    self.monitor,
+                    self._monitor,
                 )
             else:
                 if self._monitor_op(current, self._best):
