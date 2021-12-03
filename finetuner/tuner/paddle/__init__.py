@@ -207,7 +207,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
 
         self._trigger_callbacks('on_fit_end')
 
-    def save(self, *args, **kwargs):
+    def save(self, epoch, best, monitor, *args, **kwargs):
         """Save the embedding model.
 
         You need to pass the path where to save the model in either ``args`` or

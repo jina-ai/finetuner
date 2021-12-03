@@ -40,22 +40,22 @@ def test_save_best_only(pytorch_model: BaseTuner, tmpdir):
 def test_mode_min(tmpdir):
 
     checkpoint = ModelCheckpoint(save_dir=tmpdir, save_best_only=True, mode='min')
-    assert checkpoint.get_monitor_op() == np.less
-    assert checkpoint.get_best() == np.Inf
+    assert checkpoint._monitor_op == np.less
+    assert checkpoint._best == np.Inf
 
 
 def test_mode_max(tmpdir):
 
     checkpoint = ModelCheckpoint(save_dir=tmpdir, save_best_only=True, mode='max')
-    assert checkpoint.get_monitor_op() == np.greater
-    assert checkpoint.get_best() == -np.Inf
+    assert checkpoint._monitor_op == np.greater
+    assert checkpoint._best == -np.Inf
 
 
 def test_mode_auto_min(tmpdir):
 
     checkpoint = ModelCheckpoint(save_dir=tmpdir, save_best_only=True, mode='auto')
-    assert checkpoint.get_monitor_op() == np.less
-    assert checkpoint.get_best() == np.Inf
+    assert checkpoint._monitor_op == np.less
+    assert checkpoint._best == np.Inf
 
 
 def test_mode_auto_max(tmpdir):
@@ -63,8 +63,8 @@ def test_mode_auto_max(tmpdir):
     checkpoint = ModelCheckpoint(
         save_dir=tmpdir, save_best_only=True, mode='auto', monitor='acc'
     )
-    assert checkpoint.get_monitor_op() == np.greater
-    assert checkpoint.get_best() == -np.Inf
+    assert checkpoint._monitor_op == np.greater
+    assert checkpoint._best == -np.Inf
 
 
 def test_mode_auto_fallback(tmpdir):
@@ -75,8 +75,8 @@ def test_mode_auto_fallback(tmpdir):
         mode='somethingelse',
         monitor='acc',
     )
-    assert checkpoint.get_monitor_op() == np.greater
-    assert checkpoint.get_best() == -np.Inf
+    assert checkpoint._monitor_op == np.greater
+    assert checkpoint._best == -np.Inf
 
 
 def test_mandatory_save_dir(pytorch_model: BaseTuner):
