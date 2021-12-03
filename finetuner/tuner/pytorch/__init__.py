@@ -46,7 +46,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
     ) -> DataLoader:
-        """ Get the dataloader for the dataset"""
+        """Get the dataloader for the dataset"""
 
         if collate_fn:
 
@@ -210,7 +210,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
         self._trigger_callbacks('on_fit_end')
 
-    def save(self, *args, **kwargs):
+    def save(self, epoch, best, monitor, *args, **kwargs):
         """Save the embedding model.
 
         You need to pass the path where to save the model in either ``args`` or
@@ -219,7 +219,24 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         :param args: Arguments to pass to ``torch.save`` function
         :param kwargs: Keyword arguments to pass to ``torch.save`` function
         """
-        torch.save(self.embed_model.state_dict(), *args, **kwargs)
+        if hasattr(self, '_optimizer'):
+            state = {
+                'epoch': epoch,
+                'state_dict': self.embed_model.state_dict(),
+                'best': best,
+                'optimizer': self._optimizer.state_dict(),
+                'monitor': monitor,
+            }
+        else:
+            state = {
+                'epoch': epoch,
+                'state_dict': self.embed_model.state_dict(),
+                'best': best,
+                'optimizer': 'opt',
+                'monitor': monitor,
+            }
+
+        torch.save(state, *args, **kwargs)
 
 
 def get_device(device: str):
