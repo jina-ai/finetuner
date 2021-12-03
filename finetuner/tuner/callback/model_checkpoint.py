@@ -54,6 +54,8 @@ class ModelCheckpoint(BaseCallback):
         self._save_dir = save_dir
         self._save_best_only = save_best_only
         self._monitor = monitor
+        self._train_losses = []
+        self._valid_losses = []
         if not save_dir:
             raise ValueError(
                 '``save_dir`` parameter is mandatory. Pass it in parameters'
@@ -79,18 +81,16 @@ class ModelCheckpoint(BaseCallback):
                 self._monitor_op = np.less
                 self._best = np.Inf
 
-    def get_monitor_op(self):
-        return self._monitor_op
-
-    def get_best(self):
-        return self._best
-
     def on_epoch_end(self, tuner: 'BaseTuner'):
         """
         Called at the end of the training epoch.
         """
         if self._monitor == 'loss':
             self._save_model(tuner)
+            self._train_losses = []
+
+    def on_train_batch_end(self, tuner: 'BaseTuner'):
+        self._train_losses.append(tuner.state.train_loss)
 
     def on_val_end(self, tuner: 'BaseTuner'):
         """
@@ -98,13 +98,17 @@ class ModelCheckpoint(BaseCallback):
         """
         if self._monitor == 'val_loss':
             self._save_model(tuner)
+            self._valid_losses = []
+
+    def on_val_batch_end(self, tuner: 'BaseTuner'):
+        self._valid_losses.append(tuner.state.val_loss)
 
     def _save_model(self, tuner):
         if self._save_best_only:
             if self._monitor == 'val_loss':
-                current = tuner.state.val_loss
+                current = np.mean(self._valid_losses)
             else:
-                current = tuner.state.train_loss
+                current = np.mean(self._train_losses)
             if current is None:
                 self._logger.warning(
                     'Can save best model only with %s available, ' 'skipping.',
@@ -124,9 +128,19 @@ class ModelCheckpoint(BaseCallback):
         if get_framework(tuner.embed_model) == 'keras':
             tuner.save(filepath=self._get_file_path(tuner))
         elif get_framework(tuner.embed_model) == 'torch':
-            tuner.save(f=os.path.join(self._get_file_path(tuner)))
+            tuner.save(
+                f=self._get_file_path(tuner),
+                epoch=tuner.state.epoch + 1,
+                best=self._save_best_only,
+                monitor=self._monitor,
+            )
         elif get_framework(tuner.embed_model) == 'paddle':
-            tuner.save(path=os.path.join(self._get_file_path(tuner), 'model'))
+            tuner.save(
+                path=self._get_file_path(tuner),
+                epoch=tuner.state.epoch + 1,
+                best=self._save_best_only,
+                monitor=self._monitor,
+            )
 
     def _get_file_path(self, tuner):
         """
