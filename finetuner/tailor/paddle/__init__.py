@@ -1,7 +1,7 @@
 import copy
 import warnings
 from collections import OrderedDict
-from typing import Optional, List, TYPE_CHECKING
+from typing import Optional, List, TYPE_CHECKING, Union
 
 import numpy as np
 import paddle
@@ -139,19 +139,19 @@ class PaddleTailor(BaseTailor):
     def to_embedding_model(
         self,
         layer_name: Optional[str] = None,
-        output_dim: Optional[int] = None,
-        freeze: bool = False,
-        freeze_layers: Optional[List[str]] = None,
+        freeze: Union[bool, List[str]] = False,
+        pooling: Optional[str] = None,
+        bottleneck_net: Optional['AnyDNN'] = None,
     ) -> 'AnyDNN':
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
         :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
             will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
             To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
-        :param output_dim: the dimensionality of the embedding output.
-        :param freeze: if set, then freeze weights of a model. If :py:attr:`freeze_layers` is defined, only freeze layers in :py:attr:`freeze_layers`.
-        :param freeze_layers: if set, then freeze specific layers.
-        :return: Converted embedding model.
+        :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.
+        :param pooling: apply pooling at the end of the :py:`attr`:`layer_name`. Options are `max`, `avg`, `gem`.
+        :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.
+        :return: Converted embedding model..
         """
         model = copy.deepcopy(self._model)
         _all_embed_layers = {l['name']: l for l in self.embedding_layers}
@@ -166,45 +166,27 @@ class PaddleTailor(BaseTailor):
             # when not given, using the last layer
             _embed_layer = self.embedding_layers[-1]
 
-        if freeze and freeze_layers:
+        if isinstance(freeze, list):
             # freeze specific layers defined in `freeze_layers`
             for layer_name, param in zip(_all_embed_layers, model.parameters()):
-                if layer_name in freeze_layers:
+                if layer_name in freeze:
                     param.trainable = False
-        if freeze and not freeze_layers:
+        elif isinstance(freeze, bool) and freeze is True:
+            # freeze all layers, not including bottleneck module
             for param in model.parameters():
                 param.trainable = False
 
+        _embed_layer_output_shape = None
         _relative_idx_to_embedding_layer = None
-        _is_dense_layer_added = False
         for name, module in model.named_sublayers():
             if name == _embed_layer['module_name']:
                 _relative_idx_to_embedding_layer = 0
-
-                # corner-case
-                if not output_dim and not layer_name:
-                    for param in module.parameters():
-                        param.trainable = True
-                    else:
-                        warnings.warn(
-                            'The current configs results in a non-parametric model, '
-                            'which is no trainable. '
-                            'You may need to specify `output_dim` or `embedding_layer_name`.'
-                        )
-
+                _embed_layer_output_shape = _embed_layer['output_shape']
             if (
                 _relative_idx_to_embedding_layer
                 and _relative_idx_to_embedding_layer >= 1
             ):
-                if _relative_idx_to_embedding_layer == 1 and output_dim:
-                    replaced_layer = nn.Linear(
-                        in_features=_embed_layer['output_features'],
-                        out_features=output_dim,
-                    )
-                    _is_dense_layer_added = True
-                else:
-                    replaced_layer = _Identity()
-
+                replaced_layer = _Identity()
                 if (
                     '.' in name
                 ):  # Note: in torchvision, nested layer names are named with '.' e.g. classifier.0
@@ -216,13 +198,10 @@ class PaddleTailor(BaseTailor):
             if _relative_idx_to_embedding_layer is not None:
                 _relative_idx_to_embedding_layer += 1
 
-        if output_dim and not _is_dense_layer_added:
-            # the dense layer needs to be added after the last layer
-            model = _LinearAtLast(
-                model,
-                in_features=_embed_layer['output_features'],
-                out_features=output_dim,
-            )
+        model = nn.Sequential(
+            model,
+            bottleneck_net,
+        )
 
         return model
 
@@ -232,13 +211,3 @@ class _Identity(nn.Layer):
 
     def forward(self, input_: Tensor) -> Tensor:
         return input_
-
-
-class _LinearAtLast(nn.Layer):
-    def __init__(self, model, *args, **kwargs):
-        super().__init__()
-        self._model = model
-        self._linear = nn.Linear(*args, **kwargs)
-
-    def forward(self, input_):
-        return self._linear(self._model(input_))
