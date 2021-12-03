@@ -2,6 +2,7 @@ import os
 
 import pytest
 import torch
+import copy
 
 import finetuner
 from finetuner.tuner.callback import ModelCheckpoint
@@ -58,3 +59,22 @@ def test_val_end(pytorch_model: BaseTuner, tmpdir):
     checkpoint.on_val_end(tuner)
 
     assert os.listdir(tmpdir) == ['saved_model_epoch_03']
+
+
+def test_load_model(pytorch_model: BaseTuner, tmpdir):
+
+    new_model = copy.deepcopy(pytorch_model)
+
+    finetuner.fit(
+        pytorch_model,
+        epochs=1,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[ModelCheckpoint(save_dir=tmpdir)],
+    )
+
+    checkpoint = torch.load(os.path.join(tmpdir, 'saved_model_epoch_01'))
+    new_model.load_state_dict(checkpoint['state_dict'])
+
+    for l1, l2 in zip(pytorch_model.parameters(), new_model.parameters()):
+        assert (l1 == l2).all()

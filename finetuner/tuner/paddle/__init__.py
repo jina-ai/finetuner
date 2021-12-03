@@ -212,7 +212,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
 
         self._trigger_callbacks('on_fit_end')
 
-    def save(self, *args, **kwargs):
+    def save(self, epoch, best, monitor, *args, **kwargs):
         """Save the embedding model.
 
         You need to pass the path where to save the model in either ``args`` or
@@ -221,7 +221,23 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
         :param args: Arguments to pass to ``paddle.save`` function
         :param kwargs: Keyword arguments to pass to ``paddle.save`` function
         """
-        paddle.save(self.embed_model.state_dict(), *args, **kwargs)
+        if hasattr(self, '_optimizer'):
+            state = {
+                'epoch': epoch,
+                'state_dict': self.embed_model.state_dict(),
+                'best': best,
+                'optimizer': self._optimizer.state_dict(),
+                'monitor': monitor,
+            }
+        else:
+            state = {
+                'epoch': epoch,
+                'state_dict': self.embed_model.state_dict(),
+                'best': best,
+                'optimizer': 'opt',
+                'monitor': monitor,
+            }
+        paddle.save(state, *args, **kwargs)
 
 
 def get_device(device: str):

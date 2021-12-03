@@ -2,6 +2,7 @@ import os
 
 import pytest
 import tensorflow as tf
+import keras
 
 import finetuner
 from finetuner.tuner.callback import ModelCheckpoint
@@ -73,3 +74,22 @@ def test_val_end(keras_model: BaseTuner, tmpdir):
         'keras_metadata.pb',
         'saved_model.pb',
     }
+
+
+def test_load_model(keras_model: BaseTuner, tmpdir):
+
+    finetuner.fit(
+        keras_model,
+        epochs=1,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[ModelCheckpoint(tmpdir)],
+    )
+
+    new_model = keras.models.load_model(os.path.join(tmpdir, 'saved_model_epoch_01'))
+
+    for l1, l2 in zip(new_model.layers, keras_model.layers):
+        assert l1.get_config() == l2.get_config()
+        assert len(l1.weights) == len(l2.weights)
+        for idx in range(len(l1.weights)):
+            assert (l1.get_weights()[idx] == l2.get_weights()[idx]).all()
