@@ -32,14 +32,14 @@ def test_pytorch_model(pytorch_model: BaseTuner, tmpdir):
         epochs=1,
         train_data=generate_fashion(num_total=1000),
         eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[ModelCheckpoint(filepath=tmpdir)],
+        callbacks=[ModelCheckpoint(save_dir=tmpdir)],
     )
 
     assert os.listdir(tmpdir) == ['saved_model_epoch_01']
 
 
 def test_epoch_end(pytorch_model: BaseTuner, tmpdir):
-    checkpoint = ModelCheckpoint(filepath=tmpdir, monitor='loss')
+    checkpoint = ModelCheckpoint(save_dir=tmpdir, monitor='loss')
 
     tuner = PytorchTuner(embed_model=pytorch_model)
     tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
@@ -50,7 +50,7 @@ def test_epoch_end(pytorch_model: BaseTuner, tmpdir):
 
 
 def test_val_end(pytorch_model: BaseTuner, tmpdir):
-    checkpoint = ModelCheckpoint(filepath=tmpdir, monitor='val_loss')
+    checkpoint = ModelCheckpoint(save_dir=tmpdir, monitor='val_loss')
 
     tuner = PytorchTuner(embed_model=pytorch_model)
     tuner.state = TunerState(epoch=2, batch_index=2, val_loss=1.1)

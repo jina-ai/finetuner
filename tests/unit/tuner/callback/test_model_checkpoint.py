@@ -5,7 +5,7 @@ import torch
 import numpy as np
 
 import finetuner
-from finetuner.tuner.callback import ModelCheckpointCallback
+from finetuner.tuner.callback import ModelCheckpoint
 from finetuner.tuner.base import BaseTuner
 from finetuner.toydata import generate_fashion
 
@@ -31,16 +31,16 @@ def test_save_best_only(pytorch_model: BaseTuner, tmpdir):
         epochs=1,
         train_data=generate_fashion(num_total=1000),
         eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[ModelCheckpointCallback(filepath=tmpdir, save_best_only=True)],
+        callbacks=[ModelCheckpoint(save_dir=tmpdir, save_best_only=True)],
     )
 
-    assert os.listdir(tmpdir) == ['best_model']
+    assert os.listdir(tmpdir) == ['best_model_val_loss']
 
 
 def test_mode_min(tmpdir):
 
-    checkpoint = ModelCheckpointCallback(
-        filepath=tmpdir, save_best_only=True, mode='min'
+    checkpoint  = ModelCheckpoint(
+        save_dir=tmpdir, save_best_only=True, mode='min'
     )
     assert checkpoint.get_monitor_op() == np.less
     assert checkpoint.get_best() == np.Inf
@@ -48,8 +48,8 @@ def test_mode_min(tmpdir):
 
 def test_mode_max(tmpdir):
 
-    checkpoint = ModelCheckpointCallback(
-        filepath=tmpdir, save_best_only=True, mode='max'
+    checkpoint = ModelCheckpoint(
+        save_dir=tmpdir, save_best_only=True, mode='max'
     )
     assert checkpoint.get_monitor_op() == np.greater
     assert checkpoint.get_best() == -np.Inf
@@ -57,8 +57,8 @@ def test_mode_max(tmpdir):
 
 def test_mode_auto_min(tmpdir):
 
-    checkpoint = ModelCheckpointCallback(
-        filepath=tmpdir, save_best_only=True, mode='auto'
+    checkpoint = ModelCheckpoint(
+        save_dir=tmpdir, save_best_only=True, mode='auto'
     )
     assert checkpoint.get_monitor_op() == np.less
     assert checkpoint.get_best() == np.Inf
@@ -66,8 +66,8 @@ def test_mode_auto_min(tmpdir):
 
 def test_mode_auto_max(tmpdir):
 
-    checkpoint = ModelCheckpointCallback(
-        filepath=tmpdir, save_best_only=True, mode='auto', monitor='acc'
+    checkpoint = ModelCheckpoint(
+        save_dir=tmpdir, save_best_only=True, mode='auto', monitor='acc'
     )
     assert checkpoint.get_monitor_op() == np.greater
     assert checkpoint.get_best() == -np.Inf
@@ -75,8 +75,8 @@ def test_mode_auto_max(tmpdir):
 
 def test_mode_auto_fallback(tmpdir):
 
-    checkpoint = ModelCheckpointCallback(
-        filepath=tmpdir,
+    checkpoint = ModelCheckpoint(
+        save_dir=tmpdir,
         save_best_only=True,
         mode='somethingelse',
         monitor='acc',
@@ -85,12 +85,12 @@ def test_mode_auto_fallback(tmpdir):
     assert checkpoint.get_best() == -np.Inf
 
 
-def test_mandatory_filepath(pytorch_model: BaseTuner):
+def test_mandatory_save_dir(pytorch_model: BaseTuner):
     with pytest.raises(ValueError, match='parameter is mandatory'):
         finetuner.fit(
             pytorch_model,
             epochs=1,
             train_data=generate_fashion(num_total=1000),
             eval_data=generate_fashion(is_testset=True, num_total=200),
-            callbacks=[ModelCheckpointCallback()],
+            callbacks=[ModelCheckpoint()],
         )
