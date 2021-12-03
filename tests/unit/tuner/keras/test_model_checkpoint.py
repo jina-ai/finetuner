@@ -42,7 +42,7 @@ def test_keras_model(keras_model: BaseTuner, tmpdir):
 
 
 def test_epoch_end(keras_model: BaseTuner, tmpdir):
-    checkpoint = ModelCheckpoint(filepath=tmpdir, monitor='loss')
+    checkpoint = ModelCheckpoint(save_dir=tmpdir, monitor='loss')
 
     tuner = KerasTuner(embed_model=keras_model)
     tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
@@ -59,7 +59,7 @@ def test_epoch_end(keras_model: BaseTuner, tmpdir):
 
 
 def test_val_end(keras_model: BaseTuner, tmpdir):
-    checkpoint = ModelCheckpoint(filepath=tmpdir, monitor="val_loss")
+    checkpoint = ModelCheckpoint(save_dir=tmpdir, monitor="val_loss")
 
     tuner = KerasTuner(embed_model=keras_model)
     tuner.state = TunerState(epoch=2, batch_index=2, val_loss=1.1)
