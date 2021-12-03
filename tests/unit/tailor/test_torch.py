@@ -318,14 +318,16 @@ def test_torch_lstm_model_parser():
         input_dtype='int64',
     )
     r = pytorch_tailor.embedding_layers
-    assert len(r) == 2
+    assert len(r) == 3
+    print(r[0])
+    print(r[1])
 
     # flat layer can be a nonparametric candidate
-    assert r[0]['output_features'] == 128
-    assert r[0]['nb_params'] == 0
+    assert r[0]['output_features'] == 64
+    assert r[0]['nb_params'] == 320000
 
-    assert r[1]['output_features'] == 32
-    assert r[1]['nb_params'] == 4128
+    assert r[1]['output_features'] == 128
+    assert r[1]['nb_params'] == 0
 
 
 def test_torch_mlp_model_parser():
