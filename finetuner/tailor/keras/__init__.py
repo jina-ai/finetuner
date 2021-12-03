@@ -104,11 +104,9 @@ class KerasTailor(BaseTailor):
 
         index = _embed_layer['layer_idx']
 
-        if _embed_layer != self._model.layers[-1]:
-            out = self._model.layers[index].output
-            model = tf.keras.Model(self._model.input, out)
-        else:
-            model = self._model
+        if _embed_layer != model.layers[-1]:
+            out = model.layers[index].output
+            model = tf.keras.Model(model.input, out)
 
         if isinstance(freeze, list):
             for layer_name, layer in zip(_all_embed_layers, model.layers):
@@ -120,7 +118,10 @@ class KerasTailor(BaseTailor):
                 layer.trainable = False
 
         if bottleneck_net:
-            concat = tf.keras.layers.Concatenate()([model, bottleneck_net])
-            model = tf.keras.Model(self._model.input, bottleneck_net.output)
+            # append bottleneck net at the end of embedding model.
+            x = model.output
+            for layer in bottleneck_net.layers:
+                x = layer(x)
+            model = tf.keras.Model(model.input, x)
 
         return model

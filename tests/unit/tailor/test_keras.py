@@ -147,6 +147,31 @@ def test_freeze(model, freeze):
             assert layer.trainable
 
 
+def test_freeze_given_bottleneck_model_and_freeze_is_true(simple_cnn_model):
+    def _create_bottleneck_model():
+        model = tf.keras.models.Sequential()
+        model.add(tf.keras.layers.InputLayer(input_shape=(128,)))
+        model.add(tf.keras.layers.Dense(64, activation='relu'))
+        return model
+
+    paddle_tailor = KerasTailor(
+        model=simple_cnn_model,
+        input_size=(28, 28, 1),
+        input_dtype='float32',
+    )
+
+    model = paddle_tailor.to_embedding_model(
+        freeze=True, layer_name='dropout_1', bottleneck_net=_create_bottleneck_model()
+    )
+    print(model.summary())
+    # assert bottleneck model is not freezed
+    for layer in model.layers:
+        if layer.name == 'dense_2':
+            assert layer.trainable == True
+        else:
+            assert layer.trainable == False
+
+
 @pytest.mark.parametrize(
     'model, layer_name, input_size, input_dtype, freeze_layers',
     [
@@ -208,3 +233,22 @@ def test_keras_model_parser():
 
     assert r[2]['output_features'] == 32
     assert r[2]['nb_params'] == 4128
+
+
+def test_attach_bottleneck_layer(vgg16_cnn_model):
+    def _create_bottleneck_model():
+        model = tf.keras.models.Sequential()
+        model.add(tf.keras.layers.InputLayer(input_shape=(4096,)))
+        model.add(tf.keras.layers.Dense(1024, activation='relu'))
+        model.add(tf.keras.layers.Dense(512, activation='softmax'))
+        return model
+
+    keras_tailor = KerasTailor(
+        model=vgg16_cnn_model,
+        input_size=(224, 224, 3),
+        input_dtype='float32',
+    )
+    tailed_model = keras_tailor.to_embedding_model(
+        layer_name='fc1', freeze=False, bottleneck_net=_create_bottleneck_model()
+    )
+    assert list(tailed_model.output.shape) == ([None, 512])

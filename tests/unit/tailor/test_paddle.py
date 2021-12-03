@@ -370,6 +370,5 @@ def test_attach_bottleneck_layer(vgg16_cnn_model):
     tailed_model = paddle_tailor.to_embedding_model(
         layer_name='linear_36', freeze=False, bottleneck_net=_BottleneckModel()
     )
-    print(tailed_model)
     out = tailed_model(paddle.rand((1, 3, 224, 224)))
     assert out.shape == [1, 512]
