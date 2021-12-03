@@ -39,27 +39,21 @@ def test_save_best_only(pytorch_model: BaseTuner, tmpdir):
 
 def test_mode_min(tmpdir):
 
-    checkpoint  = ModelCheckpoint(
-        save_dir=tmpdir, save_best_only=True, mode='min'
-    )
+    checkpoint = ModelCheckpoint(save_dir=tmpdir, save_best_only=True, mode='min')
     assert checkpoint.get_monitor_op() == np.less
     assert checkpoint.get_best() == np.Inf
 
 
 def test_mode_max(tmpdir):
 
-    checkpoint = ModelCheckpoint(
-        save_dir=tmpdir, save_best_only=True, mode='max'
-    )
+    checkpoint = ModelCheckpoint(save_dir=tmpdir, save_best_only=True, mode='max')
     assert checkpoint.get_monitor_op() == np.greater
     assert checkpoint.get_best() == -np.Inf
 
 
 def test_mode_auto_min(tmpdir):
 
-    checkpoint = ModelCheckpoint(
-        save_dir=tmpdir, save_best_only=True, mode='auto'
-    )
+    checkpoint = ModelCheckpoint(save_dir=tmpdir, save_best_only=True, mode='auto')
     assert checkpoint.get_monitor_op() == np.less
     assert checkpoint.get_best() == np.Inf
 
