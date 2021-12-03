@@ -32,10 +32,10 @@ def test_simple_sequential_model(tmpdir, params, loss):
         batch_size=params['batch_size'],
         num_items_per_class=params['num_items_per_class'],
     )
-    pt.save(model_path)
+    pt.save(path=model_path)
 
     # load the checkpoint and ensure the dim
-    user_model.set_state_dict(paddle.load(model_path))
+    user_model.set_state_dict(paddle.load(model_path)['state_dict'])
     user_model.eval()
     inputs = paddle.to_tensor(
         np.random.random(
