@@ -167,9 +167,9 @@ def test_freeze(model, layer_name, input_size, input_dtype, freeze):
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = paddle_tailor.to_embedding_model(freeze=freeze, output_dim=2)
+    model = paddle_tailor.to_embedding_model(freeze=freeze)
     if freeze:
-        assert len(set(param.trainable for param in model.parameters())) == 2
+        assert set(param.trainable for param in model.parameters()) == {False}
     else:
         assert set(param.trainable for param in model.parameters()) == {True}
 
@@ -199,9 +199,7 @@ def test_freeze_given_freeze_layers(
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = pytorch_tailor.to_embedding_model(
-        freeze=True, output_dim=2, freeze_layers=freeze_layers
-    )
+    model = pytorch_tailor.to_embedding_model(freeze=freeze_layers)
     for layer, param in zip(pytorch_tailor.embedding_layers, model.parameters()):
         layer_name = layer['name']
         if layer_name in freeze_layers:
