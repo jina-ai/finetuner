@@ -12,4 +12,5 @@ class TunerState:
     num_batches_val: int = 0
 
     batch_index: int = 0
-    current_loss: float = 0.0
+    train_loss: float = 0.0
+    val_loss: float = 0.0

@@ -77,7 +77,7 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
                 zip(grads, self._embed_model.trainable_weights)
             )
 
-            self.state.current_loss = loss.numpy()
+            self.state.train_loss = loss.numpy()
             self._trigger_callbacks('on_train_batch_end')
 
         data.on_epoch_end()  # To re-create batches
@@ -92,7 +92,7 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
             embeddings = self._embed_model(inputs)
             loss = self._loss(embeddings, labels)
 
-            self.state.current_loss = loss.numpy()
+            self.state.val_loss = loss.numpy()
             self._trigger_callbacks('on_val_batch_end')
 
         data.on_epoch_end()  # To re-create batches

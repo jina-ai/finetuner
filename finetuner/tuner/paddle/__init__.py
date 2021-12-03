@@ -96,7 +96,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
             embeddings = self.embed_model(inputs)
             loss = self._loss(embeddings, labels)
 
-            self.state.current_loss = loss.item()
+            self.state.val_loss = loss.item()
             self._trigger_callbacks('on_val_batch_end')
 
     def _train(self, data: DataLoader):
@@ -118,7 +118,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
             loss.backward()
             self._optimizer.step()
 
-            self.state.current_loss = loss.item()
+            self.state.train_loss = loss.item()
 
             self._trigger_callbacks('on_train_batch_end')
 

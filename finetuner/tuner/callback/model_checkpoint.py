@@ -1,7 +1,9 @@
 import os
 from typing import TYPE_CHECKING, Optional
+
 import numpy as np
 from jina.logging.logger import JinaLogger
+
 from finetuner.helper import get_framework
 from .base import BaseCallback
 
@@ -83,7 +85,7 @@ class ModelCheckpointCallback(BaseCallback):
     def get_best(self):
         return self.__best
 
-    def on_train_epoch_end(self, tuner: 'BaseTuner'):
+    def on_epoch_end(self, tuner: 'BaseTuner'):
         """
         Called at the end of the training epoch.
         """
@@ -99,7 +101,10 @@ class ModelCheckpointCallback(BaseCallback):
 
     def _save_model(self, tuner):
         if self.__save_best_only:
-            current = tuner.state.current_loss
+            if self.__monitor == 'val_loss':
+                current = tuner.state.val_loss
+            else:
+                current = tuner.state.train_loss
             if current is None:
                 self.__logger.warning(
                     'Can save best model only with %s available, ' 'skipping.',
