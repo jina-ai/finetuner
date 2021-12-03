@@ -211,7 +211,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
         self._trigger_callbacks('on_fit_end')
 
-    def save(self, epoch, best, monitor, *args, **kwargs):
+    def save(self, epoch=0, best=False, monitor="train_loss", *args, **kwargs):
         """Save the embedding model.
 
         You need to pass the path where to save the model in either ``args`` or

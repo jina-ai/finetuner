@@ -32,10 +32,10 @@ def test_simple_sequential_model(tmpdir, params, loss):
         batch_size=params['batch_size'],
         num_items_per_class=params['num_items_per_class'],
     )
-    pt.save(model_path)
+    pt.save(f=model_path)
 
     # load the checkpoint and ensure the dim
-    user_model.load_state_dict(torch.load(model_path))
+    user_model.load_state_dict(torch.load(model_path)['state_dict'])
     user_model.eval()
     inputs = torch.from_numpy(
         np.random.random(
