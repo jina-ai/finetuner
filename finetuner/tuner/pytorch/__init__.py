@@ -101,7 +101,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 embeddings = self.embed_model(inputs)
                 loss = self._loss(embeddings, labels)
 
-            self.state.current_loss = loss.item()
+            self.state.val_loss = loss.item()
             self._trigger_callbacks('on_val_batch_end')
 
     def _train(self, data: DataLoader):
@@ -128,10 +128,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
             loss.backward()
             self._optimizer.step()
 
-            if self._scheduler_step == 'batch' and self._scheduler is not None:
-                self._scheduler.step()
-
-            self.state.current_loss = loss.item()
+            self.state.train_loss = loss.item()
 
             self._trigger_callbacks('on_train_batch_end')
 
