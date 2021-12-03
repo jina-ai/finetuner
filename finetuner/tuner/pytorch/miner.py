@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Optional, Tuple
+from typing import Callable, Optional, Tuple
 from numpy.lib.function_base import diff
 
 import torch
@@ -95,7 +95,7 @@ class TorchStrategicMiningHelper:
 
     def _get_per_row_min(
         self, dist_mat: torch.Tensor, semihard_tsh: Optional[torch.Tensor] = None
-    ):
+    ) -> Tuple[Tuple[torch.Tensor, torch.Tensor], torch.Tensor]:
 
         """Given a matrix, this function gets the min value of each valid row and
         their respective column indices
@@ -145,7 +145,7 @@ class TorchStrategicMiningHelper:
             return (torch.empty(()), torch.empty((), dtype=torch.bool)), torch.empty(
                 (), dtype=torch.bool
             )
-
+        # Mask for semihard case
         if semihard_tsh is not None:
             dist_mat[dist_mat >= semihard_tsh] = 0
 
@@ -153,40 +153,84 @@ class TorchStrategicMiningHelper:
         non_zero_rows = torch.all(dist_mat != 0, dim=1)
         return torch.max(dist_mat, dim=1, keepdim=True), non_zero_rows
 
-    def _update_dist_mat(self, dist_mat, indices):
+    def _update_dist_mat(
+        self, dist_mat: torch.Tensor, indices: torch.Tensor
+    ) -> torch.Tensor:
+        """Given a distance matrix and indices for row-wise min or max values,
+         this func removes all but the extreme values from the matrix
+
+        :param dist_mat: Pair-wise distance matrix
+        :param indices: Row-wise indices of min or max values
+
+        :return: The distance matrix, where only the min or max values
+          remain in each row
+        """
         keep_mask = torch.zeros_like(dist_mat)
         keep_mask[range(keep_mask.shape[0]), indices.squeeze()] = 1
         # Mask and return the distance matrix
         return dist_mat * keep_mask
 
-    def _get_mine_func(self, strategy: str):
+    def _get_mine_func(self, strategy: str) -> Callable:
+        """Given a strategy, this function gets the correct extractor for
+        min or max distance values
+
+        :param strategy: Name of the mining strategy
+
+        :return: Function that either gets the row-wise min or max
+        """
         if strategy in ['hard', 'semihard']:
             return self._get_per_row_max
         else:
             return self._get_per_row_min
 
     def _update_pos_mat(self, match_mat, dist_mat, pos_strategy, semihard_tsh=None):
-        # Get all d(a, p)
-        d_a_p = match_mat * dist_mat
+        """Function that wraps the update of the postitive pair distancs to realize
+        mining strategy.
 
+        :param match_mat: Matrix that indicates the values in distance matrix, that
+          belong to positive pairs
+        :param dist_mat: Matrix with pair-wise encoding distances
+        :param strategy: Mining strategy for positive samples
+        :param semihard_tsh: Row-wise threshold values incorporated during semihard
+          mining
+
+        :return: Updated distance matrix so it can be used to realize mining strategy,
+          and the row-wise min or max distances, depending on mining strategy
+        """
+        # Get all positive distances d(a, p)
+        d_a_p = match_mat * dist_mat
         mine_func = self._get_mine_func(pos_strategy)
         (pos_dists, min_max_indices), invalid_row_mask = mine_func(d_a_p, semihard_tsh)
+        # Remove rows where semihard thresholding has created unusable values
         match_mat[invalid_row_mask] = 0
         return self._update_dist_mat(match_mat, min_max_indices), pos_dists
 
     def _update_neg_mat(self, diff_mat, dist_mat, neg_strategy, semihard_tsh=None):
-        # Get all d(a, n)
+        # Get all negative distances d(a, n)
         d_a_n = diff_mat * dist_mat
 
         # Neg. needs to be handled in opposite fashion than pos. strategy
         neg_strategy = 'easy' if neg_strategy in ('hard', 'semihard') else 'hard'
         mine_func = self._get_mine_func(neg_strategy)
         (neg_dists, min_max_indices), invalid_row_mask = mine_func(d_a_n, semihard_tsh)
+        # Remove rows where semihard thresholding has created unusable values
         diff_mat[invalid_row_mask] = 0
         return self._update_dist_mat(diff_mat, min_max_indices), neg_dists
 
     def apply_strategy(self, match_mat, diff_mat, dist_mat):
+        """Wraps the application of mining strategies to update the matrices
+        with positive and negative matches depending, using the distance
+        matrix for filtering
 
+        :param match_mat: Matrix indicating matches between positive embeddings
+        :param diff_mat: Matrix indicating matches between negative embeddings
+        :param dist_mat: Matrix with pair-wise embedding distances
+
+        :return match_mat: Updated matrix of positve matches after applying
+          strategy
+        :return diff_mat: Updated matrix of negative matches after applying
+          strategy
+        """
         if self.pos_strategy == 'semihard' and self.neg_strategy != 'all':
 
             diff_mat, neg_dists = self._update_neg_mat(
@@ -212,7 +256,6 @@ class TorchStrategicMiningHelper:
                 diff_mat, _ = self._update_neg_mat(
                     diff_mat, dist_mat, self.neg_strategy
                 )
-
         return match_mat, diff_mat
 
 
