@@ -11,7 +11,7 @@ from finetuner.tuner.paddle import PaddleTuner
 from finetuner.tuner.state import TunerState
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope='module')
 def paddle_model() -> BaseTuner:
     embed_model = paddle.nn.Sequential(
         paddle.nn.Flatten(),
@@ -39,7 +39,7 @@ def test_paddle_model(paddle_model: BaseTuner, tmpdir):
 
 
 def test_epoch_end(paddle_model: BaseTuner, tmpdir):
-    checkpoint = ModelCheckpointCallback(filepath=tmpdir, monitor="loss")
+    checkpoint = ModelCheckpointCallback(filepath=tmpdir, monitor='loss')
 
     tuner = PaddleTuner(embed_model=paddle_model)
     tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
@@ -51,7 +51,7 @@ def test_epoch_end(paddle_model: BaseTuner, tmpdir):
 
 
 def test_val_end(paddle_model: BaseTuner, tmpdir):
-    checkpoint = ModelCheckpointCallback(filepath=tmpdir, monitor="val_loss")
+    checkpoint = ModelCheckpointCallback(filepath=tmpdir, monitor='val_loss')
 
     tuner = PaddleTuner(embed_model=paddle_model)
     tuner.state = TunerState(epoch=2, batch_index=2, val_loss=1.1)

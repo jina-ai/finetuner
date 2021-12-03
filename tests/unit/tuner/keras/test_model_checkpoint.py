@@ -12,7 +12,7 @@ from finetuner.tuner.keras import KerasTuner
 from finetuner.tuner.state import TunerState
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope='module')
 def keras_model() -> BaseTuner:
     embed_model = tf.keras.Sequential(
         [
@@ -43,7 +43,7 @@ def test_keras_model(keras_model: BaseTuner, tmpdir):
 
 
 def test_epoch_end(keras_model: BaseTuner, tmpdir):
-    checkpoint = ModelCheckpointCallback(filepath=tmpdir, monitor="loss")
+    checkpoint = ModelCheckpointCallback(filepath=tmpdir, monitor='loss')
 
     tuner = KerasTuner(embed_model=keras_model)
     tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
