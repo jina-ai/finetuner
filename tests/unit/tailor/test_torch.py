@@ -319,8 +319,6 @@ def test_torch_lstm_model_parser():
     )
     r = pytorch_tailor.embedding_layers
     assert len(r) == 3
-    print(r[0])
-    print(r[1])
 
     # flat layer can be a nonparametric candidate
     assert r[0]['output_features'] == 64

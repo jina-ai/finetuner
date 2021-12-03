@@ -163,7 +163,6 @@ def test_freeze_given_bottleneck_model_and_freeze_is_true(simple_cnn_model):
     model = paddle_tailor.to_embedding_model(
         freeze=True, layer_name='dropout_1', bottleneck_net=_create_bottleneck_model()
     )
-    print(model.summary())
     # assert bottleneck model is not freezed
     for layer in model.layers:
         if layer.name == 'dense_2':
