@@ -59,9 +59,9 @@ def fit(
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
     layer_name: Optional[str] = None,
-    output_dim: Optional[int] = None,
-    freeze: bool = False,
-    freeze_layers: Optional[List[str]] = None,
+    freeze: Union[bool, List[str]] = False,
+    pooling: Optional[str] = None,
+    bottleneck_net: Optional['AnyDNN'] = None,
 ) -> 'AnyDNN':
     ...
 
@@ -114,9 +114,9 @@ def fit(
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
     layer_name: Optional[str] = None,
-    output_dim: Optional[int] = None,
-    freeze: bool = False,
-    freeze_layers: Optional[List[str]] = None,
+    freeze: Union[bool, List[str]] = False,
+    pooling: Optional[str] = None,
+    bottleneck_net: Optional['AnyDNN'] = None,
 ) -> 'AnyDNN':
     ...
 

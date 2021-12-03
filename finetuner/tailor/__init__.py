@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, TYPE_CHECKING, Type
+from typing import Optional, Tuple, TYPE_CHECKING, Type, Union, List
 
 from ..helper import get_framework
 
@@ -27,10 +27,11 @@ def _get_tailor_class(dnn_model: 'AnyDNN') -> Type['BaseTailor']:
 def to_embedding_model(
     model: 'AnyDNN',
     layer_name: Optional[str] = None,
-    output_dim: Optional[int] = None,
-    freeze: bool = False,
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
+    freeze: Union[bool, List[str]] = False,
+    pooling: Optional[str] = None,
+    bottleneck_net: Optional['AnyDNN'] = None,
     **kwargs
 ) -> 'AnyDNN':
     """Convert a general model from :py:attr:`.model` to an embedding model.
@@ -47,7 +48,10 @@ def to_embedding_model(
     ft = _get_tailor_class(model)
 
     return ft(model, input_size, input_dtype).to_embedding_model(
-        layer_name=layer_name, output_dim=output_dim, freeze=freeze
+        layer_name=layer_name,
+        pooling=pooling,
+        bottleneck_net=bottleneck_net,
+        freeze=freeze,
     )
 
 
