@@ -11,7 +11,7 @@ from finetuner.tuner.pytorch import PytorchTuner
 from finetuner.tuner.state import TunerState
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope='module')
 def pytorch_model() -> BaseTuner:
     embed_model = torch.nn.Sequential(
         torch.nn.Flatten(),
@@ -39,7 +39,7 @@ def test_pytorch_model(pytorch_model: BaseTuner, tmpdir):
 
 
 def test_epoch_end(pytorch_model: BaseTuner, tmpdir):
-    checkpoint = ModelCheckpointCallback(filepath=tmpdir, monitor="loss")
+    checkpoint = ModelCheckpointCallback(filepath=tmpdir, monitor='loss')
 
     tuner = PytorchTuner(embed_model=pytorch_model)
     tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
@@ -50,7 +50,7 @@ def test_epoch_end(pytorch_model: BaseTuner, tmpdir):
 
 
 def test_val_end(pytorch_model: BaseTuner, tmpdir):
-    checkpoint = ModelCheckpointCallback(filepath=tmpdir, monitor="val_loss")
+    checkpoint = ModelCheckpointCallback(filepath=tmpdir, monitor='val_loss')
 
     tuner = PytorchTuner(embed_model=pytorch_model)
     tuner.state = TunerState(epoch=2, batch_index=2, val_loss=1.1)
