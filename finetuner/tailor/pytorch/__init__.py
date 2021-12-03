@@ -131,7 +131,6 @@ class PytorchTailor(BaseTailor):
         self,
         layer_name: Optional[str] = None,
         freeze: Union[bool, List[str]] = False,
-        pooling: Optional[str] = None,
         bottleneck_net: Optional[nn.Module] = None,
     ) -> 'AnyDNN':
         """Convert a general model from :py:attr:`.model` to an embedding model.
@@ -140,7 +139,6 @@ class PytorchTailor(BaseTailor):
             will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
             To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
         :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.
-        :param pooling: apply pooling at the end of the :py:`attr`:`layer_name`. Options are `max`, `avg`, `gem`.
         :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.
         :return: Converted embedding model.
         """
