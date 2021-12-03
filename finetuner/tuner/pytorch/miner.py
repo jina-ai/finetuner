@@ -150,8 +150,8 @@ class TorchStrategicMiningHelper:
             dist_mat[dist_mat >= semihard_tsh] = 0
 
         # Get row mask for rows where thresholding caused max to be zero
-        non_zero_rows = torch.all(dist_mat != 0, dim=1)
-        return torch.max(dist_mat, dim=1, keepdim=True), non_zero_rows
+        all_zero_rows = torch.all(dist_mat == 0, dim=1)
+        return torch.max(dist_mat, dim=1, keepdim=True), all_zero_rows
 
     def _update_dist_mat(
         self, dist_mat: torch.Tensor, indices: torch.Tensor
@@ -326,8 +326,6 @@ class TripletEasyHardMiner(BaseClassMiner[torch.Tensor]):
         diffs = matches ^ 1
 
         matches.fill_diagonal_(0)
-        print(distances)
-        print(matches)
         matches, diffs = self.strategic_mining_helper.apply_strategy(
             matches, diffs, distances
         )
