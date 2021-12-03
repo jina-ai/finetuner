@@ -77,13 +77,8 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
     def _default_configure_optimizer(self, model: nn.Module) -> Optimizer:
         """Get the default Adam optimizer"""
-        optimizer = torch.optim.Adam(model.parameters(), lr=self._learning_rate_default)
+        optimizer = torch.optim.Adam(model.parameters(), lr=self._default_learning_rate)
         return optimizer
-
-    def _get_default_optimizer(self, learning_rate: float) -> Optimizer:
-        """Get the default optimizer (Adam), if none was provided by user."""
-
-        return torch.optim.Adam(self._embed_model.parameters(), lr=learning_rate)
 
     def _eval(self, data: DataLoader):
         """Evaluate the model on given labeled data"""

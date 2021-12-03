@@ -52,7 +52,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         configure_optimizer: Optional[
             Callable[[AnyDNN], Union[AnyOptimizer, Tuple[AnyOptimizer, AnyScheduler]]]
         ] = None,
-        learning_rate: float = 1e-3,
+        default_learning_rate: float = 1e-3,
         scheduler_step: str = 'batch',
         callbacks: Optional[List[BaseCallback]] = None,
         **kwargs,
@@ -66,7 +66,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
             optimizer and learning rate. The function should take one input - the
             embedding model, and return either just an optimizer or a tuple of an
             optimizer and a learning rate scheduler.
-        :param learning_rate: Learning rate for the default optimizer. If you
+        :param default_learning_rate: Learning rate for the default optimizer. If you
             provide a custom optimizer, this learning rate will not apply.
         :param scheduler_step: At which interval should the learning rate sheduler's
             step function be called. Valid options are "batch" and "epoch".
@@ -76,7 +76,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
         self._configure_optimizer = configure_optimizer
-        self._learning_rate_default = learning_rate
+        self._default_learning_rate = default_learning_rate
         self._scheduler_step = scheduler_step
         self._scheduler = None
 
@@ -106,6 +106,10 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
 
         return batch_sampler
 
+    @abc.abstractmethod
+    def _default_configure_optimizer(self, model: AnyDNN) -> AnyOptimizer:
+        """Get the default optimizer (Adam), if none was provided by user."""
+
     def _trigger_callbacks(self, method: str):
         """Trigger the specified method on all callbacks"""
         for callback in self._callbacks:
@@ -115,10 +119,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
     def embed_model(self) -> AnyDNN:
         """Get the base model of this object."""
         return self._embed_model
-
-    @abc.abstractmethod
-    def _get_default_optimizer(self, learning_rate: float) -> AnyOptimizer:
-        """Get the default optimizer (Adam), if none was provided by user."""
 
     @abc.abstractmethod
     def fit(
