@@ -4,7 +4,7 @@ import pytest
 import paddle
 
 import finetuner
-from finetuner.tuner.callback import ModelCheckpointCallback
+from finetuner.tuner.callback import ModelCheckpoint
 from finetuner.tuner.base import BaseTuner
 from finetuner.toydata import generate_fashion
 from finetuner.tuner.paddle import PaddleTuner
@@ -31,7 +31,7 @@ def test_paddle_model(paddle_model: BaseTuner, tmpdir):
         epochs=1,
         train_data=generate_fashion(num_total=1000),
         eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[ModelCheckpointCallback(filepath=tmpdir)],
+        callbacks=[ModelCheckpoint(filepath=tmpdir)],
     )
 
     assert os.listdir(tmpdir) == ['saved_model_epoch_01']
@@ -39,7 +39,7 @@ def test_paddle_model(paddle_model: BaseTuner, tmpdir):
 
 
 def test_epoch_end(paddle_model: BaseTuner, tmpdir):
-    checkpoint = ModelCheckpointCallback(filepath=tmpdir, monitor='loss')
+    checkpoint = ModelCheckpoint(filepath=tmpdir, monitor='loss')
 
     tuner = PaddleTuner(embed_model=paddle_model)
     tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
@@ -51,7 +51,7 @@ def test_epoch_end(paddle_model: BaseTuner, tmpdir):
 
 
 def test_val_end(paddle_model: BaseTuner, tmpdir):
-    checkpoint = ModelCheckpointCallback(filepath=tmpdir, monitor='val_loss')
+    checkpoint = ModelCheckpoint(filepath=tmpdir, monitor='val_loss')
 
     tuner = PaddleTuner(embed_model=paddle_model)
     tuner.state = TunerState(epoch=2, batch_index=2, val_loss=1.1)
