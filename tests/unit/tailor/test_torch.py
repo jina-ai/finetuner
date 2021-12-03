@@ -239,10 +239,36 @@ def test_freeze(model, layer_name, input_size, input_dtype, freeze):
         input_dtype=input_dtype,
     )
     model = pytorch_tailor.to_embedding_model(freeze=freeze)
-    if freeze:
-        assert len(set(param.requires_grad for param in model.parameters())) == 2
+    if freeze:  # all freezed
+        assert set(param.requires_grad for param in model.parameters()) == {False}
     else:
         assert set(param.requires_grad for param in model.parameters()) == {True}
+
+
+def test_freeze_given_bottleneck_model(simple_cnn_model):
+    class _BottleneckModel(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self._linear_should_not_freeze = nn.Linear(in_features=128, out_features=64)
+
+        def forward(self, input_):
+            return self._linear(input_)
+
+    pytorch_tailor = PytorchTailor(
+        model=simple_cnn_model,
+        input_size=(1, 28, 28),
+        input_dtype='float32',
+    )
+
+    model = pytorch_tailor.to_embedding_model(
+        freeze=True, layer_name='linear_8', bottleneck_net=_BottleneckModel()
+    )
+    # assert bottleneck model is not freezed
+    for name, param in model.named_parameters():
+        if '_linear_should_not_freeze' in name:
+            assert param.requires_grad == True
+        else:
+            assert param.requires_grad == False
 
 
 @pytest.mark.parametrize(
