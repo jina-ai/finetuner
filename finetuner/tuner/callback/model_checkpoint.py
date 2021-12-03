@@ -122,7 +122,7 @@ class ModelCheckpoint(BaseCallback):
         Saves the model depending on its framework.
         """
         if get_framework(tuner.embed_model) == 'keras':
-            tuner.save(save_dir=self._get_file_path(tuner))
+            tuner.save(filepath=self._get_file_path(tuner))
         elif get_framework(tuner.embed_model) == 'torch':
             tuner.save(f=os.path.join(self._get_file_path(tuner)))
         elif get_framework(tuner.embed_model) == 'paddle':
