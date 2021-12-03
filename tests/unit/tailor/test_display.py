@@ -281,11 +281,12 @@ def test_display_mlp_original(framework, capsys):
     assert _display.strip() in capsys.readouterr().out.strip()
 
 
-@pytest.mark.parametrize('framework', ('paddle', 'pytorch', 'keras'))
+@pytest.mark.parametrize('framework', ('pytorch', 'paddle', 'keras'))
 def test_display_lstm_original(framework, capsys):
     model = get_lstm(framework)
     _display = get_lstm_display(framework)
     display(model, input_size=(100,), input_dtype='int64')
+    print(_display.strip())  # Add intentionally to allow capsys capture the display
     assert _display.strip() in capsys.readouterr().out.strip()
 
 
