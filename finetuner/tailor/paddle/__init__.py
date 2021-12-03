@@ -198,10 +198,11 @@ class PaddleTailor(BaseTailor):
             if _relative_idx_to_embedding_layer is not None:
                 _relative_idx_to_embedding_layer += 1
 
-        model = nn.Sequential(
-            model,
-            bottleneck_net,
-        )
+        if bottleneck_net:
+            model = nn.Sequential(
+                model,
+                bottleneck_net,
+            )
 
         return model
 
