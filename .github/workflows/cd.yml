@@ -20,6 +20,24 @@ jobs:
           token: ${{ secrets.JINA_DEV_BOT }}
         env:
           release_token: ${{ secrets.FINETUNER_RELEASE_TOKEN }}
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Check if there were changes to docs
+        id: changed-files-docs
+        uses: tj-actions/changed-files@v10
+        with:
+          files: |
+            docs/**
+      - if: steps.changed-files-docs.outputs.any_changed == 'true'
+        name: Deploy Jina Docsbot
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          repo: jina-ai/cloud-ops
+          workflow: Docsbot Deployment Pipeline
+          inputs: '{ "environment": "prod", "project": "FINETUNER", "branch": "main" }'
+          ref: "master"
+          token: ${{ secrets.JINA_DEV_BOT }}
 
 
   prep-testbed:
