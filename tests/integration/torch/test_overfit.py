@@ -1,10 +1,14 @@
 import pytest
 import torch
+import random
 from scipy.spatial.distance import pdist, squareform
 
 from finetuner.tuner.base import BaseLoss
 from finetuner.tuner.pytorch import PytorchTuner
 from finetuner.tuner.pytorch.losses import SiameseLoss, TripletLoss
+
+torch.manual_seed(42)
+random.seed(42)
 
 
 def check_distances(n_cls, vec_embedings, distance):
