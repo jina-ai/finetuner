@@ -104,6 +104,12 @@ class KerasTailor(BaseTailor):
 
         index = _embed_layer['layer_idx']
 
+        if _embed_layer != self._model.layers[-1]:
+            out = self._model.layers[index].output
+            model = tf.keras.Model(self._model.input, out)
+        else:
+            model = self._model
+
         if isinstance(freeze, list):
             for layer_name, layer in zip(_all_embed_layers, model.layers):
                 if layer_name in freeze:
