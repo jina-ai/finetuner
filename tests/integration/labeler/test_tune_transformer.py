@@ -122,8 +122,6 @@ def test_all_frameworks(loss, tmpdir):
                 'data': [],
                 'parameters': {
                     'model_path': model_path,
-                    'f': model_path,
-                    'path': model_path,
                 },
             },
         )
