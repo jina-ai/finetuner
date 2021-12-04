@@ -211,7 +211,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
         self._trigger_callbacks('on_fit_end')
 
-    def save(self, epoch=0, best=False, monitor="train_loss", *args, **kwargs):
+    def save(self, *args, **kwargs):
         """Save the embedding model.
 
         You need to pass the path where to save the model in either ``args`` or
@@ -222,19 +222,19 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         """
         if hasattr(self, '_optimizer'):
             state = {
-                'epoch': epoch,
+                'epoch': kwargs.pop('epoch', 0),
                 'state_dict': self.embed_model.state_dict(),
-                'best': best,
+                'best': kwargs.pop('best', False),
                 'optimizer': self._optimizer.state_dict(),
-                'monitor': monitor,
+                'monitor': kwargs.pop('monitor', 'train_loss'),
             }
         else:
             state = {
-                'epoch': epoch,
+                'epoch': kwargs.pop('epoch', 0),
                 'state_dict': self.embed_model.state_dict(),
-                'best': best,
-                'optimizer': 'opt',
-                'monitor': monitor,
+                'best': kwargs.pop('best', False),
+                'optimizer': kwargs.pop('optimizer', 'None'),
+                'monitor': kwargs.pop('monitor', 'train_loss'),
             }
 
         torch.save(state, *args, **kwargs)
