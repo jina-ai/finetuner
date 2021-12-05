@@ -3,6 +3,8 @@ from typing import Optional, Union, TYPE_CHECKING
 import tensorflow as tf
 from keras.engine.data_adapter import KerasSequenceAdapter
 from tensorflow.keras.optimizers import Optimizer
+from tensorflow.keras.optimizers.schedules import LearningRateSchedule
+from tensorflow.keras.layers import Layer
 
 from . import losses
 from .data import KerasDataSequence
@@ -15,7 +17,9 @@ if TYPE_CHECKING:
     from ...helper import DocumentSequence, PreprocFnType, CollateFnType
 
 
-class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimizer]):
+class KerasTuner(
+    BaseTuner[Layer, KerasSequenceAdapter, Optimizer, LearningRateSchedule]
+):
     def _get_loss(self, loss: Union[BaseLoss, str]) -> BaseLoss:
         """Get the loss layer."""
         if isinstance(loss, str):
@@ -56,16 +60,22 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
         adapter = KerasSequenceAdapter(sequence)
         return adapter
 
-    def _get_default_optimizer(self, learning_rate: float) -> Optimizer:
-        """Get the default optimizer (Adam), if none was provided by user."""
-
-        return tf.keras.optimizers.Adam(learning_rate=learning_rate)
+    def _default_configure_optimizer(self, model: Layer) -> Optimizer:
+        """Get the default Adam optimizer"""
+        optimizer = tf.keras.optimizers.Adam(learning_rate=self._default_learning_rate)
+        return optimizer
 
     def _train(self, data: KerasSequenceAdapter):
         """Train the model on given labeled data"""
 
         for idx, (inputs, labels) in enumerate(data.get_dataset()):
+
+            # Set state variables
             self.state.batch_index = idx
+            self.state.learning_rates['learning_rate'] = self._optimizer._decayed_lr(
+                tf.float32
+            ).numpy()
+
             self._trigger_callbacks('on_train_batch_begin')
 
             with tf.GradientTape() as tape:
@@ -104,8 +114,6 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        optimizer: Optional[Optimizer] = None,
-        learning_rate: float = 1e-3,
         device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
@@ -124,11 +132,6 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
         :param batch_size: The batch size to use for training and evaluation
         :param num_items_per_class: Number of items from a single class to include in
             the batch. Only relevant for class datasets
-        :param optimizer: The optimizer to use for training. If none is passed, an
-            Adam optimizer is used by default, with learning rate specified by the
-            ``learning_rate`` parameter.
-        :param learning_rate: Learning rate for the default optimizer. If you
-            provide a custom optimizer, this learning rate will not apply.
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
         """
@@ -152,8 +155,15 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
                 collate_fn=collate_fn,
             )
 
-        # Create optimizer
-        self._optimizer = optimizer or self._get_default_optimizer(learning_rate)
+        # Create optimizer (and scheduler)
+        if self._configure_optimizer:
+            res = self._configure_optimizer(self._embed_model)
+            if isinstance(res, tuple):
+                self._optimizer, self._scheduler = res
+            else:
+                self._optimizer = res
+        else:
+            self._optimizer = self._default_configure_optimizer(self._embed_model)
 
         # Set state
         self.state = TunerState(num_epochs=epochs)

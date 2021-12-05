@@ -66,10 +66,19 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
             optimizer and learning rate. The function should take one input - the
             embedding model, and return either just an optimizer or a tuple of an
             optimizer and a learning rate scheduler.
+
+            For Keras, you should provide the learning rate scheduler directly to
+            the optimizer using the `learning_rate` argument in its ``__init__``
+            function - and this should be an instance of a subclass of
+            ``tf.keras.optimizer.schedulers.LearningRateScheduler`` - and not an
+            instance of the callback (``tf.keras.callbacks.LearningRateScheduler``).
         :param default_learning_rate: Learning rate for the default optimizer. If you
             provide a custom optimizer, this learning rate will not apply.
         :param scheduler_step: At which interval should the learning rate sheduler's
             step function be called. Valid options are "batch" and "epoch".
+
+            For Keras, this option has no effect, as ``LearningRateScheduler`` instances
+            are called by the optimizer on each step automatically.
         :param callbacks: A list of callbacks. The progress bar callback
             will be pre-prended to this list.
         """
