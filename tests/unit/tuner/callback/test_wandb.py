@@ -76,5 +76,5 @@ def test_wandb_logger_log_val(mocked_logger):
     assert logger._train_step == 0  # validation batch does not increase train step
 
     logger.on_val_end(tuner)
-    assert logger.wandb_logger.log_data == {'val/loss': 1.0, 'epoch': 1}
+    assert logger.wandb_logger.log_data == {'val/loss': 1.0}
     assert logger.wandb_logger.log_step == 0
