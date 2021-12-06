@@ -5,7 +5,7 @@ import torch
 import copy
 
 import finetuner
-from finetuner.tuner.callback import TrainingModelCheckpoint, BestModelCheckpoint
+from finetuner.tuner.callback import TrainingCheckpoint, BestModelCheckpoint
 from finetuner.tuner.base import BaseTuner
 from finetuner.toydata import generate_fashion
 from finetuner.tuner.pytorch import PytorchTuner
@@ -33,14 +33,14 @@ def test_pytorch_model(pytorch_model: BaseTuner, tmpdir):
         epochs=1,
         train_data=generate_fashion(num_total=1000),
         eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[TrainingModelCheckpoint(save_dir=tmpdir)],
+        callbacks=[TrainingCheckpoint(save_dir=tmpdir)],
     )
 
     assert os.listdir(tmpdir) == ['saved_model_epoch_01']
 
 
 def test_epoch_end(pytorch_model: BaseTuner, tmpdir):
-    checkpoint = TrainingModelCheckpoint(save_dir=tmpdir, monitor='loss')
+    checkpoint = TrainingCheckpoint(save_dir=tmpdir)
 
     tuner = PytorchTuner(embed_model=pytorch_model)
     tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
@@ -49,16 +49,6 @@ def test_epoch_end(pytorch_model: BaseTuner, tmpdir):
 
     assert os.listdir(tmpdir) == ['saved_model_epoch_01']
 
-
-def test_val_end(pytorch_model: BaseTuner, tmpdir):
-    checkpoint = TrainingModelCheckpoint(save_dir=tmpdir, monitor='val_loss')
-
-    tuner = PytorchTuner(embed_model=pytorch_model)
-    tuner.state = TunerState(epoch=2, batch_index=2, val_loss=1.1)
-
-    checkpoint.on_val_end(tuner)
-
-    assert os.listdir(tmpdir) == ['saved_model_epoch_03']
 
 
 def test_load_model(pytorch_model: BaseTuner, tmpdir):
@@ -70,7 +60,7 @@ def test_load_model(pytorch_model: BaseTuner, tmpdir):
         epochs=1,
         train_data=generate_fashion(num_total=1000),
         eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[TrainingModelCheckpoint(save_dir=tmpdir)],
+        callbacks=[TrainingCheckpoint(save_dir=tmpdir)],
     )
 
     checkpoint = torch.load(os.path.join(tmpdir, 'saved_model_epoch_01'))

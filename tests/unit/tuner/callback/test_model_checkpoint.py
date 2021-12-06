@@ -6,7 +6,7 @@ import torch
 import numpy as np
 
 import finetuner
-from finetuner.tuner.callback import BestModelCheckpoint, TrainingModelCheckpoint
+from finetuner.tuner.callback import BestModelCheckpoint, TrainingCheckpoint
 from finetuner.tuner.base import BaseTuner
 from finetuner.toydata import generate_fashion
 
@@ -50,7 +50,7 @@ def test_save_best_only(pytorch_model: BaseTuner, tmpdir):
 )
 def test_mode(mode: str, monitor: str, operation, best, tmpdir):
 
-    checkpoint = TrainingModelCheckpoint(save_dir=tmpdir, mode=mode, monitor=monitor)
+    checkpoint = BestModelCheckpoint(save_dir=tmpdir, mode=mode, monitor=monitor)
     assert checkpoint._monitor_op == operation
     assert checkpoint._best == best
 
@@ -62,7 +62,7 @@ def test_mandatory_save_dir(pytorch_model: BaseTuner):
             epochs=1,
             train_data=generate_fashion(num_total=1000),
             eval_data=generate_fashion(is_testset=True, num_total=200),
-            callbacks=[TrainingModelCheckpoint()],
+            callbacks=[TrainingCheckpoint()],
         )
 
 
@@ -75,7 +75,7 @@ def test_both_checkpoints(pytorch_model: BaseTuner, tmpdir):
         eval_data=generate_fashion(is_testset=True, num_total=200),
         callbacks=[
             BestModelCheckpoint(save_dir=tmpdir),
-            TrainingModelCheckpoint(save_dir=tmpdir),
+            TrainingCheckpoint(save_dir=tmpdir),
         ],
     )
 
