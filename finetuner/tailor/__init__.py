@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, TYPE_CHECKING, Type
+from typing import Optional, Tuple, TYPE_CHECKING, Type, Union, List
 
 from ..helper import get_framework
 
@@ -27,10 +27,10 @@ def _get_tailor_class(dnn_model: 'AnyDNN') -> Type['BaseTailor']:
 def to_embedding_model(
     model: 'AnyDNN',
     layer_name: Optional[str] = None,
-    output_dim: Optional[int] = None,
-    freeze: bool = False,
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
+    freeze: Union[bool, List[str]] = False,
+    bottleneck_net: Optional['AnyDNN'] = None,
     **kwargs
 ) -> 'AnyDNN':
     """Convert a general model from :py:attr:`.model` to an embedding model.
@@ -39,15 +39,17 @@ def to_embedding_model(
     :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
         will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
         To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
-    :param output_dim: the dimensionality of the embedding output.
-    :param freeze: if set, then freeze all weights of the original model.
     :param input_size: The input size of the DNN model.
     :param input_dtype: The input data type of the DNN model.
+    :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.
+    :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.
     """
     ft = _get_tailor_class(model)
 
     return ft(model, input_size, input_dtype).to_embedding_model(
-        layer_name=layer_name, output_dim=output_dim, freeze=freeze
+        layer_name=layer_name,
+        bottleneck_net=bottleneck_net,
+        freeze=freeze,
     )
 
 

@@ -119,13 +119,12 @@ const app = new Vue({
             doc.matches.forEach(function (match) {
                 match.tags.finetuner = {}
                 if (match.tags.finetuner_label) {
-                    match.tags.finetuner.label = app.advanced_config.pos_value.value
+                    match.tags.finetuner_label = app.advanced_config.pos_value.value
                     app.progress_stats.positive.value++
                 } else {
-                    match.tags.finetuner.label = app.advanced_config.neg_value.value
+                    match.tags.finetuner_label = app.advanced_config.neg_value.value
                     app.progress_stats.negative.value++
                 }
-                delete match.tags.finetuner_label
             });
             app.progress_stats.total.value++
             app.fit_doc(doc)

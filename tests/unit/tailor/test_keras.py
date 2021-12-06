@@ -97,7 +97,7 @@ def test_trim_fail_given_unexpected_layer_name(model, layer_name):
     'model, layer_name, expected_output_shape',
     [
         ('dense_model', 'dense_3', (None, 10)),
-        ('simple_cnn_model', 'dense', (None, 128)),
+        ('simple_cnn_model', 'dropout_1', (None, 128)),
         ('vgg16_cnn_model', 'fc2', (None, 4096)),
         ('stacked_lstm', 'dense', (None, 256)),
         ('bidirectional_lstm', 'dense', (None, 32)),
@@ -124,42 +124,6 @@ def test_weights_preserved_given_pretrained_model(vgg16_cnn_model):
 
 
 @pytest.mark.parametrize(
-    'model, layer_name, output_dim, expected_output_shape',
-    [
-        ('dense_model', 'dense_3', None, (None, 10)),
-        ('simple_cnn_model', 'dense', None, (None, 128)),
-        ('vgg16_cnn_model', 'fc2', None, (None, 4096)),
-        ('stacked_lstm', 'dense', None, (None, 256)),
-        ('bidirectional_lstm', 'dense', None, (None, 32)),
-        # no layer name no output dim
-        ('dense_model', None, None, (None, 10)),
-        ('simple_cnn_model', None, None, (None, 10)),
-        ('vgg16_cnn_model', None, None, (None, 1000)),
-        ('stacked_lstm', None, None, (None, 5)),
-        ('bidirectional_lstm', None, None, (None, 32)),
-        # with output dim
-        ('dense_model', 'dense_3', 16, (None, 16)),
-        ('simple_cnn_model', 'dense', 1024, (None, 1024)),
-        ('vgg16_cnn_model', 'fc2', 1024, (None, 1024)),
-        ('stacked_lstm', 'dense', 128, (None, 128)),
-        ('bidirectional_lstm', 'dense', 256, (None, 256)),
-    ],
-    indirect=['model'],
-)
-def test_attach_dense_layer(model, layer_name, output_dim, expected_output_shape):
-    keras_tailor = KerasTailor(model)
-    model = keras_tailor.to_embedding_model(
-        freeze=True, layer_name=layer_name, output_dim=output_dim
-    )
-    num_layers_before = len(model.layers)
-    if output_dim:
-        assert len(model.layers) == num_layers_before
-        assert isinstance(model.layers[-1], tf.keras.layers.Dense)
-    assert model.layers[-1].trainable is True
-    assert model.output_shape == expected_output_shape
-
-
-@pytest.mark.parametrize(
     'model',
     [
         'dense_model',
@@ -178,12 +142,33 @@ def test_freeze(model, freeze):
     model = keras_tailor.to_embedding_model(freeze=freeze)
     for idx, layer in enumerate(model.layers):
         if freeze:
-            if idx == len(model.layers) - 1:
-                assert layer.trainable
-            else:
-                assert not layer.trainable
+            assert not layer.trainable
         else:
             assert layer.trainable
+
+
+def test_freeze_given_bottleneck_model_and_freeze_is_true(simple_cnn_model):
+    def _create_bottleneck_model():
+        model = tf.keras.models.Sequential()
+        model.add(tf.keras.layers.InputLayer(input_shape=(128,)))
+        model.add(tf.keras.layers.Dense(64, activation='relu'))
+        return model
+
+    paddle_tailor = KerasTailor(
+        model=simple_cnn_model,
+        input_size=(28, 28, 1),
+        input_dtype='float32',
+    )
+
+    model = paddle_tailor.to_embedding_model(
+        freeze=True, layer_name='dropout_1', bottleneck_net=_create_bottleneck_model()
+    )
+    # assert bottleneck model is not freezed
+    for layer in model.layers:
+        if layer.name == 'dense_2':
+            assert layer.trainable == True
+        else:
+            assert layer.trainable == False
 
 
 @pytest.mark.parametrize(
@@ -212,7 +197,7 @@ def test_freeze_given_freeze_layers(
         input_dtype=input_dtype,
     )
     model = pytorch_tailor.to_embedding_model(
-        freeze=True, output_dim=2, freeze_layers=freeze_layers
+        freeze=freeze_layers,
     )
     for layer, param in zip(pytorch_tailor.embedding_layers, model.layers):
         layer_name = layer['name']
@@ -247,3 +232,22 @@ def test_keras_model_parser():
 
     assert r[2]['output_features'] == 32
     assert r[2]['nb_params'] == 4128
+
+
+def test_attach_bottleneck_layer(vgg16_cnn_model):
+    def _create_bottleneck_model():
+        model = tf.keras.models.Sequential()
+        model.add(tf.keras.layers.InputLayer(input_shape=(4096,)))
+        model.add(tf.keras.layers.Dense(1024, activation='relu'))
+        model.add(tf.keras.layers.Dense(512, activation='softmax'))
+        return model
+
+    keras_tailor = KerasTailor(
+        model=vgg16_cnn_model,
+        input_size=(224, 224, 3),
+        input_dtype='float32',
+    )
+    tailed_model = keras_tailor.to_embedding_model(
+        layer_name='fc1', freeze=False, bottleneck_net=_create_bottleneck_model()
+    )
+    assert list(tailed_model.output.shape) == ([None, 512])
