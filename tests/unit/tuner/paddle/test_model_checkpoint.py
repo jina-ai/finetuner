@@ -96,3 +96,34 @@ def test_load_best_model(paddle_model: BaseTuner, tmpdir):
 
     for l1, l2 in zip(paddle_model.parameters(), new_model.parameters()):
         assert (l1 == l2).all()
+
+
+def test_save_best_only(paddle_model: BaseTuner, tmpdir):
+
+    finetuner.fit(
+        paddle_model,
+        epochs=1,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[BestModelCheckpoint(save_dir=tmpdir)],
+    )
+
+    assert os.listdir(tmpdir) == ['best_model_val_loss']
+
+
+def test_load_best_model(paddle_model: BaseTuner, tmpdir):
+
+    new_model = copy.deepcopy(paddle_model)
+    finetuner.fit(
+        paddle_model,
+        epochs=1,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[TrainingCheckpoint(save_dir=tmpdir)],
+    )
+
+    checkpoint = paddle.load(os.path.join(tmpdir, 'best_model_val_loss'))
+    new_model.set_state_dict(checkpoint['state_dict'])
+
+    for l1, l2 in zip(paddle_model.parameters(), new_model.parameters()):
+        assert (l1 == l2).all()

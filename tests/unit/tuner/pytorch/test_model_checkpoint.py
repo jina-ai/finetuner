@@ -122,3 +122,35 @@ def test_load_best_model(pytorch_model: BaseTuner, tmpdir):
 
     for l1, l2 in zip(pytorch_model.parameters(), new_model.parameters()):
         assert (l1 == l2).all()
+
+
+def test_save_best_only(pytorch_model: BaseTuner, tmpdir):
+
+    finetuner.fit(
+        pytorch_model,
+        epochs=1,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[BestModelCheckpoint(save_dir=tmpdir)],
+    )
+
+    assert os.listdir(tmpdir) == ['best_model_val_loss']
+
+
+def test_load_best_model(pytorch_model: BaseTuner, tmpdir):
+
+    new_model = copy.deepcopy(pytorch_model)
+
+    finetuner.fit(
+        pytorch_model,
+        epochs=1,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[TrainingCheckpoint(save_dir=tmpdir)],
+    )
+
+    checkpoint = torch.load(os.path.join(tmpdir, 'best_model_val_loss'))
+    new_model.load_state_dict(checkpoint['state_dict'])
+
+    for l1, l2 in zip(pytorch_model.parameters(), new_model.parameters()):
+        assert (l1 == l2).all()

@@ -134,3 +134,35 @@ def test_load_best_model(keras_model: BaseTuner, tmpdir):
         assert len(l1.weights) == len(l2.weights)
         for idx in range(len(l1.weights)):
             assert (l1.get_weights()[idx] == l2.get_weights()[idx]).all()
+
+
+def test_save_best_only(keras_model: BaseTuner, tmpdir):
+
+    finetuner.fit(
+        keras_model,
+        epochs=1,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[BestModelCheckpoint(save_dir=tmpdir)],
+    )
+
+    assert os.listdir(tmpdir) == ['best_model_val_loss']
+
+
+def test_load_best_model(keras_model: BaseTuner, tmpdir):
+
+    finetuner.fit(
+        keras_model,
+        epochs=1,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[BestModelCheckpoint(tmpdir)],
+    )
+
+    new_model = keras.models.load_model(os.path.join(tmpdir, 'best_model_val_loss'))
+
+    for l1, l2 in zip(new_model.layers, keras_model.layers):
+        assert l1.get_config() == l2.get_config()
+        assert len(l1.weights) == len(l2.weights)
+        for idx in range(len(l1.weights)):
+            assert (l1.get_weights()[idx] == l2.get_weights()[idx]).all()
