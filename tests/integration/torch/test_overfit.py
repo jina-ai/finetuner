@@ -7,9 +7,6 @@ from finetuner.tuner.base import BaseLoss
 from finetuner.tuner.pytorch import PytorchTuner
 from finetuner.tuner.pytorch.losses import SiameseLoss, TripletLoss
 
-torch.manual_seed(42)
-random.seed(42)
-
 
 def check_distances(n_cls, vec_embedings, distance):
     # Compute pairwise distances between embeddings
@@ -85,11 +82,11 @@ def test_overfit_pytorch_session(
 @pytest.mark.parametrize(
     "n_cls,dim,n_epochs,loss,distance",
     [
-        (5, 10, 50, TripletLoss, 'euclidean'),
-        (5, 10, 100, TripletLoss, 'cosine'),
+        # (5, 10, 50, TripletLoss, 'euclidean'),
+        # (5, 10, 100, TripletLoss, 'cosine'),
         # Siamese needs more time to converge
         (5, 10, 100, SiameseLoss, 'euclidean'),
-        (5, 10, 100, SiameseLoss, 'cosine'),
+        # (5, 10, 100, SiameseLoss, 'cosine'),
     ],
 )
 def test_overfit_pytorch_class(
