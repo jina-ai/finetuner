@@ -208,6 +208,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
             self._train(train_dl)
 
             if self._scheduler_step == 'epoch' and self._scheduler is not None:
+                print('se')
                 self._scheduler.step()
 
             self._trigger_callbacks('on_train_epoch_end')
