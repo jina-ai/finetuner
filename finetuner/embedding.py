@@ -9,20 +9,6 @@ if TYPE_CHECKING:
 from .helper import get_framework
 
 
-def _apply2batch(docs: 'DocumentArray', fn: 'PreprocFnType') -> 'DocumentArray':
-    da = []
-    for d in docs:
-        d_new = fn(d)
-        if d_new is not None:
-            da.append(d_new)
-    if da:
-        from jina import DocumentArray
-
-        return DocumentArray(da)
-    else:
-        return docs
-
-
 def embed(
     docs: Union['DocumentArray', 'DocumentArrayMemmap'],
     embed_model: 'AnyDNN',
@@ -70,8 +56,10 @@ def _set_embeddings_keras(
     with device:
         for b in docs.batch(batch_size):
             if preprocess_fn:
-                b = _apply2batch(b, preprocess_fn)
-            batch_inputs = collate_fn(b.contents)
+                contents = [preprocess_fn(d) for d in b]
+            else:
+                contents = b.contents
+            batch_inputs = collate_fn(contents)
             b.embeddings = embed_model(batch_inputs, training=False).numpy()
 
 
@@ -98,8 +86,10 @@ def _set_embeddings_torch(
     with torch.inference_mode():
         for b in docs.batch(batch_size):
             if preprocess_fn:
-                b = _apply2batch(b, preprocess_fn)
-            batch_inputs = collate_fn(b.contents).to(device)
+                contents = [preprocess_fn(d) for d in b]
+            else:
+                contents = b.contents
+            batch_inputs = collate_fn(contents).to(device)
             b.embeddings = embed_model(batch_inputs).cpu().detach().numpy()
     if is_training_before:
         embed_model.train()
@@ -127,8 +117,10 @@ def _set_embeddings_paddle(
     embed_model.eval()
     for b in docs.batch(batch_size):
         if preprocess_fn:
-            b = _apply2batch(b, preprocess_fn)
-        batch_inputs = paddle.to_tensor(collate_fn(b.contents), place=device)
+            contents = [preprocess_fn(d) for d in b]
+        else:
+            contents = b.contents
+        batch_inputs = paddle.to_tensor(collate_fn(contents), place=device)
         b.embeddings = embed_model(batch_inputs).numpy()
     if is_training_before:
         embed_model.train()
