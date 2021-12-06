@@ -90,7 +90,7 @@ class BaseTailor(abc.ABC):
         print(
             table,
             '[green]Green[/green] layers are trainable layers, '
-            '[cyan]Cyan[/cyan] layers are non-trainable layers or freezed layers.\n'
-            '[bright_black]Gray[/bright_black] layers indicates this layer has been replaced as an Identity layer which has no impact on model traning and inference.\n'
+            '[cyan]Cyan[/cyan] layers are non-trainable layers or frozen layers.\n'
+            '[bright_black]Gray[/bright_black] layers indicates this layer has been replaced by an Identity layer.\n'
             'Use to_embedding_model(...) to create embedding model.',
         )
