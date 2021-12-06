@@ -102,7 +102,7 @@ def test_load_best_model(pytorch_model: BaseTuner, tmpdir):
         epochs=1,
         train_data=generate_fashion(num_total=1000),
         eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[TrainingModelCheckpoint(save_dir=tmpdir)],
+        callbacks=[BestModelCheckpoint(save_dir=tmpdir)],
     )
 
     checkpoint = torch.load(os.path.join(tmpdir, 'best_model_val_loss'))
