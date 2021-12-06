@@ -79,4 +79,4 @@ def test_both_checkpoints(pytorch_model: BaseTuner, tmpdir):
         ],
     )
 
-    assert os.listdir(tmpdir) == ['best_model_val_loss', 'saved_model_epoch_01']
+    assert set(os.listdir(tmpdir)) == {'best_model_val_loss', 'saved_model_epoch_01'}
