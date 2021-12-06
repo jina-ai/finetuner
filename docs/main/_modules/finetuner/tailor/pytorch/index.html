@@ -360,10 +360,8 @@
                 </div>
                 <h1>Source code for finetuner.tailor.pytorch</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
@@ -390,7 +388,7 @@
                 <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1"> requires a valid `input_size`, but receiving </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="si">}</span><span class="s1">'</span>
             <span class="p">)</span>
 
-        <span class="n">user_model</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">)</span>
+        <span class="n">user_model</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">)</span>
         <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">torch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_dtype</span><span class="p">)]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">)</span>
         <span class="n">depth</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">user_model</span><span class="o">.</span><span class="n">modules</span><span class="p">()))</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">user_model</span><span class="o">.</span><span class="n">named_modules</span><span class="p">():</span>
@@ -441,9 +439,8 @@
             <span class="p">):</span>
                 <span class="n">hooks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">register_forward_hook</span><span class="p">(</span><span class="n">hook</span><span class="p">))</span>
 
-        <span class="c1"># batch_size of 2 for batchnorm</span>
         <span class="n">x</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="o">*</span><span class="n">in_size</span><span class="p">)</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">in_size</span><span class="p">)</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">in_size</span><span class="p">,</span> <span class="n">dt</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span><span class="p">,</span> <span class="n">dtypes</span><span class="p">)</span>
         <span class="p">]</span>
 
@@ -467,7 +464,6 @@
             <span class="n">input_shape</span> <span class="o">=</span> <span class="n">summary</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="s1">'input_shape'</span><span class="p">]</span>
             <span class="n">is_embedding_layer</span> <span class="o">=</span> <span class="ow">not</span> <span class="p">(</span>
                 <span class="ow">not</span> <span class="n">output_shape</span>
-                <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span>
                 <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_seq_int</span><span class="p">(</span><span class="n">output_shape</span><span class="p">)</span>
                 <span class="ow">or</span> <span class="n">summary</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="s1">'cls_name'</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="p">)</span>
@@ -495,18 +491,16 @@
 <div class="viewcode-block" id="PytorchTailor.to_embedding_model"><a class="viewcode-back" href="../../../../api/finetuner.tailor.pytorch/#finetuner.tailor.pytorch.PytorchTailor.to_embedding_model">[docs]</a>    <span class="k">def</span> <span class="nf">to_embedding_model</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">freeze_layers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">freeze</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">bottleneck_net</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'AnyDNN'</span><span class="p">:</span>
         <span class="sd">"""Convert a general model from :py:attr:`.model` to an embedding model.</span>
 
 <span class="sd">        :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer</span>
 <span class="sd">            will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.</span>
 <span class="sd">            To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.</span>
-<span class="sd">        :param output_dim: the dimensionality of the embedding output.</span>
-<span class="sd">        :param freeze: if set, then freeze weights of a model. If :py:attr:`freeze_layers` is defined, only freeze layers in :py:attr:`freeze_layers`.</span>
-<span class="sd">        :param freeze_layers: if set, then freeze specific layers.</span>
+<span class="sd">        :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.</span>
+<span class="sd">        :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.</span>
 <span class="sd">        :return: Converted embedding model.</span>
 <span class="sd">        """</span>
 
@@ -523,46 +517,27 @@
             <span class="c1"># when not given, using the last layer</span>
             <span class="n">_embed_layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">freeze</span> <span class="ow">and</span> <span class="n">freeze_layers</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">freeze</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="c1"># freeze specific layers defined in `freeze_layers`</span>
             <span class="k">for</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">_all_embed_layers</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()):</span>
-                <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">freeze_layers</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">freeze</span><span class="p">:</span>
                     <span class="n">param</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">freeze</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">freeze_layers</span><span class="p">:</span>
-            <span class="c1"># freeze all layers</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">freeze</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">freeze</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># freeze all layers, not including bottleneck module</span>
             <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
                 <span class="n">param</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
 
+        <span class="n">_embed_layer_output_shape</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">_relative_idx_to_embedding_layer</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">_is_dense_layer_added</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_modules</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">_embed_layer</span><span class="p">[</span><span class="s1">'module_name'</span><span class="p">]:</span>
                 <span class="n">_relative_idx_to_embedding_layer</span> <span class="o">=</span> <span class="mi">0</span>
-
-                <span class="c1"># corner-case</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">output_dim</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">layer_name</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
-                        <span class="n">param</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                            <span class="s1">'The current configs results in a non-parametric model, '</span>
-                            <span class="s1">'which is no trainable. '</span>
-                            <span class="s1">'You may need to specify `output_dim` or `embedding_layer_name`.'</span>
-                        <span class="p">)</span>
-
+                <span class="n">_embed_layer_output_shape</span> <span class="o">=</span> <span class="n">_embed_layer</span><span class="p">[</span><span class="s1">'output_shape'</span><span class="p">]</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="n">_relative_idx_to_embedding_layer</span>
                 <span class="ow">and</span> <span class="n">_relative_idx_to_embedding_layer</span> <span class="o">&gt;=</span> <span class="mi">1</span>
             <span class="p">):</span>
-                <span class="k">if</span> <span class="n">_relative_idx_to_embedding_layer</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">output_dim</span><span class="p">:</span>
-                    <span class="n">replaced_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-                        <span class="n">in_features</span><span class="o">=</span><span class="n">_embed_layer</span><span class="p">[</span><span class="s1">'output_features'</span><span class="p">],</span>
-                        <span class="n">out_features</span><span class="o">=</span><span class="n">output_dim</span><span class="p">,</span>
-                    <span class="p">)</span>
-                    <span class="n">_is_dense_layer_added</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">replaced_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">()</span>
-
+                <span class="n">replaced_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(</span><span class="n">_embed_layer_output_shape</span><span class="p">)</span>
                 <span class="k">if</span> <span class="p">(</span>
                     <span class="s1">'.'</span> <span class="ow">in</span> <span class="n">name</span>
                 <span class="p">):</span>  <span class="c1"># Note: in torchvision, nested layer names are named with '.' e.g. classifier.0</span>
@@ -574,25 +549,12 @@
             <span class="k">if</span> <span class="n">_relative_idx_to_embedding_layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">_relative_idx_to_embedding_layer</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="k">if</span> <span class="n">output_dim</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_is_dense_layer_added</span><span class="p">:</span>
-            <span class="c1"># the dense layer needs to be added after the last layer</span>
-            <span class="n">model</span> <span class="o">=</span> <span class="n">_LinearAtLast</span><span class="p">(</span>
+        <span class="k">if</span> <span class="n">bottleneck_net</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
                 <span class="n">model</span><span class="p">,</span>
-                <span class="n">in_features</span><span class="o">=</span><span class="n">_embed_layer</span><span class="p">[</span><span class="s1">'output_features'</span><span class="p">],</span>
-                <span class="n">out_features</span><span class="o">=</span><span class="n">output_dim</span><span class="p">,</span>
+                <span class="n">bottleneck_net</span><span class="p">,</span>
             <span class="p">)</span>
-
         <span class="k">return</span> <span class="n">model</span></div></div>
-
-
-<span class="k">class</span> <span class="nc">_LinearAtLast</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">(</span><span class="n">input_</span><span class="p">))</span>
 </pre></div>
             </article>
             <footer>
@@ -604,7 +566,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Dec 03, 2021.
+                    Last updated on Dec 06, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

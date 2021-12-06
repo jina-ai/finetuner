@@ -360,7 +360,7 @@
                 </div>
                 <h1>Source code for finetuner.tailor.base</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">LayerInfoType</span>
@@ -393,17 +393,17 @@
     <span class="k">def</span> <span class="nf">to_embedding_model</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">layer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">freeze</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">bottleneck_net</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'AnyDNN'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'AnyDNN'</span><span class="p">:</span>
         <span class="sd">"""Convert a general model from :py:attr:`.model` to an embedding model.</span>
 
 <span class="sd">        :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer</span>
 <span class="sd">            will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.</span>
 <span class="sd">            To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.</span>
-<span class="sd">        :param output_dim: the dimensionality of the embedding output.</span>
-<span class="sd">        :param freeze: if set, then freeze all weights of the original model.</span>
-
+<span class="sd">        :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.</span>
+<span class="sd">        :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.</span>
+<span class="sd">        :return: Converted embedding model.</span>
 <span class="sd">        """</span>
         <span class="o">...</span></div>
 
@@ -441,13 +441,19 @@
             <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">_summary</span><span class="p">:</span>
             <span class="n">style</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="s1">'is_embedding_layer'</span><span class="p">]:</span>
-                <span class="n">style</span> <span class="o">=</span> <span class="s1">'green'</span>
+            <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="s1">'trainable'</span><span class="p">]:</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="s1">'bright_green'</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">s</span><span class="p">[</span><span class="s1">'trainable'</span><span class="p">]:</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="s1">'cyan'</span>
+            <span class="k">if</span> <span class="s1">'identity'</span> <span class="ow">in</span> <span class="n">s</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]:</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="s1">'bright_black'</span>
             <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">)),</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span>
             <span class="n">table</span><span class="p">,</span>
-            <span class="s1">'[green]Green[/green] layers can be used as embedding layers, '</span>
-            <span class="s1">'whose [b]name[/b] can be used as [b]layer_name[/b] in to_embedding_model(...).'</span><span class="p">,</span>
+            <span class="s1">'[green]Green[/green] layers are trainable layers, '</span>
+            <span class="s1">'[cyan]Cyan[/cyan] layers are non-trainable layers or frozen layers.</span><span class="se">\n</span><span class="s1">'</span>
+            <span class="s1">'[bright_black]Gray[/bright_black] layers indicates this layer has been replaced by an Identity layer.</span><span class="se">\n</span><span class="s1">'</span>
+            <span class="s1">'Use to_embedding_model(...) to create embedding model.'</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 </pre></div>
             </article>
@@ -460,7 +466,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Dec 03, 2021.
+                    Last updated on Dec 06, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
