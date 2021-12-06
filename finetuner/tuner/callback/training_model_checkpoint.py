@@ -38,7 +38,6 @@ class TrainingCheckpoint(BaseCallback):
                 '``save_dir`` parameter is mandatory. Pass it in parameters'
             )
 
-
     def on_epoch_end(self, tuner: 'BaseTuner'):
         """
         Called at the end of the training epoch.
@@ -48,7 +47,6 @@ class TrainingCheckpoint(BaseCallback):
 
     def on_train_batch_end(self, tuner: 'BaseTuner'):
         self._train_losses.append(tuner.state.train_loss)
-
 
     def _save_model(self, tuner):
         current = np.mean(self._train_losses)
