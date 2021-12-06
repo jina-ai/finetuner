@@ -1,6 +1,5 @@
 import pytest
 import torch
-import random
 from scipy.spatial.distance import pdist, squareform
 
 from finetuner.tuner.base import BaseLoss
