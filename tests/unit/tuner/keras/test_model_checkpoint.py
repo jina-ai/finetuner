@@ -5,7 +5,7 @@ import tensorflow as tf
 import keras
 
 import finetuner
-from finetuner.tuner.callback import TrainingModelCheckpoint, BestModelCheckpoint
+from finetuner.tuner.callback import TrainingCheckpoint, BestModelCheckpoint
 from finetuner.tuner.base import BaseTuner
 from finetuner.toydata import generate_fashion
 from finetuner.tuner.keras import KerasTuner
@@ -30,7 +30,7 @@ def test_keras_model(keras_model: BaseTuner, tmpdir):
         epochs=1,
         train_data=generate_fashion(num_total=1000),
         eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[TrainingModelCheckpoint(tmpdir)],
+        callbacks=[TrainingCheckpoint(tmpdir)],
     )
 
     assert os.listdir(tmpdir) == ['saved_model_epoch_01']
@@ -43,7 +43,7 @@ def test_keras_model(keras_model: BaseTuner, tmpdir):
 
 
 def test_epoch_end(keras_model: BaseTuner, tmpdir):
-    checkpoint = TrainingModelCheckpoint(save_dir=tmpdir, monitor='loss')
+    checkpoint = TrainingCheckpoint(save_dir=tmpdir)
 
     tuner = KerasTuner(embed_model=keras_model)
     tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
@@ -59,21 +59,6 @@ def test_epoch_end(keras_model: BaseTuner, tmpdir):
     }
 
 
-def test_val_end(keras_model: BaseTuner, tmpdir):
-    checkpoint = TrainingModelCheckpoint(save_dir=tmpdir, monitor="val_loss")
-
-    tuner = KerasTuner(embed_model=keras_model)
-    tuner.state = TunerState(epoch=2, batch_index=2, val_loss=1.1)
-
-    checkpoint.on_val_end(tuner)
-
-    assert os.listdir(tmpdir) == ['saved_model_epoch_03']
-    assert set(os.listdir(os.path.join(tmpdir, 'saved_model_epoch_03'))) == {
-        'variables',
-        'assets',
-        'keras_metadata.pb',
-        'saved_model.pb',
-    }
 
 
 def test_load_model(keras_model: BaseTuner, tmpdir):
@@ -83,7 +68,7 @@ def test_load_model(keras_model: BaseTuner, tmpdir):
         epochs=1,
         train_data=generate_fashion(num_total=1000),
         eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[TrainingModelCheckpoint(tmpdir)],
+        callbacks=[TrainingCheckpoint(tmpdir)],
     )
 
     new_model = keras.models.load_model(os.path.join(tmpdir, 'saved_model_epoch_01'))

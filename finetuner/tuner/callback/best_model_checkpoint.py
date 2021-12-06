@@ -27,7 +27,7 @@ class BestModelCheckpoint(BaseCallback):
         self,
         save_dir: str = None,
         monitor: str = 'val_loss',
-        mode: Optional[str] = None,
+        mode: str = 'auto',
     ):
         """
         :param save_dir: string or `PathLike`, path to save the model file.
