@@ -32,7 +32,7 @@ class ModelCheckpoint(BaseCallback):
         self,
         save_dir: str = None,
         save_best_only: Optional[bool] = False,
-        monitor: Optional[str] = 'val_loss',
+        monitor: str = 'val_loss',
         mode: Optional[str] = None,
     ):
         """

@@ -37,46 +37,23 @@ def test_save_best_only(pytorch_model: BaseTuner, tmpdir):
     assert os.listdir(tmpdir) == ['best_model_val_loss']
 
 
-def test_mode_min(tmpdir):
-
-    checkpoint = ModelCheckpoint(save_dir=tmpdir, save_best_only=True, mode='min')
-    assert checkpoint._monitor_op == np.less
-    assert checkpoint._best == np.Inf
-
-
-def test_mode_max(tmpdir):
-
-    checkpoint = ModelCheckpoint(save_dir=tmpdir, save_best_only=True, mode='max')
-    assert checkpoint._monitor_op == np.greater
-    assert checkpoint._best == -np.Inf
-
-
-def test_mode_auto_min(tmpdir):
-
-    checkpoint = ModelCheckpoint(save_dir=tmpdir, save_best_only=True, mode='auto')
-    assert checkpoint._monitor_op == np.less
-    assert checkpoint._best == np.Inf
-
-
-def test_mode_auto_max(tmpdir):
+@pytest.mark.parametrize(
+    'mode, monitor, operation, best',
+    (
+        ('min', 'val_loss', np.less, np.Inf),
+        ('max', 'val_loss', np.greater, -np.Inf),
+        ('auto', 'val_loss', np.less, np.Inf),
+        ('max', 'acc', np.greater, -np.Inf),
+        ('somethingelse', 'acc', np.greater, -np.Inf),
+    ),
+)
+def test_mode(mode: str, monitor: str, operation, best, tmpdir):
 
     checkpoint = ModelCheckpoint(
-        save_dir=tmpdir, save_best_only=True, mode='auto', monitor='acc'
+        save_dir=tmpdir, save_best_only=True, mode=mode, monitor=monitor
     )
-    assert checkpoint._monitor_op == np.greater
-    assert checkpoint._best == -np.Inf
-
-
-def test_mode_auto_fallback(tmpdir):
-
-    checkpoint = ModelCheckpoint(
-        save_dir=tmpdir,
-        save_best_only=True,
-        mode='somethingelse',
-        monitor='acc',
-    )
-    assert checkpoint._monitor_op == np.greater
-    assert checkpoint._best == -np.Inf
+    assert checkpoint._monitor_op == operation
+    assert checkpoint._best == best
 
 
 def test_mandatory_save_dir(pytorch_model: BaseTuner):
