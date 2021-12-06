@@ -1,10 +1,6 @@
-import numpy as np
 from typing import Callable, Optional, Tuple
-from numpy.lib.function_base import diff
 
 import torch
-from torch._C import Value
-from torch.nn.modules import distance
 
 from ..miner import get_session_pairs, get_session_triplets
 from ..miner.base import BaseClassMiner, BaseSessionMiner
