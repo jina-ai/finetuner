@@ -59,8 +59,6 @@ def test_epoch_end(keras_model: BaseTuner, tmpdir):
     }
 
 
-
-
 def test_load_model(keras_model: BaseTuner, tmpdir):
 
     finetuner.fit(

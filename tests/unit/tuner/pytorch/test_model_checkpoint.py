@@ -50,7 +50,6 @@ def test_epoch_end(pytorch_model: BaseTuner, tmpdir):
     assert os.listdir(tmpdir) == ['saved_model_epoch_01']
 
 
-
 def test_load_model(pytorch_model: BaseTuner, tmpdir):
 
     new_model = copy.deepcopy(pytorch_model)
