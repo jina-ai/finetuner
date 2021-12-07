@@ -44,6 +44,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
+        num_workers: int = 0,
     ) -> DataLoader:
         """Get the dataloader for the dataset"""
 
@@ -69,7 +70,10 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
             num_items_per_class=num_items_per_class,
         )
         data_loader = DataLoader(
-            dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn_all
+            dataset=dataset,
+            batch_sampler=batch_sampler,
+            collate_fn=collate_fn_all,
+            num_workers=num_workers,
         )
 
         return data_loader
@@ -134,6 +138,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
         device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
+        num_workers: int = 0,
         **kwargs,
     ):
         """Finetune the model on the training data.
@@ -156,6 +161,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
             provide a custom optimizer, this learning rate will not apply.
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
+        :param num_workers: Number of workers used for loading the data.
         """
         # Get dataloaders
         train_dl = self._get_data_loader(
@@ -165,6 +171,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
             shuffle=True,
             preprocess_fn=preprocess_fn,
             collate_fn=collate_fn,
+            num_workers=num_workers,
         )
         if eval_data:
             eval_dl = self._get_data_loader(
@@ -174,6 +181,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
                 shuffle=False,
                 preprocess_fn=preprocess_fn,
                 collate_fn=collate_fn,
+                num_workers=num_workers,
             )
 
         # Place model on device

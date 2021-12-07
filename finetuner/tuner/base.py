@@ -116,6 +116,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
+        num_workers: int = 0,
         **kwargs,
     ):
         """Finetune the model on the training data.
@@ -139,6 +140,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
             provide a custom optimizer, this learning rate will not apply.
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
+        :param num_workers: Number of workers used for loading the data.
         """
 
     @abc.abstractmethod
@@ -160,6 +162,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         num_items_per_class: Optional[int] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
+        num_workers: int = 0,
     ) -> AnyDataLoader:
         """Get framework specific data loader from the input data."""
         ...
