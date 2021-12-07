@@ -83,9 +83,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
     def _default_configure_optimizer(self, model: nn.Layer) -> Optimizer:
         """Get the default optimizer (Adam), if none was provided by user."""
 
-        return Adam(
-            parameters=model.parameters(), learning_rate=self._learning_rate
-        )
+        return Adam(parameters=model.parameters(), learning_rate=self._learning_rate)
 
     def _eval(self, data: DataLoader):
         """Evaluate the model on given labeled data"""
