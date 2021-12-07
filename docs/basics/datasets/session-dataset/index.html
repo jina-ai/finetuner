@@ -7,10 +7,10 @@
   <meta property="og:title" content="Session Dataset" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/basics/datasets/session-dataset.html" />
-  <meta property="og:site_name" content="Finetuner 0.2.4 Documentation" />
-  <meta property="og:description" content="A datsetsSessionDataset is a DocumentArray, in which each Document has matches Document. The labels are stored under matched Document’s.tags['finetuner_label']. The label can be either 1(denoting similarity of match to its parent Document) or-1(denoting dissimilarity of the match from its parent ..." />
+  <meta property="og:site_name" content="Finetuner 0.2.5 Documentation" />
+  <meta property="og:description" content="A SessionDataset is a DocumentArray, in which each Document has matches Document. The labels are stored under matched Document’s.tags['finetuner_label']. The label can be either 1(denoting similarity of match to its parent Document) or-1(denoting dissimilarity of the match from its parent Documen..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
-  <meta property="og:image:alt" content="Finetuner 0.2.4 Documentation" />
+  <meta property="og:image:alt" content="Finetuner 0.2.5 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -31,7 +31,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Unlabeled Dataset" href="../unlabeled-dataset/" /><link rel="prev" title="Class Dataset" href="../class-dataset/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.1, furo 2021.11.23"/>
-        <title>Session Dataset - Finetuner 0.2.4 documentation</title>
+        <title>Session Dataset - Finetuner 0.2.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -165,7 +165,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">Finetuner 0.2.4 documentation</div>
+                <div class="brand">Finetuner 0.2.5 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -208,38 +208,6 @@
 <div class="sd-d-flex-row sd-align-major-spaced">
   <a class="github-button" href="https://github.com/jina-ai/finetuner" data-icon="octicon-star" data-show-count="true" aria-label="Star jina-ai/finetuner on GitHub" style="opacity: 0;">Star</a>
   <select onChange="window.location.href=this.value" class="version-select">
-    
-        
-          
-            <option value="../../../main/basics/datasets/session-dataset.html" >main</option>
-          
-        
-        
-          
-          
-            <option value="session-dataset.html" selected="selected" >latest (v0.2.4)</option>
-          
-        
-        
-          
-            <option value="../../../v0.2.3/basics/datasets/session-dataset.html" >v0.2.3</option>
-          
-        
-        
-          
-            <option value="../../../v0.2.2/index.html" >v0.2.2</option>
-          
-        
-        
-          
-            <option value="../../../v0.2.1/index.html" >v0.2.1</option>
-          
-        
-        
-          
-            <option value="../../../v0.2.0/index.html" >v0.2.0</option>
-          
-        
     
   </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
@@ -288,36 +256,43 @@
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/finetuner.tuner/">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/finetuner.tuner.callback/">finetuner.tuner.callback package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.keras.data/">finetuner.tuner.keras.data module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.keras.losses/">finetuner.tuner.keras.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.keras.miner/">finetuner.tuner.keras.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.miner.base/">finetuner.tuner.miner.base module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.paddle.miner/">finetuner.tuner.paddle.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.pytorch.datasets/">finetuner.tuner.pytorch.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.pytorch.losses/">finetuner.tuner.pytorch.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.pytorch.miner/">finetuner.tuner.pytorch.miner module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.summary/">finetuner.tuner.summary module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.evaluation/">finetuner.tuner.evaluation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.state/">finetuner.tuner.state module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.embedding/">finetuner.embedding module</a></li>
@@ -379,12 +354,12 @@
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="session-dataset">
 <span id="id1"></span><h1>Session Dataset<a class="headerlink" href="#session-dataset" title="Permalink to this headline">¶</a></h1>
-<p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">datsetsSessionDataset</span></code> is a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>, in which each Document has <code class="docutils literal notranslate"><span class="pre">matches</span></code> Document. The labels are stored under matched Document’s <code class="docutils literal notranslate"><span class="pre">.tags['finetuner_label']</span></code>. The label can be either <code class="docutils literal notranslate"><span class="pre">1</span></code> (denoting similarity of match to its parent <code class="docutils literal notranslate"><span class="pre">Document</span></code>) or <code class="docutils literal notranslate"><span class="pre">-1</span></code> (denoting dissimilarity of the match from its parent <code class="docutils literal notranslate"><span class="pre">Document</span></code>).</p>
+<p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">SessionDataset</span></code> is a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>, in which each Document has <code class="docutils literal notranslate"><span class="pre">matches</span></code> Document. The labels are stored under matched Document’s <code class="docutils literal notranslate"><span class="pre">.tags['finetuner_label']</span></code>. The label can be either <code class="docutils literal notranslate"><span class="pre">1</span></code> (denoting similarity of match to its parent <code class="docutils literal notranslate"><span class="pre">Document</span></code>) or <code class="docutils literal notranslate"><span class="pre">-1</span></code> (denoting dissimilarity of the match from its parent <code class="docutils literal notranslate"><span class="pre">Document</span></code>).</p>
 <p>The word “session” comes from the scenario where a user’s click-through introduces an implicit yes/no on the relevance, hence an interactive session.</p>
 <section id="batch-construction">
 <h2>Batch construction<a class="headerlink" href="#batch-construction" title="Permalink to this headline">¶</a></h2>
-<p>A <code class="docutils literal notranslate"><span class="pre">SessionDataset</span></code> works with <code class="xref py py-class docutils literal notranslate"><span class="pre">datsetsSessionSampler</span></code>.</p>
-<p>Here the batches are simply constructed by putting together enough root documents and their matches (we call this a <em>session</em>) to fill the batch according to <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> parameter. An example of a batch of size <code class="docutils literal notranslate"><span class="pre">batch_size=8</span></code> made of two sessions is show on the image below.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">SessionDataset</span></code> works with <code class="xref py py-class docutils literal notranslate"><span class="pre">SessionSampler</span></code>.</p>
+<p>Here the batches are simply constructed by putting together enough root documents and their matches (we call this a <em>session</em>) to fill the batch according to <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> parameter. An example of a batch of size <code class="docutils literal notranslate"><span class="pre">batch_size=8</span></code> made of two sessions is show on the image below. <code class="docutils literal notranslate"><span class="pre">0</span></code> denotes the root document.</p>
 <figure class="align-center">
 <img alt="../../../_images/session-dataset.png" src="../../../_images/session-dataset.png"/>
 </figure>
