@@ -57,7 +57,7 @@ class BaseDataset(abc.ABC, Generic[AnyLabel]):
 
     @property
     def labels(self) -> List[AnyLabel]:
-        """ Get the list of labels for all items in the dataset."""
+        """Get the list of labels for all items in the dataset."""
         return self._labels
 
     def __len__(self) -> int:

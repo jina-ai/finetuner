@@ -126,13 +126,10 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
             loss.backward()
             self._optimizer.step()
 
-<<<<<<< HEAD
             if self._scheduler_step == 'batch' and self._scheduler is not None:
                 self._scheduler.step()
 
             self.state.current_loss = loss.item()
-=======
->>>>>>> f38ab2509782cc560caa522463b3428ea0eac2b5
             self.state.train_loss = loss.item()
 
             self._trigger_callbacks('on_train_batch_end')
@@ -223,7 +220,6 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         :param args: Arguments to pass to ``paddle.save`` function
         :param kwargs: Keyword arguments to pass to ``paddle.save`` function
         """
-<<<<<<< HEAD
 
         state = {
             'epoch': kwargs.pop('epoch', 0),
@@ -242,26 +238,6 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         self._embed_model.set_state_dict(checkpoint['state_dict'])
         self._optimizer.set_state_dict(checkpoint['optimizer'])
         self.state.epoch = checkpoint['epoch']
-=======
-        if hasattr(self, '_optimizer'):
-            state = {
-                'epoch': kwargs.pop('epoch', 0),
-                'state_dict': self.embed_model.state_dict(),
-                'best': kwargs.pop('best', False),
-                'optimizer': self._optimizer.state_dict(),
-                'monitor': kwargs.pop('monitor', 'train_loss'),
-            }
-        else:
-            state = {
-                'epoch': kwargs.pop('epoch', 0),
-                'state_dict': self.embed_model.state_dict(),
-                'best': kwargs.pop('best', False),
-                'optimizer': kwargs.pop('optimizer', 'None'),
-                'monitor': kwargs.pop('monitor', 'train_loss'),
-            }
-
-        paddle.save(state, *args, **kwargs)
->>>>>>> f38ab2509782cc560caa522463b3428ea0eac2b5
 
 
 def get_device(device: str):
