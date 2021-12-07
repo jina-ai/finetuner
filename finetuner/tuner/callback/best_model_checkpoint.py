@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import numpy as np
 from jina.logging.logger import JinaLogger
@@ -114,21 +114,25 @@ class BestModelCheckpoint(BaseCallback):
         Saves the model depending on its framework.
         """
         if get_framework(tuner.embed_model) == 'keras':
-            tuner.save(filepath=self._get_file_path(tuner))
+            tuner.save(
+                filepath=self._get_file_path(),
+                epoch=tuner.state.epoch + 1,
+                monitor=self._monitor,
+            )
         elif get_framework(tuner.embed_model) == 'torch':
             tuner.save(
-                f=self._get_file_path(tuner),
+                f=self._get_file_path(),
                 epoch=tuner.state.epoch + 1,
                 monitor=self._monitor,
             )
         elif get_framework(tuner.embed_model) == 'paddle':
             tuner.save(
-                path=self._get_file_path(tuner),
+                path=self._get_file_path(),
                 epoch=tuner.state.epoch + 1,
                 monitor=self._monitor,
             )
 
-    def _get_file_path(self, tuner):
+    def _get_file_path(self):
         """
         Returns the file path for checkpoint.
         """
@@ -138,3 +142,10 @@ class BestModelCheckpoint(BaseCallback):
             'best_model_{}'.format(self._monitor),
         )
         return file_path
+
+    @staticmethod
+    def load_model(tuner, fp):
+        """
+        Loads the model.
+        """
+        tuner.load(fp)

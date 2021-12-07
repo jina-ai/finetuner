@@ -5,6 +5,9 @@ from keras.engine.data_adapter import KerasSequenceAdapter
 from tensorflow.keras.optimizers import Optimizer
 from tensorflow.keras.optimizers.schedules import LearningRateSchedule
 from tensorflow.keras.layers import Layer
+import keras
+import os
+import pickle
 
 from . import losses
 from .data import KerasDataSequence
@@ -196,8 +199,22 @@ class KerasTuner(
         :param kwargs: Keyword arguments to pass to ``save`` method of the embedding
             model
         """
-
+        state = {
+            'epoch': kwargs.pop('epoch', 0),
+            'best': kwargs.pop('best', False),
+            'monitor': kwargs.pop('monitor', 'train_loss'),
+        }
         self.embed_model.save(*args, **kwargs)
+        with open(os.path.join(kwargs.get('filepath'), 'saved_state.pkl'), 'wb') as f:
+            pickle.dump(state, f)
+
+    def load(self, fp, *args, **kwargs):
+        """Loads the embedding model, optimizer and updates the state epoch."""
+
+        self._embed_model = keras.models.load_model(fp, *args, **kwargs)
+        with open(os.path.join(fp, 'saved_state.pkl'), 'rb') as f:
+            loaded_state = pickle.load(f)
+        self.state.epoch = loaded_state['epoch']
 
 
 def get_device(device: str):

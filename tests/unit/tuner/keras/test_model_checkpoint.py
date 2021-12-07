@@ -3,6 +3,7 @@ import os
 import pytest
 import tensorflow as tf
 import keras
+import copy
 
 import finetuner
 from finetuner.tuner.callback import TrainingCheckpoint, BestModelCheckpoint
@@ -39,6 +40,7 @@ def test_keras_model(keras_model: BaseTuner, tmpdir):
         'assets',
         'keras_metadata.pb',
         'saved_model.pb',
+        'saved_state.pkl'
     }
 
 
@@ -56,6 +58,7 @@ def test_epoch_end(keras_model: BaseTuner, tmpdir):
         'assets',
         'keras_metadata.pb',
         'saved_model.pb',
+        'saved_state.pkl'
     }
 
 
@@ -77,6 +80,29 @@ def test_load_model(keras_model: BaseTuner, tmpdir):
         for idx in range(len(l1.weights)):
             assert (l1.get_weights()[idx] == l2.get_weights()[idx]).all()
 
+def test_load_model_directly(keras_model: BaseTuner, tmpdir):
+
+    finetuner.fit(
+        keras_model,
+        epochs=2,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[TrainingCheckpoint(tmpdir)],
+    )
+
+
+    tuner = KerasTuner()
+    tuner.state = TunerState(epoch=0, batch_index=0, train_loss=50)
+
+    TrainingCheckpoint.load_model(tuner, os.path.join(tmpdir, 'saved_model_epoch_02'))
+
+    assert tuner.state.epoch == 2 
+
+    for l1, l2 in zip(keras_model.layers, tuner.embed_model.layers):
+        assert l1.get_config() == l2.get_config()
+        assert len(l1.weights) == len(l2.weights)
+        for idx in range(len(l1.weights)):
+            assert (l1.get_weights()[idx] == l2.get_weights()[idx]).all()
 
 def test_save_best_only(keras_model: BaseTuner, tmpdir):
 

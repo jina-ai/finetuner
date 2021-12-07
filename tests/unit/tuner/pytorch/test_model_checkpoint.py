@@ -68,6 +68,29 @@ def test_load_model(pytorch_model: BaseTuner, tmpdir):
     for l1, l2 in zip(pytorch_model.parameters(), new_model.parameters()):
         assert (l1 == l2).all()
 
+def test_load_model_directly(pytorch_model: BaseTuner, tmpdir):
+
+    new_model = copy.deepcopy(pytorch_model)
+
+    finetuner.fit(
+        pytorch_model,
+        epochs=2,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[TrainingCheckpoint(tmpdir)],
+    )
+
+
+    tuner = PytorchTuner(new_model)
+    tuner.state = TunerState(epoch=0, batch_index=0, train_loss=50)
+
+    TrainingCheckpoint.load_model(tuner, os.path.join(tmpdir, 'saved_model_epoch_02'))
+
+    assert tuner.state.epoch == 2 
+
+    for l1, l2 in zip(pytorch_model.parameters(), tuner.embed_model.parameters()):
+        assert (l1 == l2).all()
+
 
 def test_save_best_only(pytorch_model: BaseTuner, tmpdir):
 

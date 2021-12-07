@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import numpy as np
 from jina.logging.logger import JinaLogger
@@ -62,7 +62,10 @@ class TrainingCheckpoint(BaseCallback):
         Saves the model depending on its framework.
         """
         if get_framework(tuner.embed_model) == 'keras':
-            tuner.save(filepath=self._get_file_path(tuner))
+            tuner.save(
+                filepath=self._get_file_path(tuner),
+                epoch=tuner.state.epoch + 1,
+            )
         elif get_framework(tuner.embed_model) == 'torch':
             tuner.save(
                 f=self._get_file_path(tuner),
@@ -84,3 +87,10 @@ class TrainingCheckpoint(BaseCallback):
             'saved_model_epoch_{:02d}'.format(tuner.state.epoch + 1),
         )
         return file_path
+
+    @staticmethod
+    def load_model(tuner: 'BaseTuner', fp: str):
+        """
+        Loads the model.
+        """
+        tuner.load(fp)
