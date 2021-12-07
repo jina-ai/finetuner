@@ -377,7 +377,7 @@
 <span class="kn">from</span> <span class="nn">..embedding</span> <span class="kn">import</span> <span class="n">embed</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">DocumentSequence</span>
+    <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">DocumentSequence</span><span class="p">,</span> <span class="n">PreprocFnType</span><span class="p">,</span> <span class="n">CollateFnType</span>
 
 
 <span class="n">METRICS</span> <span class="o">=</span> <span class="p">{</span>
@@ -399,8 +399,12 @@
         <span class="n">eval_data</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
         <span class="n">catalog</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
         <span class="n">embed_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'AnyDNN'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">distance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cosine'</span><span class="p">,</span>
         <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="n">distance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cosine'</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+        <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'PreprocFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'CollateFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        Build an Evaluator object that can be used to evaluate an embedding model on a retrieval task</span>
@@ -410,17 +414,31 @@
 <span class="sd">            match.</span>
 <span class="sd">        :param catalog: A sequence of documents, against which the eval docs will be matched.</span>
 <span class="sd">        :param embed_model: The embedding model to use, in order to extract document representations.</span>
+<span class="sd">        :param limit: Limit the number of results during matching.</span>
 <span class="sd">        :param distance: The type of distance to use when matching docs, avalilable options are</span>
 <span class="sd">            ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``</span>
-<span class="sd">        :param limit: Limit the number of results during matching.</span>
+<span class="sd">        :param device: the computational device for `embed_model`, can be either</span>
+<span class="sd">            `cpu` or `cuda`.</span>
+<span class="sd">        :param batch_size: number of Documents in a batch for embedding</span>
+<span class="sd">        :param preprocess_fn: A pre-processing function, to apply pre-processing to</span>
+<span class="sd">            documents on the fly. It should take as input the document in the dataset,</span>
+<span class="sd">            and output whatever content the model would accept.</span>
+<span class="sd">        :param collate_fn: The collation function to merge the content of individual</span>
+<span class="sd">            items into a batch. Should accept a list with the content of each item,</span>
+<span class="sd">            and output a tensor (or a list/dict of tensors) that feed directly into the</span>
+<span class="sd">            embedding model</span>
 <span class="sd">        :return: None.</span>
 <span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span> <span class="o">=</span> <span class="n">embed_model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_eval_data</span> <span class="o">=</span> <span class="n">eval_data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span> <span class="o">=</span> <span class="n">catalog</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_summary_docs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_eval_docs</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span> <span class="o">=</span> <span class="n">distance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span> <span class="o">=</span> <span class="n">embed_model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span> <span class="o">=</span> <span class="n">limit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span> <span class="o">=</span> <span class="n">distance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_preprocess_fn</span> <span class="o">=</span> <span class="n">preprocess_fn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collate_fn</span> <span class="o">=</span> <span class="n">collate_fn</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_doc_to_relevance</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Document</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
@@ -456,14 +474,25 @@
 
         <span class="k">return</span> <span class="n">summmary_docs</span>
 
+    <span class="k">def</span> <span class="nf">_embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">):</span>
+        <span class="sd">"""Extract embeddings on docs"""</span>
+        <span class="n">embed</span><span class="p">(</span>
+            <span class="n">docs</span><span class="p">,</span>
+            <span class="n">embed_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_device</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span><span class="p">,</span>
+            <span class="n">preprocess_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_preprocess_fn</span><span class="p">,</span>
+            <span class="n">collate_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_collate_fn</span><span class="p">,</span>
+        <span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_score_docs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Emded the evaluation docs and compute the matches from the catalog. Evaluation docs</span>
 <span class="sd">        embeddings are overwritten, but matches are not</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">)</span>
-            <span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_summary_docs</span><span class="p">:</span>
             <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_data</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">embedding</span>
