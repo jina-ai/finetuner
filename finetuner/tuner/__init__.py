@@ -48,7 +48,7 @@ def fit(
             ['AnyDNN'], Union['AnyOptimizer', Tuple['AnyOptimizer', 'AnyScheduler']]
         ]
     ] = None,
-    default_learning_rate: float = 1e-3,
+    learning_rate: float = 1e-3,
     scheduler_step: str = 'batch',
     device: str = 'cpu',
     callbacks: Optional[List['BaseCallback']] = None,
@@ -79,7 +79,7 @@ def fit(
         optimizer and learning rate. The function should take one input - the
         embedding model, and return either just an optimizer or a tuple of an
         optimizer and a learning rate scheduler.
-    :param default_learning_rate: Learning rate for the default optimizer. If you
+    :param learning_rate: Learning rate for the default optimizer. If you
         provide a custom optimizer, this learning rate will not apply.
     :param scheduler_step: At which interval should the learning rate sheduler's
         step function be called. Valid options are "batch" and "epoch".
@@ -95,7 +95,7 @@ def fit(
         loss=loss,
         callbacks=callbacks,
         configure_optimizer=configure_optimizer,
-        default_learning_rate=default_learning_rate,
+        learning_rate=learning_rate,
         scheduler_step=scheduler_step,
         device=device,
     ).fit(

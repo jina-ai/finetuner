@@ -52,7 +52,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         configure_optimizer: Optional[
             Callable[[AnyDNN], Union[AnyOptimizer, Tuple[AnyOptimizer, AnyScheduler]]]
         ] = None,
-        default_learning_rate: float = 1e-3,
+        learning_rate: float = 1e-3,
         scheduler_step: str = 'batch',
         callbacks: Optional[List[BaseCallback]] = None,
         device: str = 'cpu',
@@ -73,7 +73,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
             function - and this should be an instance of a subclass of
             ``tf.keras.optimizer.schedulers.LearningRateScheduler`` - and not an
             instance of the callback (``tf.keras.callbacks.LearningRateScheduler``).
-        :param default_learning_rate: Learning rate for the default optimizer. If you
+        :param learning_rate: Learning rate for the default optimizer. If you
             provide a custom optimizer, this learning rate will not apply.
         :param scheduler_step: At which interval should the learning rate sheduler's
             step function be called. Valid options are "batch" and "epoch".
@@ -87,7 +87,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
-        self._default_learning_rate = default_learning_rate
+        self._learning_rate = learning_rate
         self._scheduler_step = scheduler_step
         self._scheduler = None
         self._device_name = device

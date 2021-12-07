@@ -66,7 +66,7 @@ class KerasTuner(
 
     def _default_configure_optimizer(self, model: Layer) -> Optimizer:
         """Get the default Adam optimizer"""
-        optimizer = tf.keras.optimizers.Adam(learning_rate=self._default_learning_rate)
+        optimizer = tf.keras.optimizers.Adam(learning_rate=self._learning_rate)
         return optimizer
 
     def _train(self, data: KerasSequenceAdapter):

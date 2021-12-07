@@ -115,7 +115,7 @@ def test_overfit_pytorch_class(
         epochs=n_epochs,
         batch_size=len(data),
         num_items_per_class=2,
-        default_learning_rate=1e-2,  # Found to converge faster here
+        learning_rate=1e-2,  # Found to converge faster here
     )
 
     # Compute embedding for original vectors

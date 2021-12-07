@@ -34,7 +34,7 @@ def fit(
             ['AnyDNN'], Union['AnyOptimizer', Tuple['AnyOptimizer', 'AnyScheduler']]
         ]
     ] = None,
-    default_learning_rate: float = 1e-3,
+    learning_rate: float = 1e-3,
     scheduler_step: str = 'batch',
     device: str = 'cpu',
     preprocess_fn: Optional['PreprocFnType'] = None,
@@ -59,7 +59,7 @@ def fit(
             ['AnyDNN'], Union['AnyOptimizer', Tuple['AnyOptimizer', 'AnyScheduler']]
         ]
     ] = None,
-    default_learning_rate: float = 1e-3,
+    learning_rate: float = 1e-3,
     scheduler_step: str = 'batch',
     device: str = 'cpu',
     preprocess_fn: Optional['PreprocFnType'] = None,
@@ -90,7 +90,7 @@ def fit(
             ['AnyDNN'], Union['AnyOptimizer', Tuple['AnyOptimizer', 'AnyScheduler']]
         ]
     ] = None,
-    default_learning_rate: float = 1e-3,
+    learning_rate: float = 1e-3,
     scheduler_step: str = 'batch',
     device: str = 'cpu',
     preprocess_fn: Optional['PreprocFnType'] = None,
@@ -119,7 +119,7 @@ def fit(
             ['AnyDNN'], Union['AnyOptimizer', Tuple['AnyOptimizer', 'AnyScheduler']]
         ]
     ] = None,
-    default_learning_rate: float = 1e-3,
+    learning_rate: float = 1e-3,
     scheduler_step: str = 'batch',
     device: str = 'cpu',
     preprocess_fn: Optional['PreprocFnType'] = None,
