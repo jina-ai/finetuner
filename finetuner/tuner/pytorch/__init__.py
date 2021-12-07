@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence, Union
 
 import torch
 from torch import nn
+from torch.optim.lr_scheduler import _LRScheduler
 from torch.optim.optimizer import Optimizer
 from torch.utils.data._utils.collate import default_collate
 from torch.utils.data.dataloader import DataLoader
@@ -28,7 +29,7 @@ def _to_device(
         return [x.to(device) for x in inputs]
 
 
-class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
+class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
     def _get_loss(self, loss: Union[nn.Module, str]) -> nn.Module:
         """Get the loss layer."""
         if isinstance(loss, str):
@@ -74,10 +75,15 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
         return data_loader
 
-    def _get_default_optimizer(self, learning_rate: float) -> Optimizer:
-        """Get the default optimizer (Adam), if none was provided by user."""
+    def _move_model_to_device(self):
+        """Move the model to device and set device"""
+        self.device = get_device(self._device_name)
+        self._embed_model = self._embed_model.to(self.device)
 
-        return torch.optim.Adam(self._embed_model.parameters(), lr=learning_rate)
+    def _default_configure_optimizer(self, model: nn.Module) -> Optimizer:
+        """Get the default Adam optimizer"""
+        optimizer = torch.optim.Adam(model.parameters(), lr=self._learning_rate)
+        return optimizer
 
     def _eval(self, data: DataLoader):
         """Evaluate the model on given labeled data"""
@@ -104,7 +110,12 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         self._embed_model.train()
 
         for idx, (inputs, labels) in enumerate(data):
+
+            # Set state variables
             self.state.batch_index = idx
+            for param_idx, param_group in enumerate(self._optimizer.param_groups):
+                self.state.learning_rates[f'group_{param_idx}'] = param_group['lr']
+
             self._trigger_callbacks('on_train_batch_begin')
 
             inputs = _to_device(inputs, self.device)
@@ -117,6 +128,9 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
             loss.backward()
             self._optimizer.step()
 
+            if self._scheduler_step == 'batch' and self._scheduler is not None:
+                self._scheduler.step()
+
             self.state.current_loss = loss.item()
 
             self._trigger_callbacks('on_train_batch_end')
@@ -128,8 +142,6 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        optimizer: Optional[Optimizer] = None,
-        learning_rate: float = 1e-3,
         device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
@@ -148,13 +160,6 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
         :param batch_size: The batch size to use for training and evaluation
         :param num_items_per_class: Number of items from a single class to include in
             the batch. Only relevant for class datasets
-        :param optimizer: The optimizer to use for training. If none is passed, an
-            Adam optimizer is used by default, with learning rate specified by the
-            ``learning_rate`` parameter.
-        :param learning_rate: Learning rate for the default optimizer. If you
-            provide a custom optimizer, this learning rate will not apply.
-        :param device: The device to which to move the model. Supported options are
-            ``"cpu"`` and ``"cuda"`` (for GPU)
         """
         # Get dataloaders
         train_dl = self._get_data_loader(
@@ -175,13 +180,6 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
                 collate_fn=collate_fn,
             )
 
-        # Place model on device
-        self.device = get_device(device)
-        self._embed_model = self._embed_model.to(self.device)
-
-        # Create optimizer
-        self._optimizer = optimizer or self._get_default_optimizer(learning_rate)
-
         # Set state
         self.state = TunerState(num_epochs=epochs)
         self._trigger_callbacks('on_fit_begin')
@@ -197,6 +195,10 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer]):
 
             self._trigger_callbacks('on_train_epoch_begin')
             self._train(train_dl)
+
+            if self._scheduler_step == 'epoch' and self._scheduler is not None:
+                self._scheduler.step()
+
             self._trigger_callbacks('on_train_epoch_end')
 
             if eval_data:
