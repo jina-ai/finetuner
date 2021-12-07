@@ -360,7 +360,7 @@
                 </div>
                 <h1>Source code for finetuner.tuner.base</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">.callback</span> <span class="kn">import</span> <span class="n">BaseCallback</span><span class="p">,</span> <span class="n">ProgressBarCallback</span>
 <span class="kn">from</span> <span class="nn">.dataset</span> <span class="kn">import</span> <span class="n">ClassDataset</span><span class="p">,</span> <span class="n">SessionDataset</span>
@@ -368,7 +368,7 @@
 <span class="kn">from</span> <span class="nn">.miner.base</span> <span class="kn">import</span> <span class="n">BaseMiner</span>
 <span class="kn">from</span> <span class="nn">.state</span> <span class="kn">import</span> <span class="n">TunerState</span>
 
-<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDataLoader</span><span class="p">,</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">AnyOptimizer</span><span class="p">,</span> <span class="n">AnyTensor</span>
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDataLoader</span><span class="p">,</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">AnyOptimizer</span><span class="p">,</span> <span class="n">AnyScheduler</span><span class="p">,</span> <span class="n">AnyTensor</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="p">(</span>
@@ -403,14 +403,20 @@
         <span class="sd">"""Get the default miner for this loss, given the dataset type"""</span></div></div>
 
 
-<div class="viewcode-block" id="BaseTuner"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner">[docs]</a><span class="k">class</span> <span class="nc">BaseTuner</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">AnyDNN</span><span class="p">,</span> <span class="n">AnyDataLoader</span><span class="p">,</span> <span class="n">AnyOptimizer</span><span class="p">]):</span>
+<div class="viewcode-block" id="BaseTuner"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner">[docs]</a><span class="k">class</span> <span class="nc">BaseTuner</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">AnyDNN</span><span class="p">,</span> <span class="n">AnyDataLoader</span><span class="p">,</span> <span class="n">AnyOptimizer</span><span class="p">,</span> <span class="n">AnyScheduler</span><span class="p">]):</span>
     <span class="n">state</span><span class="p">:</span> <span class="n">TunerState</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">embed_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyDNN</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">loss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BaseLoss</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'SiameseLoss'</span><span class="p">,</span>
+        <span class="n">configure_optimizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Callable</span><span class="p">[[</span><span class="n">AnyDNN</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">AnyOptimizer</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">AnyOptimizer</span><span class="p">,</span> <span class="n">AnyScheduler</span><span class="p">]]]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
+        <span class="n">scheduler_step</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'batch'</span><span class="p">,</span>
         <span class="n">callbacks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">BaseCallback</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">"""Create the tuner instance.</span>
@@ -418,12 +424,49 @@
 <span class="sd">        :param embed_model: Model that produces embeddings from inputs</span>
 <span class="sd">        :param loss: Either the loss object instance, or the name of the loss function.</span>
 <span class="sd">            Currently available losses are ``SiameseLoss`` and ``TripletLoss``</span>
+<span class="sd">        :param configure_optimizer: A function that allows you to provide a custom</span>
+<span class="sd">            optimizer and learning rate. The function should take one input - the</span>
+<span class="sd">            embedding model, and return either just an optimizer or a tuple of an</span>
+<span class="sd">            optimizer and a learning rate scheduler.</span>
+
+<span class="sd">            For Keras, you should provide the learning rate scheduler directly to</span>
+<span class="sd">            the optimizer using the `learning_rate` argument in its ``__init__``</span>
+<span class="sd">            function - and this should be an instance of a subclass of</span>
+<span class="sd">            ``tf.keras.optimizer.schedulers.LearningRateScheduler`` - and not an</span>
+<span class="sd">            instance of the callback (``tf.keras.callbacks.LearningRateScheduler``).</span>
+<span class="sd">        :param learning_rate: Learning rate for the default optimizer. If you</span>
+<span class="sd">            provide a custom optimizer, this learning rate will not apply.</span>
+<span class="sd">        :param scheduler_step: At which interval should the learning rate sheduler's</span>
+<span class="sd">            step function be called. Valid options are "batch" and "epoch".</span>
+
+<span class="sd">            For Keras, this option has no effect, as ``LearningRateScheduler`` instances</span>
+<span class="sd">            are called by the optimizer on each step automatically.</span>
 <span class="sd">        :param callbacks: A list of callbacks. The progress bar callback</span>
 <span class="sd">            will be pre-prended to this list.</span>
+<span class="sd">        :param device: The device to which to move the model. Supported options are</span>
+<span class="sd">            ``"cpu"`` and ``"cuda"`` (for GPU)</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span> <span class="o">=</span> <span class="n">embed_model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_loss</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_learning_rate</span> <span class="o">=</span> <span class="n">learning_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_step</span> <span class="o">=</span> <span class="n">scheduler_step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_device_name</span> <span class="o">=</span> <span class="n">device</span>
 
+        <span class="c1"># Place model on device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_move_model_to_device</span><span class="p">()</span>
+
+        <span class="c1"># Create optimizer (and scheduler)</span>
+        <span class="k">if</span> <span class="n">configure_optimizer</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">configure_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler</span> <span class="o">=</span> <span class="n">res</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span> <span class="o">=</span> <span class="n">res</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_configure_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">)</span>
+
+        <span class="c1"># Prepare callbacks</span>
         <span class="n">callbacks</span> <span class="o">=</span> <span class="n">callbacks</span> <span class="ow">or</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span> <span class="o">=</span> <span class="p">[</span><span class="n">ProgressBarCallback</span><span class="p">()]</span> <span class="o">+</span> <span class="n">callbacks</span>
 
@@ -444,11 +487,19 @@
             <span class="n">batch_sampler</span> <span class="o">=</span> <span class="n">SessionSampler</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">'`dataset` must be either </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">SessionDataset</span><span class="p">)</span><span class="si">}</span><span class="s1"> or </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">ClassDataset</span><span class="p">)</span><span class="si">}</span><span class="s1">, '</span>
-                <span class="sa">f</span><span class="s1">'but receiving </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span>
+                <span class="sa">f</span><span class="s1">'`dataset` must be either </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">SessionDataset</span><span class="p">)</span><span class="si">}</span><span class="s1"> or'</span>
+                <span class="sa">f</span><span class="s1">' </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">ClassDataset</span><span class="p">)</span><span class="si">}</span><span class="s1">, but receiving </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">batch_sampler</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_move_model_to_device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Move the model to device and set device"""</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_default_configure_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyOptimizer</span><span class="p">:</span>
+        <span class="sd">"""Get the default optimizer (Adam), if none was provided by user."""</span>
 
     <span class="k">def</span> <span class="nf">_trigger_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">"""Trigger the specified method on all callbacks"""</span>
@@ -460,10 +511,6 @@
         <span class="sd">"""Get the base model of this object."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span>
 
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_get_default_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyOptimizer</span><span class="p">:</span>
-        <span class="sd">"""Get the default optimizer (Adam), if none was provided by user."""</span>
-
 <div class="viewcode-block" id="BaseTuner.fit"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.fit">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -472,9 +519,6 @@
         <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
         <span class="n">num_items_per_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyOptimizer</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
-        <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
         <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'PreprocFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'CollateFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -493,13 +537,6 @@
 <span class="sd">        :param batch_size: The batch size to use for training and evaluation</span>
 <span class="sd">        :param num_items_per_class: Number of items from a single class to include in</span>
 <span class="sd">            the batch. Only relevant for class datasets</span>
-<span class="sd">        :param optimizer: The optimizer to use for training. If none is passed, an</span>
-<span class="sd">            Adam optimizer is used by default, with learning rate specified by the</span>
-<span class="sd">            ``learning_rate`` parameter.</span>
-<span class="sd">        :param learning_rate: Learning rate for the default optimizer. If you</span>
-<span class="sd">            provide a custom optimizer, this learning rate will not apply.</span>
-<span class="sd">        :param device: The device to which to move the model. Supported options are</span>
-<span class="sd">            ``"cpu"`` and ``"cuda"`` (for GPU)</span>
 <span class="sd">        """</span></div>
 
 <div class="viewcode-block" id="BaseTuner.save"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.save">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>

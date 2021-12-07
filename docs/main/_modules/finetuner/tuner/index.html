@@ -359,7 +359,7 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.tuner</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseLoss</span>
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">get_framework</span>
@@ -370,6 +370,7 @@
     <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="p">(</span>
         <span class="n">AnyDNN</span><span class="p">,</span>
         <span class="n">AnyOptimizer</span><span class="p">,</span>
+        <span class="n">AnyScheduler</span><span class="p">,</span>
         <span class="n">DocumentSequence</span><span class="p">,</span>
         <span class="n">PreprocFnType</span><span class="p">,</span>
         <span class="n">CollateFnType</span><span class="p">,</span>
@@ -403,8 +404,13 @@
     <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
     <span class="n">num_items_per_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">loss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseLoss</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'SiameseLoss'</span><span class="p">,</span>
-    <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'AnyOptimizer'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">configure_optimizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+        <span class="n">Callable</span><span class="p">[</span>
+            <span class="p">[</span><span class="s1">'AnyDNN'</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="s1">'AnyOptimizer'</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">'AnyOptimizer'</span><span class="p">,</span> <span class="s1">'AnyScheduler'</span><span class="p">]]</span>
+        <span class="p">]</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
+    <span class="n">scheduler_step</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'batch'</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
     <span class="n">callbacks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s1">'BaseCallback'</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -430,11 +436,14 @@
 <span class="sd">        - ``TripletLoss`` for Triplet network</span>
 <span class="sd">    :param num_items_per_class: Number of items from a single class to include in</span>
 <span class="sd">        the batch. Only relevant for class datasets</span>
+<span class="sd">    :param configure_optimizer: A function that allows you to provide a custom</span>
+<span class="sd">        optimizer and learning rate. The function should take one input - the</span>
+<span class="sd">        embedding model, and return either just an optimizer or a tuple of an</span>
+<span class="sd">        optimizer and a learning rate scheduler.</span>
 <span class="sd">    :param learning_rate: Learning rate for the default optimizer. If you</span>
 <span class="sd">        provide a custom optimizer, this learning rate will not apply.</span>
-<span class="sd">    :param optimizer: The optimizer to use for training. If none is passed, an</span>
-<span class="sd">        Adam optimizer is used by default, with learning rate specified by the</span>
-<span class="sd">        ``learning_rate`` parameter.</span>
+<span class="sd">    :param scheduler_step: At which interval should the learning rate sheduler's</span>
+<span class="sd">        step function be called. Valid options are "batch" and "epoch".</span>
 <span class="sd">    :param device: The device to which to move the model. Supported options are</span>
 <span class="sd">        ``"cpu"`` and ``"cuda"`` (for GPU)</span>
 <span class="sd">    :param callbacks: A list of callbacks. The progress bar callback</span>
@@ -442,14 +451,19 @@
 <span class="sd">    """</span>
     <span class="n">ft</span> <span class="o">=</span> <span class="n">_get_tuner_class</span><span class="p">(</span><span class="n">embed_model</span><span class="p">)</span>
 
-    <span class="n">ft</span><span class="p">(</span><span class="n">embed_model</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">ft</span><span class="p">(</span>
+        <span class="n">embed_model</span><span class="p">,</span>
+        <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span>
+        <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span>
+        <span class="n">configure_optimizer</span><span class="o">=</span><span class="n">configure_optimizer</span><span class="p">,</span>
+        <span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span>
+        <span class="n">scheduler_step</span><span class="o">=</span><span class="n">scheduler_step</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
         <span class="n">train_data</span><span class="p">,</span>
         <span class="n">eval_data</span><span class="p">,</span>
         <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
-        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
-        <span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span>
-        <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
         <span class="n">preprocess_fn</span><span class="o">=</span><span class="n">preprocess_fn</span><span class="p">,</span>
         <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">,</span>
         <span class="n">num_items_per_class</span><span class="o">=</span><span class="n">num_items_per_class</span><span class="p">,</span>

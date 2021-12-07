@@ -400,10 +400,12 @@
         <span class="sd">"""</span>
 <span class="sd">        Called at the end of a training batch, after the backward pass.</span>
 <span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wandb_logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
-            <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">'epoch'</span><span class="p">:</span> <span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">epoch</span><span class="p">,</span> <span class="s1">'train_loss'</span><span class="p">:</span> <span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span><span class="p">},</span>
-            <span class="n">step</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_train_step</span><span class="p">,</span>
-        <span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'epoch'</span><span class="p">:</span> <span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">epoch</span><span class="p">,</span> <span class="s1">'train/loss'</span><span class="p">:</span> <span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">learning_rates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s1">'lr/</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">wandb_logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_train_step</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_train_step</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
 <div class="viewcode-block" id="WandBLogger.on_val_batch_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.wandb_logger/#finetuner.tuner.callback.wandb_logger.WandBLogger.on_val_batch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_val_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
@@ -419,7 +421,7 @@
 <span class="sd">        """</span>
         <span class="n">avg_loss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_val_losses</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wandb_logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
-            <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">'val_loss'</span><span class="p">:</span> <span class="n">avg_loss</span><span class="p">,</span> <span class="s1">'epoch'</span><span class="p">:</span> <span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">epoch</span><span class="p">},</span>
+            <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">'val/loss'</span><span class="p">:</span> <span class="n">avg_loss</span><span class="p">},</span>
             <span class="n">step</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_train_step</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_val_losses</span> <span class="o">=</span> <span class="p">[]</span></div>

@@ -368,7 +368,6 @@
     <span class="n">Any</span><span class="p">,</span>
     <span class="n">TYPE_CHECKING</span><span class="p">,</span>
     <span class="n">Callable</span><span class="p">,</span>
-    <span class="n">Optional</span><span class="p">,</span>
     <span class="n">Union</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -385,7 +384,9 @@
 <span class="n">AnyOptimizer</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span>
     <span class="s1">'AnyOptimizer'</span>
 <span class="p">)</span>  <span class="c1">#: The type of any implementation of an optimizer for training the model</span>
-
+<span class="n">AnyScheduler</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span>
+    <span class="s1">'AnyScheduler'</span>
+<span class="p">)</span>  <span class="c1">#: The type of any implementation of a learning rate scheduler</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">DocumentArrayMemmap</span>
