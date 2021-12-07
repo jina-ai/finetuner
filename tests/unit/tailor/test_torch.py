@@ -238,11 +238,37 @@ def test_freeze(model, layer_name, input_size, input_dtype, freeze):
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = pytorch_tailor.to_embedding_model(freeze=freeze, output_dim=2)
-    if freeze:
-        assert len(set(param.requires_grad for param in model.parameters())) == 2
+    model = pytorch_tailor.to_embedding_model(freeze=freeze)
+    if freeze:  # all freezed
+        assert set(param.requires_grad for param in model.parameters()) == {False}
     else:
         assert set(param.requires_grad for param in model.parameters()) == {True}
+
+
+def test_freeze_given_bottleneck_model_and_freeze_is_true(simple_cnn_model):
+    class _BottleneckModel(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self._linear_should_not_freeze = nn.Linear(in_features=128, out_features=64)
+
+        def forward(self, input_):
+            return self._linear(input_)
+
+    pytorch_tailor = PytorchTailor(
+        model=simple_cnn_model,
+        input_size=(1, 28, 28),
+        input_dtype='float32',
+    )
+
+    model = pytorch_tailor.to_embedding_model(
+        freeze=True, layer_name='linear_8', bottleneck_net=_BottleneckModel()
+    )
+    # assert bottleneck model is not freezed
+    for name, param in model.named_parameters():
+        if '_linear_should_not_freeze' in name:
+            assert param.requires_grad == True
+        else:
+            assert param.requires_grad == False
 
 
 @pytest.mark.parametrize(
@@ -270,9 +296,7 @@ def test_freeze_given_freeze_layers(
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = pytorch_tailor.to_embedding_model(
-        freeze=True, output_dim=2, freeze_layers=freeze_layers
-    )
+    model = pytorch_tailor.to_embedding_model(freeze=freeze_layers)
     for layer, param in zip(pytorch_tailor.embedding_layers, model.parameters()):
         layer_name = layer['name']
         if layer_name in freeze_layers:
@@ -294,14 +318,14 @@ def test_torch_lstm_model_parser():
         input_dtype='int64',
     )
     r = pytorch_tailor.embedding_layers
-    assert len(r) == 2
+    assert len(r) == 3
 
     # flat layer can be a nonparametric candidate
-    assert r[0]['output_features'] == 128
-    assert r[0]['nb_params'] == 0
+    assert r[0]['output_features'] == 64
+    assert r[0]['nb_params'] == 320000
 
-    assert r[1]['output_features'] == 32
-    assert r[1]['nb_params'] == 4128
+    assert r[1]['output_features'] == 128
+    assert r[1]['nb_params'] == 0
 
 
 def test_torch_mlp_model_parser():
@@ -335,3 +359,27 @@ def test_torch_mlp_model_parser():
 
     assert r[3]['output_features'] == 32
     assert r[3]['nb_params'] == 4128
+
+
+def test_attach_bottleneck_layer(vgg16_cnn_model):
+    class _BottleneckModel(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self._linear1 = nn.Linear(in_features=4096, out_features=1024)
+            self._relu1 = nn.ReLU()
+            self._linear2 = nn.Linear(in_features=1024, out_features=512)
+            self._softmax = nn.Softmax()
+
+        def forward(self, input_):
+            return self._softmax(self._linear2(self._relu1(self._linear1(input_))))
+
+    pytorch_tailor = PytorchTailor(
+        model=vgg16_cnn_model,
+        input_size=(3, 224, 224),
+        input_dtype='float32',
+    )
+    tailed_model = pytorch_tailor.to_embedding_model(
+        layer_name='linear_36', freeze=False, bottleneck_net=_BottleneckModel()
+    )
+    out = tailed_model(torch.rand(1, 3, 224, 224))
+    assert out.shape == (1, 512)

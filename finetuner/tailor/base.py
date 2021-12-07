@@ -1,5 +1,5 @@
 import abc
-from typing import Optional, Tuple, TYPE_CHECKING
+from typing import Optional, Tuple, TYPE_CHECKING, Union, List
 
 if TYPE_CHECKING:
     from ..helper import AnyDNN, LayerInfoType
@@ -32,17 +32,17 @@ class BaseTailor(abc.ABC):
     def to_embedding_model(
         self,
         layer_name: Optional[str] = None,
-        output_dim: Optional[int] = None,
-        freeze: bool = False,
+        freeze: Union[bool, List[str]] = False,
+        bottleneck_net: Optional['AnyDNN'] = None,
     ) -> 'AnyDNN':
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
         :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
             will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
             To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
-        :param output_dim: the dimensionality of the embedding output.
-        :param freeze: if set, then freeze all weights of the original model.
-
+        :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.
+        :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.
+        :return: Converted embedding model.
         """
         ...
 
@@ -80,11 +80,17 @@ class BaseTailor(abc.ABC):
             table.add_column(k)
         for s in _summary:
             style = None
-            if s['is_embedding_layer']:
-                style = 'green'
+            if s['trainable']:
+                style = 'bright_green'
+            elif not s['trainable']:
+                style = 'cyan'
+            if 'identity' in s['name']:
+                style = 'bright_black'
             table.add_row(*map(str, (s[v] for v in cols)), style=style)
         print(
             table,
-            '[green]Green[/green] layers can be used as embedding layers, '
-            'whose [b]name[/b] can be used as [b]layer_name[/b] in to_embedding_model(...).',
+            '[green]Green[/green] layers are trainable layers, '
+            '[cyan]Cyan[/cyan] layers are non-trainable layers or frozen layers.\n'
+            '[bright_black]Gray[/bright_black] layers indicates this layer has been replaced by an Identity layer.\n'
+            'Use to_embedding_model(...) to create embedding model.',
         )

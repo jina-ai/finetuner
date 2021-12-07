@@ -113,7 +113,7 @@ def get_lstm_display(framework):
   name          output_shape_display         nb_params   trainable  
  ────────────────────────────────────────────────────────────────── 
   embedding_1   [100, 64]                    320000      True       
-  lstm_2        [[[2, 2, 64], [2, 2, 64]]]   66560       False      
+  lstm_2        [[[2, 1, 64], [2, 1, 64]]]   66560       False      
   lastcell_3    [128]                        0           False      
   linear_4      [32]                         4128        True       
     '''
@@ -294,4 +294,4 @@ def test_display_vgg_original(framework, capsys):
     model = get_vgg(framework)
     _display = get_vgg_display(framework)
     display(model, input_size=(3, 224, 224))
-    # assert _display.strip() in capsys.readouterr().out.strip()
+    assert _display.strip() in capsys.readouterr().out.strip()

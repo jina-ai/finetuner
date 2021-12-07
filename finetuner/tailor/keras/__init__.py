@@ -1,7 +1,7 @@
-from typing import Optional, List, TYPE_CHECKING
+import copy
+from typing import Optional, List, TYPE_CHECKING, Union
 
-from tensorflow.keras import Model
-from tensorflow.keras.layers import Dense
+import tensorflow as tf
 
 from ..base import BaseTailor
 
@@ -74,9 +74,8 @@ class KerasTailor(BaseTailor):
     def to_embedding_model(
         self,
         layer_name: Optional[str] = None,
-        output_dim: Optional[int] = None,
-        freeze: bool = False,
-        freeze_layers: Optional[List[str]] = None,
+        freeze: Union[bool, List[str]] = False,
+        bottleneck_net: Optional['AnyDNN'] = None,
     ) -> 'AnyDNN':
 
         """Convert a general model from :py:attr:`.model` to an embedding model.
@@ -84,11 +83,11 @@ class KerasTailor(BaseTailor):
         :param layer_name: the name of the layer that is used for output embeddings. All layers *after* that layer
             will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
             To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
-        :param output_dim: the dimensionality of the embedding output.
-        :param freeze: if set, then freeze weights of a model. If :py:attr:`freeze_layers` is defined, only freeze layers in :py:attr:`freeze_layers`.
-        :param freeze_layers: if set, then freeze specific layers.
+        :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.
+        :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.
         :return: Converted embedding model.
         """
+        model = copy.deepcopy(self._model)
         _all_embed_layers = {l['name']: l for l in self.embedding_layers}
         if layer_name:
             try:
@@ -103,23 +102,24 @@ class KerasTailor(BaseTailor):
 
         index = _embed_layer['layer_idx']
 
-        if output_dim:
-            out = Dense(output_dim)(self._model.layers[index].output)
-            model = Model(self._model.input, out)
-        elif _embed_layer != self._model.layers[-1]:
-            out = self._model.layers[index].output
-            model = Model(self._model.input, out)
-        else:
-            model = self._model
+        if _embed_layer != model.layers[-1]:
+            out = model.layers[index].output
+            model = tf.keras.Model(model.input, out)
 
-        if freeze and freeze_layers:
+        if isinstance(freeze, list):
             for layer_name, layer in zip(_all_embed_layers, model.layers):
-                if layer_name in freeze_layers:
+                if layer_name in freeze:
                     layer.trainable = False
-        if freeze and not freeze_layers:
+        elif isinstance(freeze, bool) and freeze is True:
+            # freeze all layers, not including bottleneck module
             for layer in model.layers:
                 layer.trainable = False
 
-        # the last layer must be trainable
-        model.layers[-1].trainable = True
+        if bottleneck_net:
+            # append bottleneck net at the end of embedding model.
+            x = model.output
+            for layer in bottleneck_net.layers:
+                x = layer(x)
+            model = tf.keras.Model(model.input, x)
+
         return model

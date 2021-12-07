@@ -167,9 +167,9 @@ def test_freeze(model, layer_name, input_size, input_dtype, freeze):
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = paddle_tailor.to_embedding_model(freeze=freeze, output_dim=2)
+    model = paddle_tailor.to_embedding_model(freeze=freeze)
     if freeze:
-        assert len(set(param.trainable for param in model.parameters())) == 2
+        assert set(param.trainable for param in model.parameters()) == {False}
     else:
         assert set(param.trainable for param in model.parameters()) == {True}
 
@@ -199,15 +199,39 @@ def test_freeze_given_freeze_layers(
         input_size=input_size,
         input_dtype=input_dtype,
     )
-    model = pytorch_tailor.to_embedding_model(
-        freeze=True, output_dim=2, freeze_layers=freeze_layers
-    )
+    model = pytorch_tailor.to_embedding_model(freeze=freeze_layers)
     for layer, param in zip(pytorch_tailor.embedding_layers, model.parameters()):
         layer_name = layer['name']
         if layer_name in freeze_layers:
             assert param.trainable == False
         else:
             assert param.trainable == True
+
+
+def test_freeze_given_bottleneck_model_and_freeze_is_true(simple_cnn_model):
+    class _BottleneckModel(nn.Layer):
+        def __init__(self):
+            super().__init__()
+            self._linear_should_not_freeze = nn.Linear(in_features=128, out_features=64)
+
+        def forward(self, input_):
+            return self._linear(input_)
+
+    paddle_tailor = PaddleTailor(
+        model=simple_cnn_model,
+        input_size=(1, 28, 28),
+        input_dtype='float32',
+    )
+
+    model = paddle_tailor.to_embedding_model(
+        freeze=True, layer_name='linear_8', bottleneck_net=_BottleneckModel()
+    )
+    # assert bottleneck model is not freezed
+    for name, param in model.named_parameters():
+        if '_linear_should_not_freeze' in name:
+            assert param.trainable == True
+        else:
+            assert param.trainable == False
 
 
 @pytest.mark.parametrize(
@@ -324,3 +348,27 @@ def test_paddle_mlp_model_parser():
 
     assert r[3]['output_features'] == 32
     assert r[3]['nb_params'] == 4128
+
+
+def test_attach_bottleneck_layer(vgg16_cnn_model):
+    class _BottleneckModel(nn.Layer):
+        def __init__(self):
+            super().__init__()
+            self._linear1 = nn.Linear(in_features=4096, out_features=1024)
+            self._relu1 = nn.ReLU()
+            self._linear2 = nn.Linear(in_features=1024, out_features=512)
+            self._softmax = nn.Softmax()
+
+        def forward(self, input_):
+            return self._softmax(self._linear2(self._relu1(self._linear1(input_))))
+
+    paddle_tailor = PaddleTailor(
+        model=vgg16_cnn_model,
+        input_size=(3, 224, 224),
+        input_dtype='float32',
+    )
+    tailed_model = paddle_tailor.to_embedding_model(
+        layer_name='linear_36', freeze=False, bottleneck_net=_BottleneckModel()
+    )
+    out = tailed_model(paddle.rand((1, 3, 224, 224)))
+    assert out.shape == [1, 512]
