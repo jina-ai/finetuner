@@ -184,6 +184,9 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         self.state = TunerState(num_epochs=epochs)
         self._trigger_callbacks('on_fit_begin')
 
+        # Check for early stopping
+        self._stop_training = False
+
         for epoch in range(epochs):
 
             # Setting here as re-shuffling can change number of batches
@@ -211,6 +214,9 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
             self._trigger_callbacks('on_epoch_end')
 
+            if self._stop_training :
+                break
+            
         self._trigger_callbacks('on_fit_end')
 
     def save(self, *args, **kwargs):
