@@ -38,12 +38,12 @@ class Evaluator:
         eval_data: 'DocumentSequence',
         catalog: 'DocumentSequence',
         embed_model: Optional['AnyDNN'] = None,
+        limit: int = 20,
+        distance: str = 'cosine',
         device: str = 'cpu',
         batch_size: int = 256,
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
-        distance: str = 'cosine',
-        limit: int = 20,
     ):
         """
         Build an Evaluator object that can be used to evaluate an embedding model on a retrieval task
@@ -53,6 +53,9 @@ class Evaluator:
             match.
         :param catalog: A sequence of documents, against which the eval docs will be matched.
         :param embed_model: The embedding model to use, in order to extract document representations.
+        :param limit: Limit the number of results during matching.
+        :param distance: The type of distance to use when matching docs, avalilable options are
+            ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``
         :param device: the computational device for `embed_model`, can be either
             `cpu` or `cuda`.
         :param batch_size: number of Documents in a batch for embedding
@@ -63,21 +66,18 @@ class Evaluator:
             items into a batch. Should accept a list with the content of each item,
             and output a tensor (or a list/dict of tensors) that feed directly into the
             embedding model
-        :param distance: The type of distance to use when matching docs, avalilable options are
-            ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``
-        :param limit: Limit the number of results during matching.
         :return: None.
         """
-        self._embed_model = embed_model
         self._eval_data = eval_data
         self._catalog = catalog
         self._summary_docs = self._parse_eval_docs()
+        self._embed_model = embed_model
+        self._limit = limit
+        self._distance = distance
         self._device = device
         self._batch_size = batch_size
         self._preprocess_fn = preprocess_fn
         self._collate_fn = collate_fn
-        self._distance = distance
-        self._limit = limit
 
     @staticmethod
     def _doc_to_relevance(doc: Document) -> Tuple[List[int], int]:
