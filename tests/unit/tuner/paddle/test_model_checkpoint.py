@@ -67,6 +67,31 @@ def test_load_model(paddle_model: BaseTuner, tmpdir):
         assert (l1 == l2).all()
 
 
+def test_load_model_directly(paddle_model: BaseTuner, tmpdir):
+
+    new_model = copy.deepcopy(paddle_model)
+    finetuner.fit(
+        paddle_model,
+        epochs=1,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[TrainingCheckpoint(save_dir=tmpdir)],
+    )
+
+    tuner = PaddleTuner(
+        new_model,
+        optimizer=paddle.optimizer.Adam(
+            parameters=new_model.parameters(), learning_rate=0.001
+        ),
+    )
+    tuner.state = TunerState(epoch=0, batch_index=0, train_loss=50)
+
+    TrainingCheckpoint.load_model(tuner, os.path.join(tmpdir, 'saved_model_epoch_01'))
+
+    for l1, l2 in zip(paddle_model.parameters(), new_model.parameters()):
+        assert (l1 == l2).all()
+
+
 def test_save_best_only(paddle_model: BaseTuner, tmpdir):
 
     finetuner.fit(

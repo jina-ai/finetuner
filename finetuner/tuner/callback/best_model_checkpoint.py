@@ -65,7 +65,7 @@ class BestModelCheckpoint(BaseCallback):
             self._monitor_op = np.greater
             self._best = -np.Inf
         else:
-            if 'acc' in self._monitor or self._monitor.startswith('fmeasure'):
+            if 'acc' in self._monitor:  # Extend this to other metrics
                 self._monitor_op = np.greater
                 self._best = -np.Inf
             else:

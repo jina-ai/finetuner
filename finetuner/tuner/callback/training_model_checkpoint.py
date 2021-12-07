@@ -1,7 +1,6 @@
 import os
 from typing import TYPE_CHECKING
 
-import numpy as np
 from jina.logging.logger import JinaLogger
 
 from finetuner.helper import get_framework
@@ -32,7 +31,6 @@ class TrainingCheckpoint(BaseCallback):
         """
         self._logger = JinaLogger(self.__class__.__name__)
         self._save_dir = save_dir
-        self._train_losses = []
         if not save_dir:
             raise ValueError(
                 '``save_dir`` parameter is mandatory. Pass it in parameters'
@@ -42,20 +40,7 @@ class TrainingCheckpoint(BaseCallback):
         """
         Called at the end of the training epoch.
         """
-        self._save_model(tuner)
-        self._train_losses = []
-
-    def on_train_batch_end(self, tuner: 'BaseTuner'):
-        self._train_losses.append(tuner.state.train_loss)
-
-    def _save_model(self, tuner):
-        current = np.mean(self._train_losses)
-        if current is None:
-            self._logger.warning(
-                'Can save model only with train loss available, ' 'skipping.'
-            )
-        else:
-            self._save_model_framework(tuner)
+        self._save_model_framework(tuner)
 
     def _save_model_framework(self, tuner):
         """

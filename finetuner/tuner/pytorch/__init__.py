@@ -128,6 +128,10 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
             loss.backward()
             self._optimizer.step()
 
+            if self._scheduler_step == 'batch' and self._scheduler is not None:
+                self._scheduler.step()
+
+            self.state.current_loss = loss.item()
             self.state.train_loss = loss.item()
 
             self._trigger_callbacks('on_train_batch_end')
@@ -221,12 +225,12 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         """
 
         state = {
-                'epoch': kwargs.pop('epoch', 0),
-                'state_dict': self.embed_model.state_dict(),
-                'best': kwargs.pop('best', False),
-                'optimizer': self._optimizer.state_dict(),
-                'monitor': kwargs.pop('monitor', 'train_loss'),
-            }
+            'epoch': kwargs.pop('epoch', 0),
+            'state_dict': self.embed_model.state_dict(),
+            'best': kwargs.pop('best', False),
+            'optimizer': self._optimizer.state_dict(),
+            'monitor': kwargs.pop('monitor', 'train_loss'),
+        }
 
         torch.save(state, *args, **kwargs)
 
