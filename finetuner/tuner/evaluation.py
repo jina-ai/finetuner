@@ -16,7 +16,7 @@ from .. import __default_tag_key__
 from ..embedding import embed
 
 if TYPE_CHECKING:
-    from ..helper import AnyDNN, DocumentSequence
+    from ..helper import AnyDNN, DocumentSequence, PreprocFnType, CollateFnType
 
 
 METRICS = {
@@ -38,8 +38,12 @@ class Evaluator:
         eval_data: 'DocumentSequence',
         catalog: 'DocumentSequence',
         embed_model: Optional['AnyDNN'] = None,
-        distance: str = 'cosine',
         limit: int = 20,
+        distance: str = 'cosine',
+        device: str = 'cpu',
+        batch_size: int = 256,
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
     ):
         """
         Build an Evaluator object that can be used to evaluate an embedding model on a retrieval task
@@ -49,17 +53,31 @@ class Evaluator:
             match.
         :param catalog: A sequence of documents, against which the eval docs will be matched.
         :param embed_model: The embedding model to use, in order to extract document representations.
+        :param limit: Limit the number of results during matching.
         :param distance: The type of distance to use when matching docs, avalilable options are
             ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``
-        :param limit: Limit the number of results during matching.
+        :param device: the computational device for `embed_model`, can be either
+            `cpu` or `cuda`.
+        :param batch_size: number of Documents in a batch for embedding
+        :param preprocess_fn: A pre-processing function, to apply pre-processing to
+            documents on the fly. It should take as input the document in the dataset,
+            and output whatever content the model would accept.
+        :param collate_fn: The collation function to merge the content of individual
+            items into a batch. Should accept a list with the content of each item,
+            and output a tensor (or a list/dict of tensors) that feed directly into the
+            embedding model
         :return: None.
         """
-        self._embed_model = embed_model
         self._eval_data = eval_data
         self._catalog = catalog
         self._summary_docs = self._parse_eval_docs()
-        self._distance = distance
+        self._embed_model = embed_model
         self._limit = limit
+        self._distance = distance
+        self._device = device
+        self._batch_size = batch_size
+        self._preprocess_fn = preprocess_fn
+        self._collate_fn = collate_fn
 
     @staticmethod
     def _doc_to_relevance(doc: Document) -> Tuple[List[int], int]:
@@ -95,14 +113,25 @@ class Evaluator:
 
         return summmary_docs
 
+    def _embed(self, docs: 'DocumentSequence'):
+        """Extract embeddings on docs"""
+        embed(
+            docs,
+            embed_model=self._embed_model,
+            device=self._device,
+            batch_size=self._batch_size,
+            preprocess_fn=self._preprocess_fn,
+            collate_fn=self._collate_fn,
+        )
+
     def _score_docs(self) -> None:
         """
         Emded the evaluation docs and compute the matches from the catalog. Evaluation docs
         embeddings are overwritten, but matches are not
         """
         if self._embed_model is not None:
-            embed(self._eval_data, self._embed_model)
-            embed(self._catalog, self._embed_model)
+            self._embed(self._eval_data)
+            self._embed(self._catalog)
 
         for doc in self._summary_docs:
             doc.embedding = self._eval_data[doc.id].embedding
