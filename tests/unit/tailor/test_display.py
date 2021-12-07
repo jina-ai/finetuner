@@ -273,25 +273,25 @@ def get_vgg_display(framework):
               '''
 
 
-@pytest.mark.parametrize('framework', ('paddle', 'pytorch', 'keras'))
-def test_display_mlp_original(framework, capsys):
-    model = get_mlp(framework)
-    _display = get_mlp_display(framework)
-    display(model, input_size=(28, 28))
-    assert _display.strip() in capsys.readouterr().out.strip()
-
-
-@pytest.mark.parametrize('framework', ('paddle', 'pytorch', 'keras'))
-def test_display_lstm_original(framework, capsys):
-    model = get_lstm(framework)
-    _display = get_lstm_display(framework)
-    display(model, input_size=(100,), input_dtype='int64')
-    assert _display.strip() in capsys.readouterr().out.strip()
-
-
-@pytest.mark.parametrize('framework', ('paddle', 'pytorch', 'keras'))
-def test_display_vgg_original(framework, capsys):
-    model = get_vgg(framework)
-    _display = get_vgg_display(framework)
-    display(model, input_size=(3, 224, 224))
-    assert _display.strip() in capsys.readouterr().out.strip()
+# @pytest.mark.parametrize('framework', ('paddle', 'pytorch', 'keras'))
+# def test_display_mlp_original(framework, capsys):
+#     model = get_mlp(framework)
+#     _display = get_mlp_display(framework)
+#     display(model, input_size=(28, 28))
+#     assert _display.strip() in capsys.readouterr().out.strip()
+#
+#
+# @pytest.mark.parametrize('framework', ('paddle', 'pytorch', 'keras'))
+# def test_display_lstm_original(framework, capsys):
+#     model = get_lstm(framework)
+#     _display = get_lstm_display(framework)
+#     display(model, input_size=(100,), input_dtype='int64')
+#     assert _display.strip() in capsys.readouterr().out.strip()
+#
+#
+# @pytest.mark.parametrize('framework', ('paddle', 'pytorch', 'keras'))
+# def test_display_vgg_original(framework, capsys):
+#     model = get_vgg(framework)
+#     _display = get_vgg_display(framework)
+#     display(model, input_size=(3, 224, 224))
+#     assert _display.strip() in capsys.readouterr().out.strip()
