@@ -55,6 +55,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         default_learning_rate: float = 1e-3,
         scheduler_step: str = 'batch',
         callbacks: Optional[List[BaseCallback]] = None,
+        device: str = 'cpu',
         **kwargs,
     ):
         """Create the tuner instance.
@@ -81,14 +82,30 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
             are called by the optimizer on each step automatically.
         :param callbacks: A list of callbacks. The progress bar callback
             will be pre-prended to this list.
+        :param device: The device to which to move the model. Supported options are
+            ``"cpu"`` and ``"cuda"`` (for GPU)
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
-        self._configure_optimizer = configure_optimizer
         self._default_learning_rate = default_learning_rate
         self._scheduler_step = scheduler_step
         self._scheduler = None
+        self._device_name = device
 
+        # Place model on device
+        self._move_model_to_device()
+
+        # Create optimizer (and scheduler)
+        if configure_optimizer:
+            res = configure_optimizer(self._embed_model)
+            if isinstance(res, tuple):
+                self._optimizer, self._scheduler = res
+            else:
+                self._optimizer = res
+        else:
+            self._optimizer = self._default_configure_optimizer(self._embed_model)
+
+        # Prepare callbacks
         callbacks = callbacks or []
         self._callbacks = [ProgressBarCallback()] + callbacks
 
@@ -116,6 +133,10 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         return batch_sampler
 
     @abc.abstractmethod
+    def _move_model_to_device(self):
+        """Move the model to device and set device"""
+
+    @abc.abstractmethod
     def _default_configure_optimizer(self, model: AnyDNN) -> AnyOptimizer:
         """Get the default optimizer (Adam), if none was provided by user."""
 
@@ -137,7 +158,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         **kwargs,
@@ -156,8 +176,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         :param batch_size: The batch size to use for training and evaluation
         :param num_items_per_class: Number of items from a single class to include in
             the batch. Only relevant for class datasets
-        :param device: The device to which to move the model. Supported options are
-            ``"cpu"`` and ``"cuda"`` (for GPU)
         """
 
     @abc.abstractmethod

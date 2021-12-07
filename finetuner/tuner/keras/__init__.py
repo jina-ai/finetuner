@@ -60,6 +60,10 @@ class KerasTuner(
         adapter = KerasSequenceAdapter(sequence)
         return adapter
 
+    def _move_model_to_device(self):
+        """Move the model to device and set device"""
+        # This does nothing as explicit device placement is not required in Keras
+
     def _default_configure_optimizer(self, model: Layer) -> Optimizer:
         """Get the default Adam optimizer"""
         optimizer = tf.keras.optimizers.Adam(learning_rate=self._default_learning_rate)
@@ -114,7 +118,6 @@ class KerasTuner(
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         **kwargs,
@@ -132,8 +135,6 @@ class KerasTuner(
         :param batch_size: The batch size to use for training and evaluation
         :param num_items_per_class: Number of items from a single class to include in
             the batch. Only relevant for class datasets
-        :param device: The device to which to move the model. Supported options are
-            ``"cpu"`` and ``"cuda"`` (for GPU)
         """
 
         # Get dataloaders
@@ -155,21 +156,11 @@ class KerasTuner(
                 collate_fn=collate_fn,
             )
 
-        # Create optimizer (and scheduler)
-        if self._configure_optimizer:
-            res = self._configure_optimizer(self._embed_model)
-            if isinstance(res, tuple):
-                self._optimizer, self._scheduler = res
-            else:
-                self._optimizer = res
-        else:
-            self._optimizer = self._default_configure_optimizer(self._embed_model)
-
         # Set state
         self.state = TunerState(num_epochs=epochs)
         self._trigger_callbacks('on_fit_begin')
 
-        with get_device(device):
+        with get_device(self._device_name):
             for epoch in range(epochs):
 
                 # Setting here as re-shuffling can change number of batches

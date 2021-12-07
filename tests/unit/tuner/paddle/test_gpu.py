@@ -19,9 +19,9 @@ def test_gpu_paddle(generate_random_data, loss):
         nn.Linear(in_features=4, out_features=4),
     )
 
-    tuner = PaddleTuner(embed_model, loss=loss)
+    tuner = PaddleTuner(embed_model, loss=loss, device='cuda')
 
-    tuner.fit(data, data, epochs=2, batch_size=8, device='cuda')
+    tuner.fit(data, data, epochs=2, batch_size=8)
 
     for param in tuner.embed_model.parameters():
         assert str(param.place) == 'CUDAPlace(0)'

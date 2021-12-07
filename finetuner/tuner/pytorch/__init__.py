@@ -75,6 +75,11 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
         return data_loader
 
+    def _move_model_to_device(self):
+        """Move the model to device and set device"""
+        self.device = get_device(self._device_name)
+        self._embed_model = self._embed_model.to(self.device)
+
     def _default_configure_optimizer(self, model: nn.Module) -> Optimizer:
         """Get the default Adam optimizer"""
         optimizer = torch.optim.Adam(model.parameters(), lr=self._default_learning_rate)
@@ -155,8 +160,6 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         :param batch_size: The batch size to use for training and evaluation
         :param num_items_per_class: Number of items from a single class to include in
             the batch. Only relevant for class datasets
-        :param device: The device to which to move the model. Supported options are
-            ``"cpu"`` and ``"cuda"`` (for GPU)
         """
         # Get dataloaders
         train_dl = self._get_data_loader(
@@ -176,20 +179,6 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 preprocess_fn=preprocess_fn,
                 collate_fn=collate_fn,
             )
-
-        # Place model on device
-        self.device = get_device(device)
-        self._embed_model = self._embed_model.to(self.device)
-
-        # Create optimizer (and scheduler)
-        if self._configure_optimizer:
-            res = self._configure_optimizer(self._embed_model)
-            if isinstance(res, tuple):
-                self._optimizer, self._scheduler = res
-            else:
-                self._optimizer = res
-        else:
-            self._optimizer = self._default_configure_optimizer(self._embed_model)
 
         # Set state
         self.state = TunerState(num_epochs=epochs)

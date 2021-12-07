@@ -97,12 +97,12 @@ def fit(
         configure_optimizer=configure_optimizer,
         learning_rate=learning_rate,
         scheduler_step=scheduler_step,
+        device=device,
     ).fit(
         train_data,
         eval_data,
         epochs=epochs,
         batch_size=batch_size,
-        device=device,
         preprocess_fn=preprocess_fn,
         collate_fn=collate_fn,
         num_items_per_class=num_items_per_class,
