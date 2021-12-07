@@ -52,7 +52,7 @@ def test_to_embedding_fn(framework, freeze):
     assert get_framework(m1) == framework
 
 
-# @pytest.mark.parametrize('framework', ['keras', 'paddle', 'torch'])
-# def test_display(framework):
-#     m = embed_models[framework]()
-#     display(m, input_size=(5000,), input_dtype='int64')
+@pytest.mark.parametrize('framework', ['keras', 'paddle', 'torch'])
+def test_display(framework):
+    m = embed_models[framework]()
+    display(m, input_size=(5000,), input_dtype='int64')
