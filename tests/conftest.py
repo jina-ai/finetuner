@@ -15,13 +15,13 @@ def clear_session():
     tf.keras.backend.clear_session()
 
 
-# @pytest.fixture(autouse=True)
-# def seed_session():
-#     torch.manual_seed(42)
-#     tf.random.set_seed(42)
-#     paddle.seed(321)
-#     np.random.seed(42)
-#     python_random.seed(42)
+@pytest.fixture(autouse=True)
+def seed_session():
+    torch.manual_seed(42)
+    tf.random.set_seed(42)
+    paddle.seed(321)
+    np.random.seed(42)
+    python_random.seed(42)
 
 
 @pytest.fixture
