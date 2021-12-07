@@ -205,7 +205,7 @@ class KerasTuner(
             'monitor': kwargs.pop('monitor', 'train_loss'),
         }
         self.embed_model.save(*args, **kwargs)
-        with open(os.path.join(kwargs.get('filepath'), 'saved_state.pkl'), 'wb') as f:
+        with open(os.path.join(kwargs.get('filepath','./'), 'saved_state.pkl'), 'wb') as f:
             pickle.dump(state, f)
 
     def load(self, fp, *args, **kwargs):
