@@ -370,20 +370,6 @@
 <span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">get_framework</span>
 
 
-<span class="k">def</span> <span class="nf">_apply2batch</span><span class="p">(</span><span class="n">docs</span><span class="p">:</span> <span class="s1">'DocumentArray'</span><span class="p">,</span> <span class="n">fn</span><span class="p">:</span> <span class="s1">'PreprocFnType'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'DocumentArray'</span><span class="p">:</span>
-    <span class="n">da</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
-        <span class="n">d_new</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">d_new</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">da</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d_new</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">da</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
-
-        <span class="k">return</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">da</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">docs</span>
-
-
 <div class="viewcode-block" id="embed"><a class="viewcode-back" href="../../../api/finetuner.embedding/#finetuner.embedding.embed">[docs]</a><span class="k">def</span> <span class="nf">embed</span><span class="p">(</span>
     <span class="n">docs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">'DocumentArray'</span><span class="p">,</span> <span class="s1">'DocumentArrayMemmap'</span><span class="p">],</span>
     <span class="n">embed_model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>
@@ -431,8 +417,10 @@
     <span class="k">with</span> <span class="n">device</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">docs</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">preprocess_fn</span><span class="p">:</span>
-                <span class="n">b</span> <span class="o">=</span> <span class="n">_apply2batch</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">preprocess_fn</span><span class="p">)</span>
-            <span class="n">batch_inputs</span> <span class="o">=</span> <span class="n">collate_fn</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">contents</span><span class="p">)</span>
+                <span class="n">contents</span> <span class="o">=</span> <span class="p">[</span><span class="n">preprocess_fn</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">b</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">contents</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">contents</span>
+            <span class="n">batch_inputs</span> <span class="o">=</span> <span class="n">collate_fn</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
             <span class="n">b</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 
 
@@ -459,8 +447,10 @@
     <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">inference_mode</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">docs</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">preprocess_fn</span><span class="p">:</span>
-                <span class="n">b</span> <span class="o">=</span> <span class="n">_apply2batch</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">preprocess_fn</span><span class="p">)</span>
-            <span class="n">batch_inputs</span> <span class="o">=</span> <span class="n">collate_fn</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">contents</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">contents</span> <span class="o">=</span> <span class="p">[</span><span class="n">preprocess_fn</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">b</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">contents</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">contents</span>
+            <span class="n">batch_inputs</span> <span class="o">=</span> <span class="n">collate_fn</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
             <span class="n">b</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">is_training_before</span><span class="p">:</span>
         <span class="n">embed_model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
@@ -488,8 +478,10 @@
     <span class="n">embed_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">docs</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">preprocess_fn</span><span class="p">:</span>
-            <span class="n">b</span> <span class="o">=</span> <span class="n">_apply2batch</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">preprocess_fn</span><span class="p">)</span>
-        <span class="n">batch_inputs</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">to_tensor</span><span class="p">(</span><span class="n">collate_fn</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">contents</span><span class="p">),</span> <span class="n">place</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">contents</span> <span class="o">=</span> <span class="p">[</span><span class="n">preprocess_fn</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">b</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">contents</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">contents</span>
+        <span class="n">batch_inputs</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">to_tensor</span><span class="p">(</span><span class="n">collate_fn</span><span class="p">(</span><span class="n">contents</span><span class="p">),</span> <span class="n">place</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
         <span class="n">b</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">is_training_before</span><span class="p">:</span>
         <span class="n">embed_model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
@@ -504,7 +496,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Dec 06, 2021.
+                    Last updated on Dec 07, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
