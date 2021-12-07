@@ -16,7 +16,7 @@ def params():
         'batch_size': 256,
         'num_items_per_class': 32,
         'feature_dim': 32,
-        'learning_rate': 0.01,
+        'default_learning_rate': 0.01,
         'num_train': 1000,
         'num_eval': 1000,
         'num_predict': 100,
