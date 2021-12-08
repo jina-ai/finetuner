@@ -31,6 +31,7 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
+        num_workers: int = 1,
     ) -> KerasSequenceAdapter:
         """Get the dataloader for the dataset
 
@@ -53,7 +54,7 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
             dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn
         )
 
-        adapter = KerasSequenceAdapter(sequence)
+        adapter = KerasSequenceAdapter(sequence, workers=num_workers)
         return adapter
 
     def _get_default_optimizer(self, learning_rate: float) -> Optimizer:

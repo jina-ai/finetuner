@@ -1,5 +1,14 @@
 import abc
-from typing import TYPE_CHECKING, List, Generic, Tuple, Union, TypeVar, Sequence
+from typing import (
+    TYPE_CHECKING,
+    List,
+    Generic,
+    Iterator,
+    Tuple,
+    Union,
+    TypeVar,
+    Sequence,
+)
 
 import numpy as np
 
@@ -19,17 +28,11 @@ class BaseSampler(abc.ABC):
         self._batches = []
         self._index = 0
 
-    def __iter__(self: 'T') -> 'T':
-        return self
+    def __iter__(self: 'T') -> Iterator[List[int]]:
+        yield from self._batches
 
-    def __next__(self) -> List[int]:
-        if self._index == len(self):
-            self._index = 0
-            raise StopIteration
-
-        b = self.batches[self._index]
-        self._index += 1
-        return b
+        # After batches are exhausted, recreate
+        self._prepare_batches()
 
     def __len__(self) -> int:
         return len(self.batches)
