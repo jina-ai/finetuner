@@ -35,7 +35,7 @@ def test_simple_sequential_model(tmpdir, params, loss):
     pt.save(path=model_path)
 
     # load the checkpoint and ensure the dim
-    user_model.set_state_dict(paddle.load(model_path)['state_dict'])
+    user_model.set_state_dict(paddle.load(model_path))
     user_model.eval()
     inputs = paddle.to_tensor(
         np.random.random(
