@@ -46,7 +46,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
     ) -> DataLoader:
-        """ Get the dataloader for the dataset"""
+        """Get the dataloader for the dataset"""
 
         if collate_fn:
 
@@ -214,9 +214,9 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
             self._trigger_callbacks('on_epoch_end')
 
-            if self._stop_training :
+            if self._stop_training:
                 break
-            
+
         self._trigger_callbacks('on_fit_end')
 
     def save(self, *args, **kwargs):
