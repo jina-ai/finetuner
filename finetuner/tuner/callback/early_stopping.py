@@ -102,9 +102,9 @@ class EarlyStopping(BaseCallback):
             else:
                 self._wait += 1
                 if self._wait == self._patience:
-                    self._logger.success(
+                    self._logger.info(
                         'Training is stopping, no improvement for {} epochs'.format(
                             self._patience
                         )
                     )
-                    tuner._stop_training = True
+                    tuner.stop_training = True
