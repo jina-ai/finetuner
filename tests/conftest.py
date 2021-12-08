@@ -1,13 +1,27 @@
+import random as python_random
+
+import numpy as np
+import paddle
 import pytest
 import tensorflow as tf
-import numpy as np
-from finetuner import __default_tag_key__
+import torch
 from jina import Document, DocumentArray
+
+from finetuner import __default_tag_key__
 
 
 @pytest.fixture(autouse=True)
 def clear_session():
     tf.keras.backend.clear_session()
+
+
+@pytest.fixture(autouse=True)
+def seed_session():
+    torch.manual_seed(42)
+    tf.random.set_seed(42)
+    paddle.seed(321)
+    np.random.seed(42)
+    python_random.seed(42)
 
 
 @pytest.fixture

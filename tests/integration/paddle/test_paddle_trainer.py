@@ -59,19 +59,3 @@ def test_session_data(loss, create_easy_data_session):
     # Train
     tuner = PaddleTuner(model, loss=loss)
     tuner.fit(train_data=data, epochs=2, batch_size=12)
-
-
-def test_custom_optimizer(create_easy_data_session):
-    """Test training using a custom optimizer"""
-
-    # Prepare model and data
-    data, _ = create_easy_data_session(5, 10, 2)
-
-    # Simple model
-    model = nn.Sequential(nn.Flatten(), nn.Linear(in_features=10, out_features=10))
-
-    optimizer = paddle.optimizer.SGD(parameters=model.parameters(), learning_rate=1e-3)
-
-    # Train
-    tuner = PaddleTuner(model, loss='TripletLoss')
-    tuner.fit(train_data=data, epochs=2, batch_size=10, optimizer=optimizer)

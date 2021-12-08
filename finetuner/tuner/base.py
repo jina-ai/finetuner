@@ -1,5 +1,5 @@
 import abc
-from typing import TYPE_CHECKING, Generic, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Callable, Generic, List, Optional, Tuple, Union
 
 from .callback import BaseCallback, ProgressBarCallback
 from .dataset import ClassDataset, SessionDataset
@@ -7,7 +7,7 @@ from .dataset.samplers import ClassSampler, SessionSampler
 from .miner.base import BaseMiner
 from .state import TunerState
 
-from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyTensor
+from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyScheduler, AnyTensor
 
 if TYPE_CHECKING:
     from ..helper import (
@@ -42,14 +42,20 @@ class BaseLoss(Generic[AnyTensor]):
         """Get the default miner for this loss, given the dataset type"""
 
 
-class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
+class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnyScheduler]):
     state: TunerState
 
     def __init__(
         self,
         embed_model: Optional[AnyDNN] = None,
         loss: Union[BaseLoss, str] = 'SiameseLoss',
+        configure_optimizer: Optional[
+            Callable[[AnyDNN], Union[AnyOptimizer, Tuple[AnyOptimizer, AnyScheduler]]]
+        ] = None,
+        learning_rate: float = 1e-3,
+        scheduler_step: str = 'batch',
         callbacks: Optional[List[BaseCallback]] = None,
+        device: str = 'cpu',
         **kwargs,
     ):
         """Create the tuner instance.
@@ -57,12 +63,49 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         :param embed_model: Model that produces embeddings from inputs
         :param loss: Either the loss object instance, or the name of the loss function.
             Currently available losses are ``SiameseLoss`` and ``TripletLoss``
+        :param configure_optimizer: A function that allows you to provide a custom
+            optimizer and learning rate. The function should take one input - the
+            embedding model, and return either just an optimizer or a tuple of an
+            optimizer and a learning rate scheduler.
+
+            For Keras, you should provide the learning rate scheduler directly to
+            the optimizer using the `learning_rate` argument in its ``__init__``
+            function - and this should be an instance of a subclass of
+            ``tf.keras.optimizer.schedulers.LearningRateScheduler`` - and not an
+            instance of the callback (``tf.keras.callbacks.LearningRateScheduler``).
+        :param learning_rate: Learning rate for the default optimizer. If you
+            provide a custom optimizer, this learning rate will not apply.
+        :param scheduler_step: At which interval should the learning rate sheduler's
+            step function be called. Valid options are "batch" and "epoch".
+
+            For Keras, this option has no effect, as ``LearningRateScheduler`` instances
+            are called by the optimizer on each step automatically.
         :param callbacks: A list of callbacks. The progress bar callback
             will be pre-prended to this list.
+        :param device: The device to which to move the model. Supported options are
+            ``"cpu"`` and ``"cuda"`` (for GPU)
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
+        self._learning_rate = learning_rate
+        self._scheduler_step = scheduler_step
+        self._scheduler = None
+        self._device_name = device
 
+        # Place model on device
+        self._move_model_to_device()
+
+        # Create optimizer (and scheduler)
+        if configure_optimizer:
+            res = configure_optimizer(self._embed_model)
+            if isinstance(res, tuple):
+                self._optimizer, self._scheduler = res
+            else:
+                self._optimizer = res
+        else:
+            self._optimizer = self._default_configure_optimizer(self._embed_model)
+
+        # Prepare callbacks
         callbacks = callbacks or []
         self._callbacks = [ProgressBarCallback()] + callbacks
 
@@ -83,11 +126,19 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
             batch_sampler = SessionSampler(dataset.labels, batch_size, shuffle)
         else:
             raise TypeError(
-                f'`dataset` must be either {type(SessionDataset)} or {type(ClassDataset)}, '
-                f'but receiving {type(dataset)}'
+                f'`dataset` must be either {type(SessionDataset)} or'
+                f' {type(ClassDataset)}, but receiving {type(dataset)}'
             )
 
         return batch_sampler
+
+    @abc.abstractmethod
+    def _move_model_to_device(self):
+        """Move the model to device and set device"""
+
+    @abc.abstractmethod
+    def _default_configure_optimizer(self, model: AnyDNN) -> AnyOptimizer:
+        """Get the default optimizer (Adam), if none was provided by user."""
 
     def _trigger_callbacks(self, method: str):
         """Trigger the specified method on all callbacks"""
@@ -100,10 +151,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         return self._embed_model
 
     @abc.abstractmethod
-    def _get_default_optimizer(self, learning_rate: float) -> AnyOptimizer:
-        """Get the default optimizer (Adam), if none was provided by user."""
-
-    @abc.abstractmethod
     def fit(
         self,
         train_data: 'DocumentSequence',
@@ -111,9 +158,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        optimizer: Optional[AnyOptimizer] = None,
-        learning_rate: float = 1e-3,
-        device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         **kwargs,
@@ -132,13 +176,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer]):
         :param batch_size: The batch size to use for training and evaluation
         :param num_items_per_class: Number of items from a single class to include in
             the batch. Only relevant for class datasets
-        :param optimizer: The optimizer to use for training. If none is passed, an
-            Adam optimizer is used by default, with learning rate specified by the
-            ``learning_rate`` parameter.
-        :param learning_rate: Learning rate for the default optimizer. If you
-            provide a custom optimizer, this learning rate will not apply.
-        :param device: The device to which to move the model. Supported options are
-            ``"cpu"`` and ``"cuda"`` (for GPU)
         """
 
     @abc.abstractmethod
