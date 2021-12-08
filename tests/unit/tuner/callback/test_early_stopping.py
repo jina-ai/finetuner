@@ -86,7 +86,7 @@ def test_early_stopping_pytorch(pytorch_model: BaseTuner):
         callbacks=[checkpoint],
     )
 
-    assert checkpoint._wait == checkpoint._patience
+    assert checkpoint._epoch_counter == checkpoint._patience
 
 
 def test_early_stopping_paddle(paddle_model: BaseTuner):
@@ -106,7 +106,7 @@ def test_early_stopping_paddle(paddle_model: BaseTuner):
         callbacks=[checkpoint],
     )
 
-    assert checkpoint._wait == checkpoint._patience
+    assert checkpoint._epoch_counter == checkpoint._patience
 
 
 def test_early_stopping_keras(keras_model: BaseTuner):
@@ -124,4 +124,22 @@ def test_early_stopping_keras(keras_model: BaseTuner):
         callbacks=[checkpoint],
     )
 
-    assert checkpoint._wait == checkpoint._patience
+    assert checkpoint._epoch_counter == checkpoint._patience
+
+
+def test_baseline(keras_model: BaseTuner):
+
+    tuner = KerasTuner(
+        embed_model=keras_model, optimizer=tf.keras.optimizers.Adam(learning_rate=0.01)
+    )
+    checkpoint = EarlyStopping(baseline=0.001)
+
+    finetuner.fit(
+        tuner.embed_model,
+        epochs=50,
+        train_data=generate_fashion(num_total=1000),
+        eval_data=generate_fashion(is_testset=True, num_total=200),
+        callbacks=[checkpoint],
+    )
+
+    assert checkpoint._epoch_counter == checkpoint._patience
