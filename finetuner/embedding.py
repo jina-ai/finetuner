@@ -18,7 +18,6 @@ def embed(
     collate_fn: Optional['CollateFnType'] = None,
 ) -> None:
     """Fill the embedding of Documents inplace by using `embed_model`
-
     :param docs: the Documents to be embedded
     :param embed_model: the embedding model written in Keras/Pytorch/Paddle
     :param device: the computational device for `embed_model`, can be either

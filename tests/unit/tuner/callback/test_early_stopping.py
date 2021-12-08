@@ -11,7 +11,6 @@ from finetuner.toydata import generate_fashion
 from finetuner.tuner.pytorch import PytorchTuner
 from finetuner.tuner.paddle import PaddleTuner
 from finetuner.tuner.keras import KerasTuner
-from finetuner.tuner.state import TunerState
 
 
 @pytest.fixture(scope='module')
