@@ -225,7 +225,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
             'epoch': kwargs.pop('epoch', 0),
             'state_dict': self.embed_model.state_dict(),
             'best': kwargs.pop('best', False),
-            'optimizer': kwargs.pop('optimizer', 'None'),
+            'optimizer': self._optimizer.state_dict(),
             'monitor': kwargs.pop('monitor', 'train_loss'),
         }
 

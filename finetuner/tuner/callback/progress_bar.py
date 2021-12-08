@@ -87,7 +87,7 @@ class ProgressBarCallback(BaseCallback):
         """
         Called at the end of a training batch, after the backward pass.
         """
-        self.losses.append(tuner.state.train_loss)
+        self.losses.append(tuner.state.current_loss)
         self.pbar.update(
             task_id=self.train_pbar_id, advance=1, metrics=self.train_loss_str
         )
@@ -111,7 +111,7 @@ class ProgressBarCallback(BaseCallback):
         Called at the start of the evaluation batch, after the batch data has already
         been loaded.
         """
-        self.losses.append(tuner.state.val_loss)
+        self.losses.append(tuner.state.current_loss)
 
         self.pbar.update(
             task_id=self.eval_pbar_id, advance=1, metrics=self.val_loss_str

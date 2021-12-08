@@ -83,14 +83,6 @@ class BestModelCheckpoint(BaseCallback):
     def on_train_batch_end(self, tuner: 'BaseTuner'):
         self._train_losses.append(tuner.state.train_loss)
 
-    def on_val_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the end of the validation epoch.
-        """
-        if self._monitor == 'val_loss':
-            self._save_model(tuner)
-            self._valid_losses = []
-
     def on_val_batch_end(self, tuner: 'BaseTuner'):
         self._valid_losses.append(tuner.state.val_loss)
 

@@ -50,7 +50,8 @@ class WandBLogger(BaseCallback):
         Called at the start of the evaluation batch, after the batch data has already
         been loaded.
         """
-        self._val_losses.append(tuner.state.val_loss)
+
+        self._val_losses.append(tuner.state.current_loss)
 
     def on_val_end(self, tuner: 'BaseTuner'):
         """
