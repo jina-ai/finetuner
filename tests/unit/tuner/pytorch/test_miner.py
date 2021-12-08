@@ -137,7 +137,7 @@ def test_torch_strategic_mining_semihard_thresholding_row_max(labels):
     distances = torch.Tensor(((0, 1), (1, 0)))
     semihard_tsh = torch.Tensor((2, 0.5)).unsqueeze(1)
 
-    strategic_mining_helper = TorchStrategicMiningHelper('hard', 'hard')
+    strategic_mining_helper = TorchStrategicMiningHelper('hard', 'semihard')
     tmp = strategic_mining_helper._get_per_row_max(distances, semihard_tsh)
     (_, _), invalid_row_mask = tmp
 
@@ -150,7 +150,7 @@ def test_torch_strategic_mining_semihard_thresholding_row_min(labels):
     distances = torch.Tensor(((0, 1), (1, 0)))
     semihard_tsh = torch.Tensor((2, 0.5)).unsqueeze(1)
 
-    strategic_mining_helper = TorchStrategicMiningHelper('hard', 'hard')
+    strategic_mining_helper = TorchStrategicMiningHelper('semihard', 'hard')
     tmp = strategic_mining_helper._get_per_row_min(torch.clone(distances), semihard_tsh)
     (_, _), invalid_row_mask = tmp
 
@@ -266,6 +266,21 @@ def test_triplet_easy_hard_miner_semihard_hard(labels, dummy_distances):
     )
     anch_ind, pos_ind, neg_ind = TripletEasyHardMiner(
         pos_strategy='semihard', neg_strategy='hard'
+    ).mine(labels, dummy_distances)
+    np.testing.assert_equal(anch_ind.numpy(), true_anch_ind)
+    np.testing.assert_equal(pos_ind.numpy(), true_pos_ind)
+    np.testing.assert_equal(neg_ind.numpy(), true_neg_ind)
+
+
+def test_triplet_easy_hard_miner_hard_semihard(labels, dummy_distances):
+    # TODO: should non-semihard filtering be called before the semihard filtering?
+    # This can lead to samples not being semihard, here at anchor index 2
+    true_anch_ind, true_pos_ind, true_neg_ind = np.array(
+        # Hardest positives and negatives that closest anchor, but still furhter than positives
+        ((0, 1, 2, 3, 4, 5), (2, 3, 0, 1, 5, 4), (1, 4, 3, 0, 2, 3))
+    )
+    anch_ind, pos_ind, neg_ind = TripletEasyHardMiner(
+        pos_strategy='hard', neg_strategy='semihard'
     ).mine(labels, dummy_distances)
     np.testing.assert_equal(anch_ind.numpy(), true_anch_ind)
     np.testing.assert_equal(pos_ind.numpy(), true_pos_ind)
