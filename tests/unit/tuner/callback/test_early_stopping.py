@@ -76,7 +76,7 @@ def test_early_stopping_pytorch(pytorch_model: BaseTuner):
         embed_model=pytorch_model,
         optimizer=torch.optim.Adam(params=pytorch_model.parameters(), lr=0.001),
     )
-    checkpoint = EarlyStopping(verbose=1)
+    checkpoint = EarlyStopping()
 
     finetuner.fit(
         tuner.embed_model,
@@ -97,7 +97,7 @@ def test_early_stopping_paddle(paddle_model: BaseTuner):
             parameters=paddle_model.parameters(), learning_rate=0.001
         ),
     )
-    checkpoint = EarlyStopping(verbose=1)
+    checkpoint = EarlyStopping()
     finetuner.fit(
         tuner.embed_model,
         epochs=50,
@@ -114,7 +114,7 @@ def test_early_stopping_keras(keras_model: BaseTuner):
     tuner = KerasTuner(
         embed_model=keras_model, optimizer=tf.keras.optimizers.Adam(learning_rate=0.01)
     )
-    checkpoint = EarlyStopping(verbose=1)
+    checkpoint = EarlyStopping()
 
     finetuner.fit(
         tuner.embed_model,
