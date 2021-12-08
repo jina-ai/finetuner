@@ -90,7 +90,7 @@ def test_load_model_directly(keras_model: BaseTuner, tmpdir):
         callbacks=[TrainingCheckpoint(tmpdir)],
     )
 
-    tuner = KerasTuner()
+    tuner = KerasTuner(embed_model=keras_model)
     tuner.state = TunerState(epoch=0, batch_index=0, train_loss=50)
 
     TrainingCheckpoint.load_model(tuner, os.path.join(tmpdir, 'saved_model_epoch_02'))

@@ -222,23 +222,12 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         :param kwargs: Keyword arguments to pass to ``paddle.save`` function
         """
 
-        state = {
-            'epoch': kwargs.pop('epoch', 0),
-            'state_dict': self.embed_model.state_dict(),
-            'best': kwargs.pop('best', False),
-            'optimizer': self._optimizer.state_dict(),
-            'monitor': kwargs.pop('monitor', 'train_loss'),
-        }
-
-        paddle.save(state, *args, **kwargs)
+        paddle.save(self.embed_model.state_dict(), *args, **kwargs)
 
     def load(self, fp):
-        """Loads the embedding model, optimizer and updates the state epoch."""
+        """Loads the embedding model"""
 
-        checkpoint = paddle.load(fp)
-        self._embed_model.set_state_dict(checkpoint['state_dict'])
-        self._optimizer.set_state_dict(checkpoint['optimizer'])
-        self.state.epoch = checkpoint['epoch']
+        self._embed_model.set_state_dict(paddle.load(fp))
 
 
 def get_device(device: str):

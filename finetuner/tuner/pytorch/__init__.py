@@ -225,23 +225,12 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         :param kwargs: Keyword arguments to pass to ``torch.save`` function
         """
 
-        state = {
-            'epoch': kwargs.pop('epoch', 0),
-            'state_dict': self.embed_model.state_dict(),
-            'best': kwargs.pop('best', False),
-            'optimizer': self._optimizer.state_dict(),
-            'monitor': kwargs.pop('monitor', 'train_loss'),
-        }
-
-        torch.save(state, *args, **kwargs)
+        torch.save(self.embed_model.state_dict(), *args, **kwargs)
 
     def load(self, fp):
-        """Loads the embedding model, optimizer and updates the state epoch."""
+        """Loads the embedding model"""
 
-        checkpoint = torch.load(fp)
-        self._embed_model.load_state_dict(checkpoint['state_dict'])
-        self._optimizer.load_state_dict(checkpoint['optimizer'])
-        self.state.epoch = checkpoint['epoch']
+        self._embed_model.load_state_dict(torch.load(fp))
 
 
 def get_device(device: str):

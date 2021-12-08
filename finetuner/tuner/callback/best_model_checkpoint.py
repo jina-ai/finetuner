@@ -2,6 +2,9 @@ import os
 from typing import TYPE_CHECKING
 
 import numpy as np
+import pickle
+import torch
+import paddle
 from jina.logging.logger import JinaLogger
 
 from finetuner.helper import get_framework
@@ -108,21 +111,30 @@ class BestModelCheckpoint(BaseCallback):
         if get_framework(tuner.embed_model) == 'keras':
             tuner.save(
                 filepath=self._get_file_path(),
-                epoch=tuner.state.epoch + 1,
-                monitor=self._monitor,
             )
+            state = {
+                'epoch': tuner.state.epoch + 1,
+            }
+            with open(
+                os.path.join(self._get_file_path(), 'saved_state.pkl'), 'wb'
+            ) as f:
+                pickle.dump(state, f)
         elif get_framework(tuner.embed_model) == 'torch':
-            tuner.save(
-                f=self._get_file_path(),
-                epoch=tuner.state.epoch + 1,
-                monitor=self._monitor,
-            )
+            state = {
+                'epoch': tuner.state.epoch + 1,
+                'state_dict': tuner.embed_model.state_dict(),
+                'optimizer': tuner._optimizer.state_dict(),
+            }
+
+            torch.save(state, f=self._get_file_path())
         elif get_framework(tuner.embed_model) == 'paddle':
-            tuner.save(
-                path=self._get_file_path(),
-                epoch=tuner.state.epoch + 1,
-                monitor=self._monitor,
-            )
+            state = {
+                'epoch': tuner.state.epoch + 1,
+                'state_dict': tuner.embed_model.state_dict(),
+                'optimizer': tuner._optimizer.state_dict(),
+            }
+
+            paddle.save(state, path=self._get_file_path())
 
     def _get_file_path(self):
         """
@@ -136,8 +148,22 @@ class BestModelCheckpoint(BaseCallback):
         return file_path
 
     @staticmethod
-    def load_model(tuner, fp):
+    def load_model(tuner: 'BaseTuner', fp: str):
         """
-        Loads the model.
+        Loads the model and tuner state
         """
-        tuner.load(fp)
+        if get_framework(tuner.embed_model) == 'keras':
+            tuner.load(fp)
+            with open(os.path.join(fp, 'saved_state.pkl'), 'rb') as f:
+                loaded_state = pickle.load(f)
+            tuner.state.epoch = loaded_state['epoch']
+        elif get_framework(tuner.embed_model) == 'torch':
+            checkpoint = torch.load(fp)
+            tuner._embed_model.load_state_dict(checkpoint['state_dict'])
+            tuner._optimizer.load_state_dict(checkpoint['optimizer'])
+            tuner.state.epoch = checkpoint['epoch']
+        elif get_framework(tuner.embed_model) == 'paddle':
+            checkpoint = paddle.load(fp)
+            tuner._embed_model.set_state_dict(checkpoint['state_dict'])
+            tuner._optimizer.set_state_dict(checkpoint['optimizer'])
+            tuner.state.epoch = checkpoint['epoch']
