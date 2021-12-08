@@ -185,7 +185,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         self._trigger_callbacks('on_fit_begin')
 
         # Check for early stopping
-        self._stop_training = False
+        self.stop_training = False
 
         for epoch in range(epochs):
 
@@ -214,7 +214,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
             self._trigger_callbacks('on_epoch_end')
 
-            if self._stop_training:
+            if self.stop_training:
                 break
 
         self._trigger_callbacks('on_fit_end')
