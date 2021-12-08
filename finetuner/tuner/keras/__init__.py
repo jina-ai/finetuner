@@ -58,7 +58,9 @@ class KerasTuner(
             dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn
         )
 
-        adapter = KerasSequenceAdapter(sequence, workers=num_workers)
+        adapter = KerasSequenceAdapter(
+            sequence, workers=num_workers, use_multiprocessing=num_workers > 1
+        )
         return adapter
 
     def _move_model_to_device(self):

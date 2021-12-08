@@ -12,9 +12,6 @@ from typing import (
 
 import numpy as np
 
-if TYPE_CHECKING:
-    from finetuner.helper import T
-
 AnyLabel = TypeVar('AnyLabel')
 
 
@@ -23,25 +20,16 @@ class BaseSampler(abc.ABC):
         if batch_size <= 0:
             raise ValueError('batch_size must be a positive integer')
 
-        self._labels = labels
-        self._batch_size = batch_size
-        self._batches = []
-        self._index = 0
+        self._prepare_batches()
 
-    def __iter__(self: 'T') -> Iterator[List[int]]:
+    def __iter__(self) -> Iterator[List[int]]:
         yield from self._batches
 
         # After batches are exhausted, recreate
         self._prepare_batches()
 
     def __len__(self) -> int:
-        return len(self.batches)
-
-    @property
-    def batches(self):
-        if self._index == 0:
-            self._prepare_batches()
-        return self._batches
+        return len(self._batches)
 
     @abc.abstractmethod
     def _prepare_batches(self) -> None:
