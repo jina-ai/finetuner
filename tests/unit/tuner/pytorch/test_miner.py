@@ -99,6 +99,19 @@ def dummy_tuples():
     )
 
 
+def test_torch_strategic_mining_helper_inputs():
+
+    with pytest.raises(ValueError) as err:
+        TorchStrategicMiningHelper(pos_strategy='some wrong', neg_strategy='arguments')
+    with pytest.raises(ValueError) as err:
+        TorchStrategicMiningHelper(pos_strategy='semihard', neg_strategy='all')
+    with pytest.raises(ValueError) as err:
+        TorchStrategicMiningHelper(pos_strategy='all', neg_strategy='semihard')
+
+    with pytest.raises(ValueError) as err:
+        TorchStrategicMiningHelper(pos_strategy='semihard', neg_strategy='semihard')
+
+
 def test_torch_strategic_mining_helper_neg_neg(labels, dummy_distances):
 
     labels1, labels2 = labels.unsqueeze(1), labels.unsqueeze(0)
