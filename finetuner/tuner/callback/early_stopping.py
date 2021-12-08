@@ -76,7 +76,7 @@ class EarlyStopping(BaseCallback):
             self._train_losses = []
 
     def on_train_batch_end(self, tuner: 'BaseTuner'):
-        self._train_losses.append(tuner.state.train_loss)
+        self._train_losses.append(tuner.state.current_loss)
 
     def on_val_end(self, tuner: 'BaseTuner'):
         """
@@ -87,9 +87,14 @@ class EarlyStopping(BaseCallback):
             self._valid_losses = []
 
     def on_val_batch_end(self, tuner: 'BaseTuner'):
-        self._valid_losses.append(tuner.state.val_loss)
+        self._valid_losses.append(tuner.state.current_loss)
 
     def _check(self, tuner):
+        """
+        Checks if training should be stopped. If `True` 
+        it stops it. 
+        """
+
         if self._monitor == 'val_loss':
             current = np.mean(self._valid_losses)
         else:
@@ -109,6 +114,9 @@ class EarlyStopping(BaseCallback):
                     self._stop_training(tuner)
                      
     def _stop_training(self, tuner):
+        """
+        Stops independently of the framework used.
+        """
         if get_framework(tuner.embed_model) == 'keras':
             tuner.embed_model.stop_training = True
         elif get_framework(tuner.embed_model) == 'torch':
