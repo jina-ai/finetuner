@@ -102,6 +102,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 loss = self._loss(embeddings, labels)
 
             self.state.val_loss = loss.item()
+            self.state.current_loss = loss.item()
             self._trigger_callbacks('on_val_batch_end')
 
     def _train(self, data: DataLoader):

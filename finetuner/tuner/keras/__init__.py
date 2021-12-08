@@ -95,6 +95,7 @@ class KerasTuner(
             )
 
             self.state.train_loss = loss.numpy()
+            self.state.current_loss = loss.numpy()
             self._trigger_callbacks('on_train_batch_end')
 
         data.on_epoch_end()  # To re-create batches
@@ -110,6 +111,7 @@ class KerasTuner(
             loss = self._loss(embeddings, labels)
 
             self.state.val_loss = loss.numpy()
+            self.state.current_loss = loss.numpy()
             self._trigger_callbacks('on_val_batch_end')
 
         data.on_epoch_end()  # To re-create batches
