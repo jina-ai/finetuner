@@ -59,7 +59,7 @@
    
    finetuner.fit(
        embed_model,
-       generate_fashion, 
+       generate_fashion(), 
        interactive=True)
    ```
 
@@ -121,7 +121,7 @@ Learn more about {term}`embedding model`.
 </div>
 
 +++
-Learn more about {term}`labeled data`.
+Learn more about {term}`labeled dataset`.
 
 
 :::

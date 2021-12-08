@@ -96,7 +96,7 @@ def fit(
 
     f.expose_endpoint('/next')  #: for allowing client to fetch for the next batch
     f.expose_endpoint('/fit')  #: for signaling the backend to fit on the labeled data
-    f.expose_endpoint('/feed')  #: for signaling the backend to fit on the labeled data
+    f.expose_endpoint('/feed')  #: for feeding data to the DataIterator
     f.expose_endpoint(
         '/save'
     )  #: for signaling the backend to save the current state of the model

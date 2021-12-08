@@ -69,7 +69,7 @@ class FTExecutor(Executor):
             limit=int(parameters.get('topk', 10)),
             exclude_self=True,
         )
-        for d in docs.traverse_flat(['r', 'm']):
+        for d in docs.traverse_flat('r,m'):
             d.pop('blob', 'embedding')
 
     @requests(on='/fit')
@@ -124,7 +124,7 @@ class DataIterator(Executor):
 
     @requests(on='/fit')
     def add_fit_data(self, docs: DocumentArray, **kwargs):
-        for d in docs.traverse_flat(['r', 'm']):
+        for d in docs.traverse_flat('r,m'):
             d.content = self._all_data[d.id].content
         self._labeled_dam.extend(docs)
         return self._labeled_dam
