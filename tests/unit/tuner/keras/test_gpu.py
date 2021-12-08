@@ -17,9 +17,9 @@ def test_gpu_keras(generate_random_data, loss, tf_gpu_config):
     embed_model.add(tf.keras.layers.InputLayer(input_shape=(4,)))
     embed_model.add(tf.keras.layers.Dense(4))
 
-    tuner = KerasTuner(embed_model, loss)
+    tuner = KerasTuner(embed_model, loss, device='cuda')
 
-    tuner.fit(data, data, epochs=2, batch_size=8, device='cuda')
+    tuner.fit(data, data, epochs=2, batch_size=8)
 
 
 @pytest.mark.gpu

@@ -39,10 +39,12 @@ class WandBLogger(BaseCallback):
         """
         Called at the end of a training batch, after the backward pass.
         """
-        self.wandb_logger.log(
-            data={'epoch': tuner.state.epoch, 'train_loss': tuner.state.current_loss},
-            step=self._train_step,
-        )
+
+        data = {'epoch': tuner.state.epoch, 'train/loss': tuner.state.current_loss}
+        for key, val in tuner.state.learning_rates.items():
+            data[f'lr/{key}'] = val
+
+        self.wandb_logger.log(data=data, step=self._train_step)
         self._train_step += 1
 
     def on_val_batch_end(self, tuner: 'BaseTuner'):
@@ -58,7 +60,7 @@ class WandBLogger(BaseCallback):
         """
         avg_loss = np.mean(self._val_losses)
         self.wandb_logger.log(
-            data={'val_loss': avg_loss, 'epoch': tuner.state.epoch},
+            data={'val/loss': avg_loss},
             step=self._train_step,
         )
         self._val_losses = []
