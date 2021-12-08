@@ -23,7 +23,6 @@ class EarlyStopping(BaseCallback):
         monitor: str = 'val_loss',
         mode: str = 'auto',
         patience: int = 2,
-        verbose: int = 0,
     ):
         """
         :param monitor: if `monitor='loss'` best bodel saved will be according
@@ -38,13 +37,11 @@ class EarlyStopping(BaseCallback):
             the rest of the quantities.
         :param patience: integer, the number of epochs after which the training is
             stopped if there is no improvement
-        :param verbose: set to 1 if you want to print updates
         """
         self._logger = JinaLogger(self.__class__.__name__)
         self._monitor = monitor
         self._mode = mode
         self._patience = patience
-        self._verbose = verbose
         self._train_losses = []
         self._valid_losses = []
         self._wait = 0
@@ -62,7 +59,7 @@ class EarlyStopping(BaseCallback):
             self._monitor_op = np.greater
             self._best = -np.Inf
         else:
-            if 'acc' in self._monitor or self._monitor.startswith('fmeasure'):
+            if 'acc' in self._monitor:  # to adjust other metrics are added
                 self._monitor_op = np.greater
                 self._best = -np.Inf
             else:
@@ -105,22 +102,9 @@ class EarlyStopping(BaseCallback):
             else:
                 self._wait += 1
                 if self._wait == self._patience:
-                    self._logger.success('Training is stopping')
-                    if self._verbose > 0:
-                        print(
-                            'Training is stopping, no improvement for {} epochs'.format(
-                                self._patience
-                            )
+                    self._logger.success(
+                        'Training is stopping, no improvement for {} epochs'.format(
+                            self._patience
                         )
-                    self._stop_training(tuner)
-
-    def _stop_training(self, tuner):
-        """
-        Stops independently of the framework used.
-        """
-        if get_framework(tuner.embed_model) == 'keras':
-            tuner._stop_training = True
-        elif get_framework(tuner.embed_model) == 'torch':
-            tuner._stop_training = True
-        elif get_framework(tuner.embed_model) == 'paddle':
-            tuner._stop_training = True
+                    )
+                    tuner._stop_training = True
