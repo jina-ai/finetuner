@@ -4,7 +4,35 @@ from typing import Callable, Optional, Tuple
 
 
 class TorchStrategicMiningHelper:
-    def __init__(self, pos_strategy, neg_strategy) -> None:
+    def __init__(self, pos_strategy: str, neg_strategy: str) -> None:
+        """
+        This helper implements easy-hard mining for tuples or triplets in
+        siamese and triplet respectively. The following strategies are
+        available.
+
+        Pos. Strategy:
+        - 'hard': Returns hardest positive (furthest) sample per anchor
+        - 'semihard': Returns the hardest positive sample per anchor, such
+          that it is closer than the selected negative
+        - 'easy': Returns the easiest positive sample per anchor
+        - 'all': Returns all positive samples
+
+        Neg. Strategy:
+        - 'hard': Returns hardest negative (closest) sample per anchor
+        - 'semihard': Returns the hardest negative sample per anchor, such
+          that it is further than the selected negative
+        - 'easy': Returns the easiest negative sample per anchor
+        - 'all': Returns all negative samples
+
+        Not allowed:
+        - pos. and neg. strategy cannot be set to 'semihard' simultaneously
+        - When pos. or neg. strategy is set to 'semihard' the other cannot be
+          set to 'all'
+
+        :param pos_strategy: Strategy for selecting positive samples
+        :param neg_strategy: Strategy for selecting negative samples
+        """
+
         allowed_strategies = ['easy', 'semihard', 'hard', 'all']
         if (
             pos_strategy not in allowed_strategies
