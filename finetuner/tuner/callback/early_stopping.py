@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import numpy as np
 from jina.logging.logger import JinaLogger
@@ -24,7 +24,7 @@ class EarlyStopping(BaseCallback):
         mode: str = 'auto',
         patience: int = 2,
         min_delta: int = 0,
-        baseline: float = None,
+        baseline: Optional[float] = None,
     ):
         """
         :param monitor: if `monitor='loss'` best bodel saved will be according
