@@ -160,9 +160,6 @@ class KerasTuner(
         self.state = TunerState(num_epochs=epochs)
         self._trigger_callbacks('on_fit_begin')
 
-        # Check for early stopping
-        self.stop_training = False
-
         with get_device(self._device_name):
             for epoch in range(epochs):
 

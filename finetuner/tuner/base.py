@@ -92,6 +92,9 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         self._scheduler = None
         self._device_name = device
 
+        # Check for early stopping
+        self.stop_training = False
+
         # Place model on device
         self._move_model_to_device()
 
