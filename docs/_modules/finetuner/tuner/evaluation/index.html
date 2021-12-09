@@ -450,6 +450,7 @@
             <span class="n">preprocess_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_preprocess_fn</span><span class="p">,</span>
             <span class="n">collate_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_collate_fn</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="n">docs</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float64'</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_score_docs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
@@ -527,7 +528,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Dec 07, 2021.
+                    Last updated on Dec 09, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
