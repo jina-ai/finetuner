@@ -47,7 +47,6 @@ class Evaluator:
     ):
         """
         Build an Evaluator object that can be used to evaluate an embedding model on a retrieval task
-
         :param eval_data: A sequence of documents. Each document should contain ground truth matches under
             ``doc.matches`` and relevance scores under ``doc.tags[finetuner.__default_tag_key__]`` for each
             match.
@@ -123,6 +122,7 @@ class Evaluator:
             preprocess_fn=self._preprocess_fn,
             collate_fn=self._collate_fn,
         )
+        docs.embeddings = docs.embeddings.astype('float64')
 
     def _score_docs(self) -> None:
         """
