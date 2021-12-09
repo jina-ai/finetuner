@@ -34,42 +34,51 @@ class PytorchTailor(BaseTailor):
             module.name = name
 
         def _get_shape(output):
+            output_shape = None
             if isinstance(output, (list, tuple)):
-                output_shape = [_get_shape(o) for o in output]
+                output_shape = [
+                    _get_shape(o) for o in output if isinstance(o, torch.Tensor)
+                ]
                 if len(output) == 1:
                     output_shape = output_shape[0]
+            elif output is None:
+                pass
             else:
-                output_shape = list(output.shape)
+                if isinstance(output, torch.Tensor):
+                    output_shape = list(output.shape)
             return output_shape
 
         def register_hook(module):
             def hook(module, input, output):
+                input_shape = _get_shape(input)
+                output_shape = _get_shape(output)
 
-                class_name = str(module.__class__).split('.')[-1].split("'")[0]
+                if input_shape and output_shape:
+                    class_name = str(module.__class__).split('.')[-1].split("'")[0]
 
-                module_idx = len(summary)
+                    module_idx = len(summary)
 
-                m_key = f'{class_name.lower()}_{module_idx + 1}'
-                summary[m_key] = OrderedDict()
-                summary[m_key]['cls_name'] = module.__class__.__name__
-                summary[m_key]['name'] = m_key
-                summary[m_key]['output_shape'] = _get_shape(output)
-                summary[m_key]['input_shape'] = _get_shape(input)
-                summary[m_key]['module_name'] = module.name
+                    m_key = f'{class_name.lower()}_{module_idx + 1}'
+                    summary[m_key] = OrderedDict()
+                    summary[m_key]['cls_name'] = module.__class__.__name__
+                    summary[m_key]['name'] = m_key
+                    summary[m_key]['output_shape'] = _get_shape(output)
+                    summary[m_key]['input_shape'] = _get_shape(input)
+                    summary[m_key]['module_name'] = module.name
 
-                params = 0
-                summary[m_key]['trainable'] = False
-                if hasattr(module, 'weight') and hasattr(module.weight, 'size'):
-                    params += np.prod(list(module.weight.size()))
-                    summary[m_key]['trainable'] = module.weight.requires_grad
-                if hasattr(module, 'bias') and hasattr(module.bias, 'size'):
-                    params += np.prod(list(module.bias.size()))
-                if hasattr(module, 'all_weights'):
-                    params += sum(
-                        np.prod(ww.size()) for w in module.all_weights for ww in w
-                    )
+                    params = 0
+                    summary[m_key]['trainable'] = False
+                    if hasattr(module, 'weight') and hasattr(module.weight, 'size'):
+                        params += np.prod(list(module.weight.size()))
+                        summary[m_key]['trainable'] = module.weight.requires_grad
+                    if hasattr(module, 'bias') and hasattr(module.bias, 'size'):
+                        params += np.prod(list(module.bias.size()))
+                    if hasattr(module, 'all_weights'):
+                        params += sum(
+                            np.prod(ww.size()) for w in module.all_weights for ww in w
+                        )
 
-                summary[m_key]['nb_params'] = params
+                    summary[m_key]['nb_params'] = params
 
             if (
                 not isinstance(module, nn.Sequential)
