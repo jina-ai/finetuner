@@ -120,7 +120,7 @@ def _set_embeddings_paddle(
         else:
             contents = b.contents
         batch_inputs = paddle.to_tensor(collate_fn(contents), place=device)
-        
+
         b.embeddings = embed_model(batch_inputs).numpy()
     if is_training_before:
         embed_model.train()
