@@ -62,8 +62,8 @@ class PytorchTailor(BaseTailor):
                     summary[m_key] = OrderedDict()
                     summary[m_key]['cls_name'] = module.__class__.__name__
                     summary[m_key]['name'] = m_key
-                    summary[m_key]['output_shape'] = _get_shape(output)
-                    summary[m_key]['input_shape'] = _get_shape(input)
+                    summary[m_key]['output_shape'] = output_shape
+                    summary[m_key]['input_shape'] = input_shape
                     summary[m_key]['module_name'] = module.name
 
                     params = 0
