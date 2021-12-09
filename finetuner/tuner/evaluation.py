@@ -123,6 +123,7 @@ class Evaluator:
             preprocess_fn=self._preprocess_fn,
             collate_fn=self._collate_fn,
         )
+        docs.embeddings = docs.embeddings.astype('float64')
 
     def _score_docs(self) -> None:
         """
