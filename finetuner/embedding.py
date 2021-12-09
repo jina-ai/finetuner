@@ -89,7 +89,7 @@ def _set_embeddings_torch(
             else:
                 contents = b.contents
             batch_inputs = collate_fn(contents).to(device)
-            b.embeddings = embed_model(batch_inputs).cpu().detach().numpy()
+            b.embeddings = embed_model(batch_inputs.float()).cpu().detach().numpy()
     if is_training_before:
         embed_model.train()
 
@@ -120,6 +120,7 @@ def _set_embeddings_paddle(
         else:
             contents = b.contents
         batch_inputs = paddle.to_tensor(collate_fn(contents), place=device)
-        b.embeddings = embed_model(batch_inputs).numpy()
+        batch_inputs_float = paddle.cast(batch_inputs, dtype='float64')
+        b.embeddings = embed_model(batch_inputs_float).numpy()
     if is_training_before:
         embed_model.train()
