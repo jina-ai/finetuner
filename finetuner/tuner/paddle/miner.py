@@ -130,8 +130,8 @@ class SiameseEasyHardMiner(BaseClassMiner[paddle.Tensor]):
             to_numpy=True,
         )
 
-        matches = paddle.Tensor(updated_matches)
-        diffs = paddle.Tensor(updated_diffs)
+        matches = paddle.to_tensor(updated_matches, place=matches.place)
+        diffs = paddle.Tensor(updated_diffs, place=matches.place)
 
         pos_inds = paddle.nonzero(matches).transpose([1, 0])
         neg_inds = paddle.nonzero(diffs).transpose([1, 0])

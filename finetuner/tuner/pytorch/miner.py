@@ -186,11 +186,9 @@ class TripletEasyHardMiner(BaseClassMiner[torch.Tensor]):
         diffs = matches ^ 1
 
         matches.fill_diagonal_(0)
-        print("TORCH MATCHES/DIFFS: ", matches, diffs)
         matches, diffs = self.strategic_mining_helper.apply_strategy(
             matches, diffs, distances
         )
-        print("TORCH UPDATED MATCHES/DIFFS: ", matches, diffs)
 
         triplets = matches.unsqueeze(2) * diffs.unsqueeze(1)
 

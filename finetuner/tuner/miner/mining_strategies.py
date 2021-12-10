@@ -227,6 +227,6 @@ class TorchStrategicMiningHelper:
                     diff_mat, dist_mat, self.neg_strategy
                 )
         if to_numpy:
-            return match_mat.cpu().detach().numpy(), diff_mat.cpu().detach().numpy()
+            return match_mat.cpu().numpy(), diff_mat.cpu().detach().numpy()
         else:
             return match_mat, diff_mat
