@@ -95,9 +95,9 @@ class SiameseEasyHardMiner(BaseClassMiner[tf.Tensor]):
 
         # Apply mining strategy
         updated_matches, updated_diffs = self.strategic_mining_helper.apply_strategy(
-            torch.tensor(matches.numpy()),
-            torch.tensor(diffs.numpy()),
-            torch.tensor(distances.numpy()),
+            torch.Tensor(matches.numpy()),
+            torch.Tensor(diffs.numpy()),
+            torch.Tensor(distances.numpy()),
             to_numpy=True,
         )
         # Send updated tensors to GPU if available
