@@ -41,6 +41,7 @@ def fit(
     collate_fn: Optional['CollateFnType'] = None,
     num_items_per_class: Optional[int] = None,
     callbacks: Optional[List['BaseCallback']] = None,
+    num_workers: int = 0,
 ) -> 'AnyDNN':
     ...
 
@@ -66,6 +67,7 @@ def fit(
     collate_fn: Optional['CollateFnType'] = None,
     num_items_per_class: Optional[int] = None,
     callbacks: Optional[List['BaseCallback']] = None,
+    num_workers: int = 0,
     to_embedding_model: bool = True,  #: below are tailor args
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
@@ -97,6 +99,7 @@ def fit(
     collate_fn: Optional['CollateFnType'] = None,
     num_items_per_class: Optional[int] = None,
     callbacks: Optional[List['BaseCallback']] = None,
+    num_workers: int = 0,
     interactive: bool = True,  #: below are labeler args
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
@@ -126,6 +129,7 @@ def fit(
     collate_fn: Optional['CollateFnType'] = None,
     num_items_per_class: Optional[int] = None,
     callbacks: Optional[List['BaseCallback']] = None,
+    num_workers: int = 0,
     interactive: bool = True,  #: below are labeler args
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
