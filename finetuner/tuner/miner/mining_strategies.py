@@ -228,8 +228,9 @@ class TorchStrategicMiningHelper:
                 )
         if to_numpy:
             return (
-                match_mat.cpu().numpy().astype('uint8'),
-                diff_mat.cpu().detach().numpy().astype('uint8'),
+                # This has to int32 for paddle to
+                match_mat.cpu().numpy().astype('int32'),
+                diff_mat.cpu().detach().numpy().astype('int32'),
             )
         else:
-            return match_mat.to(torch.uint8), diff_mat.to(torch.uint8)
+            return match_mat.to(torch.int32), diff_mat.to(torch.int32)
