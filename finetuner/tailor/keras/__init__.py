@@ -1,4 +1,3 @@
-import copy
 from typing import Optional, List, TYPE_CHECKING, Union
 
 import tensorflow as tf
@@ -87,7 +86,6 @@ class KerasTailor(BaseTailor):
         :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.
         :return: Converted embedding model.
         """
-        model = copy.deepcopy(self._model)
         _all_embed_layers = {l['name']: l for l in self.embedding_layers}
         if layer_name:
             try:
@@ -102,9 +100,11 @@ class KerasTailor(BaseTailor):
 
         index = _embed_layer['layer_idx']
 
-        if _embed_layer != model.layers[-1]:
-            out = model.layers[index].output
-            model = tf.keras.Model(model.input, out)
+        if _embed_layer != self._model.layers[-1]:
+            out = self._model.layers[index].output
+            model = tf.keras.Model(self._model.input, out)
+        else:
+            model = self._model
 
         if isinstance(freeze, list):
             for layer_name, layer in zip(_all_embed_layers, model.layers):
