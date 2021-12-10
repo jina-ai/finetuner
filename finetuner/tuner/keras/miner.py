@@ -101,8 +101,13 @@ class SiameseEasyHardMiner(BaseClassMiner[tf.Tensor]):
             to_numpy=True,
         )
 
-        matches = tf.convert_to_tensor(updated_matches, dtype=matches.dtype)
-        diffs = tf.convert_to_tensor(updated_diffs, dtype=diffs.dtype)
+        if len(tf.config.list_physical_devices('GPU')) > 0:
+            with tf.device('/CPU:0'):
+                matches = tf.convert_to_tensor(updated_matches, dtype=matches.dtype)
+                diffs = tf.convert_to_tensor(updated_diffs, dtype=diffs.dtype)
+        else:
+            matches = tf.convert_to_tensor(updated_matches, dtype=matches.dtype)
+            diffs = tf.convert_to_tensor(updated_diffs, dtype=diffs.dtype)
 
         ind1_pos, ind2_pos = tf.unstack(tf.where(matches), axis=1)
         ind1_neg, ind2_neg = tf.unstack(tf.where(diffs), axis=1)

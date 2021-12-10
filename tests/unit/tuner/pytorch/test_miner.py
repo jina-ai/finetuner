@@ -342,7 +342,9 @@ def test_triplet_session_miner_given_insufficient_inputs(session_labels, cut_ind
 
 
 @pytest.mark.gpu
-@pytest.mark.parametrize('miner', [SiameseMiner, TripletMiner])
+@pytest.mark.parametrize(
+    'miner', [SiameseMiner, TripletMiner, SiameseEasyHardMiner, TripletEasyHardMiner]
+)
 def test_class_miner_gpu(miner, labels):
     m = miner()
     outputs = m.mine(labels.to('cuda'), fake_dists(len(labels)).to('cuda'))
