@@ -115,7 +115,7 @@ def test_overfit_keras_class(
         batch_size=len(data),
         loss=SiameseLoss(
             miner=SiameseEasyHardMiner(pos_strategy='easy', neg_strategy='hard')
-        )
+        ),
         num_items_per_class=2,
         learning_rate=1e-2,  # Found to converge faster here
     )
