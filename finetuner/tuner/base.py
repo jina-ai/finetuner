@@ -179,7 +179,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
             the batch. Only relevant for class datasets
         :param num_workers: Number of workers used for loading the data.
 
-            This works onlywith Pytorch and Paddle Paddle, and has no effect when using
+            This works only with Pytorch and Paddle Paddle, and has no effect when using
             a Keras model.
         """
 

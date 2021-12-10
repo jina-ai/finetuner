@@ -90,7 +90,7 @@ def fit(
         will be pre-prended to this list.
     :param num_workers: Number of workers used for loading the data.
 
-        This works onlywith Pytorch and Paddle Paddle, and has no effect when using
+        This works only with Pytorch and Paddle Paddle, and has no effect when using
         a Keras model.
     """
     ft = _get_tuner_class(embed_model)
