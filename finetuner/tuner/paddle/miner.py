@@ -129,7 +129,6 @@ class SiameseEasyHardMiner(BaseClassMiner[paddle.Tensor]):
             torch.Tensor(distances.numpy()),
             to_numpy=True,
         )
-
         matches = paddle.to_tensor(updated_matches, place=matches.place)
         diffs = paddle.to_tensor(updated_diffs, place=diffs.place)
 
@@ -255,9 +254,8 @@ class TripletEasyHardMiner(BaseClassMiner[paddle.Tensor]):
             torch.Tensor(distances.numpy()),
             to_numpy=True,
         )
-
-        matches = paddle.Tensor(updated_matches)
-        diffs = paddle.Tensor(updated_diffs)
+        matches = paddle.to_tensor(updated_matches, place=matches.place)
+        diffs = paddle.to_tensor(updated_diffs, place=diffs.place)
 
         matches = paddle.tril(matches, -1) + paddle.triu(matches, 1)
         triplets = matches.unsqueeze(2) * diffs.unsqueeze(1)
