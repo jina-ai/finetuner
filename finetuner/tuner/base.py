@@ -178,6 +178,9 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         :param num_items_per_class: Number of items from a single class to include in
             the batch. Only relevant for class datasets
         :param num_workers: Number of workers used for loading the data.
+
+            This works onlywith Pytorch and Paddle Paddle, and has no effect when using
+            a Keras model.
         """
 
     @abc.abstractmethod

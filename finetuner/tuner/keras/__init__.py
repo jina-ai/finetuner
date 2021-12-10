@@ -35,7 +35,7 @@ class KerasTuner(
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
-        num_workers: int = 1,
+        num_workers: int = 0,
     ) -> KerasSequenceAdapter:
         """Get the dataloader for the dataset
 
@@ -58,9 +58,7 @@ class KerasTuner(
             dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn
         )
 
-        adapter = KerasSequenceAdapter(
-            sequence, workers=num_workers, use_multiprocessing=num_workers > 1
-        )
+        adapter = KerasSequenceAdapter(sequence)
         return adapter
 
     def _move_model_to_device(self):
