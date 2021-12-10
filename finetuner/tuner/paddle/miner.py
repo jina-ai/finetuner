@@ -124,9 +124,9 @@ class SiameseEasyHardMiner(BaseClassMiner[paddle.Tensor]):
 
         # Apply mining strategy
         updated_matches, updated_diffs = self.strategic_mining_helper.apply_strategy(
-            torch.tensor(matches.numpy()),
-            torch.tensor(diffs.numpy()),
-            torch.tensor(distances.numpy()),
+            torch.Tensor(matches.numpy()),
+            torch.Tensor(diffs.numpy()),
+            torch.Tensor(distances.numpy()),
             to_numpy=True,
         )
         matches = paddle.to_tensor(updated_matches, place=matches.place)
@@ -249,9 +249,9 @@ class TripletEasyHardMiner(BaseClassMiner[paddle.Tensor]):
 
         # Apply mining strategy
         updated_matches, updated_diffs = self.strategic_mining_helper.apply_strategy(
-            torch.tensor(matches.numpy()),
-            torch.tensor(diffs.numpy()),
-            torch.tensor(distances.numpy()),
+            torch.Tensor(matches.numpy()),
+            torch.Tensor(diffs.numpy()),
+            torch.Tensor(distances.numpy()),
             to_numpy=True,
         )
         matches = paddle.to_tensor(updated_matches, place=matches.place)
