@@ -379,6 +379,7 @@
     <span class="n">scheduler_step</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'batch'</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
     <span class="n">callbacks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s1">'BaseCallback'</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">"""Finetune the model on the training data.</span>
@@ -414,6 +415,10 @@
 <span class="sd">        ``"cpu"`` and ``"cuda"`` (for GPU)</span>
 <span class="sd">    :param callbacks: A list of callbacks. The progress bar callback</span>
 <span class="sd">        will be pre-prended to this list.</span>
+<span class="sd">    :param num_workers: Number of workers used for loading the data.</span>
+
+<span class="sd">        This works only with Pytorch and Paddle Paddle, and has no effect when using</span>
+<span class="sd">        a Keras model.</span>
 <span class="sd">    """</span>
     <span class="n">ft</span> <span class="o">=</span> <span class="n">_get_tuner_class</span><span class="p">(</span><span class="n">embed_model</span><span class="p">)</span>
 
