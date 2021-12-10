@@ -52,6 +52,7 @@ def fit(
     scheduler_step: str = 'batch',
     device: str = 'cpu',
     callbacks: Optional[List['BaseCallback']] = None,
+    num_workers: int = 0,
     **kwargs,
 ):
     """Finetune the model on the training data.
@@ -87,6 +88,10 @@ def fit(
         ``"cpu"`` and ``"cuda"`` (for GPU)
     :param callbacks: A list of callbacks. The progress bar callback
         will be pre-prended to this list.
+    :param num_workers: Number of workers used for loading the data.
+
+        This works onlywith Pytorch and Paddle Paddle, and has no effect when using
+        a Keras model.
     """
     ft = _get_tuner_class(embed_model)
 
