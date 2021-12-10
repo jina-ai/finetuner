@@ -1,4 +1,3 @@
-from finetuner.tuner.keras.miner import SiameseEasyHardMiner
 import pytest
 import tensorflow as tf
 from scipy.spatial.distance import pdist, squareform
@@ -6,6 +5,7 @@ from scipy.spatial.distance import pdist, squareform
 from finetuner.tuner.base import BaseLoss
 from finetuner.tuner.keras import KerasTuner
 from finetuner.tuner.keras.losses import SiameseLoss, TripletLoss
+from finetuner.tuner.keras.miner import SiameseEasyHardMiner
 
 
 def check_distances(n_cls, vec_embedings, distance):
@@ -67,14 +67,7 @@ def test_overfit_keras_session(
 
     # Train
     tuner = KerasTuner(model, loss=loss(distance=distance, margin=0.5))
-    tuner.fit(
-        train_data=data,
-        epochs=n_epochs,
-        batch_size=batch_size,
-        loss=SiameseLoss(
-            miner=SiameseEasyHardMiner(pos_strategy='easy', neg_strategy='hard')
-        ),
-    )
+    tuner.fit(train_data=data, epochs=n_epochs, batch_size=batch_size)
 
     # Compute embedding for original vectors
     vec_embedings = model(vecs).numpy()
@@ -120,6 +113,9 @@ def test_overfit_keras_class(
         train_data=data,
         epochs=n_epochs,
         batch_size=len(data),
+        loss=SiameseLoss(
+            miner=SiameseEasyHardMiner(pos_strategy='easy', neg_strategy='hard')
+        )
         num_items_per_class=2,
         learning_rate=1e-2,  # Found to converge faster here
     )
