@@ -100,7 +100,7 @@ class SiameseEasyHardMiner(BaseClassMiner[tf.Tensor]):
             torch.Tensor(distances.numpy()),
             to_numpy=True,
         )
-
+        # Send updated tensors to GPU if available
         if len(tf.config.list_physical_devices('GPU')) > 0:
             with tf.device('/CPU:0'):
                 matches = tf.convert_to_tensor(updated_matches, dtype=matches.dtype)
@@ -203,6 +203,14 @@ class TripletEasyHardMiner(BaseClassMiner[tf.Tensor]):
             torch.Tensor(distances.numpy()),
             to_numpy=True,
         )
+        # Send updated tensors to GPU if available
+        if len(tf.config.list_physical_devices('GPU')) > 0:
+            with tf.device('/CPU:0'):
+                matches = tf.convert_to_tensor(updated_matches, dtype=matches.dtype)
+                diffs = tf.convert_to_tensor(updated_diffs, dtype=diffs.dtype)
+        else:
+            matches = tf.convert_to_tensor(updated_matches, dtype=matches.dtype)
+            diffs = tf.convert_to_tensor(updated_diffs, dtype=diffs.dtype)
 
         matches = tf.convert_to_tensor(updated_matches, dtype=matches.dtype)
         diffs = tf.convert_to_tensor(updated_diffs, dtype=diffs.dtype)
