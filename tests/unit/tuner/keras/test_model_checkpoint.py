@@ -1,13 +1,16 @@
+import copy
 import os
+import time
 
+import keras
 import pytest
 import tensorflow as tf
-import keras
+from tensorflow.keras.optimizers.schedules import CosineDecay
 
 import finetuner
-from finetuner.tuner.callback import TrainingCheckpoint, BestModelCheckpoint
-from finetuner.tuner.base import BaseTuner
 from finetuner.toydata import generate_fashion
+from finetuner.tuner.base import BaseTuner
+from finetuner.tuner.callback import BestModelCheckpoint, TrainingCheckpoint
 from finetuner.tuner.keras import KerasTuner
 from finetuner.tuner.state import TunerState
 
@@ -61,7 +64,18 @@ def test_epoch_end(keras_model: BaseTuner, tmpdir):
     }
 
 
-def test_load_model(keras_model: BaseTuner, tmpdir):
+def test_save_on_every_epoch_end(keras_model: BaseTuner, tmpdir):
+    checkpoint = TrainingCheckpoint(save_dir=tmpdir)
+    tuner = KerasTuner(embed_model=keras_model)
+    tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
+    checkpoint.on_epoch_end(tuner)
+    assert os.listdir(tmpdir) == ['saved_model_epoch_01']
+    tuner.state = TunerState(epoch=1, batch_index=2, train_loss=0.5)
+    checkpoint.on_epoch_end(tuner)
+    assert set(os.listdir(tmpdir)) == {'saved_model_epoch_01', 'saved_model_epoch_02'}
+
+
+def test_same_model(keras_model: BaseTuner, tmpdir):
 
     finetuner.fit(
         keras_model,
@@ -80,88 +94,108 @@ def test_load_model(keras_model: BaseTuner, tmpdir):
             assert (l1.get_weights()[idx] == l2.get_weights()[idx]).all()
 
 
-def test_load_model_directly(keras_model: BaseTuner, tmpdir):
+def test_load_model(keras_model: BaseTuner, tmpdir):
+    def get_optimizer_and_scheduler(embding_model):
+        opt = tf.keras.optimizers.Adam(learning_rate=0.1)
+        scheduler = CosineDecay(initial_learning_rate=0.1, decay_steps=2)
+        return (opt, scheduler)
+
+    def get_optimizer_and_scheduler_different_parameters(embding_model):
+        opt = tf.keras.optimizers.Adam(learning_rate=0.01)
+        scheduler = CosineDecay(initial_learning_rate=0.01, decay_steps=3)
+        return (opt, scheduler)
+
+    new_model = copy.deepcopy(keras_model)
+
+    before_stop_tuner = KerasTuner(
+        keras_model, configure_optimizer=get_optimizer_and_scheduler
+    )
+    before_stop_tuner.state = TunerState(epoch=10, batch_index=2, train_loss=1.1)
+
+    after_stop_tuner = KerasTuner(
+        new_model, configure_optimizer=get_optimizer_and_scheduler_different_parameters
+    )
+    after_stop_tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
+
+    checkpoint = TrainingCheckpoint(save_dir=tmpdir)
+    checkpoint.on_epoch_end(before_stop_tuner)
+
+    checkpoint.load_model(
+        after_stop_tuner,
+        os.path.join(
+            tmpdir,
+            'saved_model_epoch_11',
+        ),
+    )
+
+    assert after_stop_tuner.state.epoch == 11
+
+    for l1, l2 in zip(
+        before_stop_tuner.embed_model.layers, after_stop_tuner.embed_model.layers
+    ):
+        assert l1.get_config() == l2.get_config()
+        assert len(l1.weights) == len(l2.weights)
+        for idx in range(len(l1.weights)):
+            assert (l1.get_weights()[idx] == l2.get_weights()[idx]).all()
+
+
+def test_save_best_only_fit(keras_model: BaseTuner, tmpdir):
 
     finetuner.fit(
         keras_model,
-        epochs=2,
+        epochs=3,
         train_data=generate_fashion(num_total=1000),
         eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[TrainingCheckpoint(tmpdir)],
+        callbacks=[BestModelCheckpoint(save_dir=tmpdir)],
     )
 
+    assert os.listdir(tmpdir) == ['best_model_val_loss']
+
+
+def test_save_best_only(keras_model: BaseTuner, tmpdir):
+
+    checkpoint = BestModelCheckpoint(save_dir=tmpdir, monitor='train_loss')
     tuner = KerasTuner(embed_model=keras_model)
-    tuner.state = TunerState(epoch=0, batch_index=0, train_loss=50)
-
-    TrainingCheckpoint.load_model(tuner, os.path.join(tmpdir, 'saved_model_epoch_02'))
-
-    assert tuner.state.epoch == 2
-
-    for l1, l2 in zip(keras_model.layers, tuner.embed_model.layers):
-        assert l1.get_config() == l2.get_config()
-        assert len(l1.weights) == len(l2.weights)
-        for idx in range(len(l1.weights)):
-            assert (l1.get_weights()[idx] == l2.get_weights()[idx]).all()
-
-
-def test_save_best_only(keras_model: BaseTuner, tmpdir):
-
-    finetuner.fit(
-        keras_model,
-        epochs=1,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[BestModelCheckpoint(save_dir=tmpdir)],
+    tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
+    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_epoch_end(tuner)
+    assert os.listdir(tmpdir) == ['best_model_train_loss']
+    creation_time = os.path.getmtime(os.path.join(tmpdir, 'best_model_train_loss'))
+    tuner.state = TunerState(epoch=1, batch_index=2, train_loss=1.5)
+    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_epoch_end(tuner)
+    assert creation_time == os.path.getmtime(
+        os.path.join(tmpdir, 'best_model_train_loss')
     )
-
-    assert os.listdir(tmpdir) == ['best_model_val_loss']
+    tuner.state = TunerState(epoch=2, batch_index=2, train_loss=0.5)
+    time.sleep(2)
+    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_epoch_end(tuner)
+    assert creation_time < os.path.getmtime(
+        os.path.join(tmpdir, 'best_model_train_loss')
+    )
 
 
 def test_load_best_model(keras_model: BaseTuner, tmpdir):
 
-    finetuner.fit(
-        keras_model,
-        epochs=1,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[BestModelCheckpoint(tmpdir)],
-    )
-
-    new_model = keras.models.load_model(os.path.join(tmpdir, 'best_model_val_loss'))
-
-    for l1, l2 in zip(new_model.layers, keras_model.layers):
-        assert l1.get_config() == l2.get_config()
-        assert len(l1.weights) == len(l2.weights)
-        for idx in range(len(l1.weights)):
-            assert (l1.get_weights()[idx] == l2.get_weights()[idx]).all()
-
-
-def test_save_best_only(keras_model: BaseTuner, tmpdir):
+    new_model = copy.deepcopy(keras_model)
+    checkpoint = BestModelCheckpoint(tmpdir)
 
     finetuner.fit(
         keras_model,
-        epochs=1,
+        epochs=3,
         train_data=generate_fashion(num_total=1000),
         eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[BestModelCheckpoint(save_dir=tmpdir)],
+        callbacks=[checkpoint],
     )
+
+    tuner = KerasTuner(embed_model=new_model)
+    tuner.state = TunerState(epoch=0, batch_index=2, val_loss=1.1)
 
     assert os.listdir(tmpdir) == ['best_model_val_loss']
+    checkpoint.load_model(tuner, fp=os.path.join(tmpdir, 'best_model_val_loss'))
 
-
-def test_load_best_model(keras_model: BaseTuner, tmpdir):
-
-    finetuner.fit(
-        keras_model,
-        epochs=1,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[BestModelCheckpoint(tmpdir)],
-    )
-
-    new_model = keras.models.load_model(os.path.join(tmpdir, 'best_model_val_loss'))
-
-    for l1, l2 in zip(new_model.layers, keras_model.layers):
+    for l1, l2 in zip(tuner.embed_model.layers, keras_model.layers):
         assert l1.get_config() == l2.get_config()
         assert len(l1.weights) == len(l2.weights)
         for idx in range(len(l1.weights)):

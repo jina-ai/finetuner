@@ -1,14 +1,14 @@
 import os
-from numpy.lib.npyio import save
 
+import numpy as np
 import pytest
 import torch
-import numpy as np
+from numpy.lib.npyio import save
 
 import finetuner
-from finetuner.tuner.callback import BestModelCheckpoint, TrainingCheckpoint
-from finetuner.tuner.base import BaseTuner
 from finetuner.toydata import generate_fashion
+from finetuner.tuner.base import BaseTuner
+from finetuner.tuner.callback import BestModelCheckpoint, TrainingCheckpoint
 
 
 @pytest.fixture(scope='module')

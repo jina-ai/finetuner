@@ -1,23 +1,23 @@
-from typing import Optional, Union, TYPE_CHECKING
-
-import tensorflow as tf
-from keras.engine.data_adapter import KerasSequenceAdapter
-from tensorflow.keras.optimizers import Optimizer
-from tensorflow.keras.optimizers.schedules import LearningRateSchedule
-from tensorflow.keras.layers import Layer
-import keras
 import os
 import pickle
+from typing import TYPE_CHECKING, Optional, Union
 
-from . import losses
-from .data import KerasDataSequence
-from ..base import BaseTuner, BaseLoss
+import keras
+import tensorflow as tf
+from keras.engine.data_adapter import KerasSequenceAdapter
+from tensorflow.keras.layers import Layer
+from tensorflow.keras.optimizers import Optimizer
+from tensorflow.keras.optimizers.schedules import LearningRateSchedule
+
+from ... import __default_tag_key__
+from ..base import BaseLoss, BaseTuner
 from ..dataset import ClassDataset, SessionDataset
 from ..state import TunerState
-from ... import __default_tag_key__
+from . import losses
+from .data import KerasDataSequence
 
 if TYPE_CHECKING:
-    from ...helper import DocumentSequence, PreprocFnType, CollateFnType
+    from ...helper import CollateFnType, DocumentSequence, PreprocFnType
 
 
 class KerasTuner(
@@ -203,11 +203,6 @@ class KerasTuner(
         """
 
         self.embed_model.save(*args, **kwargs)
-
-    def load(self, fp, *args, **kwargs):
-        """Loads the embedding model, optimizer and updates the state epoch."""
-
-        self._embed_model = keras.models.load_model(fp, *args, **kwargs)
 
 
 def get_device(device: str):

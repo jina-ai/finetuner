@@ -1,15 +1,15 @@
 import os
 from typing import TYPE_CHECKING
 
+import keras
 import numpy as np
-import pickle
-import torch
 import paddle
+import torch
 from jina.logging.logger import JinaLogger
 
 from finetuner.helper import get_framework
-from .base import BaseCallback
 
+from .base import BaseCallback
 
 if TYPE_CHECKING:
     from ..base import BaseTuner
@@ -56,7 +56,7 @@ class BestModelCheckpoint(BaseCallback):
             )
 
         if mode not in ['auto', 'min', 'max']:
-            self._logger.warning(
+            self._logger.logger.warning(
                 'ModelCheckpoint mode %s is unknown, ' 'fallback to auto mode.', mode
             )
             mode = 'auto'
@@ -95,7 +95,7 @@ class BestModelCheckpoint(BaseCallback):
         else:
             current = np.mean(self._train_losses)
         if current is None:
-            self._logger.warning(
+            self._logger.logger.warning(
                 'Can save best model only with %s available, ' 'skipping.',
                 self._monitor,
             )
@@ -103,38 +103,24 @@ class BestModelCheckpoint(BaseCallback):
             if self._monitor_op(current, self._best):
                 self._best = current
                 self._save_model_framework(tuner)
+                self._logger.logger.info(
+                    f'Model improved from {self._best} to {current}. New model is saved!'
+                )
+            else:
+                self._logger.logger.info(f'Model didnt improve.')
 
     def _save_model_framework(self, tuner):
         """
-        Saves the model depending on its framework.
+        Saves the model weights depending on its framework.
         """
         if get_framework(tuner.embed_model) == 'keras':
             tuner.save(
                 filepath=self._get_file_path(),
             )
-            state = {
-                'epoch': tuner.state.epoch + 1,
-            }
-            with open(
-                os.path.join(self._get_file_path(), 'saved_state.pkl'), 'wb'
-            ) as f:
-                pickle.dump(state, f)
         elif get_framework(tuner.embed_model) == 'torch':
-            state = {
-                'epoch': tuner.state.epoch + 1,
-                'state_dict': tuner.embed_model.state_dict(),
-                'optimizer': tuner._optimizer.state_dict(),
-            }
-
-            torch.save(state, f=self._get_file_path())
+            tuner.save(f=self._get_file_path())
         elif get_framework(tuner.embed_model) == 'paddle':
-            state = {
-                'epoch': tuner.state.epoch + 1,
-                'state_dict': tuner.embed_model.state_dict(),
-                'optimizer': tuner._optimizer.state_dict(),
-            }
-
-            paddle.save(state, path=self._get_file_path())
+            tuner.save(path=self._get_file_path())
 
     def _get_file_path(self):
         """
@@ -153,17 +139,8 @@ class BestModelCheckpoint(BaseCallback):
         Loads the model and tuner state
         """
         if get_framework(tuner.embed_model) == 'keras':
-            tuner.load(fp)
-            with open(os.path.join(fp, 'saved_state.pkl'), 'rb') as f:
-                loaded_state = pickle.load(f)
-            tuner.state.epoch = loaded_state['epoch']
+            tuner._embed_model = keras.models.load_model(fp)
         elif get_framework(tuner.embed_model) == 'torch':
-            checkpoint = torch.load(fp)
-            tuner._embed_model.load_state_dict(checkpoint['state_dict'])
-            tuner._optimizer.load_state_dict(checkpoint['optimizer'])
-            tuner.state.epoch = checkpoint['epoch']
+            tuner._embed_model.load_state_dict(torch.load(fp))
         elif get_framework(tuner.embed_model) == 'paddle':
-            checkpoint = paddle.load(fp)
-            tuner._embed_model.set_state_dict(checkpoint['state_dict'])
-            tuner._optimizer.set_state_dict(checkpoint['optimizer'])
-            tuner.state.epoch = checkpoint['epoch']
+            tuner._embed_model.set_state_dict(paddle.load(fp))
