@@ -3,9 +3,7 @@ from typing import TYPE_CHECKING, Optional
 import numpy as np
 from jina.logging.logger import JinaLogger
 
-from finetuner.helper import get_framework
 from .base import BaseCallback
-
 
 if TYPE_CHECKING:
     from ..base import BaseTuner
@@ -39,6 +37,13 @@ class EarlyStopping(BaseCallback):
             the rest of the quantities.
         :param patience: integer, the number of epochs after which the training is
             stopped if there is no improvement
+        :param min_delta: Minimum change in the monitored quantity
+            to qualify as an improvement, i.e. an absolute
+            change of less than min_delta, will count as no
+            improvement.
+        :param baseline: Baseline value for the monitored quantity.
+            Training will stop if the model doesn't show improvement over the
+            baseline.
         """
         self._logger = JinaLogger(self.__class__.__name__)
         self._monitor = monitor
@@ -51,7 +56,7 @@ class EarlyStopping(BaseCallback):
         self._epoch_counter = 0
 
         if mode not in ['auto', 'min', 'max']:
-            self._logger.warning(
+            self._logger.logger.warning(
                 'ModelCheckpoint mode %s is unknown, ' 'fallback to auto mode.', mode
             )
             mode = 'auto'
@@ -94,25 +99,30 @@ class EarlyStopping(BaseCallback):
         Checks if training should be stopped. If `True`
         it stops it.
         """
+        current_value = None
         if self._baseline is not None:
             self._best = self._baseline
 
         if self._monitor == 'val_loss':
             current_value = np.mean(self._validation_losses)
-        else:
+        elif self._monitor == 'train_loss':
             current_value = np.mean(self._train_losses)
         if current_value is None:
-            self._logger.warning(
+            self._logger.logger.warning(
                 f'Can save best model only with {self._monitor} available, ' 'skipping.'
             )
         else:
             if self._monitor_op(current_value - self._min_delta, self._best):
+                self._logger.logger.info(
+                    f'Model improved from {self._best} to {current_value}'
+                )
                 self._best = current_value
                 self._epoch_counter = 0
+
             else:
                 self._epoch_counter += 1
                 if self._epoch_counter == self._patience:
-                    self._logger.info(
+                    self._logger.logger.info(
                         f'Training is stopping, no improvement for {self._patience} epochs'
                     )
                     tuner.stop_training = True
