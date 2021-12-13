@@ -27,6 +27,7 @@ to_embedding_model(
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
     freeze: Union[bool, List[str]] = False,
+    bottleneck_layer = None,
 ) -> AnyDNN
 ```
 
@@ -36,6 +37,9 @@ Here, `model` is the general model with loaded weights;
 if `freeze` is `True`, tailor will freeze all layers in the `model`. Otherwise, tailor will freeze weights by layer names.
 You can visualize model structure and layer names with `display` method.
 It will be introduced in the following section.
+Besides, tailor supports user to add a bottleneck module on top of the tailored model.
+This bottleneck module should not be very complex, for example, could be a simple multi-layer perception or projection head.
+This bottleneck module is always trainable.
 
 `input_size` and `input_dtype` are input type specification required by PyTorch and Paddle models. They are not required for Keras models.
 
