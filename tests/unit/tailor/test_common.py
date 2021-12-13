@@ -44,13 +44,10 @@ embed_models = {
 
 @pytest.mark.parametrize('framework', ['keras', 'paddle', 'torch'])
 @pytest.mark.parametrize('freeze', [True, False])
-@pytest.mark.parametrize('output_dim', [None, 2])
-def test_to_embedding_fn(framework, output_dim, freeze):
+def test_to_embedding_fn(framework, freeze):
     m = embed_models[framework]()
     assert get_framework(m) == framework
-    m1 = to_embedding_model(
-        m, input_size=(5000,), input_dtype='int64', freeze=freeze, output_dim=output_dim
-    )
+    m1 = to_embedding_model(m, input_size=(5000,), input_dtype='int64', freeze=freeze)
     assert m1
     assert get_framework(m1) == framework
 

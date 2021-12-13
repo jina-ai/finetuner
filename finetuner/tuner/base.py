@@ -160,6 +160,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         num_items_per_class: Optional[int] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
+        num_workers: int = 0,
         **kwargs,
     ):
         """Finetune the model on the training data.
@@ -176,6 +177,10 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         :param batch_size: The batch size to use for training and evaluation
         :param num_items_per_class: Number of items from a single class to include in
             the batch. Only relevant for class datasets
+        :param num_workers: Number of workers used for loading the data.
+
+            This works only with Pytorch and Paddle Paddle, and has no effect when using
+            a Keras model.
         """
 
     @abc.abstractmethod
@@ -197,6 +202,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         num_items_per_class: Optional[int] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
+        num_workers: int = 0,
     ) -> AnyDataLoader:
         """Get framework specific data loader from the input data."""
         ...
