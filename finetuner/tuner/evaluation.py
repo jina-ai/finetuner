@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional, List, Dict, Tuple
 from jina import Document, DocumentArray
-from jina.math.evaluation import (
+from jina.docarray.evaluation import (
     r_precision,
     precision_at_k,
     recall_at_k,
