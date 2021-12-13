@@ -4,8 +4,6 @@ import pytest
 import tensorflow as tf
 import torch
 
-import finetuner
-from finetuner.toydata import generate_fashion
 from finetuner.tuner.base import BaseTuner
 from finetuner.tuner.callback import EarlyStopping
 from finetuner.tuner.keras import KerasTuner
@@ -143,17 +141,16 @@ def test_baseline(keras_model: BaseTuner):
     tuner = KerasTuner(
         embed_model=keras_model, optimizer=tf.keras.optimizers.Adam(learning_rate=0.01)
     )
-    checkpoint = EarlyStopping(baseline=0.001)
-
-    finetuner.fit(
-        tuner.embed_model,
-        epochs=50,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[checkpoint],
-    )
-
+    checkpoint = EarlyStopping(baseline=0.01)
+    tuner.state = TunerState(epoch=0, current_loss=0.5)
+    checkpoint.on_val_batch_end(tuner)
+    checkpoint.on_epoch_end(tuner)
+    assert checkpoint._epoch_counter == 1
+    tuner.state = TunerState(epoch=0, current_loss=0.3)
+    checkpoint.on_val_batch_end(tuner)
+    checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == checkpoint._patience
+    assert tuner.stop_training == True
 
 
 def test_counter_reset(pytorch_model: BaseTuner):

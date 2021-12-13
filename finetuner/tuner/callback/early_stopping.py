@@ -82,7 +82,9 @@ class EarlyStopping(BaseCallback):
 
     def on_epoch_end(self, tuner: 'BaseTuner'):
         """
-        Called at the end of the training epoch.
+        Called at the end of the training epoch. Checks if the model has improved
+        or not for a certain metric `monitor`. If the model hasn't improved for
+        more than `patience` epochs, the training is stopped
         """
         self._check(tuner)
         self._train_losses = []
@@ -97,7 +99,7 @@ class EarlyStopping(BaseCallback):
     def _check(self, tuner):
         """
         Checks if training should be stopped. If `True`
-        it stops it.
+        it stops the training.
         """
         current_value = None
         if self._baseline is not None:
