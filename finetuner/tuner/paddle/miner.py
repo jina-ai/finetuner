@@ -124,9 +124,9 @@ class SiameseEasyHardMiner(BaseClassMiner[paddle.Tensor]):
 
         # Apply mining strategy
         updated_matches, updated_diffs = self.strategic_mining_helper.apply_strategy(
-            torch.Tensor(matches.numpy()),
-            torch.Tensor(diffs.numpy()),
-            torch.Tensor(distances.numpy()),
+            matches.numpy(),
+            diffs.numpy(),
+            distances.numpy(),
             to_numpy=True,
         )
         matches = paddle.to_tensor(updated_matches, place=matches.place)

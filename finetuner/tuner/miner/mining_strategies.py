@@ -1,6 +1,9 @@
+import numpy as np
+from numpy.lib.arraysetops import isin
+from tensorflow.core.framework.versions_pb2 import VersionDef
 import torch
 
-from typing import Callable, Optional, Tuple
+from typing import Callable, Optional, Tuple, Union
 
 
 class TorchStrategicMiningHelper:
@@ -54,6 +57,7 @@ class TorchStrategicMiningHelper:
             )
         self.pos_strategy = pos_strategy
         self.neg_strategy = neg_strategy
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def _get_per_row_min(
         self, dist_mat: torch.Tensor, semihard_tsh: Optional[torch.Tensor] = None
@@ -179,11 +183,22 @@ class TorchStrategicMiningHelper:
         diff_mat[invalid_row_mask] = 0
         return self._update_dist_mat(diff_mat, min_max_indices), neg_dists
 
+    def _handle_input_tensors(self, tensor: Union[torch.Tensor, np.ndarray]):
+        """Helper function to parse input tensors for strategy application"""
+        if not isinstance(tensor, (torch.Tensor, np.ndarray)):
+            raise ValueError(
+                f'Application of mining strategies only works '
+                f'on ndarrays or pytorch tensors, but the passed tensor was of type: {type(tensor)}'
+            )
+        if isinstance(tensor, np.ndarray):
+            tensor = torch.Tensor(tensor)
+        return tensor.to(self.device)
+
     def apply_strategy(
         self,
-        match_mat: torch.Tensor,
-        diff_mat: torch.Tensor,
-        dist_mat: torch.Tensor,
+        match_mat: Union[torch.Tensor, np.ndarray],
+        diff_mat: Union[torch.Tensor, np.ndarray],
+        dist_mat: Union[torch.Tensor, np.ndarray],
         to_numpy: bool = False,
     ):
         """Wraps the application of mining strategies to update the matrices
@@ -201,6 +216,10 @@ class TorchStrategicMiningHelper:
         :return diff_mat: Updated matrix of negative matches after applying
           strategy
         """
+        match_mat = self._handle_input_tensors(match_mat)
+        diff_mat = self._handle_input_tensors(diff_mat)
+        dist_mat = self._handle_input_tensors(dist_mat)
+
         if self.pos_strategy == 'semihard' and self.neg_strategy != 'all':
 
             diff_mat, neg_dists = self._update_neg_mat(

@@ -95,19 +95,13 @@ class SiameseEasyHardMiner(BaseClassMiner[tf.Tensor]):
 
         # Apply mining strategy
         updated_matches, updated_diffs = self.strategic_mining_helper.apply_strategy(
-            torch.Tensor(matches.numpy()),
-            torch.Tensor(diffs.numpy()),
-            torch.Tensor(distances.numpy()),
+            matches.numpy(),
+            diffs.numpy(),
+            distances.numpy(),
             to_numpy=True,
         )
-        # Send updated tensors to GPU if available
-        if len(tf.config.list_physical_devices('GPU')) > 0:
-            with tf.device('/CPU:0'):
-                matches = tf.convert_to_tensor(updated_matches, dtype=matches.dtype)
-                diffs = tf.convert_to_tensor(updated_diffs, dtype=diffs.dtype)
-        else:
-            matches = tf.convert_to_tensor(updated_matches, dtype=matches.dtype)
-            diffs = tf.convert_to_tensor(updated_diffs, dtype=diffs.dtype)
+        matches = tf.convert_to_tensor(updated_matches, dtype=matches.dtype)
+        diffs = tf.convert_to_tensor(updated_diffs, dtype=diffs.dtype)
 
         ind1_pos, ind2_pos = tf.unstack(tf.where(matches), axis=1)
         ind1_neg, ind2_neg = tf.unstack(tf.where(diffs), axis=1)
@@ -198,19 +192,14 @@ class TripletEasyHardMiner(BaseClassMiner[tf.Tensor]):
 
         # Apply mining strategy
         updated_matches, updated_diffs = self.strategic_mining_helper.apply_strategy(
-            torch.Tensor(matches.numpy()),
-            torch.Tensor(diffs.numpy()),
-            torch.Tensor(distances.numpy()),
+            matches.numpy(),
+            diffs.numpy(),
+            distances.numpy(),
             to_numpy=True,
         )
-        # Send updated tensors to GPU if available
-        if len(tf.config.list_physical_devices('GPU')) > 0:
-            with tf.device('/CPU:0'):
-                matches = tf.convert_to_tensor(updated_matches, dtype=matches.dtype)
-                diffs = tf.convert_to_tensor(updated_diffs, dtype=diffs.dtype)
-        else:
-            matches = tf.convert_to_tensor(updated_matches, dtype=matches.dtype)
-            diffs = tf.convert_to_tensor(updated_diffs, dtype=diffs.dtype)
+
+        matches = tf.convert_to_tensor(updated_matches, dtype=matches.dtype)
+        diffs = tf.convert_to_tensor(updated_diffs, dtype=diffs.dtype)
 
         matches = tf.convert_to_tensor(updated_matches, dtype=matches.dtype)
         diffs = tf.convert_to_tensor(updated_diffs, dtype=diffs.dtype)
