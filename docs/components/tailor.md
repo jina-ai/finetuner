@@ -6,7 +6,7 @@ Given a general model with weights, Tailor *preserves its weights* and performs 
 - finding all dense layers by iterating over layers;
 - chopping off all layers after a certain dense layer;
 - freezing weights of specific layers.
-- adding a new bottleneck layer with the desired output dimensions as the last layer.
+- adding a new bottleneck module on top of the embedding model.
 
 ```{figure} tailor-feature.svg
 :align: center
@@ -38,7 +38,7 @@ if `freeze` is `True`, tailor will freeze all layers in the `model`. Otherwise, 
 You can visualize model structure and layer names with `display` method.
 It will be introduced in the following section.
 Besides, tailor supports user to add a bottleneck module on top of the tailored model.
-This bottleneck module should not be very complex, for example, could be a simple multi-layer perception or projection head.
+This bottleneck module should not be complicated, for example, could be a simple multi-layer perception or projection head.
 This bottleneck module is always trainable.
 
 `input_size` and `input_dtype` are input type specification required by PyTorch and Paddle models. They are not required for Keras models.
@@ -141,57 +141,32 @@ Let's see how to use them in action.
      linear_4    [32]                   4128        True       
    ```      
    ````
-3. Say we want to get an embedding model that outputs 100-dimensional embeddings. You can simply do:
-   ```python
-   from finetuner.tailor import to_embedding_model
-    
-   embed_model = to_embedding_model(model,
-                      output_dim=100,
-                      input_size=(28, 28))
-   ```
-4. Now let's look at the layer information again using `display`.
-   ```python
-   from finetuner.tailor import display
-    
-   display(model, input_size=(28, 28))
-   ```
-   ````{tab} PyTorch
+
+### Apply Tailor on ResNet-50
+
+1. Let's customize a CNN based ResNet-50 which is more practical via PyTorch/Keras/Paddle.
+    ````{tab} PyTorch
+    ```python
+    import torchvision
    
-   ```console
-     name        output_shape_display   nb_params   trainable  
-    ────────────────────────────────────────────────────────── 
-     flatten_1   [784]                  0           False      
-     linear_2    [128]                  100480      True       
-     relu_3      [128]                  0           False      
-     linear_4    [32]                   4128        True       
-     linear_5    [100]                  3300        True       
-   ```
-   ````
-   ````{tab} Keras
-   ```console
-     name            output_shape_display   nb_params   trainable  
-    ────────────────────────────────────────────────────────────── 
-     flatten_input   []                     0           False      
-     flatten         [784]                  0           False      
-     dense           [128]                  100480      True       
-     dense_1         [32]                   4128        True       
-     dense_2         [100]                  3300        True      
-   ```   
+    model = torchvision.models.resnet50(pretrained=True)
+    ```
    
-   ````
-   ````{tab} Paddle
+    ````
+    ````{tab} Keras
+    ```python
+    import tensorflow as tf
    
-   ```console
-     name        output_shape_display   nb_params   trainable  
-    ────────────────────────────────────────────────────────── 
-     flatten_1   [784]                  0           False      
-     linear_2    [128]                  100480      True       
-     relu_3      [128]                  0           False      
-     linear_4    [32]                   4128        True       
-     linear_5    [100]                  3300        True       
-   ```      
-   ````
-   You can see that Tailor adds an additional linear layer with 100-dimensional output at the end.
+    model = tf.keras.applications.ResNet50(weights='imagenet')
+    ```
+    ````
+    ````{tab} Paddle
+    ```python
+    import paddle
+   
+    model = paddle.vision.models.resnet50(pretrained=True)
+    ```
+    ````
    
 
 
