@@ -15,13 +15,10 @@ from finetuner.tuner.state import TunerState
 @pytest.fixture(scope='module')
 def pytorch_model() -> BaseTuner:
     embed_model = torch.nn.Sequential(
-        torch.nn.Flatten(),
         torch.nn.Linear(
-            in_features=28 * 28,
-            out_features=128,
+            in_features=10,
+            out_features=10,
         ),
-        torch.nn.ReLU(),
-        torch.nn.Linear(in_features=128, out_features=32),
     )
     return embed_model
 
@@ -30,9 +27,7 @@ def pytorch_model() -> BaseTuner:
 def keras_model() -> BaseTuner:
     embed_model = tf.keras.Sequential(
         [
-            tf.keras.layers.Flatten(input_shape=(28, 28)),
-            tf.keras.layers.Dense(128, activation='relu'),
-            tf.keras.layers.Dense(32),
+            tf.keras.layers.Dense(10),
         ]
     )
     return embed_model
@@ -41,13 +36,10 @@ def keras_model() -> BaseTuner:
 @pytest.fixture(scope='module')
 def paddle_model() -> BaseTuner:
     embed_model = paddle.nn.Sequential(
-        paddle.nn.Flatten(),
         paddle.nn.Linear(
-            in_features=28 * 28,
-            out_features=128,
-        ),
-        paddle.nn.ReLU(),
-        paddle.nn.Linear(in_features=128, out_features=32),
+            in_features=10,
+            out_features=10,
+        )
     )
     return embed_model
 
@@ -71,10 +63,7 @@ def test_mode(mode: str, monitor: str, operation, best):
 
 def test_early_stopping_pytorch(pytorch_model: BaseTuner):
 
-    tuner = PytorchTuner(
-        embed_model=pytorch_model,
-        optimizer=torch.optim.Adam(params=pytorch_model.parameters(), lr=0.001),
-    )
+    tuner = PytorchTuner(embed_model=pytorch_model)
     checkpoint = EarlyStopping()
     tuner.state = TunerState(epoch=0, current_loss=0.5)
     checkpoint.on_val_batch_end(tuner)
@@ -93,12 +82,7 @@ def test_early_stopping_pytorch(pytorch_model: BaseTuner):
 
 def test_early_stopping_paddle(paddle_model: BaseTuner):
 
-    tuner = PaddleTuner(
-        embed_model=paddle_model,
-        optimizer=paddle.optimizer.Adam(
-            parameters=paddle_model.parameters(), learning_rate=0.001
-        ),
-    )
+    tuner = PaddleTuner(embed_model=paddle_model)
     checkpoint = EarlyStopping()
     tuner.state = TunerState(epoch=0, current_loss=0.5)
     checkpoint.on_val_batch_end(tuner)
@@ -117,9 +101,7 @@ def test_early_stopping_paddle(paddle_model: BaseTuner):
 
 def test_early_stopping_keras(keras_model: BaseTuner):
 
-    tuner = KerasTuner(
-        embed_model=keras_model, optimizer=tf.keras.optimizers.Adam(learning_rate=0.01)
-    )
+    tuner = KerasTuner(embed_model=keras_model)
     checkpoint = EarlyStopping()
     tuner.state = TunerState(epoch=0, current_loss=0.5)
     checkpoint.on_val_batch_end(tuner)
@@ -138,9 +120,7 @@ def test_early_stopping_keras(keras_model: BaseTuner):
 
 def test_baseline(keras_model: BaseTuner):
 
-    tuner = KerasTuner(
-        embed_model=keras_model, optimizer=tf.keras.optimizers.Adam(learning_rate=0.01)
-    )
+    tuner = KerasTuner(embed_model=keras_model)
     checkpoint = EarlyStopping(baseline=0.01)
     tuner.state = TunerState(epoch=0, current_loss=0.5)
     checkpoint.on_val_batch_end(tuner)
@@ -155,10 +135,7 @@ def test_baseline(keras_model: BaseTuner):
 
 def test_counter_reset(pytorch_model: BaseTuner):
 
-    tuner = PytorchTuner(
-        embed_model=pytorch_model,
-        optimizer=torch.optim.Adam(params=pytorch_model.parameters(), lr=0.001),
-    )
+    tuner = PytorchTuner(embed_model=pytorch_model)
     checkpoint = EarlyStopping()
     tuner.state = TunerState(epoch=0, current_loss=0.5)
     checkpoint.on_val_batch_end(tuner)

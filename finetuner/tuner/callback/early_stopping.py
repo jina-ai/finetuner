@@ -109,22 +109,21 @@ class EarlyStopping(BaseCallback):
             current_value = np.mean(self._validation_losses)
         elif self._monitor == 'train_loss':
             current_value = np.mean(self._train_losses)
-        if current_value is None:
+        else :
             self._logger.logger.warning(
                 f'Can save best model only with {self._monitor} available, ' 'skipping.'
             )
-        else:
-            if self._monitor_op(current_value - self._min_delta, self._best):
-                self._logger.logger.info(
-                    f'Model improved from {self._best} to {current_value}'
-                )
-                self._best = current_value
-                self._epoch_counter = 0
+        if self._monitor_op(current_value - self._min_delta, self._best):
+            self._logger.logger.info(
+                f'Model improved from {self._best} to {current_value}'
+            )
+            self._best = current_value
+            self._epoch_counter = 0
 
-            else:
-                self._epoch_counter += 1
-                if self._epoch_counter == self._patience:
-                    self._logger.logger.info(
-                        f'Training is stopping, no improvement for {self._patience} epochs'
-                    )
-                    tuner.stop_training = True
+        else:
+            self._epoch_counter += 1
+            if self._epoch_counter == self._patience:
+                self._logger.logger.info(
+                    f'Training is stopping, no improvement for {self._patience} epochs'
+                )
+                tuner.stop_training = True
