@@ -5,6 +5,7 @@ from scipy.spatial.distance import pdist, squareform
 from finetuner.tuner.base import BaseLoss
 from finetuner.tuner.pytorch import PytorchTuner
 from finetuner.tuner.pytorch.losses import SiameseLoss, TripletLoss
+from finetuner.tuner.pytorch.miner import SiameseEasyHardMiner
 
 
 def check_distances(n_cls, vec_embedings, distance):
@@ -114,6 +115,9 @@ def test_overfit_pytorch_class(
         train_data=data,
         epochs=n_epochs,
         batch_size=len(data),
+        loss=SiameseLoss(
+            miner=SiameseEasyHardMiner(pos_strategy='easy', neg_strategy='hard')
+        ),
         num_items_per_class=2,
         learning_rate=1e-2,  # Found to converge faster here
     )
