@@ -646,26 +646,21 @@ In the below example, we put everything together, including:
 
 with the method called ``to_embedding_model`` method.
 
-Tailor provides a high-level API ``finetuner.tailor.to_embedding_model()``, which can be used as follows:
-
+1. Tailor provides a high-level API ``finetuner.tailor.to_embedding_model``, which can be used as follows:
     ````{tab} PyTorch
     ```python
       import torch.nn as nn
       import torchvision
       import finetuner as ft
-      
       model = torchvision.models.resnet50(pretrained=True)
-      
       class SimpleMLP(nn.Module):
           def __init__(self):
               super().__init__()
               self.l1 = nn.Linear(2048, 2048, bias=True)
               self.relu = nn.ReLU()
               self.l2 = nn.Linear(2048, 1024, bias=True)
-      
           def forward(self, x):
               return self.l2((self.relu(self.l1(x))))
-      
       new_model = ft.tailor.to_embedding_model(
           model=model,
           layer_name='adaptiveavgpool2d_173',
@@ -674,6 +669,7 @@ Tailor provides a high-level API ``finetuner.tailor.to_embedding_model()``, whic
           input_size=(3, 224, 224),
       )
     ```
+
     ````
     ````{tab} Keras
     ```python
