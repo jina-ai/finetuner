@@ -55,13 +55,13 @@ Note that, `model` above must be an {term}`Embedding model`.
 ## Example
 
 ```python
+from collections import Counter
+from typing import List
+
 import finetuner
 import torch
-
-from collections import Counter
 from finetuner.toydata import generate_qa
 from jina import Document
-from typing import List
 
 VOCAB_SIZE = 5000
 PAD_TOKEN = '<pad>'

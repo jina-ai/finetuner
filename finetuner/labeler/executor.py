@@ -1,9 +1,9 @@
 import abc
-import numpy as np
-
-from jina import Executor, DocumentArray, requests, DocumentArrayMemmap
-from jina.helper import cached_property
 from typing import Dict, Optional
+
+import numpy as np
+from jina import DocumentArray, DocumentArrayMemmap, Executor, requests
+from jina.helper import cached_property
 
 from ..embedding import embed
 from ..tuner import fit, save
