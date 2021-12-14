@@ -5,7 +5,7 @@
 :end-before: <!-- end fit-method -->
 ```
 
-Note, `finetuner.fit` always returns two objects in a tuple: the tuned model and a summary statistic of the fitting procedure. You can save the model via `finetuner.save(model)`. You can save the summary object by calling `.save()`; or plot it via `.plot()` and see how the loss on training & evaluation data changes over time.
+Note, `finetuner.fit` always returns the tuned model. You can save the model via `finetuner.save(model)`.
 
 ## Save model
 
@@ -55,9 +55,27 @@ Note that, `model` above must be an {term}`Embedding model`.
 ## Example
 
 ```python
-import torch
-from finetuner.toydata import generate_qa
 import finetuner
+import torch
+
+from collections import Counter
+from finetuner.toydata import generate_qa
+from jina import Document
+from typing import List
+
+VOCAB_SIZE = 5000
+PAD_TOKEN = '<pad>'
+PAD_INDEX = 0
+UNK_TOKEN = '<unk>'
+UNK_INDEX = 1
+
+train_data = generate_qa(num_neg=1)
+tokens = [token for doc in train_data for token in doc.text.split()]
+vocab = {
+    key: idx + 2
+    for idx, (key, _) in enumerate(Counter(tokens).most_common(VOCAB_SIZE - 2))
+}
+vocab.update({PAD_TOKEN: PAD_INDEX, UNK_TOKEN: UNK_INDEX})
 
 class LastCell(torch.nn.Module):
     def forward(self, x):
@@ -65,52 +83,55 @@ class LastCell(torch.nn.Module):
         return out[:, -1, :]
 
 embed_model = torch.nn.Sequential(
-    torch.nn.Embedding(num_embeddings=5000, embedding_dim=64),
+    torch.nn.Embedding(num_embeddings=VOCAB_SIZE, embedding_dim=64),
     torch.nn.LSTM(64, 64, bidirectional=True, batch_first=True),
     LastCell(),
-    torch.nn.Linear(in_features=2 * 64, out_features=32))
+    torch.nn.Linear(in_features=2 * 64, out_features=32)
+)
 
-model, summary = finetuner.fit(
+def preprocess_fn(doc: Document) -> torch.LongTensor:
+    return torch.LongTensor([vocab.get(token, UNK_INDEX) for token in doc.text.split()])
+
+
+def collate_fn(tensors: List[torch.LongTensor]) -> torch.LongTensor:
+    return torch.nn.utils.rnn.pad_sequence(tensors, padding_value=PAD_INDEX, batch_first=True).long()
+
+model = finetuner.fit(
     embed_model,
-    train_data=lambda: generate_qa(num_neg=5, max_seq_len=10),
-    eval_data=lambda: generate_qa(num_neg=5, max_seq_len=10),
-    epochs=3,
+    train_data=train_data,
+    eval_data=generate_qa(num_neg=1),
+    epochs=1,
+    preprocess_fn=preprocess_fn,
+    collate_fn=collate_fn,
 )
 
 finetuner.display(model, input_size=(100,), input_dtype='long')
 ```
 
 ```console
-⠼  Epoch 1/3 ━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:00 estimating... 
-⠼       DONE ━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:01 10.2 step/s train: 1.25 | Eval Loss: 1.06
-⠇       DONE ━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:01 100% ETA: 0 seconds train: 1.14 | Eval Loss: 1.02
-⠹       DONE ━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:01 100% ETA: 0 seconds train: 1.10 | Eval Loss: 0.98
+  Training [1/1] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6/6 0:00:00 0:00:57 • loss: 0.664
                                                                     
   name          output_shape_display         nb_params   trainable  
  ────────────────────────────────────────────────────────────────── 
   embedding_1   [100, 64]                    320000      True       
-  lstm_2        [[[2, 2, 64], [2, 2, 64]]]   66560       False      
+  lstm_2        [[[2, 1, 64], [2, 1, 64]]]   66560       False      
   lastcell_3    [128]                        0           False      
   linear_4      [32]                         4128        True       
                                                                     
-Green layers can be used as embedding layers, whose name can be used as 
-layer_name in to_embedding_model(...).
+Green layers are trainable layers, Cyan layers are non-trainable layers or frozen layers.
+Gray layers indicates this layer has been replaced by an Identity layer.
+Use to_embedding_model(...) to create embedding model.
 ```
 
 ```python
 finetuner.save(model, './saved-model')
-summary.plot('fit.png')
-```
-
-```{figure} fit-plot.png
-:align: center
-:width: 80%
 ```
 
 ```python
 from jina import DocumentArray
+
 all_q = DocumentArray(generate_qa())
-finetuner.embed(all_q, model)
+finetuner.embed(all_q, model, preprocess_fn=preprocess_fn, collate_fn=collate_fn)
 print(all_q.embeddings.shape)
 ```
 
@@ -119,7 +140,7 @@ print(all_q.embeddings.shape)
 ```
 
 ```python
-all_q.visualize('embed.png', method='tsne')
+all_q.plot_embeddings()
 ```
 
 ```{figure} embed.png

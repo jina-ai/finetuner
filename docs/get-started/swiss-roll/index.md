@@ -133,14 +133,11 @@ And finally call Finetuner:
 
 ```python
 import finetuner
-new_model, summary = finetuner.fit(embed_model, train_data=da, epochs=500)
+new_model = finetuner.fit(embed_model, train_data=da, epochs=500)
 ```
 
-In this simple example, training on GPU should take less than 1 minute. One can plot the training loss afterwards:
-
-```python
-summary.plot()
-```
+In this simple example, training on GPU should take less than 1 minute. Let's have a look at the
+training loss:
 
 ```{figure} output_19_0.png
 :width: 50%
@@ -172,7 +169,7 @@ da4 = deepcopy(da)
 
 finetuner.embed(da2,  embed_model)  #: random init MLP
 finetuner.embed(da3, new_model)  #: finetuned space
-da4.embeddings = np.expand_dims(label_y, axis=1).astype(np.float32)  #: groundtruh
+da4.embeddings = np.expand_dims(label_y, axis=1).astype(np.float32)  #: groundtruth
 ```
 
 Let's randomly sample four take a look on the results:

@@ -4,27 +4,27 @@
 For this example, you will need a GPU machine to enable the best experience.
 ```
 
-In this example, we want to "tune" the pre-trained [ResNet](https://arxiv.org/abs/1512.03385) on [CelebA dataset](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html). Note that, the original weights of the ResNet model was trained on ImageNet.
+In this example, we want to "tune" the pre-trained [ResNet](https://arxiv.org/abs/1512.03385) on [CelebA dataset](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html). Note that, the original weights of the ResNet model were trained on ImageNet.
 
 The Finetuner will work in the following steps: 
 - first, we spawn the Labeler that helps us to inspect the top-K visually similar celebrities face images from original ResNet;
 - then, with the Labeler UI we accept or reject the results based on their similarities;
-- finally, the results are collected at the backend by the Tuner, which "tunes" the ResNet and produces better search result.
+- finally, the results are collected at the backend by the Tuner, which "tunes" the ResNet and produces better search results.
 
 Hopefully the procedure converges after several rounds; and we get a tuned embedding for better celebrity face search.
 
 ## Prepare CelebA data
 
-Let's first make sure you have downloaded all the images [`img_align_celeba.zip`](https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?usp=sharing&resourcekey=0-dYn9z10tMJOBAkviAcfdyQ) and [`IdentityCelebA.txt`](https://drive.google.com/file/d/1_ee_0u7vcNLOfNLegJRHmolfH5ICW-XS/view?usp=sharing) locally.
+Let's first make sure we have downloaded all the images [`img_align_celeba.zip`](https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?usp=sharing&resourcekey=0-dYn9z10tMJOBAkviAcfdyQ) and [`IdentityCelebA.txt`](https://drive.google.com/file/d/1_ee_0u7vcNLOfNLegJRHmolfH5ICW-XS/view?usp=sharing) locally.
 
 ```{caution}
 Beware that the original CelebA dataset is 1.3GB. In this example, we do not need the full dataset. Here is a smaller version which contains 1000 images from the original dataset. You can [download it from here](https://static.jina.ai/celeba/celeba-img.zip).
 ```
 
-Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we first load CelebA data into this format using generator:
+Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we first load CelebA data into this format using a generator:
 
 ```python
-from jina.types.document.generators import from_files
+from docarray.document.generators import from_files
 
 # please change the file path to your data path
 data = list(from_files('img_align_celeba/*.jpg', size=100, to_dataturi=True))
@@ -39,7 +39,7 @@ for doc in data:
 
 ## Load the pretrained model
 
-Let's import pretrained ResNet50 as our base model. ResNet50 is implemented in PyTorch, Keras and Paddle. You can choose whatever framework you feel comfortable:
+Let's import a pretrained ResNet50 as our base model. ResNet50 is implemented in PyTorch, Keras and Paddle. You can choose the framework you feel more comfortable with:
 
 ````{tab} PyTorch
 ```python
@@ -66,7 +66,7 @@ model = paddle.vision.models.resnet50(pretrained=True)
 
 ## Put together
 
-Finally, let's start the Finetuner. Note that we freeze the weights of the original ResNet and tuned only for the last linear layer, which leverages Tailor underneath:
+Finally, let's start the Finetuner. Note that we freeze the weights of the original ResNet and tune only the last linear layer, a procedure that leverages the Tailor component underneath:
 
 ```{code-block} python
 ---
@@ -85,7 +85,7 @@ finetuner.fit(
 )
 ```
 
-Note that how we specify `interactive=True` and `to_embedding_model=True` in the above code to activate Labler and Tailor, respectively.
+Note how we specify `interactive=True` and `to_embedding_model=True` in the code above, to activate the Labeler and the Tailor, respectively.
 
 `input_size` is not required when you using Keras as the backend.
 

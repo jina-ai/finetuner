@@ -33,7 +33,7 @@ to_embedding_model(
 
 Here, `model` is the general model with loaded weights; `layer_name` is the selected bottleneck layer; `freeze` defines whether to set weights of remaining layers as non-trainable parameters.
 
-`input_size` and `input_dtype` are input type specification required by PyTorch and Paddle models. They are not required for Keras models.
+`input_size` and `input_dtype` are input type specifications required by PyTorch and Paddle models. They are not required for Keras models.
 
 In general, you do not need to call `to_embedding_model` manually. You can use it directly via `finetuner.fit(..., to_embedding_model=True)`
 

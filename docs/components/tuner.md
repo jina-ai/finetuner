@@ -27,27 +27,27 @@ Loss function of the Tuner can be specified via the `loss` argument of `finetune
 
 By default, Tuner uses `SiameseLoss` (with cosince distance) for training. You can also use other built-in losses by specifying `finetuner.fit(..., loss='...')`.
 
-Let $\mathbf{x}_i$ denotes the predicted embedding for Document $i$. The built-in losses are summarized as follows:
+Let $\mathbf{x}_i$ denote the predicted embedding for Document $i$. The built-in losses are summarized as follows:
 
 :::{dropdown} `SiameseLoss`
 :open:
 
 
 $$\ell_{i,j} = \mathrm{sim}(i,j)d(\mathbf{x}_i, \mathbf{x}_j) + (1 - \mathrm{sim}(i,j))\max(m - d(\mathbf{x}_i, \mathbf{x}_j))$$,
-where $\mathrm{sim}(i,j)$ equals 1 Document $i$ and $j$ are positively related, and 0 otherwise, $d(\mathbf{x}_i, \mathbf{x}_j)$ represents the distance between $\mathbf{x}_i$ and $\mathbf{x}_j$ and $m$ is the "margin", the desired wedge between dis-similar items.
+where $\mathrm{sim}(i,j)$ equals 1 when Document $i$ and $j$ are positively related, and 0 otherwise, $d(\mathbf{x}_i, \mathbf{x}_j)$ represents the distance between $\mathbf{x}_i$ and $\mathbf{x}_j$ and $m$ is the "margin", the desired wedge between dis-similar items.
 
 :::
 
 :::{dropdown} `TripletLoss`
 :open:
 
-$$\ell_{i, p, n}=\max(0, d(\mathbf{x}_i, \mathbf{x}_p)-d(\mathbf{x}_i, \mathbf{x}_n)+m)$$, where Document $p$ and $i$ are positively related, whereas $n$ and $i$ are negatively related or unrelated, $d(\cdot, \cdot)$ representes a distance function, and $m$ is the desired distance between (wedge) between the positive and negative pairs
+$$\ell_{i, p, n}=\max(0, d(\mathbf{x}_i, \mathbf{x}_p)-d(\mathbf{x}_i, \mathbf{x}_n)+m)$$, where Document $p$ and $i$ are positively related, whereas $n$ and $i$ are negatively related or unrelated, $d(\cdot, \cdot)$ representes a distance function, and $m$ is the desired distance (wedge) between the positive and negative pairs.
 :::
 
 
 ```{tip}
 
-Although siamese and triplet loss works on pair and triplet inputs respectively, there is **no need** to worry about the data input format. You only need to make sure your data is labeled according to {ref}`data-format`, then you can switch between all losses freely.
+Although siamese and triplet loss work on pair and triplet inputs respectively, there is **no need** to worry about the data input format. You only need to make sure your data is labeled according to {ref}`data-format`, then you can switch between all losses freely.
 
 ```
 
@@ -100,7 +100,7 @@ After a model is tuned, you can save it by calling `finetuner.save(model, save_p
 2. Build labeled match data {ref}`according to the steps here<build-mnist-data>`. You can refer
    to `finetuner.toydata.generate_fashion` for an implementation. In this example, for each `Document` we generate 10 positive matches and 10 negative matches.
 
-3. Feed the labeled data and embedding model into Finetuner:
+3. Feed the labeled data and the embedding model into Finetuner:
     ```python
     import finetuner
     from finetuner.toydata import generate_fashion
@@ -142,7 +142,7 @@ After a model is tuned, you can save it by calling `finetuner.save(model, save_p
 2. Build labeled match data {ref}`according to the steps here<build-qa-data>`. You can refer
    to `finetuner.toydata.generate_qa` for an implementation.
 
-3. Feed labeled data and the embedding model into Finetuner:
+3. Feed the labeled data and the embedding model into Finetuner:
 
     ```python
     from typing import List
@@ -165,7 +165,7 @@ After a model is tuned, you can save it by calling `finetuner.save(model, save_p
 
     finetuner.fit(
       TransformerEmbedder(),
-      train_data=generate_qa(),
+      train_data=generate_qa(num_neg=1),
       collate_fn=collate_fn
     )
     ```

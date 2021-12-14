@@ -59,7 +59,7 @@
    
    finetuner.fit(
        embed_model,
-       generate_fashion, 
+       generate_fashion(), 
        interactive=True)
    ```
 
@@ -131,12 +131,12 @@ Learn more about {term}`labeled data`.
 
 :::{card} Finetuner usage 1
 
-Perfect! Now `embed_model` and `train_data` are already provided by you, simply do:
+Perfect! Now that `embed_model` and `train_data` are already provided by you, simply do:
 
 ```python
 import finetuner
 
-tuned_model, summary = finetuner.fit(
+tuned_model = finetuner.fit(
     embed_model,
     train_data=train_data
 )
@@ -159,7 +159,7 @@ emphasize-lines: 6
 ---
 import finetuner
 
-tuned_model, summary = finetuner.fit(
+tuned_model = finetuner.fit(
     embed_model,
     train_data=unlabeled_data,
     interactive=True
@@ -183,7 +183,7 @@ emphasize-lines: 6, 7
 ---
 import finetuner
 
-tuned_model, summary = finetuner.fit(
+tuned_model = finetuner.fit(
     general_model,
     train_data=labeled_data,
     to_embedding_model=True,
@@ -208,7 +208,7 @@ emphasize-lines: 6, 7
 ---
 import finetuner
 
-tuned_model, summary = finetuner.fit(
+tuned_model = finetuner.fit(
     general_model,
     train_data=labeled_data,
     interactive=True,
