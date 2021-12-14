@@ -273,6 +273,7 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.miner.base/">finetuner.tuner.miner.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.miner.mining_strategies/">finetuner.tuner.miner.mining_strategies module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -405,6 +406,131 @@ negative index of each triplet, respectively</p>
 </dd></dl>
 </dd></dl>
 <dl class="py class">
+<dt class="sig sig-object py" id="finetuner.tuner.pytorch.miner.SiameseEasyHardMiner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.pytorch.miner.</span></span><span class="sig-name descname"><span class="pre">SiameseEasyHardMiner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hard'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hard'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/miner/#SiameseEasyHardMiner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.miner.SiameseEasyHardMiner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.miner.base/#finetuner.tuner.miner.base.BaseClassMiner" title="finetuner.tuner.miner.base.BaseClassMiner"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.miner.base.BaseClassMiner</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>]</p>
+<p>Miner implements easy-hard mining for tuples in siamese training.
+The following strategies are available.</p>
+<p>Pos. Strategy:
+- ‘hard’: Returns hardest positive (furthest) sample per anchor
+- ‘semihard’: Returns the hardest positive sample per anchor, such</p>
+<blockquote>
+<div><p>that it is closer than the selected negative</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>‘easy’: Returns the easiest positive sample per anchor</p></li>
+<li><p>‘all’: Returns all positive samples</p></li>
+</ul>
+<p>Neg. Strategy:
+- ‘hard’: Returns hardest negative (closest) sample per anchor
+- ‘semihard’: Returns the hardest negative sample per anchor, such</p>
+<blockquote>
+<div><p>that it is further than the selected negative</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>‘easy’: Returns the easiest negative sample per anchor</p></li>
+<li><p>‘all’: Returns all negative samples</p></li>
+</ul>
+<p>Not allowed:
+- pos. and neg. strategy cannot be set to ‘semihard’ simultaneously
+- When pos. or neg. strategy is set to ‘semihard’ the other cannot be</p>
+<blockquote>
+<div><p>set to ‘all’</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos_strategy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Strategy for selecting positive samples</p></li>
+<li><p><strong>neg_strategy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Strategy for selecting negative samples</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.pytorch.miner.SiameseEasyHardMiner.mine">
+<span class="sig-name descname"><span class="pre">mine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distances</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/miner/#SiameseEasyHardMiner.mine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.miner.SiameseEasyHardMiner.mine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate all possible pairs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>labels</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A 1D tensor of item labels (classes)</p></li>
+<li><p><strong>distances</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A tensor matrix of pairwise distance between each two item
+embeddings</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>three 1D tensors, first one holding integers of first element of
+pair, second of the second element of pair, and third one the label (0 or
+1) for the pair for each pair</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.tuner.pytorch.miner.TripletEasyHardMiner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.pytorch.miner.</span></span><span class="sig-name descname"><span class="pre">TripletEasyHardMiner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hard'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hard'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/miner/#TripletEasyHardMiner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.miner.TripletEasyHardMiner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.miner.base/#finetuner.tuner.miner.base.BaseClassMiner" title="finetuner.tuner.miner.base.BaseClassMiner"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.miner.base.BaseClassMiner</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>]</p>
+<p>Miner implements easy-hard mining for triplets during training with
+triplet loss. The following strategies are available.</p>
+<p>Pos. Strategy:
+- ‘hard’: Returns hardest positive (furthest) sample per anchor
+- ‘semihard’: Returns the hardest positive sample per anchor, such</p>
+<blockquote>
+<div><p>that it is closer than the selected negative</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>‘easy’: Returns the easiest positive sample per anchor</p></li>
+<li><p>‘all’: Returns all positive samples</p></li>
+</ul>
+<p>Neg. Strategy:
+- ‘hard’: Returns hardest negative (closest) sample per anchor
+- ‘semihard’: Returns the hardest negative sample per anchor, such</p>
+<blockquote>
+<div><p>that it is further than the selected negative</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>‘easy’: Returns the easiest negative sample per anchor</p></li>
+<li><p>‘all’: Returns all negative samples</p></li>
+</ul>
+<p>Not allowed:
+- pos. and neg. strategy cannot be set to ‘semihard’ simultaneously
+- When pos. or neg. strategy is set to ‘semihard’ the other cannot be</p>
+<blockquote>
+<div><p>set to ‘all’</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos_strategy</strong> – Strategy for selecting positive samples</p></li>
+<li><p><strong>neg_strategy</strong> – Strategy for selecting negative samples</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.pytorch.miner.TripletEasyHardMiner.mine">
+<span class="sig-name descname"><span class="pre">mine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distances</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/miner/#TripletEasyHardMiner.mine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.miner.TripletEasyHardMiner.mine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate all possible triplets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>labels</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A 1D tensor of item labels (classes)</p></li>
+<li><p><strong>distances</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A tensor matrix of pairwise distance between each two item
+embeddings</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>three 1D tensors, holding the anchor index, positive index and
+negative index of each triplet, respectively</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
 <dt class="sig sig-object py" id="finetuner.tuner.pytorch.miner.SiameseSessionMiner">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.pytorch.miner.</span></span><span class="sig-name descname"><span class="pre">SiameseSessionMiner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/pytorch/miner/#SiameseSessionMiner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.pytorch.miner.SiameseSessionMiner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.miner.base/#finetuner.tuner.miner.base.BaseSessionMiner" title="finetuner.tuner.miner.base.BaseSessionMiner"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.miner.base.BaseSessionMiner</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>]</p>
@@ -495,7 +621,7 @@ negative index of each triplet, respectively</p>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Dec 10, 2021.
+                    Last updated on Dec 14, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

@@ -247,6 +247,7 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.miner.base/">finetuner.tuner.miner.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.miner.mining_strategies/">finetuner.tuner.miner.mining_strategies module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -345,6 +346,8 @@
         <li><a href="../api/finetuner.helper/#finetuner.helper.AnyScheduler">AnyScheduler (in module finetuner.helper)</a>
 </li>
         <li><a href="../api/finetuner.helper/#finetuner.helper.AnyTensor">AnyTensor (in module finetuner.helper)</a>
+</li>
+        <li><a href="../api/finetuner.tuner.miner.mining_strategies/#finetuner.tuner.miner.mining_strategies.TorchStrategicMiningHelper.apply_strategy">apply_strategy() (finetuner.tuner.miner.mining_strategies.TorchStrategicMiningHelper method)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -615,8 +618,6 @@
           <li><a href="../api/finetuner.tuner.dataset.samplers/#module-finetuner.tuner.dataset.samplers">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     finetuner.tuner.evaluation
 
@@ -624,6 +625,8 @@
           <li><a href="../api/finetuner.tuner.evaluation/#module-finetuner.tuner.evaluation">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     finetuner.tuner.keras
 
@@ -664,6 +667,13 @@
 
         <ul>
           <li><a href="../api/finetuner.tuner.miner.base/#module-finetuner.tuner.miner.base">module</a>
+</li>
+        </ul></li>
+        <li>
+    finetuner.tuner.miner.mining_strategies
+
+        <ul>
+          <li><a href="../api/finetuner.tuner.miner.mining_strategies/#module-finetuner.tuner.miner.mining_strategies">module</a>
 </li>
         </ul></li>
         <li>
@@ -881,10 +891,14 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.tuner.callback.progress_bar/#finetuner.tuner.callback.progress_bar.ProgressBarCallback.mean_loss">mean_loss (finetuner.tuner.callback.progress_bar.ProgressBarCallback property)</a>
 </li>
-        <li><a href="../api/finetuner.tuner.keras.miner/#finetuner.tuner.keras.miner.SiameseMiner.mine">mine() (finetuner.tuner.keras.miner.SiameseMiner method)</a>
+        <li><a href="../api/finetuner.tuner.keras.miner/#finetuner.tuner.keras.miner.SiameseEasyHardMiner.mine">mine() (finetuner.tuner.keras.miner.SiameseEasyHardMiner method)</a>
 
         <ul>
+          <li><a href="../api/finetuner.tuner.keras.miner/#finetuner.tuner.keras.miner.SiameseMiner.mine">(finetuner.tuner.keras.miner.SiameseMiner method)</a>
+</li>
           <li><a href="../api/finetuner.tuner.keras.miner/#finetuner.tuner.keras.miner.SiameseSessionMiner.mine">(finetuner.tuner.keras.miner.SiameseSessionMiner method)</a>
+</li>
+          <li><a href="../api/finetuner.tuner.keras.miner/#finetuner.tuner.keras.miner.TripletEasyHardMiner.mine">(finetuner.tuner.keras.miner.TripletEasyHardMiner method)</a>
 </li>
           <li><a href="../api/finetuner.tuner.keras.miner/#finetuner.tuner.keras.miner.TripletMiner.mine">(finetuner.tuner.keras.miner.TripletMiner method)</a>
 </li>
@@ -896,17 +910,25 @@
 </li>
           <li><a href="../api/finetuner.tuner.miner.base/#finetuner.tuner.miner.base.BaseSessionMiner.mine">(finetuner.tuner.miner.base.BaseSessionMiner method)</a>
 </li>
+          <li><a href="../api/finetuner.tuner.paddle.miner/#finetuner.tuner.paddle.miner.SiameseEasyHardMiner.mine">(finetuner.tuner.paddle.miner.SiameseEasyHardMiner method)</a>
+</li>
           <li><a href="../api/finetuner.tuner.paddle.miner/#finetuner.tuner.paddle.miner.SiameseMiner.mine">(finetuner.tuner.paddle.miner.SiameseMiner method)</a>
 </li>
           <li><a href="../api/finetuner.tuner.paddle.miner/#finetuner.tuner.paddle.miner.SiameseSessionMiner.mine">(finetuner.tuner.paddle.miner.SiameseSessionMiner method)</a>
+</li>
+          <li><a href="../api/finetuner.tuner.paddle.miner/#finetuner.tuner.paddle.miner.TripletEasyHardMiner.mine">(finetuner.tuner.paddle.miner.TripletEasyHardMiner method)</a>
 </li>
           <li><a href="../api/finetuner.tuner.paddle.miner/#finetuner.tuner.paddle.miner.TripletMiner.mine">(finetuner.tuner.paddle.miner.TripletMiner method)</a>
 </li>
           <li><a href="../api/finetuner.tuner.paddle.miner/#finetuner.tuner.paddle.miner.TripletSessionMiner.mine">(finetuner.tuner.paddle.miner.TripletSessionMiner method)</a>
 </li>
+          <li><a href="../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseEasyHardMiner.mine">(finetuner.tuner.pytorch.miner.SiameseEasyHardMiner method)</a>
+</li>
           <li><a href="../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseMiner.mine">(finetuner.tuner.pytorch.miner.SiameseMiner method)</a>
 </li>
           <li><a href="../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseSessionMiner.mine">(finetuner.tuner.pytorch.miner.SiameseSessionMiner method)</a>
+</li>
+          <li><a href="../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletEasyHardMiner.mine">(finetuner.tuner.pytorch.miner.TripletEasyHardMiner method)</a>
 </li>
           <li><a href="../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletMiner.mine">(finetuner.tuner.pytorch.miner.TripletMiner method)</a>
 </li>
@@ -974,6 +996,8 @@
           <li><a href="../api/finetuner.tuner.miner/#module-finetuner.tuner.miner">finetuner.tuner.miner</a>
 </li>
           <li><a href="../api/finetuner.tuner.miner.base/#module-finetuner.tuner.miner.base">finetuner.tuner.miner.base</a>
+</li>
+          <li><a href="../api/finetuner.tuner.miner.mining_strategies/#module-finetuner.tuner.miner.mining_strategies">finetuner.tuner.miner.mining_strategies</a>
 </li>
           <li><a href="../api/finetuner.tuner.paddle/#module-finetuner.tuner.paddle">finetuner.tuner.paddle</a>
 </li>
@@ -1158,6 +1182,14 @@
 </li>
         <li><a href="../api/finetuner.tuner.dataset.samplers/#finetuner.tuner.dataset.samplers.SessionSampler">SessionSampler (class in finetuner.tuner.dataset.samplers)</a>
 </li>
+        <li><a href="../api/finetuner.tuner.keras.miner/#finetuner.tuner.keras.miner.SiameseEasyHardMiner">SiameseEasyHardMiner (class in finetuner.tuner.keras.miner)</a>
+
+        <ul>
+          <li><a href="../api/finetuner.tuner.paddle.miner/#finetuner.tuner.paddle.miner.SiameseEasyHardMiner">(class in finetuner.tuner.paddle.miner)</a>
+</li>
+          <li><a href="../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseEasyHardMiner">(class in finetuner.tuner.pytorch.miner)</a>
+</li>
+        </ul></li>
         <li><a href="../api/finetuner.tuner.keras.losses/#finetuner.tuner.keras.losses.SiameseLoss">SiameseLoss (class in finetuner.tuner.keras.losses)</a>
 
         <ul>
@@ -1166,6 +1198,8 @@
           <li><a href="../api/finetuner.tuner.pytorch.losses/#finetuner.tuner.pytorch.losses.SiameseLoss">(class in finetuner.tuner.pytorch.losses)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.tuner.keras.miner/#finetuner.tuner.keras.miner.SiameseMiner">SiameseMiner (class in finetuner.tuner.keras.miner)</a>
 
         <ul>
@@ -1174,8 +1208,6 @@
           <li><a href="../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseMiner">(class in finetuner.tuner.pytorch.miner)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.tuner.keras.miner/#finetuner.tuner.keras.miner.SiameseSessionMiner">SiameseSessionMiner (class in finetuner.tuner.keras.miner)</a>
 
         <ul>
@@ -1232,8 +1264,20 @@
           <li><a href="../api/finetuner.tailor/#finetuner.tailor.to_embedding_model">(in module finetuner.tailor)</a>
 </li>
         </ul></li>
+        <li><a href="../api/finetuner.tuner.miner.mining_strategies/#finetuner.tuner.miner.mining_strategies.TorchStrategicMiningHelper">TorchStrategicMiningHelper (class in finetuner.tuner.miner.mining_strategies)</a>
+</li>
         <li><a href="../api/finetuner.tuner.callback.progress_bar/#finetuner.tuner.callback.progress_bar.ProgressBarCallback.train_loss_str">train_loss_str (finetuner.tuner.callback.progress_bar.ProgressBarCallback property)</a>
 </li>
+        <li><a href="../api/finetuner.tuner.keras.miner/#finetuner.tuner.keras.miner.TripletEasyHardMiner">TripletEasyHardMiner (class in finetuner.tuner.keras.miner)</a>
+
+        <ul>
+          <li><a href="../api/finetuner.tuner.paddle.miner/#finetuner.tuner.paddle.miner.TripletEasyHardMiner">(class in finetuner.tuner.paddle.miner)</a>
+</li>
+          <li><a href="../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletEasyHardMiner">(class in finetuner.tuner.pytorch.miner)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.tuner.keras.losses/#finetuner.tuner.keras.losses.TripletLoss">TripletLoss (class in finetuner.tuner.keras.losses)</a>
 
         <ul>
@@ -1242,8 +1286,6 @@
           <li><a href="../api/finetuner.tuner.pytorch.losses/#finetuner.tuner.pytorch.losses.TripletLoss">(class in finetuner.tuner.pytorch.losses)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.tuner.keras.miner/#finetuner.tuner.keras.miner.TripletMiner">TripletMiner (class in finetuner.tuner.keras.miner)</a>
 
         <ul>
@@ -1309,7 +1351,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Dec 10, 2021.
+                    Last updated on Dec 14, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

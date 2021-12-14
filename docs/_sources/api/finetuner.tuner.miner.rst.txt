@@ -8,6 +8,7 @@ Submodules
    :maxdepth: 4
 
    finetuner.tuner.miner.base
+   finetuner.tuner.miner.mining_strategies
 
 Module contents
 ---------------

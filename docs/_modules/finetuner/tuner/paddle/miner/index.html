@@ -248,6 +248,7 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../api/finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.miner.base/">finetuner.tuner.miner.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.miner.mining_strategies/">finetuner.tuner.miner.mining_strategies module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -325,10 +326,12 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.tuner.paddle.miner</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span></span><span class="kn">import</span> <span class="nn">paddle</span>
+<span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="kn">import</span> <span class="nn">paddle</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
 
+<span class="kn">from</span> <span class="nn">finetuner.tuner.miner.mining_strategies</span> <span class="kn">import</span> <span class="n">TorchStrategicMiningHelper</span>
 <span class="kn">from</span> <span class="nn">..miner</span> <span class="kn">import</span> <span class="n">get_session_pairs</span><span class="p">,</span> <span class="n">get_session_triplets</span>
 <span class="kn">from</span> <span class="nn">..miner.base</span> <span class="kn">import</span> <span class="n">BaseClassMiner</span><span class="p">,</span> <span class="n">BaseSessionMiner</span>
 
@@ -390,6 +393,100 @@
         <span class="k">return</span> <span class="n">ind1</span><span class="p">,</span> <span class="n">ind2</span><span class="p">,</span> <span class="n">target</span></div></div>
 
 
+<div class="viewcode-block" id="SiameseEasyHardMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.miner/#finetuner.tuner.paddle.miner.SiameseEasyHardMiner">[docs]</a><span class="k">class</span> <span class="nc">SiameseEasyHardMiner</span><span class="p">(</span><span class="n">BaseClassMiner</span><span class="p">[</span><span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'hard'</span><span class="p">,</span> <span class="n">neg_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'hard'</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Miner implements easy-hard mining for tuples in siamese training.</span>
+<span class="sd">        The following strategies are available.</span>
+
+<span class="sd">        Pos. Strategy:</span>
+<span class="sd">        - 'hard': Returns hardest positive (furthest) sample per anchor</span>
+<span class="sd">        - 'semihard': Returns the hardest positive sample per anchor, such</span>
+<span class="sd">          that it is closer than the selected negative</span>
+<span class="sd">        - 'easy': Returns the easiest positive sample per anchor</span>
+<span class="sd">        - 'all': Returns all positive samples</span>
+
+<span class="sd">        Neg. Strategy:</span>
+<span class="sd">        - 'hard': Returns hardest negative (closest) sample per anchor</span>
+<span class="sd">        - 'semihard': Returns the hardest negative sample per anchor, such</span>
+<span class="sd">          that it is further than the selected negative</span>
+<span class="sd">        - 'easy': Returns the easiest negative sample per anchor</span>
+<span class="sd">        - 'all': Returns all negative samples</span>
+
+<span class="sd">        Not allowed:</span>
+<span class="sd">        - pos. and neg. strategy cannot be set to 'semihard' simultaneously</span>
+<span class="sd">        - When pos. or neg. strategy is set to 'semihard' the other cannot be</span>
+<span class="sd">          set to 'all'</span>
+
+<span class="sd">        :param pos_strategy: Strategy for selecting positive samples</span>
+<span class="sd">        :param neg_strategy: Strategy for selecting negative samples</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strategic_mining_helper</span> <span class="o">=</span> <span class="n">TorchStrategicMiningHelper</span><span class="p">(</span>
+            <span class="n">pos_strategy</span><span class="p">,</span> <span class="n">neg_strategy</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="SiameseEasyHardMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.miner/#finetuner.tuner.paddle.miner.SiameseEasyHardMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">distances</span><span class="p">:</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="sd">"""Generate all possible pairs.</span>
+
+<span class="sd">        :param labels: A 1D tensor of item labels (classes)</span>
+<span class="sd">        :param distances: A tensor matrix of pairwise distance between each two item</span>
+<span class="sd">            embeddings</span>
+
+<span class="sd">        :return: three 1D tensors, first one holding integers of first element of</span>
+<span class="sd">            pair, second of the second element of pair, and third one the label (0 or</span>
+<span class="sd">            1) for the pair for each pair</span>
+<span class="sd">        """</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+
+        <span class="c1"># Needed, else sigfault if empty</span>
+        <span class="k">if</span> <span class="n">labels</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_empty_tensor</span><span class="p">(),</span> <span class="n">_empty_tensor</span><span class="p">(),</span> <span class="n">_empty_tensor</span><span class="p">()</span>
+
+        <span class="n">l1</span><span class="p">,</span> <span class="n">l2</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">l1</span> <span class="o">==</span> <span class="n">l2</span><span class="p">,</span> <span class="s1">'int32'</span><span class="p">)</span>
+        <span class="n">diffs</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">matches</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">diffs</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">diffs</span><span class="p">)</span>
+
+        <span class="c1"># Apply mining strategy</span>
+        <span class="n">updated_matches</span><span class="p">,</span> <span class="n">updated_diffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategic_mining_helper</span><span class="o">.</span><span class="n">apply_strategy</span><span class="p">(</span>
+            <span class="n">matches</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+            <span class="n">diffs</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+            <span class="n">distances</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+            <span class="n">to_numpy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">to_tensor</span><span class="p">(</span><span class="n">updated_matches</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="n">matches</span><span class="o">.</span><span class="n">place</span><span class="p">)</span>
+        <span class="n">diffs</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">to_tensor</span><span class="p">(</span><span class="n">updated_diffs</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="n">diffs</span><span class="o">.</span><span class="n">place</span><span class="p">)</span>
+
+        <span class="n">pos_inds</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">neg_inds</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">diffs</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Checking needed, otherwise segfault if empty</span>
+        <span class="k">if</span> <span class="n">pos_inds</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="n">ind1_pos</span><span class="p">,</span> <span class="n">ind2_pos</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ind1_pos</span><span class="p">,</span> <span class="n">ind2_pos</span> <span class="o">=</span> <span class="n">_empty_tensor</span><span class="p">(),</span> <span class="n">_empty_tensor</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">neg_inds</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="n">ind1_neg</span><span class="p">,</span> <span class="n">ind2_neg</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">diffs</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ind1_neg</span><span class="p">,</span> <span class="n">ind2_neg</span> <span class="o">=</span> <span class="n">_empty_tensor</span><span class="p">(),</span> <span class="n">_empty_tensor</span><span class="p">()</span>
+
+        <span class="c1"># Checking needed otherwise error on concat</span>
+        <span class="k">if</span> <span class="n">ind1_pos</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="n">ind1_neg</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="n">ind1</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ind1_pos</span><span class="p">,</span> <span class="n">ind1_neg</span><span class="p">])</span>
+            <span class="n">ind2</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ind2_pos</span><span class="p">,</span> <span class="n">ind2_neg</span><span class="p">])</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">paddle</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">ind1_pos</span><span class="p">),</span> <span class="n">paddle</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ind1_neg</span><span class="p">)]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ind1</span><span class="p">,</span> <span class="n">ind2</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">_empty_tensor</span><span class="p">(),</span> <span class="n">_empty_tensor</span><span class="p">(),</span> <span class="n">_empty_tensor</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">ind1</span><span class="p">,</span> <span class="n">ind2</span><span class="p">,</span> <span class="n">target</span></div></div>
+
+
 <div class="viewcode-block" id="TripletMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.miner/#finetuner.tuner.paddle.miner.TripletMiner">[docs]</a><span class="k">class</span> <span class="nc">TripletMiner</span><span class="p">(</span><span class="n">BaseClassMiner</span><span class="p">[</span><span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
 <div class="viewcode-block" id="TripletMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.miner/#finetuner.tuner.paddle.miner.TripletMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">distances</span><span class="p">:</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span>
@@ -412,6 +509,81 @@
         <span class="n">labels1</span><span class="p">,</span> <span class="n">labels2</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">matches</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">labels1</span> <span class="o">==</span> <span class="n">labels2</span><span class="p">,</span> <span class="s1">'int32'</span><span class="p">)</span>
         <span class="n">diffs</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">matches</span>
+
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">paddle</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">triplets</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">diffs</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">triplet_inds</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">triplets</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Checking needed, otherwise segfault if empty</span>
+        <span class="k">if</span> <span class="n">triplet_inds</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">triplet_inds</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_empty_tensor</span><span class="p">(),</span> <span class="n">_empty_tensor</span><span class="p">(),</span> <span class="n">_empty_tensor</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="TripletEasyHardMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.miner/#finetuner.tuner.paddle.miner.TripletEasyHardMiner">[docs]</a><span class="k">class</span> <span class="nc">TripletEasyHardMiner</span><span class="p">(</span><span class="n">BaseClassMiner</span><span class="p">[</span><span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'hard'</span><span class="p">,</span> <span class="n">neg_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'hard'</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Miner implements easy-hard mining for triplets during training with</span>
+<span class="sd">        triplet loss. The following strategies are available.</span>
+
+<span class="sd">        Pos. Strategy:</span>
+<span class="sd">        - 'hard': Returns hardest positive (furthest) sample per anchor</span>
+<span class="sd">        - 'semihard': Returns the hardest positive sample per anchor, such</span>
+<span class="sd">          that it is closer than the selected negative</span>
+<span class="sd">        - 'easy': Returns the easiest positive sample per anchor</span>
+<span class="sd">        - 'all': Returns all positive samples</span>
+
+<span class="sd">        Neg. Strategy:</span>
+<span class="sd">        - 'hard': Returns hardest negative (closest) sample per anchor</span>
+<span class="sd">        - 'semihard': Returns the hardest negative sample per anchor, such</span>
+<span class="sd">          that it is further than the selected negative</span>
+<span class="sd">        - 'easy': Returns the easiest negative sample per anchor</span>
+<span class="sd">        - 'all': Returns all negative samples</span>
+
+<span class="sd">        Not allowed:</span>
+<span class="sd">        - pos. and neg. strategy cannot be set to 'semihard' simultaneously</span>
+<span class="sd">        - When pos. or neg. strategy is set to 'semihard' the other cannot be</span>
+<span class="sd">          set to 'all'</span>
+
+<span class="sd">        :param pos_strategy: Strategy for selecting positive samples</span>
+<span class="sd">        :param neg_strategy: Strategy for selecting negative samples</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strategic_mining_helper</span> <span class="o">=</span> <span class="n">TorchStrategicMiningHelper</span><span class="p">(</span>
+            <span class="n">pos_strategy</span><span class="p">,</span> <span class="n">neg_strategy</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="TripletEasyHardMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.paddle.miner/#finetuner.tuner.paddle.miner.TripletEasyHardMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">distances</span><span class="p">:</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">paddle</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="sd">"""Generate all possible triplets.</span>
+
+<span class="sd">        :param labels: A 1D tensor of item labels (classes)</span>
+<span class="sd">        :param distances: A tensor matrix of pairwise distance between each two item</span>
+<span class="sd">            embeddings</span>
+
+<span class="sd">        :return: three 1D tensors, holding the anchor index, positive index and</span>
+<span class="sd">            negative index of each triplet, respectively</span>
+<span class="sd">        """</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+
+        <span class="c1"># Needed, else sigfault if empty</span>
+        <span class="k">if</span> <span class="n">labels</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_empty_tensor</span><span class="p">(),</span> <span class="n">_empty_tensor</span><span class="p">(),</span> <span class="n">_empty_tensor</span><span class="p">()</span>
+
+        <span class="n">labels1</span><span class="p">,</span> <span class="n">labels2</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">labels1</span> <span class="o">==</span> <span class="n">labels2</span><span class="p">,</span> <span class="s1">'int32'</span><span class="p">)</span>
+        <span class="n">diffs</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">matches</span>
+
+        <span class="c1"># Apply mining strategy</span>
+        <span class="n">updated_matches</span><span class="p">,</span> <span class="n">updated_diffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategic_mining_helper</span><span class="o">.</span><span class="n">apply_strategy</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">matches</span><span class="o">.</span><span class="n">numpy</span><span class="p">()),</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">diffs</span><span class="o">.</span><span class="n">numpy</span><span class="p">()),</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">distances</span><span class="o">.</span><span class="n">numpy</span><span class="p">()),</span>
+            <span class="n">to_numpy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">to_tensor</span><span class="p">(</span><span class="n">updated_matches</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="n">matches</span><span class="o">.</span><span class="n">place</span><span class="p">)</span>
+        <span class="n">diffs</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">to_tensor</span><span class="p">(</span><span class="n">updated_diffs</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="n">diffs</span><span class="o">.</span><span class="n">place</span><span class="p">)</span>
 
         <span class="n">matches</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">paddle</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">triplets</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">diffs</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -489,7 +661,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Dec 10, 2021.
+                    Last updated on Dec 14, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

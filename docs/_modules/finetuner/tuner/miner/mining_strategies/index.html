@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.1, furo 2021.11.23"/>
-        <title>finetuner.tuner.pytorch.miner - Finetuner 0.2.5 documentation</title>
+        <title>finetuner.tuner.miner.mining_strategies - Finetuner 0.2.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -325,80 +325,21 @@
                         </i>
                     </label>
                 </div>
-                <h1>Source code for finetuner.tuner.pytorch.miner</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
-
+                <h1>Source code for finetuner.tuner.miner.mining_strategies</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.lib.arraysetops</span> <span class="kn">import</span> <span class="n">isin</span>
+<span class="kn">from</span> <span class="nn">tensorflow.core.framework.versions_pb2</span> <span class="kn">import</span> <span class="n">VersionDef</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="kn">from</span> <span class="nn">..miner</span> <span class="kn">import</span> <span class="n">get_session_pairs</span><span class="p">,</span> <span class="n">get_session_triplets</span>
-<span class="kn">from</span> <span class="nn">..miner.base</span> <span class="kn">import</span> <span class="n">BaseClassMiner</span><span class="p">,</span> <span class="n">BaseSessionMiner</span>
-<span class="kn">from</span> <span class="nn">..miner.mining_strategies</span> <span class="kn">import</span> <span class="n">TorchStrategicMiningHelper</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 
-<div class="viewcode-block" id="SiameseMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseMiner">[docs]</a><span class="k">class</span> <span class="nc">SiameseMiner</span><span class="p">(</span><span class="n">BaseClassMiner</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
-<div class="viewcode-block" id="SiameseMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">distances</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
-        <span class="sd">"""Generate all possible pairs.</span>
-
-<span class="sd">        :param labels: A 1D tensor of item labels (classes)</span>
-<span class="sd">        :param distances: A tensor matrix of pairwise distance between each two item</span>
-<span class="sd">            embeddings</span>
-
-<span class="sd">        :return: three 1D tensors, first one holding integers of first element of</span>
-<span class="sd">            pair, second of the second element of pair, and third one the label (0 or</span>
-<span class="sd">            1) for the pair for each pair</span>
-<span class="sd">        """</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
-
-        <span class="n">l1</span><span class="p">,</span> <span class="n">l2</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="n">matches</span> <span class="o">=</span> <span class="p">(</span><span class="n">l1</span> <span class="o">==</span> <span class="n">l2</span><span class="p">)</span><span class="o">.</span><span class="n">byte</span><span class="p">()</span>
-        <span class="n">diffs</span> <span class="o">=</span> <span class="n">matches</span> <span class="o">^</span> <span class="mi">1</span>
-        <span class="n">matches</span><span class="o">.</span><span class="n">triu_</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">diffs</span><span class="o">.</span><span class="n">triu_</span><span class="p">()</span>
-
-        <span class="n">ind1_pos</span><span class="p">,</span> <span class="n">ind2_pos</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
-        <span class="n">ind1_neg</span><span class="p">,</span> <span class="n">ind2_neg</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diffs</span><span class="p">)</span>
-
-        <span class="n">ind1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">ind1_pos</span><span class="p">,</span> <span class="n">ind1_neg</span><span class="p">])</span>
-        <span class="n">ind2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">ind2_pos</span><span class="p">,</span> <span class="n">ind2_neg</span><span class="p">])</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">ind1_pos</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ind1_neg</span><span class="p">)])</span>
-
-        <span class="k">return</span> <span class="n">ind1</span><span class="p">,</span> <span class="n">ind2</span><span class="p">,</span> <span class="n">target</span></div></div>
-
-
-<div class="viewcode-block" id="TripletMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletMiner">[docs]</a><span class="k">class</span> <span class="nc">TripletMiner</span><span class="p">(</span><span class="n">BaseClassMiner</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
-<div class="viewcode-block" id="TripletMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">distances</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
-        <span class="sd">"""Generate all possible triplets.</span>
-
-<span class="sd">        :param labels: A 1D tensor of item labels (classes)</span>
-<span class="sd">        :param distances: A tensor matrix of pairwise distance between each two item</span>
-<span class="sd">            embeddings</span>
-
-<span class="sd">        :return: three 1D tensors, holding the anchor index, positive index and</span>
-<span class="sd">            negative index of each triplet, respectively</span>
-<span class="sd">        """</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
-
-        <span class="n">labels1</span><span class="p">,</span> <span class="n">labels2</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">matches</span> <span class="o">=</span> <span class="p">(</span><span class="n">labels1</span> <span class="o">==</span> <span class="n">labels2</span><span class="p">)</span><span class="o">.</span><span class="n">byte</span><span class="p">()</span>
-        <span class="n">diffs</span> <span class="o">=</span> <span class="n">matches</span> <span class="o">^</span> <span class="mi">1</span>
-
-        <span class="n">matches</span><span class="o">.</span><span class="n">fill_diagonal_</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="n">triplets</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">diffs</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">triplets</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="SiameseEasyHardMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseEasyHardMiner">[docs]</a><span class="k">class</span> <span class="nc">SiameseEasyHardMiner</span><span class="p">(</span><span class="n">BaseClassMiner</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'hard'</span><span class="p">,</span> <span class="n">neg_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'hard'</span><span class="p">):</span>
+<div class="viewcode-block" id="TorchStrategicMiningHelper"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.miner.mining_strategies/#finetuner.tuner.miner.mining_strategies.TorchStrategicMiningHelper">[docs]</a><span class="k">class</span> <span class="nc">TorchStrategicMiningHelper</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos_strategy</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">neg_strategy</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
-<span class="sd">        Miner implements easy-hard mining for tuples in siamese training.</span>
-<span class="sd">        The following strategies are available.</span>
+<span class="sd">        This helper implements easy-hard mining for tuples or triplets in</span>
+<span class="sd">        siamese and triplet respectively. The following strategies are</span>
+<span class="sd">        available.</span>
 
 <span class="sd">        Pos. Strategy:</span>
 <span class="sd">        - 'hard': Returns hardest positive (furthest) sample per anchor</span>
@@ -423,160 +364,223 @@
 <span class="sd">        :param neg_strategy: Strategy for selecting negative samples</span>
 <span class="sd">        """</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">strategic_mining_helper</span> <span class="o">=</span> <span class="n">TorchStrategicMiningHelper</span><span class="p">(</span>
-            <span class="n">pos_strategy</span><span class="p">,</span> <span class="n">neg_strategy</span>
-        <span class="p">)</span>
+        <span class="n">allowed_strategies</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'easy'</span><span class="p">,</span> <span class="s1">'semihard'</span><span class="p">,</span> <span class="s1">'hard'</span><span class="p">,</span> <span class="s1">'all'</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">pos_strategy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_strategies</span>
+            <span class="ow">or</span> <span class="n">neg_strategy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_strategies</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'The strategy has to be one of all, easy, semihard, and hard, but '</span>
+                <span class="s1">'was: </span><span class="si">{strategy}</span><span class="s1">'</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">pos_strategy</span> <span class="o">==</span> <span class="s1">'semihard'</span> <span class="ow">and</span> <span class="n">neg_strategy</span> <span class="o">==</span> <span class="s1">'semihard'</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">'Positive and negative strategy cannot both be set to semihard.'</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">pos_strategy</span> <span class="o">==</span> <span class="s1">'all'</span> <span class="ow">and</span> <span class="n">neg_strategy</span> <span class="o">==</span> <span class="s1">'semihard'</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="n">pos_strategy</span> <span class="o">==</span> <span class="s1">'semihard'</span> <span class="ow">and</span> <span class="n">neg_strategy</span> <span class="o">==</span> <span class="s1">'all'</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">'When one strategy is set to semihard, the other cannot be set to hard.'</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos_strategy</span> <span class="o">=</span> <span class="n">pos_strategy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neg_strategy</span> <span class="o">=</span> <span class="n">neg_strategy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">"cuda"</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SiameseEasyHardMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseEasyHardMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">distances</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
-        <span class="sd">"""Generate all possible pairs.</span>
+    <span class="k">def</span> <span class="nf">_get_per_row_min</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">dist_mat</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">semihard_tsh</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
 
-<span class="sd">        :param labels: A 1D tensor of item labels (classes)</span>
-<span class="sd">        :param distances: A tensor matrix of pairwise distance between each two item</span>
-<span class="sd">            embeddings</span>
+        <span class="sd">"""Given a matrix, this function gets the min value of each valid row and</span>
+<span class="sd">        their respective column indices</span>
 
-<span class="sd">        :return: three 1D tensors, first one holding integers of first element of</span>
-<span class="sd">            pair, second of the second element of pair, and third one the label (0 or</span>
-<span class="sd">            1) for the pair for each pair</span>
-<span class="sd">        """</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+<span class="sd">        :param dist_mat: Symmetric tensor with pair-wise embedding distances</span>
+<span class="sd">        :param semihard_tsh: Maximum upper bound on the distance that is selected</span>
+<span class="sd">          as minumum. This is needed for semihard mining.</span>
 
-        <span class="n">l1</span><span class="p">,</span> <span class="n">l2</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="n">matches</span> <span class="o">=</span> <span class="p">(</span><span class="n">l1</span> <span class="o">==</span> <span class="n">l2</span><span class="p">)</span><span class="o">.</span><span class="n">byte</span><span class="p">()</span>
-        <span class="n">diffs</span> <span class="o">=</span> <span class="n">matches</span> <span class="o">^</span> <span class="mi">1</span>
-        <span class="n">matches</span><span class="o">.</span><span class="n">triu_</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">diffs</span><span class="o">.</span><span class="n">triu_</span><span class="p">()</span>
-
-        <span class="n">matches</span><span class="p">,</span> <span class="n">diffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategic_mining_helper</span><span class="o">.</span><span class="n">apply_strategy</span><span class="p">(</span>
-            <span class="n">matches</span><span class="p">,</span> <span class="n">diffs</span><span class="p">,</span> <span class="n">distances</span>
-        <span class="p">)</span>
-
-        <span class="n">ind1_pos</span><span class="p">,</span> <span class="n">ind2_pos</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
-        <span class="n">ind1_neg</span><span class="p">,</span> <span class="n">ind2_neg</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diffs</span><span class="p">)</span>
-
-        <span class="n">ind1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">ind1_pos</span><span class="p">,</span> <span class="n">ind1_neg</span><span class="p">])</span>
-        <span class="n">ind2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">ind2_pos</span><span class="p">,</span> <span class="n">ind2_neg</span><span class="p">])</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">ind1_pos</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ind1_neg</span><span class="p">)])</span>
-
-        <span class="k">return</span> <span class="n">ind1</span><span class="p">,</span> <span class="n">ind2</span><span class="p">,</span> <span class="n">target</span></div></div>
-
-
-<div class="viewcode-block" id="TripletEasyHardMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletEasyHardMiner">[docs]</a><span class="k">class</span> <span class="nc">TripletEasyHardMiner</span><span class="p">(</span><span class="n">BaseClassMiner</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos_strategy</span><span class="o">=</span><span class="s1">'hard'</span><span class="p">,</span> <span class="n">neg_strategy</span><span class="o">=</span><span class="s1">'hard'</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        Miner implements easy-hard mining for triplets during training with</span>
-<span class="sd">        triplet loss. The following strategies are available.</span>
-
-<span class="sd">        Pos. Strategy:</span>
-<span class="sd">        - 'hard': Returns hardest positive (furthest) sample per anchor</span>
-<span class="sd">        - 'semihard': Returns the hardest positive sample per anchor, such</span>
-<span class="sd">          that it is closer than the selected negative</span>
-<span class="sd">        - 'easy': Returns the easiest positive sample per anchor</span>
-<span class="sd">        - 'all': Returns all positive samples</span>
-
-<span class="sd">        Neg. Strategy:</span>
-<span class="sd">        - 'hard': Returns hardest negative (closest) sample per anchor</span>
-<span class="sd">        - 'semihard': Returns the hardest negative sample per anchor, such</span>
-<span class="sd">          that it is further than the selected negative</span>
-<span class="sd">        - 'easy': Returns the easiest negative sample per anchor</span>
-<span class="sd">        - 'all': Returns all negative samples</span>
-
-<span class="sd">        Not allowed:</span>
-<span class="sd">        - pos. and neg. strategy cannot be set to 'semihard' simultaneously</span>
-<span class="sd">        - When pos. or neg. strategy is set to 'semihard' the other cannot be</span>
-<span class="sd">          set to 'all'</span>
-
-<span class="sd">        :param pos_strategy: Strategy for selecting positive samples</span>
-<span class="sd">        :param neg_strategy: Strategy for selecting negative samples</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">strategic_mining_helper</span> <span class="o">=</span> <span class="n">TorchStrategicMiningHelper</span><span class="p">(</span>
-            <span class="n">pos_strategy</span><span class="p">,</span> <span class="n">neg_strategy</span>
-        <span class="p">)</span>
-
-<div class="viewcode-block" id="TripletEasyHardMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletEasyHardMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">distances</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
-        <span class="sd">"""Generate all possible triplets.</span>
-
-<span class="sd">        :param labels: A 1D tensor of item labels (classes)</span>
-<span class="sd">        :param distances: A tensor matrix of pairwise distance between each two item</span>
-<span class="sd">            embeddings</span>
-
-<span class="sd">        :return: three 1D tensors, holding the anchor index, positive index and</span>
-<span class="sd">            negative index of each triplet, respectively</span>
-<span class="sd">        """</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
-
-        <span class="n">labels1</span><span class="p">,</span> <span class="n">labels2</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">matches</span> <span class="o">=</span> <span class="p">(</span><span class="n">labels1</span> <span class="o">==</span> <span class="n">labels2</span><span class="p">)</span><span class="o">.</span><span class="n">byte</span><span class="p">()</span>
-        <span class="n">diffs</span> <span class="o">=</span> <span class="n">matches</span> <span class="o">^</span> <span class="mi">1</span>
-
-        <span class="n">matches</span><span class="o">.</span><span class="n">fill_diagonal_</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">matches</span><span class="p">,</span> <span class="n">diffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategic_mining_helper</span><span class="o">.</span><span class="n">apply_strategy</span><span class="p">(</span>
-            <span class="n">matches</span><span class="p">,</span> <span class="n">diffs</span><span class="p">,</span> <span class="n">distances</span>
-        <span class="p">)</span>
-
-        <span class="n">triplets</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">diffs</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">triplets</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="SiameseSessionMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseSessionMiner">[docs]</a><span class="k">class</span> <span class="nc">SiameseSessionMiner</span><span class="p">(</span><span class="n">BaseSessionMiner</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
-<div class="viewcode-block" id="SiameseSessionMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.SiameseSessionMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">distances</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
-        <span class="sd">"""Generate all possible pairs for each session.</span>
-
-<span class="sd">        :param labels: A tuple of 1D tensors, denotind the items' session and match</span>
-<span class="sd">            type (0 for anchor, 1 for postive match and -1 for negative match),</span>
-<span class="sd">            respectively</span>
-<span class="sd">        :param distances: A tensor matrix of pairwise distance between each two item</span>
-<span class="sd">            embeddings</span>
-
-<span class="sd">        :return: three numpy arrays, first one holding integers of first element of</span>
-<span class="sd">            pair, second of the second element of pair, and third one the label (0 or</span>
-<span class="sd">            1) for the pair for each pair</span>
-<span class="sd">        """</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-        <span class="n">sessions</span><span class="p">,</span> <span class="n">match_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">]</span>
-        <span class="n">ind_one</span><span class="p">,</span> <span class="n">ind_two</span><span class="p">,</span> <span class="n">labels_ret</span> <span class="o">=</span> <span class="n">get_session_pairs</span><span class="p">(</span><span class="n">sessions</span><span class="p">,</span> <span class="n">match_types</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">ind_one</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">distances</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">ind_two</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">distances</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">labels_ret</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">distances</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
-        <span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="TripletSessionMiner"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletSessionMiner">[docs]</a><span class="k">class</span> <span class="nc">TripletSessionMiner</span><span class="p">(</span><span class="n">BaseSessionMiner</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
-<div class="viewcode-block" id="TripletSessionMiner.mine"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.pytorch.miner/#finetuner.tuner.pytorch.miner.TripletSessionMiner.mine">[docs]</a>    <span class="k">def</span> <span class="nf">mine</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">distances</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
-        <span class="sd">"""Generate all possible triplets for each session.</span>
-
-<span class="sd">        :param labels: A tuple of 1D tensors, denotind the items' session and match</span>
-<span class="sd">            type (0 for anchor, 1 for postive match and -1 for negative match),</span>
-<span class="sd">            respectively</span>
-<span class="sd">        :param distances: A tensor matrix of pairwise distance between each two item</span>
-<span class="sd">            embeddings</span>
-
-<span class="sd">        :return: three numpy arrays, holding the anchor index, positive index and</span>
-<span class="sd">            negative index of each triplet, respectively</span>
+<span class="sd">        :return: Tuple with two tensors of per-row min values and respective indices</span>
+<span class="sd">        :return non_inf_rows: Rows where the extracted max is larger than zero</span>
+<span class="sd">          and has not been masked through thresholding</span>
 <span class="sd">        """</span>
 
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">zero_element_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">dist_mat</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dist_mat</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(()),</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">((),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+                <span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span>
+            <span class="p">)</span>
 
-        <span class="n">sessions</span><span class="p">,</span> <span class="n">match_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">]</span>
-        <span class="n">anchor_ind</span><span class="p">,</span> <span class="n">pos_ind</span><span class="p">,</span> <span class="n">neg_ind</span> <span class="o">=</span> <span class="n">get_session_triplets</span><span class="p">(</span><span class="n">sessions</span><span class="p">,</span> <span class="n">match_types</span><span class="p">)</span>
+        <span class="c1"># Set zeros to max value, so they are not extracted as row minimum</span>
+        <span class="n">row_max</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dist_mat</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dist_mat</span> <span class="o">+=</span> <span class="p">(</span><span class="n">row_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">zero_element_mask</span>
 
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">anchor_ind</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">distances</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">pos_ind</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">distances</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">neg_ind</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">distances</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
-        <span class="p">)</span></div></div>
+        <span class="k">if</span> <span class="n">semihard_tsh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dist_mat</span><span class="p">[</span><span class="n">dist_mat</span> <span class="o">&lt;=</span> <span class="n">semihard_tsh</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'inf'</span><span class="p">)</span>
+
+        <span class="c1"># Get row mask for rows where thresholding caused min to be infinity</span>
+        <span class="n">non_inf_rows</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dist_mat</span> <span class="o">==</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'inf'</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dist_mat</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">non_inf_rows</span>
+
+    <span class="k">def</span> <span class="nf">_get_per_row_max</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">dist_mat</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">semihard_tsh</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="sd">"""Given a matrix, this function gets the max value of each non-zero row and</span>
+<span class="sd">        their respective column indices</span>
+
+<span class="sd">        :param dist_mat: Symmetric tensor with pair-wise embedding distances</span>
+<span class="sd">        :param semihard_tsh: Minimum lower bound on the distance that is selected</span>
+<span class="sd">          as maximum. This is needed for semihard mining.</span>
+
+<span class="sd">        :return: Tuple with two tensors of per-row max values and respective indices</span>
+<span class="sd">        :return non_zero_rows: Rows where the extracted max is larger than zero</span>
+<span class="sd">          and has not been masked through thresholding</span>
+<span class="sd">        """</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dist_mat</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(()),</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">((),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+                <span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span>
+            <span class="p">)</span>
+        <span class="c1"># Mask for semihard case</span>
+        <span class="k">if</span> <span class="n">semihard_tsh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dist_mat</span><span class="p">[</span><span class="n">dist_mat</span> <span class="o">&gt;=</span> <span class="n">semihard_tsh</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Get row mask for rows where thresholding caused max to be zero</span>
+        <span class="n">all_zero_rows</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dist_mat</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dist_mat</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">all_zero_rows</span>
+
+    <span class="k">def</span> <span class="nf">_update_dist_mat</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">dist_mat</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">"""Given a distance matrix and indices for row-wise min or max values,</span>
+<span class="sd">         this func removes all but the extreme values from the matrix</span>
+
+<span class="sd">        :param dist_mat: Pair-wise distance matrix</span>
+<span class="sd">        :param indices: Row-wise indices of min or max values</span>
+
+<span class="sd">        :return: The distance matrix, where only the min or max values</span>
+<span class="sd">          remain in each row</span>
+<span class="sd">        """</span>
+        <span class="n">keep_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">dist_mat</span><span class="p">)</span>
+        <span class="n">keep_mask</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">keep_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">indices</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># Mask and return the distance matrix</span>
+        <span class="k">return</span> <span class="n">dist_mat</span> <span class="o">*</span> <span class="n">keep_mask</span>
+
+    <span class="k">def</span> <span class="nf">_get_mine_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+        <span class="sd">"""Given a strategy, this function gets the correct extractor for</span>
+<span class="sd">        min or max distance values</span>
+
+<span class="sd">        :param strategy: Name of the mining strategy</span>
+
+<span class="sd">        :return: Function that either gets the row-wise min or max</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">strategy</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'hard'</span><span class="p">,</span> <span class="s1">'semihard'</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_per_row_max</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_per_row_min</span>
+
+    <span class="k">def</span> <span class="nf">_update_pos_mat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">match_mat</span><span class="p">,</span> <span class="n">dist_mat</span><span class="p">,</span> <span class="n">pos_strategy</span><span class="p">,</span> <span class="n">semihard_tsh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">"""Function that wraps the update of the postitive pair distancs to realize</span>
+<span class="sd">        mining strategy.</span>
+
+<span class="sd">        :param match_mat: Matrix that indicates the values in distance matrix, that</span>
+<span class="sd">          belong to positive pairs</span>
+<span class="sd">        :param dist_mat: Matrix with pair-wise encoding distances</span>
+<span class="sd">        :param strategy: Mining strategy for positive samples</span>
+<span class="sd">        :param semihard_tsh: Row-wise threshold values incorporated during semihard</span>
+<span class="sd">          mining</span>
+
+<span class="sd">        :return: Updated distance matrix so it can be used to realize mining strategy,</span>
+<span class="sd">          and the row-wise min or max distances, depending on mining strategy</span>
+<span class="sd">        """</span>
+        <span class="c1"># Get all positive distances d(a, p)</span>
+        <span class="n">d_a_p</span> <span class="o">=</span> <span class="n">match_mat</span> <span class="o">*</span> <span class="n">dist_mat</span>
+        <span class="n">mine_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mine_func</span><span class="p">(</span><span class="n">pos_strategy</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">pos_dists</span><span class="p">,</span> <span class="n">min_max_indices</span><span class="p">),</span> <span class="n">invalid_row_mask</span> <span class="o">=</span> <span class="n">mine_func</span><span class="p">(</span><span class="n">d_a_p</span><span class="p">,</span> <span class="n">semihard_tsh</span><span class="p">)</span>
+        <span class="c1"># Remove rows where semihard thresholding has created unusable values</span>
+        <span class="n">match_mat</span><span class="p">[</span><span class="n">invalid_row_mask</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_dist_mat</span><span class="p">(</span><span class="n">match_mat</span><span class="p">,</span> <span class="n">min_max_indices</span><span class="p">),</span> <span class="n">pos_dists</span>
+
+    <span class="k">def</span> <span class="nf">_update_neg_mat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff_mat</span><span class="p">,</span> <span class="n">dist_mat</span><span class="p">,</span> <span class="n">neg_strategy</span><span class="p">,</span> <span class="n">semihard_tsh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># Get all negative distances d(a, n)</span>
+        <span class="n">d_a_n</span> <span class="o">=</span> <span class="n">diff_mat</span> <span class="o">*</span> <span class="n">dist_mat</span>
+
+        <span class="c1"># Neg. needs to be handled in opposite fashion than pos. strategy</span>
+        <span class="n">neg_strategy</span> <span class="o">=</span> <span class="s1">'easy'</span> <span class="k">if</span> <span class="n">neg_strategy</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'hard'</span><span class="p">,</span> <span class="s1">'semihard'</span><span class="p">)</span> <span class="k">else</span> <span class="s1">'hard'</span>
+        <span class="n">mine_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mine_func</span><span class="p">(</span><span class="n">neg_strategy</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">neg_dists</span><span class="p">,</span> <span class="n">min_max_indices</span><span class="p">),</span> <span class="n">invalid_row_mask</span> <span class="o">=</span> <span class="n">mine_func</span><span class="p">(</span><span class="n">d_a_n</span><span class="p">,</span> <span class="n">semihard_tsh</span><span class="p">)</span>
+        <span class="c1"># Remove rows where semihard thresholding has created unusable values</span>
+        <span class="n">diff_mat</span><span class="p">[</span><span class="n">invalid_row_mask</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_dist_mat</span><span class="p">(</span><span class="n">diff_mat</span><span class="p">,</span> <span class="n">min_max_indices</span><span class="p">),</span> <span class="n">neg_dists</span>
+
+    <span class="k">def</span> <span class="nf">_handle_input_tensors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensor</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]):</span>
+        <span class="sd">"""Helper function to parse input tensors for strategy application"""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'Application of mining strategies only works '</span>
+                <span class="sa">f</span><span class="s1">'on ndarrays or pytorch tensors, but the passed tensor was of type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tensor</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TorchStrategicMiningHelper.apply_strategy"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.miner.mining_strategies/#finetuner.tuner.miner.mining_strategies.TorchStrategicMiningHelper.apply_strategy">[docs]</a>    <span class="k">def</span> <span class="nf">apply_strategy</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">match_mat</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">diff_mat</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">dist_mat</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">to_numpy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">"""Wraps the application of mining strategies to update the matrices</span>
+<span class="sd">        with positive and negative matches depending, using the distance</span>
+<span class="sd">        matrix for filtering</span>
+
+<span class="sd">        :param match_mat: Matrix indicating matches between positive embeddings</span>
+<span class="sd">        :param diff_mat: Matrix indicating matches between negative embeddings</span>
+<span class="sd">        :param dist_mat: Matrix with pair-wise embedding distances</span>
+<span class="sd">        :param to_numpy: Boolean switch determining whether to return numpy or</span>
+<span class="sd">          torch tensors</span>
+
+<span class="sd">        :return match_mat: Updated matrix of positve matches after applying</span>
+<span class="sd">          strategy</span>
+<span class="sd">        :return diff_mat: Updated matrix of negative matches after applying</span>
+<span class="sd">          strategy</span>
+<span class="sd">        """</span>
+        <span class="n">match_mat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_input_tensors</span><span class="p">(</span><span class="n">match_mat</span><span class="p">)</span>
+        <span class="n">diff_mat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_input_tensors</span><span class="p">(</span><span class="n">diff_mat</span><span class="p">)</span>
+        <span class="n">dist_mat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_input_tensors</span><span class="p">(</span><span class="n">dist_mat</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos_strategy</span> <span class="o">==</span> <span class="s1">'semihard'</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">neg_strategy</span> <span class="o">!=</span> <span class="s1">'all'</span><span class="p">:</span>
+
+            <span class="n">diff_mat</span><span class="p">,</span> <span class="n">neg_dists</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_neg_mat</span><span class="p">(</span>
+                <span class="n">diff_mat</span><span class="p">,</span> <span class="n">dist_mat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">neg_strategy</span>
+            <span class="p">)</span>
+            <span class="n">match_mat</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_pos_mat</span><span class="p">(</span>
+                <span class="n">match_mat</span><span class="p">,</span> <span class="n">dist_mat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos_strategy</span><span class="p">,</span> <span class="n">neg_dists</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos_strategy</span> <span class="o">!=</span> <span class="s1">'all'</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">neg_strategy</span> <span class="o">==</span> <span class="s1">'semihard'</span><span class="p">:</span>
+
+            <span class="n">match_mat</span><span class="p">,</span> <span class="n">pos_dists</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_pos_mat</span><span class="p">(</span>
+                <span class="n">match_mat</span><span class="p">,</span> <span class="n">dist_mat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos_strategy</span>
+            <span class="p">)</span>
+            <span class="n">diff_mat</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_neg_mat</span><span class="p">(</span>
+                <span class="n">diff_mat</span><span class="p">,</span> <span class="n">dist_mat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">neg_strategy</span><span class="p">,</span> <span class="n">pos_dists</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos_strategy</span> <span class="o">!=</span> <span class="s1">'all'</span><span class="p">:</span>
+                <span class="n">match_mat</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_pos_mat</span><span class="p">(</span>
+                    <span class="n">match_mat</span><span class="p">,</span> <span class="n">dist_mat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos_strategy</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">neg_strategy</span> <span class="o">!=</span> <span class="s1">'all'</span><span class="p">:</span>
+                <span class="n">diff_mat</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_neg_mat</span><span class="p">(</span>
+                    <span class="n">diff_mat</span><span class="p">,</span> <span class="n">dist_mat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">neg_strategy</span>
+                <span class="p">)</span>
+        <span class="k">if</span> <span class="n">to_numpy</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="c1"># This has to int32 for paddle to</span>
+                <span class="n">match_mat</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'int32'</span><span class="p">),</span>
+                <span class="n">diff_mat</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'int32'</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">match_mat</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span> <span class="n">diff_mat</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span></div></div>
 </pre></div>
             </article>
             <footer>
