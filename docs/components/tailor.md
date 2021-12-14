@@ -724,10 +724,9 @@ Tailor provides a high-level API ``finetuner.tailor.to_embedding_model()``, whic
     ```
     ````
 
-
-
-
-   
+if you ``display`` the `new_model`, you'll notice that the `fc` layer has been replaced with as `Identity`.
+The layers you specified to `freeze` are not trainable anymore.
+Last but not least, you attached a trainable bottleneck module and reduced the ouput dimensionality to `1024`.
 
 
 ## Tips
