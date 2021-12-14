@@ -440,7 +440,6 @@
             <span class="n">input_shape</span> <span class="o">=</span> <span class="n">summary</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="s1">'input_shape'</span><span class="p">]</span>
             <span class="n">is_embedding_layer</span> <span class="o">=</span> <span class="ow">not</span> <span class="p">(</span>
                 <span class="ow">not</span> <span class="n">output_shape</span>
-                <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span>
                 <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_seq_int</span><span class="p">(</span><span class="n">output_shape</span><span class="p">)</span>
                 <span class="ow">or</span> <span class="n">summary</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="s1">'cls_name'</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="p">)</span>
