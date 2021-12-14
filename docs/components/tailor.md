@@ -13,11 +13,11 @@ Given a general model with weights, Tailor *preserves its weights* and performs 
 ```
 
 Finally, Tailor outputs an embedding model that can be fine-tuned in Tuner.
-To make the best use of Tailor, you could:
+To make the best use of Tailor, you could follow the journey of:
 1. `display` model summary.
 2. Select an embedding layer as your model output.
 3. Decide your `freeze` strategy.
-4. (optional) Attach a bottleneck layer.
+4. (optional) Attach a bottleneck module.
 
 ## `dispaly` model summary
 
@@ -53,7 +53,7 @@ Let's see how to create a embedding model with ResNet-50.
     ft.display(model, input_size=(3, 224, 224))
     ```
     ````
-2. Now you could see the model tabular summary in your console/notebook.
+2. Now you could see the model tabular summary in your console/notebook. The summary shows the overall layers, output shapes parameters and trainable layers.
    ````{tab} PyTorch
    
    ```console
@@ -613,13 +613,117 @@ Let's see how to create a embedding model with ResNet-50.
    ```      
    ````
 
-
-
 ## Select an embedding layer as your model output.
+
+After plotted the table summary of the pre-trained model, we can decide which layer can be used as the "embedding layer".
+As you can see in the above ResNet-50, layer with name ``linear_174`` (pytorch/paddle) or ``predictions`` (keras) is the final classification layer for classify 1000 ImageNet classes.
+This layer is not a good chocie of "embedding layer". We'll use ``adaptiveavgpool2d_173`` (pytorch/paddle) or ``avg_pool`` (keras) as our "embedding layer".
+
+Keep the layer name in mind, we'll put everything together after we decide ``freeze`` strategy and ``bottleneck layer``.
 
 ## Decide your `freeze` strategy.
 
-## (optional) Attach a bottleneck layer.
+To apply a pre-trained model on your downstream task, in most cases you do not want to train everything from scratch.
+Finetuner allows you to freeze the entire model or freeze specific layers, with ``freeze`` argument.
+
+If ``freeze=True``, finetuner will freeze the entire pre-trained model. If freeze is a list of string layer names,
+for example, ``freeze=['conv2d_1', 'conv2d_5']`` will only freeze these two layers.
+
+Again, keep this in mind, we'll put everything together after we attach the ``bottleneck layer``.
+
+## (optional) Attach a bottleneck module.
+
+Sometimes you want to add a bottleneck module or projection head on top of your embedding model.
+This bottleneck layer should be a simple multi-layer perception.
+This could help you improve your embedding quality and potentially reduce the dimensionality.
+
+Tailor allows you to attach this small bottleneck module on top of your embedding model.
+In the below example, we put everything together, including:
+
+- choose embedding layer
+- freezing weights of specific layers.
+- attach a bottleneck layer
+
+with the method called ``to_embedding_model`` method.
+
+Tailor provides a high-level API ``finetuner.tailor.to_embedding_model()``, which can be used as follows:
+
+    ````{tab} PyTorch
+    ```python
+      import torch.nn as nn
+      import torchvision
+      import finetuner as ft
+      
+      model = torchvision.models.resnet50(pretrained=True)
+      
+      class SimpleMLP(nn.Module):
+          def __init__(self):
+              super().__init__()
+              self.l1 = nn.Linear(2048, 2048, bias=True)
+              self.relu = nn.ReLU()
+              self.l2 = nn.Linear(2048, 1024, bias=True)
+      
+          def forward(self, x):
+              return self.l2((self.relu(self.l1(x))))
+      
+      new_model = ft.tailor.to_embedding_model(
+          model=model,
+          layer_name='adaptiveavgpool2d_173',
+          freeze=['conv2d_1', 'batchnorm2d_2'],  # or set to True to freeze the entire model
+          bottleneck_net=SimpleMLP(),
+          input_size=(3, 224, 224),
+      )
+    ```
+    ````
+    ````{tab} Keras
+    ```python
+    import tensorflow as tf
+    import finetuner as ft
+   
+    model = tf.keras.applications.ResNet50(weights='imagenet')
+
+    bottleneck_model = tf.keras.models.Sequential()
+    bottleneck_model.add(tf.keras.layers.InputLayer(input_shape=(2048,)))
+    bottleneck_model.add(tf.keras.layers.Dense(2048, activation='relu'))
+    bottleneck_model.add(tf.keras.layers.Dense(1024))
+
+    new_model = ft.tailor.to_embedding_model(
+        model=model,
+        layer_name='avg_pool',
+        freeze=['conv1_conv', 'conv1_bn'],  # or set to True to freeze the entire model
+        bottleneck_net=bottleneck_model,
+        input_size=(3, 224, 224),
+    )
+    ```
+    ````
+    ````{tab} Paddle
+    ```python
+    import paddle
+    import paddle.nn as nn
+    import finetuner as ft
+   
+    model = paddle.vision.models.resnet50(pretrained=True)
+
+    class SimpleMLP(nn.Layer):
+        def __init__(self):
+            super().__init__()
+            self.l1 = nn.Linear(2048, 2048)
+            self.relu = nn.ReLU()
+            self.l2 = nn.Linear(2048, 1024)
+   
+          def forward(self, x):
+              return self.l2(self.relu(self.l1(x)))
+        
+    new_model = ft.tailor.to_embedding_model(
+        model=model,
+        layer_name='adaptiveavgpool2d_173',
+        freeze=['conv2d_1', 'batchnorm2d_2'],  # or set to True to freeze the entire model
+        bottleneck_net=SimpleMLP(),
+        input_size=(3, 224, 224),
+    )
+    ```
+    ````
+
 
 
 
