@@ -22,7 +22,7 @@ To make the best use of Tailor, you could follow the journey of:
 ## `dispaly` model summary
 
 Tailor provides a helper function `finetuner.display()` that gives a table summary of a Keras/PyTorch/Paddle model.
-Let's see how to create a embedding model with ResNet-50.
+Let's see how to create an embedding model with ResNet-50.
 
 1. Load a pre-trained ResNet-50 via your favourite deep learning backend and call ``display``.
     ````{tab} PyTorch
@@ -634,7 +634,7 @@ Again, keep this in mind, we'll put everything together after we attach the ``bo
 ## (optional) Attach a bottleneck module.
 
 Sometimes you want to add a bottleneck module or projection head on top of your embedding model.
-This bottleneck layer should be a simple multi-layer perception.
+This bottleneck layer should be a simple multi-layer perceptron.
 This could help you improve your embedding quality and potentially reduce the dimensionality.
 
 Tailor allows you to attach this small bottleneck module on top of your embedding model.
