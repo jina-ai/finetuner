@@ -652,7 +652,9 @@ with the method called ``to_embedding_model`` method.
       import torch.nn as nn
       import torchvision
       import finetuner as ft
+   
       model = torchvision.models.resnet50(pretrained=True)
+   
       class SimpleMLP(nn.Module):
           def __init__(self):
               super().__init__()
@@ -661,6 +663,7 @@ with the method called ``to_embedding_model`` method.
               self.l2 = nn.Linear(2048, 1024, bias=True)
           def forward(self, x):
               return self.l2((self.relu(self.l1(x))))
+   
       new_model = ft.tailor.to_embedding_model(
           model=model,
           layer_name='adaptiveavgpool2d_173',
