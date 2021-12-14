@@ -109,7 +109,7 @@ class EarlyStopping(BaseCallback):
             current_value = np.mean(self._validation_losses)
         elif self._monitor == 'train_loss':
             current_value = np.mean(self._train_losses)
-        else :
+        else:
             self._logger.logger.warning(
                 f'Can save best model only with {self._monitor} available, ' 'skipping.'
             )
