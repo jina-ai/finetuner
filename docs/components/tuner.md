@@ -295,4 +295,3 @@ tuner.fit(
 We can monitor the training by watching the progress bar, or we can log into our WanB account, and see the live updates there. Here's an example of what we might see there
 
 ![wandb dashboard](wandb.png)
-
