@@ -47,7 +47,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         num_items_per_class: Optional[int] = None,
         num_workers: int = 0,
     ) -> DataLoader:
-        """ Get the dataloader for the dataset"""
+        """Get the dataloader for the dataset"""
 
         if collate_fn:
 
