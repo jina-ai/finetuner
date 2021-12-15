@@ -42,7 +42,7 @@ def test_mode(mode: str, monitor: str, operation, best, tmpdir):
 
 
 def test_mandatory_save_dir():
-    with pytest.raises(ValueError, match='parameter is mandatory'):
+    with pytest.raises(TypeError, match='missing'):
         checkpoint = TrainingCheckpoint()
 
 
