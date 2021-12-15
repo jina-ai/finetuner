@@ -136,6 +136,7 @@ class SessionSampler(BaseSampler):
             sessions which is given by ``labels``.
         """
 
+        self._batch_size = batch_size
         self._shuffle = shuffle
         # The locations and types of labels for each session
         self._sessions = defaultdict(list)

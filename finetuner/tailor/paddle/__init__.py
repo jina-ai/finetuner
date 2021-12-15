@@ -112,7 +112,6 @@ class PaddleTailor(BaseTailor):
             input_shape = summary[layer]['input_shape']
             is_embedding_layer = not (
                 not output_shape
-                or len(output_shape) != 2
                 or not is_seq_int(output_shape)
                 or summary[layer]['cls_name'] == self._model.__class__.__name__
             )

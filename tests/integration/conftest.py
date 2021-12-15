@@ -1,4 +1,5 @@
 from copy import deepcopy
+from time import perf_counter, sleep
 
 import numpy as np
 import pytest
@@ -269,3 +270,38 @@ def results_lr():
             ]
 
     return get_results
+
+
+@pytest.fixture
+def multi_workers_callback():
+    """
+    Used to time training and artifically set each bath to last 1 second,
+    to check that multi-process loading works well.
+    """
+
+    class TrainingTimer(BaseCallback):
+        def __init__(self):
+            self.batch_times = []
+            self._start = None
+
+        def on_train_batch_begin(self, tuner):
+            if self._start:
+                self.batch_times.append(perf_counter() - self._start)
+            self._start = perf_counter()
+            sleep(1)  # "Training" should take exactly one second
+
+    return TrainingTimer()
+
+
+@pytest.fixture
+def multi_workers_preprocess_fn():
+    """
+    A preprocessing function that delays preprocessing of each item by one second
+    """
+
+    def preprocess_fn(d: Document):
+        sleep(1)
+
+        return d.content
+
+    return preprocess_fn
