@@ -29,28 +29,34 @@ Here $\mathrm{sim}(i,j)$ denotes the similarity function, which returns 1 if ite
 It's straightforward to use these loss functions with the Tuner. You can just give the name of the loss function (as a string) as the `loss` argument on initialization, or you can instantiate the loss object, which allows you to customize parameters (including [miners](#tuple-miners))
 
 ````{tab} Pytorch
+```python
 from finetuner.tuner.pytorch import PytorchTuner
 from finetuner.tuner.pytorch.losses import TripletLoss
 
 loss = TripletLoss(distance='cosine', margin=0.5)
 
 tuner = PytorchTuner(..., loss=loss)
+```
 ````
 ````{tab} Keras
+```python
 from finetuner.tuner.keras import KerasTuner
 from finetuner.tuner.keras.losses import TripletLoss
 
 loss = TripletLoss(distance='cosine', margin=0.5)
 
 tuner = KerasTuner(..., loss=loss)
+```
 ````
 ````{tab} Paddle
+```python
 from finetuner.tuner.paddle import PaddleTuner
 from finetuner.tuner.paddle.losses import TripletLoss
 
 loss = TripletLoss(distance='cosine', margin=0.5)
 
 tuner = PaddleTuner(..., loss=loss)
+```
 ````
 
 ## Tuple Miners
@@ -72,10 +78,8 @@ This [paper](https://openaccess.thecvf.com/content_WACV_2020/papers/Xuan_Improve
     * 'easy': Returns the easiest negative sample for each anchor.
     * 'all': Returns all possible negative samples.
 + **Restricted Combinations**: 
-    * `pos_strategy` and `neg_strategy` cannot be set to `semihard` at the same time
-    * If either `pos_strategy` or `neg_strategy` is set to semihard, the other cannot be set to `all`
-allowed_pos_range: Optional tuple containing the allowed range of anchor-positive distances/similarties. For example, allowed_pos_range = (0.2, 1). If None, then a range is not applied.
-allowed_neg_range: Optional tuple containing the allowed range of anchor-negative distances/similarties. For example, allowed_neg_range = (0.2, 1). If None, then a range is not applied.
+    * `pos_strategy` and `neg_strategy` cannot be set to `semihard` at the same time.
+    * If either `pos_strategy` or `neg_strategy` is set to semihard, the other cannot be set to `all`.
 
 The image below illustrates the relative position of samples in the case of triplet training and will help us to define the necessary terminology. 
 
@@ -92,7 +96,7 @@ Any negative sample that is even further away from the anchor, is considered an 
 In order to apply mining, during siamese- or triplet training with the *Finetuner*, you simply need to add the desired miner to your loss. 
 
 ````{tab} Pytorch
-
+```python
 from finetuner.tuner.pytorch import PytorchTuner
 from finetuner.tuner.pytorch.miner import TripletEasyHardMiner
 from finetuner.tuner.pytorch.losses import TripletLoss
@@ -100,8 +104,10 @@ from finetuner.tuner.pytorch.losses import TripletLoss
 loss = TripletLoss(miner=TripletEasyHardMiner(pos_strategy='easy', neg_strategy='hard'))
 
 tuner = PytorchTuner(..., loss=loss)
+```
 ````
 ````{tab} Keras
+```python
 from finetuner.tuner.keras import KerasTuner
 from finetuner.tuner.keras.miner import TripletEasyHardMiner
 from finetuner.tuner.keras.losses import TripletLoss
@@ -109,9 +115,11 @@ from finetuner.tuner.keras.losses import TripletLoss
 loss = TripletLoss(miner=TripletEasyHardMiner(pos_strategy='easy', neg_strategy='hard'))
 
 tuner = KerasTuner(..., loss=loss)
+```
 ````
 
 ````{tab} Paddle
+```python
 from finetuner.tuner.paddle import PaddleTuner
 from finetuner.tuner.paddle.miner import TripletEasyHardMiner
 from finetuner.tuner.paddle.losses import TripletLoss
@@ -119,4 +127,5 @@ from finetuner.tuner.paddle.losses import TripletLoss
 loss = TripletLoss(miner=TripletEasyHardMiner(pos_strategy='easy', neg_strategy='hard'))
 
 tuner = PaddleTuner(..., loss=loss)
+```
 ````
