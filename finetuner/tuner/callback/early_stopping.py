@@ -36,7 +36,9 @@ class EarlyStopping(BaseCallback):
             monitored are 'acc' or start with 'fmeasure' and are set to `min` for
             the rest of the quantities.
         :param patience: integer, the number of epochs after which the training is
-            stopped if there is no improvement
+            stopped if there is no improvement. 
+            i.e. if `patience = 2`, if the model doesn't improve for 2 consecutive
+            epochs the training is stopped.
         :param min_delta: Minimum change in the monitored quantity
             to qualify as an improvement, i.e. an absolute
             change of less than min_delta, will count as no
