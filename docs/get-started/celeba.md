@@ -39,7 +39,7 @@ for doc in data:
 
 ## Load the pretrained model
 
-Let's import a pretrained ResNet50 as our base model. ResNet50 is implemented in PyTorch, Keras and Paddle. You can choose the framework you feel more comfortable with:
+Let's import a pretrained ResNet50 as our base model. ResNet50 is implemented in PyTorch, Keras and Paddle. You can choose the framework you are the most comfortable with:
 
 ````{tab} PyTorch
 ```python
