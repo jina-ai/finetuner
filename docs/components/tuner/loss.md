@@ -37,8 +37,7 @@ loss = TripletLoss(distance='cosine', margin=0.5)
 
 tuner = PytorchTuner(..., loss=loss)
 ````
-```
-```python
+
 ````{tab} Keras
 from finetuner.tuner.keras import KerasTuner
 from finetuner.tuner.keras.losses import TripletLoss
@@ -47,8 +46,7 @@ loss = TripletLoss(distance='cosine', margin=0.5)
 
 tuner = KerasTuner(..., loss=loss)
 ````
-```
-```python
+
 ````{tab} Paddle
 from finetuner.tuner.paddle import PaddleTuner
 from finetuner.tuner.paddle.losses import TripletLoss
