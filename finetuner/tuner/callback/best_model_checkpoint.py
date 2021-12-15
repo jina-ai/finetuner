@@ -102,20 +102,14 @@ class BestModelCheckpoint(BaseCallback):
         else:
             if self._monitor_op(current, self._best):
                 self._best = current
-                self._save_model_framework(tuner)
+                tuner.save(
+                    self._get_file_path(),
+                )
                 self._logger.logger.info(
                     f'Model improved from {self._best} to {current}. New model is saved!'
                 )
             else:
                 self._logger.logger.info(f'Model didnt improve.')
-
-    def _save_model_framework(self, tuner):
-        """
-        Saves the model weights.
-        """
-        tuner.save(
-            self._get_file_path(),
-        )
 
     def _get_file_path(self):
         """
