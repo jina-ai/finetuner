@@ -3,12 +3,11 @@ import os
 import numpy as np
 import pytest
 import torch
-from numpy.lib.npyio import save
 
-import finetuner
-from finetuner.toydata import generate_fashion
 from finetuner.tuner.base import BaseTuner
 from finetuner.tuner.callback import BestModelCheckpoint, TrainingCheckpoint
+from finetuner.tuner.pytorch import PytorchTuner
+from finetuner.tuner.state import TunerState
 
 
 @pytest.fixture(scope='module')
@@ -23,19 +22,6 @@ def pytorch_model() -> BaseTuner:
         torch.nn.Linear(in_features=128, out_features=32),
     )
     return embed_model
-
-
-def test_save_best_only(pytorch_model: BaseTuner, tmpdir):
-
-    finetuner.fit(
-        pytorch_model,
-        epochs=1,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[BestModelCheckpoint(save_dir=tmpdir)],
-    )
-
-    assert os.listdir(tmpdir) == ['best_model_val_loss']
 
 
 @pytest.mark.parametrize(
@@ -55,28 +41,21 @@ def test_mode(mode: str, monitor: str, operation, best, tmpdir):
     assert checkpoint._best == best
 
 
-def test_mandatory_save_dir(pytorch_model: BaseTuner):
+def test_mandatory_save_dir():
     with pytest.raises(ValueError, match='parameter is mandatory'):
-        finetuner.fit(
-            pytorch_model,
-            epochs=1,
-            train_data=generate_fashion(num_total=1000),
-            eval_data=generate_fashion(is_testset=True, num_total=200),
-            callbacks=[TrainingCheckpoint()],
+        checkpoint = TrainingCheckpoint()
+
+
+def test_last_k_epochs(pytorch_model: BaseTuner, tmpdir):
+    checkpoint = TrainingCheckpoint(save_dir=tmpdir, last_k_epochs=3)
+    tuner = PytorchTuner(embed_model=pytorch_model)
+    for epoch in range(10):
+        tuner.state = TunerState(
+            epoch=epoch, batch_index=2, train_loss=1.1, num_epochs=10
         )
-
-
-def test_both_checkpoints(pytorch_model: BaseTuner, tmpdir):
-
-    finetuner.fit(
-        pytorch_model,
-        epochs=1,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[
-            BestModelCheckpoint(save_dir=tmpdir),
-            TrainingCheckpoint(save_dir=tmpdir),
-        ],
-    )
-
-    assert set(os.listdir(tmpdir)) == {'best_model_val_loss', 'saved_model_epoch_01'}
+        checkpoint.on_epoch_end(tuner)
+    assert set(os.listdir(tmpdir)) == {
+        'saved_model_epoch_10',
+        'saved_model_epoch_09',
+        'saved_model_epoch_08',
+    }

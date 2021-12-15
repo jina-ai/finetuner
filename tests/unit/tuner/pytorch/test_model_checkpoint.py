@@ -6,8 +6,6 @@ import pytest
 import torch
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
-import finetuner
-from finetuner.toydata import generate_fashion
 from finetuner.tuner.base import BaseTuner
 from finetuner.tuner.callback import BestModelCheckpoint, TrainingCheckpoint
 from finetuner.tuner.pytorch import PytorchTuner
@@ -28,30 +26,6 @@ def pytorch_model() -> BaseTuner:
     return embed_model
 
 
-def test_pytorch_model(pytorch_model: BaseTuner, tmpdir):
-
-    finetuner.fit(
-        pytorch_model,
-        epochs=1,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[TrainingCheckpoint(save_dir=tmpdir)],
-    )
-
-    assert os.listdir(tmpdir) == ['saved_model_epoch_01']
-
-
-def test_epoch_end(pytorch_model: BaseTuner, tmpdir):
-    checkpoint = TrainingCheckpoint(save_dir=tmpdir)
-
-    tuner = PytorchTuner(embed_model=pytorch_model)
-    tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
-
-    checkpoint.on_epoch_end(tuner)
-
-    assert os.listdir(tmpdir) == ['saved_model_epoch_01']
-
-
 def test_save_on_every_epoch_end(pytorch_model: BaseTuner, tmpdir):
     checkpoint = TrainingCheckpoint(save_dir=tmpdir)
     tuner = PytorchTuner(embed_model=pytorch_model)
@@ -65,17 +39,13 @@ def test_save_on_every_epoch_end(pytorch_model: BaseTuner, tmpdir):
 
 def test_same_model(pytorch_model: BaseTuner, tmpdir):
 
-    new_model = copy.deepcopy(pytorch_model)
+    tuner = PytorchTuner(pytorch_model)
+    checkpoint = TrainingCheckpoint(save_dir=tmpdir)
+    tuner.state = TunerState(epoch=1, batch_index=2, train_loss=1.1)
+    checkpoint.on_epoch_end(tuner)
 
-    finetuner.fit(
-        pytorch_model,
-        epochs=1,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[TrainingCheckpoint(save_dir=tmpdir)],
-    )
-
-    checkpoint = torch.load(os.path.join(tmpdir, 'saved_model_epoch_01'))
+    checkpoint = torch.load(os.path.join(tmpdir, 'saved_model_epoch_02'))
+    new_model = pytorch_model
     new_model.load_state_dict(checkpoint['state_dict'])
 
     for l1, l2 in zip(pytorch_model.parameters(), new_model.parameters()):
@@ -140,19 +110,6 @@ def test_load_model(pytorch_model: BaseTuner, tmpdir):
     )
 
 
-def test_save_best_only_fit(pytorch_model: BaseTuner, tmpdir):
-
-    finetuner.fit(
-        pytorch_model,
-        epochs=3,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[BestModelCheckpoint(save_dir=tmpdir)],
-    )
-
-    assert os.listdir(tmpdir) == ['best_model_val_loss']
-
-
 def test_save_best_only(pytorch_model: BaseTuner, tmpdir):
 
     checkpoint = BestModelCheckpoint(save_dir=tmpdir, monitor='train_loss')
@@ -180,21 +137,19 @@ def test_save_best_only(pytorch_model: BaseTuner, tmpdir):
 def test_load_best_model(pytorch_model: BaseTuner, tmpdir):
 
     new_model = copy.deepcopy(pytorch_model)
+    checkpoint = BestModelCheckpoint(tmpdir)
 
-    finetuner.fit(
-        pytorch_model,
-        epochs=3,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[BestModelCheckpoint(save_dir=tmpdir)],
-    )
+    before_tuner = PytorchTuner(embed_model=pytorch_model)
+    before_tuner.state = TunerState(epoch=0, batch_index=2, val_loss=1.1)
 
-    tuner = PytorchTuner(
-        new_model, optimizer=torch.optim.Adam(new_model.parameters(), lr=0.001)
-    )
-    tuner.state = TunerState(epoch=0, batch_index=0, train_loss=50)
+    checkpoint.on_val_batch_end(before_tuner)
+    checkpoint.on_epoch_end(before_tuner)
 
-    BestModelCheckpoint.load_model(tuner, os.path.join(tmpdir, 'best_model_val_loss'))
+    after_tuner = PytorchTuner(embed_model=new_model)
+    after_tuner.state = TunerState(epoch=1, batch_index=2, val_loss=0)
+
+    assert os.listdir(tmpdir) == ['best_model_val_loss']
+    checkpoint.load_model(after_tuner, fp=os.path.join(tmpdir, 'best_model_val_loss'))
 
     for l1, l2 in zip(pytorch_model.parameters(), new_model.parameters()):
         assert (l1 == l2).all()

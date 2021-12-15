@@ -6,8 +6,6 @@ import paddle
 import pytest
 from paddle.optimizer.lr import ReduceOnPlateau
 
-import finetuner
-from finetuner.toydata import generate_fashion
 from finetuner.tuner.base import BaseTuner
 from finetuner.tuner.callback import BestModelCheckpoint, TrainingCheckpoint
 from finetuner.tuner.paddle import PaddleTuner
@@ -28,29 +26,6 @@ def paddle_model() -> BaseTuner:
     return embed_model
 
 
-def test_paddle_model(paddle_model: BaseTuner, tmpdir):
-    finetuner.fit(
-        paddle_model,
-        epochs=1,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[TrainingCheckpoint(save_dir=tmpdir)],
-    )
-
-    assert os.listdir(tmpdir) == ['saved_model_epoch_01']
-
-
-def test_epoch_end(paddle_model: BaseTuner, tmpdir):
-    checkpoint = TrainingCheckpoint(save_dir=tmpdir)
-
-    tuner = PaddleTuner(embed_model=paddle_model)
-    tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
-
-    checkpoint.on_epoch_end(tuner)
-
-    assert os.listdir(tmpdir) == ['saved_model_epoch_01']
-
-
 def test_save_on_every_epoch_end(paddle_model: BaseTuner, tmpdir):
     checkpoint = TrainingCheckpoint(save_dir=tmpdir)
     tuner = PaddleTuner(embed_model=paddle_model)
@@ -64,16 +39,13 @@ def test_save_on_every_epoch_end(paddle_model: BaseTuner, tmpdir):
 
 def test_same_model(paddle_model: BaseTuner, tmpdir):
 
-    new_model = copy.deepcopy(paddle_model)
-    finetuner.fit(
-        paddle_model,
-        epochs=1,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[TrainingCheckpoint(save_dir=tmpdir)],
-    )
+    tuner = PaddleTuner(paddle_model)
+    checkpoint = TrainingCheckpoint(save_dir=tmpdir)
+    tuner.state = TunerState(epoch=1, batch_index=2, train_loss=1.1)
+    checkpoint.on_epoch_end(tuner)
 
-    checkpoint = paddle.load(os.path.join(tmpdir, 'saved_model_epoch_01'))
+    checkpoint = paddle.load(os.path.join(tmpdir, 'saved_model_epoch_02'))
+    new_model = paddle_model
     new_model.set_state_dict(checkpoint['state_dict'])
 
     for l1, l2 in zip(paddle_model.parameters(), new_model.parameters()):
@@ -140,19 +112,6 @@ def test_load_model(paddle_model: BaseTuner, tmpdir):
     )
 
 
-def test_save_best_only_fit(paddle_model: BaseTuner, tmpdir):
-
-    finetuner.fit(
-        paddle_model,
-        epochs=3,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[BestModelCheckpoint(save_dir=tmpdir)],
-    )
-
-    assert os.listdir(tmpdir) == ['best_model_val_loss']
-
-
 def test_save_best_only(paddle_model: BaseTuner, tmpdir):
 
     checkpoint = BestModelCheckpoint(save_dir=tmpdir, monitor='train_loss')
@@ -180,25 +139,19 @@ def test_save_best_only(paddle_model: BaseTuner, tmpdir):
 def test_load_best_model(paddle_model: BaseTuner, tmpdir):
 
     new_model = copy.deepcopy(paddle_model)
-    finetuner.fit(
-        paddle_model,
-        epochs=3,
-        train_data=generate_fashion(num_total=1000),
-        eval_data=generate_fashion(is_testset=True, num_total=200),
-        callbacks=[BestModelCheckpoint(save_dir=tmpdir)],
-    )
+    checkpoint = BestModelCheckpoint(tmpdir)
 
-    tuner = PaddleTuner(
-        new_model,
-        optimizer=paddle.optimizer.Adam(
-            parameters=new_model.parameters(), learning_rate=0.001
-        ),
-    )
-    tuner.state = TunerState(epoch=0, batch_index=0, train_loss=50)
+    before_tuner = PaddleTuner(embed_model=paddle_model)
+    before_tuner.state = TunerState(epoch=0, batch_index=2, val_loss=1.1)
 
-    BestModelCheckpoint.load_model(
-        tuner, fp=os.path.join(tmpdir, 'best_model_val_loss')
-    )
+    checkpoint.on_val_batch_end(before_tuner)
+    checkpoint.on_epoch_end(before_tuner)
+
+    after_tuner = PaddleTuner(embed_model=new_model)
+    after_tuner.state = TunerState(epoch=1, batch_index=2, val_loss=0)
+
+    assert os.listdir(tmpdir) == ['best_model_val_loss']
+    checkpoint.load_model(after_tuner, fp=os.path.join(tmpdir, 'best_model_val_loss'))
 
     for l1, l2 in zip(paddle_model.parameters(), new_model.parameters()):
         assert (l1 == l2).all()

@@ -28,7 +28,7 @@ class BestModelCheckpoint(BaseCallback):
 
     def __init__(
         self,
-        save_dir: str = None,
+        save_dir: str,
         monitor: str = 'val_loss',
         mode: str = 'auto',
     ):

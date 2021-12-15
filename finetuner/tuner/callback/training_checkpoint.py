@@ -17,20 +17,22 @@ if TYPE_CHECKING:
 
 class TrainingCheckpoint(BaseCallback):
     """
-    Callback to save model at every epoch
+    Callback to save model at every epoch or the last K epochs
     `TrainingModelCheckpoint` is used in conjunction with training
     using `finetuner.fit()`
     """
 
-    def __init__(
-        self,
-        save_dir: str = None,
-    ):
+    def __init__(self, save_dir: str, last_k_epochs: int = None):
         """
         :param save_dir: string or `PathLike`, path to save the model file.
+        :param last_k_epochs: this parameter is an integer. It allows you yo save
+            only at the last k epochs and not on every epoch.
+            For example if `last_k_epochs = 3` and the total number of epochs is 10
+            we'll save only on epochs 8,9 and 10.
         """
         self._logger = JinaLogger(self.__class__.__name__)
         self._save_dir = save_dir
+        self._last_k_epochs = last_k_epochs
         if not save_dir:
             raise ValueError(
                 '``save_dir`` parameter is mandatory. Pass it in parameters'
@@ -40,10 +42,17 @@ class TrainingCheckpoint(BaseCallback):
         """
         Called at the end of the training epoch.
         """
-        self._save_model_framework(tuner)
-        self._logger.logger.info(
-            f'Model trained for {tuner.state.epoch+1} epochs is saved!'
-        )
+        if self._last_k_epochs == None:
+            self._save_model_framework(tuner)
+            self._logger.logger.info(
+                f'Model trained for {tuner.state.epoch+1} epochs is saved!'
+            )
+        else:
+            if tuner.state.epoch >= tuner.state.num_epochs - self._last_k_epochs:
+                self._save_model_framework(tuner)
+                self._logger.logger.info(
+                    f'Model trained for {tuner.state.epoch+1} epochs is saved!'
+                )
 
     def _save_model_framework(self, tuner):
         """
