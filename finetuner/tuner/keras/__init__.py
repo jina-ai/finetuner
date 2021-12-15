@@ -35,6 +35,7 @@ class KerasTuner(
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
+        num_workers: int = 0,
     ) -> KerasSequenceAdapter:
         """Get the dataloader for the dataset
 
