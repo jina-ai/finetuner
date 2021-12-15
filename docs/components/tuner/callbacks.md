@@ -30,7 +30,7 @@ logger = WandBLogger()
 tuner = PytorchTuner(..., callbacks=[logger])
 ```
 
-You should then be able to see your training runs in wandb
+You should then be able to see your training runs in wandb.
 
 ## Custom callbacks
 
