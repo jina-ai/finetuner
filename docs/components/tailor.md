@@ -19,12 +19,13 @@ To make the best use of Tailor, you could follow the journey of:
 3. Decide your `freeze` strategy.
 4. (optional) Attach a bottleneck module.
 
-## `dispaly` model summary
+## `display` model summary
 
 Tailor provides a helper function `finetuner.display()` that gives a table summary of a Keras/PyTorch/Paddle model.
 Let's see how to create an embedding model with ResNet-50.
 
 1. Load a pre-trained ResNet-50 via your favourite deep learning backend and call ``display``.
+
     ````{tab} PyTorch
     ```python
     import torchvision

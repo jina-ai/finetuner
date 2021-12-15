@@ -1,21 +1,21 @@
 # Finetuning MLP for Fashion Image Search
 
 ```{tip}
-This example is inspired by [`jina hello fashion`](https://docs.jina.ai/get-started/hello-world/fashion/). We stronly recommend you to checkout that demo first before go through this tutorial.
+This example is inspired by [`jina hello fashion`](https://docs.jina.ai/get-started/hello-world/fashion/). We strongly recommend you to checkout that demo first before going through this tutorial.
 ```
 
 In this example, we want to "tune" the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST image data, the same dataset that we are using in `jina hello fashion`. 
 
 Precisely, "tuning" means: 
-- we set up a Jina search pipeline and will look at the top-K visually similar result;
+- we set up a Jina search pipeline and will look at the top-K visually similar results;
 - we accept or reject the results based on their quality;
-- we let the model remember our feedback and produce better search result.
+- we let the model remember our feedback in order to produce better search results.
 
-Hopefully the procedure converges after several rounds and we get a tuned embedding for better search task.
+Hopefully the procedure converges after several rounds and we get a tuned embedding for better results on the search task.
 
 ## Build embedding model
 
-Let's write a 2-layer MLP as our {ref}`embedding model<embedding-model>` using any of the following frameworks:
+Let's write a 2-layer MLP as our {ref}`embedding model<embedding-model>`, using any of the following frameworks:
 
 ````{tab} PyTorch
 
@@ -60,7 +60,7 @@ embed_model = paddle.nn.Sequential(
 
 ## Prepare data
 
-Now prepare Fashion-MNIST data for the Finetuner. Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we first convert them into this format.
+Now prepare the Fashion-MNIST data for the Finetuner. Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we first need to convert the data into this format.
 
 ```python
 from finetuner.toydata import generate_fashion
@@ -87,7 +87,7 @@ finetuner.fit(
 
 ## Label interactively
 
-You can now label the data by mouse/keyboard. The model will get trained and improved as you are labeling.
+You can now label the data by mouse/keyboard. The model will get trained and improve as you are labeling.
 
 ```{figure} ../img/labeler-on-fashion-mnist.gif
 :align: center

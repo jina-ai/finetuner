@@ -1,7 +1,7 @@
 (session-dataset)=
 # Session Dataset
 
-A {class}`~fintuner.tuner.dataset.SessionDataset` is a `DocumentArray`, in which each Document has `matches` Document. The labels are stored under matched Document's `.tags['finetuner_label']`. The label can be either `1` (denoting similarity of match to its parent `Document`) or `-1` (denoting dissimilarity of the match from its parent `Document`).
+A {class}`~fintuner.tuner.dataset.SessionDataset` is a `DocumentArray`, in which each Document has `matches`. The labels are stored under matched Document's `.tags['finetuner_label']`. The label can be either `1` (denoting similarity of match to its parent `Document`) or `-1` (denoting dissimilarity of the match from its parent `Document`).
 
 The word "session" comes from the scenario where a user's click-through introduces an implicit yes/no on the relevance, hence an interactive session. 
 
@@ -9,7 +9,7 @@ The word "session" comes from the scenario where a user's click-through introduc
 
 A `SessionDataset` works with {class}`~fintuner.tuner.dataset.SessionSampler`. 
 
-Here the batches are simply constructed by putting together enough root documents and their matches (we call this a *session*) to fill the batch according to `batch_size` parameter. An example of a batch of size `batch_size=8` made of two sessions is show on the image below. `0` denotes the root document.
+Here the batches are simply constructed by putting together enough root documents and their matches (we call this a *session*) to fill the batch according to the `batch_size` parameter. An example of a batch of size `batch_size=8` made of two sessions is shown on the image below. `0` denotes the root document.
 
 ```{figure} ../session-dataset.png
 :align: center
@@ -74,3 +74,5 @@ Matches are built with the logic below:
 
 - only allows 1 positive match per Document, it is taken from the `answer` column;
 - always include `wrong_answer` column as the negative match. Then sample other documents' answer as negative matches.
+
+One can use {meth}`~finetuner.toydata.generate_qa` to generate it.
