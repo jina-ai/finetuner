@@ -14,33 +14,21 @@ from finetuner.tuner.state import TunerState
 
 @pytest.fixture(scope='module')
 def pytorch_model() -> BaseTuner:
-    embed_model = torch.nn.Sequential(
-        torch.nn.Linear(
-            in_features=10,
-            out_features=10,
-        ),
-    )
+    embed_model = torch.nn.Linear(in_features=10, out_features=10)
+
     return embed_model
 
 
 @pytest.fixture(scope='module')
 def keras_model() -> BaseTuner:
-    embed_model = tf.keras.Sequential(
-        [
-            tf.keras.layers.Dense(10),
-        ]
-    )
+    embed_model = tf.keras.Sequential([tf.keras.layers.Dense(10)])
     return embed_model
 
 
 @pytest.fixture(scope='module')
 def paddle_model() -> BaseTuner:
-    embed_model = paddle.nn.Sequential(
-        paddle.nn.Linear(
-            in_features=10,
-            out_features=10,
-        )
-    )
+    embed_model = paddle.nn.Linear(in_features=10, out_features=10)
+
     return embed_model
 
 

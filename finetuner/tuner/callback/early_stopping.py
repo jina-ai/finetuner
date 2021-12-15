@@ -115,6 +115,8 @@ class EarlyStopping(BaseCallback):
             self._logger.logger.warning(
                 f'Can save best model only with {self._monitor} available, ' 'skipping.'
             )
+            return
+
         if self._monitor_op(current_value - self._min_delta, self._best):
             self._logger.logger.info(
                 f'Model improved from {self._best} to {current_value}'
