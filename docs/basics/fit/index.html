@@ -402,10 +402,10 @@ Do you have labeled data?</div>
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
 Finetuner usage 1</div>
-<p class="sd-card-text">Perfect! Now <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> and <code class="docutils literal notranslate"><span class="pre">train_data</span></code> are already provided by you, simply do:</p>
+<p class="sd-card-text">Perfect! Now that <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> and <code class="docutils literal notranslate"><span class="pre">train_data</span></code> are already provided by you, simply do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">tuned_model</span><span class="p">,</span> <span class="n">summary</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">embed_model</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span>
 <span class="p">)</span>
@@ -425,7 +425,7 @@ Finetuner usage 2</div>
 <p class="sd-card-text">You have an <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> to use, but no labeled data for fine-tuning this model. No worries, you can use Finetuner to interactively label data and train <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">tuned_model</span><span class="p">,</span> <span class="n">summary</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">embed_model</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="n">unlabeled_data</span><span class="p">,</span>
 <span class="hll">    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span>
@@ -446,7 +446,7 @@ Finetuner usage 3</div>
 <p class="sd-card-text">You have a <code class="docutils literal notranslate"><span class="pre">general_model</span></code> but it does not output embeddings. Luckily, you’ve got some <code class="docutils literal notranslate"><span class="pre">labeled_data</span></code> for training. No worries, Finetuner can convert your model into an embedding model and train it via:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">tuned_model</span><span class="p">,</span> <span class="n">summary</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">general_model</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="n">labeled_data</span><span class="p">,</span>
 <span class="hll">    <span class="n">to_embedding_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -468,7 +468,7 @@ Finetuner usage 4</div>
 <p class="sd-card-text">You have a <code class="docutils literal notranslate"><span class="pre">general_model</span></code> which is not for embeddings. Meanwhile, you don’t have any labeled data for training. But no worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">tuned_model</span><span class="p">,</span> <span class="n">summary</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">general_model</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="n">labeled_data</span><span class="p">,</span>
 <span class="hll">    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -503,7 +503,7 @@ Finetuner usage 4</div>
         input.addEventListener('change', myfunction);
     });
 </script>
-<p>Note, <code class="docutils literal notranslate"><span class="pre">finetuner.fit</span></code> always returns two objects in a tuple: the tuned model and a summary statistic of the fitting procedure. You can save the model via <code class="docutils literal notranslate"><span class="pre">finetuner.save(model)</span></code>. You can save the summary object by calling <code class="docutils literal notranslate"><span class="pre">.save()</span></code>; or plot it via <code class="docutils literal notranslate"><span class="pre">.plot()</span></code> and see how the loss on training &amp; evaluation data changes over time.</p>
+<p>Note, <code class="docutils literal notranslate"><span class="pre">finetuner.fit</span></code> always returns the tuned model. You can save the model via <code class="docutils literal notranslate"><span class="pre">finetuner.save(model)</span></code>.</p>
 <section id="save-model">
 <h2>Save model<a class="headerlink" href="#save-model" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
@@ -546,9 +546,27 @@ Finetuner usage 4</div>
 </section>
 <section id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">finetuner.toydata</span> <span class="kn">import</span> <span class="n">generate_qa</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
 <span class="kn">import</span> <span class="nn">finetuner</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">finetuner.toydata</span> <span class="kn">import</span> <span class="n">generate_qa</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
+
+<span class="n">VOCAB_SIZE</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">PAD_TOKEN</span> <span class="o">=</span> <span class="s1">'&lt;pad&gt;'</span>
+<span class="n">PAD_INDEX</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">UNK_TOKEN</span> <span class="o">=</span> <span class="s1">'&lt;unk&gt;'</span>
+<span class="n">UNK_INDEX</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">generate_qa</span><span class="p">(</span><span class="n">num_neg</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">token</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">train_data</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+<span class="n">vocab</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">key</span><span class="p">:</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">2</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="n">VOCAB_SIZE</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span>
+<span class="p">}</span>
+<span class="n">vocab</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">PAD_TOKEN</span><span class="p">:</span> <span class="n">PAD_INDEX</span><span class="p">,</span> <span class="n">UNK_TOKEN</span><span class="p">:</span> <span class="n">UNK_INDEX</span><span class="p">})</span>
 
 <span class="k">class</span> <span class="nc">LastCell</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -556,54 +574,59 @@ Finetuner usage 4</div>
         <span class="k">return</span> <span class="n">out</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
 
 <span class="n">embed_model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
-    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_embeddings</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_embeddings</span><span class="o">=</span><span class="n">VOCAB_SIZE</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
     <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
     <span class="n">LastCell</span><span class="p">(),</span>
-    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="mi">64</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">))</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="mi">64</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+<span class="p">)</span>
 
-<span class="n">model</span><span class="p">,</span> <span class="n">summary</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="k">def</span> <span class="nf">preprocess_fn</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Document</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">([</span><span class="n">vocab</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">UNK_INDEX</span><span class="p">)</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()])</span>
+
+
+<span class="k">def</span> <span class="nf">collate_fn</span><span class="p">(</span><span class="n">tensors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rnn</span><span class="o">.</span><span class="n">pad_sequence</span><span class="p">(</span><span class="n">tensors</span><span class="p">,</span> <span class="n">padding_value</span><span class="o">=</span><span class="n">PAD_INDEX</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">long</span><span class="p">()</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">embed_model</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">generate_qa</span><span class="p">(</span><span class="n">num_neg</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_seq_len</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-    <span class="n">eval_data</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">generate_qa</span><span class="p">(</span><span class="n">num_neg</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_seq_len</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-    <span class="n">epochs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
+    <span class="n">eval_data</span><span class="o">=</span><span class="n">generate_qa</span><span class="p">(</span><span class="n">num_neg</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">preprocess_fn</span><span class="o">=</span><span class="n">preprocess_fn</span><span class="p">,</span>
+    <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">input_size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,),</span> <span class="n">input_dtype</span><span class="o">=</span><span class="s1">'long'</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">⠼  Epoch 1/3 ━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:00 estimating... </span>
-<span class="go">⠼       DONE ━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:01 10.2 step/s train: 1.25 | Eval Loss: 1.06</span>
-<span class="go">⠇       DONE ━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:01 100% ETA: 0 seconds train: 1.14 | Eval Loss: 1.02</span>
-<span class="go">⠹       DONE ━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:00:01 100% ETA: 0 seconds train: 1.10 | Eval Loss: 0.98</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">  Training [1/1] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6/6 0:00:00 0:00:57 • loss: 0.664</span>
 <span class="go">                                                                    </span>
 <span class="go">  name          output_shape_display         nb_params   trainable  </span>
 <span class="go"> ────────────────────────────────────────────────────────────────── </span>
 <span class="go">  embedding_1   [100, 64]                    320000      True       </span>
-<span class="go">  lstm_2        [[[2, 2, 64], [2, 2, 64]]]   66560       False      </span>
+<span class="go">  lstm_2        [[[2, 1, 64], [2, 1, 64]]]   66560       False      </span>
 <span class="go">  lastcell_3    [128]                        0           False      </span>
 <span class="go">  linear_4      [32]                         4128        True       </span>
 <span class="go">                                                                    </span>
-<span class="go">Green layers can be used as embedding layers, whose name can be used as </span>
-<span class="go">layer_name in to_embedding_model(...).</span>
+<span class="go">Green layers are trainable layers, Cyan layers are non-trainable layers or frozen layers.</span>
+<span class="go">Gray layers indicates this layer has been replaced by an Identity layer.</span>
+<span class="go">Use to_embedding_model(...) to create embedding model.</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">finetuner</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s1">'./saved-model'</span><span class="p">)</span>
-<span class="n">summary</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'fit.png'</span><span class="p">)</span>
 </pre></div>
 </div>
-<figure class="align-center">
-<a class="reference internal image-reference" href="../../_images/fit-plot.png"><img alt="../../_images/fit-plot.png" src="../../_images/fit-plot.png" style="width: 80%;"/></a>
-</figure>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+
 <span class="n">all_q</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">generate_qa</span><span class="p">())</span>
-<span class="n">finetuner</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">all_q</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">all_q</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">preprocess_fn</span><span class="o">=</span><span class="n">preprocess_fn</span><span class="p">,</span> <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">all_q</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(481, 32)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">all_q</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="s1">'embed.png'</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'tsne'</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">all_q</span><span class="o">.</span><span class="n">plot_embeddings</span><span class="p">()</span>
 </pre></div>
 </div>
 <figure class="align-center">
@@ -644,7 +667,7 @@ Finetuner usage 4</div>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Dec 14, 2021.
+                    Last updated on Dec 15, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

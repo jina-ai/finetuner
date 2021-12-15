@@ -462,13 +462,11 @@ Code for plotting<div class="sd-summary-down docutils">
 </div>
 <p>And finally call Finetuner:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-<span class="n">new_model</span><span class="p">,</span> <span class="n">summary</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">embed_model</span><span class="p">,</span> <span class="n">train_data</span><span class="o">=</span><span class="n">da</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<span class="n">new_model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">embed_model</span><span class="p">,</span> <span class="n">train_data</span><span class="o">=</span><span class="n">da</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In this simple example, training on GPU should take less than 1 minute. One can plot the training loss afterwards:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">summary</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-</pre></div>
-</div>
+<p>In this simple example, training on GPU should take less than 1 minute. Let’s have a look at the
+training loss:</p>
 <figure class="align-default">
 <a class="reference internal image-reference" href="../../_images/output_19_0.png"><img alt="../../_images/output_19_0.png" src="../../_images/output_19_0.png" style="width: 50%;"/></a>
 </figure>
@@ -495,7 +493,7 @@ Code for plotting<div class="sd-summary-down docutils">
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">da2</span><span class="p">,</span>  <span class="n">embed_model</span><span class="p">)</span>  <span class="c1">#: random init MLP</span>
 <span class="n">finetuner</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">da3</span><span class="p">,</span> <span class="n">new_model</span><span class="p">)</span>  <span class="c1">#: finetuned space</span>
-<span class="n">da4</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">label_y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>  <span class="c1">#: groundtruh</span>
+<span class="n">da4</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">label_y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>  <span class="c1">#: groundtruth</span>
 </pre></div>
 </div>
 <p>Let’s randomly sample four take a look on the results:</p>
@@ -547,7 +545,7 @@ Code for plotting<div class="sd-summary-down docutils">
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Dec 14, 2021.
+                    Last updated on Dec 15, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

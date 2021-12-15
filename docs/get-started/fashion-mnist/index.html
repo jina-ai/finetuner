@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/get-started/fashion-mnist.html" />
   <meta property="og:site_name" content="Finetuner 0.2.5 Documentation" />
-  <meta property="og:description" content="In this example, we want to “tune” the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST image data, the same dataset that we are using in jina hello fashion. Precisely, “tuning” means: we set up a Jina search pipeline and will look at the top-K visually similar result;, we accept ..." />
+  <meta property="og:description" content="In this example, we want to “tune” the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST image data, the same dataset that we are using in jina hello fashion. Precisely, “tuning” means: we set up a Jina search pipeline and will look at the top-K visually similar results;, we accept..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner 0.2.5 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -355,19 +355,19 @@
 <h1>Finetuning MLP for Fashion Image Search<a class="headerlink" href="#finetuning-mlp-for-fashion-image-search" title="Permalink to this headline">¶</a></h1>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>This example is inspired by <a class="reference external" href="https://docs.jina.ai/get-started/hello-world/fashion/"><code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">hello</span> <span class="pre">fashion</span></code></a>. We stronly recommend you to checkout that demo first before go through this tutorial.</p>
+<p>This example is inspired by <a class="reference external" href="https://docs.jina.ai/get-started/hello-world/fashion/"><code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">hello</span> <span class="pre">fashion</span></code></a>. We strongly recommend you to checkout that demo first before going through this tutorial.</p>
 </div>
 <p>In this example, we want to “tune” the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST image data, the same dataset that we are using in <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">hello</span> <span class="pre">fashion</span></code>.</p>
 <p>Precisely, “tuning” means:</p>
 <ul class="simple">
-<li><p>we set up a Jina search pipeline and will look at the top-K visually similar result;</p></li>
+<li><p>we set up a Jina search pipeline and will look at the top-K visually similar results;</p></li>
 <li><p>we accept or reject the results based on their quality;</p></li>
-<li><p>we let the model remember our feedback and produce better search result.</p></li>
+<li><p>we let the model remember our feedback in order to produce better search results.</p></li>
 </ul>
-<p>Hopefully the procedure converges after several rounds and we get a tuned embedding for better search task.</p>
+<p>Hopefully the procedure converges after several rounds and we get a tuned embedding for better results on the search task.</p>
 <section id="build-embedding-model">
 <h2>Build embedding model<a class="headerlink" href="#build-embedding-model" title="Permalink to this headline">¶</a></h2>
-<p>Let’s write a 2-layer MLP as our <span class="xref std std-ref">embedding model</span> using any of the following frameworks:</p>
+<p>Let’s write a 2-layer MLP as our <span class="xref std std-ref">embedding model</span>, using any of the following frameworks:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -411,7 +411,7 @@
 </section>
 <section id="prepare-data">
 <h2>Prepare data<a class="headerlink" href="#prepare-data" title="Permalink to this headline">¶</a></h2>
-<p>Now prepare Fashion-MNIST data for the Finetuner. Note that Finetuner accepts Jina <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>/<code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>, so we first convert them into this format.</p>
+<p>Now prepare the Fashion-MNIST data for the Finetuner. Note that Finetuner accepts Jina <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>/<code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>, so we first need to convert the data into this format.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.toydata</span> <span class="kn">import</span> <span class="n">generate_fashion</span>
 </pre></div>
 </div>
@@ -434,7 +434,7 @@
 </section>
 <section id="label-interactively">
 <h2>Label interactively<a class="headerlink" href="#label-interactively" title="Permalink to this headline">¶</a></h2>
-<p>You can now label the data by mouse/keyboard. The model will get trained and improved as you are labeling.</p>
+<p>You can now label the data by mouse/keyboard. The model will get trained and improve as you are labeling.</p>
 <figure class="align-center">
 <img alt="../../_images/labeler-on-fashion-mnist.gif" src="../../_images/labeler-on-fashion-mnist.gif"/>
 </figure>
@@ -490,7 +490,7 @@ UserWarning: The given NumPy array is not writeable, and PyTorch does not suppor
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Dec 14, 2021.
+                    Last updated on Dec 15, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

@@ -1,6 +1,6 @@
 # Labeler
 
-Labeler is a component in Finetuner. It contains a backend and a frontend UI. Given {term}`unlabeled data` and an {term}`embedding model` or {term}`general model`, Labeler asks human for labeling data, trains model, conducts [active learning](https://en.wikipedia.org/wiki/Active_learning_(machine_learning)) and then asks better question for labeling.
+Labeler is a component in Finetuner. It contains a backend and a frontend UI. Given {term}`unlabeled data` and an {term}`embedding model` or {term}`general model`, Labeler asks human for labeling data, trains model, conducts [active learning](https://en.wikipedia.org/wiki/Active_learning_(machine_learning)) and then asks better questions for labeling.
 
 Algorithms such as few-shot learning, negative sampling, active learning are implemented in the Labeler.
 

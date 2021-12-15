@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/get-started/celeba.html" />
   <meta property="og:site_name" content="Finetuner 0.2.5 Documentation" />
-  <meta property="og:description" content="In this example, we want to “tune” the pre-trained ResNet on CelebA dataset. Note that, the original weights of the ResNet model was trained on ImageNet. The Finetuner will work in the following steps: first, we spawn the Labeler that helps us to inspect the top-K visually similar celebrities fac..." />
+  <meta property="og:description" content="In this example, we want to “tune” the pre-trained ResNet on CelebA dataset. Note that, the original weights of the ResNet model were trained on ImageNet. The Finetuner will work in the following steps: first, we spawn the Labeler that helps us to inspect the top-K visually similar celebrities fa..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner 0.2.5 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -357,23 +357,23 @@
 <p class="admonition-title">Tip</p>
 <p>For this example, you will need a GPU machine to enable the best experience.</p>
 </div>
-<p>In this example, we want to “tune” the pre-trained <a class="reference external" href="https://arxiv.org/abs/1512.03385">ResNet</a> on <a class="reference external" href="https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html">CelebA dataset</a>. Note that, the original weights of the ResNet model was trained on ImageNet.</p>
+<p>In this example, we want to “tune” the pre-trained <a class="reference external" href="https://arxiv.org/abs/1512.03385">ResNet</a> on <a class="reference external" href="https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html">CelebA dataset</a>. Note that, the original weights of the ResNet model were trained on ImageNet.</p>
 <p>The Finetuner will work in the following steps:</p>
 <ul class="simple">
 <li><p>first, we spawn the Labeler that helps us to inspect the top-K visually similar celebrities face images from original ResNet;</p></li>
 <li><p>then, with the Labeler UI we accept or reject the results based on their similarities;</p></li>
-<li><p>finally, the results are collected at the backend by the Tuner, which “tunes” the ResNet and produces better search result.</p></li>
+<li><p>finally, the results are collected at the backend by the Tuner, which “tunes” the ResNet and produces better search results.</p></li>
 </ul>
 <p>Hopefully the procedure converges after several rounds; and we get a tuned embedding for better celebrity face search.</p>
 <section id="prepare-celeba-data">
 <h2>Prepare CelebA data<a class="headerlink" href="#prepare-celeba-data" title="Permalink to this headline">¶</a></h2>
-<p>Let’s first make sure you have downloaded all the images <a class="reference external" href="https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?usp=sharing&amp;resourcekey=0-dYn9z10tMJOBAkviAcfdyQ"><code class="docutils literal notranslate"><span class="pre">img_align_celeba.zip</span></code></a> and <a class="reference external" href="https://drive.google.com/file/d/1_ee_0u7vcNLOfNLegJRHmolfH5ICW-XS/view?usp=sharing"><code class="docutils literal notranslate"><span class="pre">IdentityCelebA.txt</span></code></a> locally.</p>
+<p>Let’s first make sure we have downloaded all the images <a class="reference external" href="https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?usp=sharing&amp;resourcekey=0-dYn9z10tMJOBAkviAcfdyQ"><code class="docutils literal notranslate"><span class="pre">img_align_celeba.zip</span></code></a> and <a class="reference external" href="https://drive.google.com/file/d/1_ee_0u7vcNLOfNLegJRHmolfH5ICW-XS/view?usp=sharing"><code class="docutils literal notranslate"><span class="pre">IdentityCelebA.txt</span></code></a> locally.</p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
 <p>Beware that the original CelebA dataset is 1.3GB. In this example, we do not need the full dataset. Here is a smaller version which contains 1000 images from the original dataset. You can <a class="reference external" href="https://static.jina.ai/celeba/celeba-img.zip">download it from here</a>.</p>
 </div>
-<p>Note that Finetuner accepts Jina <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>/<code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>, so we first load CelebA data into this format using generator:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.types.document.generators</span> <span class="kn">import</span> <span class="n">from_files</span>
+<p>Note that Finetuner accepts Jina <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>/<code class="docutils literal notranslate"><span class="pre">DocumentArrayMemmap</span></code>, so we first load CelebA data into this format using a generator:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray.document.generators</span> <span class="kn">import</span> <span class="n">from_files</span>
 
 <span class="c1"># please change the file path to your data path</span>
 <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">from_files</span><span class="p">(</span><span class="s1">'img_align_celeba/*.jpg'</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">to_dataturi</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
@@ -389,7 +389,7 @@
 </section>
 <section id="load-the-pretrained-model">
 <h2>Load the pretrained model<a class="headerlink" href="#load-the-pretrained-model" title="Permalink to this headline">¶</a></h2>
-<p>Let’s import pretrained ResNet50 as our base model. ResNet50 is implemented in PyTorch, Keras and Paddle. You can choose whatever framework you feel comfortable:</p>
+<p>Let’s import a pretrained ResNet50 as our base model. ResNet50 is implemented in PyTorch, Keras and Paddle. You can choose the framework you are the most comfortable with:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchvision</span>
@@ -416,7 +416,7 @@
 </section>
 <section id="put-together">
 <h2>Put together<a class="headerlink" href="#put-together" title="Permalink to this headline">¶</a></h2>
-<p>Finally, let’s start the Finetuner. Note that we freeze the weights of the original ResNet and tuned only for the last linear layer, which leverages Tailor underneath:</p>
+<p>Finally, let’s start the Finetuner. Note that we freeze the weights of the original ResNet and tune only the last linear layer, a procedure that leverages the Tailor component underneath:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
@@ -430,7 +430,7 @@
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>Note that how we specify <code class="docutils literal notranslate"><span class="pre">interactive=True</span></code> and <code class="docutils literal notranslate"><span class="pre">to_embedding_model=True</span></code> in the above code to activate Labler and Tailor, respectively.</p>
+<p>Note how we specify <code class="docutils literal notranslate"><span class="pre">interactive=True</span></code> and <code class="docutils literal notranslate"><span class="pre">to_embedding_model=True</span></code> in the code above, to activate the Labeler and the Tailor, respectively.</p>
 <p><code class="docutils literal notranslate"><span class="pre">input_size</span></code> is not required when you using Keras as the backend.</p>
 </section>
 <section id="label-interactively">
@@ -489,7 +489,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Dec 14, 2021.
+                    Last updated on Dec 15, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
