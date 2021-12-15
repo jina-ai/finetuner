@@ -111,16 +111,11 @@ class BestModelCheckpoint(BaseCallback):
 
     def _save_model_framework(self, tuner):
         """
-        Saves the model weights depending on its framework.
+        Saves the model weights.
         """
-        if get_framework(tuner.embed_model) == 'keras':
-            tuner.save(
-                filepath=self._get_file_path(),
-            )
-        elif get_framework(tuner.embed_model) == 'torch':
-            tuner.save(f=self._get_file_path())
-        elif get_framework(tuner.embed_model) == 'paddle':
-            tuner.save(path=self._get_file_path())
+        tuner.save(
+            self._get_file_path(),
+        )
 
     def _get_file_path(self):
         """
