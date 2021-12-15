@@ -29,35 +29,94 @@ Here $\mathrm{sim}(i,j)$ denotes the similarity function, which returns 1 if ite
 It's straightforward to use these loss functions with the Tuner. You can just give the name of the loss function (as a string) as the `loss` argument on initialization, or you can instantiate the loss object, which allows you to customize parameters (including [miners](#tuple-miners))
 
 ````{tab} Pytorch
-```python
 from finetuner.tuner.pytorch import PytorchTuner
 from finetuner.tuner.pytorch.losses import TripletLoss
 
 loss = TripletLoss(distance='cosine', margin=0.5)
 
 tuner = PytorchTuner(..., loss=loss)
-```
 ````
 ````{tab} Keras
-```python
 from finetuner.tuner.keras import KerasTuner
 from finetuner.tuner.keras.losses import TripletLoss
 
 loss = TripletLoss(distance='cosine', margin=0.5)
 
 tuner = KerasTuner(..., loss=loss)
-```
 ````
 ````{tab} Paddle
-```python
 from finetuner.tuner.paddle import PaddleTuner
 from finetuner.tuner.paddle.losses import TripletLoss
 
 loss = TripletLoss(distance='cosine', margin=0.5)
 
 tuner = PaddleTuner(..., loss=loss)
-```
 ````
 
 ## Tuple Miners
 
+In order to support siamese and triplet training, the `Finetuner` implements different mining strategies. 
+
+This [paper](https://openaccess.thecvf.com/content_WACV_2020/papers/Xuan_Improved_Embeddings_with_Easy_Positive_Triplet_Mining_WACV_2020_paper.pdf) provides a thorough investigation of which mining strategies should be used and why. 
+
+### Parameters
+
+* **pos_strategy**: 
+    * 'hard': Returns the hardest positive sample for each anchor.
+    * 'semihard': Returns the hardest positive sample for each anchor anchor, such that it is closer than the selected negative.
+    * 'easy': Returns the easiest positive sample for each anchor.
+    * 'all': Returns all possible positive samples.
+* **neg_strategy**: 
+    * 'hard': Returns the hardest negative sample for each anchor.
+    * 'semihard': Returns the hardest negative sample for each anchor, such that it is further than the selected positive.
+    * 'easy': Returns the easiest negative sample for each anchor.
+    * 'all': Returns all possible negative samples.
++ **Restricted Combinations**: 
+    * `pos_strategy` and `neg_strategy` cannot be set to `semihard` at the same time
+    * If either `pos_strategy` or `neg_strategy` is set to semihard, the other cannot be set to `all`
+allowed_pos_range: Optional tuple containing the allowed range of anchor-positive distances/similarties. For example, allowed_pos_range = (0.2, 1). If None, then a range is not applied.
+allowed_neg_range: Optional tuple containing the allowed range of anchor-negative distances/similarties. For example, allowed_neg_range = (0.2, 1). If None, then a range is not applied.
+
+The image below illustrates the relative position of samples in the case of triplet training and will help us to define the necessary terminology. 
+
+<!-- ![Sample locations during mining](../../img/sample-position-during-mining.png "Sample Locations") -->
+<img src=../../img/sample-position-during-mining.png style="width:50%;height:50%"> </br>
+
+The white circle in the middle (`A`) will denotes our anchor sample $\mathrm{x}_i$ and the white circle on the left (`P`) denotes our positive sample $\mathrm{x}_p$. Depending on where our negative sample will fall, inside the encoding space, it will be either *hard*, *semihard* or an *easy* sample. 
+
+To make this a bit more formal, a negative sample is considered to be *hard*, when it its distance to the anchor sample is smaller than the distance between the anchor and the positive sample, i. e. $d(\mathrm{x}_i,\mathrm{x}_n) < d(\mathrm{x}_i,\mathrm{x}_p)$.
+When a negative sample is just *a little* further from the postive sample $\mathrm{x}_i$, but within a $\mathrm{margin}$, the sample is considered to be *semihard*. 
+Formally: $d(\mathrm{x}_i,\mathrm{x}_n) < d(\mathrm{x}_i,\mathrm{x}_p) + \mathrm{margin}$. 
+Any negative sample that is even further away from the anchor, is considered an *easy* sample, i. e. $d(\mathrm{x}_i,\mathrm{x}_n) > d(\mathrm{x}_i,\mathrm{x}_p)$.
+
+In order to apply mining, during siamese- or triplet training with the *Finetuner*, you simply need to add the desired miner to your loss. 
+
+````{tab} Pytorch
+
+from finetuner.tuner.pytorch import PytorchTuner
+from finetuner.tuner.pytorch.miner import TripletEasyHardMiner
+from finetuner.tuner.pytorch.losses import TripletLoss
+
+loss = TripletLoss(miner=TripletEasyHardMiner(pos_strategy='easy', neg_strategy='hard'))
+
+tuner = PytorchTuner(..., loss=loss)
+````
+````{tab} Keras
+from finetuner.tuner.keras import KerasTuner
+from finetuner.tuner.keras.miner import TripletEasyHardMiner
+from finetuner.tuner.keras.losses import TripletLoss
+
+loss = TripletLoss(miner=TripletEasyHardMiner(pos_strategy='easy', neg_strategy='hard'))
+
+tuner = KerasTuner(..., loss=loss)
+````
+
+````{tab} Paddle
+from finetuner.tuner.paddle import PaddleTuner
+from finetuner.tuner.paddle.miner import TripletEasyHardMiner
+from finetuner.tuner.paddle.losses import TripletLoss
+
+loss = TripletLoss(miner=TripletEasyHardMiner(pos_strategy='easy', neg_strategy='hard'))
+
+tuner = PaddleTuner(..., loss=loss)
+````
