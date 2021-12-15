@@ -113,7 +113,8 @@ class DataIterator(Executor):
 
     @requests(on='/feed')
     def store_data(self, docs: DocumentArray, **kwargs):
-        docs.blobs = docs.blobs.astype(np.float32)
+        if isinstance(docs.blobs, np.ndarray):
+            docs.blobs = docs.blobs.astype(np.float32)
         self._all_data.extend(docs)
 
     @requests(on='/next')
