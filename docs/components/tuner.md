@@ -1,6 +1,6 @@
 # Tuner
 
-Tuner is one of the three key components of Finetuner. Given an {term}`embedding model` and {term}`labeled data` (see {ref}`this guide<construct-labeled-data>` on how to construct the dataset), Tuner trains the model to fit the data.
+Tuner is one of the three key components of Finetuner. Given an {term}`embedding model` and {term}`labeled dataset` (see {ref}`the guide on data formats<data-format>` for more information), Tuner trains the model to fit the data.
 
 With Tuner, you can customize the training process to best fit your data, and track your experiements in a clear and transparent manner. You can do things like
 - choose between different loss functions, use hard negative mining for triplets/pairs
@@ -23,7 +23,7 @@ All the functionality is exposed through the base `*Tuner` class - `PytorchTuner
 
 When initializing a `*Tuner` class, you have to pass the {term}`embedding model`, but you can also customize other training configuration.
 
-You can then finetune your model using the `.fit()` method, to which you pass the training and evaluation data (which should both be {term}`labeled data`), as well as any other data-related configuration (see ).
+You can then finetune your model using the `.fit()` method, to which you pass the training and evaluation data (which should both be {term}`labeled dataset`), as well as any other data-related configuration (see ).
 
 A minimal example looks like this:
 
