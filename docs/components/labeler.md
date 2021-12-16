@@ -46,7 +46,7 @@ finetuner.fit(
     train_data=labeled_data,
     interactive=True,
     to_embedding_model=True,
-    output_dim=100
+    freeze=False,
 )
 ```
 
