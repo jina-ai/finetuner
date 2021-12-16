@@ -24,16 +24,13 @@ class TrainingCheckpoint(BaseCallback):
     def __init__(self, save_dir: str, last_k_epochs: int = None):
         """
         :param save_dir: string, path to save the model file.
-        :param last_k_epochs: this parameter is an integer. It allows you to save
-            on only the most recent epochs and not on every epoch.
-            For example if `last_k_epochs = 3` and the total number of epochs is 10
-            epoch 5 -> saved 5, 4, 3
-            epoch 6 -> saved 6, 5, 4 (here saved epoch 3 is deleted)
-            epoch 7 -> saved 7, 6, 5 (here saved epoch 4 is deleted)
+        :param last_k_epochs: this parameter is an integer. Only the most
+            recent k checkpoints will be kept. Older checkpoints are deleted
         """
         self._logger = JinaLogger(self.__class__.__name__)
         self._save_dir = save_dir
         self._last_k_epochs = last_k_epochs
+        self._saved_checkpoints = []
         if not save_dir:
             raise ValueError(
                 '``save_dir`` parameter is mandatory. Pass it in parameters'
@@ -48,32 +45,12 @@ class TrainingCheckpoint(BaseCallback):
             f'Model trained for {tuner.state.epoch+1} epochs is saved!'
         )
         if self._last_k_epochs:
-            if tuner.state.epoch + 1 > self._last_k_epochs:
-                if os.path.isfile(
-                    os.path.join(
-                        self._save_dir,
-                        'saved_model_epoch_{:02d}'.format(
-                            tuner.state.epoch + 1 - self._last_k_epochs
-                        ),
-                    )
-                ):
-                    os.remove(
-                        os.path.join(
-                            self._save_dir,
-                            'saved_model_epoch_{:02d}'.format(
-                                tuner.state.epoch + 1 - self._last_k_epochs
-                            ),
-                        )
-                    )
+            if len(self._saved_checkpoints) > self._last_k_epochs:
+                if os.path.isfile(self._saved_checkpoints[0]):
+                    os.remove(self._saved_checkpoints[0])
                 else:
-                    shutil.rmtree(
-                        os.path.join(
-                            self._save_dir,
-                            'saved_model_epoch_{:02d}'.format(
-                                tuner.state.epoch + 1 - self._last_k_epochs
-                            ),
-                        )
-                    )
+                    shutil.rmtree(self._saved_checkpoints[0])
+                self._saved_checkpoints.pop(0)
                 self._logger.logger.info(
                     f'Model trained for {tuner.state.epoch+1-self._last_k_epochs} epochs is deleted!'
                 )
@@ -128,6 +105,7 @@ class TrainingCheckpoint(BaseCallback):
                 }
 
             paddle.save(state, path=self._get_file_path(tuner))
+        self._saved_checkpoints.append(self._get_file_path(tuner))
 
     def _get_file_path(self, tuner):
         """
@@ -135,8 +113,7 @@ class TrainingCheckpoint(BaseCallback):
         """
 
         file_path = os.path.join(
-            self._save_dir,
-            'saved_model_epoch_{:02d}'.format(tuner.state.epoch + 1),
+            self._save_dir, f'saved_model_epoch_{tuner.state.epoch + 1:02d}'
         )
         return file_path
 

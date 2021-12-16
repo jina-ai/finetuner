@@ -100,9 +100,7 @@ class BestModelCheckpoint(BaseCallback):
         else:
             if self._monitor_op(current, self._best):
                 self._best = current
-                tuner.save(
-                    self._get_file_path(),
-                )
+                tuner.save(self._get_file_path())
                 self._logger.logger.info(
                     f'Model improved from {self._best} to {current}. New model is saved!'
                 )
@@ -114,10 +112,7 @@ class BestModelCheckpoint(BaseCallback):
         Returns the file path for checkpoint.
         """
 
-        file_path = os.path.join(
-            self._save_dir,
-            'best_model_{}'.format(self._monitor),
-        )
+        file_path = os.path.join(self._save_dir, f'best_model_{self._monitor}')
         return file_path
 
     @staticmethod
