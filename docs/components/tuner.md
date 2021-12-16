@@ -4,11 +4,11 @@ Tuner is one of the three key components of Finetuner. Given an {term}`embedding
 
 With Tuner, you can customize the training process to best fit your data, and track your experiements in a clear and transparent manner. You can do things like
 - choose between different loss functions, use hard negative mining for triplets/pairs
-- [set your own optimizers and learning rates](#customize-optimization)
+- set your own optimizers and learning rates
 - track the training and evaluation metrics with Weights and Biases
-- write custom Callbacks
+- write custom callbacks
 
-You can read more on these different options in these sub-sections:
+You can read more on these different options here or in these sub-sections:
 
 ```{toctree}
 :maxdepth: 1
@@ -19,9 +19,9 @@ tuner/callbacks
 
 ## The `Tuner` class
 
-All the functionality is exposed through the base `*Tuner` class - `PytorchTuner`, `KerasTuner` and `PaddleTuner`.
+All the functionality is exposed through the base `*Tuner` class - `PytorchTuner`, `KerasTuner` and `PaddleTuner`. This class instance also gets constructed under the hood when you call `finetuner.fit()`.
 
-When initializing a `*Tuner` class, you have to pass the {term}`embedding model`, but you can also customize other training configuration.
+When initializing a `*Tuner` class, you are required to pass the {term}`embedding model`, but you can also customize other training configuration.
 
 You can then finetune your model using the `.fit()` method, to which you pass the training and evaluation data (which should both be {term}`labeled dataset`), as well as any other data-related configuration (see ).
 
@@ -42,7 +42,6 @@ embed_model = torch.nn.Sequential(
 tuner = PytorchTuner(embed_model)
 tuner.fit(generate_fashion())
 ```
-
 ````
 ````{tab} Keras
 ```python
@@ -146,9 +145,9 @@ After a model is tuned, you can save it by calling `.save(save_path)` method.
 In the example below we'll demonstrate how to make full use of the available Tuner features, as you would in any realistic setting.
 
 We will be finetuning a simple MLP model on the Fashion MNIST data, and we will be using:
-- `TripletLoss` with hard negative mining
+- {class}`~finetuner.tuner.pytorch.losses.TripletLoss` with easy positive and semihard negative mining strategy
 - A custom learning rate schedule
-- Tracking the experiement using Weights and Biases logger callback
+- Tracking the experiement on Weights and Biases using {class}`~finetuner.tuner.callback.wandb_logger.WandBLogger` callback
 - Random augmentation using `preproces_fn`
 
 ```{tip}
@@ -200,7 +199,7 @@ embed_model = torch.nn.Sequential(
 )
 ```
 
-Then we can create the `PytorchTuner` object. In this step we specify all the training configuration. We'll be using
+Then we can create the {class}`~finetuner.tuner.pytorch.PytorchTuner` object. In this step we specify all the training configuration. We'll be using
 - Triplet loss with hard miner with the easy positive and semihard negative strategy
 - Adam optimizer with initial learning rate of 0.0005, which will be halved every 30 epochs
 - WandB for tracking the experiement

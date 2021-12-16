@@ -65,20 +65,21 @@ tuner = PaddleTuner(..., loss=loss)
 
 In order to support siamese and triplet training, the `Finetuner` implements different mining strategies. 
 
-This [paper](https://openaccess.thecvf.com/content_WACV_2020/papers/Xuan_Improved_Embeddings_with_Easy_Positive_Triplet_Mining_WACV_2020_paper.pdf) provides a thorough investigation of which mining strategies should be used and why. 
+This [paper](https://openaccess.thecvf.com/content_WACV_2020/papers/Xuan_Improved_Embeddings_with_Easy_Positive_Triplet_Mining_WACV_2020_paper.pdf) provides a thorough investigation of which mining strategies should be used and why. The image below illustrates the relative position of samples in the case of triplet training and will help us to define the necessary terminology. 
 
-The image below illustrates the relative position of samples in the case of triplet training and will help us to define the necessary terminology. 
+```{figure} sample-position-during-mining.png
+:width: 50%
+```
 
-![Miner sample positions](../../img/sample-position-during-mining.png "Sample Positions in Mining")
+The white circle in the middle (`A`) denotes our anchor sample $\mathrm{x}_i$ and the white circle on the left (`P`) denotes our positive sample $\mathrm{x}_p$. Depending on where our negative sample will fall, inside the encoding space, it will be either *hard*, *semihard* or an *easy* sample. More precisely, a negative sample is considered to be
 
-The white circle in the middle (`A`) will denotes our anchor sample $\mathrm{x}_i$ and the white circle on the left (`P`) denotes our positive sample $\mathrm{x}_p$. Depending on where our negative sample will fall, inside the encoding space, it will be either *hard*, *semihard* or an *easy* sample. 
+- **hard**, when it its distance to the anchor sample is smaller than the distance between the anchor and the positive sample, formally $d(\mathrm{x}_i,\mathrm{x}_n) < d(\mathrm{x}_i,\mathrm{x}_p)$.
+- **semihard**, when it is just *a little* further from the postive sample $\mathrm{x}_i$, but within the margin, formally
+$$d(\mathrm{x}_i,\mathrm{x}_p) < d(\mathrm{x}_i,\mathrm{x}_n) < d(\mathrm{x}_i,\mathrm{x}_p) + \mathrm{m}$$
 
-To make this a bit more formal, a negative sample is considered to be *hard*, when it its distance to the anchor sample is smaller than the distance between the anchor and the positive sample, i. e. $d(\mathrm{x}_i,\mathrm{x}_n) < d(\mathrm{x}_i,\mathrm{x}_p)$.
-When a negative sample is just *a little* further from the postive sample $\mathrm{x}_i$, but within a $\mathrm{margin}$, the sample is considered to be *semihard*. 
-Formally: $d(\mathrm{x}_i,\mathrm{x}_n) < d(\mathrm{x}_i,\mathrm{x}_p) + \mathrm{margin}$. 
-Any negative sample that is even further away from the anchor, is considered an *easy* sample, i. e. $d(\mathrm{x}_i,\mathrm{x}_n) > d(\mathrm{x}_i,\mathrm{x}_p)$.
-It is possible to apply each of the strategies on both the positive and the negative samples. 
-This means that, when given an anchor and a negative sample, we can freely specify the strategy used to retrieve the positive sample for the same anchor. 
+- **easy**, when it is even further away from the anchor, formally $d(\mathrm{x}_i,\mathrm{x}_n) > d(\mathrm{x}_i,\mathrm{x}_p) + \mathrm{m}$.
+
+The strategies presented here were given for the negative sample, taking the positive one as given - but analogous strategies for selecting the positive sample, having the negative one already give, are also possible. We enable the use of both positive and negative mining strategy in Tuner.
 
 In order to apply mining, during siamese- or triplet training with the *Finetuner*, you simply need to add the desired miner to your loss. Please mind, that mining is only supported when using a [Class Dataset](https://finetuner.jina.ai/basics/datasets/class-dataset/).
 
