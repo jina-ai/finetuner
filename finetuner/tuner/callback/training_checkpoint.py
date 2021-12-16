@@ -1,6 +1,7 @@
 import os
 import pickle
 from typing import TYPE_CHECKING
+import shutil
 
 import keras
 import paddle
@@ -23,10 +24,12 @@ class TrainingCheckpoint(BaseCallback):
     def __init__(self, save_dir: str, last_k_epochs: int = None):
         """
         :param save_dir: string, path to save the model file.
-        :param last_k_epochs: this parameter is an integer. It allows you yo save
-            only at the last k epochs and not on every epoch.
+        :param last_k_epochs: this parameter is an integer. It allows you to save
+            on only the most recent epochs and not on every epoch.
             For example if `last_k_epochs = 3` and the total number of epochs is 10
-            we'll save only on epochs 8,9 and 10.
+            epoch 5 -> saved 5, 4, 3
+            epoch 6 -> saved 6, 5, 4 (here saved epoch 3 is deleted)
+            epoch 7 -> saved 7, 6, 5 (here saved epoch 4 is deleted)
         """
         self._logger = JinaLogger(self.__class__.__name__)
         self._save_dir = save_dir
@@ -40,16 +43,39 @@ class TrainingCheckpoint(BaseCallback):
         """
         Called at the end of the training epoch.
         """
-        if self._last_k_epochs == None:
-            self._save_model_framework(tuner)
-            self._logger.logger.info(
-                f'Model trained for {tuner.state.epoch+1} epochs is saved!'
-            )
-        else:
-            if tuner.state.epoch >= tuner.state.num_epochs - self._last_k_epochs:
-                self._save_model_framework(tuner)
+        self._save_model_framework(tuner)
+        self._logger.logger.info(
+            f'Model trained for {tuner.state.epoch+1} epochs is saved!'
+        )
+        if self._last_k_epochs:
+            if tuner.state.epoch + 1 > self._last_k_epochs:
+                if os.path.isfile(
+                    os.path.join(
+                        self._save_dir,
+                        'saved_model_epoch_{:02d}'.format(
+                            tuner.state.epoch + 1 - self._last_k_epochs
+                        ),
+                    )
+                ):
+                    os.remove(
+                        os.path.join(
+                            self._save_dir,
+                            'saved_model_epoch_{:02d}'.format(
+                                tuner.state.epoch + 1 - self._last_k_epochs
+                            ),
+                        )
+                    )
+                else:
+                    shutil.rmtree(
+                        os.path.join(
+                            self._save_dir,
+                            'saved_model_epoch_{:02d}'.format(
+                                tuner.state.epoch + 1 - self._last_k_epochs
+                            ),
+                        )
+                    )
                 self._logger.logger.info(
-                    f'Model trained for {tuner.state.epoch+1} epochs is saved!'
+                    f'Model trained for {tuner.state.epoch+1-self._last_k_epochs} epochs is deleted!'
                 )
 
     def _save_model_framework(self, tuner):
