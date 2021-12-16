@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/components/tuner.html" />
   <meta property="og:site_name" content="Finetuner 0.2.5 Documentation" />
-  <meta property="og:description" content="Tuner is one of the three key components of Finetuner. Given an embedding model and labeled data, Tuner trains the model to fit the data. Labeled data can be constructed by following this. fit method: Tuner can be called via finetuner.fit(). Its minimum form is as follows: Here, embed_model must ..." />
+  <meta property="og:description" content="Tuner is one of the three key components of Finetuner. Given an embedding model and labeled dataset(see the guide on data formats for more information), Tuner trains the model to fit the data. With Tuner, you can customize the training process to best fit your data, and track your experiements in..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner 0.2.5 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -28,7 +28,7 @@
 </script>
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Tailor" href="../tailor/" /><link rel="prev" title="Overview" href="../overview/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Loss and Miners" href="loss/" /><link rel="prev" title="Overview" href="../overview/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.1, furo 2021.11.23"/>
         <title>Tuner - Finetuner 0.2.5 documentation</title>
@@ -235,55 +235,59 @@
 <p class="caption" role="heading"><span class="caption-text">Components</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Tuner</a></li>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Tuner</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="loss/">Loss and Miners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="callbacks/">Callbacks</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../tailor/">Tailor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../labeler/">Labeler</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/finetuner/">finetuner package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.labeler/">finetuner.labeler package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/finetuner/">finetuner package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.labeler/">finetuner.labeler package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.labeler.executor/">finetuner.labeler.executor module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.tailor/">finetuner.tailor package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.tailor/">finetuner.tailor package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tailor.keras/">finetuner.tailor.keras package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tailor.paddle/">finetuner.tailor.paddle package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tailor.pytorch/">finetuner.tailor.pytorch package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tailor.base/">finetuner.tailor.base module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.tuner/">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.callback/">finetuner.tuner.callback package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.tuner/">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.callback/">finetuner.tuner.callback package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.keras.data/">finetuner.tuner.keras.data module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.keras.losses/">finetuner.tuner.keras.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.keras.miner/">finetuner.tuner.keras.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.miner.base/">finetuner.tuner.miner.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.miner.mining_strategies/">finetuner.tuner.miner.mining_strategies module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.paddle.miner/">finetuner.tuner.paddle.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.pytorch.datasets/">finetuner.tuner.pytorch.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.pytorch.losses/">finetuner.tuner.pytorch.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.pytorch.miner/">finetuner.tuner.pytorch.miner module</a></li>
@@ -353,174 +357,286 @@
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="tuner">
 <h1>Tuner<a class="headerlink" href="#tuner" title="Permalink to this headline">¶</a></h1>
-<p>Tuner is one of the three key components of Finetuner. Given an <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a> and <span class="xref std std-term">labeled data</span>, Tuner
-trains the model to fit the data.</p>
-<p>Labeled data can be constructed <span class="xref std std-ref">by following this</span>.</p>
-<section id="fit-method">
-<h2><code class="docutils literal notranslate"><span class="pre">fit</span></code> method<a class="headerlink" href="#fit-method" title="Permalink to this headline">¶</a></h2>
-<p>Tuner can be called via <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code>. Its minimum form is as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-
-<span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">embed_model</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span>   
-<span class="p">)</span>
-</pre></div>
+<p>Tuner is one of the three key components of Finetuner. Given an <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a> and <a class="reference internal" href="../../basics/glossary/#term-Labeled-dataset"><span class="xref std std-term">labeled dataset</span></a> (see <a class="reference internal" href="../../basics/data-format/#data-format"><span class="std std-ref">the guide on data formats</span></a> for more information), Tuner trains the model to fit the data.</p>
+<p>With Tuner, you can customize the training process to best fit your data, and track your experiements in a clear and transparent manner. You can do things like</p>
+<ul class="simple">
+<li><p>choose between different loss functions, use hard negative mining for triplets/pairs</p></li>
+<li><p>set your own optimizers and learning rates</p></li>
+<li><p>track the training and evaluation metrics with Weights and Biases</p></li>
+<li><p>write custom callbacks</p></li>
+</ul>
+<p>You can read more on these different options here or in these sub-sections:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="loss/">Loss and Miners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="callbacks/">Callbacks</a></li>
+</ul>
 </div>
-<p>Here, <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> must be an <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>; and <code class="docutils literal notranslate"><span class="pre">train_data</span></code> must be <span class="xref std std-term">labeled data</span>. Other parameters such as <code class="docutils literal notranslate"><span class="pre">epochs</span></code>, <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> can be found in the Developer Reference.</p>
-<section id="loss-argument">
-<h3><code class="docutils literal notranslate"><span class="pre">loss</span></code> argument<a class="headerlink" href="#loss-argument" title="Permalink to this headline">¶</a></h3>
-<p>Loss function of the Tuner can be specified via the <code class="docutils literal notranslate"><span class="pre">loss</span></code> argument of <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code>.</p>
-<p>By default, Tuner uses <code class="docutils literal notranslate"><span class="pre">SiameseLoss</span></code> (with cosince distance) for training. You can also use other built-in losses by specifying <code class="docutils literal notranslate"><span class="pre">finetuner.fit(...,</span> <span class="pre">loss='...')</span></code>.</p>
-<p>Let <span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span> denote the predicted embedding for Document <span class="math notranslate nohighlight">\(i\)</span>. The built-in losses are summarized as follows:</p>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" open="open">
-<summary class="sd-summary-title sd-card-header">
-<code class="docutils literal notranslate"><span class="pre">SiameseLoss</span></code><div class="sd-summary-down docutils">
-<svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-down" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z" fill-rule="evenodd"></path></svg></div>
-<div class="sd-summary-up docutils">
-<svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-up" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z" fill-rule="evenodd"></path></svg></div>
-</summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text"><div class="math-wrapper"><div class="math notranslate nohighlight">
-\[\ell_{i,j} = \mathrm{sim}(i,j)d(\mathbf{x}_i, \mathbf{x}_j) + (1 - \mathrm{sim}(i,j))\max(m - d(\mathbf{x}_i, \mathbf{x}_j))\]</div></div>
-,
-where <span class="math notranslate nohighlight">\(\mathrm{sim}(i,j)\)</span> equals 1 when Document <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> are positively related, and 0 otherwise, <span class="math notranslate nohighlight">\(d(\mathbf{x}_i, \mathbf{x}_j)\)</span> represents the distance between <span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span> and <span class="math notranslate nohighlight">\(\mathbf{x}_j\)</span> and <span class="math notranslate nohighlight">\(m\)</span> is the “margin”, the desired wedge between dis-similar items.</p>
-</div>
-</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" open="open">
-<summary class="sd-summary-title sd-card-header">
-<code class="docutils literal notranslate"><span class="pre">TripletLoss</span></code><div class="sd-summary-down docutils">
-<svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-down" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z" fill-rule="evenodd"></path></svg></div>
-<div class="sd-summary-up docutils">
-<svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-up" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z" fill-rule="evenodd"></path></svg></div>
-</summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text"><div class="math-wrapper"><div class="math notranslate nohighlight">
-\[\ell_{i, p, n}=\max(0, d(\mathbf{x}_i, \mathbf{x}_p)-d(\mathbf{x}_i, \mathbf{x}_n)+m)\]</div></div>
-, where Document <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(i\)</span> are positively related, whereas <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(i\)</span> are negatively related or unrelated, <span class="math notranslate nohighlight">\(d(\cdot, \cdot)\)</span> representes a distance function, and <span class="math notranslate nohighlight">\(m\)</span> is the desired distance (wedge) between the positive and negative pairs.</p>
-</div>
-</details><div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>Although siamese and triplet loss work on pair and triplet inputs, respectively, there is <strong>no need</strong> to worry about the data input format. You only need to make sure your data is labeled according to <a class="reference internal" href="../../basics/data-format/#data-format"><span class="std std-ref">Data Format</span></a>, then you can switch between all losses freely.</p>
-</div>
-</section>
-</section>
-<section id="save-method">
-<h2><code class="docutils literal notranslate"><span class="pre">save</span></code> method<a class="headerlink" href="#save-method" title="Permalink to this headline">¶</a></h2>
-<p>After a model is tuned, you can save it by calling <code class="docutils literal notranslate"><span class="pre">finetuner.save(model,</span> <span class="pre">save_path)</span></code>.</p>
-</section>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
-<section id="tune-a-simple-mlp-on-fashion-mnist">
-<h3>Tune a simple MLP on Fashion-MNIST<a class="headerlink" href="#tune-a-simple-mlp-on-fashion-mnist" title="Permalink to this headline">¶</a></h3>
-<ol>
-<li><p>Write an embedding model. An embedding model can be written in Keras/PyTorch/Paddle. It can be either a new model or
-an existing model with pretrained weights. Below we construct a <code class="docutils literal notranslate"><span class="pre">784x128x32</span></code> MLP that transforms Fashion-MNIST images
-into 32-dim vectors.</p>
+<section id="the-tuner-class">
+<h2>The <code class="docutils literal notranslate"><span class="pre">Tuner</span></code> class<a class="headerlink" href="#the-tuner-class" title="Permalink to this headline">¶</a></h2>
+<p>All the functionality is exposed through the base <code class="docutils literal notranslate"><span class="pre">*Tuner</span></code> class - <code class="docutils literal notranslate"><span class="pre">PytorchTuner</span></code>, <code class="docutils literal notranslate"><span class="pre">KerasTuner</span></code> and <code class="docutils literal notranslate"><span class="pre">PaddleTuner</span></code>. This class instance also gets constructed under the hood when you call <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code>.</p>
+<p>When initializing a <code class="docutils literal notranslate"><span class="pre">*Tuner</span></code> class, you are required to pass the <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>, but you can also customize other training configuration.</p>
+<p>You can then finetune your model using the <code class="docutils literal notranslate"><span class="pre">.fit()</span></code> method, to which you pass the training and evaluation data (which should both be <a class="reference internal" href="../../basics/glossary/#term-Labeled-dataset"><span class="xref std std-term">labeled dataset</span></a>), as well as any other data-related configuration (see ).</p>
+<p>A minimal example looks like this:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">PyTorch</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">finetuner.toydata</span> <span class="kn">import</span> <span class="n">generate_fashion</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch</span> <span class="kn">import</span> <span class="n">PytorchTuner</span>
+
 <span class="n">embed_model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
-      <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
-      <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">128</span><span class="p">),</span>
-      <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
-      <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">))</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">128</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">tuner</span> <span class="o">=</span> <span class="n">PytorchTuner</span><span class="p">(</span><span class="n">embed_model</span><span class="p">)</span>
+<span class="n">tuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">generate_fashion</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">Keras</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">finetuner.toydata</span> <span class="kn">import</span> <span class="n">generate_fashion</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.keras</span> <span class="kn">import</span> <span class="n">KerasTuner</span>
+
 <span class="n">embed_model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
             <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)),</span>
             <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'relu'</span><span class="p">),</span>
-            <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
-        <span class="p">])</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">tuner</span> <span class="o">=</span> <span class="n">KerasTuner</span><span class="p">(</span><span class="n">embed_model</span><span class="p">)</span>
+<span class="n">tuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">generate_fashion</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
 <input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--3">Paddle</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">paddle</span>
-<span class="n">embed_model</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
-      <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
-      <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">128</span><span class="p">),</span>
-      <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
-      <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-</div>
-</li>
-<li><p>Build labeled match data <a class="reference internal" href="../../basics/datasets/class-dataset/#build-mnist-data"><span class="std std-ref">according to the steps here</span></a>. You can refer
-to <code class="docutils literal notranslate"><span class="pre">finetuner.toydata.generate_fashion</span></code> for an implementation. In this example, for each <code class="docutils literal notranslate"><span class="pre">Document</span></code> we generate 10 positive matches and 10 negative matches.</p></li>
-<li><p>Feed the labeled data and the embedding model into Finetuner:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 <span class="kn">from</span> <span class="nn">finetuner.toydata</span> <span class="kn">import</span> <span class="n">generate_fashion</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.paddle</span> <span class="kn">import</span> <span class="n">PaddleTuner</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">embed_model</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="n">generate_fashion</span><span class="p">(),</span>
-    <span class="n">eval_data</span><span class="o">=</span><span class="n">generate_fashion</span><span class="p">(</span><span class="n">is_testset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">embed_model</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+        <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+        <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">128</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">tuner</span> <span class="o">=</span> <span class="n">PaddleTuner</span><span class="p">(</span><span class="n">embed_model</span><span class="p">)</span>
+<span class="n">tuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">generate_fashion</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="customize-optimization">
+<h3>Customize optimization<a class="headerlink" href="#customize-optimization" title="Permalink to this headline">¶</a></h3>
+<p>You can provide your own optimizer and learning rate scheduler if you wish to (by default, the Adam optimizer with a fixed learning rate will be used), using the <code class="docutils literal notranslate"><span class="pre">configure_optimizer</span></code> argument to the Tuner constructor.</p>
+<p>For Pytorch and PaddlePaddle, you can also use the <code class="docutils literal notranslate"><span class="pre">scheduler_step</span></code> argument, to set whether to step the learning rate scheduler on each batch or each epoch (for Keras this is not available, there you set the frequency, in terms of batches, in the scheduler itself)</p>
+<p>Here’s an example of how you can do this</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">Pytorch</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torch.optim</span> <span class="kn">import</span> <span class="n">Adam</span>
+<span class="kn">from</span> <span class="nn">torch.optim.lr_scheduler</span> <span class="kn">import</span> <span class="n">MultiStepLR</span>
+
+<span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch</span> <span class="kn">import</span> <span class="n">PytorchTuner</span>
+
+<span class="k">def</span> <span class="nf">configure_optimizer</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">5e-4</span><span class="p">)</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">MultiStepLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">milestones</span><span class="o">=</span><span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler</span>
+
+<span class="n">tuner</span> <span class="o">=</span> <span class="n">PytorchTuner</span><span class="p">(</span>
+    <span class="o">...</span><span class="p">,</span> <span class="n">configure_optimizer</span><span class="o">=</span><span class="n">configure_optimizer</span><span class="p">,</span> <span class="n">scheduler_step</span><span class="o">=</span><span class="s1">'epoch'</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<figure class="align-center">
-<img alt="../../_images/mlp.png" src="../../_images/mlp.png"/>
-</figure>
-</li>
-</ol>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--2">Keras</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="kn">from</span> <span class="nn">finetuner.tuner.keras</span> <span class="kn">import</span> <span class="n">KerasTuner</span>
+
+<span class="k">def</span> <span class="nf">configure_optimizer</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+        <span class="n">lr</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">schedules</span><span class="o">.</span><span class="n">ExponentialDecay</span><span class="p">(</span>
+            <span class="mf">1.0</span><span class="p">,</span> <span class="n">decay_steps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">decay_rate</span><span class="o">=</span><span class="mf">0.1</span>
+        <span class="p">)</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">lr</span>
+
+<span class="n">tuner</span> <span class="o">=</span> <span class="n">KerasTuner</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">configure_optimizer</span><span class="o">=</span><span class="n">configure_optimizer</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--1-input--3" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--3">Paddle</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">paddle</span> <span class="kn">import</span> <span class="n">optimizer</span>
+
+<span class="kn">from</span> <span class="nn">finetuner.tuner.paddle</span> <span class="kn">import</span> <span class="n">PaddleTuner</span>
+
+<span class="k">def</span> <span class="nf">configure_optimizer</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">lr</span><span class="o">.</span><span class="n">MultiStepDecay</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">5e-4</span><span class="p">,</span> <span class="n">milestones</span><span class="o">=</span><span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="n">scheduler</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler</span>
+
+<span class="n">tuner</span> <span class="o">=</span> <span class="n">PaddleTuner</span><span class="p">(</span>
+    <span class="o">...</span><span class="p">,</span> <span class="n">configure_optimizer</span><span class="o">=</span><span class="n">configure_optimizer</span><span class="p">,</span> <span class="n">scheduler_step</span><span class="o">=</span><span class="s1">'epoch'</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 </section>
-<section id="tune-a-transformer-model-on-covid-qa">
-<h3>Tune a transformer model on Covid QA<a class="headerlink" href="#tune-a-transformer-model-on-covid-qa" title="Permalink to this headline">¶</a></h3>
-<ol class="simple">
-<li><p>Write an embedding model:</p></li>
-</ol>
+<section id="saving-the-model">
+<h3>Saving the model<a class="headerlink" href="#saving-the-model" title="Permalink to this headline">¶</a></h3>
+<p>After a model is tuned, you can save it by calling <code class="docutils literal notranslate"><span class="pre">.save(save_path)</span></code> method.</p>
+</section>
+</section>
+<section id="example-full-training">
+<h2>Example - full training<a class="headerlink" href="#example-full-training" title="Permalink to this headline">¶</a></h2>
+<p>In the example below we’ll demonstrate how to make full use of the available Tuner features, as you would in any realistic setting.</p>
+<p>We will be finetuning a simple MLP model on the Fashion MNIST data, and we will be using:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../api/finetuner.tuner.pytorch.losses/#finetuner.tuner.pytorch.losses.TripletLoss" title="finetuner.tuner.pytorch.losses.TripletLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">TripletLoss</span></code></a> with easy positive and semihard negative mining strategy</p></li>
+<li><p>A custom learning rate schedule</p></li>
+<li><p>Tracking the experiement on Weights and Biases using <a class="reference internal" href="../../api/finetuner.tuner.callback.wandb_logger/#finetuner.tuner.callback.wandb_logger.WandBLogger" title="finetuner.tuner.callback.wandb_logger.WandBLogger"><code class="xref py py-class docutils literal notranslate"><span class="pre">WandBLogger</span></code></a> callback</p></li>
+<li><p>Random augmentation using <code class="docutils literal notranslate"><span class="pre">preproces_fn</span></code></p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Before trying out the example, make sure you have <a class="reference external" href="https://docs.wandb.ai/quickstart">wandb installed</a> and have logged into your account.</p>
+</div>
+<p>Let’s start with the dataset - we’ll use the <a class="reference internal" href="../../api/finetuner.toydata/#finetuner.toydata.generate_fashion" title="finetuner.toydata.generate_fashion"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_fashion()</span></code></a> helper function, which will produce a <a class="reference internal" href="../../basics/datasets/class-dataset/#class-dataset"><span class="std std-ref">Class Dataset</span></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">finetuner.toydata</span> <span class="kn">import</span> <span class="n">generate_fashion</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
+
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">generate_fashion</span><span class="p">()</span>
+<span class="n">val_data</span> <span class="o">=</span> <span class="n">generate_fashion</span><span class="p">(</span><span class="n">is_testset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">preprocess_fn</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Document</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">"""Add some noise to the image"""</span>
+    <span class="n">new_image</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">blob</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">blob</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_image</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Size of train data: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Size of train data: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">val_data</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Example of label: </span><span class="si">{</span><span class="n">train_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+
+<span class="n">blob</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">blob</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Example of blob: </span><span class="si">{</span><span class="n">blob</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1"> shape, type </span><span class="si">{</span><span class="n">blob</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Size of train data: 60000                                                                           </span>
+<span class="go">Size of train data: 10000</span>
+<span class="go">Example of label: {</span>
+<span class="go">  "finetuner_label": 9.0</span>
+<span class="go">}</span>
+<span class="go">Example of blob: (28, 28) shape, type float32</span>
+</pre></div>
+</div>
+<p>Next, we prepare the model - just a simple MLP in this case</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModel</span>
 
-<span class="n">TRANSFORMER_MODEL</span> <span class="o">=</span> <span class="s1">'sentence-transformers/paraphrase-MiniLM-L6-v2'</span>
-
-
-<span class="k">class</span> <span class="nc">TransformerEmbedder</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">TRANSFORMER_MODEL</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
-        <span class="n">out_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span>
-        <span class="n">cls_token</span> <span class="o">=</span> <span class="n">out_model</span><span class="o">.</span><span class="n">last_hidden_state</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
-        <span class="k">return</span> <span class="n">cls_token</span>
-</pre></div>
-</div>
-<ol>
-<li><p>Build labeled match data <a class="reference internal" href="../../basics/datasets/session-dataset/#build-qa-data"><span class="std std-ref">according to the steps here</span></a>. You can refer
-to <code class="docutils literal notranslate"><span class="pre">finetuner.toydata.generate_qa</span></code> for an implementation.</p></li>
-<li><p>Feed the labeled data and the embedding model into Finetuner:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
-
-<span class="kn">import</span> <span class="nn">finetuner</span>
-<span class="kn">from</span> <span class="nn">finetuner.toydata</span> <span class="kn">import</span> <span class="n">generate_qa</span>
-<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span>
-
-<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">TRANSFORMER_MODEL</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">collate_fn</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-    <span class="n">batch_tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span>
-        <span class="n">inputs</span><span class="p">,</span>
-        <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-        <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">return_tensors</span><span class="o">=</span><span class="s1">'pt'</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">batch_tokens</span>
-
-<span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-  <span class="n">TransformerEmbedder</span><span class="p">(),</span>
-  <span class="n">train_data</span><span class="o">=</span><span class="n">generate_qa</span><span class="p">(</span><span class="n">num_neg</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
-  <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span>
+<span class="n">embed_model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+      <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+      <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">128</span><span class="p">),</span>
+      <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+      <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-</li>
-</ol>
-</section>
+<p>Then we can create the <a class="reference internal" href="../../api/finetuner.tuner.pytorch/#finetuner.tuner.pytorch.PytorchTuner" title="finetuner.tuner.pytorch.PytorchTuner"><code class="xref py py-class docutils literal notranslate"><span class="pre">PytorchTuner</span></code></a> object. In this step we specify all the training configuration. We’ll be using</p>
+<ul class="simple">
+<li><p>Triplet loss with hard miner with the easy positive and semihard negative strategy</p></li>
+<li><p>Adam optimizer with initial learning rate of 0.0005, which will be halved every 30 epochs</p></li>
+<li><p>WandB for tracking the experiement</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torch.optim</span> <span class="kn">import</span> <span class="n">Adam</span>
+<span class="kn">from</span> <span class="nn">torch.optim.lr_scheduler</span> <span class="kn">import</span> <span class="n">MultiStepLR</span>
+
+<span class="kn">from</span> <span class="nn">finetuner.tuner.callback</span> <span class="kn">import</span> <span class="n">WandBLogger</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch</span> <span class="kn">import</span> <span class="n">PytorchTuner</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch.losses</span> <span class="kn">import</span> <span class="n">TripletLoss</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch.miner</span> <span class="kn">import</span> <span class="n">TripletEasyHardMiner</span>
+
+
+<span class="k">def</span> <span class="nf">configure_optimizer</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">5e-4</span><span class="p">)</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">MultiStepLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">milestones</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler</span>
+
+
+<span class="n">loss</span> <span class="o">=</span> <span class="n">TripletLoss</span><span class="p">(</span>
+    <span class="n">miner</span><span class="o">=</span><span class="n">TripletEasyHardMiner</span><span class="p">(</span><span class="n">pos_strategy</span><span class="o">=</span><span class="s1">'easy'</span><span class="p">,</span> <span class="n">neg_strategy</span><span class="o">=</span><span class="s1">'semihard'</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">logger_callback</span> <span class="o">=</span> <span class="n">WandBLogger</span><span class="p">()</span>
+
+<span class="n">tuner</span> <span class="o">=</span> <span class="n">PytorchTuner</span><span class="p">(</span>
+    <span class="n">embed_model</span><span class="p">,</span>
+    <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span>
+    <span class="n">configure_optimizer</span><span class="o">=</span><span class="n">configure_optimizer</span><span class="p">,</span>
+    <span class="n">scheduler_step</span><span class="o">=</span><span class="s1">'epoch'</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">logger_callback</span><span class="p">],</span>
+    <span class="n">device</span><span class="o">=</span><span class="s1">'cpu'</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, let’s put it all together and run the training</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch.optim</span> <span class="kn">import</span> <span class="n">Adam</span>
+<span class="kn">from</span> <span class="nn">torch.optim.lr_scheduler</span> <span class="kn">import</span> <span class="n">MultiStepLR</span>
+
+<span class="kn">from</span> <span class="nn">finetuner.toydata</span> <span class="kn">import</span> <span class="n">generate_fashion</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.callback</span> <span class="kn">import</span> <span class="n">WandBLogger</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch</span> <span class="kn">import</span> <span class="n">PytorchTuner</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch.losses</span> <span class="kn">import</span> <span class="n">TripletLoss</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch.miner</span> <span class="kn">import</span> <span class="n">TripletEasyHardMiner</span>
+
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">generate_fashion</span><span class="p">()</span>
+<span class="n">val_data</span> <span class="o">=</span> <span class="n">generate_fashion</span><span class="p">(</span><span class="n">is_testset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">preprocess_fn</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Document</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">"""Add some noise to the image"""</span>
+    <span class="n">new_image</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">blob</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">blob</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_image</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<span class="n">embed_model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">128</span><span class="p">),</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">),</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">configure_optimizer</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">5e-4</span><span class="p">)</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">MultiStepLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">milestones</span><span class="o">=</span><span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler</span>
+
+
+<span class="n">loss</span> <span class="o">=</span> <span class="n">TripletLoss</span><span class="p">(</span>
+    <span class="n">miner</span><span class="o">=</span><span class="n">TripletEasyHardMiner</span><span class="p">(</span><span class="n">pos_strategy</span><span class="o">=</span><span class="s1">'easy'</span><span class="p">,</span> <span class="n">neg_strategy</span><span class="o">=</span><span class="s1">'semihard'</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">logger_callback</span> <span class="o">=</span> <span class="n">WandBLogger</span><span class="p">()</span>
+
+<span class="n">tuner</span> <span class="o">=</span> <span class="n">PytorchTuner</span><span class="p">(</span>
+    <span class="n">embed_model</span><span class="p">,</span>
+    <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span>
+    <span class="n">configure_optimizer</span><span class="o">=</span><span class="n">configure_optimizer</span><span class="p">,</span>
+    <span class="n">scheduler_step</span><span class="o">=</span><span class="s1">'epoch'</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">logger_callback</span><span class="p">],</span>
+    <span class="n">device</span><span class="o">=</span><span class="s1">'cpu'</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">tuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">train_data</span><span class="p">,</span> <span class="n">val_data</span><span class="p">,</span> <span class="n">preprocess_fn</span><span class="o">=</span><span class="n">preprocess_fn</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">num_items_per_class</span><span class="o">=</span><span class="mi">32</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>We can monitor the training by watching the progress bar, or we can log into our WanB account, and see the live updates there. Here’s an example of what we might see there</p>
+<p><img alt="wandb dashboard" src="../../_images/wandb.png"/></p>
 </section>
 </section>
 
@@ -528,12 +644,12 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../tailor/">
+                    <a class="next-page" href="loss/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">Tailor</div>
+                            <div class="title">Loss and Miners</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
@@ -556,7 +672,7 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Dec 15, 2021.
+                    Last updated on Dec 16, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
@@ -582,16 +698,12 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">Tuner</a><ul>
-<li><a class="reference internal" href="#fit-method"><code class="docutils literal notranslate"><span class="pre">fit</span></code> method</a><ul>
-<li><a class="reference internal" href="#loss-argument"><code class="docutils literal notranslate"><span class="pre">loss</span></code> argument</a></li>
+<li><a class="reference internal" href="#the-tuner-class">The <code class="docutils literal notranslate"><span class="pre">Tuner</span></code> class</a><ul>
+<li><a class="reference internal" href="#customize-optimization">Customize optimization</a></li>
+<li><a class="reference internal" href="#saving-the-model">Saving the model</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#save-method"><code class="docutils literal notranslate"><span class="pre">save</span></code> method</a></li>
-<li><a class="reference internal" href="#examples">Examples</a><ul>
-<li><a class="reference internal" href="#tune-a-simple-mlp-on-fashion-mnist">Tune a simple MLP on Fashion-MNIST</a></li>
-<li><a class="reference internal" href="#tune-a-transformer-model-on-covid-qa">Tune a transformer model on Covid QA</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#example-full-training">Example - full training</a></li>
 </ul>
 </li>
 </ul>
@@ -720,8 +832,6 @@ to <code class="docutils literal notranslate"><span class="pre">finetuner.toydat
     <script src="../../_static/tabs.js"></script>
     <script src="../../_static/design-tabs.js"></script>
     <script>var server_address = 'https://finetuner-docsbot.jina.ai';</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="../../_static/docbot.js"></script>
     </body>
