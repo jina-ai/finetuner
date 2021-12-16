@@ -12,6 +12,7 @@
 
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -435,4 +436,60 @@ The changes of each release is tracked by this file.
 
  - [[```67c66fe4```](https://github.com/jina-ai/finetuner/commit/67c66fe43bc3fd868d1e6001c97f78c853932a6a)] __-__ bump jina min req. version (*Han Xiao*)
  - [[```c39f2a2b```](https://github.com/jina-ai/finetuner/commit/c39f2a2b91653f3ebe44f7e53dea4b989a58f475)] __-__ __version__: the next version will be 0.2.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-3-0></a>
+## Release Note (`0.3.0`)
+
+> Release time: 2021-12-16 09:48:25
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Tadej Svetina,  Wang Bo,  George Mastrapas,  Gregor von Dulong,  Aziz Belaweid,  Han Xiao,  Mohammad Kalim Akram,  Deepankar Mahapatro,  Nan Wang,  Maximilian Werk,  Roshan Jossy,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```48b089ed```](https://github.com/jina-ai/finetuner/commit/48b089ed0c767adeda72325a6123f0aa210d5f4f)] __-__ miners for hard triplets (#236) (*Gregor von Dulong*)
+ - [[```5c56547f```](https://github.com/jina-ai/finetuner/commit/5c56547fe102c52c50abe783446e29a22ea90b8a)] __-__ add multiprocessing dataloading (#263) (*Tadej Svetina*)
+ - [[```b870678f```](https://github.com/jina-ai/finetuner/commit/b870678f0e1eb6c1355a22030802d0ba9f175650)] __-__ lr scheduler (#248) (*Tadej Svetina*)
+ - [[```eaa04f6b```](https://github.com/jina-ai/finetuner/commit/eaa04f6bdb72a0089293fe7e1048edf3667cfd11)] __-__ allow any layer to be embedding layer (#238) (*Wang Bo*)
+ - [[```1e38b615```](https://github.com/jina-ai/finetuner/commit/1e38b615a660e6a86ef76d24422e8692ad2ddb34)] __-__ __tailor__: add freeze layers to fit (#246) (*Wang Bo*)
+ - [[```04673e11```](https://github.com/jina-ai/finetuner/commit/04673e116149659b609e6b08e90e7fedc81952ba)] __-__ add wandb logger (#237) (*Tadej Svetina*)
+ - [[```c060efcd```](https://github.com/jina-ai/finetuner/commit/c060efcd2121675386ac90673319141d72a7e5f4)] __-__ callbacks (#231) (*Tadej Svetina*)
+ - [[```9ea8de90```](https://github.com/jina-ai/finetuner/commit/9ea8de9080a48dea76287b9cde91deff3d057d63)] __-__ __tailor__: support freeze by layer names (#230) (*Wang Bo*)
+
+### 🐞 Bug fixes
+
+ - [[```5540b167```](https://github.com/jina-ai/finetuner/commit/5540b167ad7e78a75d2c648cd6c3917b5029ec97)] __-__ remove import (#277) (*Tadej Svetina*)
+ - [[```6095525c```](https://github.com/jina-ai/finetuner/commit/6095525c26f18b3e5d55279c0be8252c7f44d8b8)] __-__ evaluation imports imports to reflect new code structure (#275) (*Gregor von Dulong*)
+ - [[```f1b1fb11```](https://github.com/jina-ai/finetuner/commit/f1b1fb115ecc36561246b09cf1143d65ecd10c90)] __-__ embedding type (#268) (*Aziz Belaweid*)
+ - [[```b4ada547```](https://github.com/jina-ai/finetuner/commit/b4ada547ce18e554599bd91cf9af992907ed8dd9)] __-__ expose arguments of embed() in the evaluator (#256) (*George Mastrapas*)
+ - [[```7b9eedd6```](https://github.com/jina-ai/finetuner/commit/7b9eedd68a9a07b563b7d084c39b01286bc790f0)] __-__ preprocess use same for embed and training (#255) (*Tadej Svetina*)
+ - [[```3768b01e```](https://github.com/jina-ai/finetuner/commit/3768b01e567d6d8656d5203c2cf8fb73a4fcb747)] __-__ __test__: fix flaky overfit test (#253) (*Mohammad Kalim Akram*)
+ - [[```d47ddb97```](https://github.com/jina-ai/finetuner/commit/d47ddb974b9a614db9ada340bd1f3f600509f2da)] __-__ update the finetuner label key in UI to &#39;finetuner_label&#39; (#251) (*George Mastrapas*)
+ - [[```dcaba19d```](https://github.com/jina-ai/finetuner/commit/dcaba19d68907554e743ee735af666fc21f080b5)] __-__ __tuner__: make copy of non writable blob (#244) (*Wang Bo*)
+
+### 📗 Documentation
+
+ - [[```2e29c79c```](https://github.com/jina-ai/finetuner/commit/2e29c79cbefd3e16a31f1905758269db54b27062)] __-__ update tuner docs (#276) (*Tadej Svetina*)
+ - [[```0bcd6643```](https://github.com/jina-ai/finetuner/commit/0bcd6643e8761d1a17df13b55df576c9d3bb5329)] __-__ remove output dim from tailor (#281) (*Wang Bo*)
+ - [[```0c7a2cf0```](https://github.com/jina-ai/finetuner/commit/0c7a2cf0dba9277602acd3040e3cf4f65453e1c4)] __-__ minor fixes across docs (#278) (*George Mastrapas*)
+ - [[```0228da8e```](https://github.com/jina-ai/finetuner/commit/0228da8e51e901382a93c7ca0b6dda2a92e5d5bc)] __-__ refine tailor docs (#273) (*Wang Bo*)
+ - [[```984e91df```](https://github.com/jina-ai/finetuner/commit/984e91df0a56d60a7c6d34bcbb43a7574fca400b)] __-__ disable versioning (*Han Xiao*)
+ - [[```25b698b2```](https://github.com/jina-ai/finetuner/commit/25b698b26d9dbd1c53f22f8daed32580ee2179a6)] __-__ fix rendering (#245) (*Deepankar Mahapatro*)
+ - [[```e80151d8```](https://github.com/jina-ai/finetuner/commit/e80151d8d9cbc37a33643749003b2e3b35d9f493)] __-__ fix typos 1 (#234) (*Nan Wang*)
+ - [[```7a1f9157```](https://github.com/jina-ai/finetuner/commit/7a1f9157d0333f2f7ad78c174c030f573283b3bf)] __-__ __multiversion__: fix markup in options (#229) (*Roshan Jossy*)
+ - [[```675c2668```](https://github.com/jina-ai/finetuner/commit/675c2668d51c0325b653c2feaf230ea0df64f491)] __-__ fix 404 page in root (*Han Xiao*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```090817df```](https://github.com/jina-ai/finetuner/commit/090817dfcbbbc90843fd1b2c171569951d51552f)] __-__ fix tailor test (#264) (*Wang Bo*)
+ - [[```0139a0ad```](https://github.com/jina-ai/finetuner/commit/0139a0ad83cebb44ded357485bfa8e24d54be030)] __-__ __docsbot__: redeploy finetuner on cd (#250) (*Deepankar Mahapatro*)
+
+### 🍹 Other Improvements
+
+ - [[```8d081b4b```](https://github.com/jina-ai/finetuner/commit/8d081b4b67c406c946322d75c803c1eb156a6049)] __-__ set next version (#282) (*Tadej Svetina*)
+ - [[```dcadc564```](https://github.com/jina-ai/finetuner/commit/dcadc5647643f5ccaeaac972fc3375ace0d59854)] __-__ Feat evaluators (#224) (*Maximilian Werk*)
+ - [[```de967b1f```](https://github.com/jina-ai/finetuner/commit/de967b1f37ef50a705b2ded2962d35a9f9b0fcda)] __-__ __version__: the next version will be 0.2.5 (*Jina Dev Bot*)
 
