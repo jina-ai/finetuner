@@ -8,6 +8,7 @@ Submodules
    :maxdepth: 4
 
    finetuner.tuner.callback.base
+   finetuner.tuner.callback.early_stopping
    finetuner.tuner.callback.progress_bar
    finetuner.tuner.callback.wandb_logger
 

@@ -4,9 +4,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta property="og:title" content="finetuner.tuner.paddle.miner module" />
+  <meta property="og:title" content="finetuner.tuner.callback.early_stopping module" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.tuner.paddle.miner.html" />
+  <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.tuner.callback.early_stopping.html" />
   <meta property="og:site_name" content="Finetuner 0.3.1 Documentation" />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner 0.3.1 Documentation" />
@@ -27,10 +27,10 @@
 </script>
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.pytorch package" href="../finetuner.tuner.pytorch/" /><link rel="prev" title="finetuner.tuner.paddle.losses module" href="../finetuner.tuner.paddle.losses/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.callback.progress_bar module" href="../finetuner.tuner.callback.progress_bar/" /><link rel="prev" title="finetuner.tuner.callback.base module" href="../finetuner.tuner.callback.base/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.1, furo 2021.11.23"/>
-        <title>finetuner.tuner.paddle.miner module - Finetuner 0.3.1 documentation</title>
+        <title>finetuner.tuner.callback.early_stopping module - Finetuner 0.3.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=7f0192ddeb2adecfbaa87ffbcf67d16358b30bc1" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -257,9 +257,9 @@
 </ul>
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="../finetuner.tuner/">finetuner.tuner package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.callback/">finetuner.tuner.callback package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 current has-children"><a class="reference internal" href="../finetuner.tuner.callback/">finetuner.tuner.callback package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">finetuner.tuner.callback.early_stopping module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
 </ul>
@@ -281,10 +281,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.miner.mining_strategies/">finetuner.tuner.miner.mining_strategies module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current has-children"><a class="reference internal" href="../finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
-<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">finetuner.tuner.paddle.miner module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.paddle.miner/">finetuner.tuner.paddle.miner module</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -355,241 +355,59 @@
                         </i>
                     </label>
                 </div>
-                <section id="module-finetuner.tuner.paddle.miner">
-<span id="finetuner-tuner-paddle-miner-module"></span><h1>finetuner.tuner.paddle.miner module<a class="headerlink" href="#module-finetuner.tuner.paddle.miner" title="Permalink to this headline">¶</a></h1>
+                <section id="module-finetuner.tuner.callback.early_stopping">
+<span id="finetuner-tuner-callback-early-stopping-module"></span><h1>finetuner.tuner.callback.early_stopping module<a class="headerlink" href="#module-finetuner.tuner.callback.early_stopping" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.miner.SiameseMiner">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.miner.</span></span><span class="sig-name descname"><span class="pre">SiameseMiner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/miner/#SiameseMiner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.miner.SiameseMiner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.miner.base/#finetuner.tuner.miner.base.BaseClassMiner" title="finetuner.tuner.miner.base.BaseClassMiner"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.miner.base.BaseClassMiner</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.Tensor</span></code>]</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.miner.SiameseMiner.mine">
-<span class="sig-name descname"><span class="pre">mine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distances</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/miner/#SiameseMiner.mine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.miner.SiameseMiner.mine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate all possible pairs.</p>
+<dt class="sig sig-object py" id="finetuner.tuner.callback.early_stopping.EarlyStopping">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.callback.early_stopping.</span></span><span class="sig-name descname"><span class="pre">EarlyStopping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">monitor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'val_loss'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patience</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_delta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/early_stopping/#EarlyStopping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.early_stopping.EarlyStopping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.callback.base/#finetuner.tuner.callback.base.BaseCallback" title="finetuner.tuner.callback.base.BaseCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.callback.base.BaseCallback</span></code></a></p>
+<p>Callback to stop training when a monitored metric has stopped improving.
+A <cite>model.fit()</cite> training loop will check at the end of every epoch whether
+the monitered metric is no longer improving.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>labels</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A 1D tensor of item labels (classes)</p></li>
-<li><p><strong>distances</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A tensor matrix of pairwise distance between each two item
-embeddings</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>three 1D tensors, first one holding integers of first element of
-pair, second of the second element of pair, and third one the label (0 or
-1) for the pair for each pair</p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.miner.SiameseEasyHardMiner">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.miner.</span></span><span class="sig-name descname"><span class="pre">SiameseEasyHardMiner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hard'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hard'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/miner/#SiameseEasyHardMiner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.miner.SiameseEasyHardMiner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.miner.base/#finetuner.tuner.miner.base.BaseClassMiner" title="finetuner.tuner.miner.base.BaseClassMiner"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.miner.base.BaseClassMiner</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.Tensor</span></code>]</p>
-<p>Miner implements easy-hard mining for tuples in siamese training.
-The following strategies are available.</p>
-<p>Pos. Strategy:
-- ‘hard’: Returns hardest positive (furthest) sample per anchor
-- ‘semihard’: Returns the hardest positive sample per anchor, such</p>
-<blockquote>
-<div><p>that it is closer than the selected negative</p>
-</div></blockquote>
-<ul class="simple">
-<li><p>‘easy’: Returns the easiest positive sample per anchor</p></li>
-<li><p>‘all’: Returns all positive samples</p></li>
-</ul>
-<p>Neg. Strategy:
-- ‘hard’: Returns hardest negative (closest) sample per anchor
-- ‘semihard’: Returns the hardest negative sample per anchor, such</p>
-<blockquote>
-<div><p>that it is further than the selected negative</p>
-</div></blockquote>
-<ul class="simple">
-<li><p>‘easy’: Returns the easiest negative sample per anchor</p></li>
-<li><p>‘all’: Returns all negative samples</p></li>
-</ul>
-<p>Not allowed:
-- pos. and neg. strategy cannot be set to ‘semihard’ simultaneously
-- When pos. or neg. strategy is set to ‘semihard’ the other cannot be</p>
-<blockquote>
-<div><p>set to ‘all’</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pos_strategy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Strategy for selecting positive samples</p></li>
-<li><p><strong>neg_strategy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Strategy for selecting negative samples</p></li>
+<li><p><strong>monitor</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – if <cite>monitor=’loss’</cite> best bodel saved will be according
+to the training loss, if <cite>monitor=’val_loss’</cite> best model saved will be
+according to the validation loss</p></li>
+<li><p><strong>mode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – one of {‘auto’, ‘min’, ‘max’}. the
+decision to overwrite the current_value save file is made based on either
+the maximization or the minimization of the monitored quantity.
+For <cite>val_acc</cite>, this should be <cite>max</cite>, for <cite>val_loss</cite> this should be
+<cite>min</cite>, etc. In <cite>auto</cite> mode, the mode is set to <cite>max</cite> if the quantities
+monitored are ‘acc’ or start with ‘fmeasure’ and are set to <cite>min</cite> for
+the rest of the quantities.</p></li>
+<li><p><strong>patience</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – integer, the number of epochs after which the training is
+stopped if there is no improvement.
+i.e. if <cite>patience = 2</cite>, if the model doesn’t improve for 2 consecutive
+epochs the training is stopped.</p></li>
+<li><p><strong>min_delta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Minimum change in the monitored quantity
+to qualify as an improvement, i.e. an absolute
+change of less than min_delta, will count as no
+improvement.</p></li>
+<li><p><strong>baseline</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Baseline value for the monitored quantity.
+Training will stop if the model doesn’t show improvement over the
+baseline.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.miner.SiameseEasyHardMiner.mine">
-<span class="sig-name descname"><span class="pre">mine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distances</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/miner/#SiameseEasyHardMiner.mine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.miner.SiameseEasyHardMiner.mine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate all possible pairs.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>labels</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A 1D tensor of item labels (classes)</p></li>
-<li><p><strong>distances</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A tensor matrix of pairwise distance between each two item
-embeddings</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>three 1D tensors, first one holding integers of first element of
-pair, second of the second element of pair, and third one the label (0 or
-1) for the pair for each pair</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="finetuner.tuner.callback.early_stopping.EarlyStopping.on_epoch_end">
+<span class="sig-name descname"><span class="pre">on_epoch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/early_stopping/#EarlyStopping.on_epoch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.early_stopping.EarlyStopping.on_epoch_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the end of the training epoch. Checks if the model has improved
+or not for a certain metric <cite>monitor</cite>. If the model hasn’t improved for
+more than <cite>patience</cite> epochs, the training is stopped</p>
 </dd></dl>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.miner.TripletMiner">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.miner.</span></span><span class="sig-name descname"><span class="pre">TripletMiner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/miner/#TripletMiner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.miner.TripletMiner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.miner.base/#finetuner.tuner.miner.base.BaseClassMiner" title="finetuner.tuner.miner.base.BaseClassMiner"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.miner.base.BaseClassMiner</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.Tensor</span></code>]</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.miner.TripletMiner.mine">
-<span class="sig-name descname"><span class="pre">mine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distances</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/miner/#TripletMiner.mine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.miner.TripletMiner.mine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate all possible triplets.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>labels</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A 1D tensor of item labels (classes)</p></li>
-<li><p><strong>distances</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A tensor matrix of pairwise distance between each two item
-embeddings</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>three 1D tensors, holding the anchor index, positive index and
-negative index of each triplet, respectively</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="finetuner.tuner.callback.early_stopping.EarlyStopping.on_train_batch_end">
+<span class="sig-name descname"><span class="pre">on_train_batch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/early_stopping/#EarlyStopping.on_train_batch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.early_stopping.EarlyStopping.on_train_batch_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the end of a training batch, after the backward pass.</p>
 </dd></dl>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.miner.TripletEasyHardMiner">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.miner.</span></span><span class="sig-name descname"><span class="pre">TripletEasyHardMiner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hard'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hard'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/miner/#TripletEasyHardMiner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.miner.TripletEasyHardMiner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.miner.base/#finetuner.tuner.miner.base.BaseClassMiner" title="finetuner.tuner.miner.base.BaseClassMiner"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.miner.base.BaseClassMiner</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.Tensor</span></code>]</p>
-<p>Miner implements easy-hard mining for triplets during training with
-triplet loss. The following strategies are available.</p>
-<p>Pos. Strategy:
-- ‘hard’: Returns hardest positive (furthest) sample per anchor
-- ‘semihard’: Returns the hardest positive sample per anchor, such</p>
-<blockquote>
-<div><p>that it is closer than the selected negative</p>
-</div></blockquote>
-<ul class="simple">
-<li><p>‘easy’: Returns the easiest positive sample per anchor</p></li>
-<li><p>‘all’: Returns all positive samples</p></li>
-</ul>
-<p>Neg. Strategy:
-- ‘hard’: Returns hardest negative (closest) sample per anchor
-- ‘semihard’: Returns the hardest negative sample per anchor, such</p>
-<blockquote>
-<div><p>that it is further than the selected negative</p>
-</div></blockquote>
-<ul class="simple">
-<li><p>‘easy’: Returns the easiest negative sample per anchor</p></li>
-<li><p>‘all’: Returns all negative samples</p></li>
-</ul>
-<p>Not allowed:
-- pos. and neg. strategy cannot be set to ‘semihard’ simultaneously
-- When pos. or neg. strategy is set to ‘semihard’ the other cannot be</p>
-<blockquote>
-<div><p>set to ‘all’</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pos_strategy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Strategy for selecting positive samples</p></li>
-<li><p><strong>neg_strategy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Strategy for selecting negative samples</p></li>
-</ul>
-</dd>
-</dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.miner.TripletEasyHardMiner.mine">
-<span class="sig-name descname"><span class="pre">mine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distances</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/miner/#TripletEasyHardMiner.mine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.miner.TripletEasyHardMiner.mine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate all possible triplets.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>labels</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A 1D tensor of item labels (classes)</p></li>
-<li><p><strong>distances</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A tensor matrix of pairwise distance between each two item
-embeddings</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>three 1D tensors, holding the anchor index, positive index and
-negative index of each triplet, respectively</p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.miner.SiameseSessionMiner">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.miner.</span></span><span class="sig-name descname"><span class="pre">SiameseSessionMiner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/miner/#SiameseSessionMiner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.miner.SiameseSessionMiner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.miner.base/#finetuner.tuner.miner.base.BaseSessionMiner" title="finetuner.tuner.miner.base.BaseSessionMiner"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.miner.base.BaseSessionMiner</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.Tensor</span></code>]</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.miner.SiameseSessionMiner.mine">
-<span class="sig-name descname"><span class="pre">mine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distances</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/miner/#SiameseSessionMiner.mine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.miner.SiameseSessionMiner.mine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate all possible pairs for each session.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – A tuple of 1D tensors, denotind the items’ session and match
-type (0 for anchor, 1 for postive match and -1 for negative match),
-respectively</p></li>
-<li><p><strong>distances</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A tensor matrix of pairwise distance between each two item
-embeddings</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>three numpy arrays, first one holding integers of first element of
-pair, second of the second element of pair, and third one the label (0 or
-1) for the pair for each pair</p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.miner.TripletSessionMiner">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.paddle.miner.</span></span><span class="sig-name descname"><span class="pre">TripletSessionMiner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/miner/#TripletSessionMiner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.miner.TripletSessionMiner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.miner.base/#finetuner.tuner.miner.base.BaseSessionMiner" title="finetuner.tuner.miner.base.BaseSessionMiner"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.miner.base.BaseSessionMiner</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">paddle.Tensor</span></code>]</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.paddle.miner.TripletSessionMiner.mine">
-<span class="sig-name descname"><span class="pre">mine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distances</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/paddle/miner/#TripletSessionMiner.mine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.paddle.miner.TripletSessionMiner.mine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate all possible triplets for each session.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – A tuple of 1D tensors, denotind the items’ session and match
-type (0 for anchor, 1 for postive match and -1 for negative match),
-respectively</p></li>
-<li><p><strong>distances</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – A tensor matrix of pairwise distance between each two item
-embeddings</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>three numpy arrays, holding the anchor index, positive index and
-negative index of each triplet, respectively</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="finetuner.tuner.callback.early_stopping.EarlyStopping.on_val_batch_end">
+<span class="sig-name descname"><span class="pre">on_val_batch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/early_stopping/#EarlyStopping.on_val_batch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.early_stopping.EarlyStopping.on_val_batch_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the start of the evaluation batch, after the batch data has already
+been loaded.</p>
 </dd></dl>
 </dd></dl>
 </section>
@@ -598,18 +416,18 @@ negative index of each triplet, respectively</p>
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../finetuner.tuner.pytorch/">
+                    <a class="next-page" href="../finetuner.tuner.callback.progress_bar/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">finetuner.tuner.pytorch package</div>
+                            <div class="title">finetuner.tuner.callback.progress_bar module</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../finetuner.tuner.paddle.losses/">
+                    <a class="prev-page" href="../finetuner.tuner.callback.base/">
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -618,7 +436,7 @@ negative index of each triplet, respectively</p>
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">finetuner.tuner.paddle.losses module</div>
+                            <div class="title">finetuner.tuner.callback.base module</div>
                             
                         </div>
                     </a>
