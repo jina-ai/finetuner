@@ -89,8 +89,6 @@ def _set_embeddings_torch(
             else:
                 contents = b.contents
             batch_inputs = collate_fn(contents).to(device)
-            if isinstance(batch_inputs, torch.Tensor):
-                batch_inputs = batch_inputs.float()
             b.embeddings = embed_model(batch_inputs).cpu().detach().numpy()
     if is_training_before:
         embed_model.train()

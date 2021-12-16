@@ -1,7 +1,7 @@
 # Finetuning a Transformer for Question-Answering
 
 ```{tip}
-This example is inspired by [`jina hello chatbot`](https://docs.jina.ai/get-started/hello-world/covid-19-chatbot/). We stronly recommend you to checkout that demo first before go through this tutorial.
+This example is inspired by [`jina hello chatbot`](https://docs.jina.ai/get-started/hello-world/covid-19-chatbot/). We strongly recommend you to checkout that demo first before going through this tutorial.
 ```
 
 ````{info}
@@ -19,7 +19,7 @@ Precisely, "tuning" means:
 - we accept or reject the results based on their quality;
 - we let the model remember our feedback and produce better search results.
 
-Hopefully the procedure converges after several rounds and we get a tuned embedding for better search tasks.
+Hopefully the procedure converges after several rounds and we get a tuned embedding for better results in our search task.
 
 ## Build embedding model
 
@@ -45,7 +45,7 @@ class TransformerEmbedder(torch.nn.Module):
 ```
 ## Prepare data
 
-Now prepare CovidQA data for the Finetuner. Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we first convert the data into this format.
+Now prepare the CovidQA data for the Finetuner. Note that Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we first convert the data into this format.
 
 ```python
 from finetuner.toydata import generate_qa
@@ -96,7 +96,7 @@ finetuner.fit(
 
 ## Label interactively
 
-From the left bar, select `.text` as the Field. You can now label the data by mouse/keyboard. The model will get trained and improved as you are labeling.
+From the left bar, select `.text` as the Field. You can now label the data by mouse/keyboard. The model will get trained and improve as you are labeling.
 
 ```{figure} covid-labeler.gif
 :align: center

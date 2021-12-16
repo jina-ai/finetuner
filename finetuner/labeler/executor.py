@@ -1,7 +1,8 @@
 import abc
 from typing import Dict, Optional
 
-from jina import Executor, DocumentArray, requests, DocumentArrayMemmap
+import numpy as np
+from jina import DocumentArray, DocumentArrayMemmap, Executor, requests
 from jina.helper import cached_property
 
 from ..embedding import embed
@@ -112,6 +113,8 @@ class DataIterator(Executor):
 
     @requests(on='/feed')
     def store_data(self, docs: DocumentArray, **kwargs):
+        if isinstance(docs.blobs, np.ndarray):
+            docs.blobs = docs.blobs.astype(np.float32)
         self._all_data.extend(docs)
 
     @requests(on='/next')

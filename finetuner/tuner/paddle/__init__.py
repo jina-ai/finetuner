@@ -217,6 +217,8 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
                 self._trigger_callbacks('on_val_end')
 
             self._trigger_callbacks('on_epoch_end')
+            if self.stop_training:
+                break
 
         self._trigger_callbacks('on_fit_end')
 

@@ -12,7 +12,7 @@ def test_lr(generate_random_data, record_callback, scheduler_step, results_lr):
     )
 
     def configure_optimizer(model):
-        lr = lr = tf.keras.optimizers.schedules.ExponentialDecay(
+        lr = tf.keras.optimizers.schedules.ExponentialDecay(
             1.0, decay_steps=1, decay_rate=0.1
         )
         optimizer = tf.keras.optimizers.SGD(learning_rate=lr)
