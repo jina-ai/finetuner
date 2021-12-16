@@ -18,13 +18,11 @@ if TYPE_CHECKING:
 class TrainingCheckpoint(BaseCallback):
     """
     Callback to save model at every epoch or the last K epochs
-    `TrainingModelCheckpoint` is used in conjunction with training
-    using `finetuner.fit()`
     """
 
     def __init__(self, save_dir: str, last_k_epochs: int = None):
         """
-        :param save_dir: string or `PathLike`, path to save the model file.
+        :param save_dir: string, path to save the model file.
         :param last_k_epochs: this parameter is an integer. It allows you yo save
             only at the last k epochs and not on every epoch.
             For example if `last_k_epochs = 3` and the total number of epochs is 10

@@ -17,9 +17,7 @@ if TYPE_CHECKING:
 
 class BestModelCheckpoint(BaseCallback):
     """
-    Callback to save model at every epoch or the best model across all epochs
-    `BestModelCheckpoint` is used in conjunction with training
-    using `finetuner.fit()`
+    Callback to save the best model across all epochs
 
     An option this callback provides include:
     - Definition of 'best'; which quantity to monitor and whether it should be
@@ -33,7 +31,7 @@ class BestModelCheckpoint(BaseCallback):
         mode: str = 'auto',
     ):
         """
-        :param save_dir: string or `PathLike`, path to save the model file.
+        :param save_dir: string, path to save the model file.
         :param monitor: if `monitor='loss'` best bodel saved will be according
             to the training loss, if `monitor='val_loss'` best model saved will be
             according to the validation loss
