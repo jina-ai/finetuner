@@ -3,23 +3,29 @@ import os
 import numpy as np
 import pytest
 import torch
+import tensorflow as tf
 
 from finetuner.tuner.base import BaseTuner
 from finetuner.tuner.callback import BestModelCheckpoint, TrainingCheckpoint
 from finetuner.tuner.pytorch import PytorchTuner
+from finetuner.tuner.keras import KerasTuner
 from finetuner.tuner.state import TunerState
 
 
 @pytest.fixture(scope='module')
 def pytorch_model() -> BaseTuner:
-    embed_model = torch.nn.Sequential(
-        torch.nn.Flatten(),
-        torch.nn.Linear(
-            in_features=28 * 28,
-            out_features=128,
-        ),
-        torch.nn.ReLU(),
-        torch.nn.Linear(in_features=128, out_features=32),
+    embed_model = torch.nn.Linear(in_features=10, out_features=10)
+
+    return embed_model
+
+
+@pytest.fixture(scope='module')
+def keras_model() -> BaseTuner:
+    embed_model = tf.keras.Sequential(
+        [
+            tf.keras.layers.Flatten(input_shape=(28, 28)),
+            tf.keras.layers.Dense(10, activation='relu'),
+        ]
     )
     return embed_model
 
@@ -46,10 +52,45 @@ def test_mandatory_save_dir():
         checkpoint = TrainingCheckpoint()
 
 
-def test_last_k_epochs(pytorch_model: BaseTuner, tmpdir):
+def test_last_k_epochs_file(pytorch_model: BaseTuner, tmpdir):
     checkpoint = TrainingCheckpoint(save_dir=tmpdir, last_k_epochs=3)
     tuner = PytorchTuner(embed_model=pytorch_model)
-    for epoch in range(10):
+    for epoch in range(4):
+        tuner.state = TunerState(
+            epoch=epoch, batch_index=2, train_loss=1.1, num_epochs=10
+        )
+        checkpoint.on_epoch_end(tuner)
+    assert set(os.listdir(tmpdir)) == {
+        'saved_model_epoch_02',
+        'saved_model_epoch_03',
+        'saved_model_epoch_04',
+    }
+    for epoch in range(4, 10):
+        tuner.state = TunerState(
+            epoch=epoch, batch_index=2, train_loss=1.1, num_epochs=10
+        )
+        checkpoint.on_epoch_end(tuner)
+    assert set(os.listdir(tmpdir)) == {
+        'saved_model_epoch_10',
+        'saved_model_epoch_09',
+        'saved_model_epoch_08',
+    }
+
+
+def test_last_k_epochs_folder(keras_model: BaseTuner, tmpdir):
+    checkpoint = TrainingCheckpoint(save_dir=tmpdir, last_k_epochs=3)
+    tuner = KerasTuner(embed_model=keras_model)
+    for epoch in range(4):
+        tuner.state = TunerState(
+            epoch=epoch, batch_index=2, train_loss=1.1, num_epochs=10
+        )
+        checkpoint.on_epoch_end(tuner)
+    assert set(os.listdir(tmpdir)) == {
+        'saved_model_epoch_02',
+        'saved_model_epoch_03',
+        'saved_model_epoch_04',
+    }
+    for epoch in range(4, 10):
         tuner.state = TunerState(
             epoch=epoch, batch_index=2, train_loss=1.1, num_epochs=10
         )

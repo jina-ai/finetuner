@@ -7,8 +7,6 @@ import pytest
 import tensorflow as tf
 from tensorflow.keras.optimizers.schedules import CosineDecay
 
-import finetuner
-from finetuner.toydata import generate_fashion
 from finetuner.tuner.base import BaseTuner
 from finetuner.tuner.callback import BestModelCheckpoint, TrainingCheckpoint
 from finetuner.tuner.keras import KerasTuner
