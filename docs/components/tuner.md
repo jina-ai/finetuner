@@ -1,171 +1,296 @@
 # Tuner
 
-Tuner is one of the three key components of Finetuner. Given an {term}`embedding model` and {term}`labeled data`, Tuner
-trains the model to fit the data.
+Tuner is one of the three key components of Finetuner. Given an {term}`embedding model` and {term}`labeled dataset` (see {ref}`the guide on data formats<data-format>` for more information), Tuner trains the model to fit the data.
 
-Labeled data can be constructed {ref}`by following this<construct-labeled-data>`.
+With Tuner, you can customize the training process to best fit your data, and track your experiements in a clear and transparent manner. You can do things like
+- choose between different loss functions, use hard negative mining for triplets/pairs
+- set your own optimizers and learning rates
+- track the training and evaluation metrics with Weights and Biases
+- write custom callbacks
 
-## `fit` method
+You can read more on these different options here or in these sub-sections:
 
-Tuner can be called via `finetuner.fit()`. Its minimum form is as follows:
+```{toctree}
+:maxdepth: 1
+
+tuner/loss
+tuner/callbacks
+```
+
+## The `Tuner` class
+
+All the functionality is exposed through the base `*Tuner` class - `PytorchTuner`, `KerasTuner` and `PaddleTuner`. This class instance also gets constructed under the hood when you call `finetuner.fit()`.
+
+When initializing a `*Tuner` class, you are required to pass the {term}`embedding model`, but you can also customize other training configuration.
+
+You can then finetune your model using the `.fit()` method, to which you pass the training and evaluation data (which should both be {term}`labeled dataset`), as well as any other data-related configuration (see ).
+
+A minimal example looks like this:
+
+
+````{tab} PyTorch
+```python
+import torch
+from finetuner.toydata import generate_fashion
+from finetuner.tuner.pytorch import PytorchTuner
+
+embed_model = torch.nn.Sequential(
+        torch.nn.Flatten(),
+        torch.nn.Linear(in_features=28 * 28, out_features=128),
+)
+
+tuner = PytorchTuner(embed_model)
+tuner.fit(generate_fashion())
+```
+````
+````{tab} Keras
+```python
+import tensorflow as tf
+from finetuner.toydata import generate_fashion
+from finetuner.tuner.keras import KerasTuner
+
+embed_model = tf.keras.Sequential([
+            tf.keras.layers.Flatten(input_shape=(28, 28)),
+            tf.keras.layers.Dense(128, activation='relu'),
+    ]
+)
+
+tuner = KerasTuner(embed_model)
+tuner.fit(generate_fashion())
+```
+````
+````{tab} Paddle
+```python
+import paddle
+from finetuner.toydata import generate_fashion
+from finetuner.tuner.paddle import PaddleTuner
+
+embed_model = paddle.nn.Sequential(
+        paddle.nn.Flatten(),
+        paddle.nn.Linear(in_features=28 * 28, out_features=128),
+)
+
+tuner = PaddleTuner(embed_model)
+tuner.fit(generate_fashion())
+```
+````
+
+### Customize optimization
+
+You can provide your own optimizer and learning rate scheduler if you wish to (by default, the Adam optimizer with a fixed learning rate will be used), using the `configure_optimizer` argument to the Tuner constructor.
+
+For Pytorch and PaddlePaddle, you can also use the `scheduler_step` argument, to set whether to step the learning rate scheduler on each batch or each epoch (for Keras this is not available, there you set the frequency, in terms of batches, in the scheduler itself)
+
+Here's an example of how you can do this
+
+````{tab} Pytorch
+```python
+from torch.optim import Adam
+from torch.optim.lr_scheduler import MultiStepLR
+
+from finetuner.tuner.pytorch import PytorchTuner
+
+def configure_optimizer(model):
+    optimizer = Adam(model.parameters(), lr=5e-4)
+    scheduler = MultiStepLR(optimizer, milestones=[30, 60], gamma=0.5)
+
+    return optimizer, scheduler
+
+tuner = PytorchTuner(
+    ..., configure_optimizer=configure_optimizer, scheduler_step='epoch'
+)
+```
+````
+````{tab} Keras
+```python
+import tensorflow as tf
+
+from finetuner.tuner.keras import KerasTuner
+
+def configure_optimizer(model):
+        lr = tf.keras.optimizers.schedules.ExponentialDecay(
+            1.0, decay_steps=1, decay_rate=0.1
+        )
+        optimizer = tf.keras.optimizers.SGD(learning_rate=lr)
+        return optimizer, lr
+
+tuner = KerasTuner(..., configure_optimizer=configure_optimizer)
+```
+````
+````{tab} Paddle
+```python
+from paddle import optimizer
+
+from finetuner.tuner.paddle import PaddleTuner
+
+def configure_optimizer(model):
+    scheduler = optimizer.lr.MultiStepDecay(learning_rate=5e-4, milestones=[30, 60], gamma=0.5)
+    optimizer = optimizer.Adam(learning_rate=scheduler, parameters=model.parameters())
+
+    return optimizer, scheduler
+
+tuner = PaddleTuner(
+    ..., configure_optimizer=configure_optimizer, scheduler_step='epoch'
+)
+```
+````
+
+
+### Saving the model
+
+After a model is tuned, you can save it by calling `.save(save_path)` method.
+
+## Example - full training
+
+In the example below we'll demonstrate how to make full use of the available Tuner features, as you would in any realistic setting.
+
+We will be finetuning a simple MLP model on the Fashion MNIST data, and we will be using:
+- {class}`~finetuner.tuner.pytorch.losses.TripletLoss` with easy positive and semihard negative mining strategy
+- A custom learning rate schedule
+- Tracking the experiement on Weights and Biases using {class}`~finetuner.tuner.callback.wandb_logger.WandBLogger` callback
+- Random augmentation using `preproces_fn`
+
+```{tip}
+Before trying out the example, make sure you have [wandb installed](https://docs.wandb.ai/quickstart) and have logged into your account.
+```
+
+Let's start with the dataset - we'll use the {meth}`~finetuner.toydata.generate_fashion` helper function, which will produce a {ref}`Class Dataset<class_dataset>`
 
 ```python
-import finetuner
+import numpy as np
+from finetuner.toydata import generate_fashion
+from jina import Document
 
-finetuner.fit(
-    embed_model,
-    train_data,
-    **kwargs   
+train_data = generate_fashion()
+val_data = generate_fashion(is_testset=True)
+
+def preprocess_fn(doc: Document) -> np.ndarray:
+    """Add some noise to the image"""
+    new_image = doc.blob + np.random.normal(scale=0.01, size = doc.blob.shape)
+    return new_image.astype(np.float32)
+
+print(f'Size of train data: {len(train_data)}')
+print(f'Size of train data: {len(val_data)}')
+
+print(f'Example of label: {train_data[0].tags.json()}')
+
+blob = train_data[0].blob
+print(f'Example of blob: {blob.shape} shape, type {blob.dtype}')
+```
+```console
+Size of train data: 60000                                                                           
+Size of train data: 10000
+Example of label: {
+  "finetuner_label": 9.0
+}
+Example of blob: (28, 28) shape, type float32
+```
+
+Next, we prepare the model - just a simple MLP in this case
+
+```python
+import torch
+
+embed_model = torch.nn.Sequential(
+      torch.nn.Flatten(),
+      torch.nn.Linear(in_features=28 * 28, out_features=128),
+      torch.nn.ReLU(),
+      torch.nn.Linear(in_features=128, out_features=32)
 )
 ```
 
-Here, `embed_model` must be an {term}`embedding model`; and `train_data` must be {term}`labeled data`. Other parameters such as `epochs`, `optimizer` can be found in the Developer Reference.
+Then we can create the {class}`~finetuner.tuner.pytorch.PytorchTuner` object. In this step we specify all the training configuration. We'll be using
+- Triplet loss with hard miner with the easy positive and semihard negative strategy
+- Adam optimizer with initial learning rate of 0.0005, which will be halved every 30 epochs
+- WandB for tracking the experiement
 
-### `loss` argument
+```python
+from torch.optim import Adam
+from torch.optim.lr_scheduler import MultiStepLR
 
-Loss function of the Tuner can be specified via the `loss` argument of `finetuner.fit()`.
-
-By default, Tuner uses `SiameseLoss` (with cosince distance) for training. You can also use other built-in losses by specifying `finetuner.fit(..., loss='...')`.
-
-Let $\mathbf{x}_i$ denote the predicted embedding for Document $i$. The built-in losses are summarized as follows:
-
-:::{dropdown} `SiameseLoss`
-:open:
-
-
-$$\ell_{i,j} = \mathrm{sim}(i,j)d(\mathbf{x}_i, \mathbf{x}_j) + (1 - \mathrm{sim}(i,j))\max(m - d(\mathbf{x}_i, \mathbf{x}_j))$$,
-where $\mathrm{sim}(i,j)$ equals 1 when Document $i$ and $j$ are positively related, and 0 otherwise, $d(\mathbf{x}_i, \mathbf{x}_j)$ represents the distance between $\mathbf{x}_i$ and $\mathbf{x}_j$ and $m$ is the "margin", the desired wedge between dis-similar items.
-
-:::
-
-:::{dropdown} `TripletLoss`
-:open:
-
-$$\ell_{i, p, n}=\max(0, d(\mathbf{x}_i, \mathbf{x}_p)-d(\mathbf{x}_i, \mathbf{x}_n)+m)$$, where Document $p$ and $i$ are positively related, whereas $n$ and $i$ are negatively related or unrelated, $d(\cdot, \cdot)$ representes a distance function, and $m$ is the desired distance (wedge) between the positive and negative pairs.
-:::
+from finetuner.tuner.callback import WandBLogger
+from finetuner.tuner.pytorch import PytorchTuner
+from finetuner.tuner.pytorch.losses import TripletLoss
+from finetuner.tuner.pytorch.miner import TripletEasyHardMiner
 
 
-```{tip}
+def configure_optimizer(model):
+    optimizer = Adam(model.parameters(), lr=5e-4)
+    scheduler = MultiStepLR(optimizer, milestones=[10, 20], gamma=0.5)
 
-Although siamese and triplet loss work on pair and triplet inputs, respectively, there is **no need** to worry about the data input format. You only need to make sure your data is labeled according to {ref}`data-format`, then you can switch between all losses freely.
+    return optimizer, scheduler
 
+
+loss = TripletLoss(
+    miner=TripletEasyHardMiner(pos_strategy='easy', neg_strategy='semihard')
+)
+logger_callback = WandBLogger()
+
+tuner = PytorchTuner(
+    embed_model,
+    loss=loss,
+    configure_optimizer=configure_optimizer,
+    scheduler_step='epoch',
+    callbacks=[logger_callback],
+    device='cpu',
+)
 ```
 
-## `save` method
+Finally, let's put it all together and run the training
 
-After a model is tuned, you can save it by calling `finetuner.save(model, save_path)`.
+```python
+import torch
+from torch.optim import Adam
+from torch.optim.lr_scheduler import MultiStepLR
 
+from finetuner.toydata import generate_fashion
+from finetuner.tuner.callback import WandBLogger
+from finetuner.tuner.pytorch import PytorchTuner
+from finetuner.tuner.pytorch.losses import TripletLoss
+from finetuner.tuner.pytorch.miner import TripletEasyHardMiner
 
-## Examples
+train_data = generate_fashion()
+val_data = generate_fashion(is_testset=True)
 
-### Tune a simple MLP on Fashion-MNIST
+def preprocess_fn(doc: Document) -> np.ndarray:
+    """Add some noise to the image"""
+    new_image = doc.blob + np.random.normal(scale=0.01, size=doc.blob.shape)
+    return new_image.astype(np.float32)
 
-1. Write an embedding model. An embedding model can be written in Keras/PyTorch/Paddle. It can be either a new model or
-   an existing model with pretrained weights. Below we construct a `784x128x32` MLP that transforms Fashion-MNIST images
-   into 32-dim vectors.
-
-    ````{tab} PyTorch
-    ```python
-    import torch
-    embed_model = torch.nn.Sequential(
-          torch.nn.Flatten(),
-          torch.nn.Linear(in_features=28 * 28, out_features=128),
-          torch.nn.ReLU(),
-          torch.nn.Linear(in_features=128, out_features=32))
-    ```
-   
-    ````
-    ````{tab} Keras
-    ```python
-    import tensorflow as tf
-    embed_model = tf.keras.Sequential([
-                tf.keras.layers.Flatten(input_shape=(28, 28)),
-                tf.keras.layers.Dense(128, activation='relu'),
-                tf.keras.layers.Dense(32)
-            ])
-    ```
-    ````
-    ````{tab} Paddle
-    ```python
-    import paddle
-    embed_model = paddle.nn.Sequential(
-          paddle.nn.Flatten(),
-          paddle.nn.Linear(in_features=28 * 28, out_features=128),
-          paddle.nn.ReLU(),
-          paddle.nn.Linear(in_features=128, out_features=32))
-    ```
-   
-    ````
-
-2. Build labeled match data {ref}`according to the steps here<build-mnist-data>`. You can refer
-   to `finetuner.toydata.generate_fashion` for an implementation. In this example, for each `Document` we generate 10 positive matches and 10 negative matches.
-
-3. Feed the labeled data and the embedding model into Finetuner:
-    ```python
-    import finetuner
-    from finetuner.toydata import generate_fashion
-
-    finetuner.fit(
-        embed_model,
-        train_data=generate_fashion(),
-        eval_data=generate_fashion(is_testset=True)
-    )
-    ```
+embed_model = torch.nn.Sequential(
+    torch.nn.Flatten(),
+    torch.nn.Linear(in_features=28 * 28, out_features=128),
+    torch.nn.ReLU(),
+    torch.nn.Linear(in_features=128, out_features=32),
+)
 
 
-   ```{figure} mlp.png
-   :align: center
-   ```
+def configure_optimizer(model):
+    optimizer = Adam(model.parameters(), lr=5e-4)
+    scheduler = MultiStepLR(optimizer, milestones=[30, 60], gamma=0.5)
 
-### Tune a transformer model on Covid QA
-
-1. Write an embedding model:
-
-  ```python
-  import torch
-  from transformers import AutoModel
-
-  TRANSFORMER_MODEL = 'sentence-transformers/paraphrase-MiniLM-L6-v2'
+    return optimizer, scheduler
 
 
-  class TransformerEmbedder(torch.nn.Module):
-      def __init__(self):
-          super().__init__()
-          self.model = AutoModel.from_pretrained(TRANSFORMER_MODEL)
+loss = TripletLoss(
+    miner=TripletEasyHardMiner(pos_strategy='easy', neg_strategy='semihard')
+)
+logger_callback = WandBLogger()
 
-      def forward(self, inputs):
-          out_model = self.model(**inputs)
-          cls_token = out_model.last_hidden_state[:, 0, :]
-          return cls_token
-  ```
+tuner = PytorchTuner(
+    embed_model,
+    loss=loss,
+    configure_optimizer=configure_optimizer,
+    scheduler_step='epoch',
+    callbacks=[logger_callback],
+    device='cpu',
+)
 
-2. Build labeled match data {ref}`according to the steps here<build-qa-data>`. You can refer
-   to `finetuner.toydata.generate_qa` for an implementation.
+tuner.fit(
+    train_data, val_data, preprocess_fn=preprocess_fn, epochs=90, num_items_per_class=32
+)
+```
 
-3. Feed the labeled data and the embedding model into Finetuner:
+We can monitor the training by watching the progress bar, or we can log into our WanB account, and see the live updates there. Here's an example of what we might see there
 
-    ```python
-    from typing import List
-
-    import finetuner
-    from finetuner.toydata import generate_qa
-    from transformers import AutoTokenizer
-
-    tokenizer = AutoTokenizer.from_pretrained(TRANSFORMER_MODEL)
-
-    def collate_fn(inputs: List[str]):
-        batch_tokens = tokenizer(
-            inputs,
-            truncation=True,
-            max_length=50,
-            padding=True,
-            return_tensors='pt',
-        )
-        return batch_tokens
-
-    finetuner.fit(
-      TransformerEmbedder(),
-      train_data=generate_qa(num_neg=1),
-      collate_fn=collate_fn
-    )
-    ```
+![wandb dashboard](wandb.png)
