@@ -185,6 +185,9 @@ class KerasTuner(
 
                 self._trigger_callbacks('on_epoch_end')
 
+                if self.stop_training:
+                    break
+
             self._trigger_callbacks('on_fit_end')
 
     def save(self, *args, **kwargs):
