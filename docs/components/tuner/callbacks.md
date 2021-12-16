@@ -1,6 +1,6 @@
 # Callbacks
 
-Callbacks offer a way to integrate various auxiliary tasks into the training loop. We already offer built-in callbacks for some common tasks, such as
+Callbacks offer a way to integrate various auxiliary tasks into the training loop. We offer built-in callbacks for some common tasks, such as
 - Showing a progress bar (which is shown by default)
 - [Tracking experiements](#experiement-tracking)
 
@@ -38,7 +38,7 @@ If the existing callbacks don't provide the functionality you need, you can easi
 
 To do that, you should subclass {class}`~finetuner.tuner.callback.base.BaseCallback`, and override the `on_*` methods that you need. Each method will get a `tuner` object as an argument - this gives you access to its `.state` attribute, which is a {class}`~finetuner.tuner.state.TunerState` object, and contains useful information on the current training run.
 
-Here's a simple example of a callback that time each training epoch, and prints the elapsed time at the end
+Here's a simple example of a callback that times each training epoch, and prints the elapsed time at the end.
 
 ```python
 from time import perf_counter
