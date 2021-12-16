@@ -81,7 +81,7 @@ finetuner.fit(
     freeze=True,
     to_embedding_model=True,
     input_size=(3, 224, 224),
-    output_dim=100
+    freeze=False,
 )
 ```
 
