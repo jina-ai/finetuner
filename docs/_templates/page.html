@@ -182,7 +182,16 @@
                     </div>
                 </div>
                 {% endif %}
-                {% include "docbot.html" %}
+                <jina-qa-bot
+                    site="/"
+                    style="position: fixed;"
+                    theme="follow"
+                >
+                    <dt>You can ask questions about our docs. Try:</dt>
+                    <dd>What is Tailor?</dd>
+                    <dd>How can I freeze layers?</dd>
+                    <dd>What is the input data format for finetuner?</dd>
+                </jina-qa-bot>
             </div>
 
             {% endblock right_sidebar %}
