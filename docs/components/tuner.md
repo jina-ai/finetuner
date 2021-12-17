@@ -162,7 +162,7 @@ from finetuner.toydata import generate_fashion
 from jina import Document
 
 train_data = generate_fashion()
-val_data = generate_fashion(is_testset=True)
+query_data = generate_fashion(is_testset=True)
 
 def preprocess_fn(doc: Document) -> np.ndarray:
     """Add some noise to the image"""
@@ -170,7 +170,7 @@ def preprocess_fn(doc: Document) -> np.ndarray:
     return new_image.astype(np.float32)
 
 print(f'Size of train data: {len(train_data)}')
-print(f'Size of train data: {len(val_data)}')
+print(f'Size of query data: {len(query_data)}')
 
 print(f'Example of label: {train_data[0].tags.json()}')
 
@@ -250,7 +250,7 @@ from finetuner.tuner.pytorch.losses import TripletLoss
 from finetuner.tuner.pytorch.miner import TripletEasyHardMiner
 
 train_data = generate_fashion()
-val_data = generate_fashion(is_testset=True)
+query_data = generate_fashion(is_testset=True)
 
 def preprocess_fn(doc: Document) -> np.ndarray:
     """Add some noise to the image"""
@@ -287,7 +287,7 @@ tuner = PytorchTuner(
 )
 
 tuner.fit(
-    train_data, val_data, preprocess_fn=preprocess_fn, epochs=90, num_items_per_class=32
+    train_data, query_data, preprocess_fn=preprocess_fn, epochs=90, num_items_per_class=32
 )
 ```
 

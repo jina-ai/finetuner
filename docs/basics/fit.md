@@ -99,7 +99,7 @@ def collate_fn(tensors: List[torch.LongTensor]) -> torch.LongTensor:
 model = finetuner.fit(
     embed_model,
     train_data=train_data,
-    eval_data=generate_qa(num_neg=1),
+    query_data=generate_qa(num_neg=1),
     epochs=1,
     preprocess_fn=preprocess_fn,
     collate_fn=collate_fn,
