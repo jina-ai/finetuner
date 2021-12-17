@@ -21,7 +21,7 @@ class TrainingCheckpoint(BaseCallback):
     Callback to save model at every epoch or the last K epochs
     """
 
-    def __init__(self, save_dir: str, last_k_epochs: int = None):
+    def __init__(self, save_dir: str, last_k_epochs: int = 1):
         """
         :param save_dir: string, path to save the model file.
         :param last_k_epochs: this parameter is an integer. Only the most

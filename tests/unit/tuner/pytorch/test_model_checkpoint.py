@@ -14,15 +14,8 @@ from finetuner.tuner.state import TunerState
 
 @pytest.fixture(scope='module')
 def pytorch_model() -> BaseTuner:
-    embed_model = torch.nn.Sequential(
-        torch.nn.Flatten(),
-        torch.nn.Linear(
-            in_features=28 * 28,
-            out_features=128,
-        ),
-        torch.nn.ReLU(),
-        torch.nn.Linear(in_features=128, out_features=32),
-    )
+    embed_model = torch.nn.Linear(in_features=10, out_features=10)
+
     return embed_model
 
 
@@ -34,7 +27,7 @@ def test_save_on_every_epoch_end(pytorch_model: BaseTuner, tmpdir):
     assert os.listdir(tmpdir) == ['saved_model_epoch_01']
     tuner.state = TunerState(epoch=1, batch_index=2, train_loss=0.5)
     checkpoint.on_epoch_end(tuner)
-    assert set(os.listdir(tmpdir)) == {'saved_model_epoch_01', 'saved_model_epoch_02'}
+    assert os.listdir(tmpdir) == ['saved_model_epoch_02']
 
 
 def test_same_model(pytorch_model: BaseTuner, tmpdir):
@@ -85,11 +78,7 @@ def test_load_model(pytorch_model: BaseTuner, tmpdir):
     checkpoint.on_epoch_end(before_stop_tuner)
 
     checkpoint.load_model(
-        after_stop_tuner,
-        os.path.join(
-            tmpdir,
-            'saved_model_epoch_11',
-        ),
+        after_stop_tuner, os.path.join(tmpdir, 'saved_model_epoch_11')
     )
 
     assert after_stop_tuner.state.epoch == 11

@@ -12,14 +12,8 @@ from finetuner.tuner.state import TunerState
 
 @pytest.fixture(scope='module')
 def paddle_model() -> BaseTuner:
-    embed_model = paddle.nn.Sequential(
-        paddle.nn.Flatten(),
-        paddle.nn.Linear(
-            in_features=10,
-            out_features=10,
-        ),
-        paddle.nn.ReLU(),
-    )
+    embed_model = paddle.nn.Linear(in_features=10, out_features=10)
+
     return embed_model
 
 

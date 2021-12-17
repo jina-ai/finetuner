@@ -17,9 +17,8 @@ from finetuner.tuner.state import TunerState
 def keras_model() -> BaseTuner:
     embed_model = tf.keras.Sequential(
         [
-            tf.keras.layers.Flatten(input_shape=(28, 28)),
-            tf.keras.layers.Dense(128, activation='relu'),
-            tf.keras.layers.Dense(32),
+            tf.keras.layers.Flatten(input_shape=()),
+            tf.keras.layers.Dense(10, activation='relu'),
         ]
     )
     return embed_model
@@ -33,7 +32,7 @@ def test_save_on_every_epoch_end(keras_model: BaseTuner, tmpdir):
     assert os.listdir(tmpdir) == ['saved_model_epoch_01']
     tuner.state = TunerState(epoch=1, batch_index=2, train_loss=0.5)
     checkpoint.on_epoch_end(tuner)
-    assert set(os.listdir(tmpdir)) == {'saved_model_epoch_01', 'saved_model_epoch_02'}
+    assert os.listdir(tmpdir) == ['saved_model_epoch_02']
 
 
 def test_same_model(keras_model: BaseTuner, tmpdir):
@@ -79,11 +78,7 @@ def test_load_model(keras_model: BaseTuner, tmpdir):
     checkpoint.on_epoch_end(before_stop_tuner)
 
     checkpoint.load_model(
-        after_stop_tuner,
-        os.path.join(
-            tmpdir,
-            'saved_model_epoch_11',
-        ),
+        after_stop_tuner, os.path.join(tmpdir, 'saved_model_epoch_11')
     )
 
     assert after_stop_tuner.state.epoch == 11

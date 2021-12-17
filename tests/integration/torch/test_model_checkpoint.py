@@ -12,14 +12,8 @@ from finetuner.tuner.state import TunerState
 
 @pytest.fixture(scope='module')
 def pytorch_model() -> BaseTuner:
-    embed_model = torch.nn.Sequential(
-        torch.nn.Flatten(),
-        torch.nn.Linear(
-            in_features=10,
-            out_features=10,
-        ),
-        torch.nn.ReLU(),
-    )
+    embed_model = torch.nn.Linear(in_features=10, out_features=10)
+
     return embed_model
 
 
