@@ -42,7 +42,7 @@ def test_fit_all(tmpdir, loss):
             b(),
             loss=loss,
             train_data=generate_fashion(num_total=200),
-            eval_data=generate_fashion(is_testset=True, num_total=100),
+            query_data=generate_fashion(is_testset=True, num_total=100),
             batch_size=32,
             epochs=2,
         )

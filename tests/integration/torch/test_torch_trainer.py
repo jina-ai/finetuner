@@ -27,7 +27,7 @@ def test_simple_sequential_model(tmpdir, params, loss):
     # fit and save the checkpoint
     pt.fit(
         train_data=generate_fashion(num_total=params['num_train']),
-        eval_data=generate_fashion(is_testset=True, num_total=params['num_eval']),
+        query_data=generate_fashion(is_testset=True, num_total=params['num_eval']),
         epochs=params['epochs'],
         batch_size=params['batch_size'],
         num_items_per_class=params['num_items_per_class'],
