@@ -25,7 +25,8 @@ if TYPE_CHECKING:
 def fit(
     model: 'AnyDNN',  #: must be an embedding model
     train_data: 'DocumentSequence',
-    eval_data: Optional['DocumentSequence'] = None,
+    query_data: Optional['DocumentSequence'] = None,
+    index_data: Optional['DocumentSequence'] = None,
     epochs: int = 10,
     batch_size: int = 256,
     loss: Union[str, 'AnyDNN'] = 'SiameseLoss',
@@ -42,6 +43,8 @@ def fit(
     num_items_per_class: Optional[int] = None,
     callbacks: Optional[List['BaseCallback']] = None,
     num_workers: int = 0,
+    limit: int = 20,
+    distance: str = 'cosine',
 ) -> 'AnyDNN':
     ...
 
@@ -51,7 +54,8 @@ def fit(
 def fit(
     model: 'AnyDNN',
     train_data: 'DocumentSequence',
-    eval_data: Optional['DocumentSequence'] = None,
+    query_data: Optional['DocumentSequence'] = None,
+    index_data: Optional['DocumentSequence'] = None,
     epochs: int = 10,
     batch_size: int = 256,
     loss: Union[str, 'AnyDNN'] = 'SiameseLoss',
@@ -68,6 +72,8 @@ def fit(
     num_items_per_class: Optional[int] = None,
     callbacks: Optional[List['BaseCallback']] = None,
     num_workers: int = 0,
+    limit: int = 20,
+    distance: str = 'cosine',
     to_embedding_model: bool = True,  #: below are tailor args
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
@@ -83,7 +89,8 @@ def fit(
 def fit(
     model: 'AnyDNN',  #: must be an embedding model
     train_data: 'DocumentSequence',
-    eval_data: Optional['DocumentSequence'] = None,
+    query_data: Optional['DocumentSequence'] = None,
+    index_data: Optional['DocumentSequence'] = None,
     epochs: int = 10,
     batch_size: int = 256,
     loss: Union[str, 'AnyDNN'] = 'SiameseLoss',
@@ -100,6 +107,8 @@ def fit(
     num_items_per_class: Optional[int] = None,
     callbacks: Optional[List['BaseCallback']] = None,
     num_workers: int = 0,
+    limit: int = 20,
+    distance: str = 'cosine',
     interactive: bool = True,  #: below are labeler args
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
@@ -113,7 +122,8 @@ def fit(
 def fit(
     model: 'AnyDNN',
     train_data: 'DocumentSequence',
-    eval_data: Optional['DocumentSequence'] = None,
+    query_data: Optional['DocumentSequence'] = None,
+    index_data: Optional['DocumentSequence'] = None,
     epochs: int = 10,
     batch_size: int = 256,
     loss: Union[str, 'AnyDNN'] = 'SiameseLoss',
@@ -130,6 +140,8 @@ def fit(
     num_items_per_class: Optional[int] = None,
     callbacks: Optional[List['BaseCallback']] = None,
     num_workers: int = 0,
+    limit: int = 20,
+    distance: str = 'cosine',
     interactive: bool = True,  #: below are labeler args
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,

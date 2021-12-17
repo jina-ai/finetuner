@@ -89,24 +89,6 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
 
         return Adam(parameters=model.parameters(), learning_rate=self._learning_rate)
 
-    def _eval(self, data: DataLoader):
-        """Evaluate the model on given labeled data"""
-
-        self._embed_model.eval()
-
-        for idx, (inputs, labels) in enumerate(data):
-            self.state.batch_index = idx
-            self._trigger_callbacks('on_val_batch_begin')
-
-            inputs = _to_device(inputs, self.device)
-            labels = _to_device(labels, self.device)
-
-            embeddings = self.embed_model(inputs)
-            loss = self._loss(embeddings, labels)
-
-            self.state.current_loss = loss.item()
-            self._trigger_callbacks('on_val_batch_end')
-
     def _train(self, data: DataLoader):
         """Train the model on given labeled data"""
 
@@ -140,14 +122,40 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
     def _fit(
         self,
         train_data: 'DocumentSequence',
-        eval_data: Optional['DocumentSequence'] = None,
+        query_data: Optional['DocumentSequence'] = None,
+        index_data: Optional['DocumentSequence'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         num_workers: int = 0,
+        limit: int = 20,
+        distance: str = 'cosine',
+        **kwargs,
     ):
+        """Finetune the model on the training data.
+
+        :param train_data: Data on which to train the model.
+        :param query_data: Search data used by the evaluator at the end of each epoch, to evaluate the model
+        :param index_data: Index data or catalog used by the evaluator at the end of each epoch, to evaluate the model
+        :param epochs: Number of epochs to train the model.
+        :param batch_size: The batch size to use for training and evaluation.
+        :param num_items_per_class: Number of items from a single class to include in
+            the batch. Only relevant for class datasets.
+        :param preprocess_fn: A pre-processing function. It should take as input the
+            content of an item in the dataset and return the pre-processed content.
+        :param collate_fn: The collation function to merge the content of individual
+            items into a batch. Should accept a list with the content of each item,
+            and output a tensor (or a list/dict of tensors) that feed directly into the
+            embedding model.
+        :param num_workers: Number of workers used for loading the data.
+            This works only with Pytorch and Paddle Paddle, and has no effect when using
+            a Keras model.
+        :param limit: The number of top search results to consider, when evaluating.
+        :param distance: The type of distance metric to use when matching query and index docs during evaluation,
+            available options are ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``.
+        """
         # Get dataloaders
         train_dl = self._get_data_loader(
             train_data,
@@ -158,16 +166,6 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
             collate_fn=collate_fn,
             num_workers=num_workers,
         )
-        if eval_data:
-            eval_dl = self._get_data_loader(
-                eval_data,
-                batch_size=batch_size,
-                num_items_per_class=num_items_per_class,
-                shuffle=False,
-                preprocess_fn=preprocess_fn,
-                collate_fn=collate_fn,
-                num_workers=num_workers,
-            )
 
         # Set state
         self.state = TunerState(num_epochs=epochs)
@@ -190,13 +188,17 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
 
             self._trigger_callbacks('on_train_epoch_end')
 
-            if eval_data:
-                self.state.num_batches_val = len(eval_dl)
-                self.state.batch_index = 0
-
-                self._trigger_callbacks('on_val_begin')
-                self._eval(eval_dl)
-                self._trigger_callbacks('on_val_end')
+            if query_data:
+                self._eval(
+                    query_data,
+                    index_data,
+                    label=f"epoch#{epoch}",
+                    limit=limit,
+                    distance=distance,
+                    batch_size=batch_size,
+                    preprocess_fn=preprocess_fn,
+                    collate_fn=collate_fn,
+                )
 
             self._trigger_callbacks('on_epoch_end')
             if self.stop_training:

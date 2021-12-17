@@ -3,10 +3,13 @@ from typing import TYPE_CHECKING, Callable, Generic, List, Optional, Tuple, Unio
 
 from .callback import BaseCallback, ProgressBarCallback
 from .dataset import ClassDataset, SessionDataset
+from .dataset.helper import batch_document_sequence
 from .dataset.samplers import ClassSampler, SessionSampler
+from .evaluation import Evaluator
 from .miner.base import BaseMiner
 from .state import TunerState
 
+from ..embedding import embed
 from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyScheduler, AnyTensor
 
 if TYPE_CHECKING:
@@ -156,34 +159,41 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
     def fit(
         self,
         train_data: 'DocumentSequence',
-        eval_data: Optional['DocumentSequence'] = None,
+        query_data: Optional['DocumentSequence'] = None,
+        index_data: Optional['DocumentSequence'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         num_workers: int = 0,
+        limit: int = 20,
+        distance: str = 'cosine',
         **kwargs,
     ):
         """Finetune the model on the training data.
 
-        :param train_data: Data on which to train the model
-        :param eval_data: Data on which to evaluate the model at the end of each epoch
+        :param train_data: Data on which to train the model.
+        :param query_data: Search data used by the evaluator at the end of each epoch, to evaluate the model
+        :param index_data: Index data or catalog used by the evaluator at the end of each epoch, to evaluate the model
+        :param epochs: Number of epochs to train the model.
+        :param batch_size: The batch size to use for training and evaluation.
+        :param num_items_per_class: Number of items from a single class to include in
+            the batch. Only relevant for class datasets.
         :param preprocess_fn: A pre-processing function. It should take as input the
-            content of an item in the dataset and return the pre-processed content
+            content of an item in the dataset and return the pre-processed content.
         :param collate_fn: The collation function to merge the content of individual
             items into a batch. Should accept a list with the content of each item,
             and output a tensor (or a list/dict of tensors) that feed directly into the
-            embedding model
-        :param epochs: Number of epochs to train the model
-        :param batch_size: The batch size to use for training and evaluation
-        :param num_items_per_class: Number of items from a single class to include in
-            the batch. Only relevant for class datasets
+            embedding model.
         :param num_workers: Number of workers used for loading the data.
-
             This works only with Pytorch and Paddle Paddle, and has no effect when using
             a Keras model.
+        :param limit: The number of top search results to consider, when evaluating.
+        :param distance: The type of distance metric to use when matching query and index docs during evaluation,
+            available options are ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``.
         """
+        ...
 
         try:
             self._fit(
@@ -226,6 +236,12 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         """Get framework specific data loader from the input data."""
         ...
 
+    @staticmethod
+    def _get_num_batches(docs: 'DocumentSequence', batch_size: int) -> int:
+        """Get the number of batches from a document sequence"""
+        n = len(docs)
+        return n // batch_size + 1 * (n % batch_size)
+
     @abc.abstractmethod
     def _fit(
         self,
@@ -246,7 +262,75 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         """Train the model on given labeled data"""
         ...
 
-    @abc.abstractmethod
-    def _eval(self, data: AnyDataLoader):
-        """Evaluate the model on given labeled data"""
-        ...
+    def _eval(
+        self,
+        query_data: 'DocumentSequence',
+        index_data: Optional['DocumentSequence'],
+        label: str,
+        limit: int,
+        distance: str,
+        batch_size: int,
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
+    ):
+        """Embed the evaluation data and ompute the evaluation metrics"""
+
+        self.state.num_batches_query = self._get_num_batches(query_data, batch_size)
+        self.state.num_batches_index = (
+            self._get_num_batches(index_data, batch_size) if index_data else 0
+        )
+        self.state.batch_index = 0
+
+        self._trigger_callbacks('on_val_begin')
+        self._trigger_callbacks('on_val_query_begin')
+
+        for idx, batch in enumerate(
+            batch_document_sequence(query_data, size=batch_size)
+        ):
+            self.state.batch_index = idx
+            self._trigger_callbacks('on_val_query_batch_begin')
+            embed(
+                batch,
+                self.embed_model,
+                device=self._device_name,
+                batch_size=batch_size,
+                preprocess_fn=preprocess_fn,
+                collate_fn=collate_fn,
+            )
+            self._trigger_callbacks('on_val_query_batch_end')
+
+        self._trigger_callbacks('on_val_query_end')
+
+        if index_data:
+            self.state.batch_index = 0
+            self._trigger_callbacks('on_val_index_begin')
+
+            for idx, batch in enumerate(
+                batch_document_sequence(index_data, size=batch_size)
+            ):
+                self.state.batch_index = idx
+                self._trigger_callbacks('on_val_index_batch_begin')
+                embed(
+                    batch,
+                    self.embed_model,
+                    device=self._device_name,
+                    batch_size=batch_size,
+                    preprocess_fn=preprocess_fn,
+                    collate_fn=collate_fn,
+                )
+                self._trigger_callbacks('on_val_index_batch_end')
+
+            self._trigger_callbacks('on_val_index_end')
+
+        else:
+            index_data = query_data
+
+        self._trigger_callbacks('on_val_match_begin')
+
+        evaluator = Evaluator(query_data, index_data)
+        self.state.eval_metrics = evaluator.evaluate(
+            limit=limit, distance=distance, label=label
+        )
+        self._trigger_callbacks('on_val_match_end')
+
+        self._trigger_callbacks('on_val_end')

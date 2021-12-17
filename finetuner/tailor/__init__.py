@@ -4,7 +4,7 @@ from ..helper import get_framework
 
 if TYPE_CHECKING:
     from .base import BaseTailor
-    from ...helper import AnyDNN
+    from ..helper import AnyDNN
 
 
 def _get_tailor_class(dnn_model: 'AnyDNN') -> Type['BaseTailor']:

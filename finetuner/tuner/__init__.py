@@ -36,7 +36,8 @@ def _get_tuner_class(dnn_model: 'AnyDNN') -> Type['BaseTuner']:
 def fit(
     embed_model: 'AnyDNN',
     train_data: 'DocumentSequence',
-    eval_data: Optional['DocumentSequence'] = None,
+    query_data: Optional['DocumentSequence'] = None,
+    index_data: Optional['DocumentSequence'] = None,
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
     epochs: int = 10,
@@ -53,13 +54,16 @@ def fit(
     device: str = 'cpu',
     callbacks: Optional[List['BaseCallback']] = None,
     num_workers: int = 0,
+    limit: int = 20,
+    distance: str = 'cosine',
     **kwargs,
 ):
     """Finetune the model on the training data.
 
     :param embed_model: an embedding model
     :param train_data: Data on which to train the model
-    :param eval_data: Data on which to evaluate the model at the end of each epoch
+    :param query_data: Search data used by the evaluator at the end of each epoch, to evaluate the model
+    :param index_data: Index data or catalog used by the evaluator at the end of each epoch, to evaluate the model
     :param preprocess_fn: A pre-processing function, to apply pre-processing to
         documents on the fly. It should take as input the document in the dataset,
         and output whatever content the framework-specific dataloader (and model) would
@@ -88,10 +92,11 @@ def fit(
         ``"cpu"`` and ``"cuda"`` (for GPU)
     :param callbacks: A list of callbacks. The progress bar callback
         will be pre-prended to this list.
-    :param num_workers: Number of workers used for loading the data.
-
-        This works only with Pytorch and Paddle Paddle, and has no effect when using
-        a Keras model.
+    :param num_workers: Number of workers used for loading the data. This works only with Pytorch and
+        Paddle Paddle, and has no effect when using a Keras model.
+    :param limit: The number of top search results to consider, when evaluating.
+    :param distance: The type of distance metric to use when matching query and index docs during evaluation,
+        available options are ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``.
     """
     ft = _get_tuner_class(embed_model)
 
@@ -105,12 +110,16 @@ def fit(
         device=device,
     ).fit(
         train_data,
-        eval_data,
+        query_data,
+        index_data,
         epochs=epochs,
         batch_size=batch_size,
         preprocess_fn=preprocess_fn,
         collate_fn=collate_fn,
         num_items_per_class=num_items_per_class,
+        num_workers=num_workers,
+        limit=limit,
+        distance=distance,
     )
 
 
