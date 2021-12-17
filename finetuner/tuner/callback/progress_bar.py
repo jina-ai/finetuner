@@ -125,4 +125,17 @@ class ProgressBarCallback(BaseCallback):
         self.pbar.update(task_id=self.eval_pbar_id, visible=False)
 
     def on_fit_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of the ``fit`` method call, after finishing all the epochs.
+        """
+        self._teardown()
+
+    def on_exception(self, tuner: 'BaseTuner', exception: BaseException):
+        """
+        Called when the tuner encounters an exception during execution.
+        """
+        self._teardown()
+
+    def _teardown(self):
+        """Stop the progress bar"""
         self.pbar.stop()
