@@ -57,20 +57,59 @@ class BaseCallback(ABC):
         Called at the start of the evaluation.
         """
 
-    def on_val_batch_begin(self, tuner: 'BaseTuner'):
+    def on_val_query_begin(self, tuner: 'BaseTuner'):
         """
-        Called at the start of the evaluation.
+        Called at the start of the query data processing.
         """
 
-    def on_val_batch_end(self, tuner: 'BaseTuner'):
+    def on_val_query_batch_begin(self, tuner: 'BaseTuner'):
         """
-        Called at the start of the evaluation batch, after the batch data has already
-        been loaded.
+        Called at the start of the query data batch computation.
+        """
+
+    def on_val_query_batch_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of the query data batch computation.
+        """
+
+    def on_val_query_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of the query data processing.
+        """
+
+    def on_val_index_begin(self, tuner: 'BaseTuner'):
+        """
+        Called at the start of the index data processing.
+        """
+
+    def on_val_index_batch_begin(self, tuner: 'BaseTuner'):
+        """
+        Called at the start of the index data batch computation.
+        """
+
+    def on_val_index_batch_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of the index data batch computation.
+        """
+
+    def on_val_index_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of the index data processing.
+        """
+
+    def on_val_match_begin(self, tuner: 'BaseTuner'):
+        """
+        Called at the start of the index - query matching.
+        """
+
+    def on_val_match_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of the index - query matching.
         """
 
     def on_val_end(self, tuner: 'BaseTuner'):
         """
-        Called at the end of the evaluation batch.
+        Called at the end of the evaluation.
         """
 
     def on_epoch_end(self, tuner: 'BaseTuner'):

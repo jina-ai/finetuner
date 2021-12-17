@@ -4,6 +4,7 @@ import numpy as np
 from jina.logging.logger import JinaLogger
 
 from .base import BaseCallback
+from ..evaluation import __evaluator_mean_prefix__
 
 if TYPE_CHECKING:
     from ..base import BaseTuner
@@ -12,22 +13,22 @@ if TYPE_CHECKING:
 class EarlyStopping(BaseCallback):
     """
     Callback to stop training when a monitored metric has stopped improving.
-    A `model.fit()` training loop will check at the end of every epoch whether
-    the monitered metric is no longer improving.
+    A `finetuner.fit()` training loop will check at the end of every epoch whether
+    the monitored metric is still improving or not.
     """
 
     def __init__(
         self,
-        monitor: str = 'val_loss',
+        monitor: str = 'loss',
         mode: str = 'auto',
         patience: int = 2,
         min_delta: int = 0,
         baseline: Optional[float] = None,
     ):
         """
-        :param monitor: if `monitor='loss'` best bodel saved will be according
-            to the training loss, if `monitor='val_loss'` best model saved will be
-            according to the validation loss
+        :param monitor: if `monitor='loss'` best model saved will be according
+            to the training loss, else if monitor is set to an evaluation metric,
+            best model saved will be according to this metric
         :param mode: one of {'auto', 'min', 'max'}. the
             decision to overwrite the current_value save file is made based on either
             the maximization or the minimization of the monitored quantity.
@@ -49,38 +50,41 @@ class EarlyStopping(BaseCallback):
         """
         self._logger = JinaLogger(self.__class__.__name__)
         self._monitor = monitor
-        self._mode = mode
         self._patience = patience
         self._min_delta = min_delta
         self._baseline = baseline
         self._train_losses = []
-        self._validation_losses = []
         self._epoch_counter = 0
 
         if mode not in ['auto', 'min', 'max']:
             self._logger.logger.warning(
-                'ModelCheckpoint mode %s is unknown, ' 'fallback to auto mode.', mode
+                f'Early stopping mode {mode} is unknown, falling back to auto mode.'
             )
             mode = 'auto'
+        self._mode = mode
+
+        self._monitor_op: np.ufunc
+        self._best: float
 
         if mode == 'min':
-            self._monitor_op = np.less
-            self._best = np.Inf
+            self._set_min_mode()
         elif mode == 'max':
-            self._monitor_op = np.greater
-            self._best = -np.Inf
+            self._set_max_mode()
         else:
-            if 'acc' in self._monitor:  # to adjust other metrics are added
-                self._monitor_op = np.greater
-                self._best = -np.Inf
+            if self._monitor == 'loss':  # to adjust other metrics are added
+                self._set_min_mode()
             else:
-                self._monitor_op = np.less
-                self._best = np.Inf
+                self._set_max_mode()
 
-        if self._monitor_op == np.greater:
-            self._min_delta *= 1
-        else:
-            self._min_delta *= -1
+    def _set_max_mode(self):
+        self._monitor_op = np.greater
+        self._best = -np.Inf
+        self._min_delta *= 1
+
+    def _set_min_mode(self):
+        self._monitor_op = np.less
+        self._best = np.Inf
+        self._min_delta *= -1
 
     def on_epoch_end(self, tuner: 'BaseTuner'):
         """
@@ -90,30 +94,31 @@ class EarlyStopping(BaseCallback):
         """
         self._check(tuner)
         self._train_losses = []
-        self._validation_losses = []
 
     def on_train_batch_end(self, tuner: 'BaseTuner'):
         self._train_losses.append(tuner.state.current_loss)
 
-    def on_val_batch_end(self, tuner: 'BaseTuner'):
-        self._validation_losses.append(tuner.state.current_loss)
-
-    def _check(self, tuner):
+    def _check(self, tuner: 'BaseTuner'):
         """
         Checks if training should be stopped. If `True`
         it stops the training.
         """
-        current_value = None
         if self._baseline is not None:
             self._best = self._baseline
 
-        if self._monitor == 'val_loss':
-            current_value = np.mean(self._validation_losses)
-        elif self._monitor == 'train_loss':
+        if self._monitor == 'loss':
             current_value = np.mean(self._train_losses)
         else:
+            try:
+                current_value = tuner.state.eval_metrics[self._monitor]
+            except KeyError:
+                current_value = tuner.state.eval_metrics.get(
+                    __evaluator_mean_prefix__ + self._monitor, None
+                )
+
+        if current_value is None:
             self._logger.logger.warning(
-                f'Can save best model only with {self._monitor} available, ' 'skipping.'
+                f'Could not retrieve monitor metric {self._monitor}'
             )
             return
 

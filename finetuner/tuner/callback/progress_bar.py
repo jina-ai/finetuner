@@ -1,4 +1,4 @@
-from typing import List, Optional, TYPE_CHECKING
+from typing import Any, List, Optional, TYPE_CHECKING
 
 import numpy as np
 from rich.progress import (
@@ -11,6 +11,7 @@ from rich.progress import (
 )
 
 from .base import BaseCallback
+from ..evaluation import __evaluator_mean_prefix__
 
 if TYPE_CHECKING:
     from ..base import BaseTuner
@@ -19,38 +20,38 @@ if TYPE_CHECKING:
 class ProgressBarCallback(BaseCallback):
     """A progress bar callback, using the rich progress bar."""
 
-    def __init__(self):
-
+    def __init__(self, metrics: Optional[List[str]] = None):
         self.losses: List[float] = []
-        self.prev_val_loss = None
+        self.metrics = metrics or ["average_precision"]
+        self.metrics_values = {metric: None for metric in self.metrics}
+        self.pbar = None
+        self.train_pbar_id = None
+        self.query_pbar_id = None
+        self.index_pbar_id = None
+        self.match_pbar_id = None
 
     @property
-    def mean_loss(self) -> Optional[float]:
-        if len(self.losses):
-            return np.mean(self.losses)
-        else:
-            return None
+    def _mean_loss(self) -> Optional[float]:
+        return np.mean(self.losses) if len(self.losses) else None
+
+    @staticmethod
+    def _display_value(name: str, value: Optional[float]) -> str:
+        return f'{name}: {value:.3f}' if value is not None else f'{name}: -.---'
 
     @property
-    def train_loss_str(self) -> str:
-        train_loss_str = ''
-        if self.mean_loss is not None:
-            train_loss_str = f'loss: {self.mean_loss:.3f}'
-        else:
-            train_loss_str = 'loss: -.---'
-
-        val_loss_str = ''
-        if self.prev_val_loss:
-            val_loss_str = f' • val_loss: {self.prev_val_loss:.3f}'
-
-        return train_loss_str + val_loss_str
+    def _train_loss_str(self) -> str:
+        return self._display_value('loss', self._mean_loss)
 
     @property
-    def val_loss_str(self) -> str:
-        if self.mean_loss is not None:
-            return f'loss: {self.mean_loss:.3f}'
-        else:
-            return 'loss: -.---'
+    def _metrics_str(self) -> List[str]:
+        return [
+            self._display_value(metric, value)
+            for metric, value in self.metrics_values.items()
+        ]
+
+    @property
+    def _label(self):
+        return " ".join([self._train_loss_str] + self._metrics_str)
 
     def on_fit_begin(self, tuner: 'BaseTuner'):
         self.pbar = Progress(
@@ -67,12 +68,15 @@ class ProgressBarCallback(BaseCallback):
         )
         self.pbar.start()
         self.train_pbar_id = self.pbar.add_task('Training', visible=False, start=False)
-        self.eval_pbar_id = self.pbar.add_task('Evaluating', visible=False, start=False)
+        self.query_pbar_id = self.pbar.add_task(
+            'Embedding queries', visible=False, start=False
+        )
+        self.index_pbar_id = self.pbar.add_task(
+            'Embedding index', visible=False, start=False
+        )
+        self.match_pbar_id = self.pbar.add_task('Matching', visible=False, start=False)
 
     def on_train_epoch_begin(self, tuner: 'BaseTuner'):
-        """
-        Called at the begining of training part of the epoch.
-        """
         self.losses = []
         self.pbar.reset(
             self.train_pbar_id,
@@ -80,49 +84,68 @@ class ProgressBarCallback(BaseCallback):
             description=f'Training [{tuner.state.epoch+1}/{tuner.state.num_epochs}]',
             total=tuner.state.num_batches_train,
             completed=0,
-            metrics=self.train_loss_str,
+            metrics=self._label,
         )
 
     def on_train_batch_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the end of a training batch, after the backward pass.
-        """
         self.losses.append(tuner.state.current_loss)
-        self.pbar.update(
-            task_id=self.train_pbar_id, advance=1, metrics=self.train_loss_str
-        )
+        self.pbar.update(task_id=self.train_pbar_id, advance=1, metrics=self._label)
 
     def on_val_begin(self, tuner: 'BaseTuner'):
-        """
-        Called at the start of the evaluation.
-        """
         self.losses = []
+
+    def on_val_query_begin(self, tuner: 'BaseTuner'):
         self.pbar.reset(
-            self.eval_pbar_id,
+            self.query_pbar_id,
             visible=True,
-            description='Evaluating',
-            total=tuner.state.num_batches_val,
+            description='Embedding queries',
+            total=tuner.state.num_batches_query,
             completed=0,
-            metrics=self.val_loss_str,
+            metrics="",
         )
 
-    def on_val_batch_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the start of the evaluation batch, after the batch data has already
-        been loaded.
-        """
-        self.losses.append(tuner.state.current_loss)
+    def on_val_query_batch_end(self, tuner: 'BaseTuner'):
+        self.pbar.update(task_id=self.query_pbar_id, advance=1, metrics="")
 
-        self.pbar.update(
-            task_id=self.eval_pbar_id, advance=1, metrics=self.val_loss_str
+    def on_val_query_end(self, tuner: 'BaseTuner'):
+        self.pbar.update(task_id=self.query_pbar_id, visible=False)
+
+    def on_val_index_begin(self, tuner: 'BaseTuner'):
+        self.pbar.reset(
+            self.index_pbar_id,
+            visible=True,
+            description='Embedding index',
+            total=tuner.state.num_batches_index,
+            completed=0,
+            metrics="",
         )
+
+    def on_val_index_batch_end(self, tuner: 'BaseTuner'):
+        self.pbar.update(task_id=self.index_pbar_id, advance=1, metrics="")
+
+    def on_val_index_end(self, tuner: 'BaseTuner'):
+        self.pbar.update(task_id=self.index_pbar_id, visible=False)
+
+    def on_val_match_begin(self, tuner: 'BaseTuner'):
+        self.pbar.reset(
+            self.match_pbar_id,
+            visible=True,
+            description='Matching',
+            metrics="",
+        )
+
+    def on_val_match_end(self, tuner: 'BaseTuner'):
+        self.pbar.update(task_id=self.match_pbar_id, visible=False)
 
     def on_val_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the end of the evaluation batch.
-        """
-        self.prev_val_loss = self.mean_loss
-        self.pbar.update(task_id=self.eval_pbar_id, visible=False)
+        for metric in self.metrics:
+            try:
+                value = tuner.state.eval_metrics[metric]
+            except KeyError:
+                value = tuner.state.eval_metrics.get(
+                    __evaluator_mean_prefix__ + metric, None
+                )
+            self.metrics_values[metric] = value
 
     def on_fit_end(self, tuner: 'BaseTuner'):
         """

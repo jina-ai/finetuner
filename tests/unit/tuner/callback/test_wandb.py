@@ -1,9 +1,8 @@
 import pytest
 
+import wandb
 from finetuner.tuner.state import TunerState
 from finetuner.tuner.callback import WandBLogger
-
-import wandb
 
 
 class FakeTuner:
@@ -69,12 +68,8 @@ def test_wandb_logger_log_val(mocked_logger):
 
     logger = WandBLogger()
 
-    logger.on_val_batch_end(tuner)
-
-    tuner.state.current_loss = 0.9
-    logger.on_val_batch_end(tuner)
-    assert logger._train_step == 0  # validation batch does not increase train step
-
+    tuner.state.eval_metrics = {"metric": 0.9}
     logger.on_val_end(tuner)
-    assert logger.wandb_logger.log_data == {'val/loss': 1.0}
+    assert logger._train_step == 0  # validation batch does not increase train step
+    assert logger.wandb_logger.log_data == {'val/metric': 0.9}
     assert logger.wandb_logger.log_step == 0
