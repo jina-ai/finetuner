@@ -6,7 +6,7 @@ jina-qa-bot[theme="follow"] {
   --jina-qabot-color-primary: var(--sd-color-card-text);
   --jina-qabot-color-action: var(--color-brand-primary);
   --jina-qabot-color-action-contrast: var(--color-code-background);
-  --jina-qabot-color-dimmed: var(--sd-color-card-background);
+  --jina-qabot-color-dimmed: var(--color-background-border);
   --jina-qabot-color-muted: var(--color-foreground-muted);
 }
 jina-qa-bot:not(:defined) {
