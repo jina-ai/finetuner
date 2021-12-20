@@ -7,14 +7,14 @@ from torch.optim.optimizer import Optimizer
 from torch.utils.data._utils.collate import default_collate
 from torch.utils.data.dataloader import DataLoader
 
-from . import losses
-from .datasets import PytorchClassDataset, PytorchSessionDataset
+from ... import __default_tag_key__
 from ..base import BaseTuner
 from ..state import TunerState
-from ... import __default_tag_key__
+from . import losses
+from .datasets import PytorchClassDataset, PytorchSessionDataset
 
 if TYPE_CHECKING:
-    from ...helper import DocumentSequence, PreprocFnType, CollateFnType
+    from ...helper import CollateFnType, DocumentSequence, PreprocFnType
 
 
 def _to_device(
@@ -233,6 +233,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         :param args: Arguments to pass to ``torch.save`` function
         :param kwargs: Keyword arguments to pass to ``torch.save`` function
         """
+
         torch.save(self.embed_model.state_dict(), *args, **kwargs)
 
 

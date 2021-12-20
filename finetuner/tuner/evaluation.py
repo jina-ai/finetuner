@@ -1,22 +1,24 @@
-from typing import TYPE_CHECKING, Optional, List, Dict, Tuple
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
+
+
 from jina import Document, DocumentArray
 from docarray.math.evaluation import (
-    r_precision,
-    precision_at_k,
-    recall_at_k,
+    average_precision,
+    dcg_at_k,
     f1_score_at_k,
     hit_at_k,
-    average_precision,
-    reciprocal_rank,
-    dcg_at_k,
     ndcg_at_k,
+    precision_at_k,
+    r_precision,
+    recall_at_k,
+    reciprocal_rank,
 )
 
 from .. import __default_tag_key__
 from ..embedding import embed
 
 if TYPE_CHECKING:
-    from ..helper import AnyDNN, DocumentSequence, PreprocFnType, CollateFnType
+    from ..helper import AnyDNN, CollateFnType, DocumentSequence, PreprocFnType
 
 
 METRICS = {
@@ -47,7 +49,6 @@ class Evaluator:
     ):
         """
         Build an Evaluator object that can be used to evaluate an embedding model on a retrieval task
-
         :param eval_data: A sequence of documents. Each document should contain ground truth matches under
             ``doc.matches`` and relevance scores under ``doc.tags[finetuner.__default_tag_key__]`` for each
             match.

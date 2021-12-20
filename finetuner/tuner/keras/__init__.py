@@ -1,20 +1,23 @@
-from typing import Optional, Union, TYPE_CHECKING
+import os
+import pickle
+from typing import TYPE_CHECKING, Optional, Union
 
+import keras
 import tensorflow as tf
 from keras.engine.data_adapter import KerasSequenceAdapter
+from tensorflow.keras.layers import Layer
 from tensorflow.keras.optimizers import Optimizer
 from tensorflow.keras.optimizers.schedules import LearningRateSchedule
-from tensorflow.keras.layers import Layer
 
-from . import losses
-from .data import KerasDataSequence
-from ..base import BaseTuner, BaseLoss
+from ... import __default_tag_key__
+from ..base import BaseLoss, BaseTuner
 from ..dataset import ClassDataset, SessionDataset
 from ..state import TunerState
-from ... import __default_tag_key__
+from . import losses
+from .data import KerasDataSequence
 
 if TYPE_CHECKING:
-    from ...helper import DocumentSequence, PreprocFnType, CollateFnType
+    from ...helper import CollateFnType, DocumentSequence, PreprocFnType
 
 
 class KerasTuner(

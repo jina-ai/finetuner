@@ -12,7 +12,6 @@ class WandBLogger(BaseCallback):
     """
     `Weights & Biases <https://wandb.ai/site>`_ logger to log metrics for training and
     validation.
-
     To use this logger, make sure to have a WandB account created, install the WandB
     client (which you can do using ``pip install wandb``) and (using ``wandb login`` or
     by setting the API key as environmental variable).
@@ -20,7 +19,6 @@ class WandBLogger(BaseCallback):
 
     def __init__(self, **kwargs):
         """Initialize the WandB logger
-
         :param kwargs: Keyword arguments that are passed to ``wandb.init`` function.
         """
 
@@ -52,6 +50,7 @@ class WandBLogger(BaseCallback):
         Called at the start of the evaluation batch, after the batch data has already
         been loaded.
         """
+
         self._val_losses.append(tuner.state.current_loss)
 
     def on_val_end(self, tuner: 'BaseTuner'):

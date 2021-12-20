@@ -7,14 +7,14 @@ from paddle.io import DataLoader
 from paddle.optimizer import Adam, Optimizer
 from paddle.optimizer.lr import LRScheduler
 
-from . import losses
-from .datasets import PaddleClassDataset, PaddleSessionDataset
+from ... import __default_tag_key__
 from ..base import BaseTuner
 from ..state import TunerState
-from ... import __default_tag_key__
+from . import losses
+from .datasets import PaddleClassDataset, PaddleSessionDataset
 
 if TYPE_CHECKING:
-    from ...helper import DocumentSequence, PreprocFnType, CollateFnType
+    from ...helper import CollateFnType, DocumentSequence, PreprocFnType
 
 
 def _to_device(
@@ -229,6 +229,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         :param args: Arguments to pass to ``paddle.save`` function
         :param kwargs: Keyword arguments to pass to ``paddle.save`` function
         """
+
         paddle.save(self.embed_model.state_dict(), *args, **kwargs)
 
 
