@@ -121,7 +121,6 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 self.state.learning_rates[f'group_{param_idx}'] = param_group['lr']
 
             self._trigger_callbacks('on_train_batch_begin')
-
             inputs = _to_device(inputs, self.device)
             labels = _to_device(labels, self.device)
 
@@ -136,37 +135,19 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 self._scheduler.step()
 
             self.state.current_loss = loss.item()
-
             self._trigger_callbacks('on_train_batch_end')
 
-    def fit(
+    def _fit(
         self,
         train_data: 'DocumentSequence',
         eval_data: Optional['DocumentSequence'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         num_workers: int = 0,
-        **kwargs,
     ):
-        """Finetune the model on the training data.
-        :param train_data: Data on which to train the model
-        :param eval_data: Data on which to evaluate the model at the end of each epoch
-        :param preprocess_fn: A pre-processing function. It should take as input the
-            content of an item in the dataset and return the pre-processed content
-        :param collate_fn: The collation function to merge the content of individual
-            items into a batch. Should accept a list with the content of each item,
-            and output a tensor (or a list/dict of tensors) that feed directly into the
-            embedding model
-        :param epochs: Number of epochs to train the model
-        :param batch_size: The batch size to use for training and evaluation
-        :param num_items_per_class: Number of items from a single class to include in
-            the batch. Only relevant for class datasets
-        :param num_workers: Number of workers used for loading the data.
-        """
         # Get dataloaders
         train_dl = self._get_data_loader(
             train_data,

@@ -143,17 +143,16 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
     def _default_configure_optimizer(self, model: AnyDNN) -> AnyOptimizer:
         """Get the default optimizer (Adam), if none was provided by user."""
 
-    def _trigger_callbacks(self, method: str):
+    def _trigger_callbacks(self, method: str, **kwargs):
         """Trigger the specified method on all callbacks"""
         for callback in self._callbacks:
-            getattr(callback, method)(self)
+            getattr(callback, method)(self, **kwargs)
 
     @property
     def embed_model(self) -> AnyDNN:
         """Get the base model of this object."""
         return self._embed_model
 
-    @abc.abstractmethod
     def fit(
         self,
         train_data: 'DocumentSequence',
@@ -186,6 +185,23 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
             a Keras model.
         """
 
+        try:
+            self._fit(
+                train_data,
+                eval_data,
+                epochs,
+                batch_size,
+                num_items_per_class,
+                preprocess_fn,
+                collate_fn,
+                num_workers,
+            )
+        except KeyboardInterrupt:
+            self._trigger_callbacks('on_keyboard_interrupt')
+        except BaseException as e:
+            self._trigger_callbacks('on_exception', exception=e)
+            raise
+
     @abc.abstractmethod
     def save(self, *args, **kwargs):
         """Save the weights of the :py:attr:`.embed_model`."""
@@ -208,6 +224,21 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         num_workers: int = 0,
     ) -> AnyDataLoader:
         """Get framework specific data loader from the input data."""
+        ...
+
+    @abc.abstractmethod
+    def _fit(
+        self,
+        train_data: 'DocumentSequence',
+        eval_data: Optional['DocumentSequence'] = None,
+        epochs: int = 10,
+        batch_size: int = 256,
+        num_items_per_class: Optional[int] = None,
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
+        num_workers: int = 0,
+    ):
+        """Fit the model (training and evaluation)"""
         ...
 
     @abc.abstractmethod
