@@ -196,8 +196,11 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
                 collate_fn,
                 num_workers,
             )
+        except KeyboardInterrupt:
+            self._trigger_callbacks('on_keyboard_interrupt')
         except BaseException as e:
             self._trigger_callbacks('on_exception', exception=e)
+            raise
 
     @abc.abstractmethod
     def save(self, *args, **kwargs):

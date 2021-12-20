@@ -136,6 +136,12 @@ class ProgressBarCallback(BaseCallback):
         """
         self._teardown()
 
+    def on_keyboard_interrupt(self, tuner: 'BaseTuner'):
+        """
+        Called when the tuner is interrupted by the user
+        """
+        self._teardown()
+
     def _teardown(self):
         """Stop the progress bar"""
         self.pbar.stop()

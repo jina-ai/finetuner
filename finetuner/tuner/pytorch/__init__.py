@@ -121,7 +121,6 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 self.state.learning_rates[f'group_{param_idx}'] = param_group['lr']
 
             self._trigger_callbacks('on_train_batch_begin')
-
             inputs = _to_device(inputs, self.device)
             labels = _to_device(labels, self.device)
 
@@ -136,7 +135,6 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 self._scheduler.step()
 
             self.state.current_loss = loss.item()
-
             self._trigger_callbacks('on_train_batch_end')
 
     def _fit(
