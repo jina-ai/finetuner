@@ -478,18 +478,17 @@
     <span class="k">def</span> <span class="nf">_default_configure_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">AnyDNN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyOptimizer</span><span class="p">:</span>
         <span class="sd">"""Get the default optimizer (Adam), if none was provided by user."""</span>
 
-    <span class="k">def</span> <span class="nf">_trigger_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_trigger_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">"""Trigger the specified method on all callbacks"""</span>
         <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">:</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">method</span><span class="p">)(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">method</span><span class="p">)(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">embed_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDNN</span><span class="p">:</span>
         <span class="sd">"""Get the base model of this object."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span>
 
-<div class="viewcode-block" id="BaseTuner.fit"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.fit">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+<div class="viewcode-block" id="BaseTuner.fit"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
         <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentSequence'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -519,7 +518,24 @@
 
 <span class="sd">            This works only with Pytorch and Paddle Paddle, and has no effect when using</span>
 <span class="sd">            a Keras model.</span>
-<span class="sd">        """</span></div>
+<span class="sd">        """</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span>
+                <span class="n">train_data</span><span class="p">,</span>
+                <span class="n">eval_data</span><span class="p">,</span>
+                <span class="n">epochs</span><span class="p">,</span>
+                <span class="n">batch_size</span><span class="p">,</span>
+                <span class="n">num_items_per_class</span><span class="p">,</span>
+                <span class="n">preprocess_fn</span><span class="p">,</span>
+                <span class="n">collate_fn</span><span class="p">,</span>
+                <span class="n">num_workers</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_callbacks</span><span class="p">(</span><span class="s1">'on_keyboard_interrupt'</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_callbacks</span><span class="p">(</span><span class="s1">'on_exception'</span><span class="p">,</span> <span class="n">exception</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span></div>
 
 <div class="viewcode-block" id="BaseTuner.save"><a class="viewcode-back" href="../../../../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.save">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -543,6 +559,21 @@
         <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyDataLoader</span><span class="p">:</span>
         <span class="sd">"""Get framework specific data loader from the input data."""</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
+        <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentSequence'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+        <span class="n">num_items_per_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'PreprocFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'CollateFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">"""Fit the model (training and evaluation)"""</span>
         <span class="o">...</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>

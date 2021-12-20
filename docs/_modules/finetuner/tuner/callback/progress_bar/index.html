@@ -460,7 +460,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_pbar_id</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ProgressBarCallback.on_fit_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.progress_bar/#finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_fit_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_fit_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div></div>
+        <span class="sd">"""</span>
+<span class="sd">        Called at the end of the ``fit`` method call, after finishing all the epochs.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_teardown</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ProgressBarCallback.on_exception"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.progress_bar/#finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_exception">[docs]</a>    <span class="k">def</span> <span class="nf">on_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">,</span> <span class="n">exception</span><span class="p">:</span> <span class="ne">BaseException</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Called when the tuner encounters an exception during execution.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_teardown</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ProgressBarCallback.on_keyboard_interrupt"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.progress_bar/#finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_keyboard_interrupt">[docs]</a>    <span class="k">def</span> <span class="nf">on_keyboard_interrupt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Called when the tuner is interrupted by the user</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_teardown</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Stop the progress bar"""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
 </pre></div>
             </article>
             <footer>

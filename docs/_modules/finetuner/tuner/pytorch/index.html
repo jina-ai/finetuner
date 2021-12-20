@@ -456,7 +456,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">learning_rates</span><span class="p">[</span><span class="sa">f</span><span class="s1">'group_</span><span class="si">{</span><span class="n">param_idx</span><span class="si">}</span><span class="s1">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_group</span><span class="p">[</span><span class="s1">'lr'</span><span class="p">]</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_callbacks</span><span class="p">(</span><span class="s1">'on_train_batch_begin'</span><span class="p">)</span>
-
             <span class="n">inputs</span> <span class="o">=</span> <span class="n">_to_device</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="n">_to_device</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
@@ -471,37 +470,19 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_callbacks</span><span class="p">(</span><span class="s1">'on_train_batch_end'</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PytorchTuner.fit"><a class="viewcode-back" href="../../../../api/finetuner.tuner.pytorch/#finetuner.tuner.pytorch.PytorchTuner.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
         <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentSequence'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
         <span class="n">num_items_per_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
         <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'PreprocFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'CollateFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">"""Finetune the model on the training data.</span>
-<span class="sd">        :param train_data: Data on which to train the model</span>
-<span class="sd">        :param eval_data: Data on which to evaluate the model at the end of each epoch</span>
-<span class="sd">        :param preprocess_fn: A pre-processing function. It should take as input the</span>
-<span class="sd">            content of an item in the dataset and return the pre-processed content</span>
-<span class="sd">        :param collate_fn: The collation function to merge the content of individual</span>
-<span class="sd">            items into a batch. Should accept a list with the content of each item,</span>
-<span class="sd">            and output a tensor (or a list/dict of tensors) that feed directly into the</span>
-<span class="sd">            embedding model</span>
-<span class="sd">        :param epochs: Number of epochs to train the model</span>
-<span class="sd">        :param batch_size: The batch size to use for training and evaluation</span>
-<span class="sd">        :param num_items_per_class: Number of items from a single class to include in</span>
-<span class="sd">            the batch. Only relevant for class datasets</span>
-<span class="sd">        :param num_workers: Number of workers used for loading the data.</span>
-<span class="sd">        """</span>
         <span class="c1"># Get dataloaders</span>
         <span class="n">train_dl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_loader</span><span class="p">(</span>
             <span class="n">train_data</span><span class="p">,</span>
@@ -557,7 +538,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_training</span><span class="p">:</span>
                 <span class="k">break</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_callbacks</span><span class="p">(</span><span class="s1">'on_fit_end'</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_callbacks</span><span class="p">(</span><span class="s1">'on_fit_end'</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PytorchTuner.save"><a class="viewcode-back" href="../../../../api/finetuner.tuner.pytorch/#finetuner.tuner.pytorch.PytorchTuner.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">"""Save the embedding model.</span>
