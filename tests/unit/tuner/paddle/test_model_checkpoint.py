@@ -22,10 +22,10 @@ def paddle_model() -> BaseTuner:
 def test_save_on_every_epoch_end(paddle_model: BaseTuner, tmpdir):
     checkpoint = TrainingCheckpoint(save_dir=tmpdir)
     tuner = PaddleTuner(embed_model=paddle_model)
-    tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
+    tuner.state = TunerState(epoch=0, batch_index=2, current_loss=1.1)
     checkpoint.on_epoch_end(tuner)
     assert os.listdir(tmpdir) == ['saved_model_epoch_01']
-    tuner.state = TunerState(epoch=1, batch_index=2, train_loss=0.5)
+    tuner.state = TunerState(epoch=1, batch_index=2, current_loss=0.5)
     checkpoint.on_epoch_end(tuner)
     assert os.listdir(tmpdir) == ['saved_model_epoch_02']
 
@@ -34,7 +34,7 @@ def test_same_model(paddle_model: BaseTuner, tmpdir):
 
     tuner = PaddleTuner(paddle_model)
     checkpoint = TrainingCheckpoint(save_dir=tmpdir)
-    tuner.state = TunerState(epoch=1, batch_index=2, train_loss=1.1)
+    tuner.state = TunerState(epoch=1, batch_index=2, current_loss=1.1)
     checkpoint.on_epoch_end(tuner)
 
     checkpoint = paddle.load(os.path.join(tmpdir, 'saved_model_epoch_02'))
@@ -69,17 +69,17 @@ def test_load_model(paddle_model: BaseTuner, tmpdir):
     before_stop_tuner = PaddleTuner(
         paddle_model, configure_optimizer=get_optimizer_and_scheduler
     )
-    before_stop_tuner.state = TunerState(epoch=10, batch_index=2, train_loss=1.1)
+    before_stop_tuner.state = TunerState(epoch=10, batch_index=2, current_loss=1.1)
 
     after_stop_tuner = PaddleTuner(
         new_model, configure_optimizer=get_optimizer_and_scheduler_different_parameters
     )
-    after_stop_tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
+    after_stop_tuner.state = TunerState(epoch=0, batch_index=2, current_loss=1.1)
 
     checkpoint = TrainingCheckpoint(save_dir=tmpdir)
     checkpoint.on_epoch_end(before_stop_tuner)
 
-    checkpoint.load_model(
+    checkpoint.load(
         after_stop_tuner, os.path.join(tmpdir, 'saved_model_epoch_11')
     )
 
@@ -105,18 +105,18 @@ def test_save_best_only(paddle_model: BaseTuner, tmpdir):
 
     checkpoint = BestModelCheckpoint(save_dir=tmpdir, monitor='train_loss')
     tuner = PaddleTuner(embed_model=paddle_model)
-    tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
+    tuner.state = TunerState(epoch=0, batch_index=2, current_loss=1.1)
     checkpoint.on_train_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert os.listdir(tmpdir) == ['best_model_train_loss']
     creation_time = os.path.getmtime(os.path.join(tmpdir, 'best_model_train_loss'))
-    tuner.state = TunerState(epoch=1, batch_index=2, train_loss=1.5)
+    tuner.state = TunerState(epoch=1, batch_index=2, current_loss=1.5)
     checkpoint.on_train_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert creation_time == os.path.getmtime(
         os.path.join(tmpdir, 'best_model_train_loss')
     )
-    tuner.state = TunerState(epoch=2, batch_index=2, train_loss=0.5)
+    tuner.state = TunerState(epoch=2, batch_index=2, current_loss=0.5)
     time.sleep(2)
     checkpoint.on_train_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
@@ -131,13 +131,13 @@ def test_load_best_model(paddle_model: BaseTuner, tmpdir):
     checkpoint = BestModelCheckpoint(tmpdir)
 
     before_tuner = PaddleTuner(embed_model=paddle_model)
-    before_tuner.state = TunerState(epoch=0, batch_index=2, val_loss=1.1)
+    before_tuner.state = TunerState(epoch=0, batch_index=2, current_loss=1.1)
 
     checkpoint.on_val_batch_end(before_tuner)
     checkpoint.on_epoch_end(before_tuner)
 
     after_tuner = PaddleTuner(embed_model=new_model)
-    after_tuner.state = TunerState(epoch=1, batch_index=2, val_loss=0)
+    after_tuner.state = TunerState(epoch=1, batch_index=2, current_loss=0)
 
     assert os.listdir(tmpdir) == ['best_model_val_loss']
     checkpoint.load_model(after_tuner, fp=os.path.join(tmpdir, 'best_model_val_loss'))
