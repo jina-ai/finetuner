@@ -220,6 +220,25 @@ def expected_results():
 
 
 @pytest.fixture
+def exception_callback():
+    class ExceptionCallback(BaseCallback):
+        def __init__(self, exception):
+            self.exception = exception
+            self.calls = []
+
+        def on_fit_begin(self, tuner):
+            raise self.exception
+
+        def on_exception(self, tuner, exception):
+            self.calls.append('on_exception')
+
+        def on_keyboard_interrupt(self, tuner):
+            self.calls.append('on_keyboard_interrupt')
+
+    return ExceptionCallback
+
+
+@pytest.fixture
 def results_lr():
     """
     Get recorded learning rates for the exponential scheduler test
