@@ -79,9 +79,7 @@ def test_load_model(paddle_model: BaseTuner, tmpdir):
     checkpoint = TrainingCheckpoint(save_dir=tmpdir)
     checkpoint.on_epoch_end(before_stop_tuner)
 
-    checkpoint.load(
-        after_stop_tuner, os.path.join(tmpdir, 'saved_model_epoch_11')
-    )
+    checkpoint.load(after_stop_tuner, os.path.join(tmpdir, 'saved_model_epoch_11'))
 
     assert after_stop_tuner.state.epoch == 11
 
