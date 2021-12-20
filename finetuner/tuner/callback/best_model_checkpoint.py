@@ -48,10 +48,6 @@ class BestModelCheckpoint(BaseCallback):
         self._monitor = monitor
         self._train_losses = []
         self._valid_losses = []
-        if not save_dir:
-            raise ValueError(
-                '``save_dir`` parameter is mandatory. Pass it in parameters'
-            )
 
         if mode not in ['auto', 'min', 'max']:
             self._logger.logger.warning(
@@ -82,10 +78,10 @@ class BestModelCheckpoint(BaseCallback):
         self._valid_losses = []
 
     def on_train_batch_end(self, tuner: 'BaseTuner'):
-        self._train_losses.append(tuner.state.train_loss)
+        self._train_losses.append(tuner.state.current_loss)
 
     def on_val_batch_end(self, tuner: 'BaseTuner'):
-        self._valid_losses.append(tuner.state.val_loss)
+        self._valid_losses.append(tuner.state.current_loss)
 
     def _save_model(self, tuner):
         if self._monitor == 'val_loss':

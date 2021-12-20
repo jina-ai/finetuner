@@ -47,7 +47,7 @@ def test_epoch_end(keras_model: BaseTuner, tmpdir):
     checkpoint = TrainingCheckpoint(save_dir=tmpdir)
 
     tuner = KerasTuner(embed_model=keras_model)
-    tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
+    tuner.state = TunerState(epoch=0, batch_index=2, current_loss=1.1)
 
     checkpoint.on_epoch_end(tuner)
 

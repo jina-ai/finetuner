@@ -31,10 +31,6 @@ class TrainingCheckpoint(BaseCallback):
         self._save_dir = save_dir
         self._last_k_epochs = last_k_epochs
         self._saved_checkpoints = []
-        if not save_dir:
-            raise ValueError(
-                '``save_dir`` parameter is mandatory. Pass it in parameters'
-            )
 
     def on_epoch_end(self, tuner: 'BaseTuner'):
         """
@@ -61,49 +57,30 @@ class TrainingCheckpoint(BaseCallback):
         depending on its framework.
         """
         if get_framework(tuner.embed_model) == 'keras':
-            tuner.save(
-                filepath=self._get_file_path(tuner),
-            )
-            state = {
-                'epoch': tuner.state.epoch + 1,
-            }
+            tuner.save(filepath=self._get_file_path(tuner))
+            state = {'epoch': tuner.state.epoch + 1}
             with open(
                 os.path.join(self._get_file_path(tuner), 'saved_state.pkl'), 'wb'
             ) as f:
                 pickle.dump(state, f)
         elif get_framework(tuner.embed_model) == 'torch':
+            state = {
+                'epoch': tuner.state.epoch + 1,
+                'state_dict': tuner.embed_model.state_dict(),
+                'optimizer': tuner._optimizer.state_dict(),
+            }
             if tuner._scheduler and hasattr(tuner._scheduler, 'state_dict'):
-                state = {
-                    'epoch': tuner.state.epoch + 1,
-                    'state_dict': tuner.embed_model.state_dict(),
-                    'optimizer': tuner._optimizer.state_dict(),
-                    'scheduler': tuner._scheduler.state_dict(),
-                }
-            else:
-                state = {
-                    'epoch': tuner.state.epoch + 1,
-                    'state_dict': tuner.embed_model.state_dict(),
-                    'optimizer': tuner._optimizer.state_dict(),
-                    'scheduler': None,
-                }
-
+                state['scheduler'] = tuner._scheduler.state_dict()
             torch.save(state, f=self._get_file_path(tuner))
-        elif get_framework(tuner.embed_model) == 'paddle':
-            if tuner._scheduler and hasattr(tuner._scheduler, 'state_dict'):
-                state = {
-                    'epoch': tuner.state.epoch + 1,
-                    'state_dict': tuner.embed_model.state_dict(),
-                    'optimizer': tuner._optimizer.state_dict(),
-                    'scheduler': tuner._scheduler.state_dict(),
-                }
-            else:
-                state = {
-                    'epoch': tuner.state.epoch + 1,
-                    'state_dict': tuner.embed_model.state_dict(),
-                    'optimizer': tuner._optimizer.state_dict(),
-                    'scheduler': None,
-                }
 
+        elif get_framework(tuner.embed_model) == 'paddle':
+            state = {
+                'epoch': tuner.state.epoch + 1,
+                'state_dict': tuner.embed_model.state_dict(),
+                'optimizer': tuner._optimizer.state_dict(),
+            }
+            if tuner._scheduler and hasattr(tuner._scheduler, 'state_dict'):
+                state['scheduler'] = tuner._scheduler.state_dict()
             paddle.save(state, path=self._get_file_path(tuner))
         self._saved_checkpoints.append(self._get_file_path(tuner))
 
@@ -118,7 +95,7 @@ class TrainingCheckpoint(BaseCallback):
         return file_path
 
     @staticmethod
-    def load_model(tuner: 'BaseTuner', fp: str):
+    def load(tuner: 'BaseTuner', fp: str):
         """
         Loads the model and tuner state
         """

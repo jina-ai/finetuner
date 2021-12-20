@@ -57,7 +57,7 @@ def test_last_k_epochs_file(pytorch_model: BaseTuner, tmpdir):
     tuner = PytorchTuner(embed_model=pytorch_model)
     for epoch in range(4):
         tuner.state = TunerState(
-            epoch=epoch, batch_index=2, train_loss=1.1, num_epochs=10
+            epoch=epoch, batch_index=2, current_loss=1.1, num_epochs=10
         )
         checkpoint.on_epoch_end(tuner)
     assert set(os.listdir(tmpdir)) == {
@@ -67,7 +67,7 @@ def test_last_k_epochs_file(pytorch_model: BaseTuner, tmpdir):
     }
     for epoch in range(4, 10):
         tuner.state = TunerState(
-            epoch=epoch, batch_index=2, train_loss=1.1, num_epochs=10
+            epoch=epoch, batch_index=2, current_loss=1.1, num_epochs=10
         )
         checkpoint.on_epoch_end(tuner)
     assert set(os.listdir(tmpdir)) == {
@@ -82,7 +82,7 @@ def test_last_k_epochs_folder(keras_model: BaseTuner, tmpdir):
     tuner = KerasTuner(embed_model=keras_model)
     for epoch in range(4):
         tuner.state = TunerState(
-            epoch=epoch, batch_index=2, train_loss=1.1, num_epochs=10
+            epoch=epoch, batch_index=2, current_loss=1.1, num_epochs=10
         )
         checkpoint.on_epoch_end(tuner)
     assert set(os.listdir(tmpdir)) == {
@@ -92,7 +92,7 @@ def test_last_k_epochs_folder(keras_model: BaseTuner, tmpdir):
     }
     for epoch in range(4, 10):
         tuner.state = TunerState(
-            epoch=epoch, batch_index=2, train_loss=1.1, num_epochs=10
+            epoch=epoch, batch_index=2, current_loss=1.1, num_epochs=10
         )
         checkpoint.on_epoch_end(tuner)
     assert set(os.listdir(tmpdir)) == {

@@ -36,7 +36,7 @@ def test_epoch_end(paddle_model: BaseTuner, tmpdir):
     checkpoint = TrainingCheckpoint(save_dir=tmpdir)
 
     tuner = PaddleTuner(embed_model=paddle_model)
-    tuner.state = TunerState(epoch=0, batch_index=2, train_loss=1.1)
+    tuner.state = TunerState(epoch=0, batch_index=2, current_loss=1.1)
 
     checkpoint.on_epoch_end(tuner)
 

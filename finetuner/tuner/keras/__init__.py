@@ -95,7 +95,6 @@ class KerasTuner(
                 zip(grads, self._embed_model.trainable_weights)
             )
 
-            self.state.train_loss = loss.numpy()
             self.state.current_loss = loss.numpy()
             self._trigger_callbacks('on_train_batch_end')
 
@@ -111,7 +110,6 @@ class KerasTuner(
             embeddings = self._embed_model(inputs)
             loss = self._loss(embeddings, labels)
 
-            self.state.val_loss = loss.numpy()
             self.state.current_loss = loss.numpy()
             self._trigger_callbacks('on_val_batch_end')
 

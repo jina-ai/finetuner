@@ -16,5 +16,3 @@ class TunerState:
     current_loss: float = 0.0
 
     learning_rates: Dict[str, float] = field(default_factory=lambda: {})
-    train_loss: float = 0.0
-    val_loss: float = 0.0
