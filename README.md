@@ -62,7 +62,7 @@ pip install finetuner
 </thead>
 <tbody>
   <tr>
-    <td rowspan="2"><b>Do you have <a href="https://finetuner.jina.ai/basics/glossary/#term-Labeled-data">labeled data</a>?</b></td>
+    <td rowspan="2"><b>Do you have <a href="https://finetuner.jina.ai/basics/glossary/#term-Labeled-dataset">labeled data</a>?</b></td>
     <td><b>Yes</b></td>
     <td align="center">🟠</td>
     <td align="center">🟡</td>

@@ -17,11 +17,11 @@ def test_gpu(generate_random_data, loss):
 
     data = generate_random_data(40, 4)
     embed_model = torch.nn.Sequential(torch.nn.Linear(in_features=4, out_features=4))
-    tuner = PytorchTuner(embed_model, loss)
+    tuner = PytorchTuner(embed_model, loss, device='cuda')
 
     # Run quick training - mainly makes sure no errors appear, and that the model is
     # moved to GPU
-    tuner.fit(data, data, epochs=2, batch_size=8, device='cuda')
+    tuner.fit(data, data, epochs=2, batch_size=8)
 
     # Test the model was moved (by checking one of its parameters)
     assert next(embed_model.parameters()).device.type == 'cuda'
@@ -33,11 +33,11 @@ def test_gpu_session(generate_random_session_data, loss):
 
     data = generate_random_session_data(40, 4)
     embed_model = torch.nn.Sequential(torch.nn.Linear(in_features=4, out_features=4))
-    tuner = PytorchTuner(embed_model, loss)
+    tuner = PytorchTuner(embed_model, loss, device='cuda')
 
     # Run quick training - mainly makes sure no errors appear, and that the model is
     # moved to GPU
-    tuner.fit(data, data, epochs=2, batch_size=9, device='cuda')
+    tuner.fit(data, data, epochs=2, batch_size=9)
 
     # Test the model was moved (by checking one of its parameters)
     assert next(embed_model.parameters()).device.type == 'cuda'

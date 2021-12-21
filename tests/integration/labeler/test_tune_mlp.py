@@ -130,7 +130,9 @@ def test_all_frameworks(framework, loss, tmpdir):
             f'http://localhost:{port}/save',
             json={
                 'data': [],
-                'parameters': {'model_path': model_path},
+                'parameters': {
+                    'model_path': model_path,
+                },
             },
         )
         assert req.status_code == 200

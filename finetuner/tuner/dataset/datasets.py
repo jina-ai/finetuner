@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 class ClassDataset(BaseDataset[int]):
-    """ Dataset for enapsulating data where each item has a class label."""
+    """Dataset for enapsulating data where each item has a class label."""
 
     def __init__(
         self,
@@ -75,7 +75,7 @@ class ClassDataset(BaseDataset[int]):
 
     @property
     def labels(self) -> List[int]:
-        """ Get the list of integer labels for all items in the dataset."""
+        """Get the list of integer labels for all items in the dataset."""
         return self._labels
 
 

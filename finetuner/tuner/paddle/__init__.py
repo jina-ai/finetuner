@@ -5,15 +5,16 @@ from paddle import nn
 from paddle.fluid.dataloader.dataloader_iter import default_collate_fn
 from paddle.io import DataLoader
 from paddle.optimizer import Adam, Optimizer
+from paddle.optimizer.lr import LRScheduler
 
-from . import losses
-from .datasets import PaddleClassDataset, PaddleSessionDataset
+from ... import __default_tag_key__
 from ..base import BaseTuner
 from ..state import TunerState
-from ... import __default_tag_key__
+from . import losses
+from .datasets import PaddleClassDataset, PaddleSessionDataset
 
 if TYPE_CHECKING:
-    from ...helper import DocumentSequence, PreprocFnType, CollateFnType
+    from ...helper import CollateFnType, DocumentSequence, PreprocFnType
 
 
 def _to_device(
@@ -28,7 +29,7 @@ def _to_device(
         return [paddle.to_tensor(x, place=device) for x in inputs]
 
 
-class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
+class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
     def _get_loss(self, loss: Union[nn.Layer, str]) -> nn.Layer:
         """Get the loss layer."""
         if isinstance(loss, str):
@@ -44,6 +45,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
+        num_workers: int = 0,
     ) -> DataLoader:
         """Get the dataloader for the dataset"""
 
@@ -69,17 +71,23 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
             num_items_per_class=num_items_per_class,
         )
         data_loader = DataLoader(
-            dataset=dataset, batch_sampler=batch_sampler, collate_fn=collate_fn_all
+            dataset=dataset,
+            batch_sampler=batch_sampler,
+            collate_fn=collate_fn_all,
+            num_workers=num_workers,
         )
 
         return data_loader
 
-    def _get_default_optimizer(self, learning_rate: float) -> Optimizer:
+    def _move_model_to_device(self):
+        """Move the model to device and set device"""
+        self.device = get_device(self._device_name)
+        self._embed_model.to(device=self.device)
+
+    def _default_configure_optimizer(self, model: nn.Layer) -> Optimizer:
         """Get the default optimizer (Adam), if none was provided by user."""
 
-        return Adam(
-            parameters=self._embed_model.parameters(), learning_rate=learning_rate
-        )
+        return Adam(parameters=model.parameters(), learning_rate=self._learning_rate)
 
     def _eval(self, data: DataLoader):
         """Evaluate the model on given labeled data"""
@@ -105,7 +113,11 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
         self._embed_model.train()
 
         for idx, (inputs, labels) in enumerate(data):
+
+            # Set state variables
+            self.state.learning_rates['learning_rate'] = self._optimizer.get_lr()
             self.state.batch_index = idx
+
             self._trigger_callbacks('on_train_batch_begin')
 
             inputs = _to_device(inputs, self.device)
@@ -118,45 +130,24 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
             loss.backward()
             self._optimizer.step()
 
+            if self._scheduler_step == 'batch' and self._scheduler is not None:
+                self._scheduler.step()
+
             self.state.current_loss = loss.item()
 
             self._trigger_callbacks('on_train_batch_end')
 
-    def fit(
+    def _fit(
         self,
         train_data: 'DocumentSequence',
         eval_data: Optional['DocumentSequence'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        optimizer: Optional[Optimizer] = None,
-        learning_rate: float = 1e-3,
-        device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
-        **kwargs,
+        num_workers: int = 0,
     ):
-        """Finetune the model on the training data.
-        :param train_data: Data on which to train the model
-        :param eval_data: Data on which to evaluate the model at the end of each epoch
-        :param preprocess_fn: A pre-processing function. It should take as input the
-            content of an item in the dataset and return the pre-processed content
-        :param collate_fn: The collation function to merge the content of individual
-            items into a batch. Should accept a list with the content of each item,
-            and output a tensor (or a list/dict of tensors) that feed directly into the
-            embedding model
-        :param epochs: Number of epochs to train the model
-        :param batch_size: The batch size to use for training and evaluation
-        :param num_items_per_class: Number of items from a single class to include in
-            the batch. Only relevant for class datasets
-        :param optimizer: The optimizer to use for training. If none is passed, an
-            Adam optimizer is used by default, with learning rate specified by the
-            ``learning_rate`` parameter.
-        :param learning_rate: Learning rate for the default optimizer. If you
-            provide a custom optimizer, this learning rate will not apply.
-        :param device: The device to which to move the model. Supported options are
-            ``"cpu"`` and ``"cuda"`` (for GPU)
-        """
         # Get dataloaders
         train_dl = self._get_data_loader(
             train_data,
@@ -165,6 +156,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
             shuffle=True,
             preprocess_fn=preprocess_fn,
             collate_fn=collate_fn,
+            num_workers=num_workers,
         )
         if eval_data:
             eval_dl = self._get_data_loader(
@@ -174,14 +166,8 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
                 shuffle=False,
                 preprocess_fn=preprocess_fn,
                 collate_fn=collate_fn,
+                num_workers=num_workers,
             )
-
-        # Place model on device
-        self.device = get_device(device)
-        self._embed_model.to(device=self.device)
-
-        # Create optimizer
-        self._optimizer = optimizer or self._get_default_optimizer(learning_rate)
 
         # Set state
         self.state = TunerState(num_epochs=epochs)
@@ -198,6 +184,10 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
 
             self._trigger_callbacks('on_train_epoch_begin')
             self._train(train_dl)
+
+            if self._scheduler_step == 'epoch' and self._scheduler is not None:
+                self._scheduler.step()
+
             self._trigger_callbacks('on_train_epoch_end')
 
             if eval_data:
@@ -209,6 +199,8 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
                 self._trigger_callbacks('on_val_end')
 
             self._trigger_callbacks('on_epoch_end')
+            if self.stop_training:
+                break
 
         self._trigger_callbacks('on_fit_end')
 
@@ -221,6 +213,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer]):
         :param args: Arguments to pass to ``paddle.save`` function
         :param kwargs: Keyword arguments to pass to ``paddle.save`` function
         """
+
         paddle.save(self.embed_model.state_dict(), *args, **kwargs)
 
 

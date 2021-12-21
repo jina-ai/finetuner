@@ -1,21 +1,28 @@
-from typing import Optional, Union, TYPE_CHECKING
+import os
+import pickle
+from typing import TYPE_CHECKING, Optional, Union
 
+import keras
 import tensorflow as tf
 from keras.engine.data_adapter import KerasSequenceAdapter
+from tensorflow.keras.layers import Layer
 from tensorflow.keras.optimizers import Optimizer
+from tensorflow.keras.optimizers.schedules import LearningRateSchedule
 
-from . import losses
-from .data import KerasDataSequence
-from ..base import BaseTuner, BaseLoss
+from ... import __default_tag_key__
+from ..base import BaseLoss, BaseTuner
 from ..dataset import ClassDataset, SessionDataset
 from ..state import TunerState
-from ... import __default_tag_key__
+from . import losses
+from .data import KerasDataSequence
 
 if TYPE_CHECKING:
-    from ...helper import DocumentSequence, PreprocFnType, CollateFnType
+    from ...helper import CollateFnType, DocumentSequence, PreprocFnType
 
 
-class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimizer]):
+class KerasTuner(
+    BaseTuner[Layer, KerasSequenceAdapter, Optimizer, LearningRateSchedule]
+):
     def _get_loss(self, loss: Union[BaseLoss, str]) -> BaseLoss:
         """Get the loss layer."""
         if isinstance(loss, str):
@@ -31,6 +38,7 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
+        num_workers: int = 0,
     ) -> KerasSequenceAdapter:
         """Get the dataloader for the dataset
 
@@ -56,16 +64,26 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
         adapter = KerasSequenceAdapter(sequence)
         return adapter
 
-    def _get_default_optimizer(self, learning_rate: float) -> Optimizer:
-        """Get the default optimizer (Adam), if none was provided by user."""
+    def _move_model_to_device(self):
+        """Move the model to device and set device"""
+        # This does nothing as explicit device placement is not required in Keras
 
-        return tf.keras.optimizers.Adam(learning_rate=learning_rate)
+    def _default_configure_optimizer(self, model: Layer) -> Optimizer:
+        """Get the default Adam optimizer"""
+        optimizer = tf.keras.optimizers.Adam(learning_rate=self._learning_rate)
+        return optimizer
 
     def _train(self, data: KerasSequenceAdapter):
         """Train the model on given labeled data"""
 
         for idx, (inputs, labels) in enumerate(data.get_dataset()):
+
+            # Set state variables
             self.state.batch_index = idx
+            self.state.learning_rates['learning_rate'] = self._optimizer._decayed_lr(
+                tf.float32
+            ).numpy()
+
             self._trigger_callbacks('on_train_batch_begin')
 
             with tf.GradientTape() as tape:
@@ -97,42 +115,17 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
 
         data.on_epoch_end()  # To re-create batches
 
-    def fit(
+    def _fit(
         self,
         train_data: 'DocumentSequence',
         eval_data: Optional['DocumentSequence'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        optimizer: Optional[Optimizer] = None,
-        learning_rate: float = 1e-3,
-        device: str = 'cpu',
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
-        **kwargs,
+        num_workers: int = 0,
     ):
-        """Finetune the model on the training data.
-        :param train_data: Data on which to train the model
-        :param eval_data: Data on which to evaluate the model at the end of each epoch
-        :param preprocess_fn: A pre-processing function. It should take as input the
-            content of an item in the dataset and return the pre-processed content
-        :param collate_fn: The collation function to merge the content of individual
-            items into a batch. Should accept a list with the content of each item,
-            and output a tensor (or a list/dict of tensors) that feed directly into the
-            embedding model
-        :param epochs: Number of epochs to train the model
-        :param batch_size: The batch size to use for training and evaluation
-        :param num_items_per_class: Number of items from a single class to include in
-            the batch. Only relevant for class datasets
-        :param optimizer: The optimizer to use for training. If none is passed, an
-            Adam optimizer is used by default, with learning rate specified by the
-            ``learning_rate`` parameter.
-        :param learning_rate: Learning rate for the default optimizer. If you
-            provide a custom optimizer, this learning rate will not apply.
-        :param device: The device to which to move the model. Supported options are
-            ``"cpu"`` and ``"cuda"`` (for GPU)
-        """
-
         # Get dataloaders
         train_dl = self._get_data_loader(
             train_data,
@@ -152,14 +145,11 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
                 collate_fn=collate_fn,
             )
 
-        # Create optimizer
-        self._optimizer = optimizer or self._get_default_optimizer(learning_rate)
-
         # Set state
         self.state = TunerState(num_epochs=epochs)
         self._trigger_callbacks('on_fit_begin')
 
-        with get_device(device):
+        with get_device(self._device_name):
             for epoch in range(epochs):
 
                 # Setting here as re-shuffling can change number of batches
@@ -182,6 +172,9 @@ class KerasTuner(BaseTuner[tf.keras.layers.Layer, KerasSequenceAdapter, Optimize
                     self._trigger_callbacks('on_val_end')
 
                 self._trigger_callbacks('on_epoch_end')
+
+                if self.stop_training:
+                    break
 
             self._trigger_callbacks('on_fit_end')
 

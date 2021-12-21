@@ -1,3 +1,6 @@
+from copy import deepcopy
+from time import perf_counter, sleep
+
 import numpy as np
 import pytest
 from finetuner import __default_tag_key__
@@ -109,69 +112,75 @@ def create_easy_data_session():
     return create_easy_data_fn
 
 
-class RecordCallback(BaseCallback):
-    def __init__(self):
-        self.calls = []
-        self.epochs = []
-        self.batch_idx = []
-        self.num_epochs = []
-        self.num_batches_train = []
-        self.num_batches_val = []
+@pytest.fixture
+def record_callback():
+    class RecordCallback(BaseCallback):
+        def __init__(self):
+            self.calls = []
+            self.epochs = []
+            self.batch_idx = []
+            self.num_epochs = []
+            self.num_batches_train = []
+            self.num_batches_val = []
+            self.learning_rates = []
 
-    def _record(self, tuner):
-        self.epochs.append(tuner.state.epoch)
-        self.batch_idx.append(tuner.state.batch_index)
-        self.num_epochs.append(tuner.state.num_epochs)
-        self.num_batches_train.append(tuner.state.num_batches_train)
-        self.num_batches_val.append(tuner.state.num_batches_val)
+        def _record(self, tuner):
+            self.epochs.append(tuner.state.epoch)
+            self.batch_idx.append(tuner.state.batch_index)
+            self.num_epochs.append(tuner.state.num_epochs)
+            self.num_batches_train.append(tuner.state.num_batches_train)
+            self.num_batches_val.append(tuner.state.num_batches_val)
+            self.learning_rates.append(deepcopy(tuner.state.learning_rates))
 
-    def on_fit_begin(self, tuner):
-        self.calls.append('on_fit_begin')
-        self._record(tuner)
+        def on_fit_begin(self, tuner):
+            self.calls.append('on_fit_begin')
+            self._record(tuner)
 
-    def on_epoch_begin(self, tuner):
-        self.calls.append('on_epoch_begin')
-        self._record(tuner)
+        def on_epoch_begin(self, tuner):
+            self.calls.append('on_epoch_begin')
+            self._record(tuner)
 
-    def on_train_epoch_begin(self, tuner):
-        self.calls.append('on_train_epoch_begin')
-        self._record(tuner)
+        def on_train_epoch_begin(self, tuner):
+            self.calls.append('on_train_epoch_begin')
+            self._record(tuner)
 
-    def on_train_batch_begin(self, tuner):
-        self.calls.append('on_train_batch_begin')
-        self._record(tuner)
+        def on_train_batch_begin(self, tuner):
+            self.calls.append('on_train_batch_begin')
+            self._record(tuner)
 
-    def on_train_batch_end(self, tuner):
-        self.calls.append('on_train_batch_end')
-        self._record(tuner)
+        def on_train_batch_end(self, tuner):
+            self.calls.append('on_train_batch_end')
+            self._record(tuner)
 
-    def on_train_epoch_end(self, tuner):
-        self.calls.append('on_train_epoch_end')
-        self._record(tuner)
+        def on_train_epoch_end(self, tuner):
+            self.calls.append('on_train_epoch_end')
+            self._record(tuner)
 
-    def on_val_begin(self, tuner):
-        self.calls.append('on_val_begin')
-        self._record(tuner)
+        def on_val_begin(self, tuner):
+            self.calls.append('on_val_begin')
+            self._record(tuner)
 
-    def on_val_batch_begin(self, tuner):
-        self.calls.append('on_val_batch_begin')
-        self._record(tuner)
+        def on_val_batch_begin(self, tuner):
+            self.calls.append('on_val_batch_begin')
+            self._record(tuner)
 
-    def on_val_batch_end(self, tuner):
-        self.calls.append('on_val_batch_end')
-        self._record(tuner)
+        def on_val_batch_end(self, tuner):
+            self.calls.append('on_val_batch_end')
+            self._record(tuner)
 
-    def on_val_end(self, tuner):
-        self.calls.append('on_val_end')
-        self._record(tuner)
+        def on_val_end(self, tuner):
+            self.calls.append('on_val_end')
+            self._record(tuner)
 
-    def on_epoch_end(self, tuner):
-        self.calls.append('on_epoch_end')
-        self._record(tuner)
+        def on_epoch_end(self, tuner):
+            self.calls.append('on_epoch_end')
+            self._record(tuner)
 
-    def on_fit_end(self, tuner):
-        self.calls.append('on_fit_end')
-        self._record(tuner)
+        def on_fit_end(self, tuner):
+            self.calls.append('on_fit_end')
+            self._record(tuner)
+
+    return RecordCallback()
 
 
 @pytest.fixture
@@ -208,3 +217,110 @@ def expected_results():
         ('on_epoch_end', 1, 0, 2, 2, 1),
         ('on_fit_end', 1, 0, 2, 2, 1),
     ]
+
+
+@pytest.fixture
+def exception_callback():
+    class ExceptionCallback(BaseCallback):
+        def __init__(self, exception):
+            self.exception = exception
+            self.calls = []
+
+        def on_fit_begin(self, tuner):
+            raise self.exception
+
+        def on_exception(self, tuner, exception):
+            self.calls.append('on_exception')
+
+        def on_keyboard_interrupt(self, tuner):
+            self.calls.append('on_keyboard_interrupt')
+
+    return ExceptionCallback
+
+
+@pytest.fixture
+def results_lr():
+    """
+    Get recorded learning rates for the exponential scheduler test
+    """
+
+    def get_results(scheduler_step):
+        if scheduler_step == 'batch':
+            return [
+                None,
+                None,
+                None,
+                1,
+                1,
+                1e-1,
+                1e-1,
+                1e-1,
+                1e-1,
+                1e-1,
+                1e-1,
+                1e-2,
+                1e-2,
+                1e-3,
+                1e-3,
+                1e-3,
+                1e-3,
+                1e-3,
+            ]
+        elif scheduler_step == 'epoch':
+            return [
+                None,
+                None,
+                None,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1e-1,
+                1e-1,
+                1e-1,
+                1e-1,
+                1e-1,
+                1e-1,
+                1e-1,
+            ]
+
+    return get_results
+
+
+@pytest.fixture
+def multi_workers_callback():
+    """
+    Used to time training and artifically set each bath to last 1 second,
+    to check that multi-process loading works well.
+    """
+
+    class TrainingTimer(BaseCallback):
+        def __init__(self):
+            self.batch_times = []
+            self._start = None
+
+        def on_train_batch_begin(self, tuner):
+            if self._start:
+                self.batch_times.append(perf_counter() - self._start)
+            self._start = perf_counter()
+            sleep(1)  # "Training" should take exactly one second
+
+    return TrainingTimer()
+
+
+@pytest.fixture
+def multi_workers_preprocess_fn():
+    """
+    A preprocessing function that delays preprocessing of each item by one second
+    """
+
+    def preprocess_fn(d: Document):
+        sleep(1)
+
+        return d.content
+
+    return preprocess_fn

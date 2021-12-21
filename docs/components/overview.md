@@ -1,6 +1,6 @@
 # Overview
 
-Finetuner project is composed of three components:
+The Finetuner project is composed of three components:
 - **Tuner**: to tune any embedding model for better embedding on labeled data;
 - **Tailor**: to convert any deep neural network into an embedding model;
 - **Labeler**: a UI for interactive labeling and conducting [active learning](https://en.wikipedia.org/wiki/Active_learning_(machine_learning)) via Tuner.

@@ -1,3 +1,4 @@
+(class_dataset)=
 # Class Dataset
 
 A {class}`~fintuner.tuner.dataset.ClassDataset` is a `DocumentArray`, in which each `Document` has a discrete label stored under `.tags['finetuner_label']`, e.g. `red/black/white/yellow`, `shirt/tops/hats`.

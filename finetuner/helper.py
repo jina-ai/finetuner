@@ -7,7 +7,6 @@ from typing import (
     Any,
     TYPE_CHECKING,
     Callable,
-    Optional,
     Union,
 )
 
@@ -24,7 +23,9 @@ AnyDataLoader = TypeVar(
 AnyOptimizer = TypeVar(
     'AnyOptimizer'
 )  #: The type of any implementation of an optimizer for training the model
-
+AnyScheduler = TypeVar(
+    'AnyScheduler'
+)  #: The type of any implementation of a learning rate scheduler
 
 if TYPE_CHECKING:
     from jina import Document, DocumentArray, DocumentArrayMemmap

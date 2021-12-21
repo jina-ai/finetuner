@@ -1,10 +1,9 @@
+import pytest
 import torch
 from finetuner.tuner.pytorch import PytorchTuner
 
-from ..conftest import RecordCallback
 
-
-def test_basic_callback(generate_random_data, expected_results):
+def test_basic_callback(generate_random_data, expected_results, record_callback):
     train_data = generate_random_data(8, 2, 2)
     val_data = generate_random_data(4, 2, 2)
     model = torch.nn.Sequential(
@@ -12,8 +11,7 @@ def test_basic_callback(generate_random_data, expected_results):
     )
 
     # Train
-    callback = RecordCallback()
-    tuner = PytorchTuner(model, callbacks=[callback])
+    tuner = PytorchTuner(model, callbacks=[record_callback])
     tuner.fit(
         train_data=train_data,
         eval_data=val_data,
@@ -29,9 +27,40 @@ def test_basic_callback(generate_random_data, expected_results):
     expected_num_batches_train = [x[4] for x in expected_results]
     expected_num_batches_val = [x[5] for x in expected_results]
 
-    assert callback.calls == expected_calls
-    assert callback.epochs == expected_epochs
-    assert callback.num_epochs == expected_num_epochs
-    assert callback.batch_idx == expected_batch_idx
-    assert callback.num_batches_train == expected_num_batches_train
-    assert callback.num_batches_val == expected_num_batches_val
+    assert record_callback.calls == expected_calls
+    assert record_callback.epochs == expected_epochs
+    assert record_callback.num_epochs == expected_num_epochs
+    assert record_callback.batch_idx == expected_batch_idx
+    assert record_callback.num_batches_train == expected_num_batches_train
+    assert record_callback.num_batches_val == expected_num_batches_val
+
+
+def test_on_exception(exception_callback, generate_random_data):
+    train_data = generate_random_data(8, 2, 2)
+    model = torch.nn.Sequential(
+        torch.nn.Flatten(), torch.nn.Linear(in_features=2, out_features=2)
+    )
+    ec = exception_callback(ValueError('Test'))
+
+    # Train
+    tuner = PytorchTuner(model, callbacks=[ec])
+
+    with pytest.raises(ValueError, match='Test'):
+        tuner.fit(train_data=train_data, epochs=1, batch_size=4, num_items_per_class=2)
+
+    assert ec.calls == ['on_exception']
+
+
+def test_on_keyboard_interrupt(exception_callback, generate_random_data):
+    train_data = generate_random_data(8, 2, 2)
+    model = torch.nn.Sequential(
+        torch.nn.Flatten(), torch.nn.Linear(in_features=2, out_features=2)
+    )
+    ec = exception_callback(KeyboardInterrupt)
+
+    # Train
+    tuner = PytorchTuner(model, callbacks=[ec])
+
+    tuner.fit(train_data=train_data, epochs=1, batch_size=4, num_items_per_class=2)
+
+    assert ec.calls == ['on_keyboard_interrupt']

@@ -1,18 +1,19 @@
 # do not change this line manually
 # this is managed by git tag and updated on every release
 # NOTE: this represents the NEXT release version
-__version__ = '0.2.5'
+__version__ = '0.3.1'
 
 __default_tag_key__ = 'finetuner_label'
 
 # define the high-level API: fit()
-from typing import List, Optional, overload, TYPE_CHECKING, Tuple, Union
+from typing import Callable, List, Optional, overload, TYPE_CHECKING, Tuple, Union
 
 if TYPE_CHECKING:
     from .tuner.callback import BaseCallback
     from .helper import (
         AnyDNN,
         AnyOptimizer,
+        AnyScheduler,
         DocumentSequence,
         PreprocFnType,
         CollateFnType,
@@ -28,13 +29,19 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     loss: Union[str, 'AnyDNN'] = 'SiameseLoss',
-    optimizer: Optional['AnyOptimizer'] = None,
+    configure_optimizer: Optional[
+        Callable[
+            ['AnyDNN'], Union['AnyOptimizer', Tuple['AnyOptimizer', 'AnyScheduler']]
+        ]
+    ] = None,
     learning_rate: float = 1e-3,
+    scheduler_step: str = 'batch',
     device: str = 'cpu',
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
     num_items_per_class: Optional[int] = None,
     callbacks: Optional[List['BaseCallback']] = None,
+    num_workers: int = 0,
 ) -> 'AnyDNN':
     ...
 
@@ -48,13 +55,19 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     loss: Union[str, 'AnyDNN'] = 'SiameseLoss',
-    optimizer: Optional['AnyOptimizer'] = None,
+    configure_optimizer: Optional[
+        Callable[
+            ['AnyDNN'], Union['AnyOptimizer', Tuple['AnyOptimizer', 'AnyScheduler']]
+        ]
+    ] = None,
     learning_rate: float = 1e-3,
+    scheduler_step: str = 'batch',
     device: str = 'cpu',
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
     num_items_per_class: Optional[int] = None,
     callbacks: Optional[List['BaseCallback']] = None,
+    num_workers: int = 0,
     to_embedding_model: bool = True,  #: below are tailor args
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
@@ -74,13 +87,19 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     loss: Union[str, 'AnyDNN'] = 'SiameseLoss',
-    optimizer: Optional['AnyOptimizer'] = None,
+    configure_optimizer: Optional[
+        Callable[
+            ['AnyDNN'], Union['AnyOptimizer', Tuple['AnyOptimizer', 'AnyScheduler']]
+        ]
+    ] = None,
     learning_rate: float = 1e-3,
+    scheduler_step: str = 'batch',
     device: str = 'cpu',
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
     num_items_per_class: Optional[int] = None,
     callbacks: Optional[List['BaseCallback']] = None,
+    num_workers: int = 0,
     interactive: bool = True,  #: below are labeler args
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
@@ -98,13 +117,19 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     loss: Union[str, 'AnyDNN'] = 'SiameseLoss',
-    optimizer: Optional['AnyOptimizer'] = None,
+    configure_optimizer: Optional[
+        Callable[
+            ['AnyDNN'], Union['AnyOptimizer', Tuple['AnyOptimizer', 'AnyScheduler']]
+        ]
+    ] = None,
     learning_rate: float = 1e-3,
+    scheduler_step: str = 'batch',
     device: str = 'cpu',
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
     num_items_per_class: Optional[int] = None,
     callbacks: Optional[List['BaseCallback']] = None,
+    num_workers: int = 0,
     interactive: bool = True,  #: below are labeler args
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,

@@ -33,7 +33,7 @@ def simple_cnn_model():
 
 @pytest.fixture
 def vgg16_cnn_model():
-    return tf.keras.applications.vgg16.VGG16()
+    return tf.keras.applications.vgg16.VGG16(weights=None)
 
 
 @pytest.fixture

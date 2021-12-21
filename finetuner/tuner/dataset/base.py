@@ -1,10 +1,16 @@
 import abc
-from typing import TYPE_CHECKING, List, Generic, Tuple, Union, TypeVar, Sequence
+from typing import (
+    TYPE_CHECKING,
+    List,
+    Generic,
+    Iterator,
+    Tuple,
+    Union,
+    TypeVar,
+    Sequence,
+)
 
 import numpy as np
-
-if TYPE_CHECKING:
-    from finetuner.helper import T
 
 AnyLabel = TypeVar('AnyLabel')
 
@@ -14,31 +20,16 @@ class BaseSampler(abc.ABC):
         if batch_size <= 0:
             raise ValueError('batch_size must be a positive integer')
 
-        self._labels = labels
-        self._batch_size = batch_size
-        self._batches = []
-        self._index = 0
+        self._prepare_batches()
 
-    def __iter__(self: 'T') -> 'T':
-        return self
+    def __iter__(self) -> Iterator[List[int]]:
+        yield from self._batches
 
-    def __next__(self) -> List[int]:
-        if self._index == len(self):
-            self._index = 0
-            raise StopIteration
-
-        b = self.batches[self._index]
-        self._index += 1
-        return b
+        # After batches are exhausted, recreate
+        self._prepare_batches()
 
     def __len__(self) -> int:
-        return len(self.batches)
-
-    @property
-    def batches(self):
-        if self._index == 0:
-            self._prepare_batches()
-        return self._batches
+        return len(self._batches)
 
     @abc.abstractmethod
     def _prepare_batches(self) -> None:
@@ -57,7 +48,7 @@ class BaseDataset(abc.ABC, Generic[AnyLabel]):
 
     @property
     def labels(self) -> List[AnyLabel]:
-        """ Get the list of labels for all items in the dataset."""
+        """Get the list of labels for all items in the dataset."""
         return self._labels
 
     def __len__(self) -> int:

@@ -83,3 +83,13 @@ class BaseCallback(ABC):
         """
         Called at the end of the ``fit`` method call, after finishing all the epochs.
         """
+
+    def on_keyboard_interrupt(self, tuner: 'BaseTuner'):
+        """
+        Called when the tuner is interrupted by the user
+        """
+
+    def on_exception(self, tuner: 'BaseTuner', exception: BaseException):
+        """
+        Called when the tuner encounters an exception during execution.
+        """
