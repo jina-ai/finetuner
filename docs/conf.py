@@ -188,7 +188,7 @@ ogp_custom_meta_tags = [
 </script>
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-<script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.2.3"></script>
+<script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.2"></script>
     ''',
 ]
 
