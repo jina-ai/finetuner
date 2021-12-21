@@ -4,11 +4,11 @@ In this tutorial, we will use Finetuner to finetune embeddings on [Totally Looks
 
 >Totally-Looks-Like is a dataset and benchmark challenging machine-learned representations to reproduce human perception of image similarity. 
 
-The dataset consist 6016 pairs of images (12032 in total).
-And we use Finetuner to tune the model to get a better embedding. But how it works?
+The dataset consist 6016 pairs of images (12032 in total). 
+How it works?
 
 Finetuner adopts the idea of `transfer learning` and `metric learning`. The rationale is
-1. TLL dataset is a relative small dataset, it's not reasonable to train a large network, such as ResNet on TLL from scratch. So we freeze the weights of a pre-trained ResNet and train a MLP head to adopt our new dataset.
+1. TLL dataset is a relative small dataset, it's not reasonable to train a large network, such as ResNet on TLL from scratch. So we freeze the weights of a pre-trained ResNet and only train seval layers of the network.
 2. TLL dataset consist pairs of images which can be formed as a positive pair, and a random image can can be considered as a negative pair. We can form a `triplet` and use the Finetuner `TripletLoss`. We expect after fine-tuning, the distance between positive pairs can be pull closer, while the distance between positive and negative pairs can be push away.
 
 ## Environment & Data Preparation
