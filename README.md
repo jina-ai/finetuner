@@ -82,7 +82,7 @@ Perfect! Now `embed_model` and `labeled_data` are given by you already, simply d
 ```python
 import finetuner
 
-tuned_model, _ = finetuner.fit(
+tuned_model = finetuner.fit(
     embed_model,
     train_data=labeled_data
 )
@@ -96,7 +96,7 @@ You can use Finetuner to interactive label data and train `embed_model` as below
 ```python
 import finetuner
 
-tuned_model, _ = finetuner.fit(
+tuned_model = finetuner.fit(
     embed_model,
     train_data=unlabeled_data,
     interactive=True
@@ -111,11 +111,12 @@ worries, Finetuner can convert your model into an embedding model and train it v
 ```python
 import finetuner
 
-tuned_model, _ = finetuner.fit(
+tuned_model = finetuner.fit(
     general_model,
     train_data=labeled_data,
     to_embedding_model=True,
-    output_dim=100
+    layer_name='my_embedding_layer',
+    freeze=['layer_1', 'layer_2'],
 )
 ```
 
@@ -127,12 +128,13 @@ worries, Finetuner can help you train an embedding model with interactive labeli
 ```python
 import finetuner
 
-tuned_model, _ = finetuner.fit(
+tuned_model = finetuner.fit(
     general_model,
     train_data=unlabeled_data,
     interactive=True,
     to_embedding_model=True,
-    output_dim=100
+    layer_name='my_embedding_layer',
+    freeze=['layer_1', 'layer_2'],
 )
 ```
 
@@ -183,7 +185,8 @@ tuned_model, _ = finetuner.fit(
         freeze=True,
         to_embedding_model=True,
         input_size=(3, 224, 224),
-        output_dim=100
+        layer_name='my_embedding_layer',
+        freeze=['layer_1', 'layer_2'],
     )
     ```
 5. After downloading the model and loading the data (takes ~20s depending on your network/CPU/GPU), your browser will open the Labeler UI as below. You can now label the relevance of celebrity faces via mouse/keyboard. The ResNet50 model will get finetuned and improved as you are labeling. If you are running this example on a CPU machine, it may take up to 20 seconds for each labeling round.
