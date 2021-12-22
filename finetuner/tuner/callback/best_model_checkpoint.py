@@ -95,11 +95,11 @@ class BestModelCheckpoint(BaseCallback):
             )
         else:
             if self._monitor_op(current, self._best):
-                self._best = current
                 tuner.save(self._get_file_path())
                 self._logger.logger.info(
                     f'Model improved from {self._best} to {current}. New model is saved!'
                 )
+                self._best = current
             else:
                 self._logger.logger.info(f'Model didnt improve.')
 
