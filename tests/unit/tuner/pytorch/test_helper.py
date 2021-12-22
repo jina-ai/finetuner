@@ -28,6 +28,7 @@ def model(dim=32):
 
 def test_pytorch_to_onnx(model):
 
+    BATCH_SIZE = 8
     temp_onnx_file = Path(tempfile.tempdir) / "finetuned.onnx"
 
     # convert to ONNX
@@ -35,13 +36,14 @@ def test_pytorch_to_onnx(model):
         model,
         temp_onnx_file,
         input_shape=((32,)),
+        batch_size=BATCH_SIZE,
     )
 
     # initialize ONNX models
     ptmodel_onnx = onnxruntime.InferenceSession(str(temp_onnx_file))
 
     # Create dummy float32 data
-    xpt = (np.random.random((8, 1, 32)) / 0.5 - 1).astype(np.float32)
+    xpt = (np.random.random((1, 32)) / 0.5 - 1).astype(np.float32)
 
     # Perform inference with original and onnx-reserialized model
     with torch.inference_mode():

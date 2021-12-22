@@ -1,13 +1,14 @@
 from typing import (
-    TypeVar,
-    Sequence,
+    Any,
+    Callable,
+    Dict,
     Iterator,
     List,
-    Dict,
-    Any,
+    Optional,
+    Sequence,
     Tuple,
     TYPE_CHECKING,
-    Callable,
+    TypeVar,
     Union,
 )
 
@@ -101,7 +102,7 @@ def to_onnx(
     embed_model: 'AnyDNN',
     path: str,
     input_shape: Tuple[int, ...],
-    batch_size: int,
+    batch_size: Optional[Union[int, None]] = None,
     opset_version: int = 11,
 ) -> None:
     """Func that converts a given model in paddle, torch or keras,
@@ -109,23 +110,35 @@ def to_onnx(
     :param embed_model: Model to be converted and stored in ONNX
     :param path: Path to store ONNX model to
     :param input_shape: Input shape of embedding model
-    :param batch_size: The batch size the model was trained with
+    :param batch_size: The batch size the model was trained with. This
+      is only required when converting pyTorch model to onnx. In other
+      frameworks, the batch size does not need to be made specific
     :param opset_version: ONNX opset version in which to register
     """
 
-    def _parse_to_onnx_func(framework_name: str):
+    def _parse_and_apply_to_onnx_func(framework_name: str):
         """Helper func to get _to_onnx_xyz func from framework name"""
+        if fm == "torch" and batch_size is None:
+            raise ValueError(
+                f"When using to_onnx with pyTorch, you need "
+                "set batch size specifically."
+            )
+        elif fm in ('keras', 'paddle') and batch_size is not None:
+            raise ValueError(
+                f'The batch_size should not be set explicitly, '
+                f'when serializing a {fm} to ONNX. The resulting model will maintain '
+                'a variable batch_size'
+            )
         return {
             'torch': _to_onnx_torch,
             'keras': _to_onnx_keras,
             'paddle': _to_onnx_paddle,
-        }[fm]
+        }[fm](embed_model, path, input_shape, batch_size, opset_version)
 
     fm = get_framework(embed_model)
 
     # Get framework-specific func to register model in ONNX
-    _to_onnx_func = _parse_to_onnx_func(fm)
-    _to_onnx_func(embed_model, path, input_shape, batch_size, opset_version)
+    _parse_and_apply_to_onnx_func(fm)
 
     _check_onnx_model(path)
 
@@ -144,7 +157,7 @@ def _to_onnx_torch(
     embed_model: 'AnyDNN',
     path: str,
     input_shape: Tuple[int, ...],
-    batch_size: int,
+    batch_size: Optional[Union[int, None]] = None,
     opset_version: int = 11,
 ) -> None:
     """Convert a PyTorch embedding model to the ONNX format
@@ -178,7 +191,7 @@ def _to_onnx_keras(
     embed_model: 'AnyDNN',
     path: str,
     input_shape: Tuple[int, ...],
-    batch_size: int, 
+    batch_size: Optional[Union[int, None]] = None,
     opset_version: int = 11,
 ) -> None:
     """Convert a Keras embedding model to the ONNX format
@@ -209,7 +222,7 @@ def _to_onnx_paddle(
     embed_model: 'AnyDNN',
     path: str,
     input_shape: Tuple[int, ...],
-    batch_size: int, 
+    batch_size: Optional[Union[int, None]] = None,
     opset_version: int = 11,
 ) -> None:
     """Convert a paddle embedding model to the ONNX format
