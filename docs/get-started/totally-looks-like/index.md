@@ -184,20 +184,8 @@ Compare fine-tuned model and pre-trained model,
 how much performance gain we get?
 We conducted an experiment using pre-trained ResNet50 on ImageNet, by chopping off the last classification layer, the rest of the model serves as a feature extractor.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+| hit@k  | pre-trained | fine-tuned |
+|--------|-------------|------------|
+| hit@1  | 0.068       | 0.122      |
+| hit@5  | 0.142       | 0.230      |
+| hit@10 | 0.183       | 0.301      |
