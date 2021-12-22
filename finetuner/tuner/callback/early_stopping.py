@@ -47,6 +47,7 @@ class EarlyStopping(BaseCallback):
         :param baseline: Baseline value for the monitored quantity.
             Training will stop if the model doesn't show improvement over the
             baseline.
+        :param verbose: Wheter to log score improvement events
         """
         self._logger = logging.getLogger('finetuner.' + self.__class__.__name__)
         self._logger.setLevel(logging.INFO if verbose else logging.WARNING)
