@@ -1,10 +1,7 @@
 import os
 from typing import TYPE_CHECKING
 
-import keras
 import numpy as np
-import paddle
-import torch
 from jina.logging.logger import JinaLogger
 
 from finetuner.helper import get_framework
