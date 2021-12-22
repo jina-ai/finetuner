@@ -5,7 +5,7 @@ The dataset consists of 6016 pairs of images (12032 in total).
 
 >Totally-Looks-Like is a dataset and benchmark challenging machine-learned representations to reproduce human perception of image similarity.
 
-Finetuner adopts the idea of `transfer learning` and `metric learning`. The rationale is
+Finetuner adopts the idea of [transfer learning](https://en.wikipedia.org/wiki/Transfer_learning) and [metric learning](https://en.wikipedia.org/wiki/Similarity_learning#Metric_learning). The rationale is
 1. TLL dataset is a relatively small dataset, it's not reasonable to train a large network, such as ResNet on TLL from scratch. So we train part of the network by freezing layers.
 2. TLL dataset consists of pairs of images that can be formed as a positive pair (same classes), and a random image can be considered as a negative pair. We can form a `triplet` and use the Finetuner `TripletLoss`. We expect after fine-tuning, the distance between positive pairs can be pulled closer, while the distance between positive and negative pairs can be pushed away.
 
@@ -80,20 +80,25 @@ ft.display(resnet, (3, 224, 224))
 
 You can get more information in [Tailor docs](https://finetuner.jina.ai/components/tailor/).
 Since the model is pre-trained on ImageNet on a classification task, so the output `fc` layer should **not** be considered as `embedding layer`.
-We can use the pooling layer `adaptiveavgpool2d_173` as the output of our embedding model.
+We can use the pooling layer `adaptiveavgpool2d_173` as the output of the {term}`embedding model`.
 This layer generates a 2048 dimensional dense embedding as output.
+
+```{tip}
+Selecting an appropriate embedding layer is non-trivial.
+In general, you have to remove the task-specific top from the pre-trained model.
+```
 
 
 ## Model Training
 
 Model training is straitforward in finetuner. 
-You'll need to config several hyper-parameters,
+You'll need to config several hyperparameters,
 plugin your model and training set, that's it.
 
-The script below demonstrates how to combine Tailor + Tuner for model fine-tuning.
-The parameter above ``to_embedding_model=True`` are tuner parameters, the rest are tailor parameters.
+The script below demonstrates how to combine {term}`Tailor` + {term}`Tuner` interface for model fine-tuning.
+The parameter above ``to_embedding_model=True`` are {term}`Tuner` parameters, the rest are {term}`Tailor` parameters.
 
-We save the returned embedding model as ``tuned_model``,
+We save the returned {term}`embedding model` as ``tuned_model``,
 given an input image, at inference time, this model generates a *representation* of the image (2048 dimensional vectors).
 
 ```python
@@ -118,17 +123,17 @@ tuned_model = ft.fit(
 )
 ```
 
-But how does it work? We'll explain briefly:
+But how does it work?:
 
-1. Finetuner will "look into" your labels defined in the `tag` of the jina `Document`, and find the positive sample and find a hard-negative sample as triplets.
-2. Finetuner try to optimize the `TripletLoss` objective, aiming at pulling documents with the same classes closer, while pushing documents with different class away.
+1. Finetuner will "look into" your labels defined in the `tag` of the jina `Document`, and find the positive sample and find a hard-negative (as we use `neg_strategy='hard''`) sample as triplets.
+2. Finetuner try to optimize the `TripletLoss`, aiming at pulling documents with the same classes closer, while pushing documents with different class away.
 
-In the research domain, this is normally referred to as supervised contrastive metric learning.
+![metric_learning](metric_learning.png)
 
 ## Evaluating the Embedding Quality
 
-We'll use `hit@10` to measure the quality of the representation on the search task.
-``hit@10`` means for all the test data, how likely the positive `match` ranked within the top 10 matches with respect to the `query` Document we give.
+We'll use **hit@10** to measure the quality of the representation on the search task.
+**hit@10** means for all the test data, how likely the positive `match` ranked within the top 10 matches with respect to the `query` Document.
 
 Remind that we have the `train_da` ready, now we need to perform the same preprocessing on test DocumentArray:
 
@@ -152,7 +157,12 @@ test_left_da.embed(tuned_model, device='cuda')
 test_right_da.embed(tuned_model, device='cuda')
 ```
 
-Last but not least, we perform evaluation:
+Last but not least,
+we match `test_left_da` against `test_right_da`.
+
+You can consider `test_left_da` as user queries, while `test_right_da` is our indexed document collection.
+For each `test_left_da`, `match` function will find top-10 nearest embeddings in `test_right_da`.
+And we evaluate result with **hit@10**
 
 ```python
 test_left_da.match(test_right_da, limit=10)
@@ -170,23 +180,10 @@ for k in range(1, 11):
     print(f'hit@{k}:  finetuned: {hit_rate(test_left_da, k):.3f}')
 ```
 
-Finally we get:
+Compare fine-tuned model and pre-trained model, 
+how much performance gain we get?
+We conducted an experiment using pre-trained ResNet50 on ImageNet, by chopping off the last classification layer, the rest of the model serves as a feature extractor.
 
-```console
-hit@1:  finetuned: 0.122
-hit@2:  finetuned: 0.159
-hit@3:  finetuned: 0.184
-hit@4:  finetuned: 0.207
-hit@5:  finetuned: 0.230
-hit@6:  finetuned: 0.251
-hit@7:  finetuned: 0.268
-hit@8:  finetuned: 0.278
-hit@9:  finetuned: 0.294
-hit@10:  finetuned: 0.301
-```
-
-How much performance gain we get?
-We conducted an experiment using pre-trained ResNet50 on ImageNet, by chopping off the last classification layer as a feature extractor.
 
 
 
