@@ -114,8 +114,11 @@ class BestModelCheckpoint(BaseCallback):
         Loads the model and tuner state
         """
         if get_framework(tuner.embed_model) == 'keras':
+            import keras
             tuner._embed_model = keras.models.load_model(fp)
         elif get_framework(tuner.embed_model) == 'torch':
+            import torch
             tuner._embed_model.load_state_dict(torch.load(fp))
         elif get_framework(tuner.embed_model) == 'paddle':
+            import paddle
             tuner._embed_model.set_state_dict(paddle.load(fp))
