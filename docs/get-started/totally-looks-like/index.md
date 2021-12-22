@@ -3,7 +3,9 @@
 In this tutorial, we will use Finetuner to finetune embeddings on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset) (TLL) dataset.
 The dataset consists of 6016 pairs of images (12032 in total).
 
->Totally-Looks-Like is a dataset and benchmark challenging machine-learned representations to reproduce human perception of image similarity.
+```{tip}
+Totally-Looks-Like is a dataset and benchmark challenging machine-learned representations to reproduce human perception of image similarity. As shown below, each image patch in the left has a corresponded similar image patch in the right. 
+```
 
 ```{figure} overview.png
 :width: 70%
