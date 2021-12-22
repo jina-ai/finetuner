@@ -7,7 +7,7 @@ from typing import Generator, Optional
 
 import numpy as np
 from jina import Document, DocumentArray
-from jina.logging.profile import ProgressBar
+from rich.progress import track
 
 from finetuner import __default_tag_key__
 
@@ -86,24 +86,21 @@ def _download_qa_data(
         )
         opener.add_handler(proxy)
     urllib.request.install_opener(opener)
-    with ProgressBar('download chatbot data') as t:
-        for k, v in targets.items():
-            if not os.path.exists(v['filename']):
-                urllib.request.urlretrieve(
-                    v['url'], v['filename'], reporthook=lambda *x: t.update(0.01)
-                )
+    for k, v in track(targets.items(), 'Downloading chatbot data'):
+        if not os.path.exists(v['filename']):
+            urllib.request.urlretrieve(v['url'], v['filename'])
 
-        with open(targets['covid-csv']['filename']) as fp:
-            lines = csv.DictReader(fp)
-            for idx, value in enumerate(lines):
-                if is_testset is None:
+    with open(targets['covid-csv']['filename']) as fp:
+        lines = csv.DictReader(fp)
+        for idx, value in enumerate(lines):
+            if is_testset is None:
+                yield Document(value)
+            elif is_testset:
+                if idx % 2 == 0:
                     yield Document(value)
-                elif is_testset:
-                    if idx % 2 == 0:
-                        yield Document(value)
-                else:
-                    if idx % 2 == 1:
-                        yield Document(value)
+            else:
+                if idx % 2 == 1:
+                    yield Document(value)
 
 
 def generate_fashion(
@@ -158,21 +155,18 @@ def generate_fashion(
         )
         opener.add_handler(proxy)
     urllib.request.install_opener(opener)
-    with ProgressBar('download fashion-mnist') as t:
-        for k, v in targets.items():
-            if not os.path.exists(v['filename']):
-                urllib.request.urlretrieve(
-                    v['url'], v['filename'], reporthook=lambda *x: t.update(0.01)
-                )
-            if k == 'index-labels' or k == 'query-labels':
-                v['data'] = _load_labels(v['filename'])
-            if k == 'index' or k == 'query':
-                v['data'] = _load_mnist(
-                    v['filename'],
-                    upsampling=upsampling,
-                    channels=channels,
-                    channel_axis=channel_axis,
-                )
+    for k, v in track(targets.items(), 'Downloading fashion-mnist'):
+        if not os.path.exists(v['filename']):
+            urllib.request.urlretrieve(v['url'], v['filename'])
+        if k == 'index-labels' or k == 'query-labels':
+            v['data'] = _load_labels(v['filename'])
+        if k == 'index' or k == 'query':
+            v['data'] = _load_mnist(
+                v['filename'],
+                upsampling=upsampling,
+                channels=channels,
+                channel_axis=channel_axis,
+            )
     if is_testset:
         partition = 'query'
     else:

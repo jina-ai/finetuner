@@ -1,7 +1,7 @@
+import logging
 from typing import TYPE_CHECKING, Optional
 
 import numpy as np
-from jina.logging.logger import JinaLogger
 
 from .base import BaseCallback
 
@@ -47,7 +47,7 @@ class EarlyStopping(BaseCallback):
             Training will stop if the model doesn't show improvement over the
             baseline.
         """
-        self._logger = JinaLogger(self.__class__.__name__)
+        self._logger = logging.getLogger('finetuner.' + self.__class__.__name__)
         self._monitor = monitor
         self._mode = mode
         self._patience = patience
@@ -112,7 +112,7 @@ class EarlyStopping(BaseCallback):
         elif self._monitor == 'train_loss':
             current_value = np.mean(self._train_losses)
         else:
-            self._logger.logger.warning(
+            self._logger.warning(
                 f'Can save best model only with {self._monitor} available, ' 'skipping.'
             )
             return
@@ -127,7 +127,7 @@ class EarlyStopping(BaseCallback):
         else:
             self._epoch_counter += 1
             if self._epoch_counter == self._patience:
-                self._logger.logger.info(
+                self._logger.info(
                     f'Training is stopping, no improvement for {self._patience} epochs'
                 )
                 tuner.stop_training = True

@@ -1,15 +1,11 @@
+import logging
 import os
 from typing import TYPE_CHECKING
 
-import keras
 import numpy as np
-import paddle
-import torch
-from jina.logging.logger import JinaLogger
-
-from finetuner.helper import get_framework
 
 from .base import BaseCallback
+from ...helper import get_framework
 
 if TYPE_CHECKING:
     from ..base import BaseTuner
@@ -43,7 +39,7 @@ class BestModelCheckpoint(BaseCallback):
             monitored are 'acc' or start with 'fmeasure' and are set to `min` for
             the rest of the quantities.
         """
-        self._logger = JinaLogger(self.__class__.__name__)
+        self._logger = logging.getLogger('finetuner.' + self.__class__.__name__)
         self._save_dir = save_dir
         self._monitor = monitor
         self._train_losses = []
@@ -97,11 +93,12 @@ class BestModelCheckpoint(BaseCallback):
             if self._monitor_op(current, self._best):
                 self._best = current
                 tuner.save(self._get_file_path())
-                self._logger.logger.info(
-                    f'Model improved from {self._best} to {current}. New model is saved!'
+                self._logger.info(
+                    f'Model improved from {self._best} to {current}.'
+                    ' New model is saved!'
                 )
             else:
-                self._logger.logger.info(f'Model didnt improve.')
+                self._logger.info('Model didnt improve.')
 
     def _get_file_path(self):
         """
@@ -117,8 +114,14 @@ class BestModelCheckpoint(BaseCallback):
         Loads the model and tuner state
         """
         if get_framework(tuner.embed_model) == 'keras':
+            import keras
+
             tuner._embed_model = keras.models.load_model(fp)
         elif get_framework(tuner.embed_model) == 'torch':
+            import torch
+
             tuner._embed_model.load_state_dict(torch.load(fp))
         elif get_framework(tuner.embed_model) == 'paddle':
+            import paddle
+
             tuner._embed_model.set_state_dict(paddle.load(fp))
