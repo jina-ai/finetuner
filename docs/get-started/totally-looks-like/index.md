@@ -48,7 +48,6 @@ ratio = 0.8
 train_size = int(ratio * len(left_da))
 
 train_da = left_da[:train_size] + right_da[:train_size]
-train_da = train_da.shuffle()
 ```
 
 ## Transform Training Data
