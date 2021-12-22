@@ -5,7 +5,9 @@ The dataset consists of 6016 pairs of images (12032 in total).
 
 >Totally-Looks-Like is a dataset and benchmark challenging machine-learned representations to reproduce human perception of image similarity.
 
-![overview](overview.png)
+```{figure} overview.png
+:width: 70%
+```
 
 *Each image patch in the left has a corresponded similar image patch in the right.*
 
