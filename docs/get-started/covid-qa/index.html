@@ -221,6 +221,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../fashion-mnist/">Finetuning MLP for Fashion Image Search</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Finetuning a Transformer for Question-Answering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../celeba/">Finetuning Pretrained ResNet for Celebrity Face Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../totally-looks-like/">Finetuning ResNet50 on Totally Looks Like Dataset</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
@@ -372,10 +373,10 @@
 <li><p>we accept or reject the results based on their quality;</p></li>
 <li><p>we let the model remember our feedback and produce better search results.</p></li>
 </ul>
-<p>Hopefully the procedure converges after several rounds and we get a tuned embedding for better results in our search task.</p>
+<p>Hopefully the procedure converges after several rounds, and we get a tuned embedding for better results in our search task.</p>
 <section id="build-embedding-model">
 <h2>Build embedding model<a class="headerlink" href="#build-embedding-model" title="Permalink to this headline">¶</a></h2>
-<p>Let’s create a transformers model as our <span class="xref std std-ref">embedding model</span>, where we will use the <code class="docutils literal notranslate"><span class="pre">[CLS]</span></code> token as the embedding:</p>
+<p>Let’s create a transformers model as our <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>, where we will use the <code class="docutils literal notranslate"><span class="pre">[CLS]</span></code> token as the embedding:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModel</span>
 

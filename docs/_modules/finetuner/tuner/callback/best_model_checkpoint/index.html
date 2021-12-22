@@ -194,6 +194,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../get-started/fashion-mnist/">Finetuning MLP for Fashion Image Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../get-started/covid-qa/">Finetuning a Transformer for Question-Answering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../get-started/celeba/">Finetuning Pretrained ResNet for Celebrity Face Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../get-started/totally-looks-like/">Finetuning ResNet50 on Totally Looks Like Dataset</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
@@ -336,10 +337,7 @@
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">import</span> <span class="nn">keras</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">paddle</span>
-<span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">jina.logging.logger</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
 
 <span class="kn">from</span> <span class="nn">finetuner.helper</span> <span class="kn">import</span> <span class="n">get_framework</span>
@@ -449,13 +447,19 @@
 <div class="viewcode-block" id="BestModelCheckpoint.load_model"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.best_model_checkpoint/#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.load_model">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">,</span> <span class="n">fp</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">"""</span>
-<span class="sd">        Loads the model and tuner state</span>
+<span class="sd">        Loads the model and the tuner state</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'keras'</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">keras</span>
+
             <span class="n">tuner</span><span class="o">.</span><span class="n">_embed_model</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'torch'</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">torch</span>
+
             <span class="n">tuner</span><span class="o">.</span><span class="n">_embed_model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">paddle</span>
+
             <span class="n">tuner</span><span class="o">.</span><span class="n">_embed_model</span><span class="o">.</span><span class="n">set_state_dict</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span></div></div>
 </pre></div>
             </article>

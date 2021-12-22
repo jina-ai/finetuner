@@ -194,6 +194,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../get-started/fashion-mnist/">Finetuning MLP for Fashion Image Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../get-started/covid-qa/">Finetuning a Transformer for Question-Answering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../get-started/celeba/">Finetuning Pretrained ResNet for Celebrity Face Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../get-started/totally-looks-like/">Finetuning ResNet50 on Totally Looks Like Dataset</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
@@ -405,7 +406,7 @@
             <span class="n">limit</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'topk'</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>
             <span class="n">exclude_self</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="o">.</span><span class="n">traverse_flat</span><span class="p">([</span><span class="s1">'r'</span><span class="p">,</span> <span class="s1">'m'</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="o">.</span><span class="n">traverse_flat</span><span class="p">(</span><span class="s1">'r,m'</span><span class="p">):</span>
             <span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'blob'</span><span class="p">,</span> <span class="s1">'embedding'</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FTExecutor.fit"><a class="viewcode-back" href="../../../../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.fit">[docs]</a>    <span class="nd">@requests</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="s1">'/fit'</span><span class="p">)</span>
@@ -462,7 +463,7 @@
 
 <div class="viewcode-block" id="DataIterator.add_fit_data"><a class="viewcode-back" href="../../../../api/finetuner.labeler.executor/#finetuner.labeler.executor.DataIterator.add_fit_data">[docs]</a>    <span class="nd">@requests</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="s1">'/fit'</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">add_fit_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="o">.</span><span class="n">traverse_flat</span><span class="p">([</span><span class="s1">'r'</span><span class="p">,</span> <span class="s1">'m'</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="o">.</span><span class="n">traverse_flat</span><span class="p">(</span><span class="s1">'r,m'</span><span class="p">):</span>
             <span class="n">d</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_data</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">content</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_labeled_dam</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labeled_dam</span></div></div>

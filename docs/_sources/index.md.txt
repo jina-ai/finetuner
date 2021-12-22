@@ -121,7 +121,7 @@ Learn more about {term}`embedding model`.
 </div>
 
 +++
-Learn more about {term}`labeled data`.
+Learn more about {term}`labeled dataset`.
 
 
 :::
@@ -259,6 +259,7 @@ get-started/swiss-roll/index
 get-started/fashion-mnist
 get-started/covid-qa
 get-started/celeba
+get-started/totally-looks-like/index
 ```
 
 
