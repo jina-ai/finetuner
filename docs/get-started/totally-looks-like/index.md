@@ -5,6 +5,9 @@ The dataset consists of 6016 pairs of images (12032 in total).
 
 >Totally-Looks-Like is a dataset and benchmark challenging machine-learned representations to reproduce human perception of image similarity.
 
+![overview](overview.png)
+*Each image patch in the left has a corresponded similar image patch in the right.*
+
 Finetuner adopts the idea of [transfer learning](https://en.wikipedia.org/wiki/Transfer_learning) and [metric learning](https://en.wikipedia.org/wiki/Similarity_learning#Metric_learning). The rationale is
 1. TLL dataset is a relatively small dataset, it's not reasonable to train a large network, such as ResNet on TLL from scratch. So we train part of the network by freezing layers.
 2. TLL dataset consists of pairs of images that can be formed as a positive pair (same classes), and a random image can be considered as a negative pair. We can form a `triplet` and use the Finetuner `TripletLoss`. We expect after fine-tuning, the distance between positive pairs can be pulled closer, while the distance between positive and negative pairs can be pushed away.

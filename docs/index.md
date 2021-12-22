@@ -259,6 +259,7 @@ get-started/swiss-roll/index
 get-started/fashion-mnist
 get-started/covid-qa
 get-started/celeba
+get-started/totally-looks-like/index
 ```
 
 
