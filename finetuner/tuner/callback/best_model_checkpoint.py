@@ -1,15 +1,13 @@
 import os
 from typing import TYPE_CHECKING
 
-import keras
 import numpy as np
-import paddle
-import torch
 from jina.logging.logger import JinaLogger
 
 from finetuner.helper import get_framework
 
 from .base import BaseCallback
+from ..evaluation import __evaluator_mean_prefix__
 
 if TYPE_CHECKING:
     from ..base import BaseTuner
@@ -32,93 +30,115 @@ class BestModelCheckpoint(BaseCallback):
     ):
         """
         :param save_dir: string, path to save the model file.
-        :param monitor: if `monitor='loss'` best bodel saved will be according
-            to the training loss, if `monitor='val_loss'` best model saved will be
-            according to the validation loss
-        :param mode: one of {'auto', 'min', 'max'}. the
-            decision to overwrite the current save file is made based on either
-            the maximization or the minimization of the monitored quantity.
-            For `val_acc`, this should be `max`, for `val_loss` this should be
-            `min`, etc. In `auto` mode, the mode is set to `max` if the quantities
-            monitored are 'acc' or start with 'fmeasure' and are set to `min` for
-            the rest of the quantities.
+        :param monitor: if `monitor='train_loss'` best model saved will be according
+            to the training loss, while if `monitor='val_loss'` best model saved will be
+            according to the validation loss. If monitor is set to an evaluation metric,
+            best model saved will be according to this metric.
+        :param mode: one of {'auto', 'min', 'max'}. The decision to overwrite the
+            currently saved model is made based on either the maximization or the
+            minimization of the monitored quantity.
+            For an evaluation metric, this should be `max`, for `val_loss` this should
+            be `min`, etc. In `auto` mode, the mode is set to `min` if `monitor='loss'`
+            or `monitor='val_loss'` and to `min` otherwise.
         """
         self._logger = JinaLogger(self.__class__.__name__)
         self._save_dir = save_dir
         self._monitor = monitor
         self._train_losses = []
-        self._valid_losses = []
+        self._val_losses = []
 
         if mode not in ['auto', 'min', 'max']:
             self._logger.logger.warning(
-                'ModelCheckpoint mode %s is unknown, ' 'fallback to auto mode.', mode
+                f'Unknown early stopping mode {mode}, falling back to auto mode.'
             )
             mode = 'auto'
+        self._mode = mode
+
+        self._monitor_op: np.ufunc
+        self._best: float
 
         if mode == 'min':
-            self._monitor_op = np.less
-            self._best = np.Inf
+            self._set_min_mode()
         elif mode == 'max':
-            self._monitor_op = np.greater
-            self._best = -np.Inf
+            self._set_max_mode()
         else:
-            if 'acc' in self._monitor:  # Extend this to other metrics
-                self._monitor_op = np.greater
-                self._best = -np.Inf
+            if self._monitor == 'train_loss' or self._monitor == 'val_loss':
+                self._set_min_mode()
             else:
-                self._monitor_op = np.less
-                self._best = np.Inf
+                self._set_max_mode()
+
+    def _set_max_mode(self):
+        self._monitor_op = np.greater
+        self._best = -np.Inf
+
+    def _set_min_mode(self):
+        self._monitor_op = np.less
+        self._best = np.Inf
 
     def on_epoch_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the end of the training epoch.
-        """
         self._save_model(tuner)
         self._train_losses = []
-        self._valid_losses = []
+        self._val_losses = []
 
     def on_train_batch_end(self, tuner: 'BaseTuner'):
         self._train_losses.append(tuner.state.current_loss)
 
     def on_val_batch_end(self, tuner: 'BaseTuner'):
-        self._valid_losses.append(tuner.state.current_loss)
+        self._val_losses.append(tuner.state.current_loss)
 
     def _save_model(self, tuner):
-        if self._monitor == 'val_loss':
-            current = np.mean(self._valid_losses)
-        else:
+        """Save the model"""
+        if self._monitor == 'train_loss':
             current = np.mean(self._train_losses)
+        elif self._monitor == 'val_loss':
+            current = np.mean(self._val_losses)
+        else:
+            try:
+                current = tuner.state.eval_metrics[self._monitor]
+            except KeyError:
+                current = tuner.state.eval_metrics.get(
+                    __evaluator_mean_prefix__ + self._monitor, None
+                )
+
         if current is None:
             self._logger.logger.warning(
-                'Can save best model only with %s available, ' 'skipping.',
-                self._monitor,
+                f'Could not retrieve monitor metric {self._monitor}'
             )
+            return
+
+        if self._monitor_op(current, self._best):
+            tuner.save(self._get_file_path())
+            self._logger.logger.info(
+                f'Model improved from {self._best} to {current}. New model is saved!'
+            )
+            self._best = current
         else:
-            if self._monitor_op(current, self._best):
-                tuner.save(self._get_file_path())
-                self._logger.logger.info(
-                    f'Model improved from {self._best} to {current}. New model is saved!'
-                )
-                self._best = current
-            else:
-                self._logger.logger.info(f'Model didnt improve.')
+            self._logger.logger.info(f'Model did not improve.')
 
     def _get_file_path(self):
         """
         Returns the file path for checkpoint.
         """
-
-        file_path = os.path.join(self._save_dir, f'best_model_{self._monitor}')
-        return file_path
+        return os.path.join(self._save_dir, f'best_model_{self._monitor}')
 
     @staticmethod
-    def load_model(tuner: 'BaseTuner', fp: str):
+    def load(tuner: 'BaseTuner', fp: str):
         """
-        Loads the model and tuner state
+        Loads the model.
         """
-        if get_framework(tuner.embed_model) == 'keras':
+        framework = get_framework(tuner.embed_model)
+
+        if framework == 'keras':
+            import keras
+
             tuner._embed_model = keras.models.load_model(fp)
-        elif get_framework(tuner.embed_model) == 'torch':
+
+        elif framework == 'torch':
+            import torch
+
             tuner._embed_model.load_state_dict(torch.load(fp))
-        elif get_framework(tuner.embed_model) == 'paddle':
+
+        elif framework == 'paddle':
+            import paddle
+
             tuner._embed_model.set_state_dict(paddle.load(fp))
