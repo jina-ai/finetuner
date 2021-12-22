@@ -347,6 +347,7 @@
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseCallback</span>
+<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">live_console</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseTuner</span>
@@ -400,6 +401,7 @@
             <span class="n">TimeElapsedColumn</span><span class="p">(),</span>
             <span class="s1">'•'</span><span class="p">,</span>
             <span class="n">TextColumn</span><span class="p">(</span><span class="s1">'</span><span class="si">{task.fields[metrics]}</span><span class="s1">'</span><span class="p">),</span>
+            <span class="n">console</span><span class="o">=</span><span class="n">live_console</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">train_pbar_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="s1">'Training'</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>

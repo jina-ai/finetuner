@@ -463,7 +463,7 @@ and output a tensor (or a list/dict of tensors) that feed directly into the
 embedding model</p></li>
 <li><p><strong>epochs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of epochs to train the model</p></li>
 <li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The batch size to use for training and evaluation</p></li>
-<li><p><strong>loss</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLoss</span></code></a>]) – Which loss to use in training. Supported
+<li><p><strong>loss</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – Which loss to use in training. Supported
 losses are:
 - <code class="docutils literal notranslate"><span class="pre">SiameseLoss</span></code> for Siamese network
 - <code class="docutils literal notranslate"><span class="pre">TripletLoss</span></code> for Triplet network</p></li>

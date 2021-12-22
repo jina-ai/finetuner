@@ -342,7 +342,12 @@
 <span class="n">__default_tag_key__</span> <span class="o">=</span> <span class="s1">'finetuner_label'</span>
 
 <span class="c1"># define the high-level API: fit()</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">overload</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
+<span class="kn">from</span> <span class="nn">rich.logging</span> <span class="kn">import</span> <span class="n">RichHandler</span>
+<span class="kn">from</span> <span class="nn">rich.text</span> <span class="kn">import</span> <span class="n">Text</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.tuner.callback</span> <span class="kn">import</span> <span class="n">BaseCallback</span>
@@ -354,6 +359,18 @@
         <span class="n">PreprocFnType</span><span class="p">,</span>
         <span class="n">CollateFnType</span><span class="p">,</span>
     <span class="p">)</span>
+
+
+<span class="c1"># To make logging pretty - but most impotantly, play nice with progress bar</span>
+<span class="k">class</span> <span class="nc">_RichHandler</span><span class="p">(</span><span class="n">RichHandler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">render_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">LogRecord</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">"""Add logger name to log message"""</span>
+        <span class="k">return</span> <span class="n">Text</span><span class="p">(</span><span class="sa">f</span><span class="s1">'[</span><span class="si">{</span><span class="n">record</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">] '</span><span class="p">)</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">render_message</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+
+
+<span class="n">live_console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>  <span class="c1"># Can be used by other rich components, e.g. progress bar</span>
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">'finetuner'</span><span class="p">)</span>
+<span class="n">_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">_RichHandler</span><span class="p">(</span><span class="n">console</span><span class="o">=</span><span class="n">live_console</span><span class="p">))</span>
 
 
 <span class="c1"># fit interface generated from Tuner</span>
