@@ -28,8 +28,8 @@ def fit(
 ) -> None:
     """Fit the model in an interactive UI.
 
-    :param embed_model: The embedding model to fine-tune
-    :param train_data: Data on which to train the model
+    :param embed_model: The embedding model to fine-tune.
+    :param train_data: Data on which to train the model.
     :param clear_labels_on_start: If set True, will remove all labeled data.
     :param port_expose: The port to expose.
     :param runtime_backend: The parallel backend of the runtime inside the Pea, either
@@ -45,7 +45,7 @@ def fit(
     :param collate_fn: The collation function to merge the content of individual
         items into a batch. Should accept a list with the content of each item,
         and output a tensor (or a list/dict of tensors) that feed directly into the
-        embedding model
+        embedding model.
     :param kwargs: Additional keyword arguments.
     """
     dam_path = tempfile.mkdtemp()

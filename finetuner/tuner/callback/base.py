@@ -57,59 +57,79 @@ class BaseCallback(ABC):
         Called at the start of the evaluation.
         """
 
-    def on_val_query_begin(self, tuner: 'BaseTuner'):
+    def on_val_batch_begin(self, tuner: 'BaseTuner'):
         """
-        Called at the start of the query data processing.
-        """
-
-    def on_val_query_batch_begin(self, tuner: 'BaseTuner'):
-        """
-        Called at the start of the query data batch computation.
+        Called at the start of a evaluation batch.
         """
 
-    def on_val_query_batch_end(self, tuner: 'BaseTuner'):
+    def on_val_batch_end(self, tuner: 'BaseTuner'):
         """
-        Called at the end of the query data batch computation.
-        """
-
-    def on_val_query_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the end of the query data processing.
-        """
-
-    def on_val_index_begin(self, tuner: 'BaseTuner'):
-        """
-        Called at the start of the index data processing.
-        """
-
-    def on_val_index_batch_begin(self, tuner: 'BaseTuner'):
-        """
-        Called at the start of the index data batch computation.
-        """
-
-    def on_val_index_batch_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the end of the index data batch computation.
-        """
-
-    def on_val_index_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the end of the index data processing.
-        """
-
-    def on_val_match_begin(self, tuner: 'BaseTuner'):
-        """
-        Called at the start of the index - query matching.
-        """
-
-    def on_val_match_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the end of the index - query matching.
+        Called at the end of an evaluation batch.
         """
 
     def on_val_end(self, tuner: 'BaseTuner'):
         """
         Called at the end of the evaluation.
+        """
+
+    def on_metrics_begin(self, tuner: 'BaseTuner'):
+        """
+        Called at the start of the metrics computation.
+        """
+
+    def on_metrics_query_begin(self, tuner: 'BaseTuner'):
+        """
+        Called at the start of the query data processing.
+        """
+
+    def on_metrics_query_batch_begin(self, tuner: 'BaseTuner'):
+        """
+        Called at the start of the query data batch computation.
+        """
+
+    def on_metrics_query_batch_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of the query data batch computation.
+        """
+
+    def on_metrics_query_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of the query data processing.
+        """
+
+    def on_metrics_index_begin(self, tuner: 'BaseTuner'):
+        """
+        Called at the start of the index data processing.
+        """
+
+    def on_metrics_index_batch_begin(self, tuner: 'BaseTuner'):
+        """
+        Called at the start of the index data batch computation.
+        """
+
+    def on_metrics_index_batch_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of the index data batch computation.
+        """
+
+    def on_metrics_index_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of the index data processing.
+        """
+
+    def on_metrics_match_begin(self, tuner: 'BaseTuner'):
+        """
+        Called at the start of the index - query matching.
+        """
+
+    def on_metrics_match_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of the index - query matching.
+        """
+
+    def on_metrics_end(self, tuner: 'BaseTuner'):
+        """
+        Called at the end of the metrics computation.
         """
 
     def on_epoch_end(self, tuner: 'BaseTuner'):

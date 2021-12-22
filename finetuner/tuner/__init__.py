@@ -36,6 +36,7 @@ def _get_tuner_class(dnn_model: 'AnyDNN') -> Type['BaseTuner']:
 def fit(
     embed_model: 'AnyDNN',
     train_data: 'DocumentSequence',
+    eval_data: Optional['DocumentSequence'] = None,
     query_data: Optional['DocumentSequence'] = None,
     index_data: Optional['DocumentSequence'] = None,
     preprocess_fn: Optional['PreprocFnType'] = None,
@@ -60,10 +61,11 @@ def fit(
 ):
     """Finetune the model on the training data.
 
-    :param embed_model: an embedding model
-    :param train_data: Data on which to train the model
-    :param query_data: Search data used by the evaluator at the end of each epoch, to evaluate the model
-    :param index_data: Index data or catalog used by the evaluator at the end of each epoch, to evaluate the model
+    :param embed_model: an embedding model.
+    :param train_data: Data on which to train the model.
+    :param eval_data: Data on which the validation loss is computed.
+    :param query_data: Search data used by the evaluator at the end of each epoch, to evaluate the model.
+    :param index_data: Index data or catalog used by the evaluator at the end of each epoch, to evaluate the model.
     :param preprocess_fn: A pre-processing function, to apply pre-processing to
         documents on the fly. It should take as input the document in the dataset,
         and output whatever content the framework-specific dataloader (and model) would
@@ -71,15 +73,15 @@ def fit(
     :param collate_fn: The collation function to merge the content of individual
         items into a batch. Should accept a list with the content of each item,
         and output a tensor (or a list/dict of tensors) that feed directly into the
-        embedding model
-    :param epochs: Number of epochs to train the model
-    :param batch_size: The batch size to use for training and evaluation
+        embedding model.
+    :param epochs: Number of epochs to train the model.
+    :param batch_size: The batch size to use for training and evaluation.
+    :param num_items_per_class: Number of items from a single class to include in
+        the batch. Only relevant for class datasets.
     :param loss: Which loss to use in training. Supported
         losses are:
         - ``SiameseLoss`` for Siamese network
         - ``TripletLoss`` for Triplet network
-    :param num_items_per_class: Number of items from a single class to include in
-        the batch. Only relevant for class datasets
     :param configure_optimizer: A function that allows you to provide a custom
         optimizer and learning rate. The function should take one input - the
         embedding model, and return either just an optimizer or a tuple of an
@@ -89,14 +91,14 @@ def fit(
     :param scheduler_step: At which interval should the learning rate sheduler's
         step function be called. Valid options are "batch" and "epoch".
     :param device: The device to which to move the model. Supported options are
-        ``"cpu"`` and ``"cuda"`` (for GPU)
+        ``"cpu"`` and ``"cuda"`` (for GPU).
     :param callbacks: A list of callbacks. The progress bar callback
         will be pre-prended to this list.
     :param num_workers: Number of workers used for loading the data. This works only with Pytorch and
         Paddle Paddle, and has no effect when using a Keras model.
-    :param limit: The number of top search results to consider, when evaluating.
+    :param limit: The number of top search results to consider, when computing the evaluation metrics.
     :param distance: The type of distance metric to use when matching query and index docs during evaluation,
-        available options are ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``.
+        available options are ``'cosine'``, ``'euclidean'`` and ``'sqeuclidean'``.
     """
     ft = _get_tuner_class(embed_model)
 
@@ -110,6 +112,7 @@ def fit(
         device=device,
     ).fit(
         train_data,
+        eval_data,
         query_data,
         index_data,
         epochs=epochs,
@@ -126,11 +129,11 @@ def fit(
 def save(embed_model: 'AnyDNN', model_path: str, *args, **kwargs) -> None:
     """Save the embedding model.
 
-    :param embed_model: The embedding model to save
-    :param model_path: Path to file/folder where to save the model
-    :param args: Arguments to pass to framework-specific tuner's ``save`` method
+    :param embed_model: The embedding model to save.
+    :param model_path: Path to file/folder where to save the model.
+    :param args: Arguments to pass to framework-specific tuner's ``save`` method.
     :param kwargs: Keyword arguments to pass to framework-specific tuner's ``save``
-        method
+        method.
     """
     ft = _get_tuner_class(embed_model)
 

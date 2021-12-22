@@ -40,7 +40,7 @@ class KerasTuner(
         num_items_per_class: Optional[int] = None,
         num_workers: int = 0,
     ) -> KerasSequenceAdapter:
-        """Get the dataloader for the dataset
+        """Get the dataloader for the dataset.
 
         In this case, since there is no true dataloader in keras, we are returning
         the adapter, which can produce the dataset that yields batches.
@@ -65,16 +65,15 @@ class KerasTuner(
         return adapter
 
     def _move_model_to_device(self):
-        """Move the model to device and set device"""
+        """Move the model to device and set device."""
         # This does nothing as explicit device placement is not required in Keras
 
     def _default_configure_optimizer(self, model: Layer) -> Optimizer:
-        """Get the default Adam optimizer"""
-        optimizer = tf.keras.optimizers.Adam(learning_rate=self._learning_rate)
-        return optimizer
+        """Get the default Adam optimizer."""
+        return tf.keras.optimizers.Adam(learning_rate=self._learning_rate)
 
     def _train(self, data: KerasSequenceAdapter):
-        """Train the model on given labeled data"""
+        """Train the model on the given labeled data."""
 
         for idx, (inputs, labels) in enumerate(data.get_dataset()):
 
@@ -101,57 +100,37 @@ class KerasTuner(
         data.on_epoch_end()  # To re-create batches
 
     def _eval(self, data: KerasSequenceAdapter):
-        """Evaluate the model on given labeled data"""
+        """Compute the validation loss on the given labeled data."""
 
         for idx, (inputs, labels) in enumerate(data.get_dataset()):
             self.state.batch_index = idx
-            self._trigger_callbacks('on_val_batch_begin')
+            self._trigger_callbacks('on_eval_batch_begin')
 
             embeddings = self._embed_model(inputs)
             loss = self._loss(embeddings, labels)
 
             self.state.current_loss = loss.numpy()
-            self._trigger_callbacks('on_val_batch_end')
+            self._trigger_callbacks('on_eval_batch_end')
 
         data.on_epoch_end()  # To re-create batches
 
     def _fit(
         self,
         train_data: 'DocumentSequence',
+        eval_data: Optional['DocumentSequence'] = None,
         query_data: Optional['DocumentSequence'] = None,
         index_data: Optional['DocumentSequence'] = None,
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        preprocess_fn: Optional['PreprocFnType'] = None,
-        collate_fn: Optional['CollateFnType'] = None,
         num_workers: int = 0,
         limit: int = 20,
         distance: str = 'cosine',
-        **kwargs,
     ):
-        """Finetune the model on the training data.
+        """Fit the model - training and evaluation."""
 
-        :param train_data: Data on which to train the model.
-        :param query_data: Search data used by the evaluator at the end of each epoch, to evaluate the model
-        :param index_data: Index data or catalog used by the evaluator at the end of each epoch, to evaluate the model
-        :param epochs: Number of epochs to train the model.
-        :param batch_size: The batch size to use for training and evaluation.
-        :param num_items_per_class: Number of items from a single class to include in
-            the batch. Only relevant for class datasets.
-        :param preprocess_fn: A pre-processing function. It should take as input the
-            content of an item in the dataset and return the pre-processed content.
-        :param collate_fn: The collation function to merge the content of individual
-            items into a batch. Should accept a list with the content of each item,
-            and output a tensor (or a list/dict of tensors) that feed directly into the
-            embedding model.
-        :param num_workers: Number of workers used for loading the data.
-            This works only with Pytorch and Paddle Paddle, and has no effect when using
-            a Keras model.
-        :param limit: The number of top search results to consider, when evaluating.
-        :param distance: The type of distance metric to use when matching query and index docs during evaluation,
-            available options are ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``.
-        """
         # Get dataloaders
         train_dl = self._get_data_loader(
             train_data,
@@ -161,6 +140,15 @@ class KerasTuner(
             preprocess_fn=preprocess_fn,
             collate_fn=collate_fn,
         )
+        if eval_data:
+            eval_dl = self._get_data_loader(
+                eval_data,
+                batch_size=batch_size,
+                num_items_per_class=num_items_per_class,
+                shuffle=False,
+                preprocess_fn=preprocess_fn,
+                collate_fn=collate_fn,
+            )
 
         # Set state
         self.state = TunerState(num_epochs=epochs)
@@ -175,13 +163,23 @@ class KerasTuner(
                 self.state.batch_index = 0
 
                 self._trigger_callbacks('on_epoch_begin')
-
                 self._trigger_callbacks('on_train_epoch_begin')
+
                 self._train(train_dl)
+
                 self._trigger_callbacks('on_train_epoch_end')
 
+                if eval_data:
+                    self.state.num_batches_val = eval_dl.get_size()
+                    self.state.batch_index = 0
+
+                    self._trigger_callbacks('on_val_begin')
+                    self._eval(eval_dl)
+                    self._trigger_callbacks('on_val_end')
+
                 if query_data:
-                    self._eval(
+                    self._trigger_callbacks('on_metrics_begin')
+                    self._compute_metrics(
                         query_data,
                         index_data,
                         label=f"epoch#{epoch}",
@@ -191,6 +189,7 @@ class KerasTuner(
                         preprocess_fn=preprocess_fn,
                         collate_fn=collate_fn,
                     )
+                    self._trigger_callbacks('on_metrics_end')
 
                 self._trigger_callbacks('on_epoch_end')
 
@@ -205,20 +204,18 @@ class KerasTuner(
         You need to pass the path where to save the model in either ``args`` or
         ``kwargs`` (for ``filepath`` key).
 
-        :param args: Arguments to pass to ``save`` method of the embedding model
+        :param args: Arguments to pass to ``save`` method of the embedding model.
         :param kwargs: Keyword arguments to pass to ``save`` method of the embedding
-            model
+            model.
         """
-
         self.embed_model.save(*args, **kwargs)
 
 
 def get_device(device: str):
     """Get tensorflow compute device.
 
-    :param device: device name
+    :param device: device name.
     """
-
     # translate our own alias into framework-compatible ones
     if device == 'cuda':
         device = '/GPU:0'

@@ -25,6 +25,7 @@ if TYPE_CHECKING:
 def fit(
     model: 'AnyDNN',  #: must be an embedding model
     train_data: 'DocumentSequence',
+    eval_data: Optional['DocumentSequence'] = None,
     query_data: Optional['DocumentSequence'] = None,
     index_data: Optional['DocumentSequence'] = None,
     epochs: int = 10,
@@ -54,6 +55,7 @@ def fit(
 def fit(
     model: 'AnyDNN',
     train_data: 'DocumentSequence',
+    eval_data: Optional['DocumentSequence'] = None,
     query_data: Optional['DocumentSequence'] = None,
     index_data: Optional['DocumentSequence'] = None,
     epochs: int = 10,
@@ -89,6 +91,7 @@ def fit(
 def fit(
     model: 'AnyDNN',  #: must be an embedding model
     train_data: 'DocumentSequence',
+    eval_data: Optional['DocumentSequence'] = None,
     query_data: Optional['DocumentSequence'] = None,
     index_data: Optional['DocumentSequence'] = None,
     epochs: int = 10,
@@ -122,6 +125,7 @@ def fit(
 def fit(
     model: 'AnyDNN',
     train_data: 'DocumentSequence',
+    eval_data: Optional['DocumentSequence'] = None,
     query_data: Optional['DocumentSequence'] = None,
     index_data: Optional['DocumentSequence'] = None,
     epochs: int = 10,
