@@ -13,8 +13,10 @@ Totally-Looks-Like is a dataset and benchmark challenging machine-learned repres
 
 
 Finetuner adopts the idea of [transfer learning](https://en.wikipedia.org/wiki/Transfer_learning) and [metric learning](https://en.wikipedia.org/wiki/Similarity_learning#Metric_learning). The rationale is
-1. TLL dataset is a relatively small dataset, it's not reasonable to train a large network, such as ResNet on TLL from scratch. So we train part of the network by freezing layers.
-2. TLL dataset consists of pairs of images that can be formed as a positive pair (same classes), and a random image can be considered as a negative pair. We can form a `triplet` and use the Finetuner `TripletLoss`. We expect after fine-tuning, the distance between positive pairs can be pulled closer, while the distance between positive and negative pairs can be pushed away.
+- it is a relatively small dataset and doesn't require training a large network from scratch. So we train only part of the ResNet-50 by freezing layers.
+- it consists of pairs of images that can be formed as positive pairs (same classes). A random image can be considered as a negative pair. We construct `triplet` and use the `TripletLoss`. 
+
+After fine-tuning, the distance between positive pairs is expected to be pulled closer, while the distance between positive and negative pairs is expected to be pushed away.
 
 ## Environment & Data Preparation
 
