@@ -18,7 +18,7 @@ The rationale for choosing TLL dataset is
 
 After fine-tuning, the distance between positive pairs is expected to be pulled closer, while the distance between positive and negative pairs is expected to be pushed away.
 
-## Environment & Data Preparation
+## Data preparation
 
 We will download `left.zip` and `right.zip`, as stated before,
 each of them consists of 6016 images which can be formed into pairs based on the same file name.
@@ -55,7 +55,7 @@ train_size = int(ratio * len(left_da))
 train_da = left_da[:train_size] + right_da[:train_size]
 ```
 
-## Transform Training Data
+### Preparing training data
 
 After loading data into jina `DocumentArray`, we can prepare documents for training.
 Finetuner will do the most challenging work for you, all you need to do is to:
@@ -72,7 +72,7 @@ def assign_label_and_preprocess(doc):
 train_da.apply(assign_label_and_preprocess)
 ```
 
-## Prepare Model and Model Visualization
+## Choosing the base model
 
 We create a pre-trained ResNet-50 model from torchvision, and since we want to learn a better `embedding`,
 the first thing is to see which layer is suitable for use as an `embedding layer`.
@@ -97,7 +97,7 @@ In general, you have to remove the task-specific top from the pre-trained model.
 ```
 
 
-## Model Training
+## Training
 
 Model training is straitforward in finetuner. 
 You'll need to config several hyperparameters,
@@ -138,7 +138,7 @@ But how does it work?:
 
 ![metric_learning](metric_learning.png)
 
-## Evaluating the Embedding Quality
+## Evaluating the embedding quality
 
 We'll use **hit@10** to measure the quality of the representation on the search task.
 **hit@10** means for all the test data, how likely the positive `match` ranked within the top 10 matches with respect to the `query` Document.
