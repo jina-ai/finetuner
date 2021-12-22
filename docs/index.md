@@ -121,7 +121,7 @@ Learn more about {term}`embedding model`.
 </div>
 
 +++
-Learn more about {term}`labeled data`.
+Learn more about {term}`labeled dataset`.
 
 
 :::
