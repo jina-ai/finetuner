@@ -19,11 +19,11 @@ Precisely, "tuning" means:
 - we accept or reject the results based on their quality;
 - we let the model remember our feedback and produce better search results.
 
-Hopefully the procedure converges after several rounds and we get a tuned embedding for better results in our search task.
+Hopefully the procedure converges after several rounds, and we get a tuned embedding for better results in our search task.
 
 ## Build embedding model
 
-Let's create a transformers model as our {ref}`embedding model<embedding-model>`, where we will use the `[CLS]` token as the embedding:
+Let's create a transformers model as our {term}`embedding model`, where we will use the `[CLS]` token as the embedding:
 
 
 ```python

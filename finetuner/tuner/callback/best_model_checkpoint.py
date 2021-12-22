@@ -94,12 +94,12 @@ class BestModelCheckpoint(BaseCallback):
             )
         else:
             if self._monitor_op(current, self._best):
-                self._best = current
                 tuner.save(self._get_file_path())
                 self._logger.info(
                     f'Model improved from {self._best:.3f} to {current:.3f}.'
                     ' New model is saved!'
                 )
+                self._best = current
             else:
                 self._logger.info('Model didnt improve.')
 
@@ -114,7 +114,7 @@ class BestModelCheckpoint(BaseCallback):
     @staticmethod
     def load_model(tuner: 'BaseTuner', fp: str):
         """
-        Loads the model and tuner state
+        Loads the model and the tuner state
         """
         if get_framework(tuner.embed_model) == 'keras':
             import keras
