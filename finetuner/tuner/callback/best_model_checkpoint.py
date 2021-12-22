@@ -1,10 +1,7 @@
 import os
 from typing import TYPE_CHECKING
 
-import keras
 import numpy as np
-import paddle
-import torch
 from jina.logging.logger import JinaLogger
 
 from finetuner.helper import get_framework
@@ -114,11 +111,17 @@ class BestModelCheckpoint(BaseCallback):
     @staticmethod
     def load_model(tuner: 'BaseTuner', fp: str):
         """
-        Loads the model and tuner state
+        Loads the model and the tuner state
         """
         if get_framework(tuner.embed_model) == 'keras':
+            import keras
+
             tuner._embed_model = keras.models.load_model(fp)
         elif get_framework(tuner.embed_model) == 'torch':
+            import torch
+
             tuner._embed_model.load_state_dict(torch.load(fp))
         elif get_framework(tuner.embed_model) == 'paddle':
+            import paddle
+
             tuner._embed_model.set_state_dict(paddle.load(fp))
