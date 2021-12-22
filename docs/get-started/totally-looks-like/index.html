@@ -29,7 +29,7 @@
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.2"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="&lt;no title&gt;" href="../../basics/" /><link rel="prev" title="Finetuning Pretrained ResNet for Celebrity Face Search" href="../celeba/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Finetuning MLP for Fashion Image Search" href="../fashion-mnist/" /><link rel="prev" title="Finetuning MLP on Swiss Roll Dataset" href="../swiss-roll/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.2, furo 2021.11.23"/>
         <title>Finetuning ResNet50 on Totally Looks Like Dataset - Finetuner 0.3.1 documentation</title>
@@ -218,10 +218,10 @@
     <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../swiss-roll/">Finetuning MLP on Swiss Roll Dataset</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Finetuning ResNet50 on Totally Looks Like Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../fashion-mnist/">Finetuning MLP for Fashion Image Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../covid-qa/">Finetuning a Transformer for Question-Answering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../celeba/">Finetuning Pretrained ResNet for Celebrity Face Search</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Finetuning ResNet50 on Totally Looks Like Dataset</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
@@ -377,8 +377,8 @@ The dataset consists of 6016 pairs of images (12032 in total).</p>
 <li><p>it consists of pairs of images that can be formed as positive pairs (same classes). A random image can be considered as a negative pair. We construct <code class="docutils literal notranslate"><span class="pre">triplet</span></code> and use the <code class="docutils literal notranslate"><span class="pre">TripletLoss</span></code>.</p></li>
 </ul>
 <p>After fine-tuning, the distance between positive pairs is expected to be pulled closer, while the distance between positive and negative pairs is expected to be pushed away.</p>
-<section id="environment-data-preparation">
-<h2>Environment &amp; Data Preparation<a class="headerlink" href="#environment-data-preparation" title="Permalink to this headline">¶</a></h2>
+<section id="data-preparation">
+<h2>Data preparation<a class="headerlink" href="#data-preparation" title="Permalink to this headline">¶</a></h2>
 <p>We will download <code class="docutils literal notranslate"><span class="pre">left.zip</span></code> and <code class="docutils literal notranslate"><span class="pre">right.zip</span></code>, as stated before,
 each of them consists of 6016 images which can be formed into pairs based on the same file name.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install gdown
@@ -409,9 +409,8 @@ While 20% of the dataset will be used to evaluate the quality of embeddings on t
 <span class="n">train_da</span> <span class="o">=</span> <span class="n">left_da</span><span class="p">[:</span><span class="n">train_size</span><span class="p">]</span> <span class="o">+</span> <span class="n">right_da</span><span class="p">[:</span><span class="n">train_size</span><span class="p">]</span>
 </pre></div>
 </div>
-</section>
-<section id="transform-training-data">
-<h2>Transform Training Data<a class="headerlink" href="#transform-training-data" title="Permalink to this headline">¶</a></h2>
+<section id="preparing-training-data">
+<h3>Preparing training data<a class="headerlink" href="#preparing-training-data" title="Permalink to this headline">¶</a></h3>
 <p>After loading data into jina <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>, we can prepare documents for training.
 Finetuner will do the most challenging work for you, all you need to do is to:</p>
 <ol class="simple">
@@ -426,8 +425,9 @@ Finetuner will do the most challenging work for you, all you need to do is to:</
 </pre></div>
 </div>
 </section>
-<section id="prepare-model-and-model-visualization">
-<h2>Prepare Model and Model Visualization<a class="headerlink" href="#prepare-model-and-model-visualization" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="choosing-the-base-model">
+<h2>Choosing the base model<a class="headerlink" href="#choosing-the-base-model" title="Permalink to this headline">¶</a></h2>
 <p>We create a pre-trained ResNet-50 model from torchvision, and since we want to learn a better <code class="docutils literal notranslate"><span class="pre">embedding</span></code>,
 the first thing is to see which layer is suitable for use as an <code class="docutils literal notranslate"><span class="pre">embedding</span> <span class="pre">layer</span></code>.
 You can call <code class="docutils literal notranslate"><span class="pre">finetuner.display(model,</span> <span class="pre">input_size)</span></code> to plot the model architecture.</p>
@@ -448,8 +448,8 @@ This layer generates a 2048 dimensional dense embedding as output.</p>
 In general, you have to remove the task-specific top from the pre-trained model.</p>
 </div>
 </section>
-<section id="model-training">
-<h2>Model Training<a class="headerlink" href="#model-training" title="Permalink to this headline">¶</a></h2>
+<section id="training">
+<h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
 <p>Model training is straitforward in finetuner.
 You’ll need to config several hyperparameters,
 plugin your model and training set, that’s it.</p>
@@ -486,7 +486,7 @@ given an input image, at inference time, this model generates a <em>representati
 <p><img alt="metric_learning" src="../../_images/metric_learning.png"/></p>
 </section>
 <section id="evaluating-the-embedding-quality">
-<h2>Evaluating the Embedding Quality<a class="headerlink" href="#evaluating-the-embedding-quality" title="Permalink to this headline">¶</a></h2>
+<h2>Evaluating the embedding quality<a class="headerlink" href="#evaluating-the-embedding-quality" title="Permalink to this headline">¶</a></h2>
 <p>We’ll use <strong>hit@10</strong> to measure the quality of the representation on the search task.
 <strong>hit@10</strong> means for all the test data, how likely the positive <code class="docutils literal notranslate"><span class="pre">match</span></code> ranked within the top 10 matches with respect to the <code class="docutils literal notranslate"><span class="pre">query</span></code> Document.</p>
 <p>Remind that we have the <code class="docutils literal notranslate"><span class="pre">train_da</span></code> ready, now we need to perform the same preprocessing on test DocumentArray:</p>
@@ -563,18 +563,18 @@ the rest of the model serves as a feature extractor.</p>
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../../basics/">
+                    <a class="next-page" href="../fashion-mnist/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">&lt;no title&gt;</div>
+                            <div class="title">Finetuning MLP for Fashion Image Search</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../celeba/">
+                    <a class="prev-page" href="../swiss-roll/">
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -583,7 +583,7 @@ the rest of the model serves as a feature extractor.</p>
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">Finetuning Pretrained ResNet for Celebrity Face Search</div>
+                            <div class="title">Finetuning MLP on Swiss Roll Dataset</div>
                             
                         </div>
                     </a>
@@ -617,11 +617,13 @@ the rest of the model serves as a feature extractor.</p>
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">Finetuning ResNet50 on Totally Looks Like Dataset</a><ul>
-<li><a class="reference internal" href="#environment-data-preparation">Environment &amp; Data Preparation</a></li>
-<li><a class="reference internal" href="#transform-training-data">Transform Training Data</a></li>
-<li><a class="reference internal" href="#prepare-model-and-model-visualization">Prepare Model and Model Visualization</a></li>
-<li><a class="reference internal" href="#model-training">Model Training</a></li>
-<li><a class="reference internal" href="#evaluating-the-embedding-quality">Evaluating the Embedding Quality</a></li>
+<li><a class="reference internal" href="#data-preparation">Data preparation</a><ul>
+<li><a class="reference internal" href="#preparing-training-data">Preparing training data</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#choosing-the-base-model">Choosing the base model</a></li>
+<li><a class="reference internal" href="#training">Training</a></li>
+<li><a class="reference internal" href="#evaluating-the-embedding-quality">Evaluating the embedding quality</a></li>
 </ul>
 </li>
 </ul>

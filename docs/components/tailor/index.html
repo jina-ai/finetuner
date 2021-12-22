@@ -218,10 +218,10 @@
     <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/swiss-roll/">Finetuning MLP on Swiss Roll Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/totally-looks-like/">Finetuning ResNet50 on Totally Looks Like Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/fashion-mnist/">Finetuning MLP for Fashion Image Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/covid-qa/">Finetuning a Transformer for Question-Answering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/celeba/">Finetuning Pretrained ResNet for Celebrity Face Search</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../get-started/totally-looks-like/">Finetuning ResNet50 on Totally Looks Like Dataset</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
@@ -992,8 +992,8 @@ Finetuner allows you to freeze the entire model or freeze specific layers, with 
 for example, <code class="docutils literal notranslate"><span class="pre">freeze=['conv2d_1',</span> <span class="pre">'conv2d_5']</span></code> will only freeze these two layers.</p>
 <p>Again, keep this in mind, we’ll put everything together after we attach the <code class="docutils literal notranslate"><span class="pre">bottleneck</span> <span class="pre">layer</span></code>.</p>
 </section>
-<section id="optional-attach-a-bottleneck-module">
-<h2>(optional) Attach a bottleneck module.<a class="headerlink" href="#optional-attach-a-bottleneck-module" title="Permalink to this headline">¶</a></h2>
+<section id="attach-a-bottleneck-module">
+<h2>Attach a bottleneck module.<a class="headerlink" href="#attach-a-bottleneck-module" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes you want to add a bottleneck module or projection head on top of your embedding model.
 This bottleneck layer should be a simple multi-layer perceptron.
 This could help you improve your embedding quality and potentially reduce the dimensionality.</p>
@@ -1160,7 +1160,7 @@ Last but not least, you attached a trainable bottleneck module and reduced the o
 <li><a class="reference internal" href="#display-model-summary"><code class="docutils literal notranslate"><span class="pre">display</span></code> model summary</a></li>
 <li><a class="reference internal" href="#select-an-embedding-layer-as-your-model-output">Select an embedding layer as your model output.</a></li>
 <li><a class="reference internal" href="#decide-your-freeze-strategy">Decide your <code class="docutils literal notranslate"><span class="pre">freeze</span></code> strategy.</a></li>
-<li><a class="reference internal" href="#optional-attach-a-bottleneck-module">(optional) Attach a bottleneck module.</a></li>
+<li><a class="reference internal" href="#attach-a-bottleneck-module">Attach a bottleneck module.</a></li>
 <li><a class="reference internal" href="#tips">Tips</a></li>
 </ul>
 </li>
