@@ -86,7 +86,7 @@ def _download_qa_data(
         )
         opener.add_handler(proxy)
     urllib.request.install_opener(opener)
-    for k, v in track(targets.items(), 'Downloading chatbot data'):
+    for v in track(targets.values(), 'Downloading chatbot data'):
         if not os.path.exists(v['filename']):
             urllib.request.urlretrieve(v['url'], v['filename'])
 
