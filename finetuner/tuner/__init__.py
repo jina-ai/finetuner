@@ -1,10 +1,9 @@
 from typing import Callable, List, Optional, Type, TYPE_CHECKING, Tuple, Union
 
-from .base import BaseLoss
 from ..helper import get_framework
 
 if TYPE_CHECKING:
-    from .base import BaseTuner
+    from .base import BaseTuner, BaseLoss
     from .callback import BaseCallback
     from ..helper import (
         AnyDNN,
@@ -42,7 +41,7 @@ def fit(
     epochs: int = 10,
     batch_size: int = 256,
     num_items_per_class: Optional[int] = None,
-    loss: Union[str, BaseLoss] = 'SiameseLoss',
+    loss: Union[str, 'BaseLoss'] = 'SiameseLoss',
     configure_optimizer: Optional[
         Callable[
             ['AnyDNN'], Union['AnyOptimizer', Tuple['AnyOptimizer', 'AnyScheduler']]
