@@ -16,13 +16,15 @@ class TrainingCheckpoint(BaseCallback):
     Callback to save model at every epoch or the last K epochs
     """
 
-    def __init__(self, save_dir: str, last_k_epochs: int = 1):
+    def __init__(self, save_dir: str, last_k_epochs: int = 1, verbose: bool = False):
         """
         :param save_dir: string, path to save the model file.
         :param last_k_epochs: this parameter is an integer. Only the most
             recent k checkpoints will be kept. Older checkpoints are deleted
+        :param verbose: Whether to log notifications when a checkpoint is saved/deleted
         """
         self._logger = logging.getLogger('finetuner.' + self.__class__.__name__)
+        self._logger.setLevel(logging.INFO if verbose else logging.WARNING)
         self._save_dir = save_dir
         self._last_k_epochs = last_k_epochs
         self._saved_checkpoints = []

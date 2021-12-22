@@ -23,6 +23,7 @@ class EarlyStopping(BaseCallback):
         patience: int = 2,
         min_delta: int = 0,
         baseline: Optional[float] = None,
+        verbose: bool = False,
     ):
         """
         :param monitor: if `monitor='loss'` best bodel saved will be according
@@ -48,6 +49,8 @@ class EarlyStopping(BaseCallback):
             baseline.
         """
         self._logger = logging.getLogger('finetuner.' + self.__class__.__name__)
+        self._logger.setLevel(logging.INFO if verbose else logging.WARNING)
+
         self._monitor = monitor
         self._mode = mode
         self._patience = patience
@@ -58,9 +61,7 @@ class EarlyStopping(BaseCallback):
         self._epoch_counter = 0
 
         if mode not in ['auto', 'min', 'max']:
-            self._logger.logger.warning(
-                'ModelCheckpoint mode %s is unknown, ' 'fallback to auto mode.', mode
-            )
+            self._logger.warning('mode %s is unknown, ' 'fallback to auto mode.', mode)
             mode = 'auto'
 
         if mode == 'min':
@@ -112,15 +113,11 @@ class EarlyStopping(BaseCallback):
         elif self._monitor == 'train_loss':
             current_value = np.mean(self._train_losses)
         else:
-            self._logger.warning(
-                f'Can save best model only with {self._monitor} available, ' 'skipping.'
-            )
+            self._logger.warning(f'Metric {self._monitor} not available, skipping.')
             return
 
         if self._monitor_op(current_value - self._min_delta, self._best):
-            self._logger.logger.info(
-                f'Model improved from {self._best} to {current_value}'
-            )
+            self._logger.info(f'Model improved from {self._best} to {current_value}')
             self._best = current_value
             self._epoch_counter = 0
 

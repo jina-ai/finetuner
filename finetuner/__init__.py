@@ -34,7 +34,6 @@ class _RichHandler(RichHandler):
 
 live_console = Console()  # Can be used by other rich components, e.g. progress bar
 _logger = logging.getLogger('finetuner')
-_logger.setLevel(logging.INFO)
 _logger.addHandler(_RichHandler(console=live_console))
 
 
