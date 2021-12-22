@@ -6,6 +6,7 @@ The dataset consists of 6016 pairs of images (12032 in total).
 >Totally-Looks-Like is a dataset and benchmark challenging machine-learned representations to reproduce human perception of image similarity.
 
 ![overview](overview.png)
+
 *Each image patch in the left has a corresponded similar image patch in the right.*
 
 Finetuner adopts the idea of [transfer learning](https://en.wikipedia.org/wiki/Transfer_learning) and [metric learning](https://en.wikipedia.org/wiki/Similarity_learning#Metric_learning). The rationale is
@@ -35,7 +36,7 @@ Afterward, we load all images from unzipped `left` and `right` folders and turn 
 While 20% of the dataset will be used to evaluate the quality of embeddings on the search task.
 
 ```python
-from jina import DocumentArray
+from docarray import DocumentArray
 
 left_da = DocumentArray.from_files('left/*.jpg')
 right_da = DocumentArray.from_files('right/*.jpg')
