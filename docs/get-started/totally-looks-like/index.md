@@ -11,7 +11,6 @@ Totally-Looks-Like is a dataset and benchmark challenging machine-learned repres
 :width: 70%
 ```
 
-*Each image patch in the left has a corresponded similar image patch in the right.*
 
 Finetuner adopts the idea of [transfer learning](https://en.wikipedia.org/wiki/Transfer_learning) and [metric learning](https://en.wikipedia.org/wiki/Similarity_learning#Metric_learning). The rationale is
 1. TLL dataset is a relatively small dataset, it's not reasonable to train a large network, such as ResNet on TLL from scratch. So we train part of the network by freezing layers.
