@@ -5,6 +5,7 @@ from typing import (
     List,
     Dict,
     Any,
+    Tuple,
     TYPE_CHECKING,
     Callable,
     Union,
@@ -94,3 +95,136 @@ def get_framework(dnn_model: 'AnyDNN') -> str:
 def is_seq_int(tp) -> bool:
     """Return True if the input is a sequence of integers."""
     return tp and isinstance(tp, Sequence) and all(isinstance(p, int) for p in tp)
+
+
+def to_onnx(
+    embed_model: 'AnyDNN',
+    path: str,
+    input_shape: Tuple[int, ...],
+    batch_size: int,
+    opset_version: int = 11,
+) -> None:
+    """Func that converts a given model in paddle, torch or keras,
+    and converts it to the ONNX format
+    :param embed_model: Model to be converted and stored in ONNX
+    :param path: Path to store ONNX model to
+    :param input_shape: Input shape of embedding model
+    :param batch_size: The batch size the model was trained with
+    :param opset_version: ONNX opset version in which to register
+    """
+
+    def _parse_to_onnx_func(framework_name: str):
+        """Helper func to get _to_onnx_xyz func from framework name"""
+        return {
+            'torch': _to_onnx_torch,
+            'keras': _to_onnx_keras,
+            'paddle': _to_onnx_paddle,
+        }[fm]
+
+    fm = get_framework(embed_model)
+
+    # Get framework-specific func to register model in ONNX
+    _to_onnx_func = _parse_to_onnx_func(fm)
+    _to_onnx_func(embed_model, path, input_shape, batch_size, opset_version)
+
+    _check_onnx_model(path)
+
+
+def _check_onnx_model(path: str) -> None:
+    """Check an ONNX model
+    :param path: Path to ONNX model
+    """
+    import onnx
+
+    model = onnx.load(path)
+    onnx.checker.check_model(model)
+
+
+def _to_onnx_torch(
+    embed_model: 'AnyDNN',
+    path: str,
+    input_shape: Tuple[int, ...],
+    batch_size: int,
+    opset_version: int = 11,
+) -> None:
+    """Convert a PyTorch embedding model to the ONNX format
+    :param embed_model: Embedding model to register in ONNX
+    :param path: Patch where to register ONNX model to
+    :param input_shape: Embedding model input shape
+    :param batch_size: The batch size the model was trained with
+    :param opset_version: ONNX opset version in which to register
+    """
+
+    import torch
+
+    x = torch.randn(
+        (batch_size,) + input_shape, requires_grad=True, dtype=torch.float32
+    )
+    embed_model.eval()
+    torch.onnx.export(
+        embed_model,
+        x,
+        path,
+        export_params=True,
+        do_constant_folding=True,
+        opset_version=opset_version,
+        input_names=['input'],
+        output_names=['output'],
+        dynamic_axes={'input': {0: 'batch_size'}, 'output': {0: 'batch_size'}},
+    )
+
+
+def _to_onnx_keras(
+    embed_model: 'AnyDNN',
+    path: str,
+    input_shape: Tuple[int, ...],
+    batch_size: int, 
+    opset_version: int = 11,
+) -> None:
+    """Convert a Keras embedding model to the ONNX format
+    :param embed_model: Embedding model to register in ONNX
+    :param path: Patch where to register ONNX model to
+    :param input_shape: Embedding model input shape
+    :param batch_size: The batch size the model was trained with
+    :param opset_version: ONNX opset version in which to register
+    """
+
+    try:
+        import tf2onnx
+    except (ImportError, ModuleNotFoundError) as _:
+        raise ModuleNotFoundError('Module tf2onnx not found, try "pip install tf2onnx"')
+
+    import tensorflow as tf
+
+    shape = (None,) + input_shape
+    _ = tf2onnx.convert.from_keras(
+        embed_model,
+        input_signature=[tf.TensorSpec(shape)],
+        opset=opset_version,
+        output_path=path,
+    )
+
+
+def _to_onnx_paddle(
+    embed_model: 'AnyDNN',
+    path: str,
+    input_shape: Tuple[int, ...],
+    batch_size: int, 
+    opset_version: int = 11,
+) -> None:
+    """Convert a paddle embedding model to the ONNX format
+    :param embed_model: Embedding model to register in ONNX
+    :param path: Patch where to register ONNX model to
+    :param input_shape: Embedding model input shape
+    :param batch_size: The batch size the model was trained with
+    :param opset_version: ONNX opset version in which to register
+    """
+
+    import paddle
+    from paddle.static import InputSpec
+
+    shape = (None,) + input_shape
+    x_spec = InputSpec(shape, 'float32', 'input')
+    paddle.onnx.export(
+        embed_model, path, input_spec=[x_spec], opset_version=opset_version
+    )
