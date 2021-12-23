@@ -7,6 +7,7 @@ import numpy as np
 from .base import BaseCallback
 from ..evaluation import __evaluator_mean_prefix__
 from ...helper import get_framework
+
 if TYPE_CHECKING:
     from ..base import BaseTuner
 
@@ -51,7 +52,6 @@ class BestModelCheckpoint(BaseCallback):
         if mode not in ['auto', 'min', 'max']:
             self._logger.warning(
                 f'Unknown early stopping mode {mode}, falling back to auto mode.'
-
             )
             mode = 'auto'
         self._mode = mode
@@ -103,9 +103,7 @@ class BestModelCheckpoint(BaseCallback):
                 )
 
         if current is None:
-            self._logger.warning(
-                f'Could not retrieve monitor metric {self._monitor}'
-            )
+            self._logger.warning(f'Could not retrieve monitor metric {self._monitor}')
             return
 
         if self._monitor_op(current, self._best):
@@ -117,7 +115,6 @@ class BestModelCheckpoint(BaseCallback):
             self._best = current
         else:
             self._logger.info(f'Model did not improve.')
-
 
     def _get_file_path(self):
         """
