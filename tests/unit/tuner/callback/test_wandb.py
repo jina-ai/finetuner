@@ -1,6 +1,6 @@
 import pytest
-
 import wandb
+
 from finetuner.tuner.callback import WandBLogger
 from finetuner.tuner.state import TunerState
 
