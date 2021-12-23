@@ -5,7 +5,6 @@ import tempfile
 
 import onnxruntime
 import tensorflow as tf
-import torch
 
 from pathlib import Path
 
@@ -15,19 +14,24 @@ from finetuner.helper import to_onnx
 
 
 @pytest.fixture
-def model(dim=32):
-    return keras.Sequential(
-        [
-            keras.layers.Flatten(input_shape=(dim,)),
-            keras.layers.Dense(64, activation='relu'),
-            keras.layers.Dense(64, activation='relu'),
-            keras.layers.Dense(64, activation='relu'),
-            keras.layers.Dense(32),
-        ]
-    )
+def get_model():
+    def _get_model(input_dim):
+        return keras.Sequential(
+            [
+                keras.layers.Flatten(input_shape=(input_dim,)),
+                keras.layers.Dense(64, activation='relu'),
+                keras.layers.Dense(64, activation='relu'),
+                keras.layers.Dense(64, activation='relu'),
+                keras.layers.Dense(32),
+            ]
+        )
+
+    return _get_model
 
 
-def test_keras_to_onnx(model):
+def test_keras_to_onnx(get_model):
+
+    model = get_model(32)
 
     temp_onnx_file = Path(tempfile.tempdir) / "finetuned.onnx"
 

@@ -1,3 +1,5 @@
+import numpy as np
+
 from typing import (
     Any,
     Callable,
@@ -11,6 +13,8 @@ from typing import (
     TypeVar,
     Union,
 )
+
+from torch._C import dtype
 
 
 AnyDNN = TypeVar(
@@ -118,12 +122,12 @@ def to_onnx(
 
     def _parse_and_apply_to_onnx_func(framework_name: str):
         """Helper func to get _to_onnx_xyz func from framework name"""
-        if fm == "torch" and batch_size is None:
+        if fm in ('paddle', 'torch') and batch_size is None:
             raise ValueError(
-                f"When using to_onnx with pyTorch, you need "
-                "set batch size specifically."
+                f'When using to_onnx with pyTorch, you need '
+                'set batch size specifically.'
             )
-        elif fm in ('keras', 'paddle') and batch_size is not None:
+        elif fm == 'keras' and batch_size is not None:
             raise ValueError(
                 f'The batch_size should not be set explicitly, '
                 f'when serializing a {fm} to ONNX. The resulting model will maintain '
@@ -234,10 +238,34 @@ def _to_onnx_paddle(
     """
 
     import paddle
+    from paddle import fluid
     from paddle.static import InputSpec
 
-    shape = (None,) + input_shape
-    x_spec = InputSpec(shape, 'float32', 'input')
-    paddle.onnx.export(
-        embed_model, path, input_spec=[x_spec], opset_version=opset_version
+    print(batch_size, input_shape)
+    x = paddle.Tensor(
+        np.random.standard_normal([batch_size] + input_shape).astype(np.float32)
     )
+
+    paddle.enable_static()
+    x = fluid.data(name='input', shape=[None] + input_shape, dtype='float')
+
+    shape = [batch_size] + input_shape
+
+    predict = embed_model(x)
+
+    exe = fluid.Executor(fluid.CPUPlace())
+    _ = exe.run(fluid.default_startup_program())
+
+    import os
+
+    fluid.io.save_inference_model(os.path.dirname(path), ["input"], [predict], exe)
+    # x_spec = InputSpec(shape, 'float32','input')
+    # x_spec = InputSpec(shape, dtype='float32')
+    # paddle.jit.to_static(embed_model)
+    # model_output = embed_model(x)
+    # paddle.onnx.export(
+    #     embed_model,
+    #     path,
+    #     input_spec=[x_spec],
+    #     output_spec=[model_output],  # opset_version=opset_version
+    # )

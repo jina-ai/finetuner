@@ -1,5 +1,4 @@
 import numpy as np
-from finetuner.tuner import pytorch
 import pytest
 import tempfile
 
@@ -13,24 +12,28 @@ from finetuner.helper import to_onnx
 
 
 @pytest.fixture
-def model(dim=32):
-    return torch.nn.Sequential(
-        torch.nn.Flatten(),
-        torch.nn.Linear(in_features=dim, out_features=64),
-        torch.nn.ReLU(),
-        torch.nn.Linear(in_features=64, out_features=64),
-        torch.nn.ReLU(),
-        torch.nn.Linear(in_features=64, out_features=64),
-        torch.nn.ReLU(),
-        torch.nn.Linear(in_features=64, out_features=32),
-    )
+def get_model():
+    def _get_model(input_dim):
+        return torch.nn.Sequential(
+            torch.nn.Flatten(),
+            torch.nn.Linear(in_features=input_dim, out_features=64),
+            torch.nn.ReLU(),
+            torch.nn.Linear(in_features=64, out_features=64),
+            torch.nn.ReLU(),
+            torch.nn.Linear(in_features=64, out_features=64),
+            torch.nn.ReLU(),
+            torch.nn.Linear(in_features=64, out_features=32),
+        )
+
+    return _get_model
 
 
-def test_pytorch_to_onnx(model):
+def test_pytorch_to_onnx(get_model):
 
     BATCH_SIZE = 8
     temp_onnx_file = Path(tempfile.tempdir) / "finetuned.onnx"
 
+    model = get_model(32)
     # convert to ONNX
     to_onnx(
         model,
