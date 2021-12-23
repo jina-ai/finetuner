@@ -55,7 +55,7 @@ class TorchStrategicMiningHelper:
             )
         self.pos_strategy = pos_strategy
         self.neg_strategy = neg_strategy
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     def _get_per_row_min(
         self, dist_mat: torch.Tensor, semihard_tsh: Optional[torch.Tensor] = None

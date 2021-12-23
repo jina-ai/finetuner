@@ -119,11 +119,11 @@ class ProgressBarCallback(BaseCallback):
             description='Embedding queries',
             total=tuner.state.num_batches_query,
             completed=0,
-            metrics="",
+            metrics='',
         )
 
     def on_metrics_query_batch_end(self, tuner: 'BaseTuner'):
-        self.pbar.update(task_id=self.query_pbar_id, advance=1, metrics="")
+        self.pbar.update(task_id=self.query_pbar_id, advance=1, metrics='')
 
     def on_metrics_query_end(self, tuner: 'BaseTuner'):
         self.pbar.update(task_id=self.query_pbar_id, visible=False)
@@ -135,11 +135,11 @@ class ProgressBarCallback(BaseCallback):
             description='Embedding index',
             total=tuner.state.num_batches_index,
             completed=0,
-            metrics="",
+            metrics='',
         )
 
     def on_metrics_index_batch_end(self, tuner: 'BaseTuner'):
-        self.pbar.update(task_id=self.index_pbar_id, advance=1, metrics="")
+        self.pbar.update(task_id=self.index_pbar_id, advance=1, metrics='')
 
     def on_metrics_index_end(self, tuner: 'BaseTuner'):
         self.pbar.update(task_id=self.index_pbar_id, visible=False)
@@ -149,7 +149,7 @@ class ProgressBarCallback(BaseCallback):
             self.match_pbar_id,
             visible=True,
             description='Matching',
-            metrics="",
+            metrics='',
         )
 
     def on_metrics_match_end(self, tuner: 'BaseTuner'):

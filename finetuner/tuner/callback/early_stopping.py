@@ -19,8 +19,8 @@ class EarlyStopping(BaseCallback):
 
     def __init__(
         self,
-        monitor: str = "val_loss",
-        mode: str = "auto",
+        monitor: str = 'val_loss',
+        mode: str = 'auto',
         patience: int = 2,
         min_delta: int = 0,
         baseline: Optional[float] = None,
@@ -48,7 +48,7 @@ class EarlyStopping(BaseCallback):
             baseline.
         :param verbose: Wheter to log score improvement events.
         """
-        self._logger = logging.getLogger("finetuner." + self.__class__.__name__)
+        self._logger = logging.getLogger('finetuner.' + self.__class__.__name__)
         self._logger.setLevel(logging.INFO if verbose else logging.WARNING)
 
         self._monitor = monitor
@@ -59,22 +59,22 @@ class EarlyStopping(BaseCallback):
         self._val_losses = []
         self._epoch_counter = 0
 
-        if mode not in ["auto", "min", "max"]:
+        if mode not in ['auto', 'min', 'max']:
             self._logger.warning(
-                f"Unknown early stopping mode {mode}, falling back to auto mode."
+                f'Unknown early stopping mode {mode}, falling back to auto mode.'
             )
-            mode = "auto"
+            mode = 'auto'
         self._mode = mode
 
         self._monitor_op: np.ufunc
         self._best: float
 
-        if mode == "min":
+        if mode == 'min':
             self._set_min_mode()
-        elif mode == "max":
+        elif mode == 'max':
             self._set_max_mode()
         else:
-            if self._monitor == "train_loss" or self._monitor == "val_loss":
+            if self._monitor == 'train_loss' or self._monitor == 'val_loss':
                 self._set_min_mode()
             else:
                 self._set_max_mode()
@@ -89,27 +89,27 @@ class EarlyStopping(BaseCallback):
         self._best = np.Inf
         self._min_delta *= -1
 
-    def on_epoch_end(self, tuner: "BaseTuner"):
+    def on_epoch_end(self, tuner: 'BaseTuner'):
         self._check(tuner)
         self._train_losses = []
         self._val_losses = []
 
-    def on_train_batch_end(self, tuner: "BaseTuner"):
+    def on_train_batch_end(self, tuner: 'BaseTuner'):
         self._train_losses.append(tuner.state.current_loss)
 
-    def on_val_batch_end(self, tuner: "BaseTuner"):
+    def on_val_batch_end(self, tuner: 'BaseTuner'):
         self._val_losses.append(tuner.state.current_loss)
 
-    def _check(self, tuner: "BaseTuner"):
+    def _check(self, tuner: 'BaseTuner'):
         """
         Checks if training should be stopped.
         """
         if self._baseline is not None:
             self._best = self._baseline
 
-        if self._monitor == "train_loss":
+        if self._monitor == 'train_loss':
             current = np.mean(self._train_losses)
-        elif self._monitor == "val_loss":
+        elif self._monitor == 'val_loss':
             current = np.mean(self._val_losses)
         else:
             try:
@@ -120,17 +120,17 @@ class EarlyStopping(BaseCallback):
                 )
 
         if current is None:
-            self._logger.warning(f"Could not retrieve monitor metric {self._monitor}")
+            self._logger.warning(f'Could not retrieve monitor metric {self._monitor}')
             return
 
         if self._monitor_op(current - self._min_delta, self._best):
-            self._logger.info(f"Model improved from {self._best} to {current}")
+            self._logger.info(f'Model improved from {self._best} to {current}')
             self._best = current
             self._epoch_counter = 0
         else:
             self._epoch_counter += 1
             if self._epoch_counter == self._patience:
                 self._logger.info(
-                    f"Training is stopping, no improvement for {self._patience} epochs"
+                    f'Training is stopping, no improvement for {self._patience} epochs'
                 )
                 tuner.stop_training = True

@@ -21,15 +21,15 @@ if TYPE_CHECKING:
 
 
 METRICS = {
-    "r_precision": r_precision,
-    "precision": precision_at_k,
-    "recall": recall_at_k,
-    "f1score": f1_score_at_k,
-    "average_precision": average_precision,
-    "hit": hit_at_k,
-    "reciprocal_rank": reciprocal_rank,
-    "dcg": dcg_at_k,
-    "ndcg": ndcg_at_k,
+    'r_precision': r_precision,
+    'precision': precision_at_k,
+    'recall': recall_at_k,
+    'f1score': f1_score_at_k,
+    'average_precision': average_precision,
+    'hit': hit_at_k,
+    'reciprocal_rank': reciprocal_rank,
+    'dcg': dcg_at_k,
+    'ndcg': ndcg_at_k,
 }
 
 __evaluator_metrics_key__ = 'finetuner_metrics'
@@ -147,7 +147,7 @@ class Evaluator:
 
             embedding = self._query_data[doc.id].embedding
             if embedding is None:
-                raise ValueError(f"Found doc {doc.id} with no embedding set")
+                raise ValueError(f'Found doc {doc.id} with no embedding set')
 
             doc.embedding = embedding
             doc.matches.clear()
@@ -164,7 +164,7 @@ class Evaluator:
                 self._query_data[doc.id].tags[__evaluator_metrics_key__][label][name]
                 for doc in self._summary_docs
             ]
-            means[f"{__evaluator_mean_prefix__}{name}"] = sum(values) / len(values)
+            means[f'{__evaluator_mean_prefix__}{name}'] = sum(values) / len(values)
 
         return means
 

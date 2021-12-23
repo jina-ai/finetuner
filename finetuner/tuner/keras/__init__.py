@@ -182,7 +182,7 @@ class KerasTuner(
                     self._compute_metrics(
                         query_data,
                         index_data,
-                        label=f"epoch#{epoch}",
+                        label=f'epoch#{epoch}',
                         limit=limit,
                         distance=distance,
                         batch_size=batch_size,
