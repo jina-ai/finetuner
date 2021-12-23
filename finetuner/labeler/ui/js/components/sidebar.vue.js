@@ -160,7 +160,7 @@ const sidebar = {
 
         <footer>
             <a href="https://jina.ai" target="_blank">© 2020-2021 Jina AI</a>
-            <a href="https://github.com/jina-ai/finetuner" target="_blank">(<strong>Finetuner</strong> v0.1)</a>
+            <a href="https://github.com/jina-ai/finetuner" target="_blank">(<strong>Finetuner</strong> v0.3)</a>
         </footer>
     </div>
   `,

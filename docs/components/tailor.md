@@ -632,7 +632,7 @@ for example, ``freeze=['conv2d_1', 'conv2d_5']`` will only freeze these two laye
 
 Again, keep this in mind, we'll put everything together after we attach the ``bottleneck layer``.
 
-## (optional) Attach a bottleneck module.
+## Attach a bottleneck module.
 
 Sometimes you want to add a bottleneck module or projection head on top of your embedding model.
 This bottleneck layer should be a simple multi-layer perceptron.

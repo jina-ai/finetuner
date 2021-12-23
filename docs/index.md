@@ -121,7 +121,7 @@ Learn more about {term}`embedding model`.
 </div>
 
 +++
-Learn more about {term}`labeled data`.
+Learn more about {term}`labeled dataset`.
 
 
 :::
@@ -256,6 +256,7 @@ Learn more about {term}`Tailor`, {term}`Tuner` and {term}`Labeler`.
 :hidden:
 
 get-started/swiss-roll/index
+get-started/totally-looks-like/index
 get-started/fashion-mnist
 get-started/covid-qa
 get-started/celeba

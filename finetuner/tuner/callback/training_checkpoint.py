@@ -1,13 +1,11 @@
+import logging
 import os
 import pickle
 import shutil
 from typing import TYPE_CHECKING
 
-from jina.logging.logger import JinaLogger
-
 from .base import BaseCallback
 from ...helper import get_framework
-
 if TYPE_CHECKING:
     from ..base import BaseTuner
 
@@ -17,13 +15,15 @@ class TrainingCheckpoint(BaseCallback):
     Callback to save model at every epoch or the last K epochs
     """
 
-    def __init__(self, save_dir: str, last_k_epochs: int = 1):
+    def __init__(self, save_dir: str, last_k_epochs: int = 1, verbose: bool = False):
         """
         :param save_dir: string, path to save the model file.
         :param last_k_epochs: this parameter is an integer. Only the most
             recent k checkpoints will be kept. Older checkpoints are deleted.
+        :param verbose: Whether to log notifications when a checkpoint is saved/deleted.
         """
-        self._logger = JinaLogger(self.__class__.__name__)
+        self._logger = logging.getLogger('finetuner.' + self.__class__.__name__)
+        self._logger.setLevel(logging.INFO if verbose else logging.WARNING)
         self._save_dir = save_dir
         self._last_k_epochs = last_k_epochs
         self._saved_checkpoints = []
@@ -33,9 +33,8 @@ class TrainingCheckpoint(BaseCallback):
         Called at the end of the training epoch.
         """
         self._save_model(tuner)
-        self._logger.logger.info(
-            f'Model trained for {tuner.state.epoch+1} epochs is saved!'
-        )
+        self._logger.info(f'Model trained for {tuner.state.epoch+1} epochs is saved!')
+
         if self._last_k_epochs:
             if len(self._saved_checkpoints) > self._last_k_epochs:
                 if os.path.isfile(self._saved_checkpoints[0]):
@@ -43,8 +42,10 @@ class TrainingCheckpoint(BaseCallback):
                 else:
                     shutil.rmtree(self._saved_checkpoints[0])
                 self._saved_checkpoints.pop(0)
-                self._logger.logger.info(
-                    f'Model trained for {tuner.state.epoch+1-self._last_k_epochs} epochs is deleted!'
+
+                self._logger.info(
+                    f'Model trained for {tuner.state.epoch+1-self._last_k_epochs}'
+                    ' epochs is deleted!'
                 )
 
     def _save_model(self, tuner: 'BaseTuner'):

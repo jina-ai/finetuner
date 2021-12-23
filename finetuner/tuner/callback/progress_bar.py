@@ -11,6 +11,7 @@ from rich.progress import (
 )
 
 from .base import BaseCallback
+from ... import live_console
 
 if TYPE_CHECKING:
     from ..base import BaseTuner
@@ -60,6 +61,7 @@ class ProgressBarCallback(BaseCallback):
             TimeElapsedColumn(),
             '•',
             TextColumn('{task.fields[metrics]}'),
+            console=live_console,
         )
         self.pbar.start()
         self.train_pbar_id = self.pbar.add_task('Training', visible=False, start=False)

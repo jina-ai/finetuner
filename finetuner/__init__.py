@@ -6,7 +6,12 @@ __version__ = '0.3.1'
 __default_tag_key__ = 'finetuner_label'
 
 # define the high-level API: fit()
+import logging
 from typing import Callable, List, Optional, overload, TYPE_CHECKING, Tuple, Union
+
+from rich.console import Console
+from rich.logging import RichHandler
+from rich.text import Text
 
 if TYPE_CHECKING:
     from .tuner.callback import BaseCallback
@@ -18,6 +23,18 @@ if TYPE_CHECKING:
         PreprocFnType,
         CollateFnType,
     )
+
+
+# To make logging pretty - but most impotantly, play nice with progress bar
+class _RichHandler(RichHandler):
+    def render_message(self, record: logging.LogRecord, message: str):
+        """Add logger name to log message"""
+        return Text(f'[{record.name}] ') + super().render_message(record, message)
+
+
+live_console = Console()  # Can be used by other rich components, e.g. progress bar
+_logger = logging.getLogger('finetuner')
+_logger.addHandler(_RichHandler(console=live_console))
 
 
 # fit interface generated from Tuner
