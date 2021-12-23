@@ -5,9 +5,10 @@ import time
 
 import pytest
 import requests
-from finetuner.toydata import generate_fashion
-from finetuner import __default_tag_key__
 from jina.helper import random_port
+
+from finetuner import __default_tag_key__
+from finetuner.toydata import generate_fashion
 
 os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
 
@@ -15,11 +16,11 @@ all_test_losses = ['SiameseLoss', 'TripletLoss']
 
 
 def _run(framework_name, loss, port_expose):
-    from finetuner import fit
-
     import paddle
     import tensorflow as tf
     import torch
+
+    from finetuner import fit
 
     embed_models = {
         'keras': lambda: tf.keras.Sequential(
@@ -95,7 +96,7 @@ def test_all_frameworks(framework, loss, tmpdir):
                 assert req.status_code == 200
                 assert req.json()['data']['docs']
                 break
-            except:
+            except:  # noqa: 722
                 print('wait for ready...')
                 time.sleep(2)
 
@@ -147,7 +148,7 @@ def test_all_frameworks(framework, loss, tmpdir):
         )
         assert req.status_code == 200
 
-    except:
+    except:  # noqa: 722
         raise
     finally:
         p.terminate()

@@ -1,7 +1,7 @@
+from typing import Callable, Optional, Tuple, Union
+
 import numpy as np
 import torch
-
-from typing import Callable, Optional, Tuple, Union
 
 
 class TorchStrategicMiningHelper:
@@ -35,14 +35,17 @@ class TorchStrategicMiningHelper:
         """
 
         allowed_strategies = ['easy', 'semihard', 'hard', 'all']
-        if (
-            pos_strategy not in allowed_strategies
-            or neg_strategy not in allowed_strategies
-        ):
+        if pos_strategy not in allowed_strategies:
             raise ValueError(
-                f'The strategy has to be one of all, easy, semihard, and hard, but '
-                'was: {strategy}'
+                'pos_stragegy has to be one of all, easy, semihard, and hard, but '
+                f'was: {pos_strategy}'
             )
+        if neg_strategy not in allowed_strategies:
+            raise ValueError(
+                'neg_strategy has to be one of all, easy, semihard, and hard, but '
+                f'was: {neg_strategy}'
+            )
+
         elif pos_strategy == 'semihard' and neg_strategy == 'semihard':
             raise ValueError(
                 'Positive and negative strategy cannot both be set to semihard.'

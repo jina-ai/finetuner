@@ -1,0 +1,8 @@
+[tool.black]
+line-length = 88
+skip-string-normalization = true
+extend-exclude = 'docs/conf.py'
+
+[tool.isort]
+profile = "black"
+extend_skip = ["docs/conf.py"]

@@ -1,9 +1,8 @@
 import pytest
 
-from finetuner.tuner.state import TunerState
-from finetuner.tuner.callback import WandBLogger
-
 import wandb
+from finetuner.tuner.callback import WandBLogger
+from finetuner.tuner.state import TunerState
 
 
 class FakeTuner:

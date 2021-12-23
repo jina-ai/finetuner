@@ -1,5 +1,5 @@
-import pytest
 import paddle.nn as nn
+import pytest
 from jina import DocumentArray, DocumentArrayMemmap
 
 from finetuner.embedding import embed

@@ -1,18 +1,18 @@
-from typing import Callable, List, Optional, Type, TYPE_CHECKING, Tuple, Union
+from typing import TYPE_CHECKING, Callable, List, Optional, Tuple, Type, Union
 
 from ..helper import get_framework
 
 if TYPE_CHECKING:
-    from .base import BaseTuner, BaseLoss
-    from .callback import BaseCallback
     from ..helper import (
         AnyDNN,
         AnyOptimizer,
         AnyScheduler,
+        CollateFnType,
         DocumentSequence,
         PreprocFnType,
-        CollateFnType,
     )
+    from .base import BaseLoss, BaseTuner
+    from .callback import BaseCallback
 
 
 def _get_tuner_class(dnn_model: 'AnyDNN') -> Type['BaseTuner']:

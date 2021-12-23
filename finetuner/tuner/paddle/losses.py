@@ -4,8 +4,8 @@ import paddle
 import paddle.nn as nn
 import paddle.nn.functional as F
 
-from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
 from ..base import BaseLoss, BaseMiner
+from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
 
 
 def _is_tensor_empty(tensor: paddle.Tensor):

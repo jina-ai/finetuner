@@ -1,17 +1,17 @@
-from typing import List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional
 
 import numpy as np
 from rich.progress import (
-    Progress,
     BarColumn,
+    Progress,
+    SpinnerColumn,
     TextColumn,
     TimeElapsedColumn,
     TimeRemainingColumn,
-    SpinnerColumn,
 )
 
-from .base import BaseCallback
 from ... import live_console
+from .base import BaseCallback
 
 if TYPE_CHECKING:
     from ..base import BaseTuner

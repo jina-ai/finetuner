@@ -1,12 +1,10 @@
+import numpy as np
 import pytest
 import torch
-import numpy as np
-
 from jina import Document, DocumentArray
-from finetuner import __default_tag_key__
-from finetuner.tuner.evaluation import METRICS
-from finetuner.tuner.evaluation import Evaluator
 
+from finetuner import __default_tag_key__
+from finetuner.tuner.evaluation import METRICS, Evaluator
 
 DATASET_SIZE = 1000
 EMBEDDING_SIZE = 256

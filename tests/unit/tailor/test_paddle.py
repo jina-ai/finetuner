@@ -1,7 +1,7 @@
+import numpy as np
 import paddle
 import paddle.nn as nn
 import pytest
-import numpy as np
 
 from finetuner.tailor.paddle import PaddleTailor
 
@@ -203,9 +203,9 @@ def test_freeze_given_freeze_layers(
     for layer, param in zip(pytorch_tailor.embedding_layers, model.parameters()):
         layer_name = layer['name']
         if layer_name in freeze_layers:
-            assert param.trainable == False
+            assert not param.trainable
         else:
-            assert param.trainable == True
+            assert param.trainable
 
 
 def test_freeze_given_bottleneck_model_and_freeze_is_true(simple_cnn_model):
@@ -229,9 +229,9 @@ def test_freeze_given_bottleneck_model_and_freeze_is_true(simple_cnn_model):
     # assert bottleneck model is not freezed
     for name, param in model.named_parameters():
         if '_linear_should_not_freeze' in name:
-            assert param.trainable == True
+            assert param.trainable
         else:
-            assert param.trainable == False
+            assert not param.trainable
 
 
 @pytest.mark.parametrize(

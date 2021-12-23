@@ -1,17 +1,10 @@
-from typing import (
-    Dict,
-    List,
-    Optional,
-    Tuple,
-    Union,
-    TYPE_CHECKING,
-)
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
-from .base import BaseDataset
 from ... import __default_tag_key__
+from .base import BaseDataset
 
 if TYPE_CHECKING:
-    from ...helper import DocumentSequence, PreprocFnType, DocumentContentType
+    from ...helper import DocumentContentType, DocumentSequence, PreprocFnType
 
 
 class ClassDataset(BaseDataset[int]):

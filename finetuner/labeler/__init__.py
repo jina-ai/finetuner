@@ -2,17 +2,17 @@ import os
 import tempfile
 import threading
 import webbrowser
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import jina.helper
 from jina import Flow
 from jina.logging.predefined import default_logger
 
-from .executor import FTExecutor, DataIterator
 from .. import __default_tag_key__
+from .executor import DataIterator, FTExecutor
 
 if TYPE_CHECKING:
-    from ..helper import AnyDNN, DocumentSequence, PreprocFnType, CollateFnType
+    from ..helper import AnyDNN, CollateFnType, DocumentSequence, PreprocFnType
 
 
 def fit(
@@ -55,7 +55,7 @@ def fit(
     for doc in train_data:
         try:
             del doc.tags[__default_tag_key__]
-        except:
+        except KeyError:
             pass
 
     class MyExecutor(FTExecutor):
@@ -124,7 +124,7 @@ def fit(
             url_html_path = f'http://localhost:{f.port_expose}/finetuner'
             try:
                 webbrowser.open(url_html_path, new=2)
-            except:
+            except:  # noqa: 722
                 pass  # intentional pass, browser support isn't cross-platform
             finally:
                 default_logger.info(f'Finetuner is available at {url_html_path}')

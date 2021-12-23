@@ -7,22 +7,27 @@ __default_tag_key__ = 'finetuner_label'
 
 # define the high-level API: fit()
 import logging
-from typing import Callable, List, Optional, overload, TYPE_CHECKING, Tuple, Union
+from typing import TYPE_CHECKING, Callable, List, Optional, Tuple, Union, overload
 
 from rich.console import Console
 from rich.logging import RichHandler
 from rich.text import Text
 
+# level them up to the top-level
+from .embedding import embed  # noqa: F401
+from .tailor import display  # noqa: F401
+from .tuner import save  # noqa: F401
+
 if TYPE_CHECKING:
-    from .tuner.callback import BaseCallback
     from .helper import (
         AnyDNN,
         AnyOptimizer,
         AnyScheduler,
+        CollateFnType,
         DocumentSequence,
         PreprocFnType,
-        CollateFnType,
     )
+    from .tuner.callback import BaseCallback
 
 
 # To make logging pretty - but most impotantly, play nice with progress bar
@@ -177,9 +182,3 @@ def fit(model: 'AnyDNN', train_data: 'DocumentSequence', *args, **kwargs) -> 'An
 
         fit(model, train_data, *args, **kwargs)
         return model
-
-
-# level them up to the top-level
-from .tuner import save
-from .tailor import display
-from .embedding import embed

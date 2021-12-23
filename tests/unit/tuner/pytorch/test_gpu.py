@@ -7,7 +7,6 @@ from finetuner.embedding import embed
 from finetuner.toydata import generate_fashion
 from finetuner.tuner.pytorch import PytorchTuner
 
-
 all_test_losses = ['SiameseLoss', 'TripletLoss']
 
 

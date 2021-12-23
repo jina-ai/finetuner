@@ -1,7 +1,6 @@
 from typing import Tuple
 
 import tensorflow as tf
-import torch
 
 from ..miner import get_session_pairs, get_session_triplets
 from ..miner.base import BaseClassMiner, BaseSessionMiner
