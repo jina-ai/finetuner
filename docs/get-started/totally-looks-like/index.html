@@ -377,6 +377,9 @@ The dataset consists of 6016 pairs of images (12032 in total).</p>
 <li><p>it consists of pairs of images that can be formed as positive pairs (same classes). A random image can be considered as a negative pair. We construct <code class="docutils literal notranslate"><span class="pre">triplet</span></code> and use the <code class="docutils literal notranslate"><span class="pre">TripletLoss</span></code>.</p></li>
 </ul>
 <p>After fine-tuning, the distance between positive pairs is expected to be pulled closer, while the distance between positive and negative pairs is expected to be pushed away.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../../_images/result.png"><img alt="../../_images/result.png" src="../../_images/result.png" style="width: 70%;"/></a>
+</figure>
 <section id="data-preparation">
 <h2>Data preparation<a class="headerlink" href="#data-preparation" title="Permalink to this headline">¶</a></h2>
 <p>We will download <code class="docutils literal notranslate"><span class="pre">left.zip</span></code> and <code class="docutils literal notranslate"><span class="pre">right.zip</span></code>, as stated before,
@@ -556,7 +559,19 @@ the rest of the model serves as a feature extractor.</p>
 <td>0.301</td>
 </tr>
 </tbody>
-</table></div></section>
+</table></div>
+<p>Now let’s look at some results that Finetuned model did good and pretrained ResNet50 did bad.</p>
+<figure class="align-default">
+<img alt="../../_images/result-final1.png" src="../../_images/result-final1.png"/>
+</figure>
+<figure class="align-default">
+<img alt="../../_images/result-final2.png" src="../../_images/result-final2.png"/>
+</figure>
+<p>Here are some results in reverse: i.e. pretrained ResNet did “good” but Finetuned did “wrong”.</p>
+<figure class="align-default">
+<img alt="../../_images/result-final3.png" src="../../_images/result-final3.png"/>
+</figure>
+</section>
 </section>
 
             </article>
@@ -591,7 +606,7 @@ the rest of the model serves as a feature extractor.</p>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Dec 22, 2021.
+                    Last updated on Dec 23, 2021.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/jina/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

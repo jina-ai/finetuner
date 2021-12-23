@@ -11,12 +11,15 @@ Totally-Looks-Like is a dataset and benchmark challenging machine-learned repres
 :width: 70%
 ```
 
-
 The rationale for choosing TLL dataset is
 - it is a relatively small dataset and doesn't require training a large network from scratch. So we train only part of the ResNet-50 by freezing layers.
 - it consists of pairs of images that can be formed as positive pairs (same classes). A random image can be considered as a negative pair. We construct `triplet` and use the `TripletLoss`. 
 
 After fine-tuning, the distance between positive pairs is expected to be pulled closer, while the distance between positive and negative pairs is expected to be pushed away.
+
+```{figure} result.png
+:width: 70%
+```
 
 ## Data preparation
 
@@ -200,3 +203,16 @@ The result is demonstrated in the table below:
 | hit@1  | 0.068       | 0.122      |
 | hit@5  | 0.142       | 0.230      |
 | hit@10 | 0.183       | 0.301      |
+
+Now let's look at some results that Finetuned model did good and pretrained ResNet50 did bad.
+
+```{figure} result-final1.png
+```
+
+```{figure} result-final2.png
+```
+
+Here are some results in reverse: i.e. pretrained ResNet did "good" but Finetuned did "wrong".
+
+```{figure} result-final3.png
+```
