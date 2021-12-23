@@ -4,24 +4,22 @@ import pytest
 import tensorflow as tf
 
 import finetuner
-from finetuner.tuner.base import BaseTuner
 from finetuner.tuner.callback import BestModelCheckpoint, TrainingCheckpoint
 from finetuner.tuner.keras import KerasTuner
 from finetuner.tuner.state import TunerState
 
 
 @pytest.fixture(scope='module')
-def keras_model() -> BaseTuner:
-    embed_model = tf.keras.Sequential(
+def keras_model():
+    return tf.keras.Sequential(
         [
             tf.keras.layers.Flatten(),
             tf.keras.layers.Dense(10, activation='relu'),
         ]
     )
-    return embed_model
 
 
-def test_keras_model(keras_model: BaseTuner, tmpdir, create_easy_data_session):
+def test_keras_model(keras_model, tmpdir, create_easy_data_session):
 
     data, _ = create_easy_data_session(5, 10, 2)
 
@@ -43,7 +41,7 @@ def test_keras_model(keras_model: BaseTuner, tmpdir, create_easy_data_session):
     }
 
 
-def test_epoch_end(keras_model: BaseTuner, tmpdir):
+def test_epoch_end(keras_model, tmpdir):
     checkpoint = TrainingCheckpoint(save_dir=tmpdir)
 
     tuner = KerasTuner(embed_model=keras_model)
@@ -61,7 +59,7 @@ def test_epoch_end(keras_model: BaseTuner, tmpdir):
     }
 
 
-def test_save_best_only_fit(keras_model: BaseTuner, tmpdir, create_easy_data_session):
+def test_save_best_only_fit(keras_model, tmpdir, create_easy_data_session):
 
     data, _ = create_easy_data_session(5, 10, 2)
 

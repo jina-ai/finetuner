@@ -68,8 +68,26 @@ def test_wandb_logger_log_val(mocked_logger):
 
     logger = WandBLogger()
 
-    tuner.state.eval_metrics = {"metric": 0.9}
+    logger.on_val_batch_end(tuner)
+
+    tuner.state.current_loss = 0.9
+    logger.on_val_batch_end(tuner)
+    assert logger._train_step == 0  # validation batch does not increase train step
+
     logger.on_val_end(tuner)
+    assert logger.wandb_logger.log_data == {'val/loss': 1.0}
+    assert logger.wandb_logger.log_step == 0
+
+
+def test_wandb_logger_log_metrics(mocked_logger):
+
+    tuner = FakeTuner()
+    tuner.state = TunerState(epoch=1, batch_index=2, current_loss=1.1)
+
+    logger = WandBLogger()
+
+    tuner.state.eval_metrics = {"metric": 0.9}
+    logger.on_metrics_end(tuner)
     assert logger._train_step == 0  # validation batch does not increase train step
     assert logger.wandb_logger.log_data == {'val/metric': 0.9}
     assert logger.wandb_logger.log_step == 0

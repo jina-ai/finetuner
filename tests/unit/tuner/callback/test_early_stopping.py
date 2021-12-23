@@ -29,9 +29,9 @@ def paddle_model():
 @pytest.mark.parametrize(
     'mode, monitor, operation, best',
     (
-        ('min', 'loss', np.less, np.Inf),
-        ('max', 'loss', np.greater, -np.Inf),
-        ('auto', 'loss', np.less, np.Inf),
+        ('min', 'train_loss', np.less, np.Inf),
+        ('max', 'train_loss', np.greater, -np.Inf),
+        ('auto', 'train_loss', np.less, np.Inf),
         ('max', 'precision', np.greater, -np.Inf),
         ('somethingelse', 'precision', np.greater, -np.Inf),
     ),
@@ -47,15 +47,15 @@ def test_early_stopping_pytorch(pytorch_model):
     tuner = PytorchTuner(embed_model=pytorch_model)
     checkpoint = EarlyStopping()
     tuner.state = TunerState(epoch=0, current_loss=0.5)
-    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == 0
     tuner.state = TunerState(epoch=1, current_loss=0.6)
-    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == 1
     tuner.state = TunerState(epoch=2, current_loss=0.7)
-    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == checkpoint._patience
     assert tuner.stop_training
@@ -66,15 +66,15 @@ def test_early_stopping_paddle(paddle_model):
     tuner = PaddleTuner(embed_model=paddle_model)
     checkpoint = EarlyStopping()
     tuner.state = TunerState(epoch=0, current_loss=0.5)
-    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == 0
     tuner.state = TunerState(epoch=1, current_loss=0.6)
-    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == 1
     tuner.state = TunerState(epoch=2, current_loss=0.7)
-    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == checkpoint._patience
     assert tuner.stop_training
@@ -85,15 +85,15 @@ def test_early_stopping_keras(keras_model):
     tuner = KerasTuner(embed_model=keras_model)
     checkpoint = EarlyStopping()
     tuner.state = TunerState(epoch=0, current_loss=0.5)
-    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == 0
     tuner.state = TunerState(epoch=1, current_loss=0.6)
-    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == 1
     tuner.state = TunerState(epoch=2, current_loss=0.7)
-    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == checkpoint._patience
     assert tuner.stop_training
@@ -119,15 +119,15 @@ def test_counter_reset(pytorch_model):
     tuner = PytorchTuner(embed_model=pytorch_model)
     checkpoint = EarlyStopping()
     tuner.state = TunerState(epoch=0, current_loss=0.5)
-    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == 0
     tuner.state = TunerState(epoch=1, current_loss=0.6)
-    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == 1
     tuner.state = TunerState(epoch=2, current_loss=0.4)
-    checkpoint.on_train_batch_end(tuner)
+    checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == 0
     assert not tuner.stop_training

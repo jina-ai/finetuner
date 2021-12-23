@@ -230,14 +230,13 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
     ):
         """Embed the query/index data and compute the evaluation metrics."""
 
-        _query_data = [doc for doc in query_data if doc.embeddings is not None]
-        self.state.num_batches_query = self._get_num_batches(_query_data, batch_size)
+        self.state.num_batches_query = self._get_num_batches(query_data, batch_size)
         self.state.batch_index = 0
 
         self._trigger_callbacks('on_metrics_query_begin')
 
         for idx, batch in enumerate(
-            batch_document_sequence(_query_data, size=batch_size)
+            batch_document_sequence(query_data, size=batch_size)
         ):
             self.state.batch_index = idx
             self._trigger_callbacks('on_metrics_query_batch_begin')
@@ -255,16 +254,13 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
 
         if index_data:
 
-            _index_data = [doc for doc in index_data if doc.embeddings is not None]
-            self.state.num_batches_index = self._get_num_batches(
-                _index_data, batch_size
-            )
+            self.state.num_batches_index = self._get_num_batches(index_data, batch_size)
             self.state.batch_index = 0
 
             self._trigger_callbacks('on_metrics_index_begin')
 
             for idx, batch in enumerate(
-                batch_document_sequence(_index_data, size=batch_size)
+                batch_document_sequence(index_data, size=batch_size)
             ):
                 self.state.batch_index = idx
                 self._trigger_callbacks('on_metrics_index_batch_begin')

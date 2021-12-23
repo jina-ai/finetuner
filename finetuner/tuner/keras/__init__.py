@@ -104,13 +104,13 @@ class KerasTuner(
 
         for idx, (inputs, labels) in enumerate(data.get_dataset()):
             self.state.batch_index = idx
-            self._trigger_callbacks('on_eval_batch_begin')
+            self._trigger_callbacks('on_val_batch_begin')
 
             embeddings = self._embed_model(inputs)
             loss = self._loss(embeddings, labels)
 
             self.state.current_loss = loss.numpy()
-            self._trigger_callbacks('on_eval_batch_end')
+            self._trigger_callbacks('on_val_batch_end')
 
         data.on_epoch_end()  # To re-create batches
 

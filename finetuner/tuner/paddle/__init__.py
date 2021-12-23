@@ -125,7 +125,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
 
         for idx, (inputs, labels) in enumerate(data):
             self.state.batch_index = idx
-            self._trigger_callbacks('on_eval_batch_begin')
+            self._trigger_callbacks('on_val_batch_begin')
 
             inputs = _to_device(inputs, self.device)
             labels = _to_device(labels, self.device)
@@ -134,7 +134,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
             loss = self._loss(embeddings, labels)
 
             self.state.current_loss = loss.item()
-            self._trigger_callbacks('on_eval_batch_end')
+            self._trigger_callbacks('on_val_batch_end')
 
     def _fit(
         self,

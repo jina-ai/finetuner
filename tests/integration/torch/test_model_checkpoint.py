@@ -4,20 +4,17 @@ import pytest
 import torch
 
 import finetuner
-from finetuner.tuner.base import BaseTuner
 from finetuner.tuner.callback import BestModelCheckpoint, TrainingCheckpoint
 from finetuner.tuner.pytorch import PytorchTuner
 from finetuner.tuner.state import TunerState
 
 
 @pytest.fixture(scope='module')
-def pytorch_model() -> BaseTuner:
-    embed_model = torch.nn.Linear(in_features=10, out_features=10)
-
-    return embed_model
+def pytorch_model():
+    return torch.nn.Linear(in_features=10, out_features=10)
 
 
-def test_pytorch_model(pytorch_model: BaseTuner, tmpdir, create_easy_data_session):
+def test_pytorch_model(pytorch_model, tmpdir, create_easy_data_session):
 
     data, _ = create_easy_data_session(5, 10, 2)
 
@@ -32,7 +29,7 @@ def test_pytorch_model(pytorch_model: BaseTuner, tmpdir, create_easy_data_sessio
     assert os.listdir(tmpdir) == ['saved_model_epoch_01']
 
 
-def test_epoch_end(pytorch_model: BaseTuner, tmpdir):
+def test_epoch_end(pytorch_model, tmpdir):
     checkpoint = TrainingCheckpoint(save_dir=tmpdir)
 
     tuner = PytorchTuner(embed_model=pytorch_model)
@@ -43,7 +40,7 @@ def test_epoch_end(pytorch_model: BaseTuner, tmpdir):
     assert os.listdir(tmpdir) == ['saved_model_epoch_01']
 
 
-def test_save_best_only_fit(pytorch_model: BaseTuner, tmpdir, create_easy_data_session):
+def test_save_best_only_fit(pytorch_model, tmpdir, create_easy_data_session):
 
     data, _ = create_easy_data_session(5, 10, 2)
 
