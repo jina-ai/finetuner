@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Optional
 import numpy as np
 
 from .base import BaseCallback
-from ..evaluation import __evaluator_mean_prefix__
 
 if TYPE_CHECKING:
     from ..base import BaseTuner
@@ -112,12 +111,7 @@ class EarlyStopping(BaseCallback):
         elif self._monitor == 'val_loss':
             current = np.mean(self._val_losses)
         else:
-            try:
-                current = tuner.state.eval_metrics[self._monitor]
-            except KeyError:
-                current = tuner.state.eval_metrics.get(
-                    __evaluator_mean_prefix__ + self._monitor, None
-                )
+            current = tuner.state.eval_metrics.get(self._monitor, None)
 
         if current is None:
             self._logger.warning(f'Could not retrieve monitor metric {self._monitor}')

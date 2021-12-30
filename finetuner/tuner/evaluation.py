@@ -34,7 +34,6 @@ METRICS = {
 
 __evaluator_metrics_key__ = 'finetuner_metrics'
 __evaluator_targets_key__ = 'targets'
-__evaluator_mean_prefix__ = 'mean_'
 
 
 class Evaluator:
@@ -170,7 +169,7 @@ class Evaluator:
                 self._query_data[doc.id].tags[__evaluator_metrics_key__][label][name]
                 for doc in self._summary_docs
             ]
-            means[f'{__evaluator_mean_prefix__}{name}'] = sum(values) / len(values)
+            means[name] = sum(values) / len(values)
 
         return means
 

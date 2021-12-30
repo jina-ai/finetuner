@@ -158,9 +158,9 @@ def test_evaluator_half_precision(
         evaluator = Evaluator(_query_data, _index_data, embed_model)
         metrics = evaluator.evaluate(label='foo', limit=2, distance='euclidean')
         for k, v in metrics.items():
-            if k == "mean_precision":
+            if k == "precision":
                 assert v == 0.5
-            elif k == "mean_f1score":
+            elif k == "f1score":
                 assert 0.66 < v < 0.67
             else:
                 assert v == 1.0

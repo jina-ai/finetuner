@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 from .base import BaseCallback
-from ..evaluation import __evaluator_mean_prefix__
 from ...helper import get_framework
 
 if TYPE_CHECKING:
@@ -95,12 +94,7 @@ class BestModelCheckpoint(BaseCallback):
         elif self._monitor == 'val_loss':
             current = np.mean(self._val_losses)
         else:
-            try:
-                current = tuner.state.eval_metrics[self._monitor]
-            except KeyError:
-                current = tuner.state.eval_metrics.get(
-                    __evaluator_mean_prefix__ + self._monitor, None
-                )
+            current = tuner.state.eval_metrics.get(self._monitor, None)
 
         if current is None:
             self._logger.warning(f'Could not retrieve monitor metric {self._monitor}')
