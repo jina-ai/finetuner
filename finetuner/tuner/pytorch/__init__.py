@@ -211,6 +211,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                     label=f'epoch#{epoch}',
                     limit=limit,
                     distance=distance,
+                    num_workers=num_workers,
                     batch_size=batch_size,
                     preprocess_fn=preprocess_fn,
                     collate_fn=collate_fn,

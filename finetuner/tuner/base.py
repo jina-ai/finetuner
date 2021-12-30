@@ -224,6 +224,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         label: str,
         limit: int,
         distance: str,
+        num_workers: int,
         batch_size: int,
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
@@ -283,7 +284,10 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
 
         evaluator = Evaluator(query_data, index_data)
         self.state.eval_metrics = evaluator.evaluate(
-            limit=limit, distance=distance, label=label
+            limit=limit,
+            distance=distance,
+            label=label,
+            num_workers=num_workers or 1,
         )
 
         self._trigger_callbacks('on_metrics_match_end')

@@ -131,7 +131,11 @@ class Evaluator:
         return summmary_docs
 
     def _score_docs(
-        self, limit: int = 20, distance: str = 'cosine', **embed_kwargs
+        self,
+        limit: int = 20,
+        distance: str = 'cosine',
+        num_workers: int = 1,
+        **embed_kwargs,
     ) -> None:
         """
         Emded the evaluation docs and compute the matches from the catalog. Evaluation docs
@@ -152,7 +156,9 @@ class Evaluator:
             doc.embedding = embedding
             doc.matches.clear()
 
-        self._summary_docs.match(self._index_data, limit=limit, metric=distance)
+        self._summary_docs.match(
+            self._index_data, limit=limit, metric=distance, num_worker=num_workers
+        )
 
     def _get_mean_metrics(self, label: str = 'metrics') -> Dict[str, float]:
         """
@@ -180,6 +186,7 @@ class Evaluator:
         limit: int = 20,
         distance: str = 'cosine',
         label: str = 'metrics',
+        num_workers: int = 1,
         **embed_kwargs,
     ) -> Dict[str, float]:
         """
@@ -189,11 +196,14 @@ class Evaluator:
             ``'cosine'``, ``'euclidean'`` and ``'sqeuclidean'``.
         :param label: Per document metrics are written in each evaluation document under
             ``doc.tags[__evaluator_metrics_key__][label]``.
+        :param num_workers: The number of workers to use when matching query and index data.
         :param embed_kwargs: Keyword arguments to pass to the embed call.
 
         :return: dictionary with evaluation metrics
         """
-        self._score_docs(limit=limit, distance=distance, **embed_kwargs)
+        self._score_docs(
+            limit=limit, distance=distance, num_workers=num_workers, **embed_kwargs
+        )
 
         # iterate through the available metrics
         # for each metric iterate through the docs, calculate the metric and write the result
