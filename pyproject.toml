@@ -12,3 +12,6 @@ profile = "black"
 extend_skip = ["docs/conf.py"]
 skip_gitignore = true
 src_paths = ["finetuner"]
+
+[tool.pytest.ini_options]
+markers = ["gpu: marks tests requires gpu machine (deselect with '-m \"not gpu\"')"]
