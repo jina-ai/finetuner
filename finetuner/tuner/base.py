@@ -1,4 +1,5 @@
 import abc
+import math
 from typing import TYPE_CHECKING, Callable, Generic, List, Optional, Tuple, Union
 
 from .callback import BaseCallback, ProgressBarCallback
@@ -211,12 +212,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
             self._trigger_callbacks('on_exception', exception=e)
             raise
 
-    @staticmethod
-    def _get_num_batches(docs: 'DocumentSequence', batch_size: int) -> int:
-        """Get the number of batches from a document sequence."""
-        n = len(docs)
-        return n // batch_size + 1 * (n % batch_size)
-
     def _compute_metrics(
         self,
         query_data: 'DocumentSequence',
@@ -231,7 +226,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
     ):
         """Embed the query/index data and compute the evaluation metrics."""
 
-        self.state.num_batches_query = self._get_num_batches(query_data, batch_size)
+        self.state.num_batches_query = math.ceil(len(query_data) / batch_size)
         self.state.batch_index = 0
 
         self._trigger_callbacks('on_metrics_query_begin')
@@ -255,7 +250,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
 
         if index_data:
 
-            self.state.num_batches_index = self._get_num_batches(index_data, batch_size)
+            self.state.num_batches_index = math.ceil(len(index_data) / batch_size)
             self.state.batch_index = 0
 
             self._trigger_callbacks('on_metrics_index_begin')
