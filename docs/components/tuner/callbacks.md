@@ -55,7 +55,7 @@ tuner = PytorchTuner(..., callbacks=[checkpoint])
 TrainingCheckpoint.load(tuner, 'checkpoints/saved_model_epoch_10')
 ```
 
-For the {class}`~finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint`, you would also add it to `callbacks`, and later you could load the model from it
+For the {class}`~finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint`, you would also add it to `callbacks`, and later you could load the model from it.
 
 ```python
 from finetuner.tuner.callback import BestModelCheckpoint
