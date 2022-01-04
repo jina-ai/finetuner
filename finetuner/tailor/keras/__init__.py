@@ -1,11 +1,11 @@
-from typing import Optional, List, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 import tensorflow as tf
 
 from ..base import BaseTailor
 
 if TYPE_CHECKING:
-    from ...helper import LayerInfoType, AnyDNN
+    from ...helper import AnyDNN, LayerInfoType
 
 
 class KerasTailor(BaseTailor):
@@ -21,13 +21,13 @@ class KerasTailor(BaseTailor):
         def _get_output_shape(layer):
             try:
                 return layer.output_shape
-            except:
+            except:  # noqa: 722
                 pass  #: return none when
 
         def _get_input_shape(layer):
             try:
                 return layer.input_shape
-            except:
+            except:  # noqa: 722
                 pass  #: return none when
 
         results = []
@@ -86,7 +86,7 @@ class KerasTailor(BaseTailor):
         :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.
         :return: Converted embedding model.
         """
-        _all_embed_layers = {l['name']: l for l in self.embedding_layers}
+        _all_embed_layers = {layer['name']: layer for layer in self.embedding_layers}
         if layer_name:
             try:
                 _embed_layer = _all_embed_layers[layer_name]

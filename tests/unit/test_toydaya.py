@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from finetuner import __default_tag_key__
-from finetuner.toydata import generate_qa, generate_fashion
+from finetuner.toydata import generate_fashion, generate_qa
 
 
 def test_qa_data_generator():

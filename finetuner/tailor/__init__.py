@@ -1,10 +1,10 @@
-from typing import Optional, Tuple, TYPE_CHECKING, Type, Union, List
+from typing import TYPE_CHECKING, List, Optional, Tuple, Type, Union
 
 from ..helper import get_framework
 
 if TYPE_CHECKING:
-    from .base import BaseTailor
     from ...helper import AnyDNN
+    from .base import BaseTailor
 
 
 def _get_tailor_class(dnn_model: 'AnyDNN') -> Type['BaseTailor']:

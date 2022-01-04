@@ -4,7 +4,7 @@ import tensorflow as tf
 import torch
 
 from finetuner.helper import get_framework
-from finetuner.tailor import to_embedding_model, display
+from finetuner.tailor import display, to_embedding_model
 
 
 class LastCellPT(torch.nn.Module):

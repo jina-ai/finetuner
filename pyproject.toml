@@ -1,0 +1,13 @@
+[tool.black]
+line-length = 88
+skip-string-normalization = true
+extend-exclude = 'docs/conf.py'
+
+[tool.isort]
+profile = "black"
+extend_skip = ["docs/conf.py", "setup.py"]
+skip_gitignore = true
+src_paths = ["finetuner"]
+
+[tool.pytest.ini_options]
+markers = ["gpu: marks tests requires gpu machine (deselect with '-m \"not gpu\"')"]

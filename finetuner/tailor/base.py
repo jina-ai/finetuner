@@ -1,5 +1,5 @@
 import abc
-from typing import Optional, Tuple, TYPE_CHECKING, Union, List
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 if TYPE_CHECKING:
     from ..helper import AnyDNN, LayerInfoType
@@ -70,8 +70,8 @@ class BaseTailor(abc.ABC):
         :param args: args pass to :py:attr:`.summary`
         :param kwargs: kwargs pass to :py:attr:`.summary`
         """
+        from rich import box, print
         from rich.table import Table
-        from rich import print, box
 
         _summary = self.summary(*args, **kwargs)
         table = Table(box=box.SIMPLE)

@@ -1,9 +1,9 @@
+import numpy as np
 import paddle
 import pytest
 import tensorflow as tf
 import torch
-from jina import DocumentArray, DocumentArrayMemmap, Document
-import numpy as np
+from jina import Document, DocumentArray, DocumentArrayMemmap
 
 from finetuner.embedding import embed
 from finetuner.toydata import generate_fashion

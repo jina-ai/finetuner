@@ -1,6 +1,6 @@
 import numpy as np
-import pytest
 import paddle
+import pytest
 
 from finetuner.tuner.paddle import PaddleTuner
 

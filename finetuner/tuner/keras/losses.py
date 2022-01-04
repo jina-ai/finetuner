@@ -2,8 +2,8 @@ from typing import Optional, Tuple, Union
 
 import tensorflow as tf
 
-from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
 from ..base import BaseLoss, BaseMiner
+from .miner import SiameseMiner, SiameseSessionMiner, TripletMiner, TripletSessionMiner
 
 
 def _is_tensor_empty(tensor: tf.Tensor):

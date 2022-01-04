@@ -216,8 +216,8 @@ def set_qa_server_address(app):
 
 def setup(app):
     from sphinx.domains.python import PyField
-    from sphinx.util.docfields import Field
     from sphinx.locale import _
+    from sphinx.util.docfields import Field
 
     app.add_object_type(
         'confval',

@@ -1,8 +1,5 @@
-import os
-import pickle
 from typing import TYPE_CHECKING, Optional, Union
 
-import keras
 import tensorflow as tf
 from keras.engine.data_adapter import KerasSequenceAdapter
 from tensorflow.keras.layers import Layer

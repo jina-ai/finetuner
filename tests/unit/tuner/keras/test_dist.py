@@ -1,5 +1,5 @@
-import pytest
 import numpy as np
+import pytest
 from scipy.spatial.distance import pdist, squareform
 
 from finetuner.tuner.keras.losses import get_distance

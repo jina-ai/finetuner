@@ -1,6 +1,5 @@
-from math import ceil
-
 import pytest
+
 from finetuner.tuner.dataset.samplers import SessionSampler
 
 

@@ -65,7 +65,7 @@ def test_early_stopping_pytorch(pytorch_model: BaseTuner):
     checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == checkpoint._patience
-    assert tuner.stop_training == True
+    assert tuner.stop_training
 
 
 def test_early_stopping_paddle(paddle_model: BaseTuner):
@@ -84,7 +84,7 @@ def test_early_stopping_paddle(paddle_model: BaseTuner):
     checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == checkpoint._patience
-    assert tuner.stop_training == True
+    assert tuner.stop_training
 
 
 def test_early_stopping_keras(keras_model: BaseTuner):
@@ -103,7 +103,7 @@ def test_early_stopping_keras(keras_model: BaseTuner):
     checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == checkpoint._patience
-    assert tuner.stop_training == True
+    assert tuner.stop_training
 
 
 def test_baseline(keras_model: BaseTuner):
@@ -118,7 +118,7 @@ def test_baseline(keras_model: BaseTuner):
     checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == checkpoint._patience
-    assert tuner.stop_training == True
+    assert tuner.stop_training
 
 
 def test_counter_reset(pytorch_model: BaseTuner):
@@ -137,4 +137,4 @@ def test_counter_reset(pytorch_model: BaseTuner):
     checkpoint.on_val_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert checkpoint._epoch_counter == 0
-    assert tuner.stop_training == False
+    assert not tuner.stop_training

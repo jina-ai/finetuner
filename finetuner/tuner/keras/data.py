@@ -1,11 +1,11 @@
-from typing import List, Mapping, Optional, Sequence, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Mapping, Optional, Sequence, Union
 
 import numpy as np
 import tensorflow as tf
 
 if TYPE_CHECKING:
-    from ..dataset import ClassDataset, SessionDataset
     from ...helper import CollateFnType
+    from ..dataset import ClassDataset, SessionDataset
 
 
 def _default_collate(content: List):

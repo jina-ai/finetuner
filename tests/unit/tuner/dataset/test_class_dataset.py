@@ -1,7 +1,8 @@
 import pytest
+from jina import Document, DocumentArray, DocumentArrayMemmap
+
 from finetuner import __default_tag_key__
 from finetuner.tuner.dataset import ClassDataset
-from jina import Document, DocumentArray, DocumentArrayMemmap
 
 
 def _class(cls):
