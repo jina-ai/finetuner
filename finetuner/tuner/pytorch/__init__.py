@@ -84,7 +84,19 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         self.device = get_device(self._device_name)
         self._embed_model = self._embed_model.to(self.device)
 
-    def _attach_projection_head(self, dim: int = 128):
+    def _attach_projection_head(
+        self,
+        in_features: int,
+        output_dim: Optional[int] = 128,
+        num_layers: Optional[int] = 3,
+    ):
+        """Attach a projection head on top of the embed model for self-supervised learning.
+        Calling this function will modify :attr:`self._embed_model` in place.
+
+        :param in_features: The input shape of the projection head, should be the output of the embed model.
+        :param output_dim: The output dimensionality of the projection, default 128, recommend 32, 64, 128, 256.
+        :param num_layers: Number of layers of the projection head, default 3, recommend 2, 3.
+        """
         pass
 
     def _default_configure_optimizer(self, model: nn.Module) -> Optimizer:

@@ -143,6 +143,15 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
     def _default_configure_optimizer(self, model: AnyDNN) -> AnyOptimizer:
         """Get the default optimizer (Adam), if none was provided by user."""
 
+    @abc.abstractmethod
+    def _attach_projection_head(
+        self,
+        in_features: int,
+        output_dim: Optional[int] = 128,
+        num_layers: Optional[int] = 3,
+    ) -> AnyDNN:
+        """Attach a projection head on top of the embed model for self-supervised learning."""
+
     def _trigger_callbacks(self, method: str, **kwargs):
         """Trigger the specified method on all callbacks"""
         for callback in self._callbacks:
