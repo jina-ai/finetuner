@@ -149,7 +149,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         in_features: int,
         output_dim: Optional[int] = 128,
         num_layers: Optional[int] = 3,
-    ) -> AnyDNN:
+    ):
         """Attach a projection head on top of the embed model for self-supervised learning."""
 
     def _trigger_callbacks(self, method: str, **kwargs):

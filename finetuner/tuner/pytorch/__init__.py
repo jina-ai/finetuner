@@ -97,7 +97,8 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         :param output_dim: The output dimensionality of the projection, default 128, recommend 32, 64, 128, 256.
         :param num_layers: Number of layers of the projection head, default 3, recommend 2, 3.
         """
-        pass
+        projection_head = _ProjectionHead(in_features, output_dim, num_layers)
+        self._embed_model.add_module(projection_head)
 
     def _default_configure_optimizer(self, model: nn.Module) -> Optimizer:
         """Get the default Adam optimizer"""
@@ -184,6 +185,15 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 num_workers=num_workers,
             )
 
+        # If self-supervised, add projection head, vision task.
+        if isinstance(train_dl, 'UnlabeledDataset') and isinstance(
+            eval_dl, 'UnlabeledDataset'
+        ):
+            # TODO DISCUSS
+            embed_model_out_features = self._embed_model.forward(
+                torch.rand(1, 3, 224, 224)
+            )
+            self._attach_projection_head(in_features=embed_model_out_features)
         # Set state
         self.state = TunerState(num_epochs=epochs)
         self._trigger_callbacks('on_fit_begin')
@@ -219,6 +229,13 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 break
 
         self._trigger_callbacks('on_fit_end')
+
+        # If self-supervised, drop projection head, vision task.
+        if isinstance(train_dl, 'UnlabeledDataset') and isinstance(
+            eval_dl, 'UnlabeledDataset'
+        ):
+            # TODO DISCUSS
+            del self._embed_model.projection_head
 
     def save(self, *args, **kwargs):
         """Save the embedding model.
