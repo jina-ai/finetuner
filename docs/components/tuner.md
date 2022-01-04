@@ -8,6 +8,9 @@ With Tuner, you can customize the training process to best fit your data, and tr
 - track the training and evaluation metrics with Weights and Biases
 - write custom callbacks
 
+As part of the training process, you can also compute IR related evaluation metrics, using the standalone
+{class}`~finetuner.tuner.evaluation.Evaluator` component.
+
 You can read more on these different options here or in these sub-sections:
 
 ```{toctree}
@@ -15,6 +18,7 @@ You can read more on these different options here or in these sub-sections:
 
 tuner/loss
 tuner/callbacks
+tuner/evaluation
 ```
 
 ## The `Tuner` class
