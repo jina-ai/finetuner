@@ -365,10 +365,11 @@
 <p>Tuner is one of the three key components of Finetuner. Given an <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a> and <a class="reference internal" href="../../basics/glossary/#term-Labeled-dataset"><span class="xref std std-term">labeled dataset</span></a> (see <a class="reference internal" href="../../basics/data-format/#data-format"><span class="std std-ref">the guide on data formats</span></a> for more information), Tuner trains the model to fit the data.</p>
 <p>With Tuner, you can customize the training process to best fit your data, and track your experiements in a clear and transparent manner. You can do things like</p>
 <ul class="simple">
-<li><p>choose between different loss functions, use hard negative mining for triplets/pairs</p></li>
-<li><p>set your own optimizers and learning rates</p></li>
-<li><p>track the training and evaluation metrics with Weights and Biases</p></li>
-<li><p>write custom callbacks</p></li>
+<li><p>Choose between different loss functions, use hard negative mining for triplets/pairs</p></li>
+<li><p>Set your own optimizers and learning rates</p></li>
+<li><p>Track the training and evaluation metrics with Weights and Biases</p></li>
+<li><p>Save checkpoints during training</p></li>
+<li><p>Write custom callbacks</p></li>
 </ul>
 <p>You can read more on these different options here or in these sub-sections:</p>
 <div class="toctree-wrapper compound">
@@ -555,11 +556,12 @@
 <li><p>Triplet loss with hard miner with the easy positive and semihard negative strategy</p></li>
 <li><p>Adam optimizer with initial learning rate of 0.0005, which will be halved every 30 epochs</p></li>
 <li><p>WandB for tracking the experiement</p></li>
+<li><p>A <a class="reference internal" href="../../api/finetuner.tuner.callback.training_checkpoint/#finetuner.tuner.callback.training_checkpoint.TrainingCheckpoint" title="finetuner.tuner.callback.training_checkpoint.TrainingCheckpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingCheckpoint</span></code></a> to save a checkpoint every epoch - if training is interrupted we can later continue from this checkpoint. We need to create a <code class="docutils literal notranslate"><span class="pre">checkpoints/</span></code> folder inside our current directory to store checkpoints there.</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torch.optim</span> <span class="kn">import</span> <span class="n">Adam</span>
 <span class="kn">from</span> <span class="nn">torch.optim.lr_scheduler</span> <span class="kn">import</span> <span class="n">MultiStepLR</span>
 
-<span class="kn">from</span> <span class="nn">finetuner.tuner.callback</span> <span class="kn">import</span> <span class="n">WandBLogger</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.callback</span> <span class="kn">import</span> <span class="n">WandBLogger</span><span class="p">,</span> <span class="n">TrainingCheckpoint</span>
 <span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch</span> <span class="kn">import</span> <span class="n">PytorchTuner</span>
 <span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch.losses</span> <span class="kn">import</span> <span class="n">TripletLoss</span>
 <span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch.miner</span> <span class="kn">import</span> <span class="n">TripletEasyHardMiner</span>
@@ -576,13 +578,14 @@
     <span class="n">miner</span><span class="o">=</span><span class="n">TripletEasyHardMiner</span><span class="p">(</span><span class="n">pos_strategy</span><span class="o">=</span><span class="s1">'easy'</span><span class="p">,</span> <span class="n">neg_strategy</span><span class="o">=</span><span class="s1">'semihard'</span><span class="p">)</span>
 <span class="p">)</span>
 <span class="n">logger_callback</span> <span class="o">=</span> <span class="n">WandBLogger</span><span class="p">()</span>
+<span class="n">checkpoint</span> <span class="o">=</span> <span class="n">TrainingCheckpoint</span><span class="p">(</span><span class="s1">'checkpoints'</span><span class="p">)</span>
 
 <span class="n">tuner</span> <span class="o">=</span> <span class="n">PytorchTuner</span><span class="p">(</span>
     <span class="n">embed_model</span><span class="p">,</span>
     <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span>
     <span class="n">configure_optimizer</span><span class="o">=</span><span class="n">configure_optimizer</span><span class="p">,</span>
     <span class="n">scheduler_step</span><span class="o">=</span><span class="s1">'epoch'</span><span class="p">,</span>
-    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">logger_callback</span><span class="p">],</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">logger_callback</span><span class="p">,</span> <span class="n">checkpoint</span><span class="p">],</span>
     <span class="n">device</span><span class="o">=</span><span class="s1">'cpu'</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
@@ -593,7 +596,7 @@
 <span class="kn">from</span> <span class="nn">torch.optim.lr_scheduler</span> <span class="kn">import</span> <span class="n">MultiStepLR</span>
 
 <span class="kn">from</span> <span class="nn">finetuner.toydata</span> <span class="kn">import</span> <span class="n">generate_fashion</span>
-<span class="kn">from</span> <span class="nn">finetuner.tuner.callback</span> <span class="kn">import</span> <span class="n">WandBLogger</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.callback</span> <span class="kn">import</span> <span class="n">WandBLogger</span><span class="p">,</span> <span class="n">TrainingCheckpoint</span>
 <span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch</span> <span class="kn">import</span> <span class="n">PytorchTuner</span>
 <span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch.losses</span> <span class="kn">import</span> <span class="n">TripletLoss</span>
 <span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch.miner</span> <span class="kn">import</span> <span class="n">TripletEasyHardMiner</span>
@@ -625,13 +628,14 @@
     <span class="n">miner</span><span class="o">=</span><span class="n">TripletEasyHardMiner</span><span class="p">(</span><span class="n">pos_strategy</span><span class="o">=</span><span class="s1">'easy'</span><span class="p">,</span> <span class="n">neg_strategy</span><span class="o">=</span><span class="s1">'semihard'</span><span class="p">)</span>
 <span class="p">)</span>
 <span class="n">logger_callback</span> <span class="o">=</span> <span class="n">WandBLogger</span><span class="p">()</span>
+<span class="n">checkpoint</span> <span class="o">=</span> <span class="n">TrainingCheckpoint</span><span class="p">(</span><span class="s1">'checkpoints'</span><span class="p">)</span>
 
 <span class="n">tuner</span> <span class="o">=</span> <span class="n">PytorchTuner</span><span class="p">(</span>
     <span class="n">embed_model</span><span class="p">,</span>
     <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span>
     <span class="n">configure_optimizer</span><span class="o">=</span><span class="n">configure_optimizer</span><span class="p">,</span>
     <span class="n">scheduler_step</span><span class="o">=</span><span class="s1">'epoch'</span><span class="p">,</span>
-    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">logger_callback</span><span class="p">],</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">logger_callback</span><span class="p">,</span> <span class="n">checkpoint</span><span class="p">],</span>
     <span class="n">device</span><span class="o">=</span><span class="s1">'cpu'</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -677,7 +681,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 03, 2022.
+                    Last updated on Jan 04, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

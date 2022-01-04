@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/components/tuner/callbacks.html" />
   <meta property="og:site_name" content="Finetuner 0.3.1 Documentation" />
-  <meta property="og:description" content="Callbacks offer a way to integrate various auxiliary tasks into the training loop. We offer built-in callbacks for some common tasks, such as Showing a progress bar (which is shown by default), Tracking experiements. You can also write your own callbacks. Experiement Tracking: When you train a mo..." />
+  <meta property="og:description" content="Callbacks offer a way to integrate various auxiliary tasks into the training loop. We offer built-in callbacks for some common tasks, such as Showing a progress bar (which is shown by default), Tracking experiements, Checkpoint training progress. You can also write your own callbacks. Experiement..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner 0.3.1 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -366,6 +366,7 @@
 <ul class="simple">
 <li><p>Showing a progress bar (which is shown by default)</p></li>
 <li><p><a class="reference external" href="#experiement-tracking">Tracking experiements</a></p></li>
+<li><p><a class="reference external" href="#checkpoints">Checkpoint training progress</a></p></li>
 </ul>
 <p>You can also <a class="reference external" href="#custom-callbacks">write your own callbacks</a>.</p>
 <section id="experiement-tracking">
@@ -387,6 +388,37 @@
 </pre></div>
 </div>
 <p>You should then be able to see your training runs in wandb.</p>
+</section>
+<section id="checkpoints">
+<h2>Checkpoints<a class="headerlink" href="#checkpoints" title="Permalink to this headline">¶</a></h2>
+<p>On long train jobs, you may want to periodically save the progress, so you can continue
+from this checkpoint later, if training gets interrupted. Or you may want to save the
+best model, so that you can use it after the training finishes. For these purposes, we
+offer <a class="reference internal" href="../../../api/finetuner.tuner.callback.training_checkpoint/#finetuner.tuner.callback.training_checkpoint.TrainingCheckpoint" title="finetuner.tuner.callback.training_checkpoint.TrainingCheckpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingCheckpoint</span></code></a> and <a class="reference internal" href="../../../api/finetuner.tuner.callback.best_model_checkpoint/#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint" title="finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BestModelCheckpoint</span></code></a>, respectively.</p>
+<p>For the  <a class="reference internal" href="../../../api/finetuner.tuner.callback.training_checkpoint/#finetuner.tuner.callback.training_checkpoint.TrainingCheckpoint" title="finetuner.tuner.callback.training_checkpoint.TrainingCheckpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainingCheckpoint</span></code></a> checkpoint, you would simply add it to <code class="docutils literal notranslate"><span class="pre">callbacks</span></code>. Later you could then load the tuner from the checkpoint, as in the example below</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.tuner.callback</span> <span class="kn">import</span> <span class="n">TrainingCheckpoint</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch</span> <span class="kn">import</span> <span class="n">PytorchTuner</span>
+
+<span class="n">checkpoint</span> <span class="o">=</span> <span class="n">TrainingCheckpoint</span><span class="p">(</span><span class="s1">'checkpoints'</span><span class="p">)</span>
+
+<span class="n">tuner</span> <span class="o">=</span> <span class="n">PytorchTuner</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">checkpoint</span><span class="p">])</span>
+
+<span class="c1"># Afterwards, load tuner from the saved theckpoint</span>
+<span class="n">TrainingCheckpoint</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">tuner</span><span class="p">,</span> <span class="s1">'checkpoints/saved_model_epoch_10'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For the <a class="reference internal" href="../../../api/finetuner.tuner.callback.best_model_checkpoint/#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint" title="finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BestModelCheckpoint</span></code></a>, you would also add it to <code class="docutils literal notranslate"><span class="pre">callbacks</span></code>, and later you could load the model from it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.tuner.callback</span> <span class="kn">import</span> <span class="n">BestModelCheckpoint</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch</span> <span class="kn">import</span> <span class="n">PytorchTuner</span>
+
+<span class="n">checkpoint</span> <span class="o">=</span> <span class="n">BestModelCheckpoint</span><span class="p">(</span><span class="s1">'checkpoints'</span><span class="p">)</span>
+
+<span class="n">tuner</span> <span class="o">=</span> <span class="n">PytorchTuner</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">checkpoint</span><span class="p">])</span>
+
+<span class="c1"># Afterwards, load model from the saved theckpoint</span>
+<span class="n">BestModelCheckpoint</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="n">tuner</span><span class="p">,</span> <span class="s1">'checkpoints/best_model_val_loss'</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="custom-callbacks">
 <h2>Custom callbacks<a class="headerlink" href="#custom-callbacks" title="Permalink to this headline">¶</a></h2>
@@ -453,7 +485,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 03, 2022.
+                    Last updated on Jan 04, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
@@ -480,6 +512,7 @@
                         <ul>
 <li><a class="reference internal" href="#">Callbacks</a><ul>
 <li><a class="reference internal" href="#experiement-tracking">Experiement Tracking</a></li>
+<li><a class="reference internal" href="#checkpoints">Checkpoints</a></li>
 <li><a class="reference internal" href="#custom-callbacks">Custom callbacks</a></li>
 </ul>
 </li>
