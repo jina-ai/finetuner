@@ -2,7 +2,7 @@ from collections import defaultdict
 from copy import deepcopy
 from math import ceil
 from random import choices, sample, shuffle
-from typing import Sequence, Tuple, Optional
+from typing import Optional, Sequence, Tuple
 
 from finetuner.tuner.dataset.base import BaseSampler
 

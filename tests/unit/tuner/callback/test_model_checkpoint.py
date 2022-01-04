@@ -1,13 +1,13 @@
 import numpy as np
 import os
 import pytest
-import torch
 import tensorflow as tf
+import torch
 
 from finetuner.tuner.base import BaseTuner
 from finetuner.tuner.callback import BestModelCheckpoint, TrainingCheckpoint
-from finetuner.tuner.pytorch import PytorchTuner
 from finetuner.tuner.keras import KerasTuner
+from finetuner.tuner.pytorch import PytorchTuner
 from finetuner.tuner.state import TunerState
 
 
@@ -48,7 +48,7 @@ def test_mode(mode: str, monitor: str, operation, best, tmpdir):
 
 def test_mandatory_save_dir():
     with pytest.raises(TypeError, match='missing'):
-        checkpoint = TrainingCheckpoint()
+        TrainingCheckpoint()
 
 
 def test_last_k_epochs_file(pytorch_model: BaseTuner, tmpdir):

@@ -1,10 +1,8 @@
 import torch
-
 from transformers import AutoModel, AutoTokenizer
 
 from finetuner.toydata import generate_qa
 from finetuner.tuner.pytorch import PytorchTuner
-
 
 TRANSFORMER_MODEL = 'sentence-transformers/paraphrase-MiniLM-L6-v2'
 

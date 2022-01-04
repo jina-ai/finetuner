@@ -1,15 +1,14 @@
 from typing import (
-    TypeVar,
-    Sequence,
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
     Iterator,
     List,
-    Dict,
-    Any,
-    TYPE_CHECKING,
-    Callable,
+    Sequence,
+    TypeVar,
     Union,
 )
-
 
 AnyDNN = TypeVar(
     'AnyDNN'

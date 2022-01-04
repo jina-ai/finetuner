@@ -6,16 +6,14 @@ from typing import List
 
 import pytest
 import requests
+import torch
 from jina.helper import random_port
-from transformers import AutoModel
-from transformers import AutoTokenizer
+from transformers import AutoModel, AutoTokenizer
+
+from finetuner import __default_tag_key__
+from finetuner.toydata import generate_qa
 
 os.environ['JINA_LOG_LEVEL'] = 'DEBUG'
-import torch
-
-from finetuner.toydata import generate_qa
-from finetuner import __default_tag_key__
-
 TRANSFORMER_MODEL = 'sentence-transformers/paraphrase-MiniLM-L6-v2'
 
 
@@ -87,7 +85,7 @@ def test_all_frameworks(loss, tmpdir):
                 assert req.status_code == 200
                 assert req.json()['data']['docs']
                 break
-            except:
+            except:  # noqa: 722
                 print('wait for ready...')
                 time.sleep(2)
 
@@ -138,7 +136,7 @@ def test_all_frameworks(loss, tmpdir):
         assert req.status_code == 200
         assert os.path.isfile(model_path)
 
-    except:
+    except:  # noqa: 722
         raise
     finally:
         p.terminate()

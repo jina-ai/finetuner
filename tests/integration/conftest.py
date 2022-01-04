@@ -3,9 +3,10 @@ from time import perf_counter, sleep
 
 import numpy as np
 import pytest
+from jina import Document, DocumentArray
+
 from finetuner import __default_tag_key__
 from finetuner.tuner.callback.base import BaseCallback
-from jina import Document, DocumentArray
 
 
 @pytest.fixture

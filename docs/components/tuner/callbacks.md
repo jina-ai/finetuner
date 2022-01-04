@@ -2,7 +2,8 @@
 
 Callbacks offer a way to integrate various auxiliary tasks into the training loop. We offer built-in callbacks for some common tasks, such as
 - Showing a progress bar (which is shown by default)
-- [Tracking experiements](#experiment-tracking)
+- [Tracking experiments](#experiment-tracking)
+- [Checkpoint training progress](#checkpoints)
 
 You can also [write your own callbacks](#custom-callbacks).
 
@@ -31,6 +32,42 @@ tuner = PytorchTuner(..., callbacks=[logger])
 ```
 
 You should then be able to see your training runs in wandb.
+
+## Checkpoints
+
+On long train jobs, you may want to periodically save the progress, so you can continue
+from this checkpoint later, if training gets interrupted. Or you may want to save the
+best model, so that you can use it after the training finishes. For these purposes, we
+offer {class}`~finetuner.tuner.callback.training_checkpoint.TrainingCheckpoint` and {class}`~finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint`, respectively.
+
+For the  {class}`~finetuner.tuner.callback.training_checkpoint.TrainingCheckpoint` checkpoint, you would simply add it to `callbacks`. Later you could then load the tuner from the checkpoint, as in the example below
+
+
+```python
+from finetuner.tuner.callback import TrainingCheckpoint
+from finetuner.tuner.pytorch import PytorchTuner
+
+checkpoint = TrainingCheckpoint('checkpoints')
+
+tuner = PytorchTuner(..., callbacks=[checkpoint])
+
+# Afterwards, load tuner from the saved theckpoint
+TrainingCheckpoint.load(tuner, 'checkpoints/saved_model_epoch_10')
+```
+
+For the {class}`~finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint`, you would also add it to `callbacks`, and later you could load the model from it.
+
+```python
+from finetuner.tuner.callback import BestModelCheckpoint
+from finetuner.tuner.pytorch import PytorchTuner
+
+checkpoint = BestModelCheckpoint('checkpoints')
+
+tuner = PytorchTuner(..., callbacks=[checkpoint])
+
+# Afterwards, load model from the saved theckpoint
+BestModelCheckpoint.load_model(tuner, 'checkpoints/best_model_val_loss')
+```
 
 ## Custom callbacks
 

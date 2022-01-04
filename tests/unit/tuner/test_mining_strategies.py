@@ -26,14 +26,14 @@ def labels():
 
 def test_torch_strategic_mining_helper_inputs():
 
-    with pytest.raises(ValueError) as err:
+    with pytest.raises(ValueError):
         TorchStrategicMiningHelper(pos_strategy='some wrong', neg_strategy='arguments')
-    with pytest.raises(ValueError) as err:
+    with pytest.raises(ValueError):
         TorchStrategicMiningHelper(pos_strategy='semihard', neg_strategy='all')
-    with pytest.raises(ValueError) as err:
+    with pytest.raises(ValueError):
         TorchStrategicMiningHelper(pos_strategy='all', neg_strategy='semihard')
 
-    with pytest.raises(ValueError) as err:
+    with pytest.raises(ValueError):
         TorchStrategicMiningHelper(pos_strategy='semihard', neg_strategy='semihard')
 
 

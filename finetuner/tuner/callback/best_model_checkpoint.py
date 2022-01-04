@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from .base import BaseCallback
 from ...helper import get_framework
+from .base import BaseCallback
 
 if TYPE_CHECKING:
     from ..base import BaseTuner

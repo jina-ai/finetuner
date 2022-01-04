@@ -2,9 +2,9 @@ import pytest
 import tensorflow as tf
 from jina import DocumentArray, DocumentArrayMemmap
 
-from finetuner.tuner.keras import KerasTuner
 from finetuner.embedding import embed
 from finetuner.toydata import generate_fashion
+from finetuner.tuner.keras import KerasTuner
 
 all_test_losses = ['SiameseLoss', 'TripletLoss']
 

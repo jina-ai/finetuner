@@ -1,7 +1,7 @@
+import numpy as np
 import pytest
 import torch
 import torch.nn as nn
-import numpy as np
 
 from finetuner.tailor.pytorch import PytorchTailor
 
@@ -266,9 +266,9 @@ def test_freeze_given_bottleneck_model_and_freeze_is_true(simple_cnn_model):
     # assert bottleneck model is not freezed
     for name, param in model.named_parameters():
         if '_linear_should_not_freeze' in name:
-            assert param.requires_grad == True
+            assert param.requires_grad
         else:
-            assert param.requires_grad == False
+            assert not param.requires_grad
 
 
 @pytest.mark.parametrize(
@@ -300,9 +300,9 @@ def test_freeze_given_freeze_layers(
     for layer, param in zip(pytorch_tailor.embedding_layers, model.parameters()):
         layer_name = layer['name']
         if layer_name in freeze_layers:
-            assert param.requires_grad == False
+            assert not param.requires_grad
         else:
-            assert param.requires_grad == True
+            assert param.requires_grad
 
 
 def test_torch_lstm_model_parser():

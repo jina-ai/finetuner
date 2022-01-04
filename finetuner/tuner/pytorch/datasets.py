@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple
 
 import numpy as np
 from torch.utils.data import Dataset as PytorchDataset

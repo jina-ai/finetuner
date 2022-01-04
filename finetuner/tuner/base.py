@@ -1,20 +1,15 @@
 import abc
 from typing import TYPE_CHECKING, Callable, Generic, List, Optional, Tuple, Union
 
+from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyScheduler, AnyTensor
 from .callback import BaseCallback, ProgressBarCallback
 from .dataset import ClassDataset, SessionDataset
 from .dataset.samplers import ClassSampler, SessionSampler
 from .miner.base import BaseMiner
 from .state import TunerState
 
-from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyScheduler, AnyTensor
-
 if TYPE_CHECKING:
-    from ..helper import (
-        DocumentSequence,
-        PreprocFnType,
-        CollateFnType,
-    )
+    from ..helper import CollateFnType, DocumentSequence, PreprocFnType
 
 
 class BaseLoss(Generic[AnyTensor]):
