@@ -1,8 +1,5 @@
-import os
-import pickle
 from typing import TYPE_CHECKING, Optional, Union
 
-import keras
 import tensorflow as tf
 from keras.engine.data_adapter import KerasSequenceAdapter
 from tensorflow.keras.layers import Layer
@@ -118,16 +115,12 @@ class KerasTuner(
         self,
         train_data: 'DocumentSequence',
         eval_data: Optional['DocumentSequence'] = None,
-        query_data: Optional['DocumentSequence'] = None,
-        index_data: Optional['DocumentSequence'] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
         num_workers: int = 0,
-        limit: int = 20,
-        distance: str = 'cosine',
     ):
         """Fit the model - training and evaluation."""
 
@@ -176,21 +169,6 @@ class KerasTuner(
                     self._trigger_callbacks('on_val_begin')
                     self._eval(eval_dl)
                     self._trigger_callbacks('on_val_end')
-
-                if query_data:
-                    self._trigger_callbacks('on_metrics_begin')
-                    self._compute_metrics(
-                        query_data,
-                        index_data,
-                        label=f'epoch#{epoch}',
-                        limit=limit,
-                        distance=distance,
-                        num_workers=num_workers,
-                        batch_size=batch_size,
-                        preprocess_fn=preprocess_fn,
-                        collate_fn=collate_fn,
-                    )
-                    self._trigger_callbacks('on_metrics_end')
 
                 self._trigger_callbacks('on_epoch_end')
 

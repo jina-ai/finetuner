@@ -140,8 +140,6 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         self,
         train_data: 'DocumentSequence',
         eval_data: Optional['DocumentSequence'] = None,
-        query_data: Optional['DocumentSequence'] = None,
-        index_data: Optional['DocumentSequence'] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
@@ -201,21 +199,6 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
                 self._trigger_callbacks('on_val_begin')
                 self._eval(eval_dl)
                 self._trigger_callbacks('on_val_end')
-
-            if query_data:
-                self._trigger_callbacks('on_metrics_begin')
-                self._compute_metrics(
-                    query_data,
-                    index_data,
-                    label=f'epoch#{epoch}',
-                    limit=limit,
-                    distance=distance,
-                    num_workers=num_workers,
-                    batch_size=batch_size,
-                    preprocess_fn=preprocess_fn,
-                    collate_fn=collate_fn,
-                )
-                self._trigger_callbacks('on_metrics_end')
 
             self._trigger_callbacks('on_epoch_end')
 

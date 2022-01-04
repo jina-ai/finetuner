@@ -87,7 +87,7 @@ def test_wandb_logger_log_metrics(mocked_logger):
     logger = WandBLogger()
 
     tuner.state.eval_metrics = {"metric": 0.9}
-    logger.on_metrics_end(tuner)
+    logger.on_epoch_end(tuner)
     assert logger._train_step == 0  # validation batch does not increase train step
-    assert logger.wandb_logger.log_data == {'val/metric': 0.9}
+    assert logger.wandb_logger.log_data == {'metrics/metric': 0.9}
     assert logger.wandb_logger.log_step == 0

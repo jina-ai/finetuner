@@ -1,18 +1,20 @@
 from dataclasses import dataclass, field
 from typing import Dict
 
+from rich.progress import Progress
+
 
 @dataclass
 class TunerState:
     """A data container representing information on the current run."""
+
+    progress_bar: Progress = Progress()
 
     num_epochs: int = 0
     epoch: int = 0
 
     num_batches_train: int = 0
     num_batches_val: int = 0
-    num_batches_query: int = 0
-    num_batches_index: int = 0
 
     batch_index: int = 0
     current_loss: float = 0.0

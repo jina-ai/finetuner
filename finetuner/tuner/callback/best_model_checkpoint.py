@@ -76,16 +76,16 @@ class BestModelCheckpoint(BaseCallback):
         self._monitor_op = np.less
         self._best = np.Inf
 
-    def on_epoch_end(self, tuner: 'BaseTuner'):
-        self._save_model(tuner)
-        self._train_losses = []
-        self._val_losses = []
-
     def on_train_batch_end(self, tuner: 'BaseTuner'):
         self._train_losses.append(tuner.state.current_loss)
 
     def on_val_batch_end(self, tuner: 'BaseTuner'):
         self._val_losses.append(tuner.state.current_loss)
+
+    def on_epoch_end(self, tuner: 'BaseTuner'):
+        self._save_model(tuner)
+        self._train_losses = []
+        self._val_losses = []
 
     def _save_model(self, tuner):
         """Save the model"""

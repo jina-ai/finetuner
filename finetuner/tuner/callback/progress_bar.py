@@ -23,12 +23,8 @@ class ProgressBarCallback(BaseCallback):
     def __init__(self):
         self.losses: List[float] = []
         self.prev_val_loss = None
-        self.pbar = None
         self.train_pbar_id = None
-        self.eval_pbar_id = None
-        self.query_pbar_id = None
-        self.index_pbar_id = None
-        self.match_pbar_id = None
+        self.val_pbar_id = None
 
     @property
     def _mean_loss(self) -> Optional[float]:
@@ -50,7 +46,7 @@ class ProgressBarCallback(BaseCallback):
         return self._display_value('loss', self._mean_loss)
 
     def on_fit_begin(self, tuner: 'BaseTuner'):
-        self.pbar = Progress(
+        tuner.state.progress_bar = Progress(
             SpinnerColumn(),
             '[progress.description]{task.description}',
             BarColumn(
@@ -63,20 +59,17 @@ class ProgressBarCallback(BaseCallback):
             TextColumn('{task.fields[metrics]}'),
             console=live_console,
         )
-        self.pbar.start()
-        self.train_pbar_id = self.pbar.add_task('Training', visible=False, start=False)
-        self.eval_pbar_id = self.pbar.add_task('Evaluating', visible=False, start=False)
-        self.query_pbar_id = self.pbar.add_task(
-            'Embedding queries', visible=False, start=False
+        tuner.state.progress_bar.start()
+        self.train_pbar_id = tuner.state.progress_bar.add_task(
+            'Training', visible=False, start=False
         )
-        self.index_pbar_id = self.pbar.add_task(
-            'Embedding index', visible=False, start=False
+        self.val_pbar_id = tuner.state.progress_bar.add_task(
+            'Evaluating', visible=False, start=False
         )
-        self.match_pbar_id = self.pbar.add_task('Matching', visible=False, start=False)
 
     def on_train_epoch_begin(self, tuner: 'BaseTuner'):
         self.losses = []
-        self.pbar.reset(
+        tuner.state.progress_bar.reset(
             self.train_pbar_id,
             visible=True,
             description=f'Training [{tuner.state.epoch+1}/{tuner.state.num_epochs}]',
@@ -87,14 +80,14 @@ class ProgressBarCallback(BaseCallback):
 
     def on_train_batch_end(self, tuner: 'BaseTuner'):
         self.losses.append(tuner.state.current_loss)
-        self.pbar.update(
+        tuner.state.progress_bar.update(
             task_id=self.train_pbar_id, advance=1, metrics=self.train_loss_str
         )
 
     def on_val_begin(self, tuner: 'BaseTuner'):
         self.losses = []
-        self.pbar.reset(
-            self.eval_pbar_id,
+        tuner.state.progress_bar.reset(
+            self.val_pbar_id,
             visible=True,
             description='Evaluating',
             total=tuner.state.num_batches_val,
@@ -104,66 +97,24 @@ class ProgressBarCallback(BaseCallback):
 
     def on_val_batch_end(self, tuner: 'BaseTuner'):
         self.losses.append(tuner.state.current_loss)
-        self.pbar.update(
-            task_id=self.eval_pbar_id, advance=1, metrics=self.val_loss_str
+        tuner.state.progress_bar.update(
+            task_id=self.val_pbar_id, advance=1, metrics=self.val_loss_str
         )
 
     def on_val_end(self, tuner: 'BaseTuner'):
         self.prev_val_loss = self._mean_loss
-        self.pbar.update(task_id=self.eval_pbar_id, visible=False)
-
-    def on_metrics_query_begin(self, tuner: 'BaseTuner'):
-        self.pbar.reset(
-            self.query_pbar_id,
-            visible=True,
-            description='Embedding queries',
-            total=tuner.state.num_batches_query,
-            completed=0,
-            metrics='',
-        )
-
-    def on_metrics_query_batch_end(self, tuner: 'BaseTuner'):
-        self.pbar.update(task_id=self.query_pbar_id, advance=1, metrics='')
-
-    def on_metrics_query_end(self, tuner: 'BaseTuner'):
-        self.pbar.update(task_id=self.query_pbar_id, visible=False)
-
-    def on_metrics_index_begin(self, tuner: 'BaseTuner'):
-        self.pbar.reset(
-            self.index_pbar_id,
-            visible=True,
-            description='Embedding index',
-            total=tuner.state.num_batches_index,
-            completed=0,
-            metrics='',
-        )
-
-    def on_metrics_index_batch_end(self, tuner: 'BaseTuner'):
-        self.pbar.update(task_id=self.index_pbar_id, advance=1, metrics='')
-
-    def on_metrics_index_end(self, tuner: 'BaseTuner'):
-        self.pbar.update(task_id=self.index_pbar_id, visible=False)
-
-    def on_metrics_match_begin(self, tuner: 'BaseTuner'):
-        self.pbar.reset(
-            self.match_pbar_id,
-            visible=True,
-            description='Matching',
-            metrics='',
-        )
-
-    def on_metrics_match_end(self, tuner: 'BaseTuner'):
-        self.pbar.update(task_id=self.match_pbar_id, visible=False)
+        tuner.state.progress_bar.update(task_id=self.val_pbar_id, visible=False)
 
     def on_fit_end(self, tuner: 'BaseTuner'):
-        self._teardown()
+        self._teardown(tuner)
 
     def on_exception(self, tuner: 'BaseTuner', exception: BaseException):
-        self._teardown()
+        self._teardown(tuner)
 
     def on_keyboard_interrupt(self, tuner: 'BaseTuner'):
-        self._teardown()
+        self._teardown(tuner)
 
-    def _teardown(self):
+    @staticmethod
+    def _teardown(tuner: 'BaseTuner'):
         """Stop the progress bar"""
-        self.pbar.stop()
+        tuner.state.progress_bar.stop()

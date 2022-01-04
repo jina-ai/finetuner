@@ -30,9 +30,6 @@ class TrainingCheckpoint(BaseCallback):
         self._saved_checkpoints = []
 
     def on_epoch_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the end of the training epoch.
-        """
         self._save_model(tuner)
         self._logger.info(f'Model trained for {tuner.state.epoch+1} epochs is saved!')
 

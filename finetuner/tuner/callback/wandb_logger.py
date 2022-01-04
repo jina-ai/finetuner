@@ -52,9 +52,10 @@ class WandBLogger(BaseCallback):
         )
         self._val_losses = []
 
-    def on_metrics_end(self, tuner: 'BaseTuner'):
+    def on_epoch_end(self, tuner: 'BaseTuner'):
         data = {
-            f'val/{metric}': value for metric, value in tuner.state.eval_metrics.items()
+            f'metrics/{metric}': value
+            for metric, value in tuner.state.eval_metrics.items()
         }
         self.wandb_logger.log(data=data, step=self._train_step)
 

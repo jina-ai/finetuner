@@ -88,17 +88,6 @@ class EarlyStopping(BaseCallback):
         self._best = np.Inf
         self._min_delta *= -1
 
-    def on_epoch_end(self, tuner: 'BaseTuner'):
-        self._check(tuner)
-        self._train_losses = []
-        self._val_losses = []
-
-    def on_train_batch_end(self, tuner: 'BaseTuner'):
-        self._train_losses.append(tuner.state.current_loss)
-
-    def on_val_batch_end(self, tuner: 'BaseTuner'):
-        self._val_losses.append(tuner.state.current_loss)
-
     def _check(self, tuner: 'BaseTuner'):
         """
         Checks if training should be stopped.
@@ -128,3 +117,14 @@ class EarlyStopping(BaseCallback):
                     f'Training is stopping, no improvement for {self._patience} epochs'
                 )
                 tuner.stop_training = True
+
+    def on_train_batch_end(self, tuner: 'BaseTuner'):
+        self._train_losses.append(tuner.state.current_loss)
+
+    def on_val_batch_end(self, tuner: 'BaseTuner'):
+        self._val_losses.append(tuner.state.current_loss)
+
+    def on_epoch_end(self, tuner: 'BaseTuner'):
+        self._check(tuner)
+        self._train_losses = []
+        self._val_losses = []

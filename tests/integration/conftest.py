@@ -122,8 +122,6 @@ def record_callback():
             self.num_epochs = []
             self.num_batches_train = []
             self.num_batches_val = []
-            self.num_batches_query = []
-            self.num_batches_index = []
             self.eval_metrics = []
             self.learning_rates = []
 
@@ -133,8 +131,6 @@ def record_callback():
             self.num_epochs.append(tuner.state.num_epochs)
             self.num_batches_train.append(tuner.state.num_batches_train)
             self.num_batches_val.append(tuner.state.num_batches_val)
-            self.num_batches_query.append(tuner.state.num_batches_query)
-            self.num_batches_index.append(tuner.state.num_batches_index)
             self.eval_metrics.append(deepcopy(tuner.state.eval_metrics))
             self.learning_rates.append(deepcopy(tuner.state.learning_rates))
 
@@ -178,54 +174,6 @@ def record_callback():
             self.calls.append('on_val_end')
             self._record(tuner)
 
-        def on_metrics_begin(self, tuner):
-            self.calls.append('on_metrics_begin')
-            self._record(tuner)
-
-        def on_metrics_query_begin(self, tuner):
-            self.calls.append('on_metrics_query_begin')
-            self._record(tuner)
-
-        def on_metrics_query_batch_begin(self, tuner):
-            self.calls.append('on_metrics_query_batch_begin')
-            self._record(tuner)
-
-        def on_metrics_query_batch_end(self, tuner):
-            self.calls.append('on_metrics_query_batch_end')
-            self._record(tuner)
-
-        def on_metrics_query_end(self, tuner):
-            self.calls.append('on_metrics_query_end')
-            self._record(tuner)
-
-        def on_metrics_index_begin(self, tuner):
-            self.calls.append('on_metrics_index_begin')
-            self._record(tuner)
-
-        def on_metrics_index_batch_begin(self, tuner):
-            self.calls.append('on_metrics_index_batch_begin')
-            self._record(tuner)
-
-        def on_metrics_index_batch_end(self, tuner):
-            self.calls.append('on_metrics_index_batch_end')
-            self._record(tuner)
-
-        def on_metrics_index_end(self, tuner):
-            self.calls.append('on_metrics_index_end')
-            self._record(tuner)
-
-        def on_metrics_match_begin(self, tuner):
-            self.calls.append('on_metrics_match_begin')
-            self._record(tuner)
-
-        def on_metrics_match_end(self, tuner):
-            self.calls.append('on_metrics_match_end')
-            self._record(tuner)
-
-        def on_metrics_end(self, tuner):
-            self.calls.append('on_metrics_end')
-            self._record(tuner)
-
         def on_epoch_end(self, tuner):
             self.calls.append('on_epoch_end')
             self._record(tuner)
@@ -241,59 +189,35 @@ def record_callback():
 def expected_results():
     """
     Expected results (call, epoch, batch, number of epochs and number of batches
-    for train, eval, query and index) when doing 2 epochs, with 2 train and 1 eval/index/query batch
+    for train and eval) when doing 2 epochs, with 2 train and 1 eval batch
     """
     return [
-        ('on_fit_begin', 0, 0, 2, 0, 0, 0, 0),
-        ('on_epoch_begin', 0, 0, 2, 2, 0, 0, 0),
-        ('on_train_epoch_begin', 0, 0, 2, 2, 0, 0, 0),
-        ('on_train_batch_begin', 0, 0, 2, 2, 0, 0, 0),
-        ('on_train_batch_end', 0, 0, 2, 2, 0, 0, 0),
-        ('on_train_batch_begin', 0, 1, 2, 2, 0, 0, 0),
-        ('on_train_batch_end', 0, 1, 2, 2, 0, 0, 0),
-        ('on_train_epoch_end', 0, 1, 2, 2, 0, 0, 0),
-        ('on_val_begin', 0, 0, 2, 2, 1, 0, 0),
-        ('on_val_batch_begin', 0, 0, 2, 2, 1, 0, 0),
-        ('on_val_batch_end', 0, 0, 2, 2, 1, 0, 0),
-        ('on_val_end', 0, 0, 2, 2, 1, 0, 0),
-        ('on_metrics_begin', 0, 0, 2, 2, 1, 0, 0),
-        ('on_metrics_query_begin', 0, 0, 2, 2, 1, 1, 0),
-        ('on_metrics_query_batch_begin', 0, 0, 2, 2, 1, 1, 0),
-        ('on_metrics_query_batch_end', 0, 0, 2, 2, 1, 1, 0),
-        ('on_metrics_query_end', 0, 0, 2, 2, 1, 1, 0),
-        ('on_metrics_index_begin', 0, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_index_batch_begin', 0, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_index_batch_end', 0, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_index_end', 0, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_match_begin', 0, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_match_end', 0, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_end', 0, 0, 2, 2, 1, 1, 1),
-        ('on_epoch_end', 0, 0, 2, 2, 1, 1, 1),
-        ('on_epoch_begin', 1, 0, 2, 2, 1, 1, 1),
-        ('on_train_epoch_begin', 1, 0, 2, 2, 1, 1, 1),
-        ('on_train_batch_begin', 1, 0, 2, 2, 1, 1, 1),
-        ('on_train_batch_end', 1, 0, 2, 2, 1, 1, 1),
-        ('on_train_batch_begin', 1, 1, 2, 2, 1, 1, 1),
-        ('on_train_batch_end', 1, 1, 2, 2, 1, 1, 1),
-        ('on_train_epoch_end', 1, 1, 2, 2, 1, 1, 1),
-        ('on_val_begin', 1, 0, 2, 2, 1, 1, 1),
-        ('on_val_batch_begin', 1, 0, 2, 2, 1, 1, 1),
-        ('on_val_batch_end', 1, 0, 2, 2, 1, 1, 1),
-        ('on_val_end', 1, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_begin', 1, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_query_begin', 1, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_query_batch_begin', 1, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_query_batch_end', 1, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_query_end', 1, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_index_begin', 1, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_index_batch_begin', 1, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_index_batch_end', 1, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_index_end', 1, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_match_begin', 1, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_match_end', 1, 0, 2, 2, 1, 1, 1),
-        ('on_metrics_end', 1, 0, 2, 2, 1, 1, 1),
-        ('on_epoch_end', 1, 0, 2, 2, 1, 1, 1),
-        ('on_fit_end', 1, 0, 2, 2, 1, 1, 1),
+        ('on_fit_begin', 0, 0, 2, 0, 0),
+        ('on_epoch_begin', 0, 0, 2, 2, 0),
+        ('on_train_epoch_begin', 0, 0, 2, 2, 0),
+        ('on_train_batch_begin', 0, 0, 2, 2, 0),
+        ('on_train_batch_end', 0, 0, 2, 2, 0),
+        ('on_train_batch_begin', 0, 1, 2, 2, 0),
+        ('on_train_batch_end', 0, 1, 2, 2, 0),
+        ('on_train_epoch_end', 0, 1, 2, 2, 0),
+        ('on_val_begin', 0, 0, 2, 2, 1),
+        ('on_val_batch_begin', 0, 0, 2, 2, 1),
+        ('on_val_batch_end', 0, 0, 2, 2, 1),
+        ('on_val_end', 0, 0, 2, 2, 1),
+        ('on_epoch_end', 0, 0, 2, 2, 1),
+        ('on_epoch_begin', 1, 0, 2, 2, 1),
+        ('on_train_epoch_begin', 1, 0, 2, 2, 1),
+        ('on_train_batch_begin', 1, 0, 2, 2, 1),
+        ('on_train_batch_end', 1, 0, 2, 2, 1),
+        ('on_train_batch_begin', 1, 1, 2, 2, 1),
+        ('on_train_batch_end', 1, 1, 2, 2, 1),
+        ('on_train_epoch_end', 1, 1, 2, 2, 1),
+        ('on_val_begin', 1, 0, 2, 2, 1),
+        ('on_val_batch_begin', 1, 0, 2, 2, 1),
+        ('on_val_batch_end', 1, 0, 2, 2, 1),
+        ('on_val_end', 1, 0, 2, 2, 1),
+        ('on_epoch_end', 1, 0, 2, 2, 1),
+        ('on_fit_end', 1, 0, 2, 2, 1),
     ]
 
 

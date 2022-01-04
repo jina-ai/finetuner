@@ -1,16 +1,12 @@
 import abc
-import math
 from typing import TYPE_CHECKING, Callable, Generic, List, Optional, Tuple, Union
 
 from .callback import BaseCallback, ProgressBarCallback
 from .dataset import ClassDataset, SessionDataset
-from .dataset.helper import batch_document_sequence
 from .dataset.samplers import ClassSampler, SessionSampler
-from .evaluation import Evaluator
 from .miner.base import BaseMiner
 from .state import TunerState
 
-from ..embedding import embed
 from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyScheduler, AnyTensor
 
 if TYPE_CHECKING:
@@ -96,6 +92,12 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         self._scheduler = None
         self._device_name = device
 
+        self._preprocess_fn = None
+        self._collate_fn = None
+        self._batch_size = None
+        self._num_items_per_class = None
+        self._num_workers = None
+
         # Check for early stopping
         self.stop_training = False
 
@@ -153,24 +155,18 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         self,
         train_data: 'DocumentSequence',
         eval_data: Optional['DocumentSequence'] = None,
-        query_data: Optional['DocumentSequence'] = None,
-        index_data: Optional['DocumentSequence'] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
         num_workers: int = 0,
-        limit: int = 20,
-        distance: str = 'cosine',
         **kwargs,
     ):
         """Finetune the model on the training data.
 
         :param train_data: Data on which to train the model.
         :param eval_data: Data on which the validation loss is computed.
-        :param query_data: Search data used by the evaluator at the end of each epoch, to evaluate the model.
-        :param index_data: Index data or catalog used by the evaluator at the end of each epoch, to evaluate the model.
         :param preprocess_fn: A pre-processing function, to apply pre-processing to
             documents on the fly. It should take as input the document in the dataset,
             and output whatever content the framework-specific dataloader (and model) would
@@ -185,107 +181,29 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
             the batch. Only relevant for class datasets.
         :param num_workers: Number of workers used for loading the data. This works only with Pytorch and
             Paddle Paddle, and has no effect when using a Keras model.
-        :param limit: The number of top search results to consider, when computing the evaluation metrics.
-        :param distance: The type of distance metric to use when matching query and index docs during evaluation,
-            available options are ``'cosine'``, ``'euclidean'`` and ``'sqeuclidean'``.
         """
-        ...
+        self._preprocess_fn = preprocess_fn
+        self._collate_fn = collate_fn
+        self._batch_size = batch_size
+        self._num_items_per_class = num_items_per_class
+        self._num_workers = num_workers
 
         try:
             self._fit(
                 train_data,
                 eval_data,
-                query_data,
-                index_data,
                 preprocess_fn,
                 collate_fn,
                 epochs,
                 batch_size,
                 num_items_per_class,
                 num_workers,
-                limit,
-                distance,
             )
         except KeyboardInterrupt:
             self._trigger_callbacks('on_keyboard_interrupt')
         except BaseException as e:
             self._trigger_callbacks('on_exception', exception=e)
             raise
-
-    def _compute_metrics(
-        self,
-        query_data: 'DocumentSequence',
-        index_data: Optional['DocumentSequence'],
-        label: str,
-        limit: int,
-        distance: str,
-        num_workers: int,
-        batch_size: int,
-        preprocess_fn: Optional['PreprocFnType'] = None,
-        collate_fn: Optional['CollateFnType'] = None,
-    ):
-        """Embed the query/index data and compute the evaluation metrics."""
-
-        self.state.num_batches_query = math.ceil(len(query_data) / batch_size)
-        self.state.batch_index = 0
-
-        self._trigger_callbacks('on_metrics_query_begin')
-
-        for idx, batch in enumerate(
-            batch_document_sequence(query_data, size=batch_size)
-        ):
-            self.state.batch_index = idx
-            self._trigger_callbacks('on_metrics_query_batch_begin')
-            embed(
-                batch,
-                self.embed_model,
-                device=self._device_name,
-                batch_size=batch_size,
-                preprocess_fn=preprocess_fn,
-                collate_fn=collate_fn,
-            )
-            self._trigger_callbacks('on_metrics_query_batch_end')
-
-        self._trigger_callbacks('on_metrics_query_end')
-
-        if index_data:
-
-            self.state.num_batches_index = math.ceil(len(index_data) / batch_size)
-            self.state.batch_index = 0
-
-            self._trigger_callbacks('on_metrics_index_begin')
-
-            for idx, batch in enumerate(
-                batch_document_sequence(index_data, size=batch_size)
-            ):
-                self.state.batch_index = idx
-                self._trigger_callbacks('on_metrics_index_batch_begin')
-                embed(
-                    batch,
-                    self.embed_model,
-                    device=self._device_name,
-                    batch_size=batch_size,
-                    preprocess_fn=preprocess_fn,
-                    collate_fn=collate_fn,
-                )
-                self._trigger_callbacks('on_metrics_index_batch_end')
-
-            self._trigger_callbacks('on_metrics_index_end')
-
-        else:
-            index_data = query_data
-
-        self._trigger_callbacks('on_metrics_match_begin')
-
-        evaluator = Evaluator(query_data, index_data)
-        self.state.eval_metrics = evaluator.evaluate(
-            limit=limit,
-            distance=distance,
-            label=label,
-            num_workers=num_workers or 1,
-        )
-
-        self._trigger_callbacks('on_metrics_match_end')
 
     @abc.abstractmethod
     def _move_model_to_device(self):
@@ -326,16 +244,12 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         self,
         train_data: 'DocumentSequence',
         eval_data: Optional['DocumentSequence'] = None,
-        query_data: Optional['DocumentSequence'] = None,
-        index_data: Optional['DocumentSequence'] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
         num_workers: int = 0,
-        limit: int = 20,
-        distance: str = 'cosine',
     ):
         """Fit the model - training and evaluation."""
         ...
