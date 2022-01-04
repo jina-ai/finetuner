@@ -193,10 +193,7 @@ class PaddleTailor(BaseTailor):
                 _relative_idx_to_embedding_layer += 1
 
         if bottleneck_net:
-            model = nn.Sequential(
-                model,
-                bottleneck_net,
-            )
+            model.add_sublayer('bottleneck_net', bottleneck_net)
 
         return model
 

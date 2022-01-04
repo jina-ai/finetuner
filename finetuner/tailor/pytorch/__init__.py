@@ -189,8 +189,6 @@ class PytorchTailor(BaseTailor):
                 _relative_idx_to_embedding_layer += 1
 
         if bottleneck_net:
-            return nn.Sequential(
-                model,
-                bottleneck_net,
-            )
+            model.add_module('bottleneck_net', bottleneck_net)
+
         return model
