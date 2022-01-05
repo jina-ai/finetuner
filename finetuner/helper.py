@@ -1,4 +1,5 @@
 from typing import (
+    TYPE_CHECKING,
     Any,
     Callable,
     Dict,
@@ -6,10 +7,8 @@ from typing import (
     List,
     Sequence,
     TypeVar,
-    TYPE_CHECKING,
     Union,
 )
-
 
 AnyDNN = TypeVar(
     'AnyDNN'

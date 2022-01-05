@@ -1,16 +1,14 @@
+import tempfile
+from pathlib import Path
+
 import numpy as np
 import onnxruntime
 import paddle
 import pytest
-import tempfile
 import torch
-
-from pathlib import Path
-
 from tensorflow import keras
 
-from finetuner.tuner.onnx import to_onnx
-from finetuner.tuner.onnx import validate_onnx_export
+from finetuner.tuner.onnx import to_onnx, validate_onnx_export
 
 
 @pytest.fixture
