@@ -11,7 +11,7 @@ def to_onnx(
     input_shape: Union[Tuple[int], List[int]],
     opset_version: int = 11,
 ) -> None:
-    """Func that converts a given model in paddle, torch or keras,
+    """Func that converts a given model in PaddlePaddle, PyTorch or Keras,
     and converts it to the ONNX format
     :param embed_model: Model to be converted and stored in ONNX
     :param model_path: Path to store ONNX model to
