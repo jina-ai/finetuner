@@ -42,7 +42,7 @@ class Evaluator:
     def __init__(
         self,
         query_data: 'DocumentSequence',
-        index_data: 'DocumentSequence',
+        index_data: Optional['DocumentSequence'] = None,
         embed_model: Optional['AnyDNN'] = None,
     ):
         """
@@ -90,7 +90,10 @@ class Evaluator:
         Convert class format docs to the internal representation used by the Evaluator.
         """
         groups = {}
-        for doc in self._index_data:
+        query_data = self._query_data
+        index_data = self._index_data or query_data
+
+        for doc in index_data:
             label = doc.tags[__default_tag_key__]
             if label in groups:
                 groups[label].append(doc.id)
@@ -98,7 +101,7 @@ class Evaluator:
                 groups[label] = [doc.id]
 
         summmary_docs = DocumentArray()
-        for doc in self._query_data:
+        for doc in query_data:
             label = doc.tags[__default_tag_key__]
             relevancies = [(m, 1) for m in groups[label]] if label in groups else []
             summmary_doc = Document(
@@ -142,9 +145,13 @@ class Evaluator:
         """
         if self._embed_model is not None:
             embed(self._query_data, embed_model=self._embed_model, **embed_kwargs)
-            embed(self._index_data, embed_model=self._embed_model, **embed_kwargs)
             self._query_data.embeddings = self._query_data.embeddings.astype('float64')
-            self._index_data.embeddings = self._index_data.embeddings.astype('float64')
+
+            if self._index_data:
+                embed(self._index_data, embed_model=self._embed_model, **embed_kwargs)
+                self._index_data.embeddings = self._index_data.embeddings.astype(
+                    'float64'
+                )
 
         for doc in self._summary_docs:
 
@@ -156,7 +163,10 @@ class Evaluator:
             doc.matches.clear()
 
         self._summary_docs.match(
-            self._index_data, limit=limit, metric=distance, num_worker=num_workers
+            self._index_data or self._query_data,
+            limit=limit,
+            metric=distance,
+            num_worker=num_workers,
         )
 
     def _get_mean_metrics(self, label: str = 'metrics') -> Dict[str, float]:

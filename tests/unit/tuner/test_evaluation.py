@@ -171,3 +171,11 @@ def test_evaluator_half_precision(
                     assert 0.66 < v < 0.67
                 else:
                     assert v == 1.0
+
+
+def test_evaluator_no_index_data(embed_model, query_class_data):
+    """
+    Test the evaluator when no index data are given
+    """
+    evaluator = Evaluator(query_class_data, embed_model=embed_model)
+    _ = evaluator.evaluate()
