@@ -5,8 +5,8 @@ from typing import (
     Iterator,
     List,
     Sequence,
-    TYPE_CHECKING,
     TypeVar,
+    TYPE_CHECKING,
     Union,
 )
 
