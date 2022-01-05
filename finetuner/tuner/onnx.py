@@ -1,6 +1,7 @@
+from typing import Any, List, Tuple, Union
+
 import numpy as np
 import onnxruntime
-from typing import Any, List, Tuple, Union
 
 from finetuner.helper import AnyDNN
 from finetuner.helper import get_framework
