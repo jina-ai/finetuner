@@ -7,6 +7,7 @@ from typing import (
     Optional,
     Sequence,
     Tuple,
+    TYPE_CHECKING,
     TypeVar,
     Union,
 )

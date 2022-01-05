@@ -1,8 +1,4 @@
-import numpy as np
-import onnxruntime
-
 from typing import (
-    Any,
     List,
     Optional,
     Tuple,
