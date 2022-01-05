@@ -3,10 +3,11 @@
 Tuner is one of the three key components of Finetuner. Given an {term}`embedding model` and {term}`labeled dataset` (see {ref}`the guide on data formats<data-format>` for more information), Tuner trains the model to fit the data.
 
 With Tuner, you can customize the training process to best fit your data, and track your experiements in a clear and transparent manner. You can do things like
-- choose between different loss functions, use hard negative mining for triplets/pairs
-- set your own optimizers and learning rates
-- track the training and evaluation metrics with Weights and Biases
-- write custom callbacks
+- Choose between different loss functions, use hard negative mining for triplets/pairs
+- Set your own optimizers and learning rates
+- Track the training and evaluation metrics with Weights and Biases
+- Save checkpoints during training
+- Write custom callbacks
 
 You can read more on these different options here or in these sub-sections:
 
@@ -203,12 +204,13 @@ Then we can create the {class}`~finetuner.tuner.pytorch.PytorchTuner` object. In
 - Triplet loss with hard miner with the easy positive and semihard negative strategy
 - Adam optimizer with initial learning rate of 0.0005, which will be halved every 30 epochs
 - WandB for tracking the experiement
+- A {class}`~finetuner.tuner.callback.training_checkpoint.TrainingCheckpoint` to save a checkpoint every epoch - if training is interrupted we can later continue from this checkpoint. We need to create a `checkpoints/` folder inside our current directory to store checkpoints there.
 
 ```python
 from torch.optim import Adam
 from torch.optim.lr_scheduler import MultiStepLR
 
-from finetuner.tuner.callback import WandBLogger
+from finetuner.tuner.callback import WandBLogger, TrainingCheckpoint
 from finetuner.tuner.pytorch import PytorchTuner
 from finetuner.tuner.pytorch.losses import TripletLoss
 from finetuner.tuner.pytorch.miner import TripletEasyHardMiner
@@ -225,13 +227,14 @@ loss = TripletLoss(
     miner=TripletEasyHardMiner(pos_strategy='easy', neg_strategy='semihard')
 )
 logger_callback = WandBLogger()
+checkpoint = TrainingCheckpoint('checkpoints')
 
 tuner = PytorchTuner(
     embed_model,
     loss=loss,
     configure_optimizer=configure_optimizer,
     scheduler_step='epoch',
-    callbacks=[logger_callback],
+    callbacks=[logger_callback, checkpoint],
     device='cpu',
 )
 ```
@@ -244,7 +247,7 @@ from torch.optim import Adam
 from torch.optim.lr_scheduler import MultiStepLR
 
 from finetuner.toydata import generate_fashion
-from finetuner.tuner.callback import WandBLogger
+from finetuner.tuner.callback import WandBLogger, TrainingCheckpoint
 from finetuner.tuner.pytorch import PytorchTuner
 from finetuner.tuner.pytorch.losses import TripletLoss
 from finetuner.tuner.pytorch.miner import TripletEasyHardMiner
@@ -276,13 +279,14 @@ loss = TripletLoss(
     miner=TripletEasyHardMiner(pos_strategy='easy', neg_strategy='semihard')
 )
 logger_callback = WandBLogger()
+checkpoint = TrainingCheckpoint('checkpoints')
 
 tuner = PytorchTuner(
     embed_model,
     loss=loss,
     configure_optimizer=configure_optimizer,
     scheduler_step='epoch',
-    callbacks=[logger_callback],
+    callbacks=[logger_callback, checkpoint],
     device='cpu',
 )
 

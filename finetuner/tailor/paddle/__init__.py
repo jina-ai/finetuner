@@ -1,17 +1,16 @@
 import copy
-import warnings
 from collections import OrderedDict
-from typing import Optional, List, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 import numpy as np
 import paddle
-from paddle import nn, Tensor
+from paddle import Tensor, nn
 
-from ..base import BaseTailor
 from ...helper import is_seq_int
+from ..base import BaseTailor
 
 if TYPE_CHECKING:
-    from ...helper import LayerInfoType, AnyDNN
+    from ...helper import AnyDNN, LayerInfoType
 
 
 class PaddleTailor(BaseTailor):
@@ -151,7 +150,7 @@ class PaddleTailor(BaseTailor):
         :return: Converted embedding model..
         """
         model = copy.deepcopy(self._model)
-        _all_embed_layers = {l['name']: l for l in self.embedding_layers}
+        _all_embed_layers = {layer['name']: layer for layer in self.embedding_layers}
         if layer_name:
             try:
                 _embed_layer = _all_embed_layers[layer_name]
@@ -173,12 +172,10 @@ class PaddleTailor(BaseTailor):
             for param in model.parameters():
                 param.trainable = False
 
-        _embed_layer_output_shape = None
         _relative_idx_to_embedding_layer = None
-        for name, module in model.named_sublayers():
+        for name, _ in model.named_sublayers():
             if name == _embed_layer['module_name']:
                 _relative_idx_to_embedding_layer = 0
-                _embed_layer_output_shape = _embed_layer['output_shape']
             if (
                 _relative_idx_to_embedding_layer
                 and _relative_idx_to_embedding_layer >= 1

@@ -1,15 +1,16 @@
-from typing import List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional
 
 import numpy as np
 from rich.progress import (
-    Progress,
     BarColumn,
+    Progress,
+    SpinnerColumn,
     TextColumn,
     TimeElapsedColumn,
     TimeRemainingColumn,
-    SpinnerColumn,
 )
 
+from ... import live_console
 from .base import BaseCallback
 
 if TYPE_CHECKING:
@@ -64,6 +65,7 @@ class ProgressBarCallback(BaseCallback):
             TimeElapsedColumn(),
             '•',
             TextColumn('{task.fields[metrics]}'),
+            console=live_console,
         )
         self.pbar.start()
         self.train_pbar_id = self.pbar.add_task('Training', visible=False, start=False)

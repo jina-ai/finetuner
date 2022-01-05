@@ -1,6 +1,6 @@
+import numpy as np
 import pytest
 import tensorflow as tf
-import numpy as np
 
 from finetuner.tailor.keras import KerasTailor
 
@@ -166,9 +166,9 @@ def test_freeze_given_bottleneck_model_and_freeze_is_true(simple_cnn_model):
     # assert bottleneck model is not freezed
     for layer in model.layers:
         if layer.name == 'dense_2':
-            assert layer.trainable == True
+            assert layer.trainable
         else:
-            assert layer.trainable == False
+            assert not layer.trainable
 
 
 @pytest.mark.parametrize(
@@ -202,9 +202,9 @@ def test_freeze_given_freeze_layers(
     for layer, param in zip(pytorch_tailor.embedding_layers, model.layers):
         layer_name = layer['name']
         if layer_name in freeze_layers:
-            assert param.trainable == False
+            assert not param.trainable
         else:
-            assert param.trainable == True
+            assert param.trainable
 
 
 def test_keras_model_parser():

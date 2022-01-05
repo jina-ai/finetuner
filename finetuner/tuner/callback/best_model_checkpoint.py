@@ -1,11 +1,10 @@
+import logging
 import os
 from typing import TYPE_CHECKING
 
 import numpy as np
-from jina.logging.logger import JinaLogger
 
-from finetuner.helper import get_framework
-
+from ...helper import get_framework
 from .base import BaseCallback
 
 if TYPE_CHECKING:
@@ -26,6 +25,7 @@ class BestModelCheckpoint(BaseCallback):
         save_dir: str,
         monitor: str = 'val_loss',
         mode: str = 'auto',
+        verbose: bool = False,
     ):
         """
         :param save_dir: string, path to save the model file.
@@ -39,15 +39,17 @@ class BestModelCheckpoint(BaseCallback):
             `min`, etc. In `auto` mode, the mode is set to `max` if the quantities
             monitored are 'acc' or start with 'fmeasure' and are set to `min` for
             the rest of the quantities.
+        :param verbose: Whether to log notifications when a checkpoint is saved
         """
-        self._logger = JinaLogger(self.__class__.__name__)
+        self._logger = logging.getLogger('finetuner.' + self.__class__.__name__)
+        self._logger.setLevel(logging.INFO if verbose else logging.WARNING)
         self._save_dir = save_dir
         self._monitor = monitor
         self._train_losses = []
         self._valid_losses = []
 
         if mode not in ['auto', 'min', 'max']:
-            self._logger.logger.warning(
+            self._logger.warning(
                 'ModelCheckpoint mode %s is unknown, ' 'fallback to auto mode.', mode
             )
             mode = 'auto'
@@ -86,19 +88,20 @@ class BestModelCheckpoint(BaseCallback):
         else:
             current = np.mean(self._train_losses)
         if current is None:
-            self._logger.logger.warning(
+            self._logger.warning(
                 'Can save best model only with %s available, ' 'skipping.',
                 self._monitor,
             )
         else:
             if self._monitor_op(current, self._best):
                 tuner.save(self._get_file_path())
-                self._logger.logger.info(
-                    f'Model improved from {self._best} to {current}. New model is saved!'
+                self._logger.info(
+                    f'Model improved from {self._best:.3f} to {current:.3f}.'
+                    ' New model is saved!'
                 )
                 self._best = current
             else:
-                self._logger.logger.info(f'Model didnt improve.')
+                self._logger.info('Model didnt improve.')
 
     def _get_file_path(self):
         """

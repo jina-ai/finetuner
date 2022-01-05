@@ -1,16 +1,16 @@
 import copy
 from collections import OrderedDict
-from typing import Optional, List, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 import numpy as np
 import torch
 from torch import nn
 
-from ..base import BaseTailor
 from ...helper import is_seq_int
+from ..base import BaseTailor
 
 if TYPE_CHECKING:
-    from ...helper import LayerInfoType, AnyDNN
+    from ...helper import AnyDNN, LayerInfoType
 
 
 class PytorchTailor(BaseTailor):
@@ -144,7 +144,7 @@ class PytorchTailor(BaseTailor):
         """
 
         model = copy.deepcopy(self._model)
-        _all_embed_layers = {l['name']: l for l in self.embedding_layers}
+        _all_embed_layers = {layer['name']: layer for layer in self.embedding_layers}
         if layer_name:
             try:
                 _embed_layer = _all_embed_layers[layer_name]

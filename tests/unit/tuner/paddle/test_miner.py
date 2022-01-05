@@ -5,9 +5,9 @@ import pytest
 from finetuner.tuner.paddle.miner import (
     SiameseEasyHardMiner,
     SiameseMiner,
+    SiameseSessionMiner,
     TripletEasyHardMiner,
     TripletMiner,
-    SiameseSessionMiner,
     TripletSessionMiner,
 )
 

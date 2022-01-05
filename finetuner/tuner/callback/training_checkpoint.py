@@ -1,15 +1,10 @@
+import logging
 import os
 import pickle
-from typing import TYPE_CHECKING
 import shutil
+from typing import TYPE_CHECKING
 
-import keras
-import paddle
-import torch
-from jina.logging.logger import JinaLogger
-
-from finetuner.helper import get_framework
-
+from ...helper import get_framework
 from .base import BaseCallback
 
 if TYPE_CHECKING:
@@ -21,13 +16,15 @@ class TrainingCheckpoint(BaseCallback):
     Callback to save model at every epoch or the last K epochs
     """
 
-    def __init__(self, save_dir: str, last_k_epochs: int = 1):
+    def __init__(self, save_dir: str, last_k_epochs: int = 1, verbose: bool = False):
         """
         :param save_dir: string, path to save the model file.
         :param last_k_epochs: this parameter is an integer. Only the most
             recent k checkpoints will be kept. Older checkpoints are deleted
+        :param verbose: Whether to log notifications when a checkpoint is saved/deleted
         """
-        self._logger = JinaLogger(self.__class__.__name__)
+        self._logger = logging.getLogger('finetuner.' + self.__class__.__name__)
+        self._logger.setLevel(logging.INFO if verbose else logging.WARNING)
         self._save_dir = save_dir
         self._last_k_epochs = last_k_epochs
         self._saved_checkpoints = []
@@ -37,9 +34,7 @@ class TrainingCheckpoint(BaseCallback):
         Called at the end of the training epoch.
         """
         self._save_model_framework(tuner)
-        self._logger.logger.info(
-            f'Model trained for {tuner.state.epoch+1} epochs is saved!'
-        )
+        self._logger.info(f'Model trained for {tuner.state.epoch+1} epochs is saved!')
         if self._last_k_epochs:
             if len(self._saved_checkpoints) > self._last_k_epochs:
                 if os.path.isfile(self._saved_checkpoints[0]):
@@ -47,8 +42,10 @@ class TrainingCheckpoint(BaseCallback):
                 else:
                     shutil.rmtree(self._saved_checkpoints[0])
                 self._saved_checkpoints.pop(0)
-                self._logger.logger.info(
-                    f'Model trained for {tuner.state.epoch+1-self._last_k_epochs} epochs is deleted!'
+
+                self._logger.info(
+                    f'Model trained for {tuner.state.epoch+1-self._last_k_epochs}'
+                    ' epochs is deleted!'
                 )
 
     def _save_model_framework(self, tuner):
@@ -64,6 +61,8 @@ class TrainingCheckpoint(BaseCallback):
             ) as f:
                 pickle.dump(state, f)
         elif get_framework(tuner.embed_model) == 'torch':
+            import torch
+
             state = {
                 'epoch': tuner.state.epoch + 1,
                 'state_dict': tuner.embed_model.state_dict(),
@@ -74,6 +73,8 @@ class TrainingCheckpoint(BaseCallback):
             torch.save(state, f=self._get_file_path(tuner))
 
         elif get_framework(tuner.embed_model) == 'paddle':
+            import paddle
+
             state = {
                 'epoch': tuner.state.epoch + 1,
                 'state_dict': tuner.embed_model.state_dict(),
@@ -100,11 +101,15 @@ class TrainingCheckpoint(BaseCallback):
         Loads the model and tuner state
         """
         if get_framework(tuner.embed_model) == 'keras':
+            import keras
+
             tuner._embed_model = keras.models.load_model(fp)
             with open(os.path.join(fp, 'saved_state.pkl'), 'rb') as f:
                 loaded_state = pickle.load(f)
             tuner.state.epoch = loaded_state['epoch']
         elif get_framework(tuner.embed_model) == 'torch':
+            import torch
+
             checkpoint = torch.load(fp)
             tuner._embed_model.load_state_dict(checkpoint['state_dict'])
             tuner._optimizer.load_state_dict(checkpoint['optimizer'])
@@ -112,6 +117,8 @@ class TrainingCheckpoint(BaseCallback):
                 tuner._scheduler.load_state_dict(checkpoint['scheduler'])
             tuner.state.epoch = checkpoint['epoch']
         elif get_framework(tuner.embed_model) == 'paddle':
+            import paddle
+
             checkpoint = paddle.load(fp)
             tuner._embed_model.set_state_dict(checkpoint['state_dict'])
             tuner._optimizer.set_state_dict(checkpoint['optimizer'])

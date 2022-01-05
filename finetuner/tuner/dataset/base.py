@@ -1,14 +1,5 @@
 import abc
-from typing import (
-    TYPE_CHECKING,
-    List,
-    Generic,
-    Iterator,
-    Tuple,
-    Union,
-    TypeVar,
-    Sequence,
-)
+from typing import Generic, Iterator, List, Sequence, Tuple, TypeVar, Union
 
 import numpy as np
 
