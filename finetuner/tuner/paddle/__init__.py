@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence, Union
+from typing import (TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence,
+                    Union)
 
 import paddle
 from paddle import nn
