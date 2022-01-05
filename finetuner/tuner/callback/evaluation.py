@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from ..base import BaseTuner
 
 
-class Evaluation(BaseCallback):
+class EvaluationCallback(BaseCallback):
     """
     A callback that uses the Evaluator to calculate IR metrics at the end of each epoch. When used
     with other callbacks that rely on metrics, like checkpoints and logging, this callback should be
@@ -20,7 +20,7 @@ class Evaluation(BaseCallback):
 
     def __init__(
         self,
-        query_data: Optional['DocumentSequence'],
+        query_data: 'DocumentSequence',
         index_data: Optional['DocumentSequence'] = None,
         limit: int = 20,
         distance: str = 'cosine',

@@ -6,7 +6,7 @@ import torch
 from jina import Document, DocumentArray
 
 from finetuner import __default_tag_key__
-from finetuner.tuner.callback import Evaluation
+from finetuner.tuner.callback import EvaluationCallback
 from finetuner.tuner.keras import KerasTuner
 from finetuner.tuner.paddle import PaddleTuner
 from finetuner.tuner.pytorch import PytorchTuner
@@ -40,30 +40,30 @@ def data():
     )
 
 
-def test_evaluation_pytorch(pytorch_model, data):
+def test_evaluation_callback_pytorch(pytorch_model, data):
     tuner = PytorchTuner(embed_model=pytorch_model)
     tuner.fit(train_data=data, epochs=1)
     assert len(tuner.state.eval_metrics) == 0
 
-    callback = Evaluation(data, data)
+    callback = EvaluationCallback(data, data)
     callback.on_fit_begin(tuner)
     callback.on_epoch_end(tuner)
     assert len(tuner.state.eval_metrics) > 0
 
 
-def test_evaluation_paddle(paddle_model, data):
+def test_evaluation_callback_paddle(paddle_model, data):
     tuner = PaddleTuner(embed_model=paddle_model)
     tuner.fit(train_data=data, epochs=1)
-    callback = Evaluation(data)
+    callback = EvaluationCallback(data)
     callback.on_fit_begin(tuner)
     callback.on_epoch_end(tuner)
     assert len(tuner.state.eval_metrics) > 0
 
 
-def test_evaluation_keras(keras_model, data):
+def test_evaluation_callback_keras(keras_model, data):
     tuner = KerasTuner(embed_model=keras_model)
     tuner.fit(train_data=data, epochs=1)
-    callback = Evaluation(data, data)
+    callback = EvaluationCallback(data, data)
     callback.on_fit_begin(tuner)
     callback.on_epoch_end(tuner)
     assert len(tuner.state.eval_metrics) > 0
