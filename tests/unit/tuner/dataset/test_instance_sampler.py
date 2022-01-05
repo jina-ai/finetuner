@@ -30,7 +30,7 @@ def test_normal_case(repeat_instance):
 
 
 @pytest.mark.parametrize('repeat_instance', [2, 3])
-def test_uncomplete_last_batch(repeat_instance):
+def test_incomplete_last_batch(repeat_instance):
     sampler = InstanceSampler(3, repeat_instance * 2, repeat_instance)
     assert len(sampler) == 2
 
@@ -49,12 +49,12 @@ def test_uncomplete_last_batch(repeat_instance):
 
 
 @pytest.mark.parametrize('repeat_instance', [2, 3])
-def test_uncomplete_single_batch(repeat_instance):
+def test_incomplete_single_batch(repeat_instance):
     sampler = InstanceSampler(1, repeat_instance * 2, repeat_instance)
     assert len(sampler) == 1
 
     all_samples = []
-    for batch in enumerate(sampler):
+    for batch in sampler:
         all_samples.extend(batch)
         assert len(set(batch)) == 1
         assert len(batch) == repeat_instance
