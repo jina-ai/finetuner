@@ -1,4 +1,6 @@
-from typing import List, Optional, Tuple, Union
+import numpy as np
+import onnxruntime
+from typing import Any, List, Tuple, Union
 
 from finetuner.helper import AnyDNN
 from finetuner.helper import get_framework
@@ -144,3 +146,61 @@ def _to_onnx_paddle(
         input_spec=[x_spec],
         opset_version=opset_version,
     )
+
+
+def validate_onnx_export(
+    embed_model: AnyDNN,
+    export_path: str,
+    input_shape: Tuple[int, ...],
+    batch_size: int = 8,
+) -> None:
+    """
+    Test an exported model by comparing the outputs of the original and the exported model
+    against the same input.
+    :param embed_model: The original embedding model. Can be either a PyTorch module,
+        a Keras model or a PaddlePaddle layer.
+    :param export_path: The path where the exported model is stored.
+    :param input_shape: The model's expected input shape, without the batch axis.
+    """
+    fm = get_framework(embed_model)
+
+    def _from_numpy(array: np.ndarray) -> Any:
+        if fm == 'torch':
+            import torch
+
+            return torch.tensor(array)
+        elif fm == 'keras':
+            import tensorflow as tf
+
+            return tf.convert_to_tensor(array)
+        else:
+            import paddle
+
+            return paddle.Tensor(array)
+
+    def _to_numpy(tensor: Any) -> np.ndarray:
+        if fm == 'torch':
+            return (
+                tensor.detach().cpu().numpy()
+                if tensor.requires_grad
+                else tensor.cpu().numpy()
+            )
+        else:
+            return tensor.numpy()
+
+    shape = [batch_size] + input_shape
+    x = np.random.rand(*shape).astype(np.float32)
+    session = onnxruntime.InferenceSession(export_path)
+
+    is_training_before = False
+    if fm == 'torch':
+        is_training_before = embed_model.training
+        embed_model.eval()
+
+    y_original = _to_numpy(embed_model(_from_numpy(x)))
+    y_exported = session.run(None, {session.get_inputs()[0].name: x})[0]
+
+    if is_training_before:
+        embed_model.train()
+
+    np.testing.assert_allclose(y_original, y_exported, rtol=1e-03, atol=1e-05)
