@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 from docarray.math.evaluation import (
@@ -89,16 +90,13 @@ class Evaluator:
         """
         Convert class format docs to the internal representation used by the Evaluator.
         """
-        groups = {}
         query_data = self._query_data
         index_data = self._index_data or query_data
 
+        groups = defaultdict(list)
         for doc in index_data:
             label = doc.tags[__default_tag_key__]
-            if label in groups:
-                groups[label].append(doc.id)
-            else:
-                groups[label] = [doc.id]
+            groups[label].append(doc.id)
 
         summmary_docs = DocumentArray()
         for doc in query_data:
