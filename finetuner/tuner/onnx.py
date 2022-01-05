@@ -7,7 +7,6 @@ def to_onnx(
     embed_model: 'AnyDNN',
     path: str,
     input_shape: Union[Tuple[int], List[int]],
-    batch_size: Optional[Union[int, None]] = None,
     opset_version: int = 11,
 ) -> None:
     """Func that converts a given model in paddle, torch or keras,
@@ -15,9 +14,6 @@ def to_onnx(
     :param embed_model: Model to be converted and stored in ONNX
     :param path: Path to store ONNX model to
     :param input_shape: Input shape of embedding model
-    :param batch_size: The batch size the model was trained with. This
-      is only required when converting pyTorch model to onnx. In other
-      frameworks, the batch size does not need to be made specific
     :param opset_version: ONNX opset version in which to register
     """
     if isinstance(input_shape, tuple):
@@ -63,7 +59,7 @@ def _to_onnx_torch(
     :param embed_model: Embedding model to register in ONNX
     :param path: Patch where to register ONNX model to
     :param input_shape: Embedding model input shape
-    :param batch_size: The batch size the model was trained with
+    :param batch_size: The batch size during export
     :param opset_version: ONNX opset version in which to register
     """
 
