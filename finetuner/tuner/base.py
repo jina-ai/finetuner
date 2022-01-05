@@ -1,9 +1,7 @@
 import abc
-from typing import (TYPE_CHECKING, Callable, Generic, List, Optional, Tuple,
-                    Union)
+from typing import TYPE_CHECKING, Callable, Generic, List, Optional, Tuple, Union
 
-from ..helper import (AnyDataLoader, AnyDNN, AnyOptimizer, AnyScheduler,
-                      AnyTensor)
+from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyScheduler, AnyTensor
 from .callback import BaseCallback, ProgressBarCallback
 from .dataset import ClassDataset, SessionDataset
 from .dataset.samplers import ClassSampler, SessionSampler
