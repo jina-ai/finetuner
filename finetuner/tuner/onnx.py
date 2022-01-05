@@ -1,9 +1,4 @@
-from typing import (
-    List,
-    Optional,
-    Tuple,
-    Union,
-)
+from typing import List, Optional, Tuple, Union
 
 from finetuner.helper import get_framework
 
