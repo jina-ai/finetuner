@@ -1,5 +1,3 @@
-from collections import Counter
-
 import pytest
 
 from finetuner.tuner.dataset.samplers import InstanceSampler
