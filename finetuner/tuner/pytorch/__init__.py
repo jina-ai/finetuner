@@ -272,21 +272,25 @@ class _ProjectionHead(nn.Module):
         super().__init__()
         self.head_layers = nn.ModuleList()
         is_last_layer = False
-        out_features = in_features
         for idx in range(num_layers):
             if idx == num_layers - 1:
                 is_last_layer = True
-                out_features = output_dim
-            self.head_layers.append(
-                nn.Linear(
-                    in_features=in_features, out_features=out_features, bias=False
-                )
-            )
             if not is_last_layer:
                 self.head_layers.append(
-                    nn.BatchNorm1d(num_features=out_features, eps=self.EPSILON)
+                    nn.Linear(
+                        in_features=in_features, out_features=in_features, bias=False
+                    )
+                )
+                self.head_layers.append(
+                    nn.BatchNorm1d(num_features=in_features, eps=self.EPSILON)
                 )
                 self.head_layers.append(nn.ReLU())
+            else:
+                self.head_layers.append(
+                    nn.Linear(
+                        in_features=in_features, out_features=output_dim, bias=False
+                    )
+                )
 
     def forward(self, x):
         for layer in self.head_layers:
