@@ -1,10 +1,11 @@
 from typing import List, Optional, Tuple, Union
 
+from finetuner.helper import AnyDNN
 from finetuner.helper import get_framework
 
 
 def to_onnx(
-    embed_model: 'AnyDNN',
+    embed_model: AnyDNN,
     path: str,
     input_shape: Union[Tuple[int], List[int]],
     opset_version: int = 11,
@@ -49,7 +50,7 @@ def _check_onnx_model(path: str) -> None:
 
 
 def _to_onnx_torch(
-    embed_model: 'AnyDNN',
+    embed_model: AnyDNN,
     path: str,
     input_shape: Tuple[int, ...],
     opset_version: int = 11,
@@ -83,7 +84,7 @@ def _to_onnx_torch(
 
 
 def _to_onnx_keras(
-    embed_model: 'AnyDNN',
+    embed_model: AnyDNN,
     path: str,
     input_shape: Tuple[int, ...],
     opset_version: int = 11,
@@ -97,7 +98,7 @@ def _to_onnx_keras(
 
     try:
         import tf2onnx
-    except (ImportError, ModuleNotFoundError) as _:
+    except (ImportError, ModuleNotFoundError):
         raise ModuleNotFoundError('Module tf2onnx not found, try "pip install tf2onnx"')
 
     import tensorflow as tf
@@ -115,7 +116,7 @@ def _to_onnx_keras(
 
 
 def _to_onnx_paddle(
-    embed_model: 'AnyDNN',
+    embed_model: AnyDNN,
     path: str,
     input_shape: List[int],
     opset_version: int = 11,

@@ -3,7 +3,6 @@ import onnxruntime
 import paddle
 import pytest
 import tempfile
-import tensorflow as tf
 import torch
 
 from pathlib import Path
@@ -11,12 +10,13 @@ from typing import Any, Tuple
 
 from tensorflow import keras
 
+from finetuner.helper import AnyDNN
 from finetuner.helper import get_framework
 from finetuner.tuner.onnx import to_onnx
 
 
 def validate_onnx_export(
-    embed_model: 'AnyDNN',
+    embed_model: AnyDNN,
     export_path: str,
     input_shape: Tuple[int, ...],
     batch_size: int = 8,
