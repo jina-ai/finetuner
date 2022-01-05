@@ -39,4 +39,3 @@ export _JINA_NEXT_INIT_VER=$(echo $_JINA_INIT_VER | awk -F'dev' -v OFS="dev" '{$
 # 0.9.7.dev0
 # the next version for __init__.py on every release
 export _JINA_NEXT_FINAL_INIT_VER="$_JINA_NEXT_FINAL_VER.dev0"
-

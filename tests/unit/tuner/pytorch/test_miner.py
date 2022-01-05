@@ -5,9 +5,9 @@ import torch
 from finetuner.tuner.pytorch.miner import (
     SiameseEasyHardMiner,
     SiameseMiner,
-    TripletMiner,
-    TripletEasyHardMiner,
     SiameseSessionMiner,
+    TripletEasyHardMiner,
+    TripletMiner,
     TripletSessionMiner,
 )
 

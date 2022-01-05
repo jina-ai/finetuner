@@ -1,5 +1,5 @@
-import pytest
 import paddle.nn as nn
+import pytest
 
 from finetuner import fit
 

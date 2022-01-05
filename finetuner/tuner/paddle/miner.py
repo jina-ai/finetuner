@@ -1,9 +1,10 @@
+from typing import Tuple
+
 import paddle
 import torch
 
-from typing import Tuple
-
 from finetuner.tuner.miner.mining_strategies import TorchStrategicMiningHelper
+
 from ..miner import get_session_pairs, get_session_triplets
 from ..miner.base import BaseClassMiner, BaseSessionMiner
 
