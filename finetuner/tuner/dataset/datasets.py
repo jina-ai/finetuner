@@ -7,8 +7,11 @@ if TYPE_CHECKING:
     from ...helper import DocumentContentType, DocumentSequence, PreprocFnType
 
 
-class UnlabeledDataset(BaseDataset[int]):
-    """Dataset for unlabeled data (for self-supervised learning)."""
+class InstanceDataset(BaseDataset[int]):
+    """Dataset for unlabeled data (for self-supervised learning).
+
+    In this dataset, each instance (each item) is given its own label.
+    """
 
     def __init__(
         self, docs: 'DocumentSequence', preprocess_fn: Optional['PreprocFnType'] = None
