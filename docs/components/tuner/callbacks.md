@@ -4,6 +4,7 @@ Callbacks offer a way to integrate various auxiliary tasks into the training loo
 - Showing a progress bar (which is shown by default)
 - [Tracking experiments](#experiment-tracking)
 - [Checkpoint training progress](#checkpoints)
+- [Evaluation](#evaluation)
 
 You can also [write your own callbacks](#custom-callbacks).
 
@@ -68,6 +69,10 @@ tuner = PytorchTuner(..., callbacks=[checkpoint])
 # Afterwards, load model from the saved theckpoint
 BestModelCheckpoint.load_model(tuner, 'checkpoints/best_model_val_loss')
 ```
+
+## Evaluation
+
+See the [Evaluation section](evaluation.md).
 
 ## Custom callbacks
 

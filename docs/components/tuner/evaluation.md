@@ -49,6 +49,124 @@ The computed metrics are the following:
 More information on Information Retrieval metrics can be found
 [here](https://en.wikipedia.org/wiki/Evaluation_measures_(information_retrieval)).
 
+Let's consider an example. First, let's build a model that receives a NumPy array with a single element as input, and
+outputs a vector of size 10, with all the elements set to the input scalar:
+```python
+import torch
+
+class EmbeddingModel(torch.nn.Module):
+    
+    @staticmethod
+    def forward(inputs):
+        """
+        input_shape: (bs, 1)
+        output_shape: (bs, 10)
+        """
+        batch_size = inputs.size()[0]
+        embeddings = []
+        for i in range(batch_size):
+            idx = inputs[i][0]
+            embeddings.append([idx] * 10)
+        
+        return torch.tensor(embeddings)
+
+```
+
+Now let's create some example data. We will divide into 2 sets, the evaluation data and the index data. The
+evaluation data are docs with ids from 0 to 9. The index data are docs with ids from 10 to 19. As content, for
+each doc we use `doc.blob = np.array([doc.id % 10])`. Same content yields the same embedding, so for each
+query doc we set as target match the corresponding doc from the index data that has the same content:
+```python
+import numpy as np
+from docarray import Document,  DocumentArray
+
+query_data = DocumentArray()
+for i in range(10):
+    doc = Document(
+        id=str(i),
+        blob=np.array([i]),
+        matches=[Document(id=str(10 + i))],
+    )
+    query_data.append(doc)
+
+index_data = DocumentArray()
+for i in range(10):
+    doc = Document(
+        id=str(i + 10),
+        blob=np.array([i]),
+    )
+    index_data.append(doc)
+```
+
+The above datasets are defined in session format. They can be defined in class format as well:
+```python
+import numpy as np
+from docarray import Document,  DocumentArray
+
+query_data = DocumentArray()
+for i in range(10):
+    doc = Document(
+        id=str(i),
+        blob=np.array([i]),
+        tags={'finetuner_label': str(i)},
+    )
+    query_data.append(doc)
+
+index_data = DocumentArray()
+for i in range(10):
+    doc = Document(
+        id=str(i + 10),
+        blob=np.array([i]),
+        tags={'finetuner_label': str(i)},
+    )
+    index_data.append(doc)
+```
+
+Now we can use the evaluator. When using the euclidean distance as a matching metric, we expect to see
+perfect scores, since for each query doc the nearest index doc is the one we gave as ground truth:
+
+```python
+from finetuner.tuner.evaluation import Evaluator
+
+embed_model = EmbeddingModel()
+
+evaluator = Evaluator(query_data, index_data, embed_model)
+
+metrics = evaluator.evaluate(limit=1, distance='euclidean')
+print(metrics)
+```
+```
+{
+  "r_precision": 1.0,
+  "precision_at_k": 1.0,
+  "recall_at_k": 1.0,
+  "f1_score_at_k": 1.0,
+  "average_precision": 1.0,
+  "hit_at_k": 1.0,
+  "reciprocal_rank": 1.0,
+  "dcg_at_k": 1.0,
+  "ndcg_at_k": 1.0
+}
+```
+
+When evaluating with a bigger matching limit, we expect precision to drop:
+```python
+metrics = evaluator.evaluate(limit=2, distance='euclidean')
+print(metrics)
+```
+```
+{
+  "r_precision": 1.0,
+  "precision_at_k": 0.5,
+  "recall_at_k": 1.0,
+  "f1_score_at_k": 0.6666666666666667,
+  "average_precision": 1.0,
+  "hit_at_k": 1.0,
+  "reciprocal_rank": 1.0,
+  "dcg_at_k": 1.0,
+  "ndcg_at_k": 1.0
+}
+```
 
 ## Using the evaluation callback
 

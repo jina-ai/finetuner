@@ -23,14 +23,14 @@ if TYPE_CHECKING:
 
 METRICS = {
     'r_precision': r_precision,
-    'precision': precision_at_k,
-    'recall': recall_at_k,
-    'f1score': f1_score_at_k,
+    'precision_at_k': precision_at_k,
+    'recall_at_k': recall_at_k,
+    'f1_score_at_k': f1_score_at_k,
     'average_precision': average_precision,
-    'hit': hit_at_k,
+    'hit_at_k': hit_at_k,
     'reciprocal_rank': reciprocal_rank,
-    'dcg': dcg_at_k,
-    'ndcg': ndcg_at_k,
+    'dcg_at_k': dcg_at_k,
+    'ndcg_at_k': ndcg_at_k,
 }
 
 __evaluator_metrics_key__ = 'finetuner_metrics'
@@ -116,11 +116,7 @@ class Evaluator:
         """
         summmary_docs = DocumentArray()
         for doc in self._query_data:
-            relevancies = [
-                (m.id, m.tags[__default_tag_key__])
-                for m in doc.matches
-                if m.tags[__default_tag_key__] > 0
-            ]
+            relevancies = [(m.id, 1) for m in doc.matches]
             relevancies = sorted(relevancies, key=lambda x: x[1])
             summmary_doc = Document(
                 id=doc.id,
@@ -220,7 +216,9 @@ class Evaluator:
                 rel, max_rel = self._doc_to_relevance(doc)
                 # compute metric value
                 value = (
-                    func(rel, max_rel) if name in ['recall', 'f1score'] else func(rel)
+                    func(rel, max_rel)
+                    if name in ['recall_at_k', 'f1_score_at_k']
+                    else func(rel)
                 )
                 # write value to doc
                 self._query_data[doc.id].tags[__evaluator_metrics_key__][label][

@@ -39,7 +39,7 @@ def query_session_data():
         doc = Document(
             id=str(i),
             blob=np.array([i]),
-            matches=[Document(id=str(DATASET_SIZE + i), tags={__default_tag_key__: 1})],
+            matches=[Document(id=str(DATASET_SIZE + i))],
         )
         data.append(doc)
     return data
@@ -157,17 +157,17 @@ def test_evaluator_half_precision(
         evaluator = Evaluator(_query_data, _index_data, embed_model)
         metrics = evaluator.evaluate(label='foo', limit=2, distance='euclidean')
         for k, v in metrics.items():
-            if k == 'precision':
+            if k == 'precision_at_k':
                 assert v == 0.5
-            elif k == 'f1score':
+            elif k == 'f1_score_at_k':
                 assert 0.66 < v < 0.67
             else:
                 assert v == 1.0
         for doc in _query_data:
             for k, v in doc.tags[__evaluator_metrics_key__]['foo'].items():
-                if k == 'precision':
+                if k == 'precision_at_k':
                     assert v == 0.5
-                elif k == 'f1score':
+                elif k == 'f1_score_at_k':
                     assert 0.66 < v < 0.67
                 else:
                     assert v == 1.0
