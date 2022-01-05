@@ -121,12 +121,14 @@ def _to_onnx_paddle(
     model_path: str,
     input_shape: List[int],
     opset_version: int = 11,
+    model_input_type: str = 'float32',
 ) -> None:
     """Convert a paddle embedding model to the ONNX format
     :param embed_model: Embedding model to register in ONNX
     :param model_path: Patch where to register ONNX model to
     :param input_shape: Embedding model input shape
     :param opset_version: ONNX opset version in which to register
+    :param model_input_type: Data type model expects
     """
 
     # Removing onnx extension as paddle adds it automatically
@@ -137,7 +139,7 @@ def _to_onnx_paddle(
     from paddle.static import InputSpec
 
     shape = [None] + list(input_shape)
-    x_spec = InputSpec(shape, 'float32', 'input')
+    x_spec = InputSpec(shape, model_input_type, 'input')
 
     paddle.onnx.export(
         embed_model,
