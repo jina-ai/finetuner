@@ -1,5 +1,5 @@
 import abc
-from typing import Generic, Iterator, List, Sequence, Tuple, TypeVar, Union
+from typing import Generic, Iterator, List, Tuple, TypeVar, Union
 
 import numpy as np
 
