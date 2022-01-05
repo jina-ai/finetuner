@@ -54,8 +54,7 @@ More information on Information Retrieval metrics can be found
 
 The evaluator can be handy for computing metrics in an evaluation script, or following a `finetuner.fit`
 session. For including the metrics computation in the training loop to run after each epoch, an
-evaluation callback {class}`~finetuner.tuner.callbacks.Evaluation` is provided. The callback can be
-used as follows:
+evaluation callback is provided. The callback can be used as follows:
 
 ```python
 import finetuner
