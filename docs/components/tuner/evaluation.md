@@ -23,9 +23,9 @@ evaluator = Evaluator(query_data, index_data, embed_model)
 metrics = evaluator.evaluate()
 ```
 
-The `query_data` (or eval data) are the documents that will be evaluated. They can be both in class 
-or session format. They should contain ground truths, in the form of matches (`doc.matches`) when
-using session format and in the form of labels when using class format.
+The `query_data` (or eval data) are the documents that will be evaluated. They can be in both the
+{term}`class dataset` or the {term}`session dataset` format. They should contain ground truths, in the form of
+matches (`doc.matches`) when using session format and in the form of labels when using class format.
 
 If an embedding model is given, the query docs are embedded, otherwise they are assumed to carry
 representations.
