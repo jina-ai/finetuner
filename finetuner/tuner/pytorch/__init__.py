@@ -8,6 +8,7 @@ from torch.utils.data._utils.collate import default_collate
 from torch.utils.data.dataloader import DataLoader
 
 from ... import __default_tag_key__
+from ...excepts import DimensionMismatchException
 from ..base import BaseTuner
 from ..state import TunerState
 from . import losses
@@ -97,9 +98,16 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         :param num_layers: Number of layers of the projection head, default 3, recommend 2, 3.
         :param num_channels: Generate a fake image to interpret the output dim of embed model. Grey scale image should be 1.
         """
-        in_features = self._embed_model.forward(torch.rand(1, num_channels, 224, 224))
-        projection_head = _ProjectionHead(in_features, output_dim, num_layers)
-        self._embed_model.add_module(projection_head)
+        # interpret embed model output shape
+        output = self._embed_model(torch.rand(1, num_channels, 224, 224))
+        if not len(output.size()) == 2:
+            raise DimensionMismatchException(
+                f'Expected input shape is 2d, got {len(output.size())}.'
+            )
+        projection_head = _ProjectionHead(output.shape[1], output_dim, num_layers)
+        self._embed_model.add_module(
+            projection_head
+        )  # TODO add integration test when dataset ready.
 
     def _default_configure_optimizer(self, model: nn.Module) -> Optimizer:
         """Get the default Adam optimizer"""
