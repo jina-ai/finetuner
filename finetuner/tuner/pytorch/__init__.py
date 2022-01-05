@@ -196,8 +196,8 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
         # If self-supervised, add projection head, vision task.
         # TODO: change this when we merge dataset PR
-        if isinstance(train_dl, 'UnlabeledDataset') and isinstance(
-            eval_dl, 'UnlabeledDataset'
+        if isinstance(train_dl, 'InstanceDataset') and isinstance(
+            eval_dl, 'InstanceDataset'
         ):
             # TODO interpret channels
             self._attach_projection_head(output_dim=128, num_layers=3, num_channels=3)
@@ -239,8 +239,8 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
         # If self-supervised, drop projection head, vision task.
         # TODO: change this when we merge dataset PR
-        if isinstance(train_dl, 'UnlabeledDataset') and isinstance(
-            eval_dl, 'UnlabeledDataset'
+        if isinstance(train_dl, 'InstanceDataset') and isinstance(
+            eval_dl, 'InstanceDataset'
         ):
             del self._embed_model.projection_head
 
