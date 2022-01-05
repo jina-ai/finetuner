@@ -86,17 +86,18 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
     def _attach_projection_head(
         self,
-        in_features: int,
         output_dim: Optional[int] = 128,
         num_layers: Optional[int] = 3,
+        num_channels: Optional[int] = 3,
     ):
         """Attach a projection head on top of the embed model for self-supervised learning.
         Calling this function will modify :attr:`self._embed_model` in place.
 
-        :param in_features: The input shape of the projection head, should be the output of the embed model.
         :param output_dim: The output dimensionality of the projection, default 128, recommend 32, 64, 128, 256.
         :param num_layers: Number of layers of the projection head, default 3, recommend 2, 3.
+        :param num_channels: Generate a fake image to interpret the output dim of embed model. Grey scale image should be 1.
         """
+        in_features = self._embed_model.forward(torch.rand(1, num_channels, 224, 224))
         projection_head = _ProjectionHead(in_features, output_dim, num_layers)
         self._embed_model.add_module(projection_head)
 
@@ -186,14 +187,12 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
             )
 
         # If self-supervised, add projection head, vision task.
+        # TODO: change this when we merge dataset PR
         if isinstance(train_dl, 'UnlabeledDataset') and isinstance(
             eval_dl, 'UnlabeledDataset'
         ):
-            # TODO DISCUSS
-            embed_model_out_features = self._embed_model.forward(
-                torch.rand(1, 3, 224, 224)
-            )
-            self._attach_projection_head(in_features=embed_model_out_features)
+            # TODO interpret channels
+            self._attach_projection_head(output_dim=128, num_layers=3, num_channels=3)
         # Set state
         self.state = TunerState(num_epochs=epochs)
         self._trigger_callbacks('on_fit_begin')
@@ -231,10 +230,10 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         self._trigger_callbacks('on_fit_end')
 
         # If self-supervised, drop projection head, vision task.
+        # TODO: change this when we merge dataset PR
         if isinstance(train_dl, 'UnlabeledDataset') and isinstance(
             eval_dl, 'UnlabeledDataset'
         ):
-            # TODO DISCUSS
             del self._embed_model.projection_head
 
     def save(self, *args, **kwargs):
