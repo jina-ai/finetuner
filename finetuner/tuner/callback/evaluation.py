@@ -1,14 +1,14 @@
 import math
 from typing import TYPE_CHECKING, Optional
 
-from .base import BaseCallback
+from ... import embed
 from ..dataset.helper import batch_document_sequence
 from ..evaluation import Evaluator
-from ... import embed
+from .base import BaseCallback
 
 if TYPE_CHECKING:
-    from ..base import BaseTuner
     from ...helper import DocumentSequence
+    from ..base import BaseTuner
 
 
 class Evaluation(BaseCallback):
