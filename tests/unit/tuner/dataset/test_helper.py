@@ -1,5 +1,6 @@
-from finetuner.tuner.dataset.helper import batch_document_sequence
 from jina import Document, DocumentArray
+
+from finetuner.tuner.dataset.helper import batch_document_sequence
 
 
 def doc_generator(n: int):

@@ -11,7 +11,6 @@ from finetuner.tuner.evaluation import (
     __evaluator_targets_key__,
 )
 
-
 DATASET_SIZE = 1000
 EMBEDDING_SIZE = 10
 

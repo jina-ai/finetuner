@@ -108,7 +108,7 @@ class BestModelCheckpoint(BaseCallback):
             )
             self._best = current
         else:
-            self._logger.info(f'Model did not improve.')
+            self._logger.info('Model did not improve.')
 
     def _get_file_path(self):
         """
