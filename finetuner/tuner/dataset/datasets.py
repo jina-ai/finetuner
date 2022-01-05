@@ -7,6 +7,43 @@ if TYPE_CHECKING:
     from ...helper import DocumentContentType, DocumentSequence, PreprocFnType
 
 
+class UnlabeledDataset(BaseDataset[int]):
+    """Dataset for unlabeled data (for self-supervised learning)."""
+
+    def __init__(
+        self, docs: 'DocumentSequence', preprocess_fn: Optional['PreprocFnType'] = None
+    ) -> None:
+        """Create the dataset instance.
+
+        :param docs: The documents for the dataset. Each document is expected to have
+            content, but no label is needed
+        :param preprocess_fn: A pre-processing function, to apply pre-processing to
+            documents on the fly. It should take as input the document in the dataset,
+            and output whatever content the framework-specific dataloader (and model)
+            would accept.
+        """
+
+        self._docs = docs
+        self._preprocess_fn = preprocess_fn
+        self._labels = list(range(len(docs)))
+
+    def __getitem__(self, ind: int) -> Tuple['DocumentContentType', int]:
+        """
+        Get the (preprocessed) content and label for the item at ``ind`` index in the
+        dataset.
+        """
+
+        d = self._docs[ind]
+        if self._preprocess_fn:
+            content = self._preprocess_fn(d)
+        else:
+            content = d.content
+
+        label = self._labels[ind]
+
+        return (content, label)
+
+
 class ClassDataset(BaseDataset[int]):
     """Dataset for enapsulating data where each item has a class label."""
 
