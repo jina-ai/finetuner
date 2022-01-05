@@ -12,7 +12,7 @@ The evaluator can be used standalone in order to compute the evaluation metrics 
 of documents:
 ```python
 from finetuner.tuner.evaluation import Evaluator
-from jina import DocumentArray
+from docarray import DocumentArray
 
 query_data = DocumentArray(...)
 index_data = DocumentArray(...)
@@ -33,9 +33,21 @@ representations.
 The `index_data` (or catalog) is an optional argument that defines the dataset against which the
 query docs are matched. If not provided, query docs are matched against themselves.
 
-The `evaluate()` method returns the computed metrics as a dictionary mapping metric names to values.
-Common IR metrics, like precision, recall, average precision, dcg, ndcg and reciprocal rank are
-included.
+The `evaluate()` method returns the computed metrics as a dictionary, mapping metric names to values.
+The computed metrics are the following:
+
+- Precision
+- Recall
+- F1 Score
+- Hit Score
+- R precision
+- Average Precision
+- Reciprocal Rank
+- DCG
+- NDCG
+
+More information on Information Retrieval metrics can be found
+[here](https://en.wikipedia.org/wiki/Evaluation_measures_(information_retrieval)).
 
 
 ## Using the evaluation callback
@@ -47,7 +59,7 @@ used as follows:
 
 ```python
 import finetuner
-from finetuner.tuner.callback import Evaluation
+from finetuner.tuner.callback import EvaluationCallback
 from jina import DocumentArray
 
 query_data = DocumentArray(...)
@@ -55,7 +67,7 @@ index_data = DocumentArray(...)
 
 finetuner.fit(
     ...,
-    callbacks=[Evaluation(query_data, index_data)],
+    callbacks=[EvaluationCallback(query_data, index_data)],
 )
 
 ```

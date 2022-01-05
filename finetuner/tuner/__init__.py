@@ -70,7 +70,7 @@ def fit(
     :param epochs: Number of epochs to train the model.
     :param batch_size: The batch size to use for training and evaluation.
     :param num_items_per_class: Number of items from a single class to include in
-        the batch. Only relevant for class datasets.
+        the batch. Only relevant for :class:`ClassDataset`.
     :param loss: Which loss to use in training. Supported
         losses are:
         - ``SiameseLoss`` for Siamese network
