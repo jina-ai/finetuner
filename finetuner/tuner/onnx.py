@@ -1,29 +1,30 @@
 from typing import Any, List, Tuple, Union
 
 import numpy as np
-import onnxruntime
 
 from finetuner.helper import AnyDNN, get_framework
 
 
 def to_onnx(
     embed_model: AnyDNN,
-    path: str,
+    model_path: str,
     input_shape: Union[Tuple[int], List[int]],
     opset_version: int = 11,
 ) -> None:
     """Func that converts a given model in paddle, torch or keras,
     and converts it to the ONNX format
     :param embed_model: Model to be converted and stored in ONNX
-    :param path: Path to store ONNX model to
+    :param model_path: Path to store ONNX model to
     :param input_shape: Input shape of embedding model
     :param opset_version: ONNX opset version in which to register
     """
     if isinstance(input_shape, tuple):
         input_shape = list(input_shape)
 
-    if not path.endswith(".onnx"):
-        raise ValueError(f"The `path` needs to end with `.onnx`, but was: {path}")
+    if not model_path.endswith('.onnx'):
+        raise ValueError(
+            f'The `model_path` needs to end with `.onnx`, but was: {model_path}'
+        )
 
     def _parse_and_apply_to_onnx_func(framework_name: str):
         """Helper func to get _to_onnx_xyz func from framework name"""
@@ -31,36 +32,36 @@ def to_onnx(
             'torch': _to_onnx_torch,
             'keras': _to_onnx_keras,
             'paddle': _to_onnx_paddle,
-        }[framework_name](embed_model, path, input_shape, opset_version)
+        }[framework_name](embed_model, model_path, input_shape, opset_version)
 
     fm = get_framework(embed_model)
 
     # Get framework-specific func to register model in ONNX
     _parse_and_apply_to_onnx_func(fm)
 
-    _check_onnx_model(path)
+    _check_onnx_model(model_path)
 
 
-def _check_onnx_model(path: str) -> None:
+def _check_onnx_model(model_path: str) -> None:
     """Check an ONNX model
-    :param path: Path to ONNX model
+    :param model_path: Path to ONNX model
     """
     import onnx
 
-    model = onnx.load(path)
+    model = onnx.load(model_path)
     onnx.checker.check_model(model)
 
 
 def _to_onnx_torch(
     embed_model: AnyDNN,
-    path: str,
+    model_path: str,
     input_shape: Tuple[int, ...],
     opset_version: int = 11,
     batch_size: int = 16,
 ) -> None:
     """Convert a PyTorch embedding model to the ONNX format
     :param embed_model: Embedding model to register in ONNX
-    :param path: Patch where to register ONNX model to
+    :param model_path: Patch where to register ONNX model to
     :param input_shape: Embedding model input shape
     :param batch_size: The batch size during export
     :param opset_version: ONNX opset version in which to register
@@ -68,14 +69,12 @@ def _to_onnx_torch(
 
     import torch
 
-    embed_model.eval()
-
     x = torch.randn([batch_size] + input_shape, requires_grad=True, dtype=torch.float32)
 
     torch.onnx.export(
         embed_model,
         x,
-        path,
+        model_path,
         export_params=True,
         do_constant_folding=True,
         opset_version=opset_version,
@@ -87,13 +86,13 @@ def _to_onnx_torch(
 
 def _to_onnx_keras(
     embed_model: AnyDNN,
-    path: str,
+    model_path: str,
     input_shape: Tuple[int, ...],
     opset_version: int = 11,
 ) -> None:
     """Convert a Keras embedding model to the ONNX format
     :param embed_model: Embedding model to register in ONNX
-    :param path: Patch where to register ONNX model to
+    :param model_path: Patch where to register ONNX model to
     :param input_shape: Embedding model input shape
     :param opset_version: ONNX opset version in which to register
     """
@@ -113,26 +112,26 @@ def _to_onnx_keras(
         embed_model,
         input_signature=[tf.TensorSpec(shape)],
         opset=opset_version,
-        output_path=path,
+        output_path=model_path,
     )
 
 
 def _to_onnx_paddle(
     embed_model: AnyDNN,
-    path: str,
+    model_path: str,
     input_shape: List[int],
     opset_version: int = 11,
 ) -> None:
     """Convert a paddle embedding model to the ONNX format
     :param embed_model: Embedding model to register in ONNX
-    :param path: Patch where to register ONNX model to
+    :param model_path: Patch where to register ONNX model to
     :param input_shape: Embedding model input shape
     :param opset_version: ONNX opset version in which to register
     """
 
     # Removing onnx extension as paddle adds it automatically
-    if path.endswith(".onnx"):
-        path = path[:-5]
+    if model_path.endswith('.onnx'):
+        model_path = model_path[:-5]
 
     import paddle
     from paddle.static import InputSpec
@@ -142,7 +141,7 @@ def _to_onnx_paddle(
 
     paddle.onnx.export(
         embed_model,
-        path,
+        model_path,
         input_spec=[x_spec],
         opset_version=opset_version,
     )
@@ -162,6 +161,8 @@ def validate_onnx_export(
     :param export_path: The path where the exported model is stored.
     :param input_shape: The model's expected input shape, without the batch axis.
     """
+    import onnxruntime
+
     fm = get_framework(embed_model)
 
     def _from_numpy(array: np.ndarray) -> Any:
