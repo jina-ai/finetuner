@@ -1,8 +1,7 @@
 import pytest
 import torch
 
-from finetuner.tuner.pytorch import _ProjectionHead
-from finetuner.tuner.pytorch import PytorchTuner
+from finetuner.tuner.pytorch import PytorchTuner, _ProjectionHead
 
 
 @pytest.mark.parametrize(
@@ -18,26 +17,24 @@ def test_projection_head(in_features, output_dim, num_layers):
 
 
 @pytest.mark.parametrize(
-    'torch_model, input_size, dim_representation',
+    'torch_model, input_size, input_, dim_projection_head, dim_representation',
     [
-        ('torch_dense_model', 128, 10),
-        # ('torch_simple_cnn_model', (1, 28, 28),),
-        # (
-        #     'torch_vgg16_cnn_model',
-        #     (3, 224, 224),
-        # ),
-        # ('torch_stacked_lstm', (128,)),
-        # ('torch_bidirectional_lstm', (128,)),
+        ('torch_dense_model', 128, (2, 128), 128, 10),
+        ('torch_simple_cnn_model', (1, 28, 28), (2, 1, 28, 28), 128, 10),
+        ('torch_vgg16_cnn_model', (3, 224, 224), (2, 3, 224, 224), 128, 1000),
+        ('torch_stacked_lstm', 128, (2, 128), 128, 5),
     ],
     indirect=['torch_model'],
 )
-def test_attach_detach_projection_head(torch_model, input_size, dim_representation):
+def test_attach_detach_projection_head(
+    torch_model, input_size, input_, dim_projection_head, dim_representation
+):
     torch_tuner = PytorchTuner(embed_model=torch_model, input_size=input_size)
     torch_tuner._attach_projection_head()
     assert torch_tuner.embed_model.projection_head
-    rand_input = torch.rand(2, input_size)
+    rand_input = torch.rand(input_)
     out = torch_tuner.embed_model(rand_input)
-    assert list(out.shape) == [2, input_size]
+    assert list(out.shape) == [2, dim_projection_head]
     del torch_tuner.embed_model.projection_head
     out = torch_tuner.embed_model(rand_input)
     assert list(out.shape) == [2, dim_representation]

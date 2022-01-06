@@ -104,9 +104,10 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 f'Expected input shape is 2d, got {len(output.size())}.'
             )
         projection_head = _ProjectionHead(output.shape[1], output_dim, num_layers)
-        self._embed_model.add_module(
-            'projection_head', projection_head
-        )  # TODO add integration test when dataset ready.
+        embed_model_with_projection_head = nn.Sequential()
+        embed_model_with_projection_head.add_module('embed_model', self._embed_model)
+        embed_model_with_projection_head.add_module('projection_head', projection_head)
+        self._embed_model = embed_model_with_projection_head
 
     def _default_configure_optimizer(self, model: nn.Module) -> Optimizer:
         """Get the default Adam optimizer"""
@@ -193,8 +194,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 num_workers=num_workers,
             )
 
-        # If self-supervised, add projection head, vision task.
-        # TODO: change this when we merge dataset PR
+        # If self-supervised, add projection head.
         if isinstance(train_dl.dataset, InstanceDataset):
             self._attach_projection_head(output_dim=128, num_layers=3)
         # Set state
@@ -233,8 +233,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
         self._trigger_callbacks('on_fit_end')
 
-        # If self-supervised, drop projection head, vision task.
-        # TODO: change this when we merge dataset PR
+        # If self-supervised, drop projection head
         if isinstance(train_dl.dataset, InstanceDataset):
             del self._embed_model.projection_head
 
