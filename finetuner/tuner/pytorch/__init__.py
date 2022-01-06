@@ -10,9 +10,9 @@ from torch.utils.data.dataloader import DataLoader
 from ... import __default_tag_key__
 from ...excepts import DimensionMismatchException
 from ..base import BaseTuner
+from ..dataset.datasets import InstanceDataset
 from ..state import TunerState
 from . import losses
-from ..dataset.datasets import InstanceDataset
 from .datasets import PytorchClassDataset, PytorchSessionDataset
 
 if TYPE_CHECKING:
