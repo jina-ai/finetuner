@@ -8,7 +8,9 @@ from paddle.optimizer import Adam, Optimizer
 from paddle.optimizer.lr import LRScheduler
 
 from ... import __default_tag_key__
+from ...excepts import DimensionMismatchException
 from ..base import BaseTuner
+from ..dataset.datasets import InstanceDataset
 from ..state import TunerState
 from . import losses
 from .datasets import PaddleClassDataset, PaddleSessionDataset
@@ -83,6 +85,32 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         """Move the model to device and set device"""
         self.device = get_device(self._device_name)
         self._embed_model.to(device=self.device)
+
+    def _attach_projection_head(
+        self,
+        output_dim: Optional[int] = 128,
+        num_layers: Optional[int] = 3,
+    ):
+        """Attach a projection head on top of the embed model for self-supervised learning.
+        Calling this function will modify :attr:`self._embed_model` in place.
+
+        :param output_dim: The output dimensionality of the projection, default 128, recommend 32, 64, 128, 256.
+        :param num_layers: Number of layers of the projection head, default 3, recommend 2, 3.
+        """
+        # interpret embed model output shape
+        rand_input = paddle.cast(paddle.rand(self._input_size), self._input_dtype)
+        output = self._embed_model(paddle.unsqueeze(rand_input, axis=0))
+        if not len(output.shape) == 2:
+            raise DimensionMismatchException(
+                f'Expected input shape is 2d, got {len(output.size())}.'
+            )
+        projection_head = _ProjectionHead(output.shape[1], output_dim, num_layers)
+        embed_model_with_projection_head = nn.Sequential()
+        embed_model_with_projection_head.add_sublayer('embed_model', self._embed_model)
+        embed_model_with_projection_head.add_sublayer(
+            'projection_head', projection_head
+        )
+        self._embed_model = embed_model_with_projection_head
 
     def _default_configure_optimizer(self, model: nn.Layer) -> Optimizer:
         """Get the default optimizer (Adam), if none was provided by user."""
@@ -169,6 +197,10 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
                 num_workers=num_workers,
             )
 
+        # If self-supervised, add projection head.
+        if isinstance(train_dl.dataset, InstanceDataset):
+            self._attach_projection_head(output_dim=128, num_layers=3)
+
         # Set state
         self.state = TunerState(num_epochs=epochs)
         self._trigger_callbacks('on_fit_begin')
@@ -201,6 +233,10 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
             self._trigger_callbacks('on_epoch_end')
             if self.stop_training:
                 break
+
+        # If self-supervised, drop projection head
+        if isinstance(train_dl.dataset, InstanceDataset):
+            del self._embed_model.projection_head
 
         self._trigger_callbacks('on_fit_end')
 

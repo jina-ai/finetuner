@@ -231,11 +231,11 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
             if self.stop_training:
                 break
 
-        self._trigger_callbacks('on_fit_end')
-
         # If self-supervised, drop projection head
         if isinstance(train_dl.dataset, InstanceDataset):
             del self._embed_model.projection_head
+
+        self._trigger_callbacks('on_fit_end')
 
     def save(self, *args, **kwargs):
         """Save the embedding model.
