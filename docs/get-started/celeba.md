@@ -78,8 +78,8 @@ finetuner.fit(
     model=model,
     interactive=True,
     train_data=data,
-    freeze=True,
     to_embedding_model=True,
+    freeze=False,
     input_size=(3, 224, 224),
 )
 ```
