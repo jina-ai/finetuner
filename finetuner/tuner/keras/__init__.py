@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Optional, Union
 
-import numpy as np
 import tensorflow as tf
 from keras.engine.data_adapter import KerasSequenceAdapter
 from tensorflow.keras.layers import Layer
