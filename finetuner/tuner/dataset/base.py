@@ -1,5 +1,5 @@
 import abc
-from typing import Generic, Iterator, List, Sequence, Tuple, TypeVar, Union
+from typing import Generic, Iterator, List, Tuple, TypeVar, Union
 
 import numpy as np
 
@@ -7,11 +7,7 @@ AnyLabel = TypeVar('AnyLabel')
 
 
 class BaseSampler(abc.ABC):
-    def __init__(self, labels: Sequence[AnyLabel], batch_size: int):
-        if batch_size <= 0:
-            raise ValueError('batch_size must be a positive integer')
-
-        self._prepare_batches()
+    _batches: List[List[int]]
 
     def __iter__(self) -> Iterator[List[int]]:
         yield from self._batches
