@@ -98,16 +98,14 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         :param num_layers: Number of layers of the projection head, default 3, recommend 2, 3.
         """
         # interpret embed model output shape
-        output = self._embed_model(
-            torch.unsqueeze(self._input_size).type(self._input_dtype)
-        )
+        output = self._embed_model(torch.unsqueeze(torch.rand(self._input_size), dim=0))
         if not len(output.size()) == 2:
             raise DimensionMismatchException(
                 f'Expected input shape is 2d, got {len(output.size())}.'
             )
         projection_head = _ProjectionHead(output.shape[1], output_dim, num_layers)
         self._embed_model.add_module(
-            projection_head
+            'projection_head', projection_head
         )  # TODO add integration test when dataset ready.
 
     def _default_configure_optimizer(self, model: nn.Module) -> Optimizer:
