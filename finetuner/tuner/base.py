@@ -50,6 +50,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         learning_rate: float = 1e-3,
         scheduler_step: str = 'batch',
         callbacks: Optional[List[BaseCallback]] = None,
+        device: str = 'cpu',
         input_size: Optional[Tuple[int, ...]] = None,
         input_dtype: str = 'float32',
         **kwargs,
@@ -80,6 +81,10 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
             will be pre-prended to this list.
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
+        :param input_size: a sequence of integers defining the shape of the input tensor. Note, batch size is *not* part
+            of ``input_size``. It is required for self-supervised learning while get the output shape of :attr:`embed_model`
+            and attach a projection head.
+        :param input_dtype: the data type of the input tensor.
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)

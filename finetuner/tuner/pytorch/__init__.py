@@ -12,6 +12,7 @@ from ...excepts import DimensionMismatchException
 from ..base import BaseTuner
 from ..state import TunerState
 from . import losses
+from ..dataset.datasets import InstanceDataset
 from .datasets import PytorchClassDataset, PytorchSessionDataset
 
 if TYPE_CHECKING:
@@ -196,10 +197,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
         # If self-supervised, add projection head, vision task.
         # TODO: change this when we merge dataset PR
-        if isinstance(train_dl, 'InstanceDataset') and isinstance(
-            eval_dl, 'InstanceDataset'
-        ):
-            # TODO interpret channels
+        if isinstance(train_dl.dataset, InstanceDataset):
             self._attach_projection_head(output_dim=128, num_layers=3)
         # Set state
         self.state = TunerState(num_epochs=epochs)
@@ -239,9 +237,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
         # If self-supervised, drop projection head, vision task.
         # TODO: change this when we merge dataset PR
-        if isinstance(train_dl, 'InstanceDataset') and isinstance(
-            eval_dl, 'InstanceDataset'
-        ):
+        if isinstance(train_dl.dataset, InstanceDataset):
             del self._embed_model.projection_head
 
     def save(self, *args, **kwargs):
