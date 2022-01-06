@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Optional, Union
 
+import numpy as np
 import tensorflow as tf
 from keras.engine.data_adapter import KerasSequenceAdapter
 from tensorflow.keras.layers import Layer
@@ -7,8 +8,10 @@ from tensorflow.keras.optimizers import Optimizer
 from tensorflow.keras.optimizers.schedules import LearningRateSchedule
 
 from ... import __default_tag_key__
+from ...excepts import DimensionMismatchException
 from ..base import BaseLoss, BaseTuner
 from ..dataset import ClassDataset, SessionDataset
+from ..dataset.datasets import InstanceDataset
 from ..state import TunerState
 from . import losses
 from .data import KerasDataSequence
@@ -64,6 +67,33 @@ class KerasTuner(
     def _move_model_to_device(self):
         """Move the model to device and set device"""
         # This does nothing as explicit device placement is not required in Keras
+
+    def _attach_projection_head(
+        self,
+        output_dim: Optional[int] = 128,
+        num_layers: Optional[int] = 3,
+    ):
+        """Attach a projection head on top of the embed model for self-supervised learning.
+        Calling this function will modify :attr:`self._embed_model` in place.
+
+        :param output_dim: The output dimensionality of the projection, default 128, recommend 32, 64, 128, 256.
+        :param num_layers: Number of layers of the projection head, default 3, recommend 2, 3.
+        """
+        # interpret embed model output shape
+        rand_input = tf.constant(
+            tf.random.uniform(self._input_size), dtype=self._input_dtype
+        )
+        print(f'\n\n{type(rand_input)}\n\n')
+        output = self._embed_model(tf.expand_dims(rand_input, axis=0))
+        if not len(output.shape) == 2:
+            raise DimensionMismatchException(
+                f'Expected input shape is 2d, got {len(output.shape)}.'
+            )
+        projection_head = _ProjectionHead(output.shape[1], output_dim, num_layers)
+        embed_model_with_projection_head = tf.keras.Sequential()
+        embed_model_with_projection_head.add(self._embed_model)
+        embed_model_with_projection_head.add(projection_head)
+        self._embed_model = embed_model_with_projection_head
 
     def _default_configure_optimizer(self, model: Layer) -> Optimizer:
         """Get the default Adam optimizer"""
@@ -142,6 +172,10 @@ class KerasTuner(
                 collate_fn=collate_fn,
             )
 
+        # If self-supervised, add projection head.
+        if isinstance(train_dl.dataset, InstanceDataset):
+            self._attach_projection_head(output_dim=128, num_layers=3)
+
         # Set state
         self.state = TunerState(num_epochs=epochs)
         self._trigger_callbacks('on_fit_begin')
@@ -172,6 +206,10 @@ class KerasTuner(
 
                 if self.stop_training:
                     break
+
+            # If self-supervised, drop projection head
+            if isinstance(train_dl.dataset, InstanceDataset):
+                self._embed_model = tf.keras.Sequential(self._embed_model.layers[:-1])
 
             self._trigger_callbacks('on_fit_end')
 

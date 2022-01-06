@@ -41,14 +41,14 @@ def test_attach_detach_projection_head(
     dim_representation,
     input_dtype,
 ):
-    torch_tuner = PaddleTuner(
+    paddle_tuner = PaddleTuner(
         embed_model=paddle_model, input_size=input_size, input_dtype=input_dtype
     )
-    torch_tuner._attach_projection_head()
-    assert torch_tuner.embed_model.projection_head
+    paddle_tuner._attach_projection_head()
+    assert paddle_tuner.embed_model.projection_head
     rand_input = paddle.cast(paddle.rand(input_), input_dtype)
-    out = torch_tuner.embed_model(rand_input)
+    out = paddle_tuner.embed_model(rand_input)
     assert list(out.shape) == [2, dim_projection_head]
-    del torch_tuner.embed_model.projection_head
-    out = torch_tuner.embed_model(rand_input)
+    del paddle_tuner.embed_model.projection_head
+    out = paddle_tuner.embed_model(rand_input)
     assert list(out.shape) == [2, dim_representation]
