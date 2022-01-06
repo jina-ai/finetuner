@@ -1,5 +1,6 @@
 import paddle
 import pytest
+import tensorflow as tf
 import torch
 
 
@@ -190,4 +191,75 @@ def paddle_bidirectional_lstm():
     ]
 )
 def paddle_model(request):
+    return request.getfixturevalue(request.param)
+
+
+@pytest.fixture
+def tf_dense_model():
+    model = tf.keras.models.Sequential()
+    model.add(tf.keras.layers.InputLayer(input_shape=(128,)))  # (None, 128)
+    model.add(tf.keras.layers.Dense(128, activation='relu'))  # (None, 128)
+    model.add(tf.keras.layers.Dense(64, activation='relu'))  # (None, 64)
+    model.add(tf.keras.layers.Dense(32, activation='relu'))  # (None, 32)
+    model.add(tf.keras.layers.Dense(10, activation='softmax'))  # (None, 10)
+    return model
+
+
+@pytest.fixture
+def tf_simple_cnn_model():
+    model = tf.keras.models.Sequential()
+    model.add(tf.keras.layers.InputLayer(input_shape=(28, 28, 1)))
+    model.add(tf.keras.layers.Conv2D(32, 3, (1, 1), activation='relu'))
+    model.add(tf.keras.layers.Conv2D(64, 3, (1, 1), activation='relu'))
+    model.add(tf.keras.layers.MaxPool2D(2))
+    model.add(tf.keras.layers.Dropout(0.25))
+    model.add(tf.keras.layers.Flatten())
+    model.add(tf.keras.layers.Dense(128))
+    model.add(tf.keras.layers.Dropout(0.25))
+    model.add(tf.keras.layers.Dense(10, activation='softmax'))
+    return model
+
+
+@pytest.fixture
+def tf_vgg16_cnn_model():
+    return tf.keras.applications.vgg16.VGG16(weights=None)
+
+
+@pytest.fixture
+def tf_stacked_lstm():
+    model = tf.keras.models.Sequential()
+    model.add(tf.keras.layers.Embedding(1000, 1024, input_length=128))
+    model.add(
+        tf.keras.layers.LSTM(256, return_sequences=True)
+    )  # this layer will not considered as candidate layer
+    model.add(tf.keras.layers.LSTM(256, return_sequences=True))
+    model.add(
+        tf.keras.layers.LSTM(256, return_sequences=False)
+    )  # this layer will be considered as candidate layer
+    model.add(tf.keras.layers.Dense(256, activation='relu'))
+    model.add(tf.keras.layers.Dense(5, activation='softmax'))
+    return model
+
+
+@pytest.fixture
+def tf_bidirectional_lstm():
+    return tf.keras.Sequential(
+        [
+            tf.keras.layers.Embedding(input_dim=5000, output_dim=64),
+            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
+            tf.keras.layers.Dense(32),
+        ]
+    )
+
+
+@pytest.fixture(
+    params=[
+        'tf_dense_model',
+        'tf_simple_cnn_model',
+        'tf_vgg16_cnn_model',
+        'tf_stacked_lstm',
+        'tf_bidirectional_lstm',
+    ]
+)
+def tf_model(request):
     return request.getfixturevalue(request.param)
