@@ -61,6 +61,8 @@ def fit(
     num_items_per_class: Optional[int] = None,
     callbacks: Optional[List['BaseCallback']] = None,
     num_workers: int = 0,
+    input_size: Optional[Tuple[int, ...]] = None,
+    input_dtype: str = 'float32',
 ) -> 'AnyDNN':
     ...
 

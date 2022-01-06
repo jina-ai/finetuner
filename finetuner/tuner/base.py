@@ -50,7 +50,8 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         learning_rate: float = 1e-3,
         scheduler_step: str = 'batch',
         callbacks: Optional[List[BaseCallback]] = None,
-        device: str = 'cpu',
+        input_size: Optional[Tuple[int, ...]] = None,
+        input_dtype: str = 'float32',
         **kwargs,
     ):
         """Create the tuner instance.
@@ -86,6 +87,8 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         self._scheduler_step = scheduler_step
         self._scheduler = None
         self._device_name = device
+        self._input_size = input_size
+        self._input_dtype = input_dtype
 
         # Check for early stopping
         self.stop_training = False
@@ -143,7 +146,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         self,
         output_dim: Optional[int] = 128,
         num_layers: Optional[int] = 3,
-        num_channels: Optional[int] = 3,
     ):
         """Attach a projection head on top of the embed model for self-supervised learning."""
 

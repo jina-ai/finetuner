@@ -89,17 +89,17 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         self,
         output_dim: Optional[int] = 128,
         num_layers: Optional[int] = 3,
-        num_channels: Optional[int] = 3,
     ):
         """Attach a projection head on top of the embed model for self-supervised learning.
         Calling this function will modify :attr:`self._embed_model` in place.
 
         :param output_dim: The output dimensionality of the projection, default 128, recommend 32, 64, 128, 256.
         :param num_layers: Number of layers of the projection head, default 3, recommend 2, 3.
-        :param num_channels: Generate a fake image to interpret the output dim of embed model. Grey scale image should be 1.
         """
         # interpret embed model output shape
-        output = self._embed_model(torch.rand(1, num_channels, 224, 224))
+        output = self._embed_model(
+            torch.unsqueeze(self._input_size).type(self._input_dtype)
+        )
         if not len(output.size()) == 2:
             raise DimensionMismatchException(
                 f'Expected input shape is 2d, got {len(output.size())}.'
@@ -200,7 +200,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
             eval_dl, 'InstanceDataset'
         ):
             # TODO interpret channels
-            self._attach_projection_head(output_dim=128, num_layers=3, num_channels=3)
+            self._attach_projection_head(output_dim=128, num_layers=3)
         # Set state
         self.state = TunerState(num_epochs=epochs)
         self._trigger_callbacks('on_fit_begin')
