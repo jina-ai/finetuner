@@ -1,4 +1,4 @@
-from typing import Any, List, Tuple, Union
+from typing import Any, List, Sequence, Tuple
 
 import numpy as np
 
@@ -8,7 +8,7 @@ from finetuner.helper import AnyDNN, get_framework
 def to_onnx(
     embed_model: AnyDNN,
     model_path: str,
-    input_shape: Union[Tuple[int], List[int]],
+    input_shape: Sequence[int],
     opset_version: int = 11,
 ) -> None:
     """Func that converts a given model in PaddlePaddle, PyTorch or Keras,
@@ -26,18 +26,22 @@ def to_onnx(
             f'The `model_path` needs to end with `.onnx`, but was: {model_path}'
         )
 
-    def _parse_and_apply_to_onnx_func(framework_name: str):
-        """Helper func to get _to_onnx_xyz func from framework name"""
-        return {
-            'torch': _to_onnx_torch,
-            'keras': _to_onnx_keras,
-            'paddle': _to_onnx_paddle,
-        }[framework_name](embed_model, model_path, input_shape, opset_version)
+    fn = get_framework(embed_model)
+    _to_onnx_func = None
+    if fn == 'torch':
+        _to_onnx_func = _to_onnx_torch
+    elif fn == 'keras':
+        _to_onnx_func = _to_onnx_keras
+    elif fn == 'paddle':
+        _to_onnx_func = _to_onnx_paddle
+    else:
+        raise ValueError(
+            f'The model framework was: {fn}, '
+            'but should be one of torch, keras or paddle.'
+        )
 
-    fm = get_framework(embed_model)
-
-    # Get framework-specific func to register model in ONNX
-    _parse_and_apply_to_onnx_func(fm)
+    # Call onnx conversion
+    _to_onnx_func(embed_model, model_path, input_shape, opset_version)
 
     _check_onnx_model(model_path)
 
