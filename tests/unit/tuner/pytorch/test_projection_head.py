@@ -18,9 +18,9 @@ def test_projection_head(in_features, output_dim, num_layers):
 
 
 @pytest.mark.parametrize(
-    'torch_model, input_size',
+    'torch_model, input_size, dim_representation',
     [
-        ('torch_dense_model', 128),
+        ('torch_dense_model', 128, 10),
         # ('torch_simple_cnn_model', (1, 28, 28),),
         # (
         #     'torch_vgg16_cnn_model',
@@ -31,14 +31,13 @@ def test_projection_head(in_features, output_dim, num_layers):
     ],
     indirect=['torch_model'],
 )
-def test_attach_projection_head(torch_model, input_size):
+def test_attach_detach_projection_head(torch_model, input_size, dim_representation):
     torch_tuner = PytorchTuner(embed_model=torch_model, input_size=input_size)
     torch_tuner._attach_projection_head()
     assert torch_tuner.embed_model.projection_head
     rand_input = torch.rand(2, input_size)
     out = torch_tuner.embed_model(rand_input)
     assert list(out.shape) == [2, input_size]
-
-
-def test_detach_projection_head():
-    pass
+    del torch_tuner.embed_model.projection_head
+    out = torch_tuner.embed_model(rand_input)
+    assert list(out.shape) == [2, dim_representation]
