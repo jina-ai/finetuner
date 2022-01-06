@@ -13,7 +13,7 @@ class LastCellPT(torch.nn.Module):
 
 
 @pytest.mark.parametrize(
-    'model, layer_name, input_size, input_dtype',
+    'torch_model, layer_name, input_size, input_dtype',
     [
         ('torch_dense_model', 'random_name', (128,), 'float32'),
         (
@@ -34,11 +34,11 @@ class LastCellPT(torch.nn.Module):
     indirect=['torch_model'],
 )
 def test_trim_fail_given_unexpected_layer_idx(
-    model, layer_name, input_size, input_dtype
+    torch_model, layer_name, input_size, input_dtype
 ):
     with pytest.raises(KeyError):
         paddle_tailor = PytorchTailor(
-            model=model,
+            model=torch_model,
             input_size=input_size,
             input_dtype=input_dtype,
         )
@@ -49,7 +49,7 @@ def test_trim_fail_given_unexpected_layer_idx(
 
 
 @pytest.mark.parametrize(
-    'model, layer_name, input_size, input_, input_dtype, expected_output_shape',
+    'torch_model, layer_name, input_size, input_, input_dtype, expected_output_shape',
     [
         ('torch_dense_model', 'linear_7', (128,), (1, 128), 'float32', [1, 10]),
         (
@@ -93,11 +93,13 @@ def test_trim_fail_given_unexpected_layer_idx(
     indirect=['torch_model'],
 )
 def test_to_embedding_model(
-    model, layer_name, input_size, input_, input_dtype, expected_output_shape
+    torch_model, layer_name, input_size, input_, input_dtype, expected_output_shape
 ):
-    weights = list(model.parameters())[0].detach().numpy()  # weights of the first layer
+    weights = (
+        list(torch_model.parameters())[0].detach().numpy()
+    )  # weights of the first layer
     pytorch_tailor = PytorchTailor(
-        model=model,
+        model=torch_model,
         input_size=input_size,
         input_dtype=input_dtype,
     )
@@ -115,7 +117,7 @@ def test_to_embedding_model(
 
 
 @pytest.mark.parametrize(
-    'model, layer_name, input_size, input_dtype',
+    'torch_model, layer_name, input_size, input_dtype',
     [
         ('torch_dense_model', 10, (128,), 'float32'),
         (
@@ -136,9 +138,9 @@ def test_to_embedding_model(
     indirect=['torch_model'],
 )
 @pytest.mark.parametrize('freeze', [True, False])
-def test_freeze(model, layer_name, input_size, input_dtype, freeze):
+def test_freeze(torch_model, layer_name, input_size, input_dtype, freeze):
     pytorch_tailor = PytorchTailor(
-        model=model,
+        model=torch_model,
         input_size=input_size,
         input_dtype=input_dtype,
     )
@@ -149,7 +151,7 @@ def test_freeze(model, layer_name, input_size, input_dtype, freeze):
         assert set(param.requires_grad for param in model.parameters()) == {True}
 
 
-def test_freeze_given_bottleneck_model_and_freeze_is_true(simple_cnn_model):
+def test_freeze_given_bottleneck_model_and_freeze_is_true(torch_simple_cnn_model):
     class _BottleneckModel(nn.Module):
         def __init__(self):
             super().__init__()
@@ -159,7 +161,7 @@ def test_freeze_given_bottleneck_model_and_freeze_is_true(simple_cnn_model):
             return self._linear(input_)
 
     pytorch_tailor = PytorchTailor(
-        model=simple_cnn_model,
+        model=torch_simple_cnn_model,
         input_size=(1, 28, 28),
         input_dtype='float32',
     )
@@ -176,7 +178,7 @@ def test_freeze_given_bottleneck_model_and_freeze_is_true(simple_cnn_model):
 
 
 @pytest.mark.parametrize(
-    'model, layer_name, input_size, input_dtype, freeze_layers',
+    'torch_model, layer_name, input_size, input_dtype, freeze_layers',
     [
         ('torch_dense_model', 10, (128,), 'float32', ['linear_1', 'linear_5']),
         (
@@ -205,10 +207,10 @@ def test_freeze_given_bottleneck_model_and_freeze_is_true(simple_cnn_model):
     indirect=['torch_model'],
 )
 def test_freeze_given_freeze_layers(
-    model, layer_name, input_size, input_dtype, freeze_layers
+    torch_model, layer_name, input_size, input_dtype, freeze_layers
 ):
     pytorch_tailor = PytorchTailor(
-        model=model,
+        model=torch_model,
         input_size=input_size,
         input_dtype=input_dtype,
     )
@@ -277,7 +279,7 @@ def test_torch_mlp_model_parser():
     assert r[3]['nb_params'] == 4128
 
 
-def test_attach_bottleneck_layer(vgg16_cnn_model):
+def test_attach_bottleneck_layer(torch_vgg16_cnn_model):
     class _BottleneckModel(nn.Module):
         def __init__(self):
             super().__init__()
@@ -290,7 +292,7 @@ def test_attach_bottleneck_layer(vgg16_cnn_model):
             return self._softmax(self._linear2(self._relu1(self._linear1(input_))))
 
     pytorch_tailor = PytorchTailor(
-        model=vgg16_cnn_model,
+        model=torch_vgg16_cnn_model,
         input_size=(3, 224, 224),
         input_dtype='float32',
     )

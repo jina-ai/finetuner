@@ -1,11 +1,6 @@
+import paddle
 import pytest
 import torch
-
-
-class LastCellPT(torch.nn.Module):
-    def forward(self, x):
-        out, _ = x
-        return out[:, -1, :]
 
 
 @pytest.fixture
@@ -101,4 +96,98 @@ def torch_bidirectional_lstm():
     ]
 )
 def torch_model(request):
+    return request.getfixturevalue(request.param)
+
+
+@pytest.fixture
+def paddle_dense_model():
+    return paddle.nn.Sequential(
+        paddle.nn.Linear(in_features=128, out_features=128),
+        paddle.nn.ReLU(),
+        paddle.nn.Linear(in_features=128, out_features=64),
+        paddle.nn.ReLU(),
+        paddle.nn.Linear(in_features=64, out_features=32),
+        paddle.nn.ReLU(),
+        paddle.nn.Linear(in_features=32, out_features=10),
+        paddle.nn.Softmax(),
+    )
+
+
+@pytest.fixture
+def paddle_simple_cnn_model():
+    return paddle.nn.Sequential(
+        paddle.nn.Conv2D(1, 32, 3, 1),
+        paddle.nn.ReLU(),
+        paddle.nn.Conv2D(32, 64, 3, 1),
+        paddle.nn.ReLU(),
+        paddle.nn.MaxPool2D(2),
+        paddle.nn.Dropout(0.25),
+        paddle.nn.Flatten(),
+        paddle.nn.Linear(9216, 128),
+        paddle.nn.Dropout(0.25),
+        paddle.nn.Linear(128, 10),
+        paddle.nn.Softmax(),
+    )
+
+
+@pytest.fixture
+def paddle_vgg16_cnn_model():
+    return paddle.vision.models.vgg16(pretrained=False)
+
+
+@pytest.fixture
+def paddle_stacked_lstm():
+    class LSTMClassifier(paddle.nn.Layer):
+        """A simple LSTM for text classification."""
+
+        def __init__(self, embedding_dim, hidden_dim, vocab_size, target_size):
+            super().__init__()
+            self.hidden_dim = hidden_dim
+            self.embedding_layer = paddle.nn.Embedding(vocab_size, embedding_dim)
+            self.lstm_layer = paddle.nn.LSTM(embedding_dim, hidden_dim, num_layers=3)
+            self.linear_layer_1 = paddle.nn.Linear(hidden_dim, hidden_dim)
+            self.relu_layer = paddle.nn.ReLU()
+            self.linear_layer_2 = paddle.nn.Linear(hidden_dim, target_size)
+            self.classification_layer = paddle.nn.Softmax(1)
+
+        def forward(self, input_):
+            embedding = self.embedding_layer(input_)
+            lstm_out, _ = self.lstm_layer(embedding)
+            # lstm_out -> (batch_size * seq_len * hidden_dim)
+            last_lstm_out = lstm_out[:, -1, :]
+            # last_lstm_out -> (1, hidden_dim)
+            linear_out_1 = self.linear_layer_1(last_lstm_out)
+            relu_out = self.relu_layer(linear_out_1)
+            linear_out_2 = self.linear_layer_2(relu_out)
+            classification_out = self.classification_layer(linear_out_2)
+            return classification_out
+
+    return LSTMClassifier(1024, 256, 1000, 5)
+
+
+@pytest.fixture
+def paddle_bidirectional_lstm():
+    class LastCell(paddle.nn.Layer):
+        def forward(self, x):
+            out, _ = x
+            return out[:, -1, :]
+
+    return paddle.nn.Sequential(
+        paddle.nn.Embedding(num_embeddings=5000, embedding_dim=64),
+        paddle.nn.LSTM(64, 64, direction='bidirectional'),
+        LastCell(),
+        paddle.nn.Linear(in_features=128, out_features=32),
+    )
+
+
+@pytest.fixture(
+    params=[
+        'paddle_dense_model',
+        'paddle_simple_cnn_model',
+        'paddle_vgg16_cnn_model',
+        'paddle_stacked_lstm',
+        'paddle_bidirectional_lstm',
+    ]
+)
+def paddle_model(request):
     return request.getfixturevalue(request.param)
