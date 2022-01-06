@@ -7,6 +7,49 @@ from typing import Optional, Sequence, Tuple
 from finetuner.tuner.dataset.base import BaseSampler
 
 
+class InstanceSampler(BaseSampler):
+    """A sampler that includes multiple copies of an instance in the batch.
+
+    Used for self-supervised learning, where positive samples for an anchor are just
+    (differently) augmented copies of itself.
+    """
+
+    def __init__(self, num_instances: int, batch_size: int, repeat_instance: int = 2):
+        """Construct the instance sampler.
+
+        :param num_instances: Number of instances in the dataset
+        :param batch_size: How many items to include in a batch
+        :param repeat_instance: How many times to repeat each instance in a batch
+        """
+
+        if batch_size <= 0:
+            raise ValueError('batch_size must be a positive integer')
+
+        if repeat_instance <= 1:
+            raise ValueError('repeat_instance should be larger than 1')
+
+        if batch_size % repeat_instance != 0:
+            raise ValueError('batch_size must be divisible by repeat_instance')
+
+        self._num_instances = num_instances
+        self._batch_size = batch_size
+        self._repeat_instance = repeat_instance
+
+        self._prepare_batches()
+
+    def _prepare_batches(self) -> None:
+
+        shuffled_instances = list(range(self._num_instances))
+        shuffle(shuffled_instances)
+
+        self._batches = []
+        instances_batch = self._batch_size // self._repeat_instance
+        for i in range(0, self._num_instances, instances_batch):
+            self._batches.append(
+                shuffled_instances[i : i + instances_batch] * self._repeat_instance
+            )
+
+
 class ClassSampler(BaseSampler):
     """A batch sampler that fills the batch with an equal number of items from each
     class.
@@ -36,6 +79,8 @@ class ClassSampler(BaseSampler):
             ``num_items_per_class`` is 4, the batch will consist of 4 items for each of
             the 5 classes.
         """
+        if batch_size <= 0:
+            raise ValueError('batch_size must be a positive integer')
 
         if num_items_per_class is not None and num_items_per_class < 1:
             raise ValueError(
@@ -59,7 +104,7 @@ class ClassSampler(BaseSampler):
                 [key, ceil(len(val) / self._num_items_per_class)]
             )
 
-        super().__init__(labels, batch_size)
+        self._prepare_batches()
 
     def _prepare_batches(self):
 
@@ -135,6 +180,8 @@ class SessionSampler(BaseSampler):
         :param shuffle: Suffle the order of sessions. If false, will use the order of
             sessions which is given by ``labels``.
         """
+        if batch_size <= 0:
+            raise ValueError('batch_size must be a positive integer')
 
         self._batch_size = batch_size
         self._shuffle = shuffle
@@ -143,7 +190,7 @@ class SessionSampler(BaseSampler):
         for ind, (session, match_type) in enumerate(labels):
             self._sessions[session].append([ind, match_type])
 
-        super().__init__(labels, batch_size)
+        self._prepare_batches()
 
     def _prepare_batches(self):
 

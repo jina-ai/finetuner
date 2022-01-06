@@ -17,13 +17,14 @@ finetuner.fit(model,
 
 This chapter introduces how to construct a `Document` in a way that Finetuner will accept.
 
-There are three different types of datasets:
+There are four different types of datasets:
 
 ```{toctree}
 :maxdepth: 1
 
 datasets/class-dataset
 datasets/session-dataset
+datasets/instance-dataset
 datasets/unlabeled-dataset
 ```
 
