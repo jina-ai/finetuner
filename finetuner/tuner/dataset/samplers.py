@@ -25,6 +25,9 @@ class InstanceSampler(BaseSampler):
         if batch_size <= 0:
             raise ValueError('batch_size must be a positive integer')
 
+        if repeat_instance <= 1:
+            raise ValueError('repeat_instance should be larger than 1')
+
         if batch_size % repeat_instance != 0:
             raise ValueError('batch_size must be divisible by repeat_instance')
 

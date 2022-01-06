@@ -9,10 +9,10 @@ def test_wrong_batch_size(batch_size: int):
         InstanceSampler(2, batch_size)
 
 
-@pytest.mark.parametrize('repeat_instance', [2, 4])
-def test_wrong_num_items_per_class(repeat_instance: int):
+@pytest.mark.parametrize('repeat_instance', [0, 1, 2, 4])
+def test_wrong_repeat_instance(repeat_instance: int):
     with pytest.raises(ValueError, match='repeat_instance'):
-        InstanceSampler(3, 3, repeat_instance)
+        InstanceSampler(3, batch_size=3, repeat_instance=repeat_instance)
 
 
 @pytest.mark.parametrize('repeat_instance', [2, 3])
