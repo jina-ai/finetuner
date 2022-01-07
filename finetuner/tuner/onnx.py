@@ -75,7 +75,11 @@ def _to_onnx_torch(
 
     import torch
 
-    supported_types = {"float16": torch.float16, "float32": torch.float32}
+    supported_types = {
+        "float16": torch.float16,
+        "float32": torch.float32,
+        "float64": torch.float64,
+    }
     if input_type not in supported_types:
         raise ValueError(
             f'The input_type should be one of: {[t for t in supported_types.keys()]} '
