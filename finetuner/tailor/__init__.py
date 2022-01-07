@@ -42,7 +42,7 @@ def to_embedding_model(
     :param input_size: The input size of the DNN model.
     :param input_dtype: The input data type of the DNN model.
     :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.
-    :param projection_head: Attach a bottleneck net at the end of model, this module should always trainable.
+    :param projection_head: Attach a module at the end of model, this module should always trainable.
     """
     ft = _get_tailor_class(model)
 
