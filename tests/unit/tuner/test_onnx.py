@@ -2,7 +2,6 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
-from torch._C import Value
 import onnxruntime
 import paddle
 import pytest
