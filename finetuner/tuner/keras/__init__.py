@@ -48,7 +48,10 @@ class KerasTuner(
         if __default_tag_key__ in data[0].tags:
             dataset = ClassDataset(data, preprocess_fn=preprocess_fn)
         else:
-            dataset = SessionDataset(data, preprocess_fn=preprocess_fn)
+            if len(data[0].matches) > 0:
+                dataset = SessionDataset(data, preprocess_fn=preprocess_fn)
+            else:
+                dataset = InstanceDataset(data, preprocess_fn=preprocess_fn)
 
         batch_sampler = self._get_batch_sampler(
             dataset,

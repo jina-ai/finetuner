@@ -64,7 +64,10 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         if __default_tag_key__ in data[0].tags:
             dataset = PytorchClassDataset(data, preprocess_fn=preprocess_fn)
         else:
-            dataset = PytorchSessionDataset(data, preprocess_fn=preprocess_fn)
+            if len(data[0].matches) > 0:
+                dataset = PytorchSessionDataset(data, preprocess_fn=preprocess_fn)
+            else:
+                dataset = InstanceDataset(data, preprocess_fn=preprocess_fn)
 
         batch_sampler = self._get_batch_sampler(
             dataset,
