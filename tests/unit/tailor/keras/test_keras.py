@@ -161,22 +161,3 @@ def test_keras_model_parser():
 
     assert r[2]['output_features'] == 32
     assert r[2]['nb_params'] == 4128
-
-
-def test_attach_bottleneck_layer(tf_vgg16_cnn_model):
-    def _create_bottleneck_model():
-        model = tf.keras.models.Sequential()
-        model.add(tf.keras.layers.InputLayer(input_shape=(4096,)))
-        model.add(tf.keras.layers.Dense(1024, activation='relu'))
-        model.add(tf.keras.layers.Dense(512, activation='softmax'))
-        return model
-
-    keras_tailor = KerasTailor(
-        model=tf_vgg16_cnn_model,
-        input_size=(224, 224, 3),
-        input_dtype='float32',
-    )
-    tailed_model = keras_tailor.to_embedding_model(
-        layer_name='fc1', freeze=False, projection_head=_create_bottleneck_model()
-    )
-    assert list(tailed_model.output.shape) == ([None, 512])
