@@ -6,7 +6,8 @@ if TYPE_CHECKING:
 
 
 class BaseCallback(ABC):
-    """The base callback class.
+    """
+    The base callback class.
 
     This class defines the different callback methods that can be overriden, however
     there is no method that the subclass would be required to override.
@@ -59,18 +60,17 @@ class BaseCallback(ABC):
 
     def on_val_batch_begin(self, tuner: 'BaseTuner'):
         """
-        Called at the start of the evaluation.
+        Called at the start of a evaluation batch.
         """
 
     def on_val_batch_end(self, tuner: 'BaseTuner'):
         """
-        Called at the start of the evaluation batch, after the batch data has already
-        been loaded.
+        Called at the end of an evaluation batch.
         """
 
     def on_val_end(self, tuner: 'BaseTuner'):
         """
-        Called at the end of the evaluation batch.
+        Called at the end of the evaluation.
         """
 
     def on_epoch_end(self, tuner: 'BaseTuner'):

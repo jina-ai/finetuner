@@ -21,40 +21,32 @@ class ProgressBarCallback(BaseCallback):
     """A progress bar callback, using the rich progress bar."""
 
     def __init__(self):
-
         self.losses: List[float] = []
         self.prev_val_loss = None
+        self.train_pbar_id = None
+        self.val_pbar_id = None
 
     @property
-    def mean_loss(self) -> Optional[float]:
-        if len(self.losses):
-            return np.mean(self.losses)
-        else:
-            return None
+    def _mean_loss(self) -> Optional[float]:
+        return np.mean(self.losses) if len(self.losses) else None
+
+    @staticmethod
+    def _display_value(name: str, value: Optional[float]) -> str:
+        return f'{name}: {value:.3f}' if value is not None else f'{name}: -.---'
 
     @property
     def train_loss_str(self) -> str:
-        train_loss_str = ''
-        if self.mean_loss is not None:
-            train_loss_str = f'loss: {self.mean_loss:.3f}'
-        else:
-            train_loss_str = 'loss: -.---'
-
-        val_loss_str = ''
+        train_loss_str = self._display_value('loss', self._mean_loss)
         if self.prev_val_loss:
-            val_loss_str = f' • val_loss: {self.prev_val_loss:.3f}'
-
-        return train_loss_str + val_loss_str
+            return train_loss_str + f' • val_loss: {self.prev_val_loss:.3f}'
+        return train_loss_str
 
     @property
     def val_loss_str(self) -> str:
-        if self.mean_loss is not None:
-            return f'loss: {self.mean_loss:.3f}'
-        else:
-            return 'loss: -.---'
+        return self._display_value('loss', self._mean_loss)
 
     def on_fit_begin(self, tuner: 'BaseTuner'):
-        self.pbar = Progress(
+        tuner._progress_bar = Progress(
             SpinnerColumn(),
             '[progress.description]{task.description}',
             BarColumn(
@@ -67,16 +59,17 @@ class ProgressBarCallback(BaseCallback):
             TextColumn('{task.fields[metrics]}'),
             console=live_console,
         )
-        self.pbar.start()
-        self.train_pbar_id = self.pbar.add_task('Training', visible=False, start=False)
-        self.eval_pbar_id = self.pbar.add_task('Evaluating', visible=False, start=False)
+        tuner._progress_bar.start()
+        self.train_pbar_id = tuner._progress_bar.add_task(
+            'Training', visible=False, start=False
+        )
+        self.val_pbar_id = tuner._progress_bar.add_task(
+            'Evaluating', visible=False, start=False
+        )
 
     def on_train_epoch_begin(self, tuner: 'BaseTuner'):
-        """
-        Called at the begining of training part of the epoch.
-        """
         self.losses = []
-        self.pbar.reset(
+        tuner._progress_bar.reset(
             self.train_pbar_id,
             visible=True,
             description=f'Training [{tuner.state.epoch+1}/{tuner.state.num_epochs}]',
@@ -86,21 +79,15 @@ class ProgressBarCallback(BaseCallback):
         )
 
     def on_train_batch_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the end of a training batch, after the backward pass.
-        """
         self.losses.append(tuner.state.current_loss)
-        self.pbar.update(
+        tuner._progress_bar.update(
             task_id=self.train_pbar_id, advance=1, metrics=self.train_loss_str
         )
 
     def on_val_begin(self, tuner: 'BaseTuner'):
-        """
-        Called at the start of the evaluation.
-        """
         self.losses = []
-        self.pbar.reset(
-            self.eval_pbar_id,
+        tuner._progress_bar.reset(
+            self.val_pbar_id,
             visible=True,
             description='Evaluating',
             total=tuner.state.num_batches_val,
@@ -109,41 +96,25 @@ class ProgressBarCallback(BaseCallback):
         )
 
     def on_val_batch_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the start of the evaluation batch, after the batch data has already
-        been loaded.
-        """
         self.losses.append(tuner.state.current_loss)
-
-        self.pbar.update(
-            task_id=self.eval_pbar_id, advance=1, metrics=self.val_loss_str
+        tuner._progress_bar.update(
+            task_id=self.val_pbar_id, advance=1, metrics=self.val_loss_str
         )
 
     def on_val_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the end of the evaluation batch.
-        """
-        self.prev_val_loss = self.mean_loss
-        self.pbar.update(task_id=self.eval_pbar_id, visible=False)
+        self.prev_val_loss = self._mean_loss
+        tuner._progress_bar.update(task_id=self.val_pbar_id, visible=False)
 
     def on_fit_end(self, tuner: 'BaseTuner'):
-        """
-        Called at the end of the ``fit`` method call, after finishing all the epochs.
-        """
-        self._teardown()
+        self._teardown(tuner)
 
     def on_exception(self, tuner: 'BaseTuner', exception: BaseException):
-        """
-        Called when the tuner encounters an exception during execution.
-        """
-        self._teardown()
+        self._teardown(tuner)
 
     def on_keyboard_interrupt(self, tuner: 'BaseTuner'):
-        """
-        Called when the tuner is interrupted by the user
-        """
-        self._teardown()
+        self._teardown(tuner)
 
-    def _teardown(self):
+    @staticmethod
+    def _teardown(tuner: 'BaseTuner'):
         """Stop the progress bar"""
-        self.pbar.stop()
+        tuner._progress_bar.stop()

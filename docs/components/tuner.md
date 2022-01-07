@@ -9,6 +9,9 @@ With Tuner, you can customize the training process to best fit your data, and tr
 - Save checkpoints during training
 - Write custom callbacks
 
+As part of the training process, you can also compute IR related evaluation metrics, using the standalone
+{class}`~finetuner.tuner.evaluation.Evaluator` component.
+
 You can read more on these different options here or in these sub-sections:
 
 ```{toctree}
@@ -16,6 +19,7 @@ You can read more on these different options here or in these sub-sections:
 
 tuner/loss
 tuner/callbacks
+tuner/evaluation
 ```
 
 ## The `Tuner` class
@@ -163,7 +167,7 @@ from finetuner.toydata import generate_fashion
 from jina import Document
 
 train_data = generate_fashion()
-val_data = generate_fashion(is_testset=True)
+eval_data = generate_fashion(is_testset=True)
 
 def preprocess_fn(doc: Document) -> np.ndarray:
     """Add some noise to the image"""
@@ -171,7 +175,7 @@ def preprocess_fn(doc: Document) -> np.ndarray:
     return new_image.astype(np.float32)
 
 print(f'Size of train data: {len(train_data)}')
-print(f'Size of train data: {len(val_data)}')
+print(f'Size of eval data: {len(eval_data)}')
 
 print(f'Example of label: {train_data[0].tags.json()}')
 
@@ -253,7 +257,7 @@ from finetuner.tuner.pytorch.losses import TripletLoss
 from finetuner.tuner.pytorch.miner import TripletEasyHardMiner
 
 train_data = generate_fashion()
-val_data = generate_fashion(is_testset=True)
+eval_data = generate_fashion(is_testset=True)
 
 def preprocess_fn(doc: Document) -> np.ndarray:
     """Add some noise to the image"""
@@ -291,7 +295,7 @@ tuner = PytorchTuner(
 )
 
 tuner.fit(
-    train_data, val_data, preprocess_fn=preprocess_fn, epochs=90, num_items_per_class=32
+    train_data, eval_data, preprocess_fn=preprocess_fn, epochs=90, num_items_per_class=32
 )
 ```
 

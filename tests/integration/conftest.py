@@ -123,6 +123,7 @@ def record_callback():
             self.num_epochs = []
             self.num_batches_train = []
             self.num_batches_val = []
+            self.eval_metrics = []
             self.learning_rates = []
 
         def _record(self, tuner):
@@ -131,6 +132,7 @@ def record_callback():
             self.num_epochs.append(tuner.state.num_epochs)
             self.num_batches_train.append(tuner.state.num_batches_train)
             self.num_batches_val.append(tuner.state.num_batches_val)
+            self.eval_metrics.append(deepcopy(tuner.state.eval_metrics))
             self.learning_rates.append(deepcopy(tuner.state.learning_rates))
 
         def on_fit_begin(self, tuner):
@@ -187,7 +189,7 @@ def record_callback():
 @pytest.fixture
 def expected_results():
     """
-    Expected results (calls, epochs, batches, number of epochs and number of batches
+    Expected results (call, epoch, batch, number of epochs and number of batches
     for train and eval) when doing 2 epochs, with 2 train and 1 eval batch
     """
     return [

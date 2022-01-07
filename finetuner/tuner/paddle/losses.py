@@ -104,7 +104,7 @@ class SiameseLoss(PaddleLoss):
         dist_matrix = get_distance(embeddings, self.distance)
         ind_slice = paddle.stack([ind_one, ind_two]).t()
         dists = paddle.gather_nd(dist_matrix, index=ind_slice)
-        target = paddle.cast(target, "float32")
+        target = paddle.cast(target, 'float32')
 
         loss = target * dists + (1 - target) * F.relu(self.margin - dists)
         return loss.mean()
@@ -135,7 +135,7 @@ class TripletLoss(PaddleLoss):
 
     def __init__(
         self,
-        distance: str = "cosine",
+        distance: str = 'cosine',
         margin: float = 1.0,
         miner: Optional[BaseMiner] = None,
     ):

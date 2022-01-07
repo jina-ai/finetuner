@@ -1,6 +1,8 @@
 import abc
 from typing import TYPE_CHECKING, Callable, Generic, List, Optional, Tuple, Union
 
+from rich.progress import Progress
+
 from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyScheduler, AnyTensor
 from .callback import BaseCallback, ProgressBarCallback
 from .dataset import ClassDataset, SessionDataset
@@ -55,9 +57,9 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
     ):
         """Create the tuner instance.
 
-        :param embed_model: Model that produces embeddings from inputs
+        :param embed_model: Model that produces embeddings from inputs.
         :param loss: Either the loss object instance, or the name of the loss function.
-            Currently available losses are ``SiameseLoss`` and ``TripletLoss``
+            Currently available losses are ``SiameseLoss`` and ``TripletLoss``.
         :param configure_optimizer: A function that allows you to provide a custom
             optimizer and learning rate. The function should take one input - the
             embedding model, and return either just an optimizer or a tuple of an
@@ -78,7 +80,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         :param callbacks: A list of callbacks. The progress bar callback
             will be pre-prended to this list.
         :param device: The device to which to move the model. Supported options are
-            ``"cpu"`` and ``"cuda"`` (for GPU)
+            ``"cpu"`` and ``"cuda"`` (for GPU).
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
@@ -86,6 +88,13 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         self._scheduler_step = scheduler_step
         self._scheduler = None
         self._device_name = device
+
+        self._progress_bar: Progress = Progress()
+        self._preprocess_fn = None
+        self._collate_fn = None
+        self._batch_size = None
+        self._num_items_per_class = None
+        self._num_workers = None
 
         # Check for early stopping
         self.stop_training = False
@@ -114,7 +123,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         shuffle: bool,
         num_items_per_class: Optional[int] = None,
     ) -> Union[ClassSampler, SessionSampler]:
-        """Get the batch sampler"""
+        """Get the batch sampler."""
 
         if isinstance(dataset, ClassDataset):
             batch_sampler = ClassSampler(
@@ -130,16 +139,8 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
 
         return batch_sampler
 
-    @abc.abstractmethod
-    def _move_model_to_device(self):
-        """Move the model to device and set device"""
-
-    @abc.abstractmethod
-    def _default_configure_optimizer(self, model: AnyDNN) -> AnyOptimizer:
-        """Get the default optimizer (Adam), if none was provided by user."""
-
     def _trigger_callbacks(self, method: str, **kwargs):
-        """Trigger the specified method on all callbacks"""
+        """Trigger the specified method on all callbacks."""
         for callback in self._callbacks:
             getattr(callback, method)(self, **kwargs)
 
@@ -152,43 +153,48 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         self,
         train_data: 'DocumentSequence',
         eval_data: Optional['DocumentSequence'] = None,
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        preprocess_fn: Optional['PreprocFnType'] = None,
-        collate_fn: Optional['CollateFnType'] = None,
         num_workers: int = 0,
         **kwargs,
     ):
         """Finetune the model on the training data.
 
-        :param train_data: Data on which to train the model
-        :param eval_data: Data on which to evaluate the model at the end of each epoch
-        :param preprocess_fn: A pre-processing function. It should take as input the
-            content of an item in the dataset and return the pre-processed content
+        :param train_data: Data on which to train the model.
+        :param eval_data: Data on which the validation loss is computed.
+        :param preprocess_fn: A pre-processing function, to apply pre-processing to
+            documents on the fly. It should take as input the document in the dataset,
+            and output whatever content the framework-specific dataloader (and model) would
+            accept.
         :param collate_fn: The collation function to merge the content of individual
             items into a batch. Should accept a list with the content of each item,
             and output a tensor (or a list/dict of tensors) that feed directly into the
-            embedding model
-        :param epochs: Number of epochs to train the model
-        :param batch_size: The batch size to use for training and evaluation
+            embedding model.
+        :param epochs: Number of epochs to train the model.
+        :param batch_size: The batch size to use for training and evaluation.
         :param num_items_per_class: Number of items from a single class to include in
-            the batch. Only relevant for class datasets
-        :param num_workers: Number of workers used for loading the data.
-
-            This works only with Pytorch and Paddle Paddle, and has no effect when using
-            a Keras model.
+            the batch. Only relevant for class datasets.
+        :param num_workers: Number of workers used for loading the data. This works only with Pytorch and
+            Paddle Paddle, and has no effect when using a Keras model.
         """
+        self._preprocess_fn = preprocess_fn
+        self._collate_fn = collate_fn
+        self._batch_size = batch_size
+        self._num_items_per_class = num_items_per_class
+        self._num_workers = num_workers
 
         try:
             self._fit(
                 train_data,
                 eval_data,
+                preprocess_fn,
+                collate_fn,
                 epochs,
                 batch_size,
                 num_items_per_class,
-                preprocess_fn,
-                collate_fn,
                 num_workers,
             )
         except KeyboardInterrupt:
@@ -196,6 +202,16 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         except BaseException as e:
             self._trigger_callbacks('on_exception', exception=e)
             raise
+
+    @abc.abstractmethod
+    def _move_model_to_device(self):
+        """Move the model to device and set device."""
+        ...
+
+    @abc.abstractmethod
+    def _default_configure_optimizer(self, model: AnyDNN) -> AnyOptimizer:
+        """Get the default optimizer (Adam), if none was provided by user."""
+        ...
 
     @abc.abstractmethod
     def save(self, *args, **kwargs):
@@ -226,22 +242,22 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         self,
         train_data: 'DocumentSequence',
         eval_data: Optional['DocumentSequence'] = None,
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        preprocess_fn: Optional['PreprocFnType'] = None,
-        collate_fn: Optional['CollateFnType'] = None,
         num_workers: int = 0,
     ):
-        """Fit the model (training and evaluation)"""
+        """Fit the model - training and evaluation."""
         ...
 
     @abc.abstractmethod
     def _train(self, data: AnyDataLoader):
-        """Train the model on given labeled data"""
+        """Train the model on the given labeled data."""
         ...
 
     @abc.abstractmethod
     def _eval(self, data: AnyDataLoader):
-        """Evaluate the model on given labeled data"""
+        """Compute the validation loss on the given labeled data."""
         ...

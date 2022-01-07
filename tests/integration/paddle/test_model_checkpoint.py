@@ -4,20 +4,17 @@ import paddle
 import pytest
 
 import finetuner
-from finetuner.tuner.base import BaseTuner
 from finetuner.tuner.callback import BestModelCheckpoint, TrainingCheckpoint
 from finetuner.tuner.paddle import PaddleTuner
 from finetuner.tuner.state import TunerState
 
 
 @pytest.fixture(scope='module')
-def paddle_model() -> BaseTuner:
-    embed_model = paddle.nn.Linear(in_features=10, out_features=10)
-
-    return embed_model
+def paddle_model():
+    return paddle.nn.Linear(in_features=10, out_features=10)
 
 
-def test_paddle_model(paddle_model: BaseTuner, tmpdir, create_easy_data_session):
+def test_paddle_model(paddle_model, tmpdir, create_easy_data_session):
 
     data, _ = create_easy_data_session(5, 10, 2)
 
@@ -32,7 +29,7 @@ def test_paddle_model(paddle_model: BaseTuner, tmpdir, create_easy_data_session)
     assert os.listdir(tmpdir) == ['saved_model_epoch_01']
 
 
-def test_epoch_end(paddle_model: BaseTuner, tmpdir):
+def test_epoch_end(paddle_model, tmpdir):
     checkpoint = TrainingCheckpoint(save_dir=tmpdir)
 
     tuner = PaddleTuner(embed_model=paddle_model)
@@ -43,7 +40,7 @@ def test_epoch_end(paddle_model: BaseTuner, tmpdir):
     assert os.listdir(tmpdir) == ['saved_model_epoch_01']
 
 
-def test_save_best_only_fit(paddle_model: BaseTuner, tmpdir, create_easy_data_session):
+def test_save_best_only_fit(paddle_model, tmpdir, create_easy_data_session):
 
     data, _ = create_easy_data_session(5, 10, 2)
 

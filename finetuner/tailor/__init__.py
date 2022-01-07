@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List, Optional, Tuple, Type, Union
 from ..helper import get_framework
 
 if TYPE_CHECKING:
-    from ...helper import AnyDNN
+    from ..helper import AnyDNN
     from .base import BaseTailor
 
 

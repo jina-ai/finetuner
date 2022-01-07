@@ -4,20 +4,21 @@ import torch
 from jina import Document, DocumentArray
 
 from finetuner import __default_tag_key__
-from finetuner.tuner.evaluation import METRICS, Evaluator
+from finetuner.tuner.evaluation import (
+    METRICS,
+    Evaluator,
+    __evaluator_metrics_key__,
+    __evaluator_targets_key__,
+)
 
 DATASET_SIZE = 1000
-EMBEDDING_SIZE = 256
+EMBEDDING_SIZE = 10
 
 
 class EmbeddingModel(torch.nn.Module):
-    def forward(self, inputs):
-        # return torch.rand(inputs.size()[0], EMBEDDING_SIZE)
-        embeddings = []
-        for i in range(inputs.size()[0]):
-            idx = inputs[i][0]
-            embeddings.append([idx] * EMBEDDING_SIZE)
-        return torch.tensor(embeddings)
+    @staticmethod
+    def forward(inputs):
+        return inputs.repeat(1, 10)
 
 
 @pytest.fixture
@@ -27,93 +28,150 @@ def embed_model():
 
 
 @pytest.fixture
-def eval_data():
-    """The evaluation data"""
+def query_session_data():
+    """The query data in session format"""
     data = DocumentArray()
     for i in range(DATASET_SIZE):
         doc = Document(
             id=str(i),
             blob=np.array([i]),
-            matches=[Document(id=str(i), tags={__default_tag_key__: 1})],
+            matches=[Document(id=str(DATASET_SIZE + i))],
         )
         data.append(doc)
     return data
 
 
 @pytest.fixture
-def catalog():
-    """The catalog"""
+def index_session_data():
+    """The index data in session format"""
     return DocumentArray(
-        [Document(id=str(i), blob=np.array([i])) for i in range(DATASET_SIZE)]
+        [
+            Document(id=str(DATASET_SIZE + i), blob=np.array([i]))
+            for i in range(DATASET_SIZE)
+        ]
     )
 
 
-def test_parse_eval_docs(embed_model, eval_data, catalog):
-    """
-    Test the evaluator when the matching limit is set 1. We expect all metrics == 1.0
-    """
-    evaluator = Evaluator(
-        eval_data, catalog, embed_model, limit=1, distance='euclidean'
+@pytest.fixture
+def query_class_data():
+    """The query data in class format"""
+    return DocumentArray(
+        Document(id=str(i), blob=np.array([i]), tags={__default_tag_key__: str(i)})
+        for i in range(DATASET_SIZE)
     )
-    to_be_scored_docs = evaluator._parse_eval_docs()
-    for eval_doc, to_be_scored_doc in zip(eval_data, to_be_scored_docs):
-        assert eval_doc.id == to_be_scored_doc.id
-        assert to_be_scored_doc.content is None
-        assert (
-            eval_doc.matches[0].id
-            in to_be_scored_doc.tags[__default_tag_key__]['targets']
-        )
-        assert (
-            to_be_scored_doc.tags[__default_tag_key__]['targets'][
-                eval_doc.matches[0].id
-            ]
-            == 1
-        )
 
 
-def test_list_available_metrics(embed_model, eval_data, catalog):
+@pytest.fixture
+def index_class_data():
+    """The index data in class format"""
+    return DocumentArray(
+        Document(
+            id=str(DATASET_SIZE + i),
+            blob=np.array([i]),
+            tags={__default_tag_key__: str(i)},
+        )
+        for i in range(DATASET_SIZE)
+    )
+
+
+def test_parse_session_docs(query_session_data, index_session_data):
+    """
+    Test the conversion from session docs to the internal evaluator representation
+    """
+    evaluator = Evaluator(query_session_data, index_session_data)
+    summarydocs = evaluator._parse_session_docs()
+    for evaldoc, summarydoc in zip(query_session_data, summarydocs):
+        assert evaldoc.id == summarydoc.id
+        assert summarydoc.content is None
+        assert evaldoc.matches[0].id in summarydoc.tags[__evaluator_targets_key__]
+        assert summarydoc.tags[__evaluator_targets_key__][evaldoc.matches[0].id] == 1
+
+
+def test_parse_class_docs(query_class_data, index_class_data):
+    """
+    Test the conversion from class docs to the internal evaluator representation
+    """
+    evaluator = Evaluator(query_class_data, index_class_data)
+    summarydocs = evaluator._parse_class_docs()
+    for evaldoc, summarydoc in zip(query_class_data, summarydocs):
+        assert evaldoc.id == summarydoc.id
+        assert summarydoc.content is None
+        targets = list(summarydoc.tags[__evaluator_targets_key__].items())
+        assert len(targets) == 1
+        target, relevance = targets[0]
+        assert relevance == 1
+
+
+def test_list_available_metrics(embed_model):
     """
     Test the listing of available metrics
     """
     assert Evaluator.list_available_metrics() == list(METRICS.keys())
 
 
-def test_evaluator_perfect_scores(embed_model, eval_data, catalog):
+def test_evaluator_perfect_scores(
+    embed_model,
+    query_session_data,
+    index_session_data,
+    query_class_data,
+    index_class_data,
+):
     """
     Test the evaluator when the matching limit is set 1. We expect all metrics == 1.0
     """
-    evaluator = Evaluator(
-        eval_data, catalog, embed_model, limit=1, distance='euclidean'
-    )
-    metrics = evaluator.evaluate(label='foo')
-    for _, v in metrics.items():
-        assert v == 1.0
-    for doc in eval_data:
-        for _, v in doc.tags[__default_tag_key__]['foo'].items():
+    # test both for session and class data
+    for _query_data, _index_data in [
+        (query_session_data, index_session_data),
+        (query_class_data, index_class_data),
+    ]:
+        evaluator = Evaluator(_query_data, _index_data, embed_model)
+        metrics = evaluator.evaluate(label='foo', limit=1, distance='euclidean')
+        print(metrics)
+        for _, v in metrics.items():
             assert v == 1.0
+        for doc in _query_data:
+            for _, v in doc.tags[__evaluator_metrics_key__]['foo'].items():
+                assert v == 1.0
 
 
-def test_evaluator_half_precision(embed_model, eval_data, catalog):
+def test_evaluator_half_precision(
+    embed_model,
+    query_session_data,
+    index_session_data,
+    query_class_data,
+    index_class_data,
+):
     """
     Test the evaluator when the matching limit is set 2. We expect all metrics == 1.0 except
     precision == 0.5 and f1score == 2/3
     """
-    evaluator = Evaluator(
-        eval_data, catalog, embed_model, limit=2, distance='euclidean'
-    )
-    metrics = evaluator.evaluate(label='foo')
-    for k, v in metrics.items():
-        if k == "mean_precision":
-            assert v == 0.5
-        elif k == "mean_f1score":
-            assert 0.66 < v < 0.67
-        else:
-            assert v == 1.0
-    for doc in eval_data:
-        for k, v in doc.tags[__default_tag_key__]['foo'].items():
-            if k == "precision":
+    # test both for session and class data
+    for _query_data, _index_data in [
+        (query_session_data, index_session_data),
+        (query_class_data, index_class_data),
+    ]:
+        evaluator = Evaluator(_query_data, _index_data, embed_model)
+        metrics = evaluator.evaluate(label='foo', limit=2, distance='euclidean')
+        for k, v in metrics.items():
+            if k == 'precision_at_k':
                 assert v == 0.5
-            elif k == "f1score":
+            elif k == 'f1_score_at_k':
                 assert 0.66 < v < 0.67
             else:
                 assert v == 1.0
+        for doc in _query_data:
+            for k, v in doc.tags[__evaluator_metrics_key__]['foo'].items():
+                if k == 'precision_at_k':
+                    assert v == 0.5
+                elif k == 'f1_score_at_k':
+                    assert 0.66 < v < 0.67
+                else:
+                    assert v == 1.0
+
+
+def test_evaluator_no_index_data(embed_model, query_class_data):
+    """
+    Test the evaluator when no index data are given
+    """
+    evaluator = Evaluator(query_class_data, embed_model=embed_model)
+    _ = evaluator.evaluate()

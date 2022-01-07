@@ -37,7 +37,7 @@ class KerasTuner(
         num_items_per_class: Optional[int] = None,
         num_workers: int = 0,
     ) -> KerasSequenceAdapter:
-        """Get the dataloader for the dataset
+        """Get the dataloader for the dataset.
 
         In this case, since there is no true dataloader in keras, we are returning
         the adapter, which can produce the dataset that yields batches.
@@ -62,16 +62,15 @@ class KerasTuner(
         return adapter
 
     def _move_model_to_device(self):
-        """Move the model to device and set device"""
+        """Move the model to device and set device."""
         # This does nothing as explicit device placement is not required in Keras
 
     def _default_configure_optimizer(self, model: Layer) -> Optimizer:
-        """Get the default Adam optimizer"""
-        optimizer = tf.keras.optimizers.Adam(learning_rate=self._learning_rate)
-        return optimizer
+        """Get the default Adam optimizer."""
+        return tf.keras.optimizers.Adam(learning_rate=self._learning_rate)
 
     def _train(self, data: KerasSequenceAdapter):
-        """Train the model on given labeled data"""
+        """Train the model on the given labeled data."""
 
         for idx, (inputs, labels) in enumerate(data.get_dataset()):
 
@@ -98,7 +97,7 @@ class KerasTuner(
         data.on_epoch_end()  # To re-create batches
 
     def _eval(self, data: KerasSequenceAdapter):
-        """Evaluate the model on given labeled data"""
+        """Compute the validation loss on the given labeled data."""
 
         for idx, (inputs, labels) in enumerate(data.get_dataset()):
             self.state.batch_index = idx
@@ -116,13 +115,15 @@ class KerasTuner(
         self,
         train_data: 'DocumentSequence',
         eval_data: Optional['DocumentSequence'] = None,
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        preprocess_fn: Optional['PreprocFnType'] = None,
-        collate_fn: Optional['CollateFnType'] = None,
         num_workers: int = 0,
     ):
+        """Fit the model - training and evaluation."""
+
         # Get dataloaders
         train_dl = self._get_data_loader(
             train_data,
@@ -155,9 +156,10 @@ class KerasTuner(
                 self.state.batch_index = 0
 
                 self._trigger_callbacks('on_epoch_begin')
-
                 self._trigger_callbacks('on_train_epoch_begin')
+
                 self._train(train_dl)
+
                 self._trigger_callbacks('on_train_epoch_end')
 
                 if eval_data:
@@ -181,20 +183,18 @@ class KerasTuner(
         You need to pass the path where to save the model in either ``args`` or
         ``kwargs`` (for ``filepath`` key).
 
-        :param args: Arguments to pass to ``save`` method of the embedding model
+        :param args: Arguments to pass to ``save`` method of the embedding model.
         :param kwargs: Keyword arguments to pass to ``save`` method of the embedding
-            model
+            model.
         """
-
         self.embed_model.save(*args, **kwargs)
 
 
 def get_device(device: str):
     """Get tensorflow compute device.
 
-    :param device: device name
+    :param device: device name.
     """
-
     # translate our own alias into framework-compatible ones
     if device == 'cuda':
         device = '/GPU:0'

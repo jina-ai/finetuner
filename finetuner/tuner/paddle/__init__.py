@@ -47,7 +47,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         num_items_per_class: Optional[int] = None,
         num_workers: int = 0,
     ) -> DataLoader:
-        """Get the dataloader for the dataset"""
+        """Get the dataloader for the dataset."""
 
         if collate_fn:
 
@@ -80,35 +80,16 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         return data_loader
 
     def _move_model_to_device(self):
-        """Move the model to device and set device"""
+        """Move the model to device and set device."""
         self.device = get_device(self._device_name)
         self._embed_model.to(device=self.device)
 
     def _default_configure_optimizer(self, model: nn.Layer) -> Optimizer:
         """Get the default optimizer (Adam), if none was provided by user."""
-
         return Adam(parameters=model.parameters(), learning_rate=self._learning_rate)
 
-    def _eval(self, data: DataLoader):
-        """Evaluate the model on given labeled data"""
-
-        self._embed_model.eval()
-
-        for idx, (inputs, labels) in enumerate(data):
-            self.state.batch_index = idx
-            self._trigger_callbacks('on_val_batch_begin')
-
-            inputs = _to_device(inputs, self.device)
-            labels = _to_device(labels, self.device)
-
-            embeddings = self.embed_model(inputs)
-            loss = self._loss(embeddings, labels)
-
-            self.state.current_loss = loss.item()
-            self._trigger_callbacks('on_val_batch_end')
-
     def _train(self, data: DataLoader):
-        """Train the model on given labeled data"""
+        """Train the model on the given labeled data."""
 
         self._embed_model.train()
 
@@ -137,17 +118,39 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
 
             self._trigger_callbacks('on_train_batch_end')
 
+    def _eval(self, data: DataLoader):
+        """Compute the validation loss on the given labeled data."""
+
+        self._embed_model.eval()
+
+        for idx, (inputs, labels) in enumerate(data):
+            self.state.batch_index = idx
+            self._trigger_callbacks('on_val_batch_begin')
+
+            inputs = _to_device(inputs, self.device)
+            labels = _to_device(labels, self.device)
+
+            embeddings = self.embed_model(inputs)
+            loss = self._loss(embeddings, labels)
+
+            self.state.current_loss = loss.item()
+            self._trigger_callbacks('on_val_batch_end')
+
     def _fit(
         self,
         train_data: 'DocumentSequence',
         eval_data: Optional['DocumentSequence'] = None,
+        preprocess_fn: Optional['PreprocFnType'] = None,
+        collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
         batch_size: int = 256,
         num_items_per_class: Optional[int] = None,
-        preprocess_fn: Optional['PreprocFnType'] = None,
-        collate_fn: Optional['CollateFnType'] = None,
         num_workers: int = 0,
+        limit: int = 20,
+        distance: str = 'cosine',
     ):
+        """Fit the model - training and evaluation."""
+
         # Get dataloaders
         train_dl = self._get_data_loader(
             train_data,
@@ -181,10 +184,9 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
             self.state.batch_index = 0
 
             self._trigger_callbacks('on_epoch_begin')
-
             self._trigger_callbacks('on_train_epoch_begin')
-            self._train(train_dl)
 
+            self._train(train_dl)
             if self._scheduler_step == 'epoch' and self._scheduler is not None:
                 self._scheduler.step()
 
@@ -199,6 +201,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
                 self._trigger_callbacks('on_val_end')
 
             self._trigger_callbacks('on_epoch_end')
+
             if self.stop_training:
                 break
 
@@ -210,19 +213,17 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         You need to pass the path where to save the model in either ``args`` or
         ``kwargs`` (for ``path`` key).
 
-        :param args: Arguments to pass to ``paddle.save`` function
-        :param kwargs: Keyword arguments to pass to ``paddle.save`` function
+        :param args: Arguments to pass to ``paddle.save`` function.
+        :param kwargs: Keyword arguments to pass to ``paddle.save`` function.
         """
-
         paddle.save(self.embed_model.state_dict(), *args, **kwargs)
 
 
 def get_device(device: str):
     """Get Paddle compute device.
 
-    :param device: device name
+    :param device: device name.
     """
-
     # translate our own alias into framework-compatible ones
     if device == 'cuda':
         return paddle.CUDAPlace(0)

@@ -92,25 +92,25 @@ def test_load_model(keras_model: BaseTuner, tmpdir):
 
 def test_save_best_only(keras_model: BaseTuner, tmpdir):
 
-    checkpoint = BestModelCheckpoint(save_dir=tmpdir, monitor='current_loss')
+    checkpoint = BestModelCheckpoint(save_dir=tmpdir, monitor='train_loss')
     tuner = KerasTuner(embed_model=keras_model)
     tuner.state = TunerState(epoch=0, batch_index=2, current_loss=1.1)
     checkpoint.on_train_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
-    assert os.listdir(tmpdir) == ['best_model_current_loss']
-    creation_time = os.path.getmtime(os.path.join(tmpdir, 'best_model_current_loss'))
+    assert os.listdir(tmpdir) == ['best_model_train_loss']
+    creation_time = os.path.getmtime(os.path.join(tmpdir, 'best_model_train_loss'))
     tuner.state = TunerState(epoch=1, batch_index=2, current_loss=1.5)
     checkpoint.on_train_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert creation_time == os.path.getmtime(
-        os.path.join(tmpdir, 'best_model_current_loss')
+        os.path.join(tmpdir, 'best_model_train_loss')
     )
     tuner.state = TunerState(epoch=2, batch_index=2, current_loss=0.5)
     time.sleep(2)
     checkpoint.on_train_batch_end(tuner)
     checkpoint.on_epoch_end(tuner)
     assert creation_time < os.path.getmtime(
-        os.path.join(tmpdir, 'best_model_current_loss')
+        os.path.join(tmpdir, 'best_model_train_loss')
     )
 
 
@@ -129,7 +129,7 @@ def test_load_best_model(keras_model: BaseTuner, tmpdir):
     after_tuner.state = TunerState(epoch=1, batch_index=2, current_loss=0)
 
     assert os.listdir(tmpdir) == ['best_model_val_loss']
-    checkpoint.load_model(after_tuner, fp=os.path.join(tmpdir, 'best_model_val_loss'))
+    checkpoint.load(after_tuner, fp=os.path.join(tmpdir, 'best_model_val_loss'))
 
     for l1, l2 in zip(after_tuner.embed_model.layers, before_tuner.embed_model.layers):
         assert l1.get_config() == l2.get_config()

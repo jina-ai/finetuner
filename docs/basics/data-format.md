@@ -4,8 +4,8 @@
 Finetuner uses Jina [`Document`](https://docs.jina.ai/fundamentals/document/) as the primitive data type. In
 particular, [`DocumentArray`](https://docs.jina.ai/fundamentals/document/documentarray-api/)
 and [`DocumentArrayMemap`](https://docs.jina.ai/fundamentals/document/documentarraymemmap-api/) are the input data type
-in the high-level `finetuner.fit()` API. This means, your training dataset and evaluation dataset should be stored in `DocumentArray`
-or `DocumentArrayMemap`, where each training or evaluation instance is a `Document` object:
+in the high-level `finetuner.fit()` API. This means, your training dataset and evaluation dataset should be stored in
+`DocumentArray` or `DocumentArrayMemap`, where each training or evaluation instance is a `Document` object:
 
 ```python
 import finetuner

@@ -136,7 +136,7 @@ def test_load_best_model(pytorch_model: BaseTuner, tmpdir):
     after_tuner.state = TunerState(epoch=1, batch_index=2, current_loss=0)
 
     assert os.listdir(tmpdir) == ['best_model_val_loss']
-    checkpoint.load_model(after_tuner, fp=os.path.join(tmpdir, 'best_model_val_loss'))
+    checkpoint.load(after_tuner, fp=os.path.join(tmpdir, 'best_model_val_loss'))
 
     for l1, l2 in zip(pytorch_model.parameters(), new_model.parameters()):
         assert (l1 == l2).all()

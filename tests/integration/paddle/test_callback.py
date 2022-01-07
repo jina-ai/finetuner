@@ -6,14 +6,14 @@ from finetuner.tuner.paddle import PaddleTuner
 
 def test_basic_callback(generate_random_data, expected_results, record_callback):
     train_data = generate_random_data(8, 2, 2)
-    val_data = generate_random_data(4, 2, 2)
+    eval_data = generate_random_data(4, 2, 2)
     model = nn.Sequential(nn.Flatten(), nn.Linear(in_features=2, out_features=2))
 
     # Train
     tuner = PaddleTuner(model, callbacks=[record_callback])
     tuner.fit(
         train_data=train_data,
-        eval_data=val_data,
+        eval_data=eval_data,
         epochs=2,
         batch_size=4,
         num_items_per_class=2,
@@ -28,8 +28,8 @@ def test_basic_callback(generate_random_data, expected_results, record_callback)
 
     assert record_callback.calls == expected_calls
     assert record_callback.epochs == expected_epochs
-    assert record_callback.num_epochs == expected_num_epochs
     assert record_callback.batch_idx == expected_batch_idx
+    assert record_callback.num_epochs == expected_num_epochs
     assert record_callback.num_batches_train == expected_num_batches_train
     assert record_callback.num_batches_val == expected_num_batches_val
 
