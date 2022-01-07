@@ -46,7 +46,7 @@ class ProgressBarCallback(BaseCallback):
         return self._display_value('loss', self._mean_loss)
 
     def on_fit_begin(self, tuner: 'BaseTuner'):
-        tuner.state.progress_bar = Progress(
+        tuner._progress_bar = Progress(
             SpinnerColumn(),
             '[progress.description]{task.description}',
             BarColumn(
@@ -59,17 +59,17 @@ class ProgressBarCallback(BaseCallback):
             TextColumn('{task.fields[metrics]}'),
             console=live_console,
         )
-        tuner.state.progress_bar.start()
-        self.train_pbar_id = tuner.state.progress_bar.add_task(
+        tuner._progress_bar.start()
+        self.train_pbar_id = tuner._progress_bar.add_task(
             'Training', visible=False, start=False
         )
-        self.val_pbar_id = tuner.state.progress_bar.add_task(
+        self.val_pbar_id = tuner._progress_bar.add_task(
             'Evaluating', visible=False, start=False
         )
 
     def on_train_epoch_begin(self, tuner: 'BaseTuner'):
         self.losses = []
-        tuner.state.progress_bar.reset(
+        tuner._progress_bar.reset(
             self.train_pbar_id,
             visible=True,
             description=f'Training [{tuner.state.epoch+1}/{tuner.state.num_epochs}]',
@@ -80,13 +80,13 @@ class ProgressBarCallback(BaseCallback):
 
     def on_train_batch_end(self, tuner: 'BaseTuner'):
         self.losses.append(tuner.state.current_loss)
-        tuner.state.progress_bar.update(
+        tuner._progress_bar.update(
             task_id=self.train_pbar_id, advance=1, metrics=self.train_loss_str
         )
 
     def on_val_begin(self, tuner: 'BaseTuner'):
         self.losses = []
-        tuner.state.progress_bar.reset(
+        tuner._progress_bar.reset(
             self.val_pbar_id,
             visible=True,
             description='Evaluating',
@@ -97,13 +97,13 @@ class ProgressBarCallback(BaseCallback):
 
     def on_val_batch_end(self, tuner: 'BaseTuner'):
         self.losses.append(tuner.state.current_loss)
-        tuner.state.progress_bar.update(
+        tuner._progress_bar.update(
             task_id=self.val_pbar_id, advance=1, metrics=self.val_loss_str
         )
 
     def on_val_end(self, tuner: 'BaseTuner'):
         self.prev_val_loss = self._mean_loss
-        tuner.state.progress_bar.update(task_id=self.val_pbar_id, visible=False)
+        tuner._progress_bar.update(task_id=self.val_pbar_id, visible=False)
 
     def on_fit_end(self, tuner: 'BaseTuner'):
         self._teardown(tuner)
@@ -117,4 +117,4 @@ class ProgressBarCallback(BaseCallback):
     @staticmethod
     def _teardown(tuner: 'BaseTuner'):
         """Stop the progress bar"""
-        tuner.state.progress_bar.stop()
+        tuner._progress_bar.stop()

@@ -44,20 +44,20 @@ class EvaluationCallback(BaseCallback):
         self._match_pbar_id = None
 
     def on_fit_begin(self, tuner: 'BaseTuner'):
-        self._query_pbar_id = tuner.state.progress_bar.add_task(
+        self._query_pbar_id = tuner._progress_bar.add_task(
             'Embedding queries', visible=False, start=False
         )
-        self._index_pbar_id = tuner.state.progress_bar.add_task(
+        self._index_pbar_id = tuner._progress_bar.add_task(
             'Embedding index', visible=False, start=False
         )
-        self._match_pbar_id = tuner.state.progress_bar.add_task(
+        self._match_pbar_id = tuner._progress_bar.add_task(
             'Matching', visible=False, start=False
         )
 
     def on_epoch_end(self, tuner: 'BaseTuner'):
 
         # start query data progress bar
-        tuner.state.progress_bar.reset(
+        tuner._progress_bar.reset(
             self._query_pbar_id,
             visible=True,
             description='Embedding queries',
@@ -78,13 +78,13 @@ class EvaluationCallback(BaseCallback):
                 preprocess_fn=tuner._preprocess_fn,
                 collate_fn=tuner._collate_fn,
             )
-            tuner.state.progress_bar.update(task_id=self._query_pbar_id, advance=1)
-        tuner.state.progress_bar.update(task_id=self._query_pbar_id, visible=False)
+            tuner._progress_bar.update(task_id=self._query_pbar_id, advance=1)
+        tuner._progress_bar.update(task_id=self._query_pbar_id, visible=False)
 
         if self._index_data:
 
             # start index data progress bar
-            tuner.state.progress_bar.reset(
+            tuner._progress_bar.reset(
                 self._index_pbar_id,
                 visible=True,
                 description='Embedding index',
@@ -105,16 +105,16 @@ class EvaluationCallback(BaseCallback):
                     preprocess_fn=tuner._preprocess_fn,
                     collate_fn=tuner._collate_fn,
                 )
-                tuner.state.progress_bar.update(task_id=self._index_pbar_id, advance=1)
+                tuner._progress_bar.update(task_id=self._index_pbar_id, advance=1)
 
             index_data = self._index_data
-            tuner.state.progress_bar.update(task_id=self._index_pbar_id, visible=False)
+            tuner._progress_bar.update(task_id=self._index_pbar_id, visible=False)
 
         else:
             index_data = self._query_data
 
         # start matching progress bar
-        tuner.state.progress_bar.reset(
+        tuner._progress_bar.reset(
             self._match_pbar_id,
             visible=True,
             description='Matching',
@@ -129,4 +129,4 @@ class EvaluationCallback(BaseCallback):
             label=f'epoch#{tuner.state.epoch}',
             num_workers=self._num_workers,
         )
-        tuner.state.progress_bar.update(task_id=self._match_pbar_id, visible=False)
+        tuner._progress_bar.update(task_id=self._match_pbar_id, visible=False)

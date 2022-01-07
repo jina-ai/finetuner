@@ -1,6 +1,8 @@
 import abc
 from typing import TYPE_CHECKING, Callable, Generic, List, Optional, Tuple, Union
 
+from rich.progress import Progress
+
 from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyScheduler, AnyTensor
 from .callback import BaseCallback, ProgressBarCallback
 from .dataset import ClassDataset, SessionDataset
@@ -87,6 +89,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         self._scheduler = None
         self._device_name = device
 
+        self._progress_bar: Progress = Progress()
         self._preprocess_fn = None
         self._collate_fn = None
         self._batch_size = None
