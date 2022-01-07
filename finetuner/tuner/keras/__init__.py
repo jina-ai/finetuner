@@ -66,7 +66,7 @@ class KerasTuner(
         )
 
         adapter = KerasSequenceAdapter(sequence)
-        return adapter
+        return adapter, is_instance_dataset
 
     def _move_model_to_device(self):
         """Move the model to device and set device"""
