@@ -11,7 +11,7 @@ def to_onnx(
     model_path: str,
     input_shape: Sequence[int],
     opset_version: int = 11,
-    input_type: str = "float32",
+    input_type: str = 'float32',
 ) -> None:
     """Func that converts a given model in PaddlePaddle, PyTorch or Keras,
     and converts it to the ONNX format
@@ -61,7 +61,7 @@ def _to_onnx_torch(
     input_shape: Tuple[int, ...],
     opset_version: int = 11,
     batch_size: int = 16,
-    input_type: str = "float32",
+    input_type: str = 'float32',
 ) -> None:
     """Convert a PyTorch embedding model to the ONNX format
     :params embed_model: Embedding model to register in ONNX
@@ -76,9 +76,9 @@ def _to_onnx_torch(
     import torch
 
     supported_types = {
-        "float16": torch.float16,
-        "float32": torch.float32,
-        "float64": torch.float64,
+        'float16': torch.float16,
+        'float32': torch.float32,
+        'float64': torch.float64,
     }
     if input_type not in supported_types:
         raise ValueError(
