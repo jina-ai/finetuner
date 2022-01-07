@@ -1,7 +1,7 @@
 import torch.nn as nn
 
 
-class _ProjectionHead(nn.Module):
+class ProjectionHead(nn.Module):
     """Projection head used internally for self-supervised training.
     It is (by default) a simple 3-layer MLP to be attached on top of embedding model only for training purpose.
     After training, it should be cut-out from the embedding model.

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence, Union
 
 import paddle
 from paddle import nn
@@ -81,7 +81,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
             num_workers=num_workers,
         )
 
-        return data_loader, is_instance_dataset
+        return data_loader
 
     def _move_model_to_device(self):
         """Move the model to device and set device"""

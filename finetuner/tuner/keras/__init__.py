@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 import tensorflow as tf
 from keras.engine.data_adapter import KerasSequenceAdapter
