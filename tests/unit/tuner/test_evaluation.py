@@ -18,11 +18,7 @@ EMBEDDING_SIZE = 10
 class EmbeddingModel(torch.nn.Module):
     @staticmethod
     def forward(inputs):
-        embeddings = []
-        for i in range(inputs.size()[0]):
-            idx = inputs[i][0]
-            embeddings.append([idx] * EMBEDDING_SIZE)
-        return torch.tensor(embeddings)
+        return inputs.repeat(1, 10)
 
 
 @pytest.fixture

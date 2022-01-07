@@ -62,20 +62,17 @@ class EmbeddingModel(torch.nn.Module):
         input_shape: (bs, 1)
         output_shape: (bs, 10)
         """
-        batch_size = inputs.size()[0]
-        embeddings = []
-        for i in range(batch_size):
-            idx = inputs[i][0]
-            embeddings.append([idx] * 10)
-        
-        return torch.tensor(embeddings)
+        return inputs.repeat(1, 10)
 
 ```
 
 Now let's create some example data. We will divide into 2 sets, the evaluation data and the index data. The
 evaluation data are docs with ids from 0 to 9. The index data are docs with ids from 10 to 19. As content, for
 each doc we use `doc.blob = np.array([doc.id % 10])`. Same content yields the same embedding, so for each
-query doc we set as target match the corresponding doc from the index data that has the same content:
+query doc we set as target match, the corresponding doc from the index data, that has the same content. For
+class data, we assign docs with the same content to the same class label:
+
+````{tab} Session data
 ```python
 import numpy as np
 from docarray import Document,  DocumentArray
@@ -97,8 +94,9 @@ for i in range(10):
     )
     index_data.append(doc)
 ```
+````
 
-The above datasets are defined in session format. They can be defined in class format as well:
+````{tab} Class data
 ```python
 import numpy as np
 from docarray import Document,  DocumentArray
@@ -121,6 +119,7 @@ for i in range(10):
     )
     index_data.append(doc)
 ```
+````
 
 Now we can use the evaluator. When using the euclidean distance as a matching metric, we expect to see
 perfect scores, since for each query doc the nearest index doc is the one we gave as ground truth:
