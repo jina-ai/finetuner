@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
 import paddle
 from paddle import nn
@@ -48,8 +48,9 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
         num_workers: int = 0,
-    ) -> DataLoader:
+    ) -> Tuple[DataLoader, bool]:
         """Get the dataloader for the dataset"""
+        is_instance_dataset = False
 
         if collate_fn:
 
@@ -68,6 +69,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
                 dataset = PaddleSessionDataset(data, preprocess_fn=preprocess_fn)
             else:
                 dataset = InstanceDataset(data, preprocess_fn=preprocess_fn)
+                is_instance_dataset = True
 
         batch_sampler = self._get_batch_sampler(
             dataset,
@@ -82,7 +84,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
             num_workers=num_workers,
         )
 
-        return data_loader
+        return data_loader, is_instance_dataset
 
     def _move_model_to_device(self):
         """Move the model to device and set device"""
@@ -180,7 +182,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         num_workers: int = 0,
     ):
         # Get dataloaders
-        train_dl = self._get_data_loader(
+        train_dl, is_instance_dataset = self._get_data_loader(
             train_data,
             batch_size=batch_size,
             num_items_per_class=num_items_per_class,
@@ -190,7 +192,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
             num_workers=num_workers,
         )
         if eval_data:
-            eval_dl = self._get_data_loader(
+            eval_dl, _ = self._get_data_loader(
                 eval_data,
                 batch_size=batch_size,
                 num_items_per_class=num_items_per_class,
@@ -201,7 +203,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
             )
 
         # If self-supervised, add projection head.
-        if isinstance(train_dl.dataset, InstanceDataset):
+        if is_instance_dataset:
             self._attach_projection_head(output_dim=128, num_layers=3)
 
         # Set state
@@ -238,7 +240,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
                 break
 
         # If self-supervised, drop projection head
-        if isinstance(train_dl.dataset, InstanceDataset):
+        if is_instance_dataset:
             del self._embed_model.projection_head
 
         self._trigger_callbacks('on_fit_end')

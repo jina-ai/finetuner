@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional, Tuple, Union
 
 import tensorflow as tf
 from keras.engine.data_adapter import KerasSequenceAdapter
@@ -38,12 +38,13 @@ class KerasTuner(
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
         num_workers: int = 0,
-    ) -> KerasSequenceAdapter:
+    ) -> Tuple[KerasSequenceAdapter, bool]:
         """Get the dataloader for the dataset
 
         In this case, since there is no true dataloader in keras, we are returning
         the adapter, which can produce the dataset that yields batches.
         """
+        is_instance_dataset = False
 
         if __default_tag_key__ in data[0].tags:
             dataset = ClassDataset(data, preprocess_fn=preprocess_fn)
@@ -52,6 +53,7 @@ class KerasTuner(
                 dataset = SessionDataset(data, preprocess_fn=preprocess_fn)
             else:
                 dataset = InstanceDataset(data, preprocess_fn=preprocess_fn)
+                is_instance_dataset = True
 
         batch_sampler = self._get_batch_sampler(
             dataset,
@@ -156,7 +158,7 @@ class KerasTuner(
         num_workers: int = 0,
     ):
         # Get dataloaders
-        train_dl = self._get_data_loader(
+        train_dl, is_instance_dataset = self._get_data_loader(
             train_data,
             batch_size=batch_size,
             num_items_per_class=num_items_per_class,
@@ -165,7 +167,7 @@ class KerasTuner(
             collate_fn=collate_fn,
         )
         if eval_data:
-            eval_dl = self._get_data_loader(
+            eval_dl, _ = self._get_data_loader(
                 eval_data,
                 batch_size=batch_size,
                 num_items_per_class=num_items_per_class,
@@ -175,7 +177,7 @@ class KerasTuner(
             )
 
         # If self-supervised, add projection head.
-        if isinstance(train_dl.dataset, InstanceDataset):
+        if is_instance_dataset:
             self._attach_projection_head(output_dim=128, num_layers=3)
 
         # Set state
@@ -210,7 +212,7 @@ class KerasTuner(
                     break
 
             # If self-supervised, drop projection head
-            if isinstance(train_dl.dataset, InstanceDataset):
+            if is_instance_dataset:
                 self._embed_model = tf.keras.Sequential(self._embed_model.layers[:-1])
 
             self._trigger_callbacks('on_fit_end')

@@ -233,7 +233,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         num_workers: int = 0,
-    ) -> AnyDataLoader:
+    ) -> Union[AnyDataLoader, bool]:
         """Get framework specific data loader from the input data."""
         ...
 
