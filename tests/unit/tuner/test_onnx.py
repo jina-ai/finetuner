@@ -2,6 +2,7 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
+from torch._C import Value
 import onnxruntime
 import paddle
 import pytest
@@ -103,6 +104,26 @@ def get_paddle_lstm_model():
     return _get_model
 
 
+def test_path_suffix_handling(get_pytorch_linear_model):
+    INPUT_SHAPE = [32]
+    # Create path that does not end with .onnx
+    temp_onnx_file = str(Path(tempfile.tempdir) / 'finetuned')
+    model = get_pytorch_linear_model(32)
+    # convert to ONNX
+    with pytest.raises(ValueError):
+        to_onnx(model, temp_onnx_file, input_shape=INPUT_SHAPE)
+
+
+def test_handle_tuple_for_shape(get_pytorch_linear_model):
+    INPUT_SHAPE = [32]
+    # Create path that does not end with .onnx
+    temp_onnx_file = str(Path(tempfile.tempdir) / 'finetuned')
+    model = get_pytorch_linear_model(32)
+    # convert to ONNX
+    with pytest.raises(ValueError):
+        to_onnx(model, temp_onnx_file, input_shape=tuple(INPUT_SHAPE))
+
+
 def test_pytorch_to_onnx(get_pytorch_linear_model):
     INPUT_SHAPE = [32]
     temp_onnx_file = str(Path(tempfile.tempdir) / 'finetuned.onnx')
@@ -112,9 +133,10 @@ def test_pytorch_to_onnx(get_pytorch_linear_model):
     validate_onnx_export(model, temp_onnx_file, INPUT_SHAPE)
 
 
-def test_pytorch_conv_to_onnx(pytorch_conv_model):
+def test_pytorch_conv_to_onnx(pytorch_conv_model, tmpdir):
     INPUT_SHAPE = [2, 32, 32]
-    temp_onnx_file = str(Path(tempfile.tempdir) / 'finetuned.onnx')
+
+    temp_onnx_file = str(tmpdir / 'finetuned.onnx')
 
     to_onnx(pytorch_conv_model, temp_onnx_file, input_shape=INPUT_SHAPE)
     # convert to ONNX
@@ -129,10 +151,10 @@ def test_pytorch_conv_to_onnx(pytorch_conv_model):
     np.testing.assert_allclose(y_original, y_exported, rtol=1e-03, atol=1e-05)
 
 
-def test_pytorch_lstm_to_onnx(pytorch_lstm_model):
+def test_pytorch_lstm_to_onnx(pytorch_lstm_model, tmpdir):
     INPUT_SHAPE = [32, 32]
 
-    temp_onnx_file = str(Path(tempfile.tempdir) / 'finetuned.onnx')
+    temp_onnx_file = str(tmpdir / 'finetuned.onnx')
     # convert to ONNX
     to_onnx(pytorch_lstm_model, temp_onnx_file, input_shape=INPUT_SHAPE)
 
@@ -151,55 +173,55 @@ def test_pytorch_lstm_to_onnx(pytorch_lstm_model):
     )
 
 
-def test_keras_to_onnx(get_keras_linear_model):
+def test_keras_to_onnx(get_keras_linear_model, tmpdir):
     INPUT_SHAPE = [32]
     model = get_keras_linear_model(32)
-    temp_onnx_file = str(Path(tempfile.tempdir) / 'finetuned.onnx')
+    temp_onnx_file = str(tmpdir / 'finetuned.onnx')
     # convert to ONNX
     to_onnx(model, temp_onnx_file, input_shape=INPUT_SHAPE)
     validate_onnx_export(model, temp_onnx_file, INPUT_SHAPE)
 
 
-def test_keras_conv_to_onnx(get_keras_conv_model):
+def test_keras_conv_to_onnx(get_keras_conv_model, tmpdir):
     INPUT_SHAPE = [32, 32, 3]
     model = get_keras_conv_model(INPUT_SHAPE)
-    temp_onnx_file = str(Path(tempfile.tempdir) / 'finetuned.onnx')
+    temp_onnx_file = str(tmpdir / 'finetuned.onnx')
     # convert to ONNX
     to_onnx(model, temp_onnx_file, input_shape=INPUT_SHAPE)
     validate_onnx_export(model, temp_onnx_file, INPUT_SHAPE)
 
 
-def test_keras_lstm_to_onnx(get_keras_lstm_model):
+def test_keras_lstm_to_onnx(get_keras_lstm_model, tmpdir):
     INPUT_SHAPE = [32, 32]
     model = get_keras_lstm_model(INPUT_SHAPE)
-    temp_onnx_file = str(Path(tempfile.tempdir) / 'finetuned.onnx')
+    temp_onnx_file = str(tmpdir / 'finetuned.onnx')
     # convert to ONNX
     to_onnx(model, temp_onnx_file, input_shape=INPUT_SHAPE)
     validate_onnx_export(model, temp_onnx_file, INPUT_SHAPE)
 
 
-def test_paddle_to_onnx(get_paddle_linear_model):
+def test_paddle_to_onnx(get_paddle_linear_model, tmpdir):
     INPUT_SHAPE = [32]
-    temp_onnx_file = str(Path(tempfile.tempdir) / 'finetuned.onnx')
+    temp_onnx_file = str(tmpdir / 'finetuned.onnx')
     model = get_paddle_linear_model(INPUT_SHAPE[0])
     # convert to ONNX
     to_onnx(model, temp_onnx_file, input_shape=INPUT_SHAPE)
     validate_onnx_export(model, temp_onnx_file, INPUT_SHAPE)
 
 
-def test_paddle_conv_to_onnx(paddle_conv_model):
+def test_paddle_conv_to_onnx(paddle_conv_model, tmpdir):
     INPUT_SHAPE = [3, 32, 32]
-    temp_onnx_file = str(Path(tempfile.tempdir) / 'finetuned.onnx')
+    temp_onnx_file = str(tmpdir / 'finetuned.onnx')
 
     # convert to ONNX
     to_onnx(paddle_conv_model, temp_onnx_file, input_shape=INPUT_SHAPE)
     validate_onnx_export(paddle_conv_model, temp_onnx_file, INPUT_SHAPE)
 
 
-def test_paddle_lstm_to_onnx(get_paddle_lstm_model):
+def test_paddle_lstm_to_onnx(get_paddle_lstm_model, tmpdir):
     INPUT_SHAPE = [32, 32]
     model = get_paddle_lstm_model()
-    temp_onnx_file = str(Path(tempfile.tempdir) / 'finetuned.onnx')
+    temp_onnx_file = str(tmpdir / 'finetuned.onnx')
     # convert to ONNX
     to_onnx(model, temp_onnx_file, input_shape=INPUT_SHAPE)
 

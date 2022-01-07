@@ -1,3 +1,4 @@
+from functools import partial
 from typing import Any, List, Sequence, Tuple
 
 import numpy as np
@@ -10,13 +11,16 @@ def to_onnx(
     model_path: str,
     input_shape: Sequence[int],
     opset_version: int = 11,
+    input_type: str = "float32",
 ) -> None:
     """Func that converts a given model in PaddlePaddle, PyTorch or Keras,
     and converts it to the ONNX format
-    :param embed_model: Model to be converted and stored in ONNX
-    :param model_path: Path to store ONNX model to
-    :param input_shape: Input shape of embedding model
-    :param opset_version: ONNX opset version in which to register
+    :params embed_model: Model to be converted and stored in ONNX
+    :params model_path: Path to store ONNX model to
+    :params input_shape: Input shape of embedding model
+    :params opset_version: ONNX opset version in which to register
+    :params input_type: Input type for model tracing during export of
+      PyTorch-based models
     """
     if isinstance(input_shape, tuple):
         input_shape = list(input_shape)
@@ -29,16 +33,11 @@ def to_onnx(
     fn = get_framework(embed_model)
     _to_onnx_func = None
     if fn == 'torch':
-        _to_onnx_func = _to_onnx_torch
+        _to_onnx_func = partial(_to_onnx_torch, input_type=input_type)
     elif fn == 'keras':
         _to_onnx_func = _to_onnx_keras
-    elif fn == 'paddle':
-        _to_onnx_func = _to_onnx_paddle
     else:
-        raise ValueError(
-            f'The model framework was: {fn}, '
-            'but should be one of torch, keras or paddle.'
-        )
+        _to_onnx_func = _to_onnx_paddle
 
     # Call onnx conversion
     _to_onnx_func(embed_model, model_path, input_shape, opset_version)
@@ -48,7 +47,7 @@ def to_onnx(
 
 def _check_onnx_model(model_path: str) -> None:
     """Check an ONNX model
-    :param model_path: Path to ONNX model
+    :params model_path: Path to ONNX model
     """
     import onnx
 
@@ -62,24 +61,37 @@ def _to_onnx_torch(
     input_shape: Tuple[int, ...],
     opset_version: int = 11,
     batch_size: int = 16,
+    input_type: str = "float32",
 ) -> None:
     """Convert a PyTorch embedding model to the ONNX format
-    :param embed_model: Embedding model to register in ONNX
-    :param model_path: Patch where to register ONNX model to
-    :param input_shape: Embedding model input shape
-    :param batch_size: The batch size during export
-    :param opset_version: ONNX opset version in which to register
+    :params embed_model: Embedding model to register in ONNX
+    :params model_path: Patch where to register ONNX model to
+    :params input_shape: Embedding model input shape
+    :params batch_size: The batch size during export
+    :params opset_version: ONNX opset version in which to register
+    :params input_type: Input type for model tracing during export
+      of PyTorch-based models
     """
 
     import torch
 
-    x = torch.randn([batch_size] + input_shape, requires_grad=True, dtype=torch.float32)
+    supported_types = {"float16": torch.float16, "float32": torch.float32}
+    if input_type not in supported_types:
+        raise ValueError(
+            f'The input_type should be one of: {[t for t in supported_types.keys()]} '
+            f'but was: {input_type}'
+        )
+
+    x = torch.randn(
+        [batch_size] + input_shape,
+        requires_grad=True,
+        dtype=supported_types[input_type],
+    )
 
     torch.onnx.export(
         embed_model,
         x,
         model_path,
-        export_params=True,
         do_constant_folding=True,
         opset_version=opset_version,
         input_names=['input'],
@@ -95,10 +107,10 @@ def _to_onnx_keras(
     opset_version: int = 11,
 ) -> None:
     """Convert a Keras embedding model to the ONNX format
-    :param embed_model: Embedding model to register in ONNX
-    :param model_path: Patch where to register ONNX model to
-    :param input_shape: Embedding model input shape
-    :param opset_version: ONNX opset version in which to register
+    :params embed_model: Embedding model to register in ONNX
+    :params model_path: Patch where to register ONNX model to
+    :params input_shape: Embedding model input shape
+    :params opset_version: ONNX opset version in which to register
     """
 
     try:
@@ -128,11 +140,11 @@ def _to_onnx_paddle(
     model_input_type: str = 'float32',
 ) -> None:
     """Convert a paddle embedding model to the ONNX format
-    :param embed_model: Embedding model to register in ONNX
-    :param model_path: Patch where to register ONNX model to
-    :param input_shape: Embedding model input shape
-    :param opset_version: ONNX opset version in which to register
-    :param model_input_type: Data type model expects
+    :params embed_model: Embedding model to register in ONNX
+    :params model_path: Patch where to register ONNX model to
+    :params input_shape: Embedding model input shape
+    :params opset_version: ONNX opset version in which to register
+    :params model_input_type: Data type model expects
     """
 
     # Removing onnx extension as paddle adds it automatically
@@ -162,10 +174,10 @@ def validate_onnx_export(
     """
     Test an exported model by comparing the outputs of the original and the exported model
     against the same input.
-    :param embed_model: The original embedding model. Can be either a PyTorch module,
+    :params embed_model: The original embedding model. Can be either a PyTorch module,
         a Keras model or a PaddlePaddle layer.
-    :param export_path: The path where the exported model is stored.
-    :param input_shape: The model's expected input shape, without the batch axis.
+    :params export_path: The path where the exported model is stored.
+    :params input_shape: The model's expected input shape, without the batch axis.
     """
     import onnxruntime
 
