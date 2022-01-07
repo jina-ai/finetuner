@@ -277,27 +277,3 @@ def test_torch_mlp_model_parser():
 
     assert r[3]['output_features'] == 32
     assert r[3]['nb_params'] == 4128
-
-
-def test_attach_bottleneck_layer(torch_vgg16_cnn_model):
-    class _BottleneckModel(nn.Module):
-        def __init__(self):
-            super().__init__()
-            self._linear1 = nn.Linear(in_features=4096, out_features=1024)
-            self._relu1 = nn.ReLU()
-            self._linear2 = nn.Linear(in_features=1024, out_features=512)
-            self._softmax = nn.Softmax()
-
-        def forward(self, input_):
-            return self._softmax(self._linear2(self._relu1(self._linear1(input_))))
-
-    pytorch_tailor = PytorchTailor(
-        model=torch_vgg16_cnn_model,
-        input_size=(3, 224, 224),
-        input_dtype='float32',
-    )
-    tailed_model = pytorch_tailor.to_embedding_model(
-        layer_name='linear_36', freeze=False, projection_head=_BottleneckModel()
-    )
-    out = tailed_model(torch.rand(1, 3, 224, 224))
-    assert out.shape == (1, 512)
