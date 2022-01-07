@@ -83,7 +83,7 @@ class KerasTailor(BaseTailor):
             will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
             To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
         :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.
-        :param projection_head: Attach a module at the end of model, this module should always trainable.
+        :param projection_head: Attach a module at the end of model, this module should be always trainable.
         :return: Converted embedding model.
         """
         _all_embed_layers = {layer['name']: layer for layer in self.embedding_layers}
