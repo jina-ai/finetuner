@@ -19,8 +19,8 @@ def test_projection_head(in_features, output_dim, num_layers):
 @pytest.mark.parametrize(
     'tf_model, input_size, input_, dim_projection_head, dim_representation, input_dtype',
     [
-        ('tf_dense_model', (128,), (2, 128), 128, 10, 'float32'),
-        # ('torch_simple_cnn_model', (1, 28, 28), (2, 1, 28, 28), 128, 10, 'float32'), # TODO FIX EAGER TENSOR
+        # ('tf_dense_model', (128,), (2, 128), 128, 10, 'float32'),
+        ('torch_simple_cnn_model', (1, 28, 28), (2, 1, 28, 28), 128, 10, 'float32'), # TODO FIX EAGER TENSOR
         # ('torch_vgg16_cnn_model', (3, 224, 224), (2, 3, 224, 224), 128, 1000, 'float32'),
         # ('torch_stacked_lstm', 128, (2, 128), 128, 5, 'int32'),
     ],

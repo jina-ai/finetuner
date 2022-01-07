@@ -51,8 +51,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         scheduler_step: str = 'batch',
         callbacks: Optional[List[BaseCallback]] = None,
         device: str = 'cpu',
-        input_size: Optional[Tuple[int, ...]] = None,
-        input_dtype: str = 'float32',
         **kwargs,
     ):
         """Create the tuner instance.
@@ -81,10 +79,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
             will be pre-prended to this list.
         :param device: The device to which to move the model. Supported options are
             ``"cpu"`` and ``"cuda"`` (for GPU)
-        :param input_size: a sequence of integers defining the shape of the input tensor. Note, batch size is *not* part
-            of ``input_size``. It is required for self-supervised learning while get the output shape of :attr:`embed_model`
-            and attach a projection head.
-        :param input_dtype: the data type of the input tensor.
         """
         self._embed_model = embed_model
         self._loss = self._get_loss(loss)
@@ -92,8 +86,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         self._scheduler_step = scheduler_step
         self._scheduler = None
         self._device_name = device
-        self._input_size = input_size
-        self._input_dtype = input_dtype
 
         # Check for early stopping
         self.stop_training = False
@@ -145,14 +137,6 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
     @abc.abstractmethod
     def _default_configure_optimizer(self, model: AnyDNN) -> AnyOptimizer:
         """Get the default optimizer (Adam), if none was provided by user."""
-
-    @abc.abstractmethod
-    def _attach_projection_head(
-        self,
-        output_dim: Optional[int] = 128,
-        num_layers: Optional[int] = 3,
-    ):
-        """Attach a projection head on top of the embed model for self-supervised learning."""
 
     def _trigger_callbacks(self, method: str, **kwargs):
         """Trigger the specified method on all callbacks"""

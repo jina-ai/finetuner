@@ -167,7 +167,7 @@ def test_freeze_given_bottleneck_model_and_freeze_is_true(torch_simple_cnn_model
     )
 
     model = pytorch_tailor.to_embedding_model(
-        freeze=True, layer_name='linear_8', bottleneck_net=_BottleneckModel()
+        freeze=True, layer_name='linear_8', projection_head=_BottleneckModel()
     )
     # assert bottleneck model is not freezed
     for name, param in model.named_parameters():
@@ -297,7 +297,7 @@ def test_attach_bottleneck_layer(torch_vgg16_cnn_model):
         input_dtype='float32',
     )
     tailed_model = pytorch_tailor.to_embedding_model(
-        layer_name='linear_36', freeze=False, bottleneck_net=_BottleneckModel()
+        layer_name='linear_36', freeze=False, projection_head=_BottleneckModel()
     )
     out = tailed_model(torch.rand(1, 3, 224, 224))
     assert out.shape == (1, 512)

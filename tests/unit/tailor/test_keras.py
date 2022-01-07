@@ -90,7 +90,7 @@ def test_freeze_given_bottleneck_model_and_freeze_is_true(tf_simple_cnn_model):
     )
 
     model = paddle_tailor.to_embedding_model(
-        freeze=True, layer_name='dropout_1', bottleneck_net=_create_bottleneck_model()
+        freeze=True, layer_name='dropout_1', projection_head=_create_bottleneck_model()
     )
     # assert bottleneck model is not freezed
     for layer in model.layers:
@@ -177,6 +177,6 @@ def test_attach_bottleneck_layer(tf_vgg16_cnn_model):
         input_dtype='float32',
     )
     tailed_model = keras_tailor.to_embedding_model(
-        layer_name='fc1', freeze=False, bottleneck_net=_create_bottleneck_model()
+        layer_name='fc1', freeze=False, projection_head=_create_bottleneck_model()
     )
     assert list(tailed_model.output.shape) == ([None, 512])

@@ -7,7 +7,6 @@ from tensorflow.keras.optimizers import Optimizer
 from tensorflow.keras.optimizers.schedules import LearningRateSchedule
 
 from ... import __default_tag_key__
-from ...excepts import DimensionMismatchException
 from ..base import BaseLoss, BaseTuner
 from ..dataset import ClassDataset, SessionDataset
 from ..dataset.datasets import InstanceDataset
@@ -38,13 +37,12 @@ class KerasTuner(
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
         num_workers: int = 0,
-    ) -> Tuple[KerasSequenceAdapter, bool]:
+    ) -> KerasSequenceAdapter:
         """Get the dataloader for the dataset
 
         In this case, since there is no true dataloader in keras, we are returning
         the adapter, which can produce the dataset that yields batches.
         """
-        is_instance_dataset = False
 
         if __default_tag_key__ in data[0].tags:
             dataset = ClassDataset(data, preprocess_fn=preprocess_fn)
@@ -53,7 +51,6 @@ class KerasTuner(
                 dataset = SessionDataset(data, preprocess_fn=preprocess_fn)
             else:
                 dataset = InstanceDataset(data, preprocess_fn=preprocess_fn)
-                is_instance_dataset = True
 
         batch_sampler = self._get_batch_sampler(
             dataset,
@@ -66,38 +63,11 @@ class KerasTuner(
         )
 
         adapter = KerasSequenceAdapter(sequence)
-        return adapter, is_instance_dataset
+        return adapter
 
     def _move_model_to_device(self):
         """Move the model to device and set device"""
         # This does nothing as explicit device placement is not required in Keras
-
-    def _attach_projection_head(
-        self,
-        output_dim: Optional[int] = 128,
-        num_layers: Optional[int] = 3,
-    ):
-        """Attach a projection head on top of the embed model for self-supervised learning.
-        Calling this function will modify :attr:`self._embed_model` in place.
-
-        :param output_dim: The output dimensionality of the projection, default 128, recommend 32, 64, 128, 256.
-        :param num_layers: Number of layers of the projection head, default 3, recommend 2, 3.
-        """
-        # interpret embed model output shape
-        rand_input = tf.constant(
-            tf.random.uniform(self._input_size), dtype=self._input_dtype
-        )
-        print(f'\n\n{type(rand_input)}\n\n')
-        output = self._embed_model(tf.expand_dims(rand_input, axis=0))
-        if not len(output.shape) == 2:
-            raise DimensionMismatchException(
-                f'Expected input shape is 2d, got {len(output.shape)}.'
-            )
-        projection_head = _ProjectionHead(output.shape[1], output_dim, num_layers)
-        embed_model_with_projection_head = tf.keras.Sequential()
-        embed_model_with_projection_head.add(self._embed_model)
-        embed_model_with_projection_head.add(projection_head)
-        self._embed_model = embed_model_with_projection_head
 
     def _default_configure_optimizer(self, model: Layer) -> Optimizer:
         """Get the default Adam optimizer"""
@@ -158,7 +128,7 @@ class KerasTuner(
         num_workers: int = 0,
     ):
         # Get dataloaders
-        train_dl, is_instance_dataset = self._get_data_loader(
+        train_dl = self._get_data_loader(
             train_data,
             batch_size=batch_size,
             num_items_per_class=num_items_per_class,
@@ -167,7 +137,7 @@ class KerasTuner(
             collate_fn=collate_fn,
         )
         if eval_data:
-            eval_dl, _ = self._get_data_loader(
+            eval_dl = self._get_data_loader(
                 eval_data,
                 batch_size=batch_size,
                 num_items_per_class=num_items_per_class,
@@ -175,10 +145,6 @@ class KerasTuner(
                 preprocess_fn=preprocess_fn,
                 collate_fn=collate_fn,
             )
-
-        # If self-supervised, add projection head.
-        if is_instance_dataset:
-            self._attach_projection_head(output_dim=128, num_layers=3)
 
         # Set state
         self.state = TunerState(num_epochs=epochs)
@@ -210,10 +176,6 @@ class KerasTuner(
 
                 if self.stop_training:
                     break
-
-            # If self-supervised, drop projection head
-            if is_instance_dataset:
-                self._embed_model = tf.keras.Sequential(self._embed_model.layers[:-1])
 
             self._trigger_callbacks('on_fit_end')
 

@@ -33,7 +33,7 @@ class BaseTailor(abc.ABC):
         self,
         layer_name: Optional[str] = None,
         freeze: Union[bool, List[str]] = False,
-        bottleneck_net: Optional['AnyDNN'] = None,
+        projection_head: Optional['AnyDNN'] = None,
     ) -> 'AnyDNN':
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
@@ -41,7 +41,7 @@ class BaseTailor(abc.ABC):
             will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
             To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
         :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.
-        :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.
+        :param projection_head: Attach a bottleneck net at the end of model, this module should always trainable.
         :return: Converted embedding model.
         """
         ...

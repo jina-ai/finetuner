@@ -61,8 +61,6 @@ def fit(
     num_items_per_class: Optional[int] = None,
     callbacks: Optional[List['BaseCallback']] = None,
     num_workers: int = 0,
-    input_size: Optional[Tuple[int, ...]] = None,
-    input_dtype: str = 'float32',
 ) -> 'AnyDNN':
     ...
 
@@ -94,7 +92,7 @@ def fit(
     input_dtype: str = 'float32',
     layer_name: Optional[str] = None,
     freeze: Union[bool, List[str]] = False,
-    bottleneck_net: Optional['AnyDNN'] = None,
+    projection_head: Optional['AnyDNN'] = None,
 ) -> 'AnyDNN':
     ...
 
@@ -160,7 +158,7 @@ def fit(
     input_dtype: str = 'float32',
     layer_name: Optional[str] = None,
     freeze: Union[bool, List[str]] = False,
-    bottleneck_net: Optional['AnyDNN'] = None,
+    projection_head: Optional['AnyDNN'] = None,
 ) -> 'AnyDNN':
     ...
 

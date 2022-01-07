@@ -131,7 +131,7 @@ class PytorchTailor(BaseTailor):
         self,
         layer_name: Optional[str] = None,
         freeze: Union[bool, List[str]] = False,
-        bottleneck_net: Optional[nn.Module] = None,
+        projection_head: Optional[nn.Module] = None,
     ) -> 'AnyDNN':
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
@@ -139,7 +139,7 @@ class PytorchTailor(BaseTailor):
             will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
             To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
         :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.
-        :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.
+        :param projection_head: Attach a bottleneck net at the end of model, this module should always trainable.
         :return: Converted embedding model.
         """
 
@@ -188,9 +188,12 @@ class PytorchTailor(BaseTailor):
             if _relative_idx_to_embedding_layer is not None:
                 _relative_idx_to_embedding_layer += 1
 
-        if bottleneck_net:
-            return nn.Sequential(
-                model,
-                bottleneck_net,
+        if projection_head:
+            embed_model_with_projection_head = nn.Sequential()
+            embed_model_with_projection_head.add_module('embed_model', model)
+            embed_model_with_projection_head.add_module(
+                'projection_head', projection_head
             )
+            return embed_model_with_projection_head
+
         return model

@@ -8,7 +8,6 @@ from torch.utils.data._utils.collate import default_collate
 from torch.utils.data.dataloader import DataLoader
 
 from ... import __default_tag_key__
-from ...excepts import DimensionMismatchException
 from ..base import BaseTuner
 from ..dataset.datasets import InstanceDataset
 from ..state import TunerState
@@ -48,9 +47,8 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
         num_workers: int = 0,
-    ) -> Tuple[DataLoader, bool]:
+    ) -> DataLoader:
         """Get the dataloader for the dataset"""
-        is_instance_dataset = False
 
         if collate_fn:
 
@@ -69,7 +67,6 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 dataset = PytorchSessionDataset(data, preprocess_fn=preprocess_fn)
             else:
                 dataset = InstanceDataset(data, preprocess_fn=preprocess_fn)
-                is_instance_dataset = True
 
         batch_sampler = self._get_batch_sampler(
             dataset,
@@ -84,35 +81,12 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
             num_workers=num_workers,
         )
 
-        return data_loader, is_instance_dataset
+        return data_loader
 
     def _move_model_to_device(self):
         """Move the model to device and set device"""
         self.device = get_device(self._device_name)
         self._embed_model = self._embed_model.to(self.device)
-
-    def _attach_projection_head(
-        self,
-        output_dim: Optional[int] = 128,
-        num_layers: Optional[int] = 3,
-    ):
-        """Attach a projection head on top of the embed model for self-supervised learning.
-        Calling this function will modify :attr:`self._embed_model` in place.
-
-        :param output_dim: The output dimensionality of the projection, default 128, recommend 32, 64, 128, 256.
-        :param num_layers: Number of layers of the projection head, default 3, recommend 2, 3.
-        """
-        # interpret embed model output shape
-        output = self._embed_model(torch.unsqueeze(torch.rand(self._input_size), dim=0))
-        if not len(output.size()) == 2:
-            raise DimensionMismatchException(
-                f'Expected input shape is 2d, got {len(output.size())}.'
-            )
-        projection_head = _ProjectionHead(output.shape[1], output_dim, num_layers)
-        embed_model_with_projection_head = nn.Sequential()
-        embed_model_with_projection_head.add_module('embed_model', self._embed_model)
-        embed_model_with_projection_head.add_module('projection_head', projection_head)
-        self._embed_model = embed_model_with_projection_head
 
     def _default_configure_optimizer(self, model: nn.Module) -> Optimizer:
         """Get the default Adam optimizer"""
@@ -179,7 +153,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         num_workers: int = 0,
     ):
         # Get dataloaders
-        train_dl, is_instance_dataset = self._get_data_loader(
+        train_dl = self._get_data_loader(
             train_data,
             batch_size=batch_size,
             num_items_per_class=num_items_per_class,
@@ -189,7 +163,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
             num_workers=num_workers,
         )
         if eval_data:
-            eval_dl, _ = self._get_data_loader(
+            eval_dl = self._get_data_loader(
                 eval_data,
                 batch_size=batch_size,
                 num_items_per_class=num_items_per_class,
@@ -198,10 +172,6 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 collate_fn=collate_fn,
                 num_workers=num_workers,
             )
-
-        # If self-supervised, add projection head.
-        if is_instance_dataset:
-            self._attach_projection_head(output_dim=128, num_layers=3)
         # Set state
         self.state = TunerState(num_epochs=epochs)
         self._trigger_callbacks('on_fit_begin')
@@ -235,10 +205,6 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
             if self.stop_training:
                 break
-
-        # If self-supervised, drop projection head
-        if is_instance_dataset:
-            del self._embed_model.projection_head
 
         self._trigger_callbacks('on_fit_end')
 
