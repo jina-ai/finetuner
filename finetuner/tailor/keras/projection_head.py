@@ -12,28 +12,21 @@ class ProjectionHead(tf.keras.layers.Layer):
     def __init__(self, in_features: int, output_dim: int = 128, num_layers: int = 3):
         super().__init__()
         self.layers = []
-        is_last_layer = False
-        for idx in range(num_layers):
-            if idx == num_layers - 1:
-                is_last_layer = True
-            if not is_last_layer:
-                self.layers.append(
-                    tf.keras.layers.Dense(
-                        units=in_features,
-                        bias_initializer='zeros',
-                    )
+        for idx in range(num_layers - 1):
+            self.layers.append(
+                tf.keras.layers.Dense(
+                    units=in_features,
+                    bias_initializer='zeros',
                 )
-                self.layers.append(
-                    tf.keras.layers.BatchNormalization(epsilon=self.EPSILON)
-                )
-                self.layers.append(tf.keras.layers.ReLU())
-            else:
-                self.layers.append(
-                    tf.keras.layers.Dense(
-                        units=output_dim,
-                        bias_initializer='zeros',
-                    )
-                )
+            )
+            self.layers.append(tf.keras.layers.BatchNormalization(epsilon=self.EPSILON))
+            self.layers.append(tf.keras.layers.ReLU())
+        self.layers.append(
+            tf.keras.layers.Dense(
+                units=output_dim,
+                bias_initializer='zeros',
+            )
+        )
 
     def call(self, x):
         for layer in self.layers:
