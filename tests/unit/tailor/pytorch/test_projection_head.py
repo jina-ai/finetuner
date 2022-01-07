@@ -18,7 +18,7 @@ def test_projection_head(in_features, output_dim, num_layers):
     assert list(out.shape) == [2, output_dim]
 
 
-def test_attach_bottleneck_layer(torch_vgg16_cnn_model):
+def test_attach_custom_projection_head(torch_vgg16_cnn_model):
     class _BottleneckModel(nn.Module):
         def __init__(self):
             super().__init__()
@@ -52,7 +52,7 @@ def test_attach_bottleneck_layer(torch_vgg16_cnn_model):
     ],
     indirect=['torch_model'],
 )
-def test_attach_detach_projection_head(
+def test_attach_default_projection_head(
     torch_model, input_size, input_, dim_projection_head, out_dim_embed_model
 ):
     torch_tailor = PytorchTailor(model=torch_model, input_size=input_size)
