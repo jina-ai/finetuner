@@ -118,3 +118,28 @@ loss = TripletLoss(miner=TripletEasyHardMiner(pos_strategy='easy', neg_strategy=
 tuner = PaddleTuner(..., loss=loss)
 ```
 ````
+
+## NTXent Loss
+
+The NTXent (normalized cross-entropy) loss is a popular loss function used in self-supervised training. If is defined as
+
+$$
+\ell_{i} = -\log \left(\frac{\exp (\mathrm{cossim}(\mathbf{x}_i, \mathbf{x}_{p_i})/ \tau)}{\sum_{k=1}^{2N}1_{k \neq i}\exp (\mathrm{cossim}(\mathbf{x}_i, \mathbf{x}_{k})/ \tau)}\right),
+$$
+
+where $\mathbf{x}_i$ is the embedding of the i-th element, $\mathrm{cossim(\cdot, \cdot)}$ is the cosine similarity function, and $\tau$ is the temperature parameter.
+
+### Use with Tuner
+
+The use of this loss function with tuner is straightforward, as show in the snippet below. Note that this loss will only work with the {ref}`instance_dataset`.
+
+````{tab} Pytorch
+```python
+from finetuner.tuner.pytorch import PytorchTuner
+from finetuner.tuner.pytorch.losses import NTXentLoss
+
+loss = NTXentLoss(temperature=0.5)
+
+tuner = PytorchTuner(..., loss=loss)
+```
+````
