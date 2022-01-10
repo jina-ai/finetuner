@@ -40,6 +40,6 @@ def test_vision_preprocessor(doc, height, width, num_channels, channel_axis):
 
 
 def test_vision_preprocessor_fail_given_no_blob_and_uri():
-    doc = Document(text='random text')
+    doc = Document()
     with pytest.raises(AttributeError):
         vision_preprocessor(doc)
