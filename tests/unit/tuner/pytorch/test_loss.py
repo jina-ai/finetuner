@@ -147,8 +147,8 @@ def test_correct_ntxent_loss_gpu(labels, temp):
     for i in range(len(labels)):
         exclude_self = [j for j in range(len(labels)) if j != i]
         other_pos_ind = [labels[j] for j in exclude_self].index(labels[i])
-        losses.append(-F.log_softmax(sim[i, exclude_self], dim=0)[other_pos_ind])
+        losses.append(-F.log_softmax(sim[i, exclude_self], dim=0)[other_pos_ind].item())
 
     np.testing.assert_approx_equal(
-        loss_fn(embeddings, labels_tensor).numpy(), np.mean(losses), 4
+        loss_fn(embeddings, labels_tensor).cpu().numpy(), np.mean(losses), 4
     )
