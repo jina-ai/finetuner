@@ -33,10 +33,10 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
 )
 def test_vision_preprocessor(doc, height, width, num_channels, channel_axis):
     original_blob = doc.blob
-    augmented_doc = vision_preprocessor(doc, height, width, channel_axis)
-    assert augmented_doc.blob is not None
-    assert augmented_doc.blob.shape == (height, width, num_channels)
-    assert not np.array_equal(original_blob, augmented_doc.blob)
+    augmented_content = vision_preprocessor(doc, height, width, channel_axis)
+    assert augmented_content is not None
+    assert augmented_content.shape == (height, width, num_channels)
+    assert not np.array_equal(original_blob, augmented_content)
 
 
 def test_vision_preprocessor_fail_given_no_blob_and_uri():

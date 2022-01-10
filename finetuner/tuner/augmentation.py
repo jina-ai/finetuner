@@ -42,4 +42,4 @@ def vision_preprocessor(
         ]
     )
     doc.blob = transform(image=doc.blob)['image']
-    return doc
+    return doc.blob
