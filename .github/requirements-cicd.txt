@@ -6,3 +6,4 @@ torchvision==0.10.0
 scipy==1.7.1
 transformers==4.12.3
 wandb==0.12.7
+albumentations==1.1.0
