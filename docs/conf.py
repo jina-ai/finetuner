@@ -189,7 +189,7 @@ ogp_custom_meta_tags = [
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.3"></script>
-<script type="module>
+<script type="module">
   if (!('fragmentDirective' in Location.prototype) &&
       !('fragmentDirective' in document)) {
     import('https://cdn.jsdelivr.net/npm/text-fragments-polyfill');
