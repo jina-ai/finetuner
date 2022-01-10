@@ -202,6 +202,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -213,6 +214,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../components/tailor/">Tailor</a></li>
@@ -237,6 +239,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -245,6 +248,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -298,6 +302,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -334,21 +342,21 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.tuner</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">get_framework</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseTuner</span><span class="p">,</span> <span class="n">BaseLoss</span>
-    <span class="kn">from</span> <span class="nn">.callback</span> <span class="kn">import</span> <span class="n">BaseCallback</span>
     <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="p">(</span>
         <span class="n">AnyDNN</span><span class="p">,</span>
         <span class="n">AnyOptimizer</span><span class="p">,</span>
         <span class="n">AnyScheduler</span><span class="p">,</span>
+        <span class="n">CollateFnType</span><span class="p">,</span>
         <span class="n">DocumentSequence</span><span class="p">,</span>
         <span class="n">PreprocFnType</span><span class="p">,</span>
-        <span class="n">CollateFnType</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseLoss</span><span class="p">,</span> <span class="n">BaseTuner</span>
+    <span class="kn">from</span> <span class="nn">.callback</span> <span class="kn">import</span> <span class="n">BaseCallback</span>
 
 
 <span class="k">def</span> <span class="nf">_get_tuner_class</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'BaseTuner'</span><span class="p">]:</span>
@@ -392,9 +400,9 @@
 <span class="p">):</span>
     <span class="sd">"""Finetune the model on the training data.</span>
 
-<span class="sd">    :param embed_model: an embedding model</span>
-<span class="sd">    :param train_data: Data on which to train the model</span>
-<span class="sd">    :param eval_data: Data on which to evaluate the model at the end of each epoch</span>
+<span class="sd">    :param embed_model: an embedding model.</span>
+<span class="sd">    :param train_data: Data on which to train the model.</span>
+<span class="sd">    :param eval_data: Data on which the validation loss is computed.</span>
 <span class="sd">    :param preprocess_fn: A pre-processing function, to apply pre-processing to</span>
 <span class="sd">        documents on the fly. It should take as input the document in the dataset,</span>
 <span class="sd">        and output whatever content the framework-specific dataloader (and model) would</span>
@@ -402,15 +410,15 @@
 <span class="sd">    :param collate_fn: The collation function to merge the content of individual</span>
 <span class="sd">        items into a batch. Should accept a list with the content of each item,</span>
 <span class="sd">        and output a tensor (or a list/dict of tensors) that feed directly into the</span>
-<span class="sd">        embedding model</span>
-<span class="sd">    :param epochs: Number of epochs to train the model</span>
-<span class="sd">    :param batch_size: The batch size to use for training and evaluation</span>
+<span class="sd">        embedding model.</span>
+<span class="sd">    :param epochs: Number of epochs to train the model.</span>
+<span class="sd">    :param batch_size: The batch size to use for training and evaluation.</span>
+<span class="sd">    :param num_items_per_class: Number of items from a single class to include in</span>
+<span class="sd">        the batch. Only relevant for :class:`ClassDataset`.</span>
 <span class="sd">    :param loss: Which loss to use in training. Supported</span>
 <span class="sd">        losses are:</span>
 <span class="sd">        - ``SiameseLoss`` for Siamese network</span>
 <span class="sd">        - ``TripletLoss`` for Triplet network</span>
-<span class="sd">    :param num_items_per_class: Number of items from a single class to include in</span>
-<span class="sd">        the batch. Only relevant for class datasets</span>
 <span class="sd">    :param configure_optimizer: A function that allows you to provide a custom</span>
 <span class="sd">        optimizer and learning rate. The function should take one input - the</span>
 <span class="sd">        embedding model, and return either just an optimizer or a tuple of an</span>
@@ -420,13 +428,11 @@
 <span class="sd">    :param scheduler_step: At which interval should the learning rate sheduler's</span>
 <span class="sd">        step function be called. Valid options are "batch" and "epoch".</span>
 <span class="sd">    :param device: The device to which to move the model. Supported options are</span>
-<span class="sd">        ``"cpu"`` and ``"cuda"`` (for GPU)</span>
+<span class="sd">        ``"cpu"`` and ``"cuda"`` (for GPU).</span>
 <span class="sd">    :param callbacks: A list of callbacks. The progress bar callback</span>
 <span class="sd">        will be pre-prended to this list.</span>
-<span class="sd">    :param num_workers: Number of workers used for loading the data.</span>
-
-<span class="sd">        This works only with Pytorch and Paddle Paddle, and has no effect when using</span>
-<span class="sd">        a Keras model.</span>
+<span class="sd">    :param num_workers: Number of workers used for loading the data. This works only with Pytorch and</span>
+<span class="sd">        Paddle Paddle, and has no effect when using a Keras model.</span>
 <span class="sd">    """</span>
     <span class="n">ft</span> <span class="o">=</span> <span class="n">_get_tuner_class</span><span class="p">(</span><span class="n">embed_model</span><span class="p">)</span>
 
@@ -446,17 +452,18 @@
         <span class="n">preprocess_fn</span><span class="o">=</span><span class="n">preprocess_fn</span><span class="p">,</span>
         <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">,</span>
         <span class="n">num_items_per_class</span><span class="o">=</span><span class="n">num_items_per_class</span><span class="p">,</span>
+        <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="save"><a class="viewcode-back" href="../../../api/finetuner.tuner/#finetuner.tuner.save">[docs]</a><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">embed_model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span> <span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">"""Save the embedding model.</span>
 
-<span class="sd">    :param embed_model: The embedding model to save</span>
-<span class="sd">    :param model_path: Path to file/folder where to save the model</span>
-<span class="sd">    :param args: Arguments to pass to framework-specific tuner's ``save`` method</span>
+<span class="sd">    :param embed_model: The embedding model to save.</span>
+<span class="sd">    :param model_path: Path to file/folder where to save the model.</span>
+<span class="sd">    :param args: Arguments to pass to framework-specific tuner's ``save`` method.</span>
 <span class="sd">    :param kwargs: Keyword arguments to pass to framework-specific tuner's ``save``</span>
-<span class="sd">        method</span>
+<span class="sd">        method.</span>
 <span class="sd">    """</span>
     <span class="n">ft</span> <span class="o">=</span> <span class="n">_get_tuner_class</span><span class="p">(</span><span class="n">embed_model</span><span class="p">)</span>
 
@@ -472,7 +479,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

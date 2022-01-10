@@ -228,6 +228,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -239,6 +240,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../components/tailor/">Tailor</a></li>
@@ -263,6 +265,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -271,6 +274,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -324,6 +328,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -407,9 +415,9 @@ need to first use the miner to mine indices, and then output the loss by running
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>embed_model</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[~AnyDNN]) – Model that produces embeddings from inputs</p></li>
+<li><p><strong>embed_model</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[~AnyDNN]) – Model that produces embeddings from inputs.</p></li>
 <li><p><strong>loss</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Either the loss object instance, or the name of the loss function.
-Currently available losses are <code class="docutils literal notranslate"><span class="pre">SiameseLoss</span></code> and <code class="docutils literal notranslate"><span class="pre">TripletLoss</span></code></p></li>
+Currently available losses are <code class="docutils literal notranslate"><span class="pre">SiameseLoss</span></code> and <code class="docutils literal notranslate"><span class="pre">TripletLoss</span></code>.</p></li>
 <li><p><strong>configure_optimizer</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[~AnyDNN], <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~AnyOptimizer, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~AnyOptimizer, ~AnyScheduler]]]]) – <p>A function that allows you to provide a custom
 optimizer and learning rate. The function should take one input - the
 embedding model, and return either just an optimizer or a tuple of an
@@ -430,7 +438,7 @@ are called by the optimizer on each step automatically.</p>
 <li><p><strong>callbacks</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="../finetuner.tuner.callback.base/#finetuner.tuner.callback.base.BaseCallback" title="finetuner.tuner.callback.base.BaseCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCallback</span></code></a>]]) – A list of callbacks. The progress bar callback
 will be pre-prended to this list.</p></li>
 <li><p><strong>device</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The device to which to move the model. Supported options are
-<code class="docutils literal notranslate"><span class="pre">"cpu"</span></code> and <code class="docutils literal notranslate"><span class="pre">"cuda"</span></code> (for GPU)</p></li>
+<code class="docutils literal notranslate"><span class="pre">"cpu"</span></code> and <code class="docutils literal notranslate"><span class="pre">"cuda"</span></code> (for GPU).</p></li>
 </ul>
 </dd>
 </dl>
@@ -450,27 +458,27 @@ will be pre-prended to this list.</p></li>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.base.BaseTuner.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_items_per_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseTuner.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseTuner.fit" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_items_per_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/base/#BaseTuner.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.base.BaseTuner.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finetune the model on the training data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>train_data</strong> (<em>DocumentSequence</em>) – Data on which to train the model</p></li>
-<li><p><strong>eval_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – Data on which to evaluate the model at the end of each epoch</p></li>
-<li><p><strong>preprocess_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – A pre-processing function. It should take as input the
-content of an item in the dataset and return the pre-processed content</p></li>
+<li><p><strong>train_data</strong> (<em>DocumentSequence</em>) – Data on which to train the model.</p></li>
+<li><p><strong>eval_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – Data on which the validation loss is computed.</p></li>
+<li><p><strong>preprocess_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – A pre-processing function, to apply pre-processing to
+documents on the fly. It should take as input the document in the dataset,
+and output whatever content the framework-specific dataloader (and model) would
+accept.</p></li>
 <li><p><strong>collate_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – The collation function to merge the content of individual
 items into a batch. Should accept a list with the content of each item,
 and output a tensor (or a list/dict of tensors) that feed directly into the
-embedding model</p></li>
-<li><p><strong>epochs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of epochs to train the model</p></li>
-<li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The batch size to use for training and evaluation</p></li>
+embedding model.</p></li>
+<li><p><strong>epochs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of epochs to train the model.</p></li>
+<li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The batch size to use for training and evaluation.</p></li>
 <li><p><strong>num_items_per_class</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Number of items from a single class to include in
-the batch. Only relevant for class datasets</p></li>
-<li><p><strong>num_workers</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – <p>Number of workers used for loading the data.</p>
-<p>This works only with Pytorch and Paddle Paddle, and has no effect when using
-a Keras model.</p>
-</p></li>
+the batch. Only relevant for class datasets.</p></li>
+<li><p><strong>num_workers</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of workers used for loading the data. This works only with Pytorch and
+Paddle Paddle, and has no effect when using a Keras model.</p></li>
 </ul>
 </dd>
 </dl>
@@ -515,7 +523,7 @@ a Keras model.</p>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

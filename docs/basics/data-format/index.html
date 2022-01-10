@@ -229,6 +229,7 @@
 <li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Data Format</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -240,6 +241,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../components/tailor/">Tailor</a></li>
@@ -264,6 +266,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -272,6 +275,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -325,6 +329,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -365,8 +373,8 @@
 <p>Finetuner uses Jina <a class="reference external" href="https://docs.jina.ai/fundamentals/document/"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a> as the primitive data type. In
 particular, <a class="reference external" href="https://docs.jina.ai/fundamentals/document/documentarray-api/"><code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>
 and <a class="reference external" href="https://docs.jina.ai/fundamentals/document/documentarraymemmap-api/"><code class="docutils literal notranslate"><span class="pre">DocumentArrayMemap</span></code></a> are the input data type
-in the high-level <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code> API. This means, your training dataset and evaluation dataset should be stored in <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>
-or <code class="docutils literal notranslate"><span class="pre">DocumentArrayMemap</span></code>, where each training or evaluation instance is a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object:</p>
+in the high-level <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code> API. This means, your training dataset and evaluation dataset should be stored in
+<code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> or <code class="docutils literal notranslate"><span class="pre">DocumentArrayMemap</span></code>, where each training or evaluation instance is a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
@@ -375,11 +383,12 @@ or <code class="docutils literal notranslate"><span class="pre">DocumentArrayMem
 </pre></div>
 </div>
 <p>This chapter introduces how to construct a <code class="docutils literal notranslate"><span class="pre">Document</span></code> in a way that Finetuner will accept.</p>
-<p>There are three different types of datasets:</p>
+<p>There are four different types of datasets:</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </div>
@@ -481,7 +490,7 @@ array.</p>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

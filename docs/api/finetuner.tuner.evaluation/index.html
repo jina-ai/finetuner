@@ -228,6 +228,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -239,6 +240,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../components/tailor/">Tailor</a></li>
@@ -263,6 +265,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -271,6 +274,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -324,6 +328,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -363,43 +371,34 @@
 <span id="finetuner-tuner-evaluation-module"></span><h1>finetuner.tuner.evaluation module<a class="headerlink" href="#module-finetuner.tuner.evaluation" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.tuner.evaluation.Evaluator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.evaluation.</span></span><span class="sig-name descname"><span class="pre">Evaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eval_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/evaluation/#Evaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.evaluation.Evaluator" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.tuner.evaluation.</span></span><span class="sig-name descname"><span class="pre">Evaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/evaluation/#Evaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.evaluation.Evaluator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Build an Evaluator object that can be used to evaluate an embedding model on a retrieval task
-:type eval_data: DocumentSequence
-:param eval_data: A sequence of documents. Each document should contain ground truth matches under</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">doc.matches</span></code> and relevance scores under <code class="docutils literal notranslate"><span class="pre">doc.tags[finetuner.__default_tag_key__]</span></code> for each
-match.</p>
-</div></blockquote>
+<p>The evaluator class</p>
+<p>Build an Evaluator object that can be used to evaluate the performance on a retrieval task</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>catalog</strong> (<em>DocumentSequence</em>) – A sequence of documents, against which the eval docs will be matched.</p></li>
-<li><p><strong>embed_model</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – The embedding model to use, in order to extract document representations.</p></li>
-<li><p><strong>limit</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Limit the number of results during matching.</p></li>
-<li><p><strong>distance</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The type of distance to use when matching docs, avalilable options are
-<code class="docutils literal notranslate"><span class="pre">"cosine"</span></code>, <code class="docutils literal notranslate"><span class="pre">"euclidean"</span></code> and <code class="docutils literal notranslate"><span class="pre">"sqeuclidean"</span></code></p></li>
-<li><p><strong>device</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the computational device for <cite>embed_model</cite>, can be either
-<cite>cpu</cite> or <cite>cuda</cite>.</p></li>
-<li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – number of Documents in a batch for embedding</p></li>
-<li><p><strong>preprocess_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – A pre-processing function, to apply pre-processing to
-documents on the fly. It should take as input the document in the dataset,
-and output whatever content the model would accept.</p></li>
-<li><p><strong>collate_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – The collation function to merge the content of individual
-items into a batch. Should accept a list with the content of each item,
-and output a tensor (or a list/dict of tensors) that feed directly into the
-embedding model</p></li>
+<li><p><strong>query_data</strong> (<em>DocumentSequence</em>) – A sequence of documents. Both class and session format is accepted. In the case of session
+data, each document should contain ground truth matches from the catalog under <code class="docutils literal notranslate"><span class="pre">doc.matches</span></code> where each
+match contains the relevance score under <code class="docutils literal notranslate"><span class="pre">match.tags[finetuner.__default_tag_key__]</span></code>. In the case of
+class format, each document should be mapped to a class, which is specified under
+<code class="docutils literal notranslate"><span class="pre">doc.tags[finetuner.__default_tag_key__]</span></code>.</p></li>
+<li><p><strong>index_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – A sequence of documents, against which the query data will be matched. Both class and session
+format is accepted. In the case of session data, ground truth matches are included in the <cite>query_data</cite>, so
+no additional information is required in the index data. In the case of class data, each doc in the index
+data should have class labels in <code class="docutils literal notranslate"><span class="pre">doc.tags[finetuner.__default_tag_key__]</span></code>.</p></li>
+<li><p><strong>embed_model</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – The embedding model to use, in order to extract document representations. If set to None,
+documents are assumed to carry representations.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>None.</p>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.evaluation.Evaluator.list_available_metrics">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_available_metrics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/evaluation/#Evaluator.list_available_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.evaluation.Evaluator.list_available_metrics" title="Permalink to this definition">¶</a></dt>
-<dd><p>List available metrics</p>
+<dd><p>List available metrics.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
@@ -408,19 +407,29 @@ embedding model</p></li>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.evaluation.Evaluator.evaluate">
-<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'metrics'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/evaluation/#Evaluator.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.evaluation.Evaluator.evaluate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'metrics'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">embed_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/evaluation/#Evaluator.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.evaluation.Evaluator.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run evaluation
-:type label: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>
-:param label: Per document metrics are written in each evaluation document under</p>
+:type limit: <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>
+:param limit: The number of top search results to consider, when computing the evaluation metrics.
+:type distance: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>
+:param distance: The type of distance metric to use when matching query and index docs, available options are</p>
 <blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">doc.tags[__default_tag_key__][label]</span></code>.</p>
+<div><p><code class="docutils literal notranslate"><span class="pre">'cosine'</span></code>, <code class="docutils literal notranslate"><span class="pre">'euclidean'</span></code> and <code class="docutils literal notranslate"><span class="pre">'sqeuclidean'</span></code>.</p>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Per document metrics are written in each evaluation document under
+<code class="docutils literal notranslate"><span class="pre">doc.tags[__evaluator_metrics_key__][label]</span></code>.</p></li>
+<li><p><strong>num_workers</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of workers to use when matching query and index data.</p></li>
+<li><p><strong>embed_kwargs</strong> – Keyword arguments to pass to the embed call.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>dictionary with evaluation metrics.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dictionary with evaluation metrics</p>
 </dd>
 </dl>
 </dd></dl>
@@ -459,7 +468,7 @@ embedding model</p></li>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

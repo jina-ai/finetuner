@@ -66,7 +66,7 @@ model = paddle.vision.models.resnet50(pretrained=True)
 
 ## Put together
 
-Finally, let's start the Finetuner. Note that we freeze the weights of the original ResNet and tune only the last linear layer, a procedure that leverages the Tailor component underneath:
+Finally, let's start the Finetuner. Note that we are not freezing the layers of the model, thereby making the entire model trainable.
 
 ```{code-block} python
 ---
@@ -78,10 +78,9 @@ finetuner.fit(
     model=model,
     interactive=True,
     train_data=data,
-    freeze=True,
     to_embedding_model=True,
-    input_size=(3, 224, 224),
     freeze=False,
+    input_size=(3, 224, 224),
 )
 ```
 

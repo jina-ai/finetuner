@@ -228,6 +228,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -239,6 +240,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../components/tailor/">Tailor</a></li>
@@ -263,6 +265,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -271,6 +274,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -324,6 +328,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -375,25 +383,20 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>save_dir</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – string, path to save the model file.</p></li>
-<li><p><strong>monitor</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – if <cite>monitor=’loss’</cite> best bodel saved will be according
-to the training loss, if <cite>monitor=’val_loss’</cite> best model saved will be
-according to the validation loss</p></li>
-<li><p><strong>mode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – one of {‘auto’, ‘min’, ‘max’}. the
-decision to overwrite the current save file is made based on either
-the maximization or the minimization of the monitored quantity.
-For <cite>val_acc</cite>, this should be <cite>max</cite>, for <cite>val_loss</cite> this should be
-<cite>min</cite>, etc. In <cite>auto</cite> mode, the mode is set to <cite>max</cite> if the quantities
-monitored are ‘acc’ or start with ‘fmeasure’ and are set to <cite>min</cite> for
-the rest of the quantities.</p></li>
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to log notifications when a checkpoint is saved</p></li>
+<li><p><strong>monitor</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – if <cite>monitor=’train_loss’</cite> best model saved will be according
+to the training loss, while if <cite>monitor=’val_loss’</cite> best model saved will be
+according to the validation loss. If monitor is set to an evaluation metric,
+best model saved will be according to this metric.</p></li>
+<li><p><strong>mode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – one of {‘auto’, ‘min’, ‘max’}. The decision to overwrite the
+currently saved model is made based on either the maximization or the
+minimization of the monitored quantity.
+For an evaluation metric, this should be <cite>max</cite>, for <cite>val_loss</cite> this should
+be <cite>min</cite>, etc. In <cite>auto</cite> mode, the mode is set to <cite>min</cite> if <cite>monitor=’loss’</cite>
+or <cite>monitor=’val_loss’</cite> and to <cite>min</cite> otherwise.</p></li>
+<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to log notifications when a checkpoint is saved.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.on_epoch_end">
-<span class="sig-name descname"><span class="pre">on_epoch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/best_model_checkpoint/#BestModelCheckpoint.on_epoch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.on_epoch_end" title="Permalink to this definition">¶</a></dt>
-<dd><p>Called at the end of the training epoch.</p>
-</dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.on_train_batch_end">
 <span class="sig-name descname"><span class="pre">on_train_batch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/best_model_checkpoint/#BestModelCheckpoint.on_train_batch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.on_train_batch_end" title="Permalink to this definition">¶</a></dt>
@@ -402,13 +405,18 @@ the rest of the quantities.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.on_val_batch_end">
 <span class="sig-name descname"><span class="pre">on_val_batch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/best_model_checkpoint/#BestModelCheckpoint.on_val_batch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.on_val_batch_end" title="Permalink to this definition">¶</a></dt>
-<dd><p>Called at the start of the evaluation batch, after the batch data has already
-been loaded.</p>
+<dd><p>Called at the end of an evaluation batch.</p>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.load_model">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/best_model_checkpoint/#BestModelCheckpoint.load_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.load_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads the model and the tuner state</p>
+<dt class="sig sig-object py" id="finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.on_epoch_end">
+<span class="sig-name descname"><span class="pre">on_epoch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/best_model_checkpoint/#BestModelCheckpoint.on_epoch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.on_epoch_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at the end of an epoch, after both training and validation (or just
+training if no validaton is provided).</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.load">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/best_model_checkpoint/#BestModelCheckpoint.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the model.</p>
 </dd></dl>
 </dd></dl>
 </section>
@@ -445,7 +453,7 @@ been loaded.</p>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

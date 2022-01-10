@@ -202,6 +202,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -213,6 +214,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../components/tailor/">Tailor</a></li>
@@ -237,6 +239,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -245,6 +248,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -298,6 +302,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -348,8 +356,8 @@
 <div class="viewcode-block" id="EarlyStopping"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.early_stopping/#finetuner.tuner.callback.early_stopping.EarlyStopping">[docs]</a><span class="k">class</span> <span class="nc">EarlyStopping</span><span class="p">(</span><span class="n">BaseCallback</span><span class="p">):</span>
     <span class="sd">"""</span>
 <span class="sd">    Callback to stop training when a monitored metric has stopped improving.</span>
-<span class="sd">    A `model.fit()` training loop will check at the end of every epoch whether</span>
-<span class="sd">    the monitered metric is no longer improving.</span>
+<span class="sd">    A `finetuner.fit()` training loop will check at the end of every epoch whether</span>
+<span class="sd">    the monitored metric is still improving or not.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -362,109 +370,108 @@
         <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">"""</span>
-<span class="sd">        :param monitor: if `monitor='loss'` best bodel saved will be according</span>
-<span class="sd">            to the training loss, if `monitor='val_loss'` best model saved will be</span>
-<span class="sd">            according to the validation loss</span>
-<span class="sd">        :param mode: one of {'auto', 'min', 'max'}. the</span>
-<span class="sd">            decision to overwrite the current_value save file is made based on either</span>
-<span class="sd">            the maximization or the minimization of the monitored quantity.</span>
-<span class="sd">            For `val_acc`, this should be `max`, for `val_loss` this should be</span>
-<span class="sd">            `min`, etc. In `auto` mode, the mode is set to `max` if the quantities</span>
-<span class="sd">            monitored are 'acc' or start with 'fmeasure' and are set to `min` for</span>
-<span class="sd">            the rest of the quantities.</span>
+<span class="sd">        :param monitor: if `monitor='train_loss'` training will stop/resume according</span>
+<span class="sd">            to the training loss, while if `monitor='val_loss'` training will stop/resume</span>
+<span class="sd">            according to the validation loss. If monitor is set to an evaluation metric,</span>
+<span class="sd">            training will stop/resume according to the value of this metric.</span>
+<span class="sd">        :param mode: one of {'auto', 'min', 'max'}. The decision to overwrite the</span>
+<span class="sd">            current best monitor value is made based on either the maximization or the</span>
+<span class="sd">            minimization of the monitored quantity.</span>
+<span class="sd">            For an evaluation metric, this should be `max`, for `val_loss` this should</span>
+<span class="sd">            be `min`, etc. In `auto` mode, the mode is set to `min` if `monitor='loss'`</span>
+<span class="sd">            or `monitor='val_loss'` and to `min` otherwise.</span>
 <span class="sd">        :param patience: integer, the number of epochs after which the training is</span>
-<span class="sd">            stopped if there is no improvement.</span>
-<span class="sd">            i.e. if `patience = 2`, if the model doesn't improve for 2 consecutive</span>
-<span class="sd">            epochs the training is stopped.</span>
-<span class="sd">        :param min_delta: Minimum change in the monitored quantity</span>
-<span class="sd">            to qualify as an improvement, i.e. an absolute</span>
-<span class="sd">            change of less than min_delta, will count as no</span>
+<span class="sd">            stopped if there is no improvement. For example for `patience = 2`', if the model</span>
+<span class="sd">            doesn't improve for 2 consecutive epochs, the training is stopped.</span>
+<span class="sd">        :param min_delta: Minimum change in the monitored quantity to qualify as an</span>
+<span class="sd">            improvement, i.e. an absolute change of less than min_delta, will count as no</span>
 <span class="sd">            improvement.</span>
 <span class="sd">        :param baseline: Baseline value for the monitored quantity.</span>
 <span class="sd">            Training will stop if the model doesn't show improvement over the</span>
 <span class="sd">            baseline.</span>
-<span class="sd">        :param verbose: Wheter to log score improvement events</span>
+<span class="sd">        :param verbose: Wheter to log score improvement events.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">'finetuner.'</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span> <span class="k">if</span> <span class="n">verbose</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">=</span> <span class="n">monitor</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_patience</span> <span class="o">=</span> <span class="n">patience</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_min_delta</span> <span class="o">=</span> <span class="n">min_delta</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_baseline</span> <span class="o">=</span> <span class="n">baseline</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_train_losses</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validation_losses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val_losses</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epoch_counter</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'auto'</span><span class="p">,</span> <span class="s1">'min'</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">'mode </span><span class="si">%s</span><span class="s1"> is unknown, '</span> <span class="s1">'fallback to auto mode.'</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'Unknown early stopping mode </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s1">, falling back to auto mode.'</span>
+            <span class="p">)</span>
             <span class="n">mode</span> <span class="o">=</span> <span class="s1">'auto'</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="n">mode</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ufunc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_best</span><span class="p">:</span> <span class="nb">float</span>
 
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">'min'</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">less</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_min_mode</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">'max'</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">greater</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_max_mode</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">'acc'</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span><span class="p">:</span>  <span class="c1"># to adjust other metrics are added</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">greater</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">==</span> <span class="s1">'train_loss'</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">==</span> <span class="s1">'val_loss'</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_set_min_mode</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">less</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_set_max_mode</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">greater</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_min_delta</span> <span class="o">*=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_min_delta</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">def</span> <span class="nf">_set_max_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">greater</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_delta</span> <span class="o">*=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="EarlyStopping.on_epoch_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.early_stopping/#finetuner.tuner.callback.early_stopping.EarlyStopping.on_epoch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_set_min_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">less</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_delta</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
         <span class="sd">"""</span>
-<span class="sd">        Called at the end of the training epoch. Checks if the model has improved</span>
-<span class="sd">        or not for a certain metric `monitor`. If the model hasn't improved for</span>
-<span class="sd">        more than `patience` epochs, the training is stopped</span>
+<span class="sd">        Checks if training should be stopped.</span>
 <span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check</span><span class="p">(</span><span class="n">tuner</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_train_losses</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validation_losses</span> <span class="o">=</span> <span class="p">[]</span></div>
-
-<div class="viewcode-block" id="EarlyStopping.on_train_batch_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.early_stopping/#finetuner.tuner.callback.early_stopping.EarlyStopping.on_train_batch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_train_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="EarlyStopping.on_val_batch_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.early_stopping/#finetuner.tuner.callback.early_stopping.EarlyStopping.on_val_batch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_val_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validation_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        Checks if training should be stopped. If `True`</span>
-<span class="sd">        it stops the training.</span>
-<span class="sd">        """</span>
-        <span class="n">current_value</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_baseline</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_baseline</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">==</span> <span class="s1">'val_loss'</span><span class="p">:</span>
-            <span class="n">current_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_validation_losses</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">==</span> <span class="s1">'train_loss'</span><span class="p">:</span>
-            <span class="n">current_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_train_losses</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">==</span> <span class="s1">'train_loss'</span><span class="p">:</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_train_losses</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">==</span> <span class="s1">'val_loss'</span><span class="p">:</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_val_losses</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Metric </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span><span class="si">}</span><span class="s1"> not available, skipping.'</span><span class="p">)</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">eval_metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">current</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Could not retrieve monitor metric </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span><span class="p">(</span><span class="n">current_value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_delta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_best</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Model improved from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_best</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">current_value</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="n">current_value</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span><span class="p">(</span><span class="n">current</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_delta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_best</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Model improved from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_best</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">current</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="n">current</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_epoch_counter</span> <span class="o">=</span> <span class="mi">0</span>
-
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_epoch_counter</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epoch_counter</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_patience</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s1">'Training is stopping, no improvement for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_patience</span><span class="si">}</span><span class="s1"> epochs'</span>
                 <span class="p">)</span>
-                <span class="n">tuner</span><span class="o">.</span><span class="n">stop_training</span> <span class="o">=</span> <span class="kc">True</span></div>
+                <span class="n">tuner</span><span class="o">.</span><span class="n">stop_training</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="EarlyStopping.on_train_batch_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.early_stopping/#finetuner.tuner.callback.early_stopping.EarlyStopping.on_train_batch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_train_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EarlyStopping.on_val_batch_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.early_stopping/#finetuner.tuner.callback.early_stopping.EarlyStopping.on_val_batch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_val_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EarlyStopping.on_epoch_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.early_stopping/#finetuner.tuner.callback.early_stopping.EarlyStopping.on_epoch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check</span><span class="p">(</span><span class="n">tuner</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_train_losses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val_losses</span> <span class="o">=</span> <span class="p">[]</span></div></div>
 </pre></div>
             </article>
             <footer>
@@ -476,7 +483,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

@@ -229,6 +229,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -240,6 +241,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../components/tailor/">Tailor</a></li>
@@ -264,6 +266,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -272,6 +275,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -325,6 +329,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -382,9 +390,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>embed_model</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[~AnyDNN]) – Model that produces embeddings from inputs</p></li>
+<li><p><strong>embed_model</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[~AnyDNN]) – Model that produces embeddings from inputs.</p></li>
 <li><p><strong>loss</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../finetuner.tuner.base/#finetuner.tuner.base.BaseLoss" title="finetuner.tuner.base.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLoss</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Either the loss object instance, or the name of the loss function.
-Currently available losses are <code class="docutils literal notranslate"><span class="pre">SiameseLoss</span></code> and <code class="docutils literal notranslate"><span class="pre">TripletLoss</span></code></p></li>
+Currently available losses are <code class="docutils literal notranslate"><span class="pre">SiameseLoss</span></code> and <code class="docutils literal notranslate"><span class="pre">TripletLoss</span></code>.</p></li>
 <li><p><strong>configure_optimizer</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[~AnyDNN], <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~AnyOptimizer, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~AnyOptimizer, ~AnyScheduler]]]]) – <p>A function that allows you to provide a custom
 optimizer and learning rate. The function should take one input - the
 embedding model, and return either just an optimizer or a tuple of an
@@ -405,7 +413,7 @@ are called by the optimizer on each step automatically.</p>
 <li><p><strong>callbacks</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="../finetuner.tuner.callback.base/#finetuner.tuner.callback.base.BaseCallback" title="finetuner.tuner.callback.base.BaseCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCallback</span></code></a>]]) – A list of callbacks. The progress bar callback
 will be pre-prended to this list.</p></li>
 <li><p><strong>device</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The device to which to move the model. Supported options are
-<code class="docutils literal notranslate"><span class="pre">"cpu"</span></code> and <code class="docutils literal notranslate"><span class="pre">"cuda"</span></code> (for GPU)</p></li>
+<code class="docutils literal notranslate"><span class="pre">"cpu"</span></code> and <code class="docutils literal notranslate"><span class="pre">"cuda"</span></code> (for GPU).</p></li>
 </ul>
 </dd>
 </dl>
@@ -418,8 +426,8 @@ will be pre-prended to this list.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> – Arguments to pass to <code class="docutils literal notranslate"><span class="pre">torch.save</span></code> function</p></li>
-<li><p><strong>kwargs</strong> – Keyword arguments to pass to <code class="docutils literal notranslate"><span class="pre">torch.save</span></code> function</p></li>
+<li><p><strong>args</strong> – Arguments to pass to <code class="docutils literal notranslate"><span class="pre">torch.save</span></code> function.</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments to pass to <code class="docutils literal notranslate"><span class="pre">torch.save</span></code> function.</p></li>
 </ul>
 </dd>
 </dl>
@@ -435,7 +443,7 @@ will be pre-prended to this list.</p></li>
 <dd><p>Get Pytorch compute device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – device name</p>
+<dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – device name.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -474,7 +482,7 @@ will be pre-prended to this list.</p></li>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

@@ -202,6 +202,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -213,6 +214,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../components/tailor/">Tailor</a></li>
@@ -237,6 +239,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -245,6 +248,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -298,6 +302,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -383,7 +391,7 @@
         <span class="n">num_items_per_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataLoader</span><span class="p">:</span>
-        <span class="sd">"""Get the dataloader for the dataset"""</span>
+        <span class="sd">"""Get the dataloader for the dataset."""</span>
 
         <span class="k">if</span> <span class="n">collate_fn</span><span class="p">:</span>
 
@@ -416,36 +424,17 @@
         <span class="k">return</span> <span class="n">data_loader</span>
 
     <span class="k">def</span> <span class="nf">_move_model_to_device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""Move the model to device and set device"""</span>
+        <span class="sd">"""Move the model to device and set device."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">get_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_device_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_default_configure_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optimizer</span><span class="p">:</span>
-        <span class="sd">"""Get the default Adam optimizer"""</span>
+        <span class="sd">"""Get the default Adam optimizer."""</span>
         <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_learning_rate</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">optimizer</span>
 
-    <span class="k">def</span> <span class="nf">_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">):</span>
-        <span class="sd">"""Evaluate the model on given labeled data"""</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
-
-        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">batch_index</span> <span class="o">=</span> <span class="n">idx</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_callbacks</span><span class="p">(</span><span class="s1">'on_val_batch_begin'</span><span class="p">)</span>
-
-            <span class="n">inputs</span> <span class="o">=</span> <span class="n">_to_device</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-            <span class="n">labels</span> <span class="o">=</span> <span class="n">_to_device</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-
-            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-                <span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_callbacks</span><span class="p">(</span><span class="s1">'on_val_batch_end'</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">):</span>
-        <span class="sd">"""Train the model on given labeled data"""</span>
+        <span class="sd">"""Train the model on the given labeled data."""</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
 
@@ -473,17 +462,38 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_callbacks</span><span class="p">(</span><span class="s1">'on_train_batch_end'</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">):</span>
+        <span class="sd">"""Compute the validation loss on the given labeled data."""</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">batch_index</span> <span class="o">=</span> <span class="n">idx</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_callbacks</span><span class="p">(</span><span class="s1">'on_val_batch_begin'</span><span class="p">)</span>
+
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">_to_device</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="n">_to_device</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_callbacks</span><span class="p">(</span><span class="s1">'on_val_batch_end'</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">train_data</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
         <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentSequence'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'PreprocFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'CollateFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
         <span class="n">num_items_per_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'PreprocFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'CollateFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="p">):</span>
+        <span class="sd">"""Fit the model - training and evaluation."""</span>
+
         <span class="c1"># Get dataloaders</span>
         <span class="n">train_dl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_loader</span><span class="p">(</span>
             <span class="n">train_data</span><span class="p">,</span>
@@ -517,10 +527,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">batch_index</span> <span class="o">=</span> <span class="mi">0</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_callbacks</span><span class="p">(</span><span class="s1">'on_epoch_begin'</span><span class="p">)</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_callbacks</span><span class="p">(</span><span class="s1">'on_train_epoch_begin'</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_train</span><span class="p">(</span><span class="n">train_dl</span><span class="p">)</span>
 
+            <span class="bp">self</span><span class="o">.</span><span class="n">_train</span><span class="p">(</span><span class="n">train_dl</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_step</span> <span class="o">==</span> <span class="s1">'epoch'</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
@@ -547,19 +556,17 @@
 <span class="sd">        You need to pass the path where to save the model in either ``args`` or</span>
 <span class="sd">        ``kwargs`` (for ``f`` key).</span>
 
-<span class="sd">        :param args: Arguments to pass to ``torch.save`` function</span>
-<span class="sd">        :param kwargs: Keyword arguments to pass to ``torch.save`` function</span>
+<span class="sd">        :param args: Arguments to pass to ``torch.save`` function.</span>
+<span class="sd">        :param kwargs: Keyword arguments to pass to ``torch.save`` function.</span>
 <span class="sd">        """</span>
-
         <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="get_device"><a class="viewcode-back" href="../../../../api/finetuner.tuner.pytorch/#finetuner.tuner.pytorch.get_device">[docs]</a><span class="k">def</span> <span class="nf">get_device</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">"""Get Pytorch compute device.</span>
 
-<span class="sd">    :param device: device name</span>
+<span class="sd">    :param device: device name.</span>
 <span class="sd">    """</span>
-
     <span class="c1"># translate our own alias into framework-compatible ones</span>
     <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 </pre></div>
@@ -573,7 +580,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

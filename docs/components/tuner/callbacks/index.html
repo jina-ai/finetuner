@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/components/tuner/callbacks.html" />
   <meta property="og:site_name" content="Finetuner 0.3.1 Documentation" />
-  <meta property="og:description" content="Callbacks offer a way to integrate various auxiliary tasks into the training loop. We offer built-in callbacks for some common tasks, such as Showing a progress bar (which is shown by default), Tracking experiements, Checkpoint training progress. You can also write your own callbacks. Experiement..." />
+  <meta property="og:description" content="Callbacks offer a way to integrate various auxiliary tasks into the training loop. We offer built-in callbacks for some common tasks, such as Showing a progress bar (which is shown by default), Tracking experiments, Checkpoint training progress, Evaluation. You can also write your own callbacks. ..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner 0.3.1 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -29,7 +29,7 @@
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.2"></script>
-    <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Tailor" href="../../tailor/" /><link rel="prev" title="Loss and Miners" href="../loss/" />
+    <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Evaluation" href="../evaluation/" /><link rel="prev" title="Loss and Miners" href="../loss/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>Callbacks - Finetuner 0.3.1 documentation</title>
@@ -229,6 +229,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -240,6 +241,7 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../">Tuner</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../loss/">Loss and Miners</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../tailor/">Tailor</a></li>
@@ -264,6 +266,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -272,6 +275,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -325,6 +329,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -365,12 +373,13 @@
 <p>Callbacks offer a way to integrate various auxiliary tasks into the training loop. We offer built-in callbacks for some common tasks, such as</p>
 <ul class="simple">
 <li><p>Showing a progress bar (which is shown by default)</p></li>
-<li><p><a class="reference external" href="#experiement-tracking">Tracking experiements</a></p></li>
+<li><p><a class="reference external" href="#experiment-tracking">Tracking experiments</a></p></li>
 <li><p><a class="reference external" href="#checkpoints">Checkpoint training progress</a></p></li>
+<li><p><a class="reference external" href="#evaluation">Evaluation</a></p></li>
 </ul>
 <p>You can also <a class="reference external" href="#custom-callbacks">write your own callbacks</a>.</p>
-<section id="experiement-tracking">
-<h2>Experiement Tracking<a class="headerlink" href="#experiement-tracking" title="Permalink to this headline">¶</a></h2>
+<section id="experiment-tracking">
+<h2>Experiment Tracking<a class="headerlink" href="#experiment-tracking" title="Permalink to this headline">¶</a></h2>
 <p>When you train a model, you want to monitor the progress of the training. If you don’t want to stay glued to the screen watching the training or evaluation loss change, you need to use an experiement tracking tool.</p>
 <p>Using such a tool also brings a lot of other benefits, such as the ability to easily compare different experiements.</p>
 <p>We currently offer integration with <a class="reference external" href="https://wandb.ai/site">Weights and Biases</a> through the <a class="reference internal" href="../../../api/finetuner.tuner.callback.wandb_logger/#finetuner.tuner.callback.wandb_logger.WandBLogger" title="finetuner.tuner.callback.wandb_logger.WandBLogger"><code class="xref py py-class docutils literal notranslate"><span class="pre">WandBLogger</span></code></a>. To use it, you must first download the <code class="docutils literal notranslate"><span class="pre">wandb</span></code> client and log into your account, which you can do with</p>
@@ -420,6 +429,10 @@ offer <a class="reference internal" href="../../../api/finetuner.tuner.callback.
 </pre></div>
 </div>
 </section>
+<section id="evaluation">
+<h2>Evaluation<a class="headerlink" href="#evaluation" title="Permalink to this headline">¶</a></h2>
+<p>See the <a class="reference internal" href="../evaluation/"><span class="doc std std-doc">Evaluation section</span></a>.</p>
+</section>
 <section id="custom-callbacks">
 <h2>Custom callbacks<a class="headerlink" href="#custom-callbacks" title="Permalink to this headline">¶</a></h2>
 <p>If the existing callbacks don’t provide the functionality you need, you can easily write your own.</p>
@@ -457,12 +470,12 @@ offer <a class="reference internal" href="../../../api/finetuner.tuner.callback.
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../../tailor/">
+                    <a class="next-page" href="../evaluation/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">Tailor</div>
+                            <div class="title">Evaluation</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
@@ -485,7 +498,7 @@ offer <a class="reference internal" href="../../../api/finetuner.tuner.callback.
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
@@ -511,8 +524,9 @@ offer <a class="reference internal" href="../../../api/finetuner.tuner.callback.
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">Callbacks</a><ul>
-<li><a class="reference internal" href="#experiement-tracking">Experiement Tracking</a></li>
+<li><a class="reference internal" href="#experiment-tracking">Experiment Tracking</a></li>
 <li><a class="reference internal" href="#checkpoints">Checkpoints</a></li>
+<li><a class="reference internal" href="#evaluation">Evaluation</a></li>
 <li><a class="reference internal" href="#custom-callbacks">Custom callbacks</a></li>
 </ul>
 </li>

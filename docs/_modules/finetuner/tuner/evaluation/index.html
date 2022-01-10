@@ -202,6 +202,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -213,6 +214,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../components/tailor/">Tailor</a></li>
@@ -237,6 +239,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -245,6 +248,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -298,6 +302,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -334,10 +342,9 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.tuner.evaluation</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
-
-<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 <span class="kn">from</span> <span class="nn">docarray.math.evaluation</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">average_precision</span><span class="p">,</span>
     <span class="n">dcg_at_k</span><span class="p">,</span>
@@ -349,165 +356,201 @@
     <span class="n">recall_at_k</span><span class="p">,</span>
     <span class="n">reciprocal_rank</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">__default_tag_key__</span>
 <span class="kn">from</span> <span class="nn">..embedding</span> <span class="kn">import</span> <span class="n">embed</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">CollateFnType</span><span class="p">,</span> <span class="n">DocumentSequence</span><span class="p">,</span> <span class="n">PreprocFnType</span>
+    <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">AnyDNN</span><span class="p">,</span> <span class="n">DocumentSequence</span>
 
 
 <span class="n">METRICS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"r_precision"</span><span class="p">:</span> <span class="n">r_precision</span><span class="p">,</span>
-    <span class="s2">"precision"</span><span class="p">:</span> <span class="n">precision_at_k</span><span class="p">,</span>
-    <span class="s2">"recall"</span><span class="p">:</span> <span class="n">recall_at_k</span><span class="p">,</span>
-    <span class="s2">"f1score"</span><span class="p">:</span> <span class="n">f1_score_at_k</span><span class="p">,</span>
-    <span class="s2">"average_precision"</span><span class="p">:</span> <span class="n">average_precision</span><span class="p">,</span>
-    <span class="s2">"hit"</span><span class="p">:</span> <span class="n">hit_at_k</span><span class="p">,</span>
-    <span class="s2">"reciprocal_rank"</span><span class="p">:</span> <span class="n">reciprocal_rank</span><span class="p">,</span>
-    <span class="s2">"dcg"</span><span class="p">:</span> <span class="n">dcg_at_k</span><span class="p">,</span>
-    <span class="s2">"ndcg"</span><span class="p">:</span> <span class="n">ndcg_at_k</span><span class="p">,</span>
+    <span class="s1">'r_precision'</span><span class="p">:</span> <span class="n">r_precision</span><span class="p">,</span>
+    <span class="s1">'precision_at_k'</span><span class="p">:</span> <span class="n">precision_at_k</span><span class="p">,</span>
+    <span class="s1">'recall_at_k'</span><span class="p">:</span> <span class="n">recall_at_k</span><span class="p">,</span>
+    <span class="s1">'f1_score_at_k'</span><span class="p">:</span> <span class="n">f1_score_at_k</span><span class="p">,</span>
+    <span class="s1">'average_precision'</span><span class="p">:</span> <span class="n">average_precision</span><span class="p">,</span>
+    <span class="s1">'hit_at_k'</span><span class="p">:</span> <span class="n">hit_at_k</span><span class="p">,</span>
+    <span class="s1">'reciprocal_rank'</span><span class="p">:</span> <span class="n">reciprocal_rank</span><span class="p">,</span>
+    <span class="s1">'dcg_at_k'</span><span class="p">:</span> <span class="n">dcg_at_k</span><span class="p">,</span>
+    <span class="s1">'ndcg_at_k'</span><span class="p">:</span> <span class="n">ndcg_at_k</span><span class="p">,</span>
 <span class="p">}</span>
+
+<span class="n">__evaluator_metrics_key__</span> <span class="o">=</span> <span class="s1">'finetuner_metrics'</span>
+<span class="n">__evaluator_targets_key__</span> <span class="o">=</span> <span class="s1">'targets'</span>
 
 
 <div class="viewcode-block" id="Evaluator"><a class="viewcode-back" href="../../../../api/finetuner.tuner.evaluation/#finetuner.tuner.evaluation.Evaluator">[docs]</a><span class="k">class</span> <span class="nc">Evaluator</span><span class="p">:</span>
+    <span class="sd">"""The evaluator class"""</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">eval_data</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
-        <span class="n">catalog</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
+        <span class="n">query_data</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span>
+        <span class="n">index_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentSequence'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">embed_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'AnyDNN'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
-        <span class="n">distance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cosine'</span><span class="p">,</span>
-        <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
-        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
-        <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'PreprocFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'CollateFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">"""</span>
-<span class="sd">        Build an Evaluator object that can be used to evaluate an embedding model on a retrieval task</span>
-<span class="sd">        :param eval_data: A sequence of documents. Each document should contain ground truth matches under</span>
-<span class="sd">            ``doc.matches`` and relevance scores under ``doc.tags[finetuner.__default_tag_key__]`` for each</span>
-<span class="sd">            match.</span>
-<span class="sd">        :param catalog: A sequence of documents, against which the eval docs will be matched.</span>
-<span class="sd">        :param embed_model: The embedding model to use, in order to extract document representations.</span>
-<span class="sd">        :param limit: Limit the number of results during matching.</span>
-<span class="sd">        :param distance: The type of distance to use when matching docs, avalilable options are</span>
-<span class="sd">            ``"cosine"``, ``"euclidean"`` and ``"sqeuclidean"``</span>
-<span class="sd">        :param device: the computational device for `embed_model`, can be either</span>
-<span class="sd">            `cpu` or `cuda`.</span>
-<span class="sd">        :param batch_size: number of Documents in a batch for embedding</span>
-<span class="sd">        :param preprocess_fn: A pre-processing function, to apply pre-processing to</span>
-<span class="sd">            documents on the fly. It should take as input the document in the dataset,</span>
-<span class="sd">            and output whatever content the model would accept.</span>
-<span class="sd">        :param collate_fn: The collation function to merge the content of individual</span>
-<span class="sd">            items into a batch. Should accept a list with the content of each item,</span>
-<span class="sd">            and output a tensor (or a list/dict of tensors) that feed directly into the</span>
-<span class="sd">            embedding model</span>
-<span class="sd">        :return: None.</span>
+<span class="sd">        Build an Evaluator object that can be used to evaluate the performance on a retrieval task</span>
+
+<span class="sd">        :param query_data: A sequence of documents. Both class and session format is accepted. In the case of session</span>
+<span class="sd">            data, each document should contain ground truth matches from the catalog under ``doc.matches`` where each</span>
+<span class="sd">            match contains the relevance score under ``match.tags[finetuner.__default_tag_key__]``. In the case of</span>
+<span class="sd">            class format, each document should be mapped to a class, which is specified under</span>
+<span class="sd">            ``doc.tags[finetuner.__default_tag_key__]``.</span>
+<span class="sd">        :param index_data: A sequence of documents, against which the query data will be matched. Both class and session</span>
+<span class="sd">            format is accepted. In the case of session data, ground truth matches are included in the `query_data`, so</span>
+<span class="sd">            no additional information is required in the index data. In the case of class data, each doc in the index</span>
+<span class="sd">            data should have class labels in ``doc.tags[finetuner.__default_tag_key__]``.</span>
+<span class="sd">        :param embed_model: The embedding model to use, in order to extract document representations. If set to None,</span>
+<span class="sd">            documents are assumed to carry representations.</span>
+<span class="sd">        :return: None</span>
 <span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_eval_data</span> <span class="o">=</span> <span class="n">eval_data</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span> <span class="o">=</span> <span class="n">catalog</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_summary_docs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_eval_docs</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_query_data</span> <span class="o">=</span> <span class="n">query_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_index_data</span> <span class="o">=</span> <span class="n">index_data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span> <span class="o">=</span> <span class="n">embed_model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span> <span class="o">=</span> <span class="n">limit</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span> <span class="o">=</span> <span class="n">distance</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_device</span> <span class="o">=</span> <span class="n">device</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_preprocess_fn</span> <span class="o">=</span> <span class="n">preprocess_fn</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_collate_fn</span> <span class="o">=</span> <span class="n">collate_fn</span>
+        <span class="k">if</span> <span class="n">__default_tag_key__</span> <span class="ow">in</span> <span class="n">query_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_summary_docs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_class_docs</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_summary_docs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_session_docs</span><span class="p">()</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_doc_to_relevance</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Document</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
         <span class="sd">"""</span>
-<span class="sd">        Convert a Jina document to a relevance representation</span>
-<span class="sd">        :param doc: A Jina document. The matched document identifiers, predicted by the search system, are expected to</span>
-<span class="sd">            be under ``doc.matches``. The expected documents identifiers along with the relevance scores, given by the</span>
-<span class="sd">            user as matching ground truth, should be under ``doc.tags[finetuner.__default_tag_key__]['targets']``.</span>
-<span class="sd">        :return: The relevance vector and the total number of relevant documents.</span>
+<span class="sd">        Convert a Jina document to a relevance representation.</span>
 <span class="sd">        """</span>
-        <span class="n">targets</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">][</span><span class="s1">'targets'</span><span class="p">]</span>
+        <span class="n">targets</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="n">value</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__evaluator_targets_key__</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="n">doc</span><span class="o">.</span><span class="n">id</span>
+        <span class="p">}</span>
         <span class="k">return</span> <span class="p">[</span>
-            <span class="n">targets</span><span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="k">if</span> <span class="n">match</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">targets</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span>
+            <span class="n">targets</span><span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="k">if</span> <span class="n">match</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">targets</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span>
+            <span class="k">if</span> <span class="n">match</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">doc</span><span class="o">.</span><span class="n">id</span>
         <span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_parse_eval_docs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DocumentArray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_parse_class_docs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DocumentArray</span><span class="p">:</span>
         <span class="sd">"""</span>
-<span class="sd">        Convert the evaluation docs to the internal representation used by the Evaluator</span>
+<span class="sd">        Convert class format docs to the internal representation used by the Evaluator.</span>
 <span class="sd">        """</span>
+        <span class="n">query_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_data</span>
+        <span class="n">index_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index_data</span> <span class="ow">or</span> <span class="n">query_data</span>
+
+        <span class="n">groups</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">index_data</span><span class="p">:</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">]</span>
+            <span class="n">groups</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
         <span class="n">summmary_docs</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_data</span><span class="p">:</span>
-            <span class="n">relevancies</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">])</span>
-                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span>
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
-            <span class="p">]</span>
-            <span class="n">relevancies</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">relevancies</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">query_data</span><span class="p">:</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">]</span>
+            <span class="n">relevancies</span> <span class="o">=</span> <span class="p">[(</span><span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">[</span><span class="n">label</span><span class="p">]]</span> <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">groups</span> <span class="k">else</span> <span class="p">[]</span>
             <span class="n">summmary_doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span>
                 <span class="nb">id</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-                <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="n">__default_tag_key__</span><span class="p">:</span> <span class="p">{</span><span class="s1">'targets'</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">relevancies</span><span class="p">)}},</span>
+                <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="n">__evaluator_targets_key__</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">relevancies</span><span class="p">)},</span>
             <span class="p">)</span>
             <span class="n">summmary_docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">summmary_doc</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">summmary_docs</span>
 
-    <span class="k">def</span> <span class="nf">_embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">):</span>
-        <span class="sd">"""Extract embeddings on docs"""</span>
-        <span class="n">embed</span><span class="p">(</span>
-            <span class="n">docs</span><span class="p">,</span>
-            <span class="n">embed_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">,</span>
-            <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_device</span><span class="p">,</span>
-            <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span><span class="p">,</span>
-            <span class="n">preprocess_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_preprocess_fn</span><span class="p">,</span>
-            <span class="n">collate_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_collate_fn</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">docs</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float64'</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_parse_session_docs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DocumentArray</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Convert session format docs to the internal representation used by the Evaluator.</span>
+<span class="sd">        """</span>
+        <span class="n">summmary_docs</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_data</span><span class="p">:</span>
+            <span class="n">relevancies</span> <span class="o">=</span> <span class="p">[(</span><span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="p">]</span>
+            <span class="n">relevancies</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">relevancies</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">summmary_doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span>
+                <span class="nb">id</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="n">__evaluator_targets_key__</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">relevancies</span><span class="p">)},</span>
+            <span class="p">)</span>
+            <span class="n">summmary_docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">summmary_doc</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_score_docs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">summmary_docs</span>
+
+    <span class="k">def</span> <span class="nf">_score_docs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="n">distance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cosine'</span><span class="p">,</span>
+        <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">embed_kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Emded the evaluation docs and compute the matches from the catalog. Evaluation docs</span>
-<span class="sd">        embeddings are overwritten, but matches are not</span>
+<span class="sd">        embeddings are overwritten, but matches are not.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_data</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">)</span>
+            <span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_query_data</span><span class="p">,</span> <span class="n">embed_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">,</span> <span class="o">**</span><span class="n">embed_kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_query_data</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_data</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float64'</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index_data</span><span class="p">:</span>
+                <span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_index_data</span><span class="p">,</span> <span class="n">embed_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_embed_model</span><span class="p">,</span> <span class="o">**</span><span class="n">embed_kwargs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_index_data</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index_data</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                    <span class="s1">'float64'</span>
+                <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_summary_docs</span><span class="p">:</span>
-            <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_data</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">embedding</span>
+
+            <span class="n">embedding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_data</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">embedding</span>
+            <span class="k">if</span> <span class="n">embedding</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Found doc </span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1"> with no embedding set'</span><span class="p">)</span>
+
+            <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">embedding</span>
             <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_summary_docs</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_limit</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_distance</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_index_data</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_data</span><span class="p">,</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+            <span class="n">metric</span><span class="o">=</span><span class="n">distance</span><span class="p">,</span>
+            <span class="n">num_worker</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_mean_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'metrics'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">"""</span>
-<span class="sd">        Compute the mean metric values across the evaluation docs</span>
+<span class="sd">        Compute the mean metric values across the evaluation docs.</span>
 <span class="sd">        """</span>
         <span class="n">means</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">METRICS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_eval_data</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">][</span><span class="n">label</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_query_data</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__evaluator_metrics_key__</span><span class="p">][</span><span class="n">label</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_summary_docs</span>
             <span class="p">]</span>
-            <span class="n">means</span><span class="p">[</span><span class="sa">f</span><span class="s2">"mean_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+            <span class="n">means</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">means</span>
 
 <div class="viewcode-block" id="Evaluator.list_available_metrics"><a class="viewcode-back" href="../../../../api/finetuner.tuner.evaluation/#finetuner.tuner.evaluation.Evaluator.list_available_metrics">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">list_available_metrics</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sd">"""</span>
-<span class="sd">        List available metrics</span>
+<span class="sd">        List available metrics.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">METRICS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="Evaluator.evaluate"><a class="viewcode-back" href="../../../../api/finetuner.tuner.evaluation/#finetuner.tuner.evaluation.Evaluator.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'metrics'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<div class="viewcode-block" id="Evaluator.evaluate"><a class="viewcode-back" href="../../../../api/finetuner.tuner.evaluation/#finetuner.tuner.evaluation.Evaluator.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="n">distance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cosine'</span><span class="p">,</span>
+        <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'metrics'</span><span class="p">,</span>
+        <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">embed_kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Run evaluation</span>
+<span class="sd">        :param limit: The number of top search results to consider, when computing the evaluation metrics.</span>
+<span class="sd">        :param distance: The type of distance metric to use when matching query and index docs, available options are</span>
+<span class="sd">            ``'cosine'``, ``'euclidean'`` and ``'sqeuclidean'``.</span>
 <span class="sd">        :param label: Per document metrics are written in each evaluation document under</span>
-<span class="sd">            ``doc.tags[__default_tag_key__][label]``.</span>
-<span class="sd">        :return: dictionary with evaluation metrics.</span>
+<span class="sd">            ``doc.tags[__evaluator_metrics_key__][label]``.</span>
+<span class="sd">        :param num_workers: The number of workers to use when matching query and index data.</span>
+<span class="sd">        :param embed_kwargs: Keyword arguments to pass to the embed call.</span>
+
+<span class="sd">        :return: dictionary with evaluation metrics</span>
 <span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_score_docs</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_score_docs</span><span class="p">(</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">distance</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span> <span class="o">**</span><span class="n">embed_kwargs</span>
+        <span class="p">)</span>
 
         <span class="c1"># iterate through the available metrics</span>
         <span class="c1"># for each metric iterate through the docs, calculate the metric and write the result</span>
@@ -517,13 +560,14 @@
                 <span class="n">rel</span><span class="p">,</span> <span class="n">max_rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_doc_to_relevance</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
                 <span class="c1"># compute metric value</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">func</span><span class="p">(</span><span class="n">rel</span><span class="p">,</span> <span class="n">max_rel</span><span class="p">)</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"recall"</span><span class="p">,</span> <span class="s2">"f1score"</span><span class="p">]</span> <span class="k">else</span> <span class="n">func</span><span class="p">(</span><span class="n">rel</span><span class="p">)</span>
+                    <span class="n">func</span><span class="p">(</span><span class="n">rel</span><span class="p">,</span> <span class="n">max_rel</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'recall_at_k'</span><span class="p">,</span> <span class="s1">'f1_score_at_k'</span><span class="p">]</span>
+                    <span class="k">else</span> <span class="n">func</span><span class="p">(</span><span class="n">rel</span><span class="p">)</span>
                 <span class="p">)</span>
                 <span class="c1"># write value to doc</span>
-                <span class="k">if</span> <span class="n">label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_data</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_eval_data</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">][</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">_eval_data</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__default_tag_key__</span><span class="p">][</span><span class="n">label</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_query_data</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">__evaluator_metrics_key__</span><span class="p">][</span><span class="n">label</span><span class="p">][</span>
+                    <span class="n">name</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
         <span class="c1"># get the metric averages</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mean_metrics</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span></div></div>
@@ -538,7 +582,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

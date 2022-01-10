@@ -202,6 +202,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -213,6 +214,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../components/tailor/">Tailor</a></li>
@@ -237,6 +239,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -245,6 +248,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -298,6 +302,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -334,20 +342,53 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.tuner.dataset.datasets</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Dict</span><span class="p">,</span>
-    <span class="n">List</span><span class="p">,</span>
-    <span class="n">Optional</span><span class="p">,</span>
-    <span class="n">Tuple</span><span class="p">,</span>
-    <span class="n">Union</span><span class="p">,</span>
-    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
-<span class="p">)</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseDataset</span>
 <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">__default_tag_key__</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseDataset</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">DocumentSequence</span><span class="p">,</span> <span class="n">PreprocFnType</span><span class="p">,</span> <span class="n">DocumentContentType</span>
+    <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">DocumentContentType</span><span class="p">,</span> <span class="n">DocumentSequence</span><span class="p">,</span> <span class="n">PreprocFnType</span>
+
+
+<div class="viewcode-block" id="InstanceDataset"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.dataset.datasets/#finetuner.tuner.dataset.datasets.InstanceDataset">[docs]</a><span class="k">class</span> <span class="nc">InstanceDataset</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+    <span class="sd">"""Dataset for unlabeled data (for self-supervised learning).</span>
+
+<span class="sd">    In this dataset, each instance (each item) is given its own label.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">'DocumentSequence'</span><span class="p">,</span> <span class="n">preprocess_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'PreprocFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">"""Create the dataset instance.</span>
+
+<span class="sd">        :param docs: The documents for the dataset. Each document is expected to have</span>
+<span class="sd">            content, but no label is needed</span>
+<span class="sd">        :param preprocess_fn: A pre-processing function, to apply pre-processing to</span>
+<span class="sd">            documents on the fly. It should take as input the document in the dataset,</span>
+<span class="sd">            and output whatever content the framework-specific dataloader (and model)</span>
+<span class="sd">            would accept.</span>
+<span class="sd">        """</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_docs</span> <span class="o">=</span> <span class="n">docs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_preprocess_fn</span> <span class="o">=</span> <span class="n">preprocess_fn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">'DocumentContentType'</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Get the (preprocessed) content and label for the item at ``ind`` index in the</span>
+<span class="sd">        dataset.</span>
+<span class="sd">        """</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_docs</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preprocess_fn</span><span class="p">:</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preprocess_fn</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">content</span>
+
+        <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ClassDataset"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.dataset.datasets/#finetuner.tuner.dataset.datasets.ClassDataset">[docs]</a><span class="k">class</span> <span class="nc">ClassDataset</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
@@ -504,7 +545,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

@@ -202,6 +202,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -213,6 +214,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../components/tailor/">Tailor</a></li>
@@ -237,6 +239,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -245,6 +248,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -298,6 +302,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -334,20 +342,20 @@
                     </label>
                 </div>
                 <h1>Source code for finetuner.tuner.callback.progress_bar</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Progress</span><span class="p">,</span>
     <span class="n">BarColumn</span><span class="p">,</span>
+    <span class="n">Progress</span><span class="p">,</span>
+    <span class="n">SpinnerColumn</span><span class="p">,</span>
     <span class="n">TextColumn</span><span class="p">,</span>
     <span class="n">TimeElapsedColumn</span><span class="p">,</span>
     <span class="n">TimeRemainingColumn</span><span class="p">,</span>
-    <span class="n">SpinnerColumn</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseCallback</span>
 <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">live_console</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseCallback</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseTuner</span>
@@ -357,40 +365,32 @@
     <span class="sd">"""A progress bar callback, using the rich progress bar."""</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">losses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prev_val_loss</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_pbar_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_pbar_id</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mean_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">losses</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">losses</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">def</span> <span class="nf">_mean_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">losses</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">losses</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_display_value</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">'</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">: -.---'</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">train_loss_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">train_loss_str</span> <span class="o">=</span> <span class="s1">''</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_loss</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">train_loss_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'loss: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mean_loss</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">'</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">train_loss_str</span> <span class="o">=</span> <span class="s1">'loss: -.---'</span>
-
-        <span class="n">val_loss_str</span> <span class="o">=</span> <span class="s1">''</span>
+        <span class="n">train_loss_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_display_value</span><span class="p">(</span><span class="s1">'loss'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mean_loss</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_val_loss</span><span class="p">:</span>
-            <span class="n">val_loss_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">' • val_loss: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prev_val_loss</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">'</span>
-
-        <span class="k">return</span> <span class="n">train_loss_str</span> <span class="o">+</span> <span class="n">val_loss_str</span>
+            <span class="k">return</span> <span class="n">train_loss_str</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">' • val_loss: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prev_val_loss</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">'</span>
+        <span class="k">return</span> <span class="n">train_loss_str</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">val_loss_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_loss</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s1">'loss: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mean_loss</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">'</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">'loss: -.---'</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_display_value</span><span class="p">(</span><span class="s1">'loss'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mean_loss</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ProgressBarCallback.on_fit_begin"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.progress_bar/#finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_fit_begin">[docs]</a>    <span class="k">def</span> <span class="nf">on_fit_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span> <span class="o">=</span> <span class="n">Progress</span><span class="p">(</span>
+        <span class="n">tuner</span><span class="o">.</span><span class="n">_progress_bar</span> <span class="o">=</span> <span class="n">Progress</span><span class="p">(</span>
             <span class="n">SpinnerColumn</span><span class="p">(),</span>
             <span class="s1">'[progress.description]</span><span class="si">{task.description}</span><span class="s1">'</span><span class="p">,</span>
             <span class="n">BarColumn</span><span class="p">(</span>
@@ -403,16 +403,17 @@
             <span class="n">TextColumn</span><span class="p">(</span><span class="s1">'</span><span class="si">{task.fields[metrics]}</span><span class="s1">'</span><span class="p">),</span>
             <span class="n">console</span><span class="o">=</span><span class="n">live_console</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">train_pbar_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="s1">'Training'</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eval_pbar_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="s1">'Evaluating'</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="n">tuner</span><span class="o">.</span><span class="n">_progress_bar</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_pbar_id</span> <span class="o">=</span> <span class="n">tuner</span><span class="o">.</span><span class="n">_progress_bar</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span>
+            <span class="s1">'Training'</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_pbar_id</span> <span class="o">=</span> <span class="n">tuner</span><span class="o">.</span><span class="n">_progress_bar</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span>
+            <span class="s1">'Evaluating'</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ProgressBarCallback.on_train_epoch_begin"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.progress_bar/#finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_train_epoch_begin">[docs]</a>    <span class="k">def</span> <span class="nf">on_train_epoch_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        Called at the begining of training part of the epoch.</span>
-<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span>
+        <span class="n">tuner</span><span class="o">.</span><span class="n">_progress_bar</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">train_pbar_id</span><span class="p">,</span>
             <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">'Training [</span><span class="si">{</span><span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">num_epochs</span><span class="si">}</span><span class="s1">]'</span><span class="p">,</span>
@@ -422,21 +423,15 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ProgressBarCallback.on_train_batch_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.progress_bar/#finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_train_batch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        Called at the end of a training batch, after the backward pass.</span>
-<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="n">tuner</span><span class="o">.</span><span class="n">_progress_bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
             <span class="n">task_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_pbar_id</span><span class="p">,</span> <span class="n">advance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_loss_str</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ProgressBarCallback.on_val_begin"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.progress_bar/#finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_val_begin">[docs]</a>    <span class="k">def</span> <span class="nf">on_val_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        Called at the start of the evaluation.</span>
-<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">eval_pbar_id</span><span class="p">,</span>
+        <span class="n">tuner</span><span class="o">.</span><span class="n">_progress_bar</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">val_pbar_id</span><span class="p">,</span>
             <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s1">'Evaluating'</span><span class="p">,</span>
             <span class="n">total</span><span class="o">=</span><span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">num_batches_val</span><span class="p">,</span>
@@ -445,44 +440,28 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ProgressBarCallback.on_val_batch_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.progress_bar/#finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_val_batch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_val_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        Called at the start of the evaluation batch, after the batch data has already</span>
-<span class="sd">        been loaded.</span>
-<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-            <span class="n">task_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_pbar_id</span><span class="p">,</span> <span class="n">advance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">val_loss_str</span>
+        <span class="n">tuner</span><span class="o">.</span><span class="n">_progress_bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">task_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">val_pbar_id</span><span class="p">,</span> <span class="n">advance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">val_loss_str</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ProgressBarCallback.on_val_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.progress_bar/#finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_val_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_val_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        Called at the end of the evaluation batch.</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">prev_val_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_loss</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_pbar_id</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prev_val_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mean_loss</span>
+        <span class="n">tuner</span><span class="o">.</span><span class="n">_progress_bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">task_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">val_pbar_id</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ProgressBarCallback.on_fit_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.progress_bar/#finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_fit_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_fit_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        Called at the end of the ``fit`` method call, after finishing all the epochs.</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_teardown</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_teardown</span><span class="p">(</span><span class="n">tuner</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ProgressBarCallback.on_exception"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.progress_bar/#finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_exception">[docs]</a>    <span class="k">def</span> <span class="nf">on_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">,</span> <span class="n">exception</span><span class="p">:</span> <span class="ne">BaseException</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        Called when the tuner encounters an exception during execution.</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_teardown</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_teardown</span><span class="p">(</span><span class="n">tuner</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ProgressBarCallback.on_keyboard_interrupt"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.progress_bar/#finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_keyboard_interrupt">[docs]</a>    <span class="k">def</span> <span class="nf">on_keyboard_interrupt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        Called when the tuner is interrupted by the user</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_teardown</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_teardown</span><span class="p">(</span><span class="n">tuner</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_teardown</span><span class="p">(</span><span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
         <span class="sd">"""Stop the progress bar"""</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+        <span class="n">tuner</span><span class="o">.</span><span class="n">_progress_bar</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
 </pre></div>
             </article>
             <footer>
@@ -494,7 +473,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

@@ -202,6 +202,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -213,6 +214,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../components/tailor/">Tailor</a></li>
@@ -237,6 +239,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -245,6 +248,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -298,6 +302,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -338,9 +346,52 @@
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">choices</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">shuffle</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span> <span class="nn">finetuner.tuner.dataset.base</span> <span class="kn">import</span> <span class="n">BaseSampler</span>
+
+
+<div class="viewcode-block" id="InstanceSampler"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.dataset.samplers/#finetuner.tuner.dataset.samplers.InstanceSampler">[docs]</a><span class="k">class</span> <span class="nc">InstanceSampler</span><span class="p">(</span><span class="n">BaseSampler</span><span class="p">):</span>
+    <span class="sd">"""A sampler that includes multiple copies of an instance in the batch.</span>
+
+<span class="sd">    Used for self-supervised learning, where positive samples for an anchor are just</span>
+<span class="sd">    (differently) augmented copies of itself.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_instances</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">repeat_instance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="sd">"""Construct the instance sampler.</span>
+
+<span class="sd">        :param num_instances: Number of instances in the dataset</span>
+<span class="sd">        :param batch_size: How many items to include in a batch</span>
+<span class="sd">        :param repeat_instance: How many times to repeat each instance in a batch</span>
+<span class="sd">        """</span>
+
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'batch_size must be a positive integer'</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">repeat_instance</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'repeat_instance should be larger than 1'</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">%</span> <span class="n">repeat_instance</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'batch_size must be divisible by repeat_instance'</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_instances</span> <span class="o">=</span> <span class="n">num_instances</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_repeat_instance</span> <span class="o">=</span> <span class="n">repeat_instance</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_batches</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_prepare_batches</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="n">shuffled_instances</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_instances</span><span class="p">))</span>
+        <span class="n">shuffle</span><span class="p">(</span><span class="n">shuffled_instances</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batches</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">instances_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repeat_instance</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_instances</span><span class="p">,</span> <span class="n">instances_batch</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_batches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">shuffled_instances</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">instances_batch</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repeat_instance</span>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ClassSampler"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.dataset.samplers/#finetuner.tuner.dataset.samplers.ClassSampler">[docs]</a><span class="k">class</span> <span class="nc">ClassSampler</span><span class="p">(</span><span class="n">BaseSampler</span><span class="p">):</span>
@@ -372,6 +423,8 @@
 <span class="sd">            ``num_items_per_class`` is 4, the batch will consist of 4 items for each of</span>
 <span class="sd">            the 5 classes.</span>
 <span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'batch_size must be a positive integer'</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">num_items_per_class</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num_items_per_class</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -395,7 +448,7 @@
                 <span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_items_per_class</span><span class="p">)]</span>
             <span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_batches</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_prepare_batches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
@@ -471,6 +524,8 @@
 <span class="sd">        :param shuffle: Suffle the order of sessions. If false, will use the order of</span>
 <span class="sd">            sessions which is given by ``labels``.</span>
 <span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'batch_size must be a positive integer'</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shuffle</span> <span class="o">=</span> <span class="n">shuffle</span>
@@ -479,7 +534,7 @@
         <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">match_type</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sessions</span><span class="p">[</span><span class="n">session</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">ind</span><span class="p">,</span> <span class="n">match_type</span><span class="p">])</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_batches</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_prepare_batches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
@@ -532,7 +587,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

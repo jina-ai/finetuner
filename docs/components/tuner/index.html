@@ -229,6 +229,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -240,6 +241,7 @@
 <li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Tuner</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../tailor/">Tailor</a></li>
@@ -264,6 +266,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -272,6 +275,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -325,6 +329,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -371,11 +379,14 @@
 <li><p>Save checkpoints during training</p></li>
 <li><p>Write custom callbacks</p></li>
 </ul>
+<p>As part of the training process, you can also compute IR related evaluation metrics, using the standalone
+<a class="reference internal" href="../../api/finetuner.tuner.evaluation/#finetuner.tuner.evaluation.Evaluator" title="finetuner.tuner.evaluation.Evaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Evaluator</span></code></a> component.</p>
 <p>You can read more on these different options here or in these sub-sections:</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="loss/">Loss and Miners</a></li>
 <li class="toctree-l1"><a class="reference internal" href="callbacks/">Callbacks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation/">Evaluation</a></li>
 </ul>
 </div>
 <section id="the-tuner-class">
@@ -516,7 +527,7 @@
 <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">train_data</span> <span class="o">=</span> <span class="n">generate_fashion</span><span class="p">()</span>
-<span class="n">val_data</span> <span class="o">=</span> <span class="n">generate_fashion</span><span class="p">(</span><span class="n">is_testset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">eval_data</span> <span class="o">=</span> <span class="n">generate_fashion</span><span class="p">(</span><span class="n">is_testset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">preprocess_fn</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Document</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">"""Add some noise to the image"""</span>
@@ -524,7 +535,7 @@
     <span class="k">return</span> <span class="n">new_image</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Size of train data: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Size of train data: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">val_data</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Size of eval data: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">eval_data</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Example of label: </span><span class="si">{</span><span class="n">train_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
@@ -602,7 +613,7 @@
 <span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch.miner</span> <span class="kn">import</span> <span class="n">TripletEasyHardMiner</span>
 
 <span class="n">train_data</span> <span class="o">=</span> <span class="n">generate_fashion</span><span class="p">()</span>
-<span class="n">val_data</span> <span class="o">=</span> <span class="n">generate_fashion</span><span class="p">(</span><span class="n">is_testset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">eval_data</span> <span class="o">=</span> <span class="n">generate_fashion</span><span class="p">(</span><span class="n">is_testset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">preprocess_fn</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Document</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">"""Add some noise to the image"""</span>
@@ -640,7 +651,7 @@
 <span class="p">)</span>
 
 <span class="n">tuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">train_data</span><span class="p">,</span> <span class="n">val_data</span><span class="p">,</span> <span class="n">preprocess_fn</span><span class="o">=</span><span class="n">preprocess_fn</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">num_items_per_class</span><span class="o">=</span><span class="mi">32</span>
+    <span class="n">train_data</span><span class="p">,</span> <span class="n">eval_data</span><span class="p">,</span> <span class="n">preprocess_fn</span><span class="o">=</span><span class="n">preprocess_fn</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">num_items_per_class</span><span class="o">=</span><span class="mi">32</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -681,7 +692,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

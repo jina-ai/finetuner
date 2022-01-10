@@ -28,7 +28,7 @@
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.2"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.callback.training_checkpoint module" href="../finetuner.tuner.callback.training_checkpoint/" /><link rel="prev" title="finetuner.tuner.callback.early_stopping module" href="../finetuner.tuner.callback.early_stopping/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.callback.training_checkpoint module" href="../finetuner.tuner.callback.training_checkpoint/" /><link rel="prev" title="finetuner.tuner.callback.evaluation module" href="../finetuner.tuner.callback.evaluation/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
         <title>finetuner.tuner.callback.progress_bar module - Finetuner 0.3.1 documentation</title>
@@ -228,6 +228,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -239,6 +240,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../components/tailor/">Tailor</a></li>
@@ -263,6 +265,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -271,6 +274,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -324,6 +328,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -367,15 +375,6 @@
 <dd><p>Bases: <a class="reference internal" href="../finetuner.tuner.callback.base/#finetuner.tuner.callback.base.BaseCallback" title="finetuner.tuner.callback.base.BaseCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">finetuner.tuner.callback.base.BaseCallback</span></code></a></p>
 <p>A progress bar callback, using the rich progress bar.</p>
 <dl class="py property">
-<dt class="sig sig-object py" id="finetuner.tuner.callback.progress_bar.ProgressBarCallback.mean_loss">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mean_loss</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#finetuner.tuner.callback.progress_bar.ProgressBarCallback.mean_loss" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py property">
 <dt class="sig sig-object py" id="finetuner.tuner.callback.progress_bar.ProgressBarCallback.train_loss_str">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_loss_str</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#finetuner.tuner.callback.progress_bar.ProgressBarCallback.train_loss_str" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
@@ -417,13 +416,12 @@ but before the training has started.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_val_batch_end">
 <span class="sig-name descname"><span class="pre">on_val_batch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/progress_bar/#ProgressBarCallback.on_val_batch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_val_batch_end" title="Permalink to this definition">¶</a></dt>
-<dd><p>Called at the start of the evaluation batch, after the batch data has already
-been loaded.</p>
+<dd><p>Called at the end of an evaluation batch.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_val_end">
 <span class="sig-name descname"><span class="pre">on_val_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/tuner/callback/progress_bar/#ProgressBarCallback.on_val_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_val_end" title="Permalink to this definition">¶</a></dt>
-<dd><p>Called at the end of the evaluation batch.</p>
+<dd><p>Called at the end of the evaluation.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.tuner.callback.progress_bar.ProgressBarCallback.on_fit_end">
@@ -458,7 +456,7 @@ been loaded.</p>
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../finetuner.tuner.callback.early_stopping/">
+                    <a class="prev-page" href="../finetuner.tuner.callback.evaluation/">
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -467,7 +465,7 @@ been loaded.</p>
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">finetuner.tuner.callback.early_stopping module</div>
+                            <div class="title">finetuner.tuner.callback.evaluation module</div>
                             
                         </div>
                     </a>
@@ -475,7 +473,7 @@ been loaded.</p>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

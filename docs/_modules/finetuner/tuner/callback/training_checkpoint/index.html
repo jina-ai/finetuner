@@ -202,6 +202,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -213,6 +214,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../components/tailor/">Tailor</a></li>
@@ -237,6 +239,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -245,6 +248,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -298,6 +302,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -337,11 +345,11 @@
 <span></span><span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseCallback</span>
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">get_framework</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseCallback</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseTuner</span>
@@ -356,8 +364,8 @@
         <span class="sd">"""</span>
 <span class="sd">        :param save_dir: string, path to save the model file.</span>
 <span class="sd">        :param last_k_epochs: this parameter is an integer. Only the most</span>
-<span class="sd">            recent k checkpoints will be kept. Older checkpoints are deleted</span>
-<span class="sd">        :param verbose: Whether to log notifications when a checkpoint is saved/deleted</span>
+<span class="sd">            recent k checkpoints will be kept. Older checkpoints are deleted.</span>
+<span class="sd">        :param verbose: Whether to log notifications when a checkpoint is saved/deleted.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">'finetuner.'</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span> <span class="k">if</span> <span class="n">verbose</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
@@ -366,11 +374,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_saved_checkpoints</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="TrainingCheckpoint.on_epoch_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.training_checkpoint/#finetuner.tuner.callback.training_checkpoint.TrainingCheckpoint.on_epoch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        Called at the end of the training epoch.</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_save_model_framework</span><span class="p">(</span><span class="n">tuner</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_model</span><span class="p">(</span><span class="n">tuner</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Model trained for </span><span class="si">{</span><span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1"> epochs is saved!'</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_k_epochs</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saved_checkpoints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_k_epochs</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saved_checkpoints</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
@@ -384,19 +390,22 @@
                     <span class="s1">' epochs is deleted!'</span>
                 <span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_save_model_framework</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_save_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        Saves the model weights, optimizer, scheduler and epoch</span>
-<span class="sd">        depending on its framework.</span>
+<span class="sd">        depending on the framework.</span>
 <span class="sd">        """</span>
-        <span class="k">if</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'keras'</span><span class="p">:</span>
+        <span class="n">framework</span> <span class="o">=</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'keras'</span><span class="p">:</span>
             <span class="n">tuner</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_file_path</span><span class="p">(</span><span class="n">tuner</span><span class="p">))</span>
             <span class="n">state</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'epoch'</span><span class="p">:</span> <span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">}</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_file_path</span><span class="p">(</span><span class="n">tuner</span><span class="p">),</span> <span class="s1">'saved_state.pkl'</span><span class="p">),</span> <span class="s1">'wb'</span>
             <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'torch'</span><span class="p">:</span>
+
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'torch'</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">torch</span>
 
             <span class="n">state</span> <span class="o">=</span> <span class="p">{</span>
@@ -408,7 +417,7 @@
                 <span class="n">state</span><span class="p">[</span><span class="s1">'scheduler'</span><span class="p">]</span> <span class="o">=</span> <span class="n">tuner</span><span class="o">.</span><span class="n">_scheduler</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_file_path</span><span class="p">(</span><span class="n">tuner</span><span class="p">))</span>
 
-        <span class="k">elif</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">paddle</span>
 
             <span class="n">state</span> <span class="o">=</span> <span class="p">{</span>
@@ -419,31 +428,33 @@
             <span class="k">if</span> <span class="n">tuner</span><span class="o">.</span><span class="n">_scheduler</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">_scheduler</span><span class="p">,</span> <span class="s1">'state_dict'</span><span class="p">):</span>
                 <span class="n">state</span><span class="p">[</span><span class="s1">'scheduler'</span><span class="p">]</span> <span class="o">=</span> <span class="n">tuner</span><span class="o">.</span><span class="n">_scheduler</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span>
             <span class="n">paddle</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_file_path</span><span class="p">(</span><span class="n">tuner</span><span class="p">))</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_saved_checkpoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_file_path</span><span class="p">(</span><span class="n">tuner</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_get_file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        Returns the file path for checkpoint.</span>
 <span class="sd">        """</span>
-
-        <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'saved_model_epoch_</span><span class="si">{</span><span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">'</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">file_path</span>
 
 <div class="viewcode-block" id="TrainingCheckpoint.load"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.training_checkpoint/#finetuner.tuner.callback.training_checkpoint.TrainingCheckpoint.load">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">,</span> <span class="n">fp</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        Loads the model and tuner state</span>
 <span class="sd">        """</span>
-        <span class="k">if</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'keras'</span><span class="p">:</span>
+        <span class="n">framework</span> <span class="o">=</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'keras'</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">keras</span>
 
             <span class="n">tuner</span><span class="o">.</span><span class="n">_embed_model</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">'saved_state.pkl'</span><span class="p">),</span> <span class="s1">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">loaded_state</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
             <span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="n">loaded_state</span><span class="p">[</span><span class="s1">'epoch'</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'torch'</span><span class="p">:</span>
+
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'torch'</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">torch</span>
 
             <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
@@ -452,7 +463,8 @@
             <span class="k">if</span> <span class="n">tuner</span><span class="o">.</span><span class="n">_scheduler</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">_scheduler</span><span class="p">,</span> <span class="s1">'state_dict'</span><span class="p">):</span>
                 <span class="n">tuner</span><span class="o">.</span><span class="n">_scheduler</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">checkpoint</span><span class="p">[</span><span class="s1">'scheduler'</span><span class="p">])</span>
             <span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="p">[</span><span class="s1">'epoch'</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
+
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">paddle</span>
 
             <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
@@ -472,7 +484,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

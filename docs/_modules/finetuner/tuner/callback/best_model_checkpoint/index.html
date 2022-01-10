@@ -202,6 +202,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/instance-dataset/">Instance dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
@@ -213,6 +214,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/loss/">Loss and Miners</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../components/tuner/evaluation/">Evaluation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../components/tailor/">Tailor</a></li>
@@ -237,6 +239,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
@@ -245,6 +248,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
@@ -298,6 +302,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/finetuner-dark.svg">
             Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/docarray-dark.svg">
+            DocArray</a></li>
     </ul>
 </div>
 </div>
@@ -340,8 +348,8 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseCallback</span>
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">get_framework</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseCallback</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseTuner</span>
@@ -365,102 +373,111 @@
     <span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        :param save_dir: string, path to save the model file.</span>
-<span class="sd">        :param monitor: if `monitor='loss'` best bodel saved will be according</span>
-<span class="sd">            to the training loss, if `monitor='val_loss'` best model saved will be</span>
-<span class="sd">            according to the validation loss</span>
-<span class="sd">        :param mode: one of {'auto', 'min', 'max'}. the</span>
-<span class="sd">            decision to overwrite the current save file is made based on either</span>
-<span class="sd">            the maximization or the minimization of the monitored quantity.</span>
-<span class="sd">            For `val_acc`, this should be `max`, for `val_loss` this should be</span>
-<span class="sd">            `min`, etc. In `auto` mode, the mode is set to `max` if the quantities</span>
-<span class="sd">            monitored are 'acc' or start with 'fmeasure' and are set to `min` for</span>
-<span class="sd">            the rest of the quantities.</span>
-<span class="sd">        :param verbose: Whether to log notifications when a checkpoint is saved</span>
+<span class="sd">        :param monitor: if `monitor='train_loss'` best model saved will be according</span>
+<span class="sd">            to the training loss, while if `monitor='val_loss'` best model saved will be</span>
+<span class="sd">            according to the validation loss. If monitor is set to an evaluation metric,</span>
+<span class="sd">            best model saved will be according to this metric.</span>
+<span class="sd">        :param mode: one of {'auto', 'min', 'max'}. The decision to overwrite the</span>
+<span class="sd">            currently saved model is made based on either the maximization or the</span>
+<span class="sd">            minimization of the monitored quantity.</span>
+<span class="sd">            For an evaluation metric, this should be `max`, for `val_loss` this should</span>
+<span class="sd">            be `min`, etc. In `auto` mode, the mode is set to `min` if `monitor='loss'`</span>
+<span class="sd">            or `monitor='val_loss'` and to `min` otherwise.</span>
+<span class="sd">        :param verbose: Whether to log notifications when a checkpoint is saved.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">'finetuner.'</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span> <span class="k">if</span> <span class="n">verbose</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_dir</span> <span class="o">=</span> <span class="n">save_dir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">=</span> <span class="n">monitor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_train_losses</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_valid_losses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val_losses</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'auto'</span><span class="p">,</span> <span class="s1">'min'</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s1">'ModelCheckpoint mode </span><span class="si">%s</span><span class="s1"> is unknown, '</span> <span class="s1">'fallback to auto mode.'</span><span class="p">,</span> <span class="n">mode</span>
+                <span class="sa">f</span><span class="s1">'Unknown early stopping mode </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s1">, falling back to auto mode.'</span>
             <span class="p">)</span>
             <span class="n">mode</span> <span class="o">=</span> <span class="s1">'auto'</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="n">mode</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ufunc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_best</span><span class="p">:</span> <span class="nb">float</span>
 
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">'min'</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">less</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_min_mode</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">'max'</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">greater</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_max_mode</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">'acc'</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span><span class="p">:</span>  <span class="c1"># Extend this to other metrics</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">greater</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">==</span> <span class="s1">'train_loss'</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">==</span> <span class="s1">'val_loss'</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_set_min_mode</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">less</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_set_max_mode</span><span class="p">()</span>
 
-<div class="viewcode-block" id="BestModelCheckpoint.on_epoch_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.best_model_checkpoint/#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.on_epoch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        Called at the end of the training epoch.</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_save_model</span><span class="p">(</span><span class="n">tuner</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_train_losses</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_valid_losses</span> <span class="o">=</span> <span class="p">[]</span></div>
+    <span class="k">def</span> <span class="nf">_set_max_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">greater</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
+
+    <span class="k">def</span> <span class="nf">_set_min_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">less</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">Inf</span>
 
 <div class="viewcode-block" id="BestModelCheckpoint.on_train_batch_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.best_model_checkpoint/#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.on_train_batch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_train_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BestModelCheckpoint.on_val_batch_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.best_model_checkpoint/#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.on_val_batch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_val_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_valid_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">current_loss</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BestModelCheckpoint.on_epoch_end"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.best_model_checkpoint/#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.on_epoch_end">[docs]</a>    <span class="k">def</span> <span class="nf">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_model</span><span class="p">(</span><span class="n">tuner</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_train_losses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val_losses</span> <span class="o">=</span> <span class="p">[]</span></div>
 
     <span class="k">def</span> <span class="nf">_save_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">==</span> <span class="s1">'val_loss'</span><span class="p">:</span>
-            <span class="n">current</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_valid_losses</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="sd">"""Save the model"""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">==</span> <span class="s1">'train_loss'</span><span class="p">:</span>
             <span class="n">current</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_train_losses</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">current</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s1">'Can save best model only with </span><span class="si">%s</span><span class="s1"> available, '</span> <span class="s1">'skipping.'</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span><span class="p">,</span>
-            <span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span> <span class="o">==</span> <span class="s1">'val_loss'</span><span class="p">:</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_val_losses</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_best</span><span class="p">):</span>
-                <span class="n">tuner</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_file_path</span><span class="p">())</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">'Model improved from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_best</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">current</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">.'</span>
-                    <span class="s1">' New model is saved!'</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="n">current</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">'Model didnt improve.'</span><span class="p">)</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">tuner</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">eval_metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">current</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Could not retrieve monitor metric </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_op</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_best</span><span class="p">):</span>
+            <span class="n">tuner</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_file_path</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'Model improved from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_best</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">current</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">.'</span>
+                <span class="s1">' New model is saved!'</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_best</span> <span class="o">=</span> <span class="n">current</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">'Model did not improve.'</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        Returns the file path for checkpoint.</span>
 <span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'best_model_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
-        <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'best_model_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_monitor</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">file_path</span>
-
-<div class="viewcode-block" id="BestModelCheckpoint.load_model"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.best_model_checkpoint/#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.load_model">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">,</span> <span class="n">fp</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="BestModelCheckpoint.load"><a class="viewcode-back" href="../../../../../api/finetuner.tuner.callback.best_model_checkpoint/#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.load">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">tuner</span><span class="p">:</span> <span class="s1">'BaseTuner'</span><span class="p">,</span> <span class="n">fp</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">"""</span>
-<span class="sd">        Loads the model and the tuner state</span>
+<span class="sd">        Loads the model.</span>
 <span class="sd">        """</span>
-        <span class="k">if</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'keras'</span><span class="p">:</span>
+        <span class="n">framework</span> <span class="o">=</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'keras'</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">keras</span>
 
             <span class="n">tuner</span><span class="o">.</span><span class="n">_embed_model</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'torch'</span><span class="p">:</span>
+
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'torch'</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">torch</span>
 
             <span class="n">tuner</span><span class="o">.</span><span class="n">_embed_model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">tuner</span><span class="o">.</span><span class="n">embed_model</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
+
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">paddle</span>
 
             <span class="n">tuner</span><span class="o">.</span><span class="n">_embed_model</span><span class="o">.</span><span class="n">set_state_dict</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span></div></div>
@@ -475,7 +492,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 04, 2022.
+                    Last updated on Jan 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
