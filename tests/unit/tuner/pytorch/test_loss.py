@@ -1,8 +1,14 @@
 import numpy as np
 import pytest
 import torch
+import torch.nn.functional as F
 
-from finetuner.tuner.pytorch.losses import SiameseLoss, TripletLoss
+from finetuner.tuner.pytorch.losses import (
+    NTXentLoss,
+    SiameseLoss,
+    TripletLoss,
+    get_distance,
+)
 
 N_BATCH = 10
 N_DIM = 128
@@ -83,3 +89,42 @@ def test_compute_loss_given_insufficient_data_gpu(loss_cls):
     embeddings = torch.tensor([[0.0, 0.1, 0.2, 0.4]]).to('cuda')
     with pytest.raises(ValueError):
         loss_cls(distance='euclidean').compute(embeddings, indices)
+
+
+@pytest.mark.parametrize('labels', [[0, 1], [0, 0, 1], [0, 0, 0, 1, 1]])
+def test_wrong_labels_ntxent_loss(labels):
+    """Test cases where are not two views of each instance"""
+    labels = torch.tensor(labels)
+    embeddings = torch.randn((len(labels), 2))
+    loss_fn = NTXentLoss()
+
+    with pytest.raises(ValueError, match="There need to be two views"):
+        loss_fn(embeddings, labels)
+
+
+@pytest.mark.parametrize('temp', [0.3, 0.5, 1.0])
+@pytest.mark.parametrize('labels', [[0, 0, 1, 1], [0, 1, 0, 1], [0, 1, 2, 0, 1, 2]])
+def test_correct_ntxent_loss(labels, temp):
+    """Test that returned loss matches cross-entropy calculated semi-manually"""
+    labels_tensor = torch.tensor(labels)
+    embeddings = torch.randn((len(labels), 2))
+    loss_fn = NTXentLoss(temperature=temp)
+
+    # Compute losses manually
+    sim = (1 - get_distance(embeddings, 'cosine')) / temp
+    losses = torch.empty_like(labels_tensor, dtype=torch.float32)
+    for i in range(len(losses)):
+        exclude_self = [j for j in range(len(losses)) if j != i]
+        other_pos_ind = [labels[j] for j in exclude_self].index(labels[i])
+        losses[i] = -F.log_softmax(sim[i, exclude_self], dim=0)[other_pos_ind]
+
+    assert torch.isclose(loss_fn(embeddings, labels_tensor), losses.mean())
+
+
+def test_requires_grad_ntxent_loss():
+    """Test that requires_grad is perserved on returned loss"""
+    embeddings = torch.rand((4, 2), requires_grad=True)
+    labels = torch.tensor([0, 0, 1, 1])
+    loss = NTXentLoss()(embeddings, labels)
+
+    assert loss.requires_grad

@@ -181,7 +181,7 @@ class NTXentLoss(nn.Module):
 
     This loss function is a temperature-adjusted cross-entropy loss, as defined in the
     `SimCLR paper <https://arxiv.org/abs/2002.05709>`. It operates on batches where
-    there are two versions of each instance (label)
+    there are two views of each instance
     """
 
     def __init__(self, temperature: float = 0.5) -> None:
@@ -209,10 +209,9 @@ class NTXentLoss(nn.Module):
         pos_samples = (labels1 == labels2).byte() - diag
 
         if not (pos_samples.sum(axis=1) == 1).all().item():
-            raise ValueError('There need to be two copies of each label in the batch.')
+            raise ValueError('There need to be two views of each label in the batch.')
 
         self_mask = torch.ones_like(sim, requires_grad=False) - diag
-
         upper = torch.sum(sim * pos_samples, dim=1)
         lower = torch.log(torch.sum(self_mask * torch.exp(sim), dim=1))
 
