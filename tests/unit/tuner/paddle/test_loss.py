@@ -112,14 +112,16 @@ def test_correct_ntxent_loss(labels, temp):
 
     # Compute losses manually
     sim = (1 - get_distance(embeddings, 'cosine')) / temp
-    losses = paddle.empty_like(labels_tensor, dtype='float32')
-    for i in range(len(losses)):
-        exclude_self = [j for j in range(len(losses)) if j != i]
+    losses = []
+    for i in range(len(labels)):
+        exclude_self = [j for j in range(len(labels)) if j != i]
         other_pos_ind = [labels[j] for j in exclude_self].index(labels[i])
         sim_ind = paddle.to_tensor([sim[i, ind] for ind in exclude_self])
-        losses[i] = -F.log_softmax(sim_ind, axis=0)[other_pos_ind]
+        losses.append(-F.log_softmax(sim_ind, axis=0)[other_pos_ind].numpy())
 
-    assert paddle.allclose(loss_fn(embeddings, labels_tensor), losses.mean())
+    np.testing.assert_approx_equal(
+        loss_fn(embeddings, labels_tensor).numpy(), np.mean(losses), 4
+    )
 
 
 def test_requires_grad_ntxent_loss():

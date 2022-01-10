@@ -10,9 +10,9 @@ def test_wrong_batch_size(batch_size: int):
 
 
 @pytest.mark.parametrize('repeat_instance', [0, 1, 2, 4])
-def test_wrong_repeat_instance(repeat_instance: int):
-    with pytest.raises(ValueError, match='repeat_instance'):
-        InstanceSampler(3, batch_size=3, repeat_instance=repeat_instance)
+def test_wrong_views_per_instance(views_per_instance: int):
+    with pytest.raises(ValueError, match='views_per_instance'):
+        InstanceSampler(3, batch_size=3, views_per_instance=views_per_instance)
 
 
 @pytest.mark.parametrize('repeat_instance', [2, 3])

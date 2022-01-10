@@ -31,7 +31,7 @@ def get_distance(embeddings: paddle.Tensor, distance: str) -> paddle.Tensor:
     return dists.clip(0)
 
 
-class PaddleLoss(nn.Layer, BaseLoss[paddle.Tensor]):
+class PaddleTupleLoss(nn.Layer, BaseLoss[paddle.Tensor]):
     """Base class for all paddle losses."""
 
     def forward(
@@ -50,7 +50,7 @@ class PaddleLoss(nn.Layer, BaseLoss[paddle.Tensor]):
         return loss
 
 
-class SiameseLoss(PaddleLoss):
+class SiameseLoss(PaddleTupleLoss):
     """Computes the loss for a siamese network.
 
     The loss for a pair of objects equals ::
@@ -118,7 +118,7 @@ class SiameseLoss(PaddleLoss):
             return SiameseSessionMiner()
 
 
-class TripletLoss(PaddleLoss):
+class TripletLoss(PaddleTupleLoss):
     """Compute the loss for a triplet network.
 
     The loss for a single triplet equals::
@@ -189,7 +189,7 @@ class TripletLoss(PaddleLoss):
             return TripletSessionMiner()
 
 
-class NTXentLoss(nn.Layer):
+class NTXentLoss(nn.Layer, BaseLoss[paddle.Tensor]):
     """Compute the NTXent (Normalized Temeprature Cross-Entropy) loss.
 
     This loss function is a temperature-adjusted cross-entropy loss, as defined in the
@@ -222,7 +222,7 @@ class NTXentLoss(nn.Layer):
         diag = paddle.to_tensor(diag, place=sim.place)
         labels1, labels2 = labels.unsqueeze(1), labels.unsqueeze(0)
 
-        pos_samples = paddle.cast(labels1 == labels2, 'int32') - diag
+        pos_samples = paddle.cast(labels1 == labels2, sim.dtype) - diag
 
         if not (pos_samples.sum(axis=1) == 1).all().item():
             raise ValueError('There need to be two views of each label in the batch.')

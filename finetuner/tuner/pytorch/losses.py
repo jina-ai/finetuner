@@ -176,7 +176,7 @@ class TripletLoss(PytorchTupleLoss):
             return TripletSessionMiner()
 
 
-class NTXentLoss(nn.Module):
+class NTXentLoss(nn.Module, BaseLoss[torch.Tensor]):
     """Compute the NTXent (Normalized Temeprature Cross-Entropy) loss.
 
     This loss function is a temperature-adjusted cross-entropy loss, as defined in the
@@ -206,7 +206,7 @@ class NTXentLoss(nn.Module):
         diag = torch.eye(sim.shape[0], dtype=sim.dtype, device=sim.device)
         labels1, labels2 = labels.unsqueeze(1), labels.unsqueeze(0)
 
-        pos_samples = (labels1 == labels2).byte() - diag
+        pos_samples = (labels1 == labels2).to(sim.dtype) - diag
 
         if not (pos_samples.sum(axis=1) == 1).all().item():
             raise ValueError('There need to be two views of each label in the batch.')

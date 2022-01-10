@@ -31,7 +31,7 @@ def get_distance(embeddings: tf.Tensor, distance: str) -> tf.Tensor:
     return tf.clip_by_value(dists, clip_value_min=0, clip_value_max=tf.float64.max)
 
 
-class KerasLoss(tf.keras.layers.Layer, BaseLoss[tf.Tensor]):
+class KerasTupleLoss(tf.keras.layers.Layer, BaseLoss[tf.Tensor]):
     """Base class for all keras/tensorflow losses."""
 
     def call(
@@ -50,7 +50,7 @@ class KerasLoss(tf.keras.layers.Layer, BaseLoss[tf.Tensor]):
         return loss
 
 
-class SiameseLoss(KerasLoss):
+class SiameseLoss(KerasTupleLoss):
     """Computes the loss for a siamese network.
 
     The loss for a pair of objects equals ::
@@ -120,7 +120,7 @@ class SiameseLoss(KerasLoss):
             return SiameseSessionMiner()
 
 
-class TripletLoss(KerasLoss):
+class TripletLoss(KerasTupleLoss):
     """Compute the loss for a triplet network.
 
     The loss for a single triplet equals::
@@ -191,3 +191,44 @@ class TripletLoss(KerasLoss):
             return TripletMiner()
         else:
             return TripletSessionMiner()
+
+
+class NTXentLoss(tf.keras.layers.Layer, BaseLoss[tf.Tensor]):
+    """Compute the NTXent (Normalized Temeprature Cross-Entropy) loss.
+
+    This loss function is a temperature-adjusted cross-entropy loss, as defined in the
+    `SimCLR paper <https://arxiv.org/abs/2002.05709>`. It operates on batches where
+    there are two views of each instance
+    """
+
+    def __init__(self, temperature: float = 0.5) -> None:
+        """Initialize the loss instance.
+
+        :param temerature: The temperature parameter
+        """
+        super().__init__()
+
+        self.temperature = temperature
+
+    def call(self, embeddings: tf.Tensor, labels: tf.Tensor) -> tf.Tensor:
+        """Compute the loss.
+
+        :param embeddings: An ``[N, d]`` tensor of embeddings.
+        :param labels: An ``[N,]`` tensor of item labels. It is expected that each label
+            appears two times.
+        """
+        assert embeddings.shape[0] == labels.shape[0]
+
+        sim = (1 - get_distance(embeddings, 'cosine')) / self.temperature
+        diag = tf.eye(sim.shape[0], dtype=sim.dtype)
+        labels1, labels2 = tf.expand_dims(labels, 1), tf.expand_dims(labels, 0)
+
+        pos_samples = tf.cast(labels1 == labels2, sim.dtype) - diag
+        if not (tf.reduce_sum(pos_samples, axis=1) == 1).numpy().all():
+            raise ValueError('There need to be two views of each label in the batch.')
+
+        self_mask = tf.ones_like(sim) - diag
+        upper = tf.reduce_sum(sim * pos_samples, axis=1)
+        lower = tf.math.log(tf.reduce_sum(self_mask * tf.math.exp(sim), axis=1))
+
+        return -tf.math.reduce_mean(upper - lower)
