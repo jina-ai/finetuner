@@ -14,8 +14,21 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
     [
         (Document(blob=np.random.rand(224, 224, 3)), 224, 224, 3, -1),
         (Document(blob=np.random.rand(256, 256, 3)), 256, 256, 3, -1),
-        (Document(blob=np.random.rand(3, 224, 224)), 224, 224, 3, 0),
-        (Document(uri=os.path.join(cur_dir, 'resources/lena.png')), 512, 512, 3, 1),
+        (Document(blob=np.random.rand(256, 256, 1)), 256, 256, 1, -1),  # grayscale
+        (
+            Document(blob=np.random.rand(3, 224, 224)),
+            224,
+            224,
+            3,
+            0,
+        ),  # channel axis at 0th position
+        (
+            Document(uri=os.path.join(cur_dir, 'resources/lena.png')),
+            512,
+            512,
+            3,
+            1,
+        ),  # load from uri
     ],
 )
 def test_vision_preprocessor(doc, height, width, num_channels, channel_axis):
