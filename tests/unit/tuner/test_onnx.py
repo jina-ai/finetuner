@@ -24,17 +24,6 @@ def get_pytorch_linear_model():
     return _get_model
 
 
-@pytest.mark.gpu
-def test_class_miner_gpu(get_pytorch_linear_model):
-    INPUT_SHAPE = [32]
-    temp_onnx_file = str(Path(tempfile.tempdir) / 'finetuned.onnx')
-    model = get_pytorch_linear_model(32)
-    model.to(torch.device('cuda'))
-    # convert to ONNX
-    to_onnx(model, temp_onnx_file, input_shape=INPUT_SHAPE)
-    validate_onnx_export(model, temp_onnx_file, INPUT_SHAPE)
-
-
 @pytest.fixture
 def pytorch_conv_model():
     return torch.nn.Sequential(
@@ -246,4 +235,17 @@ def test_paddle_lstm_to_onnx(get_paddle_lstm_model, tmpdir):
 
     np.testing.assert_allclose(
         y_original.detach().numpy(), y_exported, rtol=1e-03, atol=1e-05
-    )
+)
+
+    
+@pytest.mark.gpu
+def test_pytorch_to_onnx_gpu(get_pytorch_linear_model):
+    INPUT_SHAPE = [32]
+    temp_onnx_file = str(Path(tempfile.tempdir) / 'finetuned.onnx')
+    model = get_pytorch_linear_model(32)
+    model.to(torch.device('cuda'))
+    # convert to ONNX
+    to_onnx(model, temp_onnx_file, input_shape=INPUT_SHAPE)
+    validate_onnx_export(model, temp_onnx_file, INPUT_SHAPE)
+
+
