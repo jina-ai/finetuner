@@ -173,7 +173,6 @@ def validate_onnx_export(
     embed_model: AnyDNN,
     export_path: str,
     input_shape: Tuple[int, ...],
-    batch_size: int = 8,
 ) -> None:
     """
     Test an exported model by comparing the outputs of the original and the exported model
@@ -211,7 +210,8 @@ def validate_onnx_export(
         else:
             return tensor.numpy()
 
-    shape = [batch_size] + input_shape
+    BATCH_SIZE = 8
+    shape = [BATCH_SIZE] + input_shape
     x = np.random.rand(*shape).astype(np.float32)
     session = onnxruntime.InferenceSession(export_path)
 
