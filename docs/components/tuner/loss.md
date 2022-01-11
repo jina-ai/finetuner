@@ -131,7 +131,7 @@ where $\mathbf{x}_i$ is the embedding of the i-th element, $\mathrm{cossim(\cdot
 
 ### Use with Tuner
 
-The use of this loss function with tuner is straightforward, as show in the snippet below. Note that this loss will only work with the {ref}`instance_dataset`.
+The use of this loss function with tuner is straightforward, as shown in the snippet below. Note that this loss will only work with the {ref}`instance_dataset`.
 
 ````{tab} Pytorch
 ```python
