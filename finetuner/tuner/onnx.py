@@ -217,15 +217,25 @@ def validate_onnx_export(
     BATCH_SIZE = 8
     shape = [BATCH_SIZE] + input_shape
     x = np.random.rand(*shape).astype(np.float32)
+
+    # Create onnx session and and run onnx model inference
     session = onnxruntime.InferenceSession(export_path)
+    y_exported = session.run(None, {session.get_inputs()[0].name: x})[0]
+
+    # Create framework-specific tensor
+    x = _from_numpy(x)
+
+    # Send test data to same device as model
+    if fm == 'torch':
+        model_device = next(embed_model.parameters()).device
+        x = x.to(model_device)
 
     is_training_before = False
     if fm == 'torch':
         is_training_before = embed_model.training
         embed_model.eval()
 
-    y_original = _to_numpy(embed_model(_from_numpy(x)))
-    y_exported = session.run(None, {session.get_inputs()[0].name: x})[0]
+    y_original = _to_numpy(embed_model(x))
 
     if is_training_before:
         embed_model.train()
