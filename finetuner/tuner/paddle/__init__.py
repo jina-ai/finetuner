@@ -9,6 +9,7 @@ from paddle.optimizer.lr import LRScheduler
 
 from ... import __default_tag_key__
 from ..base import BaseTuner
+from ..dataset.datasets import InstanceDataset
 from ..state import TunerState
 from . import losses
 from .datasets import PaddleClassDataset, PaddleSessionDataset
@@ -62,7 +63,10 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         if __default_tag_key__ in data[0].tags:
             dataset = PaddleClassDataset(data, preprocess_fn=preprocess_fn)
         else:
-            dataset = PaddleSessionDataset(data, preprocess_fn=preprocess_fn)
+            if len(data[0].matches) > 0:
+                dataset = PaddleSessionDataset(data, preprocess_fn=preprocess_fn)
+            else:
+                dataset = InstanceDataset(data, preprocess_fn=preprocess_fn)
 
         batch_sampler = self._get_batch_sampler(
             dataset,

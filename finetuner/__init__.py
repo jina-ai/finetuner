@@ -92,7 +92,7 @@ def fit(
     input_dtype: str = 'float32',
     layer_name: Optional[str] = None,
     freeze: Union[bool, List[str]] = False,
-    bottleneck_net: Optional['AnyDNN'] = None,
+    projection_head: Optional['AnyDNN'] = None,
 ) -> 'AnyDNN':
     ...
 
@@ -158,7 +158,7 @@ def fit(
     input_dtype: str = 'float32',
     layer_name: Optional[str] = None,
     freeze: Union[bool, List[str]] = False,
-    bottleneck_net: Optional['AnyDNN'] = None,
+    projection_head: Optional['AnyDNN'] = None,
 ) -> 'AnyDNN':
     ...
 

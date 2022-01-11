@@ -9,6 +9,7 @@ from tensorflow.keras.optimizers.schedules import LearningRateSchedule
 from ... import __default_tag_key__
 from ..base import BaseLoss, BaseTuner
 from ..dataset import ClassDataset, SessionDataset
+from ..dataset.datasets import InstanceDataset
 from ..state import TunerState
 from . import losses
 from .data import KerasDataSequence
@@ -46,7 +47,10 @@ class KerasTuner(
         if __default_tag_key__ in data[0].tags:
             dataset = ClassDataset(data, preprocess_fn=preprocess_fn)
         else:
-            dataset = SessionDataset(data, preprocess_fn=preprocess_fn)
+            if len(data[0].matches) > 0:
+                dataset = SessionDataset(data, preprocess_fn=preprocess_fn)
+            else:
+                dataset = InstanceDataset(data, preprocess_fn=preprocess_fn)
 
         batch_sampler = self._get_batch_sampler(
             dataset,

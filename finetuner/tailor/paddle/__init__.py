@@ -138,7 +138,7 @@ class PaddleTailor(BaseTailor):
         self,
         layer_name: Optional[str] = None,
         freeze: Union[bool, List[str]] = False,
-        bottleneck_net: Optional['AnyDNN'] = None,
+        projection_head: Optional['AnyDNN'] = None,
     ) -> 'AnyDNN':
         """Convert a general model from :py:attr:`.model` to an embedding model.
 
@@ -146,7 +146,7 @@ class PaddleTailor(BaseTailor):
             will be removed. When set to ``None``, then the last layer listed in :py:attr:`.embedding_layers` will be used.
             To see all available names you can check ``name`` field of :py:attr:`.embedding_layers`.
         :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.
-        :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.
+        :param projection_head: Attach a module at the end of model, this module should be always trainable.
         :return: Converted embedding model..
         """
         model = copy.deepcopy(self._model)
@@ -192,11 +192,13 @@ class PaddleTailor(BaseTailor):
             if _relative_idx_to_embedding_layer is not None:
                 _relative_idx_to_embedding_layer += 1
 
-        if bottleneck_net:
-            model = nn.Sequential(
-                model,
-                bottleneck_net,
+        if projection_head:
+            embed_model_with_projection_head = nn.Sequential()
+            embed_model_with_projection_head.add_sublayer('embed_model', model)
+            embed_model_with_projection_head.add_sublayer(
+                'projection_head', projection_head
             )
+            return embed_model_with_projection_head
 
         return model
 

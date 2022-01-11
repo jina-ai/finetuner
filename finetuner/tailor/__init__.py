@@ -30,7 +30,7 @@ def to_embedding_model(
     input_size: Optional[Tuple[int, ...]] = None,
     input_dtype: str = 'float32',
     freeze: Union[bool, List[str]] = False,
-    bottleneck_net: Optional['AnyDNN'] = None,
+    projection_head: Optional['AnyDNN'] = None,
     **kwargs
 ) -> 'AnyDNN':
     """Convert a general model from :py:attr:`.model` to an embedding model.
@@ -42,13 +42,13 @@ def to_embedding_model(
     :param input_size: The input size of the DNN model.
     :param input_dtype: The input data type of the DNN model.
     :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.
-    :param bottleneck_net: Attach a bottleneck net at the end of model, this module should always trainable.
+    :param projection_head: Attach a module at the end of model, this module should be always trainable.
     """
     ft = _get_tailor_class(model)
 
     return ft(model, input_size, input_dtype).to_embedding_model(
         layer_name=layer_name,
-        bottleneck_net=bottleneck_net,
+        projection_head=projection_head,
         freeze=freeze,
     )
 
