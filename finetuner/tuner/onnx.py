@@ -178,7 +178,6 @@ def validate_onnx_export(
     embed_model: AnyDNN,
     export_path: str,
     input_shape: Tuple[int, ...],
-    batch_size: int = 8,
 ) -> None:
     """
     Test an exported model by comparing the outputs of the original and the exported model
