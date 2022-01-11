@@ -197,7 +197,7 @@ class NTXentLoss(nn.Layer, BaseLoss[paddle.Tensor]):
     there are two views of each instance
     """
 
-    def __init__(self, temperature: float = 0.5) -> None:
+    def __init__(self, temperature: float = 0.1) -> None:
         """Initialize the loss instance.
 
         :param temerature: The temperature parameter
