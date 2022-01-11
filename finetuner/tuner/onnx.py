@@ -93,7 +93,9 @@ def _to_onnx_torch(
     )
     # Set device to model device
     model_device = next(embed_model.parameters()).device
-    x.to(torch.device(model_device))
+    x = x.to(model_device)
+
+    print(x.device, model_device)
 
     torch.onnx.export(
         embed_model,
