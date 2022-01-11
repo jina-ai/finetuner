@@ -31,7 +31,7 @@ def get_distance(embeddings: paddle.Tensor, distance: str) -> paddle.Tensor:
     return dists.clip(0)
 
 
-class PaddleLoss(nn.Layer, BaseLoss[paddle.Tensor]):
+class PaddleTupleLoss(nn.Layer, BaseLoss[paddle.Tensor]):
     """Base class for all paddle losses."""
 
     def forward(
@@ -50,7 +50,7 @@ class PaddleLoss(nn.Layer, BaseLoss[paddle.Tensor]):
         return loss
 
 
-class SiameseLoss(PaddleLoss):
+class SiameseLoss(PaddleTupleLoss):
     """Computes the loss for a siamese network.
 
     The loss for a pair of objects equals ::
@@ -118,7 +118,7 @@ class SiameseLoss(PaddleLoss):
             return SiameseSessionMiner()
 
 
-class TripletLoss(PaddleLoss):
+class TripletLoss(PaddleTupleLoss):
     """Compute the loss for a triplet network.
 
     The loss for a single triplet equals::
@@ -187,3 +187,48 @@ class TripletLoss(PaddleLoss):
             return TripletMiner()
         else:
             return TripletSessionMiner()
+
+
+class NTXentLoss(nn.Layer, BaseLoss[paddle.Tensor]):
+    """Compute the NTXent (Normalized Temeprature Cross-Entropy) loss.
+
+    This loss function is a temperature-adjusted cross-entropy loss, as defined in the
+    `SimCLR paper <https://arxiv.org/abs/2002.05709>`. It operates on batches where
+    there are two views of each instance
+    """
+
+    def __init__(self, temperature: float = 0.1) -> None:
+        """Initialize the loss instance.
+
+        :param temerature: The temperature parameter
+        """
+        super().__init__()
+
+        self.temperature = temperature
+
+    def forward(
+        self, embeddings: paddle.Tensor, labels: paddle.Tensor
+    ) -> paddle.Tensor:
+        """Compute the loss.
+
+        :param embeddings: An ``[N, d]`` tensor of embeddings.
+        :param labels: An ``[N,]`` tensor of item labels. It is expected that each label
+            appears two times.
+        """
+        assert embeddings.shape[0] == labels.shape[0]
+
+        sim = (1 - get_distance(embeddings, 'cosine')) / self.temperature
+        diag = paddle.eye(sim.shape[0], dtype=sim.dtype)
+        diag = paddle.to_tensor(diag, place=sim.place)
+        labels1, labels2 = labels.unsqueeze(1), labels.unsqueeze(0)
+
+        pos_samples = paddle.cast(labels1 == labels2, sim.dtype) - diag
+
+        if not (pos_samples.sum(axis=1) == 1).all().item():
+            raise ValueError('There need to be two views of each label in the batch.')
+
+        self_mask = paddle.ones_like(sim) - diag
+        upper = paddle.sum(sim * pos_samples, axis=1)
+        lower = paddle.log(paddle.sum(self_mask * paddle.exp(sim), axis=1))
+
+        return -paddle.mean(upper - lower)
