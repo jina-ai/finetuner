@@ -194,7 +194,7 @@ def validate_onnx_export(
 
     if fm != 'torch':
         raise ValueError(
-            f'Onnx export validation is currently only supported for PyTorch'
+            'Onnx export validation is currently only supported for PyTorch'
         )
 
     def _from_numpy(array: np.ndarray) -> Any:
