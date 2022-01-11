@@ -118,10 +118,11 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
 
     @staticmethod
     def _get_batch_sampler(
-        dataset: Union[ClassDataset, SessionDataset],
+        dataset: Union[ClassDataset, SessionDataset, InstanceDataset],
         batch_size: int,
         shuffle: bool,
         num_items_per_class: Optional[int] = None,
+        views_per_instance: Optional[int] = 2,
     ) -> Union[ClassSampler, SessionSampler, InstanceSampler]:
         """Get the batch sampler."""
 
@@ -133,11 +134,13 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
             batch_sampler = SessionSampler(dataset.labels, batch_size, shuffle)
         elif isinstance(dataset, InstanceDataset):
             batch_sampler = InstanceSampler(
-                len(dataset), batch_size, 2
-            )  # TODO SET TO NUM_VIEWS AFTER LOSS PR.
+                len(dataset),
+                batch_size,
+                views_per_instance,
+            )
         else:
             raise TypeError(
-                f'`dataset` must be either {type(SessionDataset)} or'
+                f'`dataset` must be either {type(SessionDataset)}, {type(InstanceDataset)} or'
                 f' {type(ClassDataset)}, but receiving {type(dataset)}'
             )
 

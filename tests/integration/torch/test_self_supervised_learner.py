@@ -3,7 +3,7 @@ import pytest
 import finetuner as ft
 from finetuner.tailor.pytorch.projection_head import ProjectionHead
 from finetuner.tuner.augmentation import vision_preprocessor
-from finetuner.tuner.pytorch.losses import SiameseLoss, TripletLoss
+from finetuner.tuner.pytorch.losses import TripletLoss
 
 
 @pytest.fixture
