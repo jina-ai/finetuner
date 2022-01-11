@@ -13,7 +13,7 @@ def to_onnx(
     opset_version: int = 11,
     input_type: str = 'float32',
 ) -> None:
-    """Func that converts a given model in PaddlePaddle, PyTorch or Keras,
+    """Func that takes a model in PaddlePaddle, PyTorch or Keras,
     and converts it to the ONNX format
     :params embed_model: Model to be converted and stored in ONNX
     :params model_path: Path to store ONNX model to
