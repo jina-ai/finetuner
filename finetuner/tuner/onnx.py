@@ -75,6 +75,10 @@ def _to_onnx_torch(
 
     import torch
 
+    model_device = next(embed_model.parameters()).device
+    if model_device == "cuda":
+        embed_model = embed_model.to(torch.device("cuda"))
+
     supported_types = {
         'float16': torch.float16,
         'float32': torch.float32,
@@ -94,8 +98,6 @@ def _to_onnx_torch(
     # Set device to model device
     model_device = next(embed_model.parameters()).device
     x = x.to(model_device)
-
-    print(x.device, model_device)
 
     torch.onnx.export(
         embed_model,
