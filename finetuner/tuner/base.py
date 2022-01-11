@@ -5,8 +5,8 @@ from rich.progress import Progress
 
 from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyScheduler, AnyTensor
 from .callback import BaseCallback, ProgressBarCallback
-from .dataset import ClassDataset, SessionDataset
-from .dataset.samplers import ClassSampler, SessionSampler
+from .dataset import ClassDataset, InstanceDataset, SessionDataset
+from .dataset.samplers import ClassSampler, InstanceSampler, SessionSampler
 from .miner.base import BaseMiner
 from .state import TunerState
 
@@ -122,7 +122,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         batch_size: int,
         shuffle: bool,
         num_items_per_class: Optional[int] = None,
-    ) -> Union[ClassSampler, SessionSampler]:
+    ) -> Union[ClassSampler, SessionSampler, InstanceSampler]:
         """Get the batch sampler."""
 
         if isinstance(dataset, ClassDataset):
@@ -131,6 +131,10 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
             )
         elif isinstance(dataset, SessionDataset):
             batch_sampler = SessionSampler(dataset.labels, batch_size, shuffle)
+        elif isinstance(dataset, InstanceDataset):
+            batch_sampler = InstanceSampler(
+                len(dataset), batch_size, 2
+            )  # TODO SET TO NUM_VIEWS AFTER LOSS PR.
         else:
             raise TypeError(
                 f'`dataset` must be either {type(SessionDataset)} or'
