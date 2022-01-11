@@ -1,8 +1,14 @@
 import numpy as np
 import paddle
+import paddle.nn.functional as F
 import pytest
 
-from finetuner.tuner.paddle.losses import SiameseLoss, TripletLoss
+from finetuner.tuner.paddle.losses import (
+    NTXentLoss,
+    SiameseLoss,
+    TripletLoss,
+    get_distance,
+)
 
 N_BATCH = 10
 N_DIM = 128
@@ -83,3 +89,71 @@ def test_compute_loss_given_insufficient_data_gpu(loss_cls):
     embeddings = paddle.to_tensor([[0.0, 0.1, 0.2, 0.4]], place=paddle.CUDAPlace(0))
     with pytest.raises(ValueError):
         loss_cls(distance='euclidean').compute(embeddings, indices)
+
+
+@pytest.mark.parametrize('labels', [[0, 1], [0, 0, 1], [0, 0, 0, 1, 1]])
+def test_wrong_labels_ntxent_loss(labels):
+    """Test cases where are not two views of each instance"""
+    labels = paddle.to_tensor(labels)
+    embeddings = paddle.randn((len(labels), 2))
+    loss_fn = NTXentLoss()
+
+    with pytest.raises(ValueError, match="There need to be two views"):
+        loss_fn(embeddings, labels)
+
+
+@pytest.mark.parametrize('temp', [0.3, 0.5, 1.0])
+@pytest.mark.parametrize('labels', [[0, 0, 1, 1], [0, 1, 0, 1], [0, 1, 2, 0, 1, 2]])
+def test_correct_ntxent_loss(labels, temp):
+    """Test that returned loss matches cross-entropy calculated semi-manually"""
+    labels_tensor = paddle.to_tensor(labels)
+    embeddings = paddle.randn((len(labels), 2))
+    loss_fn = NTXentLoss(temperature=temp)
+
+    # Compute losses manually
+    sim = (1 - get_distance(embeddings, 'cosine')) / temp
+    losses = []
+    for i in range(len(labels)):
+        exclude_self = [j for j in range(len(labels)) if j != i]
+        other_pos_ind = [labels[j] for j in exclude_self].index(labels[i])
+        sim_ind = paddle.to_tensor([sim[i, ind] for ind in exclude_self])
+        losses.append(-F.log_softmax(sim_ind, axis=0)[other_pos_ind].numpy())
+
+    np.testing.assert_approx_equal(
+        loss_fn(embeddings, labels_tensor).numpy(), np.mean(losses), 4
+    )
+
+
+def test_requires_grad_ntxent_loss():
+    """Test that stop_gradient is perserved on returned loss"""
+    embeddings = paddle.rand((4, 2))
+    embeddings = paddle.to_tensor(embeddings, stop_gradient=False)
+    labels = paddle.to_tensor([0, 0, 1, 1])
+    loss = NTXentLoss()(embeddings, labels)
+
+    assert not loss.stop_gradient
+
+
+@pytest.mark.gpu
+@pytest.mark.parametrize('temp', [0.3, 0.5, 1.0])
+@pytest.mark.parametrize('labels', [[0, 0, 1, 1], [0, 1, 0, 1], [0, 1, 2, 0, 1, 2]])
+def test_correct_ntxent_loss_gpu(labels, temp):
+    """Test that returned loss matches cross-entropy calculated semi-manually"""
+    labels_tensor = paddle.to_tensor(labels, place=paddle.CUDAPlace(0))
+    embeddings = paddle.to_tensor(
+        paddle.randn((len(labels), 2)), place=paddle.CUDAPlace(0)
+    )
+    loss_fn = NTXentLoss(temperature=temp)
+
+    # Compute losses manually
+    sim = (1 - get_distance(embeddings, 'cosine')) / temp
+    losses = []
+    for i in range(len(labels)):
+        exclude_self = [j for j in range(len(labels)) if j != i]
+        other_pos_ind = [labels[j] for j in exclude_self].index(labels[i])
+        sim_ind = paddle.to_tensor([sim[i, ind] for ind in exclude_self])
+        losses.append(-F.log_softmax(sim_ind, axis=0)[other_pos_ind].item())
+
+    np.testing.assert_approx_equal(
+        loss_fn(embeddings, labels_tensor).cpu().numpy(), np.mean(losses), 4
+    )

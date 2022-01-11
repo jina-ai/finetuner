@@ -8,32 +8,34 @@ from finetuner.tuner.dataset.base import BaseSampler
 
 
 class InstanceSampler(BaseSampler):
-    """A sampler that includes multiple copies of an instance in the batch.
+    """A sampler that is meant for creating multiple views of an instance in a batch.
 
     Used for self-supervised learning, where positive samples for an anchor are just
-    (differently) augmented copies of itself.
+    (differently) augmented copies of itself, also known as views of the instance.
     """
 
-    def __init__(self, num_instances: int, batch_size: int, repeat_instance: int = 2):
+    def __init__(
+        self, num_instances: int, batch_size: int, views_per_instance: int = 2
+    ):
         """Construct the instance sampler.
 
         :param num_instances: Number of instances in the dataset
         :param batch_size: How many items to include in a batch
-        :param repeat_instance: How many times to repeat each instance in a batch
+        :param views_per_instance: How many times to repeat each instance in a batch
         """
 
         if batch_size <= 0:
             raise ValueError('batch_size must be a positive integer')
 
-        if repeat_instance <= 1:
-            raise ValueError('repeat_instance should be larger than 1')
+        if views_per_instance <= 1:
+            raise ValueError('views_per_instance should be larger than 1')
 
-        if batch_size % repeat_instance != 0:
-            raise ValueError('batch_size must be divisible by repeat_instance')
+        if batch_size % views_per_instance != 0:
+            raise ValueError('batch_size must be divisible by views_per_instance')
 
         self._num_instances = num_instances
         self._batch_size = batch_size
-        self._repeat_instance = repeat_instance
+        self.views_per_instance = views_per_instance
 
         self._prepare_batches()
 
@@ -43,10 +45,10 @@ class InstanceSampler(BaseSampler):
         shuffle(shuffled_instances)
 
         self._batches = []
-        instances_batch = self._batch_size // self._repeat_instance
+        instances_batch = self._batch_size // self.views_per_instance
         for i in range(0, self._num_instances, instances_batch):
             self._batches.append(
-                shuffled_instances[i : i + instances_batch] * self._repeat_instance
+                shuffled_instances[i : i + instances_batch] * self.views_per_instance
             )
 
 

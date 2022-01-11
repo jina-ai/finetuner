@@ -22,7 +22,7 @@ def get_distance(embeddings: torch.Tensor, distance: str) -> torch.Tensor:
     return dists
 
 
-class PytorchLoss(nn.Module, BaseLoss[torch.Tensor]):
+class PytorchTupleLoss(nn.Module, BaseLoss[torch.Tensor]):
     """Base class for all pytorch losses."""
 
     def forward(
@@ -41,7 +41,7 @@ class PytorchLoss(nn.Module, BaseLoss[torch.Tensor]):
         return loss
 
 
-class SiameseLoss(PytorchLoss):
+class SiameseLoss(PytorchTupleLoss):
     """Computes the loss for a siamese network.
 
     The loss for a pair of objects equals ::
@@ -106,7 +106,7 @@ class SiameseLoss(PytorchLoss):
             return SiameseSessionMiner()
 
 
-class TripletLoss(PytorchLoss):
+class TripletLoss(PytorchTupleLoss):
     """Compute the loss for a triplet network.
 
     The loss for a single triplet equals::
@@ -174,3 +174,45 @@ class TripletLoss(PytorchLoss):
             return TripletMiner()
         else:
             return TripletSessionMiner()
+
+
+class NTXentLoss(nn.Module, BaseLoss[torch.Tensor]):
+    """Compute the NTXent (Normalized Temeprature Cross-Entropy) loss.
+
+    This loss function is a temperature-adjusted cross-entropy loss, as defined in the
+    `SimCLR paper <https://arxiv.org/abs/2002.05709>`. It operates on batches where
+    there are two views of each instance
+    """
+
+    def __init__(self, temperature: float = 0.1) -> None:
+        """Initialize the loss instance.
+
+        :param temerature: The temperature parameter
+        """
+        super().__init__()
+
+        self.temperature = temperature
+
+    def forward(self, embeddings: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
+        """Compute the loss.
+
+        :param embeddings: An ``[N, d]`` tensor of embeddings.
+        :param labels: An ``[N,]`` tensor of item labels. It is expected that each label
+            appears two times.
+        """
+        assert embeddings.shape[0] == labels.shape[0]
+
+        sim = (1 - get_distance(embeddings, 'cosine')) / self.temperature
+        diag = torch.eye(sim.shape[0], dtype=sim.dtype, device=sim.device)
+        labels1, labels2 = labels.unsqueeze(1), labels.unsqueeze(0)
+
+        pos_samples = (labels1 == labels2).to(sim.dtype) - diag
+
+        if not (pos_samples.sum(axis=1) == 1).all().item():
+            raise ValueError('There need to be two views of each label in the batch.')
+
+        self_mask = torch.ones_like(sim, requires_grad=False) - diag
+        upper = torch.sum(sim * pos_samples, dim=1)
+        lower = torch.log(torch.sum(self_mask * torch.exp(sim), dim=1))
+
+        return -torch.mean(upper - lower)
