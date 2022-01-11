@@ -192,6 +192,11 @@ def validate_onnx_export(
 
     fm = get_framework(embed_model)
 
+    if fm != 'torch':
+        raise ValueError(
+            f'Onnx export validation is currently only supported for PyTorch'
+        )
+
     def _from_numpy(array: np.ndarray) -> Any:
         if fm == 'torch':
             import torch
