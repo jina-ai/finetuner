@@ -1,3 +1,4 @@
+import numpy as np
 from docarray import Document
 
 
@@ -5,7 +6,8 @@ def vision_preprocessor(
     doc: Document,
     height: int = 224,
     width: int = 224,
-    channel_axis: int = -1,
+    default_channel_axis: int = -1,
+    target_channel_axis: int = 0,
 ):
     """Randomly augmentation a Document with `blob` field.
     The method applies flipping, color jitter, cropping, gaussian blur and random rectangle erase
@@ -22,15 +24,18 @@ def vision_preprocessor(
     """
     import albumentations as A
 
-    if doc.content is None:
+    blob = doc.blob
+
+    if blob is None:
         if doc.uri:
             doc.load_uri_to_image_blob(
-                width=width, height=height, channel_axis=channel_axis
+                width=width, height=height, channel_axis=default_channel_axis
             )
+            blob = doc.blob
         else:
             raise AttributeError('Can not load `blob` field from the given document.')
-    if channel_axis not in [-1, 2]:
-        doc.set_image_blob_channel_axis(channel_axis, -1)
+    if default_channel_axis not in [-1, 2]:
+        blob = np.moveaxis(blob, default_channel_axis, -1)
     # p is the probability to apply the transform.
     transform = A.Compose(
         [
@@ -41,5 +46,7 @@ def vision_preprocessor(
             A.GridDropout(p=0.5),
         ]
     )
-    doc.blob = transform(image=doc.blob)['image']
-    return doc.blob
+    blob = transform(image=doc.blob)['image']
+    if target_channel_axis != -1:
+        blob = np.moveaxis(blob, -1, target_channel_axis)
+    return blob

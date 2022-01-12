@@ -120,7 +120,7 @@ def create_easy_data_instance():
 
         Works as follows:
         - for each class, create two random vectors - so that each one has a positive
-            sample as well. This will create 2 * n_cls unique random vectors, from
+            sample as well. This will create 2 * n_cls unique random images, from
             which we build the dataset
 
         Note that there is no relationship between these vectors - they are all randomly
@@ -132,12 +132,11 @@ def create_easy_data_instance():
         rng = np.random.default_rng(42)
 
         # Create random class vectors
-        rand_vecs = rng.uniform(size=(10 * n_cls, 224, 224, 3)).astype(np.float32)
+        rand_vecs = rng.uniform(size=(2 * n_cls, 224, 224, 3)).astype(np.float32)
 
         docs = []
         for vec in rand_vecs:
             docs.append(Document(blob=vec))
-            assert vec.shape == (224, 224, 3)
         return docs, rand_vecs
 
     return create_easy_data_fn
