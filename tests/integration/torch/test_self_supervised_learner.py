@@ -30,7 +30,7 @@ def test_self_supervised_learning(
     data, vecs = create_easy_data_instance(n_cls)
 
     projection_head = ProjectionHead(in_features=2048)
-    ft.fit(
+    model = ft.fit(
         model=default_model,
         train_data=data,
         epochs=n_epochs,
@@ -44,3 +44,4 @@ def test_self_supervised_learning(
         projection_head=projection_head,
         input_size=(3, 224, 224),
     )
+    assert model

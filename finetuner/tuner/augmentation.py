@@ -46,7 +46,9 @@ def vision_preprocessor(
             A.GridDropout(p=0.5),
         ]
     )
-    blob = transform(image=doc.blob)['image']
+    blob = transform(image=blob)['image']
+    print(blob.shape)
     if target_channel_axis != -1:
         blob = np.moveaxis(blob, -1, target_channel_axis)
+        print(blob.shape)
     return blob
