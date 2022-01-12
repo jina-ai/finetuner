@@ -14,17 +14,15 @@ def default_model():
 
 
 @pytest.mark.parametrize(
-    "n_cls,n_epochs,loss_cls,parameter",
+    "n_cls,n_epochs,loss_cls,temperature",
     [
-        (10, 2, TripletLoss, 'cosine'),
-        (10, 2, TripletLoss, 'euclidean'),
-        (10, 2, NTXentLoss, 0.1),
+        (5, 2, NTXentLoss, 0.1),
         (10, 2, NTXentLoss, 0.2),
-        (10, 2, NTXentLoss, 1.0),
+        (10, 5, NTXentLoss, 1.0),
     ],
 )
 def test_self_supervised_learning(
-    default_model, create_easy_data_instance, n_cls, n_epochs, loss_cls, parameter
+    default_model, create_easy_data_instance, n_cls, n_epochs, loss_cls, temperature
 ):
     # Prepare model and data
     data, vecs = create_easy_data_instance(n_cls)
@@ -35,7 +33,7 @@ def test_self_supervised_learning(
         train_data=data,
         epochs=n_epochs,
         batch_size=len(data),
-        loss=loss_cls(parameter),
+        loss=loss_cls(temperature=temperature),
         num_items_per_class=2,
         learning_rate=1e-2,
         preprocess_fn=vision_preprocessor,

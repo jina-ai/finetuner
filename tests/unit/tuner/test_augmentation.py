@@ -45,15 +45,15 @@ def test_vision_preprocessor(
     doc, height, width, num_channels, default_channel_axis, target_channel_axis
 ):
     original_blob = doc.blob
-    augmented_content = vision_preprocessor(
+    augmented_blob = vision_preprocessor(
         doc, height, width, default_channel_axis, target_channel_axis
     )
-    assert augmented_content is not None
+    assert augmented_blob is not None
     if target_channel_axis == -1:
-        assert augmented_content.shape == (height, width, num_channels)
+        assert augmented_blob.shape == (height, width, num_channels)
     elif target_channel_axis == 0:
-        assert augmented_content.shape == (num_channels, height, width)
-    assert not np.array_equal(original_blob, augmented_content)
+        assert augmented_blob.shape == (num_channels, height, width)
+    assert not np.array_equal(original_blob, augmented_blob)
 
 
 def test_vision_preprocessor_fail_given_no_blob_and_uri():
