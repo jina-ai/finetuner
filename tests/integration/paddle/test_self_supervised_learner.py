@@ -3,7 +3,7 @@ import pytest
 import finetuner as ft
 from finetuner.tailor.paddle.projection_head import ProjectionHead
 from finetuner.tuner.augmentation import vision_preprocessor
-from finetuner.tuner.paddle.losses import NTXentLoss, TripletLoss
+from finetuner.tuner.paddle.losses import NTXentLoss
 
 
 @pytest.fixture
