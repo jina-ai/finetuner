@@ -4,7 +4,7 @@ from ... import __default_tag_key__
 from .base import BaseDataset
 
 if TYPE_CHECKING:
-    from docarray import Document, DocumentArray
+    from docarray import DocumentArray
 
     from ...helper import PreprocFnType
 
