@@ -1,6 +1,7 @@
 from collections import defaultdict
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
+from docarray import Document, DocumentArray
 from docarray.math.evaluation import (
     average_precision,
     dcg_at_k,
@@ -12,7 +13,6 @@ from docarray.math.evaluation import (
     recall_at_k,
     reciprocal_rank,
 )
-from docarray import Document, DocumentArray
 
 from .. import __default_tag_key__
 from ..embedding import embed

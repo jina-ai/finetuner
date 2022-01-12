@@ -1,12 +1,4 @@
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Dict,
-    List,
-    Sequence,
-    TypeVar,
-)
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Sequence, TypeVar
 
 AnyDNN = TypeVar(
     'AnyDNN'

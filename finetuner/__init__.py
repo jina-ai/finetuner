@@ -18,13 +18,7 @@ from .tuner import save  # noqa: F401
 if TYPE_CHECKING:
     from docarray import DocumentArray
 
-    from .helper import (
-        AnyDNN,
-        AnyOptimizer,
-        AnyScheduler,
-        CollateFnType,
-        PreprocFnType,
-    )
+    from .helper import AnyDNN, AnyOptimizer, AnyScheduler, CollateFnType, PreprocFnType
     from .tuner.callback import BaseCallback
 
 
