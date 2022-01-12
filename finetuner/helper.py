@@ -3,11 +3,9 @@ from typing import (
     Any,
     Callable,
     Dict,
-    Iterator,
     List,
     Sequence,
     TypeVar,
-    Union,
 )
 
 AnyDNN = TypeVar(
@@ -27,17 +25,7 @@ AnyScheduler = TypeVar(
 )  #: The type of any implementation of a learning rate scheduler
 
 if TYPE_CHECKING:
-    from jina import Document, DocumentArray, DocumentArrayMemmap
-    from jina.types.document.mixins.content import DocumentContentType
-    from jina.types.ndarray import ArrayType
-
-    DocumentSequence = TypeVar(
-        'DocumentSequence',
-        Sequence[Document],
-        DocumentArray,
-        DocumentArrayMemmap,
-        Iterator[Document],
-    )  #: The type of any sequence of Document
+    from docarray import Document, DocumentArray
 
     LayerInfoType = List[
         Dict[str, Any]
@@ -48,7 +36,7 @@ if TYPE_CHECKING:
     PreprocFnType = Callable[[Document], Any]  #: The type of preprocessing function
 
     CollateFnType = Callable[
-        [Union[Sequence[DocumentContentType], ArrayType]], AnyTensor
+        [Sequence[DocumentArray]], AnyTensor
     ]  #: The type of collate function
 
 

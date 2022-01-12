@@ -12,13 +12,13 @@ from docarray.math.evaluation import (
     recall_at_k,
     reciprocal_rank,
 )
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 
 from .. import __default_tag_key__
 from ..embedding import embed
 
 if TYPE_CHECKING:
-    from ..helper import AnyDNN, DocumentSequence
+    from ..helper import AnyDNN
 
 
 METRICS = {
@@ -42,8 +42,8 @@ class Evaluator:
 
     def __init__(
         self,
-        query_data: 'DocumentSequence',
-        index_data: Optional['DocumentSequence'] = None,
+        query_data: 'DocumentArray',
+        index_data: Optional['DocumentArray'] = None,
         embed_model: Optional['AnyDNN'] = None,
     ):
         """

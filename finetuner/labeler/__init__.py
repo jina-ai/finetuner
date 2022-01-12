@@ -12,12 +12,14 @@ from .. import __default_tag_key__
 from .executor import DataIterator, FTExecutor
 
 if TYPE_CHECKING:
-    from ..helper import AnyDNN, CollateFnType, DocumentSequence, PreprocFnType
+    from docarray import DocumentArray
+
+    from ..helper import AnyDNN, CollateFnType, PreprocFnType
 
 
 def fit(
     embed_model: 'AnyDNN',
-    train_data: 'DocumentSequence',
+    train_data: 'DocumentArray',
     clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',

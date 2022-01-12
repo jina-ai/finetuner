@@ -3,7 +3,7 @@ import paddle
 import pytest
 import tensorflow as tf
 import torch
-from jina import Document, DocumentArray, DocumentArrayMemmap
+from docarray import Document, DocumentArray
 
 from finetuner.embedding import embed
 from finetuner.toydata import generate_fashion
@@ -81,9 +81,3 @@ def test_set_embeddings(framework, tmpdir):
     docs = DocumentArray(generate_fashion(num_total=100))
     embed(docs, embed_model)
     assert docs.embeddings.shape == (100, 32)
-
-    # works for DAM
-    dam = DocumentArrayMemmap(tmpdir)
-    dam.extend(generate_fashion(num_total=42))
-    embed(dam, embed_model)
-    assert dam.embeddings.shape == (42, 32)

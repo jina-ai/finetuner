@@ -15,7 +15,9 @@ from . import losses
 from .datasets import PytorchClassDataset, PytorchSessionDataset
 
 if TYPE_CHECKING:
-    from ...helper import CollateFnType, DocumentSequence, PreprocFnType
+    from docarray import DocumentArray
+
+    from ...helper import CollateFnType, PreprocFnType
 
 
 def _to_device(
@@ -40,7 +42,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
     def _get_data_loader(
         self,
-        data: 'DocumentSequence',
+        data: 'DocumentArray',
         batch_size: int,
         shuffle: bool,
         preprocess_fn: Optional['PreprocFnType'] = None,
@@ -143,8 +145,8 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
     def _fit(
         self,
-        train_data: 'DocumentSequence',
-        eval_data: Optional['DocumentSequence'] = None,
+        train_data: 'DocumentArray',
+        eval_data: Optional['DocumentArray'] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,

@@ -16,12 +16,13 @@ from .tailor import display  # noqa: F401
 from .tuner import save  # noqa: F401
 
 if TYPE_CHECKING:
+    from docarray import DocumentArray
+
     from .helper import (
         AnyDNN,
         AnyOptimizer,
         AnyScheduler,
         CollateFnType,
-        DocumentSequence,
         PreprocFnType,
     )
     from .tuner.callback import BaseCallback
@@ -43,8 +44,8 @@ _logger.addHandler(_RichHandler(console=live_console))
 @overload
 def fit(
     model: 'AnyDNN',  #: must be an embedding model
-    train_data: 'DocumentSequence',
-    eval_data: Optional['DocumentSequence'] = None,
+    train_data: 'DocumentArray',
+    eval_data: Optional['DocumentArray'] = None,
     epochs: int = 10,
     batch_size: int = 256,
     loss: Union[str, 'AnyDNN'] = 'SiameseLoss',
@@ -69,8 +70,8 @@ def fit(
 @overload
 def fit(
     model: 'AnyDNN',
-    train_data: 'DocumentSequence',
-    eval_data: Optional['DocumentSequence'] = None,
+    train_data: 'DocumentArray',
+    eval_data: Optional['DocumentArray'] = None,
     epochs: int = 10,
     batch_size: int = 256,
     loss: Union[str, 'AnyDNN'] = 'SiameseLoss',
@@ -101,8 +102,8 @@ def fit(
 @overload
 def fit(
     model: 'AnyDNN',  #: must be an embedding model
-    train_data: 'DocumentSequence',
-    eval_data: Optional['DocumentSequence'] = None,
+    train_data: 'DocumentArray',
+    eval_data: Optional['DocumentArray'] = None,
     epochs: int = 10,
     batch_size: int = 256,
     loss: Union[str, 'AnyDNN'] = 'SiameseLoss',
@@ -131,8 +132,8 @@ def fit(
 @overload
 def fit(
     model: 'AnyDNN',
-    train_data: 'DocumentSequence',
-    eval_data: Optional['DocumentSequence'] = None,
+    train_data: 'DocumentArray',
+    eval_data: Optional['DocumentArray'] = None,
     epochs: int = 10,
     batch_size: int = 256,
     loss: Union[str, 'AnyDNN'] = 'SiameseLoss',
@@ -163,7 +164,7 @@ def fit(
     ...
 
 
-def fit(model: 'AnyDNN', train_data: 'DocumentSequence', *args, **kwargs) -> 'AnyDNN':
+def fit(model: 'AnyDNN', train_data: 'DocumentArray', *args, **kwargs) -> 'AnyDNN':
     if kwargs.get('to_embedding_model', False):
         from .tailor import to_embedding_model
 

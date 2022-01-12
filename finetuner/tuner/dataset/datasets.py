@@ -1,10 +1,12 @@
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
 from ... import __default_tag_key__
 from .base import BaseDataset
 
 if TYPE_CHECKING:
-    from ...helper import DocumentContentType, DocumentSequence, PreprocFnType
+    from docarray import Document, DocumentArray
+
+    from ...helper import PreprocFnType
 
 
 class InstanceDataset(BaseDataset[int]):
@@ -14,7 +16,7 @@ class InstanceDataset(BaseDataset[int]):
     """
 
     def __init__(
-        self, docs: 'DocumentSequence', preprocess_fn: Optional['PreprocFnType'] = None
+        self, docs: 'DocumentArray', preprocess_fn: Optional['PreprocFnType'] = None
     ) -> None:
         """Create the dataset instance.
 
@@ -30,7 +32,7 @@ class InstanceDataset(BaseDataset[int]):
         self._preprocess_fn = preprocess_fn
         self._labels = list(range(len(docs)))
 
-    def __getitem__(self, ind: int) -> Tuple['DocumentContentType', int]:
+    def __getitem__(self, ind: int) -> Tuple[Any, int]:
         """
         Get the (preprocessed) content and label for the item at ``ind`` index in the
         dataset.
@@ -52,7 +54,7 @@ class ClassDataset(BaseDataset[int]):
 
     def __init__(
         self,
-        docs: 'DocumentSequence',
+        docs: 'DocumentArray',
         preprocess_fn: Optional['PreprocFnType'] = None,
     ):
         """Create the dataset instance.
@@ -90,7 +92,7 @@ class ClassDataset(BaseDataset[int]):
 
             self._labels.append(label)
 
-    def __getitem__(self, ind: int) -> Tuple['DocumentContentType', int]:
+    def __getitem__(self, ind: int) -> Tuple[Any, int]:
         """
         Get the (preprocessed) content and label for the item at ``ind`` index in the
         dataset.
@@ -121,7 +123,7 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
 
     def __init__(
         self,
-        docs: 'DocumentSequence',
+        docs: 'DocumentArray',
         preprocess_fn: Optional['PreprocFnType'] = None,
     ):
         """Create the dataset instance.
@@ -159,7 +161,7 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
 
                 self._labels.append((i, int(tag)))
 
-    def __getitem__(self, ind: int) -> Tuple['DocumentContentType', Tuple[int, int]]:
+    def __getitem__(self, ind: int) -> Tuple[Any, Tuple[int, int]]:
         """
         Get the (preprocessed) content and label for the item at ``ind`` index in the
         dataset.

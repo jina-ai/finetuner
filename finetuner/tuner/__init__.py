@@ -3,12 +3,13 @@ from typing import TYPE_CHECKING, Callable, List, Optional, Tuple, Type, Union
 from ..helper import get_framework
 
 if TYPE_CHECKING:
+    from docarray import DocumentArray
+
     from ..helper import (
         AnyDNN,
         AnyOptimizer,
         AnyScheduler,
         CollateFnType,
-        DocumentSequence,
         PreprocFnType,
     )
     from .base import BaseLoss, BaseTuner
@@ -34,8 +35,8 @@ def _get_tuner_class(dnn_model: 'AnyDNN') -> Type['BaseTuner']:
 
 def fit(
     embed_model: 'AnyDNN',
-    train_data: 'DocumentSequence',
-    eval_data: Optional['DocumentSequence'] = None,
+    train_data: 'DocumentArray',
+    eval_data: Optional['DocumentArray'] = None,
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
     epochs: int = 10,
