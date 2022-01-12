@@ -47,8 +47,6 @@ def vision_preprocessor(
         ]
     )
     blob = transform(image=blob)['image']
-    print(blob.shape)
     if target_channel_axis != -1:
         blob = np.moveaxis(blob, -1, target_channel_axis)
-        print(blob.shape)
     return blob
