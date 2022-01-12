@@ -1,6 +1,10 @@
 https://github.com/jina-ai/jina/archive/refs/heads/master.zip
-tensorflow==2.7.0
+onnx==1.9.0
+onnxruntime==1.10.0
+paddle2onnx==0.9.0
 paddlepaddle==2.2.0
+tf2onnx==1.9.3
+tensorflow==2.7.0
 torch==1.9.0
 torchvision==0.10.0
 scipy==1.7.1
