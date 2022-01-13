@@ -1,5 +1,4 @@
 import os
-import tempfile
 import threading
 import webbrowser
 from typing import TYPE_CHECKING, Optional
@@ -9,7 +8,7 @@ from jina import Flow
 from jina.logging.predefined import default_logger
 
 from .. import __default_tag_key__
-from .executor import DataIterator, FTExecutor
+from .executor import FTExecutor
 
 if TYPE_CHECKING:
     from docarray import DocumentArray
@@ -20,7 +19,6 @@ if TYPE_CHECKING:
 def fit(
     embed_model: 'AnyDNN',
     train_data: 'DocumentArray',
-    clear_labels_on_start: bool = False,
     port_expose: Optional[int] = None,
     runtime_backend: str = 'thread',
     loss: str = 'SiameseLoss',
@@ -32,7 +30,6 @@ def fit(
 
     :param embed_model: The embedding model to fine-tune.
     :param train_data: Data on which to train the model.
-    :param clear_labels_on_start: If set True, will remove all labeled data.
     :param port_expose: The port to expose.
     :param runtime_backend: The parallel backend of the runtime inside the Pea, either
         ``thread`` or ``process``.
@@ -50,7 +47,6 @@ def fit(
         embedding model.
     :param kwargs: Additional keyword arguments.
     """
-    dam_path = tempfile.mkdtemp()
     stop_event = threading.Event()
 
     # Remove all labels, as they are not needed
@@ -73,27 +69,14 @@ def fit(
         def get_preprocess_fn(self):
             return preprocess_fn
 
-    f = (
-        Flow(
-            protocol='http',
-            port_expose=port_expose,
-            prefetch=1,
-            runtime_backend=runtime_backend,
-        )
-        .add(
-            uses=DataIterator,
-            uses_with={
-                'dam_path': dam_path,
-                'clear_labels_on_start': clear_labels_on_start,
-            },
-        )
-        .add(
-            uses=MyExecutor,
-            uses_with={
-                'dam_path': dam_path,
-                'loss': loss,
-            },
-        )
+    f = Flow(
+        protocol='http',
+        port_expose=port_expose,
+        prefetch=1,
+        runtime_backend=runtime_backend,
+    ).add(
+        uses=MyExecutor,
+        uses_with={'loss': loss},
     )
 
     f.expose_endpoint('/next')  #: for allowing client to fetch for the next batch
