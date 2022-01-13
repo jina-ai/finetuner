@@ -164,7 +164,7 @@ Let's start with the dataset - we'll use the {meth}`~finetuner.toydata.generate_
 ```python
 import numpy as np
 from finetuner.toydata import generate_fashion
-from jina import Document
+from docarray import Document
 
 train_data = generate_fashion()
 eval_data = generate_fashion(is_testset=True)

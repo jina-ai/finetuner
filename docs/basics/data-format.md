@@ -54,7 +54,7 @@ array.
 ```python
 import numpy as np
 from finetuner import fit
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 
 dataset = DocumentArray([
   Document(uri='path/to/image.jpg', tags={'finetuner_label': 1}}),
@@ -77,7 +77,7 @@ Next, let's take a look at an example where we apply some basic image augmentati
 import albumentations as A
 import numpy as np
 from finetuner import fit
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 
 dataset = DocumentArray([
   Document(blob=np.random.rand(3, 128, 128), tags={'finetuner_label': 1}}),

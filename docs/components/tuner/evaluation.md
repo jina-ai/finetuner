@@ -176,7 +176,7 @@ evaluation callback is provided. The callback can be used as follows:
 ```python
 import finetuner
 from finetuner.tuner.callback import EvaluationCallback
-from jina import DocumentArray
+from docarray import DocumentArray
 
 query_data = DocumentArray(...)
 index_data = DocumentArray(...)

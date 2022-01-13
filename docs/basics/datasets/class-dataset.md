@@ -28,7 +28,7 @@ Here is an example of a toy class dataset
 ```python
 import random
 
-from jina import DocumentArray, Document
+from docarray import DocumentArray, Document
 
 from finetuner.tuner.dataset import ClassDataset, ClassSampler
 

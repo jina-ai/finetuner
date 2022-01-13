@@ -5,7 +5,7 @@ import paddle
 import pytest
 import tensorflow as tf
 import torch
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 
 from finetuner import __default_tag_key__
 

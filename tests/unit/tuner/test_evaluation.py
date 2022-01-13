@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 import torch
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 
 from finetuner import __default_tag_key__
 from finetuner.tuner.evaluation import (

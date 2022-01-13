@@ -1,5 +1,5 @@
 import numpy as np
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 
 from finetuner.tuner.pytorch.datasets import PytorchClassDataset, PytorchSessionDataset
 

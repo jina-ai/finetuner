@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Generator, Optional
 
 import numpy as np
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 from rich.progress import track
 
 from finetuner import __default_tag_key__
