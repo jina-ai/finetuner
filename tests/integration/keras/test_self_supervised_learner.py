@@ -1,5 +1,3 @@
-from functools import partial
-
 import pytest
 
 import finetuner as ft
@@ -38,7 +36,7 @@ def test_self_supervised_learning(
         loss=loss_cls(temperature),
         num_items_per_class=2,
         learning_rate=1e-2,
-        preprocess_fn=partial(vision_preprocessor, target_channel_axis=-1),
+        preprocess_fn=vision_preprocessor(target_channel_axis=-1),
         to_embedding_model=True,
         layer_name='avg_pool',
         projection_head=projection_head,

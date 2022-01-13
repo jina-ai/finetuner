@@ -3,6 +3,30 @@ from docarray import Document
 
 
 def vision_preprocessor(
+    height: int = 224,
+    width: int = 224,
+    default_channel_axis: int = -1,
+    target_channel_axis: int = 0,
+):
+    """Randomly augmentation a Document with `blob` field.
+    The method applies flipping, color jitter, cropping, gaussian blur and random rectangle erase
+    to the given image.
+
+    :param height: image height.
+    :param width: image width.
+    :param default_channel_axis: The color channel of the input image, by default -1, the expected input is H, W, C.
+    :param target_channel_axis: The color channel of the output image, by default 0, the expected output is C, H, W.
+    """
+
+    def preprocess_fn(doc):
+        return _vision_preprocessor(
+            doc, height, width, default_channel_axis, target_channel_axis
+        )
+
+    return preprocess_fn
+
+
+def _vision_preprocessor(
     doc: Document,
     height: int = 224,
     width: int = 224,
@@ -18,10 +42,6 @@ def vision_preprocessor(
     :param width: image width.
     :param default_channel_axis: The color channel of the input image, by default -1, the expected input is H, W, C.
     :param target_channel_axis: The color channel of the output image, by default 0, the expected output is C, H, W.
-
-    .. note::
-        This method will set `channel_axis` to 0 as the first dimension of the image blob. If you're using tensorflow backend,
-        needs to move the channel axis to -1.
     """
     import albumentations as A
 
