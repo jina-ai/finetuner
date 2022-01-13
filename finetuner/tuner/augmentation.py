@@ -16,11 +16,12 @@ def vision_preprocessor(
     :param doc: The document to preprocess.
     :param height: image height.
     :param width: image width.
-    :param channel_axis: The color channel of the image, by default -1, i.e, the expected input is H, W, C.
+    :param default_channel_axis: The color channel of the input image, by default -1, the expected input is H, W, C.
+    :param target_channel_axis: The color channel of the output image, by default 0, the expected output is C, H, W.
 
     .. note::
-        This method will set `channel_axis` to -1 as the last dimension of the image blob. If you're using tensorflow backend,
-        needs to call `doc.set_image_blob_channel_axis(-1, 0)` to revert the channel axis.
+        This method will set `channel_axis` to 0 as the first dimension of the image blob. If you're using tensorflow backend,
+        needs to move the channel axis to -1.
     """
     import albumentations as A
 
