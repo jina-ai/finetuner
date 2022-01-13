@@ -55,6 +55,8 @@ def _vision_preprocessor(
             blob = doc.blob
         else:
             raise AttributeError('Can not load `blob` field from the given document.')
+    if blob.dtype == 'uint8':
+        doc.set_image_blob_normalization(channel_axis=default_channel_axis)
     if default_channel_axis not in [-1, 2]:
         blob = np.moveaxis(blob, default_channel_axis, -1)
     # p is the probability to apply the transform.
