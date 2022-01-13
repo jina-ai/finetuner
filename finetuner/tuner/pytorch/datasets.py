@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Tuple
 import numpy as np
 from torch.utils.data import Dataset as PytorchDataset
 
-from ..dataset import ClassDataset, SessionDataset
+from ..dataset import ClassDataset, InstanceDataset, SessionDataset
 
 if TYPE_CHECKING:
     from jina.types.document.mixins.content import DocumentContentType
@@ -26,6 +26,13 @@ class PytorchClassDataset(ClassDataset, PytorchDataset):
 
 class PytorchSessionDataset(SessionDataset, PytorchDataset):
     def __getitem__(self, ind: int) -> Tuple['DocumentContentType', Tuple[int, int]]:
+        content, label = super().__getitem__(ind)
+        content = _make_blob_writable(content)
+        return (content, label)
+
+
+class PytorchInstanceDataset(InstanceDataset, PytorchDataset):
+    def __getitem__(self, ind: int) -> Tuple['DocumentContentType', int]:
         content, label = super().__getitem__(ind)
         content = _make_blob_writable(content)
         return (content, label)

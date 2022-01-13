@@ -5,8 +5,8 @@ from rich.progress import Progress
 
 from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyScheduler, AnyTensor
 from .callback import BaseCallback, ProgressBarCallback
-from .dataset import ClassDataset, SessionDataset
-from .dataset.samplers import ClassSampler, SessionSampler
+from .dataset import ClassDataset, InstanceDataset, SessionDataset
+from .dataset.samplers import ClassSampler, InstanceSampler, SessionSampler
 from .miner.base import BaseMiner
 from .state import TunerState
 
@@ -118,11 +118,12 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
 
     @staticmethod
     def _get_batch_sampler(
-        dataset: Union[ClassDataset, SessionDataset],
+        dataset: Union[ClassDataset, SessionDataset, InstanceDataset],
         batch_size: int,
         shuffle: bool,
         num_items_per_class: Optional[int] = None,
-    ) -> Union[ClassSampler, SessionSampler]:
+        views_per_instance: Optional[int] = 2,
+    ) -> Union[ClassSampler, SessionSampler, InstanceSampler]:
         """Get the batch sampler."""
 
         if isinstance(dataset, ClassDataset):
@@ -131,9 +132,15 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
             )
         elif isinstance(dataset, SessionDataset):
             batch_sampler = SessionSampler(dataset.labels, batch_size, shuffle)
+        elif isinstance(dataset, InstanceDataset):
+            batch_sampler = InstanceSampler(
+                len(dataset),
+                batch_size,
+                views_per_instance,
+            )
         else:
             raise TypeError(
-                f'`dataset` must be either {type(SessionDataset)} or'
+                f'`dataset` must be either {type(SessionDataset)}, {type(InstanceDataset)} or'
                 f' {type(ClassDataset)}, but receiving {type(dataset)}'
             )
 

@@ -9,10 +9,9 @@ from torch.utils.data.dataloader import DataLoader
 
 from ... import __default_tag_key__
 from ..base import BaseTuner
-from ..dataset.datasets import InstanceDataset
 from ..state import TunerState
 from . import losses
-from .datasets import PytorchClassDataset, PytorchSessionDataset
+from .datasets import PytorchClassDataset, PytorchInstanceDataset, PytorchSessionDataset
 
 if TYPE_CHECKING:
     from ...helper import CollateFnType, DocumentSequence, PreprocFnType
@@ -66,7 +65,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
             if len(data[0].matches) > 0:
                 dataset = PytorchSessionDataset(data, preprocess_fn=preprocess_fn)
             else:
-                dataset = InstanceDataset(data, preprocess_fn=preprocess_fn)
+                dataset = PytorchInstanceDataset(data, preprocess_fn=preprocess_fn)
 
         batch_sampler = self._get_batch_sampler(
             dataset,
