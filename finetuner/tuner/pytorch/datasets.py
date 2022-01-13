@@ -32,7 +32,7 @@ class PytorchSessionDataset(SessionDataset, PytorchDataset):
 
 
 class PytorchInstanceDataset(InstanceDataset, PytorchDataset):
-    def __getitem__(self, ind: int) -> Tuple['DocumentContentType', Tuple[int, int]]:
+    def __getitem__(self, ind: int) -> Tuple['DocumentContentType', int]:
         content, label = super().__getitem__(ind)
         content = _make_blob_writable(content)
         return (content, label)
