@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from docarray import Document
 
-from finetuner.tuner.augmentation import vision_preprocessor
+from finetuner.tuner.augmentation import _vision_preprocessor
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -45,7 +45,7 @@ def test_vision_preprocessor(
     doc, height, width, num_channels, default_channel_axis, target_channel_axis
 ):
     original_blob = doc.blob
-    augmented_blob = vision_preprocessor(
+    augmented_blob = _vision_preprocessor(
         doc, height, width, default_channel_axis, target_channel_axis
     )
     assert augmented_blob is not None
@@ -59,4 +59,4 @@ def test_vision_preprocessor(
 def test_vision_preprocessor_fail_given_no_blob_and_uri():
     doc = Document()
     with pytest.raises(AttributeError):
-        vision_preprocessor(doc)
+        _vision_preprocessor(doc)
