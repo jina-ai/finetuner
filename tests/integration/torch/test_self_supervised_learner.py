@@ -17,8 +17,8 @@ def default_model():
     "n_cls,n_epochs,loss_cls,temperature",
     [
         (5, 2, NTXentLoss, 0.1),
-        # (10, 2, NTXentLoss, 0.2),
-        # (10, 5, NTXentLoss, 1.0),
+        (10, 2, NTXentLoss, 0.2),
+        (10, 5, NTXentLoss, 1.0),
     ],
 )
 def test_self_supervised_learning(
