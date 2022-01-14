@@ -59,7 +59,7 @@ def _vision_preprocessor(
         blob = np.moveaxis(blob, default_channel_axis, -1)
     if blob.dtype == 'uint8':  # normalize image blob
         blob_info = np.iinfo(blob.dtype)
-        blob = (blob.astype(np.float64) / blob_info.max) * 255
+        blob = (blob.astype(np.float32) / blob_info.max) * 255
     transform = A.Compose(
         [
             A.HorizontalFlip(p=0.5),
