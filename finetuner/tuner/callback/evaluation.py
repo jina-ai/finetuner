@@ -1,5 +1,5 @@
 import math
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Tuple
 
 from ... import embed
 from ..evaluation import Evaluator
@@ -13,29 +13,44 @@ if TYPE_CHECKING:
 
 class EvaluationCallback(BaseCallback):
     """
-    A callback that uses the Evaluator to calculate IR metrics at the end of each epoch. When used
-    with other callbacks that rely on metrics, like checkpoints and logging, this callback should be
-    defined first, so that it precedes in execution.
+    A callback that uses the Evaluator to calculate IR metrics at the end of each epoch.
+    When used with other callbacks that rely on metrics, like checkpoints and logging,
+    this callback should be defined first, so that it precedes in execution.
     """
 
     def __init__(
         self,
         query_data: 'DocumentArray',
         index_data: Optional['DocumentArray'] = None,
+        metrics: Optional[
+            Dict[str, Tuple[Callable[..., float], Dict[str, Any]]]
+        ] = None,
+        exclude_self: bool = True,
         limit: int = 20,
         distance: str = 'cosine',
         num_workers: int = 1,
     ):
         """
-        :param query_data: Search data used by the evaluator at the end of each epoch, to evaluate the model.
-        :param index_data: Index data or catalog used by the evaluator at the end of each epoch, to evaluate the model.
-        :param limit: The number of top search results to consider, when computing the evaluation metrics.
-        :param distance: The type of distance metric to use when matching query and index docs, available options are
-            ``'cosine'``, ``'euclidean'`` and ``'sqeuclidean'``.
-        :param num_workers: The number of workers to use when matching query and index data.
+        :param query_data: Search data used by the evaluator at the end of each epoch,
+            to evaluate the model.
+        :param index_data: Index data or catalog used by the evaluator at the end of
+            each epoch, to evaluate the model.
+        :param metrics: A dictionary that specifies the metrics to calculate. It maps
+            metric names to tuples of metric functions and keyword arguments. If set
+            to None, default metrics are computed.
+        :param exclude_self: Whether to exclude self when matching.
+        :param limit: The number of top search results to consider, when computing the
+            valuation metrics.
+        :param distance: The type of distance metric to use when matching query and
+            index docs, available options are ``'cosine'``, ``'euclidean'`` and
+            ``'sqeuclidean'``.
+        :param num_workers: The number of workers to use when matching query and
+            index data.
         """
         self._query_data = query_data
         self._index_data = index_data
+        self._metrics = metrics
+        self._exclude_self = exclude_self
         self._limit = limit
         self._distance = distance
         self._num_workers = num_workers
@@ -118,8 +133,11 @@ class EvaluationCallback(BaseCallback):
         )
 
         # compute metrics
-        evaluator = Evaluator(self._query_data, index_data)
+        evaluator = Evaluator(self._query_data, index_data, metrics=self._metrics)
         tuner.state.eval_metrics = evaluator.evaluate(
-            limit=self._limit, distance=self._distance, num_workers=self._num_workers
+            exclude_self=self._exclude_self,
+            limit=self._limit,
+            distance=self._distance,
+            num_workers=self._num_workers,
         )
         tuner._progress_bar.update(task_id=self._match_pbar_id, visible=False)

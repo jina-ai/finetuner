@@ -1,40 +1,13 @@
 from collections import defaultdict
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Tuple
 
 from docarray import Document, DocumentArray
-from docarray.math.evaluation import (
-    average_precision,
-    dcg_at_k,
-    f1_score_at_k,
-    hit_at_k,
-    ndcg_at_k,
-    precision_at_k,
-    r_precision,
-    recall_at_k,
-    reciprocal_rank,
-)
 
 from .. import __default_tag_key__
 from ..embedding import embed
 
 if TYPE_CHECKING:
     from ..helper import AnyDNN
-
-
-METRICS = {
-    'r_precision': r_precision,
-    'precision_at_k': precision_at_k,
-    'recall_at_k': recall_at_k,
-    'f1_score_at_k': f1_score_at_k,
-    'average_precision': average_precision,
-    'hit_at_k': hit_at_k,
-    'reciprocal_rank': reciprocal_rank,
-    'dcg_at_k': dcg_at_k,
-    'ndcg_at_k': ndcg_at_k,
-}
-
-__evaluator_metrics_key__ = 'metrics'
-__evaluator_targets_key__ = 'targets'
 
 
 class Evaluator:
@@ -45,147 +18,154 @@ class Evaluator:
         query_data: 'DocumentArray',
         index_data: Optional['DocumentArray'] = None,
         embed_model: Optional['AnyDNN'] = None,
+        metrics: Optional[Dict[str, Tuple[Callable, Dict[str, Any]]]] = None,
     ):
         """
-        Build an Evaluator object that can be used to evaluate the performance on a retrieval task
+        Build an Evaluator object that can be used to evaluate the performance on a
+        retrieval task.
 
-        :param query_data: A sequence of documents. Both class and session format is accepted. In the case of session
-            data, each document should contain ground truth matches from the catalog under ``doc.matches`` where each
-            match contains the relevance score under ``match.tags[finetuner.__default_tag_key__]``. In the case of
-            class format, each document should be mapped to a class, which is specified under
+        :param query_data: A sequence of documents. Both class and session format is
+            accepted. In the case of session data, each document should contain ground
+            truth matches from the index data under ``doc.matches``. In the case of
+            class format, each document should be mapped to a class, which is specified
+            under ``doc.tags[finetuner.__default_tag_key__]``.
+        :param index_data: A sequence of documents, against which the query data will
+            be matched. If not provided, query data will be matched against themselves.
+            Both class and session format is accepted. In the case of session data,
+            ground truth matches are included in the `query_data`, so no additional
+            information is required in the index data. In the case of class data, each
+            doc in the index data should have class labels in
             ``doc.tags[finetuner.__default_tag_key__]``.
-        :param index_data: A sequence of documents, against which the query data will be matched. Both class and session
-            format is accepted. In the case of session data, ground truth matches are included in the `query_data`, so
-            no additional information is required in the index data. In the case of class data, each doc in the index
-            data should have class labels in ``doc.tags[finetuner.__default_tag_key__]``.
-        :param embed_model: The embedding model to use, in order to extract document representations. If set to None,
-            documents are assumed to carry representations.
+        :param embed_model: The embedding model to use, in order to extract document
+            representations. If set to None, documents are assumed to carry
+            representations.
+        :param metrics: A dictionary that specifies the metrics to calculate. It maps
+            metric names to tuples of metric functions and keyword arguments. If set to
+            None, default metrics are computed.
         :return: None
         """
         self._query_data = query_data
-        self._index_data = index_data
+        self._index_data = index_data or query_data
         self._embed_model = embed_model
+        self._metrics = metrics or self.default_metrics()
+
+        self._summary = DocumentArray([Document(id=doc.id) for doc in self._query_data])
+
         if __default_tag_key__ in query_data[0].tags:
-            self._summary_docs = self._parse_class_docs()
+            self._ground_truth = self._parse_class_docs()
         else:
-            self._summary_docs = self._parse_session_docs()
+            self._ground_truth = self._parse_session_docs()
 
     @staticmethod
-    def _doc_to_relevance(doc: Document) -> Tuple[List[int], int]:
+    def _get_class_label(doc: Document) -> str:
         """
-        Convert a Jina document to a relevance representation.
+        Get the class label of a class format doc
         """
-        targets: Dict[str, int] = {
-            key: value
-            for key, value in doc.tags[__evaluator_targets_key__].items()
-            if key != doc.id
-        }
-        return [
-            targets[match.id] if match.id in targets else 0
-            for match in doc.matches
-            if match.id != doc.id
-        ], len(targets)
+        label = doc.tags.get(__default_tag_key__)
+        if label is None:
+            raise ValueError(f'No label found in index doc with id: {doc.id}')
+        return label
 
     def _parse_class_docs(self) -> DocumentArray:
         """
         Convert class format docs to the internal representation used by the Evaluator.
         """
-        query_data = self._query_data
-        index_data = self._index_data or query_data
-
         groups = defaultdict(list)
-        for doc in index_data:
-            label = doc.tags[__default_tag_key__]
+        for doc in self._index_data:
+            label = self._get_class_label(doc)
             groups[label].append(doc.id)
 
-        summmary_docs = DocumentArray()
-        for doc in query_data:
-            label = doc.tags[__default_tag_key__]
-            relevancies = [(m, 1) for m in groups[label]] if label in groups else []
-            summmary_doc = Document(
+        ground_truth = DocumentArray()
+        for doc in self._query_data:
+            label = self._get_class_label(doc)
+            matches = groups.get(label, [])
+            ground_truth_doc = Document(
                 id=doc.id,
-                tags={__evaluator_targets_key__: dict(relevancies)},
+                matches=DocumentArray([Document(id=match) for match in matches]),
             )
-            summmary_docs.append(summmary_doc)
+            ground_truth.append(ground_truth_doc)
 
-        return summmary_docs
+        return ground_truth
 
     def _parse_session_docs(self) -> DocumentArray:
         """
-        Convert session format docs to the internal representation used by the Evaluator.
+        Convert session format docs to the internal representation used by the
+        Evaluator.
         """
-        summmary_docs = DocumentArray()
+        ground_truth = DocumentArray()
         for doc in self._query_data:
-            relevancies = [(m.id, 1) for m in doc.matches]
-            relevancies = sorted(relevancies, key=lambda x: x[1])
-            summmary_doc = Document(
-                id=doc.id,
-                tags={__evaluator_targets_key__: dict(relevancies)},
-            )
-            summmary_docs.append(summmary_doc)
+            matches = DocumentArray()
+            for match in doc.matches:
+                if match.id not in self._index_data:
+                    raise ValueError(
+                        f'Match: {match.id} of doc: {doc.id} not in index data'
+                    )
+                matches.append(Document(id=match.id))
 
-        return summmary_docs
+            ground_truth_doc = Document(id=doc.id, matches=matches)
+            ground_truth.append(ground_truth_doc)
+
+        return ground_truth
+
+    def _embed(self, **embed_kwargs):
+        """
+        Embed docs.
+        """
+        embed(self._query_data, embed_model=self._embed_model, **embed_kwargs)
+        embed(self._index_data, embed_model=self._embed_model, **embed_kwargs)
+        self._query_data.embeddings = self._query_data.embeddings.astype('float64')
+        self._index_data.embeddings = self._index_data.embeddings.astype('float64')
 
     def _score_docs(
         self,
+        exclude_self: bool = True,
         limit: int = 20,
         distance: str = 'cosine',
         num_workers: int = 1,
         **embed_kwargs,
     ) -> None:
         """
-        Emded the evaluation docs and compute the matches from the catalog. Evaluation docs
-        embeddings are overwritten, but matches are not.
+        Emded the query docs and compute the matches from the index data. Evaluation
+        docs embeddings are overwritten, but matches are not.
         """
         if self._embed_model is not None:
-            embed(self._query_data, embed_model=self._embed_model, **embed_kwargs)
-            self._query_data.embeddings = self._query_data.embeddings.astype('float64')
+            self._embed(**embed_kwargs)
 
-            if self._index_data:
-                embed(self._index_data, embed_model=self._embed_model, **embed_kwargs)
-                self._index_data.embeddings = self._index_data.embeddings.astype(
-                    'float64'
-                )
-
-        for doc in self._summary_docs:
+        for doc in self._summary:
 
             embedding = self._query_data[doc.id].embedding
             if embedding is None:
-                raise ValueError(f'Found doc {doc.id} with no embedding set')
+                raise ValueError(f'Found doc: {doc.id} with no embedding set')
 
             doc.embedding = embedding
             doc.matches.clear()
 
-        self._summary_docs.match(
-            self._index_data or self._query_data,
+        self._summary.match(
+            self._index_data,
             limit=limit,
             metric=distance,
             num_worker=num_workers,
+            exclude_self=exclude_self,
         )
 
-    def _get_mean_metrics(self) -> Dict[str, float]:
+    @staticmethod
+    def default_metrics() -> Dict[str, Tuple[Callable, Dict[str, Any]]]:
         """
-        Compute the mean metric values across the evaluation docs.
+        Get default metrics.
         """
-        means = {}
-        for name, _ in METRICS.items():
-            values = [
-                self._query_data[doc.id].tags[__evaluator_metrics_key__][name]
-                for doc in self._summary_docs
-            ]
-            means[name] = sum(values) / len(values)
+        from inspect import getmembers, isfunction
 
-        return means
+        from docarray.math import evaluation
 
-    @classmethod
-    def list_available_metrics(cls) -> List[str]:
-        """
-        List available metrics.
-        """
-        return list(METRICS.keys())
+        return {
+            name: (func, {})
+            for name, func in getmembers(evaluation, isfunction)
+            if not name.startswith('_')
+        }
 
     def evaluate(
         self,
+        exclude_self: bool = True,
         limit: int = 20,
         distance: str = 'cosine',
         num_workers: int = 1,
@@ -193,35 +173,41 @@ class Evaluator:
     ) -> Dict[str, float]:
         """
         Run evaluation
-        :param limit: The number of top search results to consider, when computing the evaluation metrics.
-        :param distance: The type of distance metric to use when matching query and index docs, available options are
-            ``'cosine'``, ``'euclidean'`` and ``'sqeuclidean'``.
-        :param num_workers: The number of workers to use when matching query and index data.
+        :param exclude_self: Whether to exclude self when matching.
+        :param limit: The number of top search results to consider, when computing the
+            evaluation metrics.
+        :param distance: The type of distance metric to use when matching query and
+            index docs, available options are ``'cosine'``, ``'euclidean'`` and
+            ``'sqeuclidean'``.
+        :param num_workers: The number of workers to use when matching query and index
+            data.
         :param embed_kwargs: Keyword arguments to pass to the embed call.
 
         :return: dictionary with evaluation metrics
         """
         self._score_docs(
-            limit=limit, distance=distance, num_workers=num_workers, **embed_kwargs
+            exclude_self=exclude_self,
+            limit=limit,
+            distance=distance,
+            num_workers=num_workers,
+            **embed_kwargs,
         )
 
         # iterate through the available metrics
-        # for each metric iterate through the docs, calculate the metric and write the result
-        # to the doc
-        for doc in self._summary_docs:
-            self._query_data[doc.id].tags[__evaluator_metrics_key__] = {}
+        # for each metric iterate through the docs, calculate the metric and write
+        # the result to the doc
+        metrics = {}
 
-            for name, func in METRICS.items():
+        for metric_name, (metric_func, metric_kwargs) in self._metrics.items():
+            metric_value = self._summary.evaluate(
+                self._ground_truth,
+                metric=metric_func,
+                metric_name=metric_name,
+                **metric_kwargs,
+            )
+            metrics[metric_name] = metric_value
 
-                rel, max_rel = self._doc_to_relevance(doc)
-                # compute metric value
-                value = (
-                    func(rel, max_rel)
-                    if name in ['recall_at_k', 'f1_score_at_k']
-                    else func(rel)
-                )
-                # write value to doc
-                self._query_data[doc.id].tags[__evaluator_metrics_key__][name] = value
+        for doc in self._query_data:
+            doc.evaluations = self._summary[doc.id].evaluations
 
-        # get the metric averages
-        return self._get_mean_metrics()
+        return metrics
