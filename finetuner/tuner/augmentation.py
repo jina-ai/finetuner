@@ -55,18 +55,20 @@ def _vision_preprocessor(
             blob = doc.blob
         else:
             raise AttributeError('Can not load `blob` field from the given document.')
-    if blob.dtype == 'uint8':
-        doc.set_image_blob_normalization(channel_axis=default_channel_axis)
     if default_channel_axis not in [-1, 2]:
         blob = np.moveaxis(blob, default_channel_axis, -1)
-    # p is the probability to apply the transform.
+    if blob.dtype == 'uint8':  # normalize image blob
+        blob_info = np.iinfo(blob.dtype)
+        blob = (blob.astype(np.float64) / blob_info.max) * 255
     transform = A.Compose(
         [
             A.HorizontalFlip(p=0.5),
             A.ColorJitter(p=1, brightness=0, contrast=0, saturation=0, hue=0),
             A.RandomResizedCrop(width=width, height=height, p=1),
             A.GaussianBlur(p=1),
-            A.GridDropout(p=0.5),
+            A.GridDropout(
+                ratio=0.2, p=0.5
+            ),  # random erase 0.2 percent of image with 0.5 probability
         ]
     )
     blob = transform(image=blob)['image']
