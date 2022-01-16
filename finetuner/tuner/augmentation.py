@@ -57,12 +57,12 @@ def _vision_preprocessor(
             raise AttributeError('Can not load `blob` field from the given document.')
     if default_channel_axis not in [-1, 2]:
         blob = np.moveaxis(blob, default_channel_axis, -1)
-    if blob.dtype == np.uint8 and blob.ndim == 3:
+    if blob.dtype == np.uint8:
         blob = (blob / 255.0).astype(np.float32)
     transform = A.Compose(
         [
             A.HorizontalFlip(p=0.5),
-            A.ColorJitter(p=1, brightness=0, contrast=0, saturation=0, hue=0),
+            A.ColorJitter(p=1),
             A.RandomResizedCrop(width=width, height=height, p=1),
             A.GaussianBlur(p=1),
             A.GridDropout(
