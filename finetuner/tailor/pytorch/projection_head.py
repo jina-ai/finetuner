@@ -9,7 +9,7 @@ class ProjectionHead(nn.Module):
 
     EPSILON = 1e-5
 
-    def __init__(self, in_features: int, output_dim: int = 128, num_layers: int = 3):
+    def __init__(self, in_features: int, output_dim: int = 128, num_layers: int = 2):
         super().__init__()
         self.head_layers = nn.ModuleList()
         for idx in range(num_layers - 1):
@@ -22,6 +22,9 @@ class ProjectionHead(nn.Module):
             self.head_layers.append(nn.ReLU())
         self.head_layers.append(
             nn.Linear(in_features=in_features, out_features=output_dim, bias=False)
+        )
+        self.head_layers.append(
+            nn.BatchNorm1d(num_features=output_dim, eps=self.EPSILON)
         )
 
     def forward(self, x):
