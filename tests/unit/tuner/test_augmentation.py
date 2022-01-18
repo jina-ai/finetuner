@@ -9,7 +9,7 @@ from finetuner.tuner.augmentation import _vision_preprocessor
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
 
-@pytest.mark.parametrize('phrase', ['train', 'validation'])
+@pytest.mark.parametrize('phase', ['train', 'validation'])
 @pytest.mark.parametrize(
     'doc, height, width, num_channels, default_channel_axis, target_channel_axis',
     [
@@ -51,11 +51,11 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
     ],
 )
 def test_vision_preprocessor(
-    doc, height, width, num_channels, default_channel_axis, target_channel_axis, phrase
+    doc, height, width, num_channels, default_channel_axis, target_channel_axis, phase
 ):
     original_blob = doc.blob
     augmented_blob = _vision_preprocessor(
-        doc, height, width, default_channel_axis, target_channel_axis, phrase
+        doc, height, width, default_channel_axis, target_channel_axis, phase
     )
     assert augmented_blob is not None
     assert not np.array_equal(original_blob, augmented_blob)

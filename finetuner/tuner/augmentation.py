@@ -7,7 +7,7 @@ def vision_preprocessor(
     width: int = 224,
     default_channel_axis: int = -1,
     target_channel_axis: int = 0,
-    phrase: str = 'train',
+    phase: str = 'train',
 ):
     """Randomly augmentation a Document with `blob` field.
     The method applies flipping, color jitter, cropping, gaussian blur and random rectangle erase
@@ -17,13 +17,13 @@ def vision_preprocessor(
     :param width: image width.
     :param default_channel_axis: The color channel of the input image, by default -1, the expected input is H, W, C.
     :param target_channel_axis: The color channel of the output image, by default 0, the expected output is C, H, W.
-    :param phrase: phrase of experiment, either `train` or `validation`. At `validation` phrase, will not apply
+    :param phase: phase of experiment, either `train` or `validation`. At `validation` phase, will not apply
       random transformation.
     """
 
     def preprocess_fn(doc):
         return _vision_preprocessor(
-            doc, height, width, default_channel_axis, target_channel_axis, phrase
+            doc, height, width, default_channel_axis, target_channel_axis, phase
         )
 
     return preprocess_fn
@@ -51,7 +51,7 @@ def _set_image_blob_normalization(
     .. warning::
         Please do NOT generalize this function to gray scale, black/white image, it does not make any sense for
         non RGB image. if you look at their MNIST examples, the mean and stddev are 1-dimensional
-        (since the inputs are greyscale-- no RGB channels).
+        (since the inputs are greyscale there is no RGB channels).
 
 
     """
@@ -71,7 +71,7 @@ def _vision_preprocessor(
     width: int = 224,
     default_channel_axis: int = -1,
     target_channel_axis: int = 0,
-    phrase: str = 'train',
+    phase: str = 'train',
 ):
     """Randomly augmentation a Document with `blob` field.
     The method applies flipping, color jitter, cropping, gaussian blur and random rectangle erase
@@ -82,7 +82,7 @@ def _vision_preprocessor(
     :param width: image width.
     :param default_channel_axis: The color channel of the input image, by default -1, the expected input is H, W, C.
     :param target_channel_axis: The color channel of the output image, by default 0, the expected output is C, H, W.
-    :param phrase: phrase of experiment, either `train` or `validation`. At `validation` phrase, will not apply
+    :param phase: stage of experiment, either `train` or `validation`. At `validation` phase, will not apply
         random transformation.
     """
     import albumentations as A
@@ -105,7 +105,7 @@ def _vision_preprocessor(
         blob = np.float32(blob)
     if default_channel_axis not in [-1, 2]:
         blob = np.moveaxis(blob, default_channel_axis, -1)
-    if phrase == 'train':
+    if phase == 'train':
         transform = A.Compose(
             [
                 A.HorizontalFlip(p=0.5),
