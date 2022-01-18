@@ -27,6 +27,7 @@ class ProjectionHead(tf.keras.layers.Layer):
                 bias_initializer='zeros',
             )
         )
+        self.layers.append(tf.keras.layers.BatchNormalization(epsilon=self.EPSILON))
 
     def call(self, x):
         for layer in self.layers:

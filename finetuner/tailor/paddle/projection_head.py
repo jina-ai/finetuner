@@ -31,6 +31,9 @@ class ProjectionHead(nn.Layer):
                 bias_attr=False,
             )
         )
+        self.head_layers.append(
+            nn.BatchNorm1D(num_features=output_dim, epsilon=self.EPSILON)
+        )
 
     def forward(self, x):
         for layer in self.head_layers:
