@@ -67,7 +67,7 @@ def _vision_preprocessor(
         blob = np.float32(blob)
     if default_channel_axis not in [-1, 2]:
         blob = np.moveaxis(blob, default_channel_axis, -1)
-    if blob.shape[-1] == 3:  # apply to RGB images.
+    if blob.shape[-1] == 3 and blob.dtype == np.uint8:  # apply to RGB images.
         transform = A.Compose(
             [
                 A.Normalize(),
