@@ -96,7 +96,9 @@ def _vision_preprocessor(
             )
             blob = doc.blob
         else:
-            raise AttributeError('Can not load `blob` field from the given document.')
+            raise AttributeError(
+                f'Document `blob` is None, loading it from url: {doc.uri} failed.'
+            )
     if blob.dtype == np.uint8:
         blob = _set_image_blob_normalization(blob, channel_axis=default_channel_axis)
     if blob.dtype == np.float64:
