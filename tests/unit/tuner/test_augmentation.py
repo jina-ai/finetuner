@@ -66,7 +66,7 @@ def test_vision_preprocessor(
         assert augmented_blob.shape == (num_channels, height, width)
 
 
-# def test_vision_preprocessor_fail_given_no_blob_and_uri():
-#     doc = Document()
-#     with pytest.raises(AttributeError):
-#         _vision_preprocessor(doc)
+def test_vision_preprocessor_fail_given_no_blob_and_uri():
+    doc = Document()
+    with pytest.raises(AttributeError):
+        _vision_preprocessor(doc)
