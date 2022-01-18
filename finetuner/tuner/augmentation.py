@@ -71,7 +71,6 @@ def _vision_preprocessor(
         transform = A.Compose(
             [
                 A.Normalize(),
-                A.ToFloat(),
             ]
         )
         blob = transform(image=blob)['image']
