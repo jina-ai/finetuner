@@ -183,6 +183,23 @@ def test_vision_preprocessor_train(
         assert augmented_blob.shape == (num_channels, height, width)
 
 
+def test_blob_equal_given_uint_image_and_validation():
+    def preproc_fn(doc):
+        return (
+            doc.load_uri_to_image_blob(height=224, width=224)
+            .set_image_blob_normalization()
+            .set_image_blob_channel_axis(-1, 0)
+        )
+
+    doc_1 = Document(uri=os.path.join(cur_dir, 'resources/lena.png'))
+    doc_2 = Document(uri=os.path.join(cur_dir, 'resources/lena.png'))
+    blob_vision_preprocessor = _vision_preprocessor(
+        doc_1, 224, 224, normalize=True, phase='validation'
+    )
+    blob_jina_preprocessor = preproc_fn(doc_2).blob
+    assert np.array_equal(blob_vision_preprocessor, blob_jina_preprocessor)
+
+
 def test_vision_preprocessor_fail_given_no_blob_and_uri():
     doc = Document()
     with pytest.raises(AttributeError):

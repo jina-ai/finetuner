@@ -18,6 +18,7 @@ def vision_preprocessor(
     :param width: image width.
     :param default_channel_axis: The color channel of the input image, by default -1, the expected input is H, W, C.
     :param target_channel_axis: The color channel of the output image, by default 0, the expected output is C, H, W.
+    :param normalize: Normalize uint8 image :attr:`.blob` into a float32 image :attr:`.blob` inplace.
     :param phase: phase of experiment, either `train` or `validation`. At `validation` phase, will not apply
       random transformation.
     """
@@ -54,6 +55,7 @@ def _vision_preprocessor(
     :param width: image width.
     :param default_channel_axis: The color channel of the input image, by default -1, the expected input is H, W, C.
     :param target_channel_axis: The color channel of the output image, by default 0, the expected output is C, H, W.
+    :param normalize: Normalize uint8 image :attr:`.blob` into a float32 image :attr:`.blob` inplace.
     :param phase: stage of experiment, either `train` or `validation`. At `validation` phase, will not apply
         random transformation.
     """
