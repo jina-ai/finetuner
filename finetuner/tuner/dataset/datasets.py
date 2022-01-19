@@ -54,6 +54,7 @@ class ClassDataset(BaseDataset[int]):
         self,
         docs: 'DocumentSequence',
         preprocess_fn: Optional['PreprocFnType'] = None,
+        tag_key: Optional[str] = None
     ):
         """Create the dataset instance.
 
@@ -72,14 +73,15 @@ class ClassDataset(BaseDataset[int]):
         self._tag_labels_dict: Dict[Union[str, int], int] = {}
         self._labels: List[int] = []
         max_label = 0
-
+        if tag_key is None:
+            tag_key = __default_tag_key__
         for doc in self._docs:
-            if __default_tag_key__ not in doc.tags:
+            if tag_key not in doc.tags:
                 raise KeyError(
-                    f'The tag `{__default_tag_key__}` was not found in a document.'
+                    f'The tag `{tag_key}` was not found in a document.'
                     f' When using {type(self)} all documents need this tag.'
                 )
-            tag = doc.tags[__default_tag_key__]
+            tag = doc.tags[tag_key]
 
             label = self._tag_labels_dict.get(tag)
 

@@ -34,6 +34,7 @@ class KerasTuner(
         batch_size: int,
         shuffle: bool,
         preprocess_fn: Optional['PreprocFnType'] = None,
+        tag_key: Optional[str] = None,
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
         num_workers: int = 0,
@@ -45,7 +46,7 @@ class KerasTuner(
         """
 
         if __default_tag_key__ in data[0].tags:
-            dataset = ClassDataset(data, preprocess_fn=preprocess_fn)
+            dataset = ClassDataset(data, preprocess_fn=preprocess_fn, tag_key=tag_key)
         else:
             if len(data[0].matches) > 0:
                 dataset = SessionDataset(data, preprocess_fn=preprocess_fn)
@@ -120,6 +121,7 @@ class KerasTuner(
         train_data: 'DocumentSequence',
         eval_data: Optional['DocumentSequence'] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
+        tag_key: Optional[str] = None,
         collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
         batch_size: int = 256,
@@ -135,6 +137,7 @@ class KerasTuner(
             num_items_per_class=num_items_per_class,
             shuffle=True,
             preprocess_fn=preprocess_fn,
+            tag_key=tag_key,
             collate_fn=collate_fn,
         )
         if eval_data:
