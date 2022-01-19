@@ -29,43 +29,13 @@ def vision_preprocessor(
     return preprocess_fn
 
 
-def _set_image_blob_normalization(
-    blob,
-    channel_axis: int = -1,
-    img_mean=(0.485, 0.456, 0.406),
-    img_std=(0.229, 0.224, 0.225),
-) -> np.ndarray:
-    """Normalize a uint8 image :attr:`.blob` into a float32 image :attr:`.blob` inplace.
-    Following Pytorch standard, the image must be in the shape of shape (3 x H x W) and
-    will be normalized in to a range of [0, 1] and then
-    normalized using mean = [0.485, 0.456, 0.406] and std = [0.229, 0.224, 0.225]. These two arrays are computed
-    based on millions of images. If you want to train from scratch on your own dataset, you can calculate the new
-    mean and std. Otherwise, using the Imagenet pretrianed model with its own mean and std is recommended.
-    :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
-    :param img_mean: the mean of all images
-    :param img_std: the standard deviation of all images
-    :return: itself after processed
-    .. warning::
-        Please do NOT generalize this function to gray scale, black/white image, it does not make any sense for
-        non RGB image. if you look at their MNIST examples, the mean and stddev are 1-dimensional
-        (since the inputs are greyscale there is no RGB channels).
-    """
-    blob = (blob / 255.0).astype(np.float32)
-    blob = np.moveaxis(blob, channel_axis, 0)
-    mean = np.asarray(img_mean, dtype=np.float32)
-    std = np.asarray(img_std, dtype=np.float32)
-    blob = (blob - mean[:, None, None]) / std[:, None, None]
-    # set back channel to original
-    blob = np.moveaxis(blob, 0, channel_axis)
-    return blob
-
-
 def _vision_preprocessor(
     doc: Document,
     height: int = 224,
     width: int = 224,
     default_channel_axis: int = -1,
     target_channel_axis: int = 0,
+    normalize: bool = False,
     phase: str = 'train',
 ):
     """Randomly augmentation a Document with `blob` field.
@@ -94,12 +64,13 @@ def _vision_preprocessor(
             raise AttributeError(
                 f'Document `blob` is None, loading it from url: {doc.uri} failed.'
             )
+    if normalize:
+        doc.set_image_blob_normalization(channel_axis=default_channel_axis)
+        blob = doc.blob
     if blob.dtype == np.float64:
         blob = np.float32(blob)
     if default_channel_axis not in [-1, 2]:
         blob = np.moveaxis(blob, default_channel_axis, -1)
-    if blob.dtype == np.uint8:
-        blob = _set_image_blob_normalization(blob, channel_axis=default_channel_axis)
     if phase == 'train':
         transform = A.Compose(
             [
