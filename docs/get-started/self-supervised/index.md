@@ -53,6 +53,55 @@ train_da = left_da[:train_size] + right_da[:train_size]
 
 ## Self-Supervised Pre-training
 
+Finetuner's built-in self-supervised training works as follows:
+
+1. User construct training data without any labels as `DocumentArray`.
+2. Finetuner take each image and generate 2 **Views** of the given image with random augmentation. These two views are considered as positive pairs of images.
+3. Given each batch, we have $BATCH_SIZE/2$ positive pairs of images (views), and the rest of images within the batch will be considered as negative given a positive pair of views.
+
+![simclr](simclr.png)
+*Self-supervised fine-tuning takes an image as input and generate two views.*
+
+Given the fact that Finetuner's built-in self-supervised learning follows an Algorithm called `SimCLR` & `SimCLRV2`, some other tricks also being applied to make the training effective.
+Such as:
+
+1. `projection_head`: Finetuner will attach a simple 2-layer multi-layer perceptron on top of the {term}`embedding model`.
+2. `NTXentLoss`: Normalised temperature-scaled cross entropy loss.
+3. Larger batch size (to provide more positive/negative pairs).
+4. Larger training epochs.
+
+Finetuner has implemented all components for you, all you need to do is:
+
+```python
+import finetuner as ft
+from finetuner.tailor.pytorch.projection_head import ProjectionHead
+from finetuner.tuner.augmentation import vision_preprocessor
+from finetuner.tuner.pytorch.losses import NTXentLoss
+
+import torchvision.models as models
+
+# We use ResNet 50 as backbone
+resnet = models.resnet50(pretrained=True)
+# Initialize a MLP to be attached on the feature extractor.
+# The `in_features` is 2048 because we removed fully connected layer from resnet 50.
+projection_head = ProjectionHead(in_features=2048, output_dim=1024, num_layers=2)
+
+tuned_model = ft.fit(
+    model=resnet,
+    train_data=train_da,
+    epochs=50, # enlarge epochs could improve embedding quality
+    batch_size=512, # emlarge batch_size could improve embedding quality
+    loss=NTXentLoss(temperature=0.1), 
+    device='cuda',
+    preprocess_fn=vision_preprocessor(),
+    to_embedding_model=True,
+    input_size=(3, 224, 224),
+    layer_name='adaptiveavgpool2d_173',
+    freeze=False,
+    projection_head=projection_head,
+)
+```
+
 ## Fine-tuning Given Limited Supervision
 
 ## Result Evaluation
