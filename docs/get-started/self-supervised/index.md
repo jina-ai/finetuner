@@ -57,7 +57,7 @@ Finetuner's built-in self-supervised training works as follows:
 
 1. User construct training data without any labels as `DocumentArray`.
 2. Finetuner take each image and generate 2 **Views** of the given image with random augmentation. These two views are considered as positive pairs of images.
-3. Given each batch, we have $BATCH_SIZE/2$ positive pairs of images (views), and the rest of images within the batch will be considered as negative given a positive pair of views.
+3. Given each batch, we have $BatchSize/2$ positive pairs of images (views), and the rest of images within the batch will be considered as negative given a positive pair of views.
 
 ![simclr](simclr.png)
 *Self-supervised fine-tuning takes an image as input and generate two views.*
