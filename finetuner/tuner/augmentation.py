@@ -7,6 +7,7 @@ def vision_preprocessor(
     width: int = 224,
     default_channel_axis: int = -1,
     target_channel_axis: int = 0,
+    normalize: bool = False,
     phase: str = 'train',
 ):
     """Randomly augmentation a Document with `blob` field.
@@ -23,7 +24,13 @@ def vision_preprocessor(
 
     def preprocess_fn(doc):
         return _vision_preprocessor(
-            doc, height, width, default_channel_axis, target_channel_axis, phase
+            doc,
+            height,
+            width,
+            default_channel_axis,
+            target_channel_axis,
+            normalize,
+            phase,
         )
 
     return preprocess_fn
