@@ -5,7 +5,7 @@ This dataset consists of 573,585 part instances over 26,671 3D models covering 4
 
 ```{tip}
 ModelNet: a consistent, large-scale dataset of 3D objects annotated with fine-grained, instance-level, and hierarchical 3D part information.
-This dataset is used to establish three benchmarking tasks for evaluating 3D part recognition: fine-grained semantic segmentation, hierarchical semantic segmentation.In our case we'll use it to finetune PointConv which was pretrained on [ShapeNet dataset](https://arxiv.org/abs/1512.03012).
+This dataset is used to establish three benchmarking tasks for evaluating 3D part recognition: fine-grained semantic segmentation, hierarchical semantic segmentation. In our case we'll use it to finetune PointConv which was pretrained on [ShapeNet dataset](https://arxiv.org/abs/1512.03012).
 ```
 
 You can download ModelNet dataset on the official [Princeton website](https://modelnet.cs.princeton.edu/).
@@ -25,6 +25,24 @@ pip install finetuner
 pip install trimesh
 
 unzip ModelNet40.zip
+```
+
+Before we go further let's look at some examples from our data:
+
+```{figure} airplane.gif
+:align: right
+```
+
+```{figure} lap.gif
+:align: center
+```
+
+```{figure} vase.gif
+:align: left
+```
+
+```{figure} person.gif
+:align: right
 ```
 
 Now let's go to loading our data. We'll use `DocumentArray` from the library `docarray`. We'll go through all the files in our directory.
@@ -102,7 +120,6 @@ def random_sample(pc, num):
 
 def preprocess(doc: 'Document', num_points: int = 1024, data_aug: bool = True):
     points = random_sample(doc.tensor, num_points)
-    # points = np.transpose(points)
 
     points = points - np.expand_dims(np.mean(points, axis=0), 0)  # center
     dist = np.max(np.sqrt(np.sum(points ** 2, axis=1)), 0)
@@ -187,10 +204,11 @@ torch.save(
 
 ## All in one script
 
-We provide all the code above in one script so it's super easy to use.
+We provide all the code above in one script so it's super easy to use. This script is inside the repository that we clone earlier and here's how you can
+use it:
 
 ```shell
-python finetune.py --model_name pointconv \
+python executor-3d-encoder/finetune.py --model_name pointconv \
                    --train_dataset ../train_data_modelnet.bin \
                    --eval_dataset ../test_data_modelnet.bin \
                    --batch_size 64 \
@@ -207,7 +225,7 @@ import torch
 import numpy as np
 
 train_da = DocumentArray.load_binary('../train_data_modelnet.bin') # load train dataset
-eval_da = DocumentArray.load_binary('../test_data_modelnet.bin')
+eval_da = DocumentArray.load_binary('../test_data_modelnet.bin') # load eval dataset
 
 def random_sample(pc, num):
     permutation = np.arange(len(pc))
@@ -220,7 +238,6 @@ def random_sample(pc, num):
 
 def preprocess(doc: 'Document', num_points: int = 1024, data_aug: bool = True):
     points = random_sample(doc.tensor, num_points)
-    # points = np.transpose(points)
 
     points = points - np.expand_dims(np.mean(points, axis=0), 0)  # center
     dist = np.max(np.sqrt(np.sum(points ** 2, axis=1)), 0)
@@ -247,7 +264,11 @@ train_da.embed(tuned_model, batch_size=128, device='cuda')
 eval_da.embed(tuned_model, batch_size=128, device='cuda')
 
 eval_da.match(train_da, limit=10)
+```
 
+### Metric used & results
+
+```python
 def hit_rate(da, topk=1):
     hit = 0
     for d in da:
@@ -260,3 +281,13 @@ def hit_rate(da, topk=1):
 for k in range(1, 11):
     print(f'hit@{k}:  finetuned: {hit_rate(eval_da, k):.3f}')
 ```
+
+Now let's findout how does the finetuned model compare to the out of the box model.
+
+The result is demonstrated in the table below:
+
+| hit@k  | pre-trained | fine-tuned |
+|--------|-------------|------------|
+| hit@1  | 0.068       | 0.122      |
+| hit@5  | 0.142       | 0.230      |
+| hit@10 | 0.183       | 0.301      |
