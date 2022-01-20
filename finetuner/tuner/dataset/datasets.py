@@ -54,7 +54,7 @@ class ClassDataset(BaseDataset[int]):
         self,
         docs: 'DocumentSequence',
         preprocess_fn: Optional['PreprocFnType'] = None,
-        tag_key: Optional[str] = None
+        tag_key: Optional[str] = __default_tag_key__,
     ):
         """Create the dataset instance.
 
@@ -66,6 +66,8 @@ class ClassDataset(BaseDataset[int]):
             documents on the fly. It should take as input the document in the dataset,
             and output whatever content the framework-specific dataloader (and model)
             would accept.
+        :param tag_key: The tag which has to be used for training.
+        If not defined, __default_tag_key__ is taken as default.
         """
         self._docs = docs
         self._preprocess_fn = preprocess_fn
@@ -73,8 +75,6 @@ class ClassDataset(BaseDataset[int]):
         self._tag_labels_dict: Dict[Union[str, int], int] = {}
         self._labels: List[int] = []
         max_label = 0
-        if tag_key is None:
-            tag_key = __default_tag_key__
         for doc in self._docs:
             if tag_key not in doc.tags:
                 raise KeyError(
