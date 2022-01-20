@@ -181,9 +181,8 @@ def generate_fashion(
 
         doc = Document(
             content=raw_img,
-            tags={
-                __default_tag_key__: int(lbl),
-            },
+            tags={__default_tag_key__: int(lbl)},
+            mime_type='image/png',
         )
         doc.convert_blob_to_datauri()
         doc.blob = (doc.blob / 255.0).astype(np.float32)
