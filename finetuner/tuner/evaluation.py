@@ -45,6 +45,7 @@ class Evaluator:
         query_data: 'DocumentSequence',
         index_data: Optional['DocumentSequence'] = None,
         embed_model: Optional['AnyDNN'] = None,
+        tag_key: Optional[str] = __default_tag_key__,
     ):
         """
         Build an Evaluator object that can be used to evaluate the performance on a retrieval task
@@ -60,13 +61,16 @@ class Evaluator:
             data should have class labels in ``doc.tags[finetuner.__default_tag_key__]``.
         :param embed_model: The embedding model to use, in order to extract document representations. If set to None,
             documents are assumed to carry representations.
+        :param tag_key: The tag which has to be used for training.
+            If not defined, __default_tag_key__ is taken as default.
+
         :return: None
         """
         self._query_data = query_data
         self._index_data = index_data
         self._embed_model = embed_model
-        if __default_tag_key__ in query_data[0].tags:
-            self._summary_docs = self._parse_class_docs()
+        if tag_key in query_data[0].tags:
+            self._summary_docs = self._parse_class_docs(tag_key)
         else:
             self._summary_docs = self._parse_session_docs()
 
@@ -86,7 +90,7 @@ class Evaluator:
             if match.id != doc.id
         ], len(targets)
 
-    def _parse_class_docs(self) -> DocumentArray:
+    def _parse_class_docs(self, tag_key: str) -> DocumentArray:
         """
         Convert class format docs to the internal representation used by the Evaluator.
         """
@@ -95,12 +99,12 @@ class Evaluator:
 
         groups = defaultdict(list)
         for doc in index_data:
-            label = doc.tags[__default_tag_key__]
+            label = doc.tags[tag_key]
             groups[label].append(doc.id)
 
         summmary_docs = DocumentArray()
         for doc in query_data:
-            label = doc.tags[__default_tag_key__]
+            label = doc.tags[tag_key]
             relevancies = [(m, 1) for m in groups[label]] if label in groups else []
             summmary_doc = Document(
                 id=doc.id,

@@ -34,7 +34,7 @@ class KerasTuner(
         batch_size: int,
         shuffle: bool,
         preprocess_fn: Optional['PreprocFnType'] = None,
-        tag_key: Optional[str] = None,
+        tag_key: Optional[str] = __default_tag_key__,
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
         num_workers: int = 0,
@@ -45,7 +45,7 @@ class KerasTuner(
         the adapter, which can produce the dataset that yields batches.
         """
 
-        if __default_tag_key__ in data[0].tags:
+        if tag_key in data[0].tags:
             dataset = ClassDataset(data, preprocess_fn=preprocess_fn, tag_key=tag_key)
         else:
             if len(data[0].matches) > 0:

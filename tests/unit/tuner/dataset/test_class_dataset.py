@@ -5,8 +5,8 @@ from finetuner import __default_tag_key__
 from finetuner.tuner.dataset import ClassDataset
 
 
-def _class(cls):
-    return {__default_tag_key__: cls}
+def _class(cls, tag_key=__default_tag_key__):
+    return {tag_key: cls}
 
 
 def test_empty_docarray():

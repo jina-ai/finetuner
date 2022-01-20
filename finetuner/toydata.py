@@ -18,6 +18,7 @@ def generate_qa(
     pos_value: int = 1,
     neg_value: int = -1,
     is_testset: Optional[bool] = None,
+    tag_key: Optional[str] = __default_tag_key__,
 ) -> DocumentArray:
     """Get a generator of QA data with synthetic negative matches.
 
@@ -30,6 +31,8 @@ def generate_qa(
     :param neg_value: the label value of the negative matches
     :param max_seq_len: the maximum sequence length of each text.
     :param is_testset: If to generate test data, if set to None, will all data return
+    :param tag_key: The tag which has to be used for training.
+        If not defined, __default_tag_key__ is taken as default.
     """
     all_docs = DocumentArray(_download_qa_data(is_testset=is_testset))
 
@@ -38,10 +41,10 @@ def generate_qa(
             break
 
         d.text = d.tags['question']
-        m_p = Document(text=d.tags['answer'], tags={__default_tag_key__: pos_value})
+        m_p = Document(text=d.tags['answer'], tags={tag_key: pos_value})
         m_n = Document(
             text=d.tags['wrong_answer'],
-            tags={__default_tag_key__: neg_value},
+            tags={tag_key: neg_value},
         )
 
         if num_neg > 0:
@@ -54,7 +57,7 @@ def generate_qa(
                     if n_d.id != d.id:
                         new_nd = Document(
                             text=n_d.tags['answer'],
-                            tags={__default_tag_key__: neg_value},
+                            tags={tag_key: neg_value},
                         )
 
                         d.matches.append(new_nd)
@@ -110,6 +113,7 @@ def generate_fashion(
     channel_axis: int = -1,
     is_testset: bool = False,
     download_proxy=None,
+    tag_key: Optional[str] = __default_tag_key__,
 ) -> DocumentArray:
     """Get a Generator of fashion-mnist Documents.
 
@@ -124,6 +128,8 @@ def generate_fashion(
     :param channel_axis: The axis for channels, e.g. for pytorch we expect B*C*W*H,
         channel axis should be 1.
     :param is_testset: If to generate test data
+    :param tag_key: The tag which has to be used for training.
+        If not defined, __default_tag_key__ is taken as default.
     """
     download_dir = './data'
     Path(download_dir).mkdir(parents=True, exist_ok=True)
@@ -182,7 +188,7 @@ def generate_fashion(
         doc = Document(
             content=raw_img,
             tags={
-                __default_tag_key__: int(lbl),
+                tag_key: int(lbl),
             },
         )
         doc.convert_image_blob_to_uri()

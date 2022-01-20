@@ -177,6 +177,8 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
             documents on the fly. It should take as input the document in the dataset,
             and output whatever content the framework-specific dataloader (and model) would
             accept.
+        :param tag_key: The tag which has to be used for training.
+            If not defined, __default_tag_key__ is taken as default.
         :param collate_fn: The collation function to merge the content of individual
             items into a batch. Should accept a list with the content of each item,
             and output a tensor (or a list/dict of tensors) that feed directly into the

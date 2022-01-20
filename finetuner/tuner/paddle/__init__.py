@@ -46,6 +46,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         collate_fn: Optional['CollateFnType'] = None,
         num_items_per_class: Optional[int] = None,
         num_workers: int = 0,
+        tag_key: Optional[str] = __default_tag_key__,
     ) -> DataLoader:
         """Get the dataloader for the dataset."""
 
@@ -59,7 +60,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         else:
             collate_fn_all = None
 
-        if __default_tag_key__ in data[0].tags:
+        if tag_key in data[0].tags:
             dataset = PaddleClassDataset(data, preprocess_fn=preprocess_fn)
         else:
             if len(data[0].matches) > 0:

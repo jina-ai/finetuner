@@ -67,7 +67,7 @@ class ClassDataset(BaseDataset[int]):
             and output whatever content the framework-specific dataloader (and model)
             would accept.
         :param tag_key: The tag which has to be used for training.
-        If not defined, __default_tag_key__ is taken as default.
+            If not defined, __default_tag_key__ is taken as default.
         """
         self._docs = docs
         self._preprocess_fn = preprocess_fn
@@ -125,6 +125,7 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
         self,
         docs: 'DocumentSequence',
         preprocess_fn: Optional['PreprocFnType'] = None,
+        tag_key: Optional[str] = __default_tag_key__,
     ):
         """Create the dataset instance.
 
@@ -138,6 +139,9 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
             documents on the fly. It should take as input the document in the dataset,
             and output whatever content the framework-specific dataloader (and model)
             would accept.
+        :param tag_key: The tag which has to be used for training.
+            If not defined, __default_tag_key__ is taken as default.
+
         """
         self._docs = docs
         self._preprocess_fn = preprocess_fn
@@ -151,13 +155,13 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
 
             for match_ind, match in enumerate(doc.matches):
                 self._locations.append((i, match_ind))
-                if __default_tag_key__ not in match.tags:
+                if tag_key not in match.tags:
                     raise KeyError(
-                        f'The tag `{__default_tag_key__}` was not found in a document.'
+                        f'The tag `{tag_key}` was not found in a document.'
                         f' When using {type(self)} all documents need this tag'
                     )
 
-                tag = match.tags[__default_tag_key__]
+                tag = match.tags[tag_key]
 
                 self._labels.append((i, int(tag)))
 
