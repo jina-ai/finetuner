@@ -145,6 +145,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         train_data: 'DocumentSequence',
         eval_data: Optional['DocumentSequence'] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
+        tag_key: Optional[str] = None,
         collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
         batch_size: int = 256,
