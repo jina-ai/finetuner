@@ -93,6 +93,8 @@ def _download_qa_data(
     with open(targets['covid-csv']['filename']) as fp:
         lines = csv.DictReader(fp)
         for idx, value in enumerate(lines):
+            if len(value['answer']) < 1:
+                continue  # Filter out badly formatted row
             if is_testset is None:
                 yield Document(value)
             elif is_testset:
