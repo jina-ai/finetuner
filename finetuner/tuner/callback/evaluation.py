@@ -120,9 +120,6 @@ class EvaluationCallback(BaseCallback):
         # compute metrics
         evaluator = Evaluator(self._query_data, index_data)
         tuner.state.eval_metrics = evaluator.evaluate(
-            limit=self._limit,
-            distance=self._distance,
-            label=f'epoch#{tuner.state.epoch}',
-            num_workers=self._num_workers,
+            limit=self._limit, distance=self._distance, num_workers=self._num_workers
         )
         tuner._progress_bar.update(task_id=self._match_pbar_id, visible=False)

@@ -125,12 +125,12 @@ def test_evaluator_perfect_scores(
         (query_class_data, index_class_data),
     ]:
         evaluator = Evaluator(_query_data, _index_data, embed_model)
-        metrics = evaluator.evaluate(label='foo', limit=1, distance='euclidean')
+        metrics = evaluator.evaluate(limit=1, distance='euclidean')
         print(metrics)
         for _, v in metrics.items():
             assert v == 1.0
         for doc in _query_data:
-            for _, v in doc.tags[__evaluator_metrics_key__]['foo'].items():
+            for _, v in doc.tags[__evaluator_metrics_key__].items():
                 assert v == 1.0
 
 
@@ -151,7 +151,7 @@ def test_evaluator_half_precision(
         (query_class_data, index_class_data),
     ]:
         evaluator = Evaluator(_query_data, _index_data, embed_model)
-        metrics = evaluator.evaluate(label='foo', limit=2, distance='euclidean')
+        metrics = evaluator.evaluate(limit=2, distance='euclidean')
         for k, v in metrics.items():
             if k == 'precision_at_k':
                 assert v == 0.5
@@ -160,7 +160,7 @@ def test_evaluator_half_precision(
             else:
                 assert v == 1.0
         for doc in _query_data:
-            for k, v in doc.tags[__evaluator_metrics_key__]['foo'].items():
+            for k, v in doc.tags[__evaluator_metrics_key__].items():
                 if k == 'precision_at_k':
                     assert v == 0.5
                 elif k == 'f1_score_at_k':

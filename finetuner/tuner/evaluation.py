@@ -33,7 +33,7 @@ METRICS = {
     'ndcg_at_k': ndcg_at_k,
 }
 
-__evaluator_metrics_key__ = 'finetuner_metrics'
+__evaluator_metrics_key__ = 'metrics'
 __evaluator_targets_key__ = 'targets'
 
 
@@ -163,14 +163,14 @@ class Evaluator:
             num_worker=num_workers,
         )
 
-    def _get_mean_metrics(self, label: str = 'metrics') -> Dict[str, float]:
+    def _get_mean_metrics(self) -> Dict[str, float]:
         """
         Compute the mean metric values across the evaluation docs.
         """
         means = {}
         for name, _ in METRICS.items():
             values = [
-                self._query_data[doc.id].tags[__evaluator_metrics_key__][label][name]
+                self._query_data[doc.id].tags[__evaluator_metrics_key__][name]
                 for doc in self._summary_docs
             ]
             means[name] = sum(values) / len(values)
@@ -188,7 +188,6 @@ class Evaluator:
         self,
         limit: int = 20,
         distance: str = 'cosine',
-        label: str = 'metrics',
         num_workers: int = 1,
         **embed_kwargs,
     ) -> Dict[str, float]:
@@ -197,8 +196,6 @@ class Evaluator:
         :param limit: The number of top search results to consider, when computing the evaluation metrics.
         :param distance: The type of distance metric to use when matching query and index docs, available options are
             ``'cosine'``, ``'euclidean'`` and ``'sqeuclidean'``.
-        :param label: Per document metrics are written in each evaluation document under
-            ``doc.tags[__evaluator_metrics_key__][label]``.
         :param num_workers: The number of workers to use when matching query and index data.
         :param embed_kwargs: Keyword arguments to pass to the embed call.
 
@@ -211,8 +208,10 @@ class Evaluator:
         # iterate through the available metrics
         # for each metric iterate through the docs, calculate the metric and write the result
         # to the doc
-        for name, func in METRICS.items():
-            for doc in self._summary_docs:
+        for doc in self._summary_docs:
+            for name, func in METRICS.items():
+                self._query_data[doc.id].tags[__evaluator_metrics_key__] = {}
+
                 rel, max_rel = self._doc_to_relevance(doc)
                 # compute metric value
                 value = (
@@ -221,9 +220,7 @@ class Evaluator:
                     else func(rel)
                 )
                 # write value to doc
-                self._query_data[doc.id].tags[__evaluator_metrics_key__][label][
-                    name
-                ] = value
+                self._query_data[doc.id].tags[__evaluator_metrics_key__][name] = value
 
         # get the metric averages
-        return self._get_mean_metrics(label=label)
+        return self._get_mean_metrics()
