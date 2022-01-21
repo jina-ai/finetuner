@@ -61,13 +61,13 @@ from docarray import DocumentArray
 import numpy as np
 
 da = DocumentArray.empty(len(X))
-da.blobs = X.astype(np.float32)
+da.tensors = X.astype(np.float32)
 ```
 
 Now let's consider our 3D coordinates as the embedding space. And then we randomly take a point as the query and search for its 300 nearest neighbours based on the Cosine distance:
 
 ```python
-da.embeddings = da.blobs
+da.embeddings = da.tensors
 
 q = da[7]
 q.match(da, limit=300, normalize=(1, 0))

@@ -68,7 +68,7 @@ class EmbeddingModel(torch.nn.Module):
 
 Now let's create some example data. We will divide into 2 sets, the evaluation data and the index data. The
 evaluation data are docs with ids from 0 to 9. The index data are docs with ids from 10 to 19. As content, for
-each doc we use `doc.blob = np.array([doc.id % 10])`. Same content yields the same embedding, so for each
+each doc we use `doc.tensor = np.array([doc.id % 10])`. Same content yields the same embedding, so for each
 query doc we set as target match, the corresponding doc from the index data, that has the same content. For
 class data, we assign docs with the same content to the same class label:
 
@@ -81,7 +81,7 @@ query_data = DocumentArray()
 for i in range(10):
     doc = Document(
         id=str(i),
-        blob=np.array([i]),
+        tensor=np.array([i]),
         matches=[Document(id=str(10 + i))],
     )
     query_data.append(doc)
@@ -90,7 +90,7 @@ index_data = DocumentArray()
 for i in range(10):
     doc = Document(
         id=str(i + 10),
-        blob=np.array([i]),
+        tensor=np.array([i]),
     )
     index_data.append(doc)
 ```
@@ -105,7 +105,7 @@ query_data = DocumentArray()
 for i in range(10):
     doc = Document(
         id=str(i),
-        blob=np.array([i]),
+        tensor=np.array([i]),
         tags={'finetuner_label': str(i)},
     )
     query_data.append(doc)
@@ -114,7 +114,7 @@ index_data = DocumentArray()
 for i in range(10):
     doc = Document(
         id=str(i + 10),
-        blob=np.array([i]),
+        tensor=np.array([i]),
         tags={'finetuner_label': str(i)},
     )
     index_data.append(doc)

@@ -171,7 +171,7 @@ eval_data = generate_fashion(is_testset=True)
 
 def preprocess_fn(doc: Document) -> np.ndarray:
     """Add some noise to the image"""
-    new_image = doc.blob + np.random.normal(scale=0.01, size = doc.blob.shape)
+    new_image = doc.tensor + np.random.normal(scale=0.01, size = doc.tensor.shape)
     return new_image.astype(np.float32)
 
 print(f'Size of train data: {len(train_data)}')
@@ -179,8 +179,8 @@ print(f'Size of eval data: {len(eval_data)}')
 
 print(f'Example of label: {train_data[0].tags.json()}')
 
-blob = train_data[0].blob
-print(f'Example of blob: {blob.shape} shape, type {blob.dtype}')
+tensor = train_data[0].tensor
+print(f'Example of tensor: {tensor.shape} shape, type {tensor.dtype}')
 ```
 ```console
 Size of train data: 60000                                                                           
@@ -188,7 +188,7 @@ Size of train data: 10000
 Example of label: {
   "finetuner_label": 9.0
 }
-Example of blob: (28, 28) shape, type float32
+Example of tensor: (28, 28) shape, type float32
 ```
 
 Next, we prepare the model - just a simple MLP in this case
@@ -261,7 +261,7 @@ eval_data = generate_fashion(is_testset=True)
 
 def preprocess_fn(doc: Document) -> np.ndarray:
     """Add some noise to the image"""
-    new_image = doc.blob + np.random.normal(scale=0.01, size=doc.blob.shape)
+    new_image = doc.tensor + np.random.normal(scale=0.01, size=doc.tensor.shape)
     return new_image.astype(np.float32)
 
 embed_model = torch.nn.Sequential(

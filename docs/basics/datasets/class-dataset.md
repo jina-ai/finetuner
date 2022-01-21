@@ -68,7 +68,7 @@ Fashion-MNIST contains 60,000 training images and 10,000 images in 10 classes. E
 
 This dataset is by nature a class dataset - each `Document` has a class label (corresponding to one of the 10 classes). The `Document`s contain the following relevant information:
 
-- `.blob`: the numpy array of the image
+- `.tensor`: the numpy array of the image
 - `.tags['finetuner_label']`: the class label
 
 One can use {meth}`~finetuner.toydata.generate_fashion` to generate it.
