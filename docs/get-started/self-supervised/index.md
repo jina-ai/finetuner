@@ -147,6 +147,7 @@ tuned_model_supervised = ft.fit(
 
 ## Result Evaluation
 
+We compare the model with self-supervised pre-training against pre-trained model on ImageNet and fine-tuned model with full supervision, the results are shwon in the table below:
 
 | hit@k  | pre-trained | fine-tuned | self-supervision |
 |--------|-------------|------------|------------------|
@@ -157,3 +158,9 @@ tuned_model_supervised = ft.fit(
 
 
 ## Wrapping Up
+
+In this tutorial, we introduced how you can leverage small subset of labels and improve the representation learning using self-supervised pre-training.
+Result shown that with larger batch size, more epochs, proper image augmentation and attaching a projection head,
+the model could learn a good representation even without labels.
+
+To gain in-depth knowledge about the algorithm and the rational, please checkout [simclr and simclrv2](https://github.com/google-research/simclr).
