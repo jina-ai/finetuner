@@ -209,8 +209,9 @@ class Evaluator:
         # for each metric iterate through the docs, calculate the metric and write the result
         # to the doc
         for doc in self._summary_docs:
+            self._query_data[doc.id].tags[__evaluator_metrics_key__] = {}
+
             for name, func in METRICS.items():
-                self._query_data[doc.id].tags[__evaluator_metrics_key__] = {}
 
                 rel, max_rel = self._doc_to_relevance(doc)
                 # compute metric value
