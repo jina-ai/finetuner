@@ -33,7 +33,7 @@ def data():
     return DocumentArray(
         Document(
             id=str(i),
-            blob=np.zeros(10).astype(np.float32),
+            tensor=np.zeros(10).astype(np.float32),
             tags={__default_tag_key__: str(i)},
         )
         for i in range(1000)

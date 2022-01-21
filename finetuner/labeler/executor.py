@@ -75,12 +75,12 @@ class FTExecutor(Executor):
             exclude_self=True,
         )
         for d in batch.traverse_flat('r,m'):
-            d.pop('blob', 'embedding')
+            d.pop('tensor', 'embedding')
 
     @requests(on='/feed')
     def store_data(self, docs: DocumentArray, **kwargs):
-        if isinstance(docs.blobs, np.ndarray):
-            docs.blobs = docs.blobs.astype(np.float32)
+        if isinstance(docs.tensors, np.ndarray):
+            docs.tensors = docs.tensors.astype(np.float32)
         self._all_data.extend(docs)
 
     @requests(on='/fit')

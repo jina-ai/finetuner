@@ -60,7 +60,7 @@ class ClassDataset(BaseDataset[int]):
         """Create the dataset instance.
 
         :param docs: The documents for the dataset. Each document is expected to have
-            - a content (only blob or text are accepted currently)
+            - a content (only tensor or text are accepted currently)
             - a class label, saved under ``tags['finetuner__label']``. This class
               label should be an integer or a string
         :param preprocess_fn: A pre-processing function, to apply pre-processing to
@@ -129,7 +129,7 @@ class SessionDataset(BaseDataset[Tuple[int, int]]):
         """Create the dataset instance.
 
         :param docs: The documents for the dataset. Each document is expected to have
-            - a content (only blob or text are accepted currently)
+            - a content (only tensor or text are accepted currently)
             - matches, which should also have content, as well a label, stored under
                 ``tags['finetuner__label']``, which be either 1 or -1, denoting
                 whether the match is a positive or negative input in relation to the

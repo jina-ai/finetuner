@@ -113,7 +113,7 @@ def generate_fashion(
 ) -> DocumentArray:
     """Get a Generator of fashion-mnist Documents.
 
-    Each document in the array will have the image content saved as ``blob``, and
+    Each document in the array will have the image content saved as ``tensor``, and
     the label saved as a tag under ``tags['finetuner__label']``.
 
     :param num_total: the total number of documents to return
@@ -185,7 +185,7 @@ def generate_fashion(
             mime_type='image/png',
         )
         doc.convert_image_tensor_to_uri()
-        doc.blob = (doc.blob / 255.0).astype(np.float32)
+        doc.tensor = (doc.tensor / 255.0).astype(np.float32)
         docs.append(doc)
 
     return docs

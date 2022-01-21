@@ -9,7 +9,7 @@ def vision_preprocessor(
     target_channel_axis: int = 0,
     phase: str = 'train',
 ):
-    """Randomly augmentation a Document with `blob` field.
+    """Randomly augmentation a Document with `tensor` field.
     The method applies flipping, color jitter, cropping, gaussian blur and random rectangle erase
     to the given image.
 
@@ -37,7 +37,7 @@ def _vision_preprocessor(
     target_channel_axis: int = 0,
     phase: str = 'train',
 ):
-    """Randomly augmentation a Document with `blob` field.
+    """Randomly augmentation a Document with `tensor` field.
     The method applies flipping, color jitter, cropping, gaussian blur and random rectangle erase
     to the given image.
 
@@ -51,30 +51,30 @@ def _vision_preprocessor(
     """
     import albumentations as A
 
-    blob = doc.blob
+    tensor = doc.tensor
 
-    if blob is None:
+    if tensor is None:
         if doc.uri:
-            doc.load_uri_to_image_blob(
+            doc.load_uri_to_image_tensor(
                 width=width, height=height, channel_axis=default_channel_axis
             )
-            blob = doc.blob
+            tensor = doc.tensor
         else:
             raise AttributeError(
-                f'Document `blob` is None, loading it from url: {doc.uri} failed.'
+                f'Document `tensor` is None, loading it from url: {doc.uri} failed.'
             )
-    if blob.dtype == np.float64:
-        blob = np.float32(blob)
+    if tensor.dtype == np.float64:
+        tensor = np.float32(tensor)
     if default_channel_axis not in [-1, 2]:
-        blob = np.moveaxis(blob, default_channel_axis, -1)
-    if blob.shape[-1] == 3:  # apply to RGB images.
+        tensor = np.moveaxis(tensor, default_channel_axis, -1)
+    if tensor.shape[-1] == 3:  # apply to RGB images.
         transform = A.Compose(
             [
                 A.Normalize(),
                 A.ToFloat(),
             ]
         )
-        blob = transform(image=blob)['image']
+        tensor = transform(image=tensor)['image']
     if phase == 'train':
         transform = A.Compose(
             [
@@ -87,7 +87,7 @@ def _vision_preprocessor(
                 ),  # random erase 0.2 percent of image with 0.5 probability
             ]
         )
-        blob = transform(image=blob)['image']
+        tensor = transform(image=tensor)['image']
     if target_channel_axis != -1:
-        blob = np.moveaxis(blob, -1, target_channel_axis)
-    return blob
+        tensor = np.moveaxis(tensor, -1, target_channel_axis)
+    return tensor

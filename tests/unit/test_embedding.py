@@ -52,7 +52,7 @@ random_embed_models = {
 @pytest.mark.parametrize('framework', ['keras', 'pytorch', 'paddle'])
 def test_embedding_on_random_network(framework):
     docs = DocumentArray([Document() for _ in range(2)])
-    docs.blobs = np.random.random([2, 128]).astype(np.float32)
+    docs.tensors = np.random.random([2, 128]).astype(np.float32)
     embed_model = random_embed_models[framework]()
     embed(docs, embed_model)
 

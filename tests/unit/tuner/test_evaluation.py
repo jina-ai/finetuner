@@ -34,7 +34,7 @@ def query_session_data():
     for i in range(DATASET_SIZE):
         doc = Document(
             id=str(i),
-            blob=np.array([i]),
+            tensor=np.array([i]),
             matches=[Document(id=str(DATASET_SIZE + i))],
         )
         data.append(doc)
@@ -46,7 +46,7 @@ def index_session_data():
     """The index data in session format"""
     return DocumentArray(
         [
-            Document(id=str(DATASET_SIZE + i), blob=np.array([i]))
+            Document(id=str(DATASET_SIZE + i), tensor=np.array([i]))
             for i in range(DATASET_SIZE)
         ]
     )
@@ -56,7 +56,7 @@ def index_session_data():
 def query_class_data():
     """The query data in class format"""
     return DocumentArray(
-        Document(id=str(i), blob=np.array([i]), tags={__default_tag_key__: str(i)})
+        Document(id=str(i), tensor=np.array([i]), tags={__default_tag_key__: str(i)})
         for i in range(DATASET_SIZE)
     )
 
@@ -67,7 +67,7 @@ def index_class_data():
     return DocumentArray(
         Document(
             id=str(DATASET_SIZE + i),
-            blob=np.array([i]),
+            tensor=np.array([i]),
             tags={__default_tag_key__: str(i)},
         )
         for i in range(DATASET_SIZE)
