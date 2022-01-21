@@ -1,11 +1,13 @@
 # Finetuning PointConv on PartNet Dataset
 
-In this tutorial we will finetune PointConv on [ModelNet dataset](https://arxiv.org/pdf/1406.5670v3.pdf).
-This dataset consists of 573,585 part instances over 26,671 3D models covering 40 object categories.
+In this tutorial we will finetune PointConv on [ModelNet40 dataset](https://arxiv.org/pdf/1406.5670v3.pdf).
+The ModelNet40 dataset contains synthetic object point clouds. As the most widely used benchmark for point cloud analysis, ModelNet40 is popular because of its various categories, clean shapes, well-constructed dataset.
+
+The original ModelNet40 consists of 12,311 CAD-generated meshes in 40 categories (such as airplane, car, plant, lamp), of which 9,843 are used for training while the rest 2,468 are reserved for testing.
 
 ```{tip}
 ModelNet: a consistent, large-scale dataset of 3D objects annotated with fine-grained, instance-level, and hierarchical 3D part information.
-This dataset is used to establish three benchmarking tasks for evaluating 3D part recognition: fine-grained semantic segmentation, hierarchical semantic segmentation. In our case we'll use it to finetune PointConv which was pretrained on [ShapeNet dataset](https://arxiv.org/abs/1512.03012).
+The corresponding point cloud data points are uniformly sampled from the mesh surfaces, and then further preprocessed by moving to the origin and scaling into a unit sphere. This dataset is used to establish three benchmarking tasks for evaluating 3D part recognition: fine-grained semantic segmentation and classification. In our case we'll use it to finetune PointConv which was pretrained on [ShapeNet dataset](https://arxiv.org/abs/1512.03012).
 ```
 
 You can download ModelNet dataset on the official [Princeton website](https://modelnet.cs.princeton.edu/).
@@ -30,19 +32,23 @@ unzip ModelNet40.zip
 Before we go further let's look at some examples from our data:
 
 ```{figure} airplane.gif
-:align: right
+:align: center
+:width: 70%
 ```
 
 ```{figure} lap.gif
 :align: center
+:width: 70%
 ```
 
 ```{figure} vase.gif
-:align: left
+:align: center
+:width: 70%
 ```
 
 ```{figure} person.gif
-:align: right
+:align: center
+:width: 70%
 ```
 
 Now let's go to loading our data. We'll use `DocumentArray` from the library `docarray`. We'll go through all the files in our directory.
@@ -218,6 +224,8 @@ python executor-3d-encoder/finetune.py --model_name pointconv \
 
 ## Evaluating embedding quality
 
+Now let's see whether we made an improvement or not.
+
 ```python
 from docarray import DocumentArray
 from models import MeshDataModel
@@ -226,32 +234,6 @@ import numpy as np
 
 train_da = DocumentArray.load_binary('../train_data_modelnet.bin') # load train dataset
 eval_da = DocumentArray.load_binary('../test_data_modelnet.bin') # load eval dataset
-
-def random_sample(pc, num):
-    permutation = np.arange(len(pc))
-    np.random.shuffle(permutation)
-    pc = np.array(pc).astype('float32')
-    pc = pc[permutation[:num]]
-    return pc
-
-
-
-def preprocess(doc: 'Document', num_points: int = 1024, data_aug: bool = True):
-    points = random_sample(doc.tensor, num_points)
-
-    points = points - np.expand_dims(np.mean(points, axis=0), 0)  # center
-    dist = np.max(np.sqrt(np.sum(points ** 2, axis=1)), 0)
-    points = points / dist  # scale
-
-    if data_aug:
-        theta = np.random.uniform(0, np.pi * 2)
-        rotation_matrix = np.array(
-            [[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]]
-        )
-        points[:, [0, 2]] = points[:, [0, 2]].dot(rotation_matrix)  # random rotation
-        points += np.random.normal(0, 0.02, size=points.shape)  # random jitter
-    doc.tensor = points
-    return doc
 
 train_da.apply(preprocess)
 eval_da.apply(preprocess)

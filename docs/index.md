@@ -260,6 +260,7 @@ get-started/totally-looks-like/index
 get-started/fashion-mnist
 get-started/covid-qa
 get-started/celeba
+get-started/3d-mesh/index
 ```
 
 
