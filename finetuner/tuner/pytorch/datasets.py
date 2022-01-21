@@ -9,3 +9,7 @@ class PytorchClassDataset(ClassDataset, PytorchDataset):
 
 class PytorchSessionDataset(SessionDataset, PytorchDataset):
     pass
+
+
+class PytorchInstanceDataset(InstanceDataset, PytorchDataset):
+    pass
