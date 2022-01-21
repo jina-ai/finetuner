@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset as PytorchDataset
 
-from ..dataset import ClassDataset, SessionDataset
+from ..dataset import ClassDataset, InstanceDataset, SessionDataset
 
 
 class PytorchClassDataset(ClassDataset, PytorchDataset):

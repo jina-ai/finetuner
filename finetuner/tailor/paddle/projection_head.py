@@ -9,7 +9,7 @@ class ProjectionHead(nn.Layer):
 
     EPSILON = 1e-5
 
-    def __init__(self, in_features: int, output_dim: int = 128, num_layers: int = 3):
+    def __init__(self, in_features: int, output_dim: int = 128, num_layers: int = 2):
         super().__init__()
         self.head_layers = nn.LayerList()
         for idx in range(num_layers - 1):
@@ -30,6 +30,9 @@ class ProjectionHead(nn.Layer):
                 out_features=output_dim,
                 bias_attr=False,
             )
+        )
+        self.head_layers.append(
+            nn.BatchNorm1D(num_features=output_dim, epsilon=self.EPSILON)
         )
 
     def forward(self, x):

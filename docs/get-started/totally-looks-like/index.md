@@ -49,8 +49,8 @@ from docarray import DocumentArray
 left_da = DocumentArray.from_files('left/*.jpg')
 right_da = DocumentArray.from_files('right/*.jpg')
 # we use 80% for training machine learning model.
-left_da.sort(key=lambda x: x.uri)
-right_da.sort(key=lambda x: x.uri)
+left_da = DocumentArray(sorted(left_da, key=lambda x: x.uri))
+right_da = DocumentArray(sorted(right_da, key=lambda x: x.uri))
 
 ratio = 0.8
 train_size = int(ratio * len(left_da))
