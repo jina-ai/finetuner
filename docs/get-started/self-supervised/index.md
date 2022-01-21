@@ -102,8 +102,58 @@ tuned_model = ft.fit(
 )
 ```
 
-## Fine-tuning Given Limited Supervision
+## Fine-tuning on a Small Subset of Labeled Data
+
+With self-supervised pre-training, you are able to use the
+`tuned_model` as the {term}`embedding model` for feature extraction.
+While for the totally looks like dataset, it's not applicable because the `left` and `right`pairs are formed by images with different styles.
+
+In this case, we can leverage `tuned_model` as feature extractor and further tune it with a small subset of images.
+
+SImilar as what we discussed in [Finetuning ResNet50 on Totally Looks Like Dataset](../totally-looks-like/index.md),
+now we create a small subset of the labeled training data (use roughly 10% of the dataset).
+
+```python
+from finetuner.tuner.pytorch.losses import TripletLoss
+
+# we create a small subset of DocumentArray with labels for further fine-tuning
+finetune_ratio = 0.8
+
+finetune_size  = int(finetune_ratio * len(left_da))
+# we use 10% of the data for fine=tuning
+finetune_da  = left_da[train_size: finetune_size] + right_da[train_size:finetune_size]
+
+def assign_label_and_preprocess(doc):
+    doc.tags['finetuner_label'] = doc.uri.split('/')[1]
+    return doc.load_uri_to_image_blob().set_image_blob_normalization().set_image_blob_channel_axis(-1, 0)
+
+finetune_da.apply(assign_label_and_preprocess)
+
+tuned_model_supervised = ft.fit(
+    model=tuned_model,
+    train_data=finetune_da,
+    epochs=10,
+    batch_size=128,
+    loss=TripletLoss(miner=TripletEasyHardMiner(neg_strategy='hard'), margin=0.3), 
+    learning_rate=1e-5,
+    device='cuda',
+    to_embedding_model=True,
+    input_size=(3, 224, 224),
+    num_items_per_class=2,
+    layer_name='adaptiveavgpool2d_173',
+    freeze=False,
+)
+```
 
 ## Result Evaluation
+
+
+| hit@k  | pre-trained | fine-tuned | self-supervision |
+|--------|-------------|------------|------------------|
+| hit@1  | 0.068       | 0.122      | placeholder      |
+| hit@5  | 0.142       | 0.230      | placeholder      |
+| hit@10 | 0.183       | 0.301      | placeholder      |
+
+
 
 ## Wrapping Up
