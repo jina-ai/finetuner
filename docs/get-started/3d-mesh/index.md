@@ -41,11 +41,11 @@ pip install scipy
 ```
 
 ```python
-import scipy.spatial.distance
-import plotly.graph_objects as go
-import plotly.express as px
 import matplotlib.pyplot as plt
 import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
+import scipy.spatial.distance
 
 def read_off(file):
     off_header = file.readline().strip()
@@ -142,11 +142,12 @@ Along with loading point clouds, we also assign the `finetuner_label` as a tag. 
 the resulting `DocumentArray` into a binary file for later use. This way we don't have to convert our data to point clouds again.
 
 ```python
-from docarray import DocumentArray, Document
-import trimesh
+import glob
 import os
 from typing import Optional
-import glob
+
+import trimesh
+from docarray import Document, DocumentArray
 
 train_docs = DocumentArray()
 test_docs = DocumentArray()
@@ -185,14 +186,14 @@ We import necessary libraries:
 import pathlib
 from functools import partial
 
-import finetuner
 import numpy as np
 import torch
+from docarray import Document, DocumentArray
+from models import MeshDataModel
+
+import finetuner
 from finetuner.tuner.pytorch.losses import TripletLoss
 from finetuner.tuner.pytorch.miner import TripletEasyHardMiner
-from docarray import Document, DocumentArray
-
-from models import MeshDataModel
 ```
 
 We define some helper functions for preprocessing and sampling:
@@ -319,11 +320,6 @@ and then search for test 3d objects (the query) in our training data (index). We
 ````{dropdown} Complete source code
 
 ```python
-from docarray import DocumentArray
-from models import MeshDataModel
-import torch
-import numpy as np
-
 train_da = DocumentArray.load_binary('../train_data_modelnet.bin') # load train dataset
 eval_da = DocumentArray.load_binary('../test_data_modelnet.bin') # load eval dataset
 
