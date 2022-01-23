@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence, Union
 
 import torch
@@ -61,10 +63,14 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
             collate_fn_all = None
 
         if tag_key in data[0].tags:
-            dataset = PytorchClassDataset(data, preprocess_fn=preprocess_fn)
+            dataset = PytorchClassDataset(
+                data, preprocess_fn=preprocess_fn, tag_key=tag_key
+            )
         else:
             if len(data[0].matches) > 0:
-                dataset = PytorchSessionDataset(data, preprocess_fn=preprocess_fn)
+                dataset = PytorchSessionDataset(
+                    data, preprocess_fn=preprocess_fn, tag_key=tag_key
+                )
             else:
                 dataset = PytorchInstanceDataset(data, preprocess_fn=preprocess_fn)
 
@@ -221,6 +227,10 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         :param args: Arguments to pass to ``torch.save`` function.
         :param kwargs: Keyword arguments to pass to ``torch.save`` function.
         """
+        save_path = Path(args[0])
+        folder_path = save_path.parent
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
         torch.save(self.embed_model.state_dict(), *args, **kwargs)
 
 

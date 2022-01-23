@@ -2,6 +2,7 @@ import logging
 import os
 import pickle
 import shutil
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from ...helper import get_framework
@@ -71,6 +72,10 @@ class TrainingCheckpoint(BaseCallback):
             }
             if tuner._scheduler and hasattr(tuner._scheduler, 'state_dict'):
                 state['scheduler'] = tuner._scheduler.state_dict()
+            save_path = Path(self._get_file_path(tuner))
+            folder_path = save_path.parent
+            if not os.path.exists(folder_path):
+                os.makedirs(folder_path)
             torch.save(state, f=self._get_file_path(tuner))
 
         elif framework == 'paddle':
