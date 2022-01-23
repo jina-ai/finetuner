@@ -162,6 +162,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
             num_items_per_class=num_items_per_class,
             shuffle=True,
             preprocess_fn=preprocess_fn,
+            tag_key=tag_key,
             collate_fn=collate_fn,
             num_workers=num_workers,
         )
@@ -172,6 +173,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 num_items_per_class=num_items_per_class,
                 shuffle=False,
                 preprocess_fn=preprocess_fn,
+                tag_key=tag_key,
                 collate_fn=collate_fn,
                 num_workers=num_workers,
             )

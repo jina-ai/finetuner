@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING, Callable, Generic, List, Optional, Tuple, Unio
 
 from rich.progress import Progress
 
+from finetuner import __default_tag_key__
+
 from ..helper import AnyDataLoader, AnyDNN, AnyOptimizer, AnyScheduler, AnyTensor
 from .callback import BaseCallback, ProgressBarCallback
 from .dataset import ClassDataset, InstanceDataset, SessionDataset
@@ -242,6 +244,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
         shuffle: bool,
         num_items_per_class: Optional[int] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
+        tag_key: Optional[str] = __default_tag_key__,
         collate_fn: Optional['CollateFnType'] = None,
         num_workers: int = 0,
     ) -> AnyDataLoader:
