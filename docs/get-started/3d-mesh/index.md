@@ -22,7 +22,6 @@ wget http://modelnet.cs.princeton.edu/ModelNet40.zip
 After downloading ModelNet data we need to unzip it.
 
 ```shell
-pip install docarray
 pip install finetuner
 pip install trimesh
 
@@ -316,6 +315,63 @@ python executor-3d-encoder/finetune.py --model_name pointconv \
 
 Now let's see whether we made an improvement or not. We will use the training data as index and the testing data as query. We'll embed them both
 and then search for test 3d objects (the query) in our training data (index). We do this using the pretrained model and the finetuned model and then compare top matches.
+
+We'll use two metrics to evaluate our two models (pretrained, straight out of the box model and finetuned model) on the search task:
+
+**mAP@k** : We'll calculate the average precision at 1, 5 and 10, then we'll calculate the mean of those average precisions for all documents in our test data (these are our queries) because we care about how accurate and precise our retrieved 3D objects are.
+**mNDCG@k**: We'll calculate NDCG at 1,5 and 10, then we'll calculate the mean of those for all documents in our test data  because we care about the order of the retrieved 3D objects.
+
+````{dropdown} Complete source code
+
+```python
+train_da = DocumentArray.load_binary('../train_data_modelnet.bin') # load train dataset
+eval_da = DocumentArray.load_binary('../test_data_modelnet.bin') # load test dataset
+
+train_da.apply(preprocess)
+eval_da.apply(preprocess)
+
+tuned_model = MeshDataModel(model_name='pointconv', embed_dim=512) # create pointconv model with 512 dimensions
+tuned_model.load_state_dict(torch.load('checkpoints/finetuned-pointconv-d512.pth')) # load finetuned weights
+tuned_model.eval()
+
+train_da.embed(tuned_model, batch_size=128, device='cuda') # create embeddings
+eval_da.embed(tuned_model, batch_size=128, device='cuda')
+
+eval_da.match(train_da, limit=10)
+
+def mean_average_precision_at_k(da, topk=1):
+    hit = []
+    avg_pr = []
+    for d in da:
+        for m in d.matches[:topk]:
+            if d.uri.split('/')[-1].split('_')[0] == m.uri.split('/')[-1].split('_')[0]:
+                hit.append(1)
+            else:
+                hit.append(0)
+        avg_pr.append(average_precision(hit))
+    return np.mean(avg_pr)
+
+
+for k in range(1, 11):
+    print(f'mAP@{k}:  finetuned: {mean_average_precision_at_k(eval_da, k):.3f}')
+```
+````
+
+The difference is shown in the tables below:
+
+| mAP@k  | pre-trained | fine-tuned |
+|--------|-------------|------------|
+| mAP@1  | 0.147       | 0.719      |
+| mAP@5  | 0.113       | 0.697      |
+| mAP@10 | 0.100       | 0.686      |
+
+| mNDCG@k  | pre-trained | fine-tuned |
+|--------|-------------|--------------|
+| mNDCG@1  | 0.563       | 0.927      |
+| mNDCG@5  | 0.617       | 0.931      |
+| mNDCG@10 | 0.647       | 0.935      |
+
+Now let's do some queries ourselves and check the visualizations
 
 ````{dropdown} Complete source code
 
