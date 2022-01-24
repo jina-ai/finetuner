@@ -54,11 +54,10 @@ from typing import Optional
 import trimesh
 from docarray import Document, DocumentArray
 
-all_docs = DocumentArray()
 train = DocumentArray()
 test = DocumentArray()
 data_path = 'ModelNet40'
-all_docs.from_files(os.path.join(data_path,'**/*.off'))
+all_docs = DocumentArray.from_files(os.path.join(data_path,'/**/**/*.off'))
 for doc in all_docs:
     if 'test' in doc.uri :
         test.append(doc)
@@ -119,7 +118,7 @@ def random_sample(pc, num):
 
 def preprocess(doc: 'Document', num_points: int = 1024, data_aug: bool = True):
     doc.load_uri_to_point_cloud_tensor(2048)
-    doc.tags['finetuner_label'] = doc.uri.split('/')[1]
+    doc.tags['finetuner_label'] = doc.uri.split('/')[2]
     points = random_sample(doc.tensor, num_points)
 
     points = points - np.expand_dims(np.mean(points, axis=0), 0)  # center
