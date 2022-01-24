@@ -47,9 +47,6 @@ pip install finetuner
 
 ## Finetuning ResNet50 on CelebA
 
-> ⚡ To get the best experience, you will need a GPU-machine for this example. For CPU users, we provide [finetuning a MLP on FashionMNIST](https://finetuner.jina.ai/get-started/fashion-mnist/) and [finetuning a Bi-LSTM on CovidQA](https://finetuner.jina.ai/get-started/covid-qa/) that run out the box on low-profile machines. Check out more examples in [our docs](https://finetuner.jina.ai)!
-
-
 1. Download [CelebA-small dataset (7.7MB)](https://static.jina.ai/celeba/celeba-img.zip) and decompress it to `'./img_align_celeba'`. [Full dataset can be found here.](https://drive.google.com/drive/folders/0B7EVK8r0v71pWEZsZE9oNnFzTm8?resourcekey=0-5BR16BdXnb8hVj6CNHKzLg)
 2. Finetuner accepts docarray `DocumentArray`, so we load CelebA image into this format using a generator:
     ```python
