@@ -1,3 +1,4 @@
+import random
 from collections import defaultdict
 from copy import deepcopy
 from math import ceil
@@ -150,6 +151,7 @@ class ClassSampler(BaseSampler):
             batches.append(batch)
 
         self._batches = batches
+        random.shuffle(self._batches)
 
 
 class SessionSampler(BaseSampler):
