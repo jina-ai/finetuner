@@ -30,89 +30,6 @@ unzip ModelNet40.zip
 
 Before we go further let's look at some examples from our data:
 
-````{dropdown} How to visualize 3D data?
-
-```shell
-pip install plotly
-pip install numpy
-pip install matplotlib
-pip install scipy
-```
-
-```python
-import matplotlib.pyplot as plt
-import numpy as np
-import plotly.express as px
-import plotly.graph_objects as go
-import scipy.spatial.distance
-
-def read_off(file):
-    off_header = file.readline().strip()
-    if 'OFF' == off_header:
-        n_verts, n_faces, __ = tuple([int(s) for s in file.readline().strip().split(' ')])
-    else:
-        n_verts, n_faces, __ = tuple([int(s) for s in off_header[3:].split(' ')])
-    verts = [[float(s) for s in file.readline().strip().split(' ')] for i_vert in range(n_verts)]
-    faces = [[int(s) for s in file.readline().strip().split(' ')][1:] for i_face in range(n_faces)]
-    return verts, faces
-
-
-def visualize_rotate(data):
-    x_eye, y_eye, z_eye = 1.25, 1.25, 0.8
-    frames=[]
-
-    def rotate_z(x, y, z, theta):
-        w = x+1j*y
-        return np.real(np.exp(1j*theta)*w), np.imag(np.exp(1j*theta)*w), z
-
-    for t in np.arange(0, 10.26, 0.1):
-        xe, ye, ze = rotate_z(x_eye, y_eye, z_eye, -t)
-        frames.append(dict(layout=dict(scene=dict(camera=dict(eye=dict(x=xe, y=ye, z=ze))))))
-    fig = go.Figure(data=data,
-        layout=go.Layout(
-            updatemenus=[dict(type='buttons',
-                showactive=False,
-                y=1,
-                x=0.8,
-                xanchor='left',
-                yanchor='bottom',
-                pad=dict(t=45, r=10),
-                buttons=[dict(label='Play',
-                    method='animate',
-                    args=[None, dict(frame=dict(duration=50, redraw=True),
-                        transition=dict(duration=0),
-                        fromcurrent=True,
-                        mode='immediate'
-                        )]
-                    )
-                ])]
-        ),
-        frames=frames
-    )
-
-    return fig
-
-
-def pcshow(xs,ys,zs):
-    data=[go.Scatter3d(x=xs, y=ys, z=zs,
-                                   mode='markers')]
-    fig = visualize_rotate(data)
-    fig.update_traces(marker=dict(size=2,
-                      line=dict(width=2,
-                      color='DarkSlateGrey')),
-                      selector=dict(mode='markers'))
-    fig.show()
-
-def visualize(uri):
-    with open(uri, 'r') as f:
-        verts, faces = read_off(f)
-        
-    i,j,k = np.array(faces).T
-    x,y,z = np.array(verts).T
-    visualize_rotate([go.Mesh3d(x=x, y=y, z=z, color='gray', opacity=0.5, i=i,j=j,k=k)]).show()
-```
-````
-
 ```{figure} airplane.gif
 :align: center
 :width: 70%
@@ -123,22 +40,12 @@ def visualize(uri):
 :width: 70%
 ```
 
-```{figure} vase.gif
-:align: center
-:width: 70%
-```
-
-```{figure} person.gif
-:align: center
-:width: 70%
-```
-
-Now let's go to loading our data. We'll use `DocumentArray` from the library `docarray`. We'll go through all the files in our directory.
-And we'll recursively read all files that end with `.off` each file is then loaded into a `Document` and then converted into a point cloud
+Now let's go to loading our data. We'll use `DocumentArray` from the library `docarray`. We'll go through all the fs in our directory.
+And we'll recursively read all fs that end with `.off` each f is then loaded into a `Document` and then converted into a point cloud
 tensor using `.load_uri_to_point_cloud_tensor` so can also pass the number of point you want, here we pass 2048.
 
 Along with loading point clouds, we also assign the `finetuner_label` as a tag. This label will be later used during finetuning. Finally we save
-the resulting `DocumentArray` into a binary file for later use. This way we don't have to convert our data to point clouds again.
+the resulting `DocumentArray` into a binary f for later use. This way we don't have to convert our data to point clouds again.
 
 ```python
 import glob
@@ -148,24 +55,24 @@ from typing import Optional
 import trimesh
 from docarray import Document, DocumentArray
 
-train_docs = DocumentArray()
-test_docs = DocumentArray()
+train = DocumentArray()
+test = DocumentArray()
 data_path = 'ModelNet40'
-for dir in os.listdir(data_path):
-    dir_path = os.path.join(data_path,dir)
-    for file in glob.iglob(os.path.join(dir_path,'train/*.off'),recursive=True):
-            doc= Document(uri=file)
+for directory in os.listdir(data_path):
+    dir_path = os.path.join(data_path, directory)
+    for f in glob.iglob(os.path.join(dir_path,'train/*.off'),recursive=True):
+            doc= Document(uri=f)
             doc.load_uri_to_point_cloud_tensor(2048)
-            doc.tags['finetuner_label'] = dir
-            train_docs.append(doc)
-    for file in glob.iglob(os.path.join(dir_path,'test/*.off'),recursive=True):
-            doc= Document(uri=file)
+            doc.tags['finetuner_label'] = directory
+            train.append(doc)
+    for f in glob.iglob(os.path.join(dir_path,'test/*.off'),recursive=True):
+            doc= Document(uri=f)
             doc.load_uri_to_point_cloud_tensor(2048)
-            doc.tags['finetuner_label'] = dir
-            test_docs.append(doc)
+            doc.tags['finetuner_label'] = directory
+            test.append(doc)
 
-train_docs.save_binary('train_data_modelnet.bin')
-test_docs.save_binary('test_data_modelnet.bin')
+train.save_binary('train_data_modelnet.bin')
+test.save_binary('test_data_modelnet.bin')
 
 ```
 
@@ -179,7 +86,13 @@ This executor receives Documents containing point sets data in its blob attribut
 - PointConv-Shapenet-d512: A PointConv model resulted in 512 dimension of embeddings, which is finetuned based on ShapeNet dataset.
 - PointConv-Shapenet-d1024: A PointConv model resulted in 1024 dimension of embeddings, which is finetuned based on ShapeNet dataset.
 
-We import necessary libraries:
+As we already have an Encoder that uses `PointConv` to embed data let's use it.  
+
+```shell
+git clone https://github.com/jina-ai/executor-3d-encoder.git
+```
+
+We also import necessary libraries:
 
 ```python
 import pathlib
@@ -227,8 +140,8 @@ def preprocess(doc: 'Document', num_points: int = 1024, data_aug: bool = True):
 Now we'll define some variables:
 
 ```python
-train_dataset = 'train_data_modelnet.bin' # path for training data
-eval_dataset = 'test_data_modelnet.bin' # path for testing data
+train_path = 'train_data_modelnet.bin' # path for training data
+eval_path = 'test_data_modelnet.bin' # path for testing data
 model_name = 'pointconv' # name of the model you want to use
 embed_dim = 512 # dimension for embeddings
 batch_size = 64 # how many training instance per batch
@@ -238,14 +151,8 @@ restore_from = False # whether we want to load weights from previously saved mod
 checkpoint_dir = 'checkpoints' # path where we want to save or load model 
 ```
 
-As we already have an Encoder that uses `PointConv` to embed data let's use it.  
-
-```shell
-git clone https://github.com/jina-ai/executor-3d-encoder.git
-```
-
 In the following code snippet we create MeshData model which encapsulates a `PointConv` model with 512 dimensions, we then load
-training and evaluation data from the binary files we saved before. We create an optimizer and a learning rate scheduler. In this case with use
+training and evaluation data from the binary fs we saved before. We create an optimizer and a learning rate scheduler. In this case with use
 an Adam optimizer and MultiStepLR scheduler but you can change those depending on your data and preferences.
 
 ```python
@@ -255,8 +162,8 @@ if restore_from: # restore weights from checkpoint
     ckpt = torch.load(checkpoint_dir, map_location='cpu')
     model.load_state_dict(ckpt)
 
-train_da = DocumentArray.load_binary(train_dataset) # load train dataset
-eval_da = DocumentArray.load_binary(eval_dataset) if eval_dataset else None # load eval dataset
+train_da = DocumentArray.load_binary(train_path) # load train dataset
+eval_da = DocumentArray.load_binary(eval_path) if eval_path else None # load eval dataset
 
 def configure_optimizer(model):
     from torch.optim import Adam
