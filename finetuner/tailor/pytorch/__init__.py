@@ -79,7 +79,7 @@ class PytorchTailor(BaseTailor):
                 hooks.append(module.register_forward_hook(hook))
 
         x = [
-            torch.rand(1, *in_size).type(dt)
+            torch.rand(2, *in_size).type(dt)
             for in_size, dt in zip(self._input_size, dtypes)
         ]
 
