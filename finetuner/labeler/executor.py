@@ -77,6 +77,12 @@ class FTExecutor(Executor):
         for d in batch.traverse_flat('r,m'):
             d.pop('tensor', 'embedding')
 
+        for d in batch:
+            for m in d.matches:
+                m.tags['finetuner_label'] = False
+
+        return batch
+
     @requests(on='/feed')
     def store_data(self, docs: DocumentArray, **kwargs):
         if isinstance(docs.tensors, np.ndarray):
@@ -87,6 +93,7 @@ class FTExecutor(Executor):
     def fit(self, docs: DocumentArray, parameters: Dict, **kwargs):
         for d in docs.traverse_flat('r,m'):
             d.content = self._all_data[d.id].content
+            print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', d, d.content)
         self._labeled_data.extend(docs)
 
         fit(

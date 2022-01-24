@@ -20,7 +20,7 @@ def fit(
     embed_model: 'AnyDNN',
     train_data: 'DocumentArray',
     port_expose: Optional[int] = None,
-    runtime_backend: str = 'thread',
+    runtime_backend: str = 'process',
     loss: str = 'SiameseLoss',
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
@@ -71,7 +71,7 @@ def fit(
 
     f = Flow(
         protocol='http',
-        port_expose=port_expose,
+        port_expose=1234,
         prefetch=1,
         runtime_backend=runtime_backend,
     ).add(

@@ -13,13 +13,13 @@ const app = new Vue({
         is_busy: false,
         is_conn_broken: false,
         view_template: {
-            content: [{text: '.uri', value: 'uri'},
-                {text: '.text', value: 'text'},
-                {text: '.tags', value: 'tags'}],
-            style: [{text: 'Image', value: 'image'},
-                {text: 'Text', value: 'text'},
-                {text: 'Audio', value: 'audio'},
-                {text: '3D mesh', value: 'mesh'}],
+            content: [{ text: '.uri', value: 'uri' },
+            { text: '.text', value: 'text' },
+            { text: '.tags', value: 'tags' }],
+            style: [{ text: 'Image', value: 'image' },
+            { text: 'Text', value: 'text' },
+            { text: 'Audio', value: 'audio' },
+            { text: '3D mesh', value: 'mesh' }],
         },
         labeler_config: {
             content: 'uri',
@@ -31,12 +31,12 @@ const app = new Vue({
             start_idx: 0,
         },
         progress_stats: {
-            this_session: {text: 'This Session', value: 0},
-            total: {text: 'Done', value: 0},
-            positive: {text: 'Positive', value: 0},
-            negative: {text: 'Negative', value: 0},
-            ignore: {text: 'Ignore', value: 0},
-            saved: {text: 'Saved', value: 0}
+            this_session: { text: 'This Session', value: 0 },
+            total: { text: 'Done', value: 0 },
+            positive: { text: 'Positive', value: 0 },
+            negative: { text: 'Negative', value: 0 },
+            ignore: { text: 'Ignore', value: 0 },
+            saved: { text: 'Saved', value: 0 }
         },
         general_config: {
             server_port: 65123,
@@ -47,11 +47,11 @@ const app = new Vue({
             stop_endpoint: '/terminate',
         },
         advanced_config: {
-            pos_value: {text: 'Positive label', value: 1, type: 'number'},
-            neg_value: {text: 'Negative label', value: -1, type: 'number'},
-            epochs: {text: 'Epochs', value: 1, type: 'number'},
-            sample_size: {text: 'Match pool', value: 1000, type: 'number'},
-            model_path: {text: 'Model save path', value: 'tuned-model', type: 'text'}
+            pos_value: { text: 'Positive label', value: 1, type: 'number' },
+            neg_value: { text: 'Negative label', value: -1, type: 'number' },
+            epochs: { text: 'Epochs', value: 1, type: 'number' },
+            sample_size: { text: 'Match pool', value: 1000, type: 'number' },
+            model_path: { text: 'Model save path', value: 'tuned-model', type: 'text' }
         },
         cur_batch: [],
         tags: [],
@@ -117,7 +117,6 @@ const app = new Vue({
             let doc = app.cur_batch[doc_idx]
             app.cur_batch.splice(doc_idx, 1)
             doc.matches.forEach(function (match) {
-                match.tags.finetuner = {}
                 if (match.tags.finetuner_label) {
                     match.tags.finetuner_label = app.advanced_config.pos_value.value
                     app.progress_stats.positive.value++
@@ -165,7 +164,7 @@ const app = new Vue({
                 return doc.tags[app.labeler_config.tags]
             }
         },
-        next_batch: function (clear_exist=true, update_start_idx=true) {
+        next_batch: function (clear_exist = true, update_start_idx = true) {
             if (clear_exist) {
                 app.cur_batch = []
             }
@@ -194,11 +193,14 @@ const app = new Vue({
                 if (update_start_idx) {
                     app.labeler_config.start_idx = end_idx
                 }
-
+                // data['data'].docs.forEach(function (doc) {
+                //     doc.tags = {'finetuner_label': false};
+                // });
+                console.log(data['data'].docs);
                 app.cur_batch.push(...data['data'].docs)
                 try {
                     app.tags = Object.keys(data.data.docs[0].tags)
-                } catch (e) {}
+                } catch (e) { }
 
                 app.is_busy = false
                 app.progress_stats.this_session.value = app.cur_batch.length
@@ -256,7 +258,7 @@ const app = new Vue({
             if (event.target instanceof HTMLInputElement) {
                 return
             }
-            let {activeIndex} = this.$refs.swiperComponent.$swiper
+            let { activeIndex } = this.$refs.swiperComponent.$swiper
             let currentDoc = this.cur_batch[activeIndex]
             if (/\d/.test(key)) {
                 app.toggle_relevance(currentDoc.matches[parseInt(key, 10)])
