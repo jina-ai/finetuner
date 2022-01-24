@@ -113,7 +113,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
             'validation',
         ),
         (
-            Document(blob=np.random.rand(256, 256, 1)),
+            Document(tensor=np.random.rand(256, 256, 1)),
             256,
             256,
             1,
@@ -186,7 +186,7 @@ def test_vision_preprocessor_train(
 def test_blob_equal_given_uint_image_and_validation():
     def preproc_fn(doc):
         return (
-            doc.load_uri_to_image_blob(height=224, width=224)
+            doc.load_uri_to_image_tensor(height=224, width=224)
             .set_image_tensor_normalization()
             .set_image_tensor_channel_axis(-1, 0)
         )
