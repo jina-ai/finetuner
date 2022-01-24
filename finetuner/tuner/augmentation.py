@@ -10,7 +10,7 @@ def vision_preprocessor(
     normalize: bool = False,
     phase: str = 'train',
 ):
-    """Randomly augmentation a Document with `blob` field.
+    """Randomly augments a Document with `blob` field.
     The method applies flipping, color jitter, cropping, gaussian blur and random rectangle erase
     to the given image.
 
@@ -46,7 +46,7 @@ def _vision_preprocessor(
     normalize: bool = False,
     phase: str = 'train',
 ):
-    """Randomly augmentation a Document with `blob` field.
+    """Randomly augments a Document with `blob` field.
     The method applies flipping, color jitter, cropping, gaussian blur and random rectangle erase
     to the given image.
 
