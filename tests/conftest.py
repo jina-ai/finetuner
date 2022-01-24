@@ -5,7 +5,7 @@ import paddle
 import pytest
 import tensorflow as tf
 import torch
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 
 from finetuner import __default_tag_key__
 
@@ -32,7 +32,7 @@ def generate_random_data():
         docs = DocumentArray()
         for i in range(n):
             d = Document(
-                blob=np.random.rand(dim).astype(np.float32),
+                tensor=np.random.rand(dim).astype(np.float32),
                 tags={__default_tag_key__: i % n_cls},
             )
             docs.append(d)
@@ -52,15 +52,15 @@ def generate_random_session_data():
         # Generate anchor-pos-neg triplets
         triplets = DocumentArray()
         for i in range(n):
-            d = Document(blob=np.random.rand(dim).astype(np.float32))
+            d = Document(tensor=np.random.rand(dim).astype(np.float32))
             d.matches.extend(
                 [
                     Document(
-                        blob=np.random.rand(dim).astype(np.float32),
+                        tensor=np.random.rand(dim).astype(np.float32),
                         tags={__default_tag_key__: 1},
                     ),
                     Document(
-                        blob=np.random.rand(dim).astype(np.float32),
+                        tensor=np.random.rand(dim).astype(np.float32),
                         tags={__default_tag_key__: -1},
                     ),
                 ]

@@ -1,16 +1,16 @@
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
 
 import numpy as np
 
 if TYPE_CHECKING:
-    from jina import DocumentArray, DocumentArrayMemmap
+    from docarray import DocumentArray
     from .helper import AnyDNN, PreprocFnType, CollateFnType
 
 from .helper import get_framework
 
 
 def embed(
-    docs: Union['DocumentArray', 'DocumentArrayMemmap'],
+    docs: 'DocumentArray',
     embed_model: 'AnyDNN',
     device: str = 'cpu',
     batch_size: int = 256,
@@ -39,7 +39,7 @@ def embed(
 
 
 def _set_embeddings_keras(
-    docs: Union['DocumentArray', 'DocumentArrayMemmap'],
+    docs: 'DocumentArray',
     embed_model: 'AnyDNN',
     device: str = 'cpu',
     batch_size: int = 256,
@@ -63,7 +63,7 @@ def _set_embeddings_keras(
 
 
 def _set_embeddings_torch(
-    docs: Union['DocumentArray', 'DocumentArrayMemmap'],
+    docs: 'DocumentArray',
     embed_model: 'AnyDNN',
     device: str = 'cpu',
     batch_size: int = 256,

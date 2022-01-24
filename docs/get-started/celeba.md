@@ -30,9 +30,9 @@ from docarray.document.generators import from_files
 data = list(from_files('img_align_celeba/*.jpg', size=100, to_dataturi=True))
 
 for doc in data:
-    doc.load_uri_to_image_blob(
+    doc.load_uri_to_image_tensor(
         height=224, width=224
-    ).set_image_blob_normalization().set_image_blob_channel_axis(
+    ).set_image_tensor_normalization().set_image_tensor_channel_axis(
         -1, 0
     )  # No need for changing channel axes line if you are using tf/keras
 ```

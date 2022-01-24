@@ -18,7 +18,7 @@ def test_train_test_generator():
     fmdg_test = generate_fashion(is_testset=False, num_total=10)
 
     for d1, d2 in zip(fmdg_train, fmdg_test):
-        assert np.any(np.not_equal(d1.blob, d2.blob))
+        assert np.any(np.not_equal(d1.tensor, d2.tensor))
 
 
 def test_train_test_qa_generator():
@@ -39,13 +39,13 @@ def test_doc_generator():
 def test_doc_generator_channel(channels, upsampling):
     for d in generate_fashion(channels=channels, upsampling=upsampling, num_total=10):
         if channels == 0:
-            assert d.blob.ndim == 2
+            assert d.tensor.ndim == 2
         else:
-            assert d.blob.ndim == 3
-            assert d.blob.shape[-1] == channels
+            assert d.tensor.ndim == 3
+            assert d.tensor.shape[-1] == channels
 
-        assert d.blob.shape[0] == 28 * upsampling
-        assert d.blob.shape[1] == 28 * upsampling
+        assert d.tensor.shape[0] == 28 * upsampling
+        assert d.tensor.shape[1] == 28 * upsampling
 
 
 def test_fashion_documentarray():

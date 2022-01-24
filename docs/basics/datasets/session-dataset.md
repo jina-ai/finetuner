@@ -24,7 +24,7 @@ Here the batches are simply constructed by putting together enough root document
 Here is an example of a session dataset
 
 ```python
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 
 from finetuner.tuner.dataset import SessionDataset, SessionSampler
 

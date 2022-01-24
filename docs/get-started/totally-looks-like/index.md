@@ -70,7 +70,7 @@ Finetuner will do the most challenging work for you, all you need to do is to:
 ```python
 def assign_label_and_preprocess(doc):
     doc.tags['finetuner_label'] = doc.uri.split('/')[1]
-    return doc.load_uri_to_image_blob().set_image_blob_normalization().set_image_blob_channel_axis(-1, 0)
+    return doc.load_uri_to_image_tensor().set_image_tensor_normalization().set_image_tensor_channel_axis(-1, 0)
 
 train_da.apply(assign_label_and_preprocess)
 ```
@@ -151,7 +151,7 @@ Remind that we have the `train_da` ready, now we need to perform the same prepro
 
 ```python
 def preprocess(doc):
-    return doc.load_uri_to_image_blob().set_image_blob_normalization().set_image_blob_channel_axis(-1, 0)
+    return doc.load_uri_to_image_tensor().set_image_tensor_normalization().set_image_tensor_channel_axis(-1, 0)
 
 test_left_da = left_da[train_size:]
 test_right_da = right_da[train_size:]

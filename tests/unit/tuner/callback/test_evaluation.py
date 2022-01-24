@@ -3,7 +3,7 @@ import paddle
 import pytest
 import tensorflow as tf
 import torch
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 
 from finetuner import __default_tag_key__
 from finetuner.tuner.callback import EvaluationCallback
@@ -33,7 +33,7 @@ def data():
     return DocumentArray(
         Document(
             id=str(i),
-            blob=np.zeros(10).astype(np.float32),
+            tensor=np.zeros(10).astype(np.float32),
             tags={__default_tag_key__: str(i)},
         )
         for i in range(1000)

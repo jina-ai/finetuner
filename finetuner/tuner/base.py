@@ -11,7 +11,9 @@ from .miner.base import BaseMiner
 from .state import TunerState
 
 if TYPE_CHECKING:
-    from ..helper import CollateFnType, DocumentSequence, PreprocFnType
+    from docarray import DocumentArray
+
+    from ..helper import CollateFnType, PreprocFnType
 
 
 class BaseLoss(Generic[AnyTensor]):
@@ -158,8 +160,8 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
 
     def fit(
         self,
-        train_data: 'DocumentSequence',
-        eval_data: Optional['DocumentSequence'] = None,
+        train_data: 'DocumentArray',
+        eval_data: Optional['DocumentArray'] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
@@ -233,7 +235,7 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
     @abc.abstractmethod
     def _get_data_loader(
         self,
-        data: 'DocumentSequence',
+        data: 'DocumentArray',
         batch_size: int,
         shuffle: bool,
         num_items_per_class: Optional[int] = None,
@@ -247,8 +249,8 @@ class BaseTuner(abc.ABC, Generic[AnyDNN, AnyDataLoader, AnyOptimizer, AnySchedul
     @abc.abstractmethod
     def _fit(
         self,
-        train_data: 'DocumentSequence',
-        eval_data: Optional['DocumentSequence'] = None,
+        train_data: 'DocumentArray',
+        eval_data: Optional['DocumentArray'] = None,
         preprocess_fn: Optional['PreprocFnType'] = None,
         collate_fn: Optional['CollateFnType'] = None,
         epochs: int = 10,
