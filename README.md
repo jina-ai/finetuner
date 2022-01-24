@@ -45,7 +45,7 @@ Requires Python 3.7+ and *one of* [PyTorch](https://pytorch.org/)(>=1.9) or [Ten
 pip install finetuner
 ```
 
-## Finetuning ResNet50 on CelebA
+## Finetuning ResNet18 on CelebA
 
 1. Download [CelebA-small dataset (7.7MB)](https://static.jina.ai/celeba/celeba-img.zip) and decompress it to `'./img_align_celeba'`. [Full dataset can be found here.](https://drive.google.com/drive/folders/0B7EVK8r0v71pWEZsZE9oNnFzTm8?resourcekey=0-5BR16BdXnb8hVj6CNHKzLg)
 2. Finetuner accepts docarray `DocumentArray`, so we load CelebA image into this format using a generator:
@@ -90,6 +90,7 @@ pip install finetuner
         model=resnet,
         train_data=data,
         loss='TripletLoss',
+        epochs=20,
         device='cuda',
         batch_size=128,
         to_embedding_model=True,
