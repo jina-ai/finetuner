@@ -40,12 +40,11 @@ Before we go further let's look at some examples from our data:
 :width: 70%
 ```
 
-Now let's go to loading our data. We'll use `DocumentArray` from the library `docarray`. We'll go through all the fs in our directory.
-And we'll recursively read all fs that end with `.off` each f is then loaded into a `Document` and then converted into a point cloud
-tensor using `.load_uri_to_point_cloud_tensor` so can also pass the number of point you want, here we pass 2048.
+Now let's go to loading our data. We'll use `DocumentArray` from the library `docarray`. We'll go through all the files in our directory.
+And we'll recursively read all files that end with `.off`. We split the files between two `DocumentArray`s depending on their uri to train
+and test.
 
-Along with loading point clouds, we also assign the `finetuner_label` as a tag. This label will be later used during finetuning. Finally we save
-the resulting `DocumentArray` into a binary f for later use. This way we don't have to convert our data to point clouds again.
+Finally we save the resulting `DocumentArray`s into binary files for later use.
 
 ```python
 import glob
@@ -55,21 +54,16 @@ from typing import Optional
 import trimesh
 from docarray import Document, DocumentArray
 
+all_docs = DocumentArray()
 train = DocumentArray()
 test = DocumentArray()
 data_path = 'ModelNet40'
-for directory in os.listdir(data_path):
-    dir_path = os.path.join(data_path, directory)
-    for f in glob.iglob(os.path.join(dir_path,'train/*.off'),recursive=True):
-            doc= Document(uri=f)
-            doc.load_uri_to_point_cloud_tensor(2048)
-            doc.tags['finetuner_label'] = directory
-            train.append(doc)
-    for f in glob.iglob(os.path.join(dir_path,'test/*.off'),recursive=True):
-            doc= Document(uri=f)
-            doc.load_uri_to_point_cloud_tensor(2048)
-            doc.tags['finetuner_label'] = directory
-            test.append(doc)
+all_docs.from_files(os.path.join(data_path,'**/*.off'))
+for doc in all_docs:
+    if 'test' in doc.uri :
+        test.append(doc)
+    else:
+        train.append(doc)
 
 train.save_binary('train_data_modelnet.bin')
 test.save_binary('test_data_modelnet.bin')
@@ -108,7 +102,10 @@ from finetuner.tuner.pytorch.losses import TripletLoss
 from finetuner.tuner.pytorch.miner import TripletEasyHardMiner
 ```
 
-We define some helper functions for preprocessing and sampling:
+We define some helper functions for preprocessing and sampling. We convert every `Document` into a point cloud
+tensor using `.load_uri_to_point_cloud_tensor`, we can also pass the number of point you want, here we pass 2048.
+
+Along with loading point clouds, we also assign the `finetuner_label` as a tag. This label will be later used during finetuning.
 
 ```python
 def random_sample(pc, num):
@@ -121,6 +118,8 @@ def random_sample(pc, num):
 
 
 def preprocess(doc: 'Document', num_points: int = 1024, data_aug: bool = True):
+    doc.load_uri_to_point_cloud_tensor(2048)
+    doc.tags['finetuner_label'] = doc.uri.split('/')[1]
     points = random_sample(doc.tensor, num_points)
 
     points = points - np.expand_dims(np.mean(points, axis=0), 0)  # center
@@ -137,33 +136,15 @@ def preprocess(doc: 'Document', num_points: int = 1024, data_aug: bool = True):
     return points
 ```
 
-Now we'll define some variables:
-
-```python
-train_path = 'train_data_modelnet.bin' # path for training data
-eval_path = 'test_data_modelnet.bin' # path for testing data
-model_name = 'pointconv' # name of the model you want to use
-embed_dim = 512 # dimension for embeddings
-batch_size = 64 # how many training instance per batch
-epochs = 50 # how many epochs would you like to train for
-use_gpu = True # whether we want to use gpu or no
-restore_from = False # whether we want to load weights from previously saved model
-checkpoint_dir = 'checkpoints' # path where we want to save or load model 
-```
-
 In the following code snippet we create MeshData model which encapsulates a `PointConv` model with 512 dimensions, we then load
 training and evaluation data from the binary fs we saved before. We create an optimizer and a learning rate scheduler. In this case with use
 an Adam optimizer and MultiStepLR scheduler but you can change those depending on your data and preferences.
 
 ```python
-model = MeshDataModel(model_name=model_name, embed_dim=embed_dim) # create pointconv model with 512 dimensions
-if restore_from: # restore weights from checkpoint
-    print(f'==> restore from: {restore_from}')
-    ckpt = torch.load(checkpoint_dir, map_location='cpu')
-    model.load_state_dict(ckpt)
+model = MeshDataModel(model_name='pointconv', embed_dim=512) # create pointconv model with 512 dimensions
 
-train_da = DocumentArray.load_binary(train_path) # load train dataset
-eval_da = DocumentArray.load_binary(eval_path) if eval_path else None # load eval dataset
+train = DocumentArray.load_binary('train_data_modelnet.bin') # load train dataset
+eval = DocumentArray.load_binary('test_data_modelnet.bin') # load eval dataset
 
 def configure_optimizer(model):
     from torch.optim import Adam
@@ -185,37 +166,23 @@ the final representation.
 ```python
 tuned_model = finetuner.fit(
     model,
-    train_da,
-    eval_data=eval_da,
+    train,
+    eval_data=eval,
     preprocess_fn=partial(preprocess, num_points=2048, data_aug=True),
-    epochs=epochs,
-    batch_size=batch_size,
+    epochs=50,
+    batch_size=64,
     loss=TripletLoss(
         miner=TripletEasyHardMiner(pos_strategy='easy', neg_strategy='semihard')
     ),
     configure_optimizer=configure_optimizer,
     learning_rate=5e-4,
-    device='cuda' if use_gpu else 'cpu',
+    device='cuda',
 )
 # saving the finetuner model
 torch.save(
     tuned_model.state_dict(),
     str(checkpoint_dir / f'finetuned-{model_name}-d{embed_dim}.pth'),
 )
-```
-
-## All in one script
-
-We provide all the code above in one script so it's super easy to use. This script is inside the repository that we clone earlier and here's how you can
-use it:
-
-```shell
-python executor-3d-encoder/finetune.py --model_name pointconv \
-                   --train_dataset ../train_data_modelnet.bin \
-                   --eval_dataset ../test_data_modelnet.bin \
-                   --batch_size 64 \
-                   --epochs 50 \
-                   --use-gpu
 ```
 
 ## Evaluating embedding quality & Results
@@ -231,36 +198,27 @@ We'll use two metrics to evaluate our two models (pretrained, straight out of th
 ````{dropdown} Complete source code
 
 ```python
-train_da = DocumentArray.load_binary('../train_data_modelnet.bin') # load train dataset
-eval_da = DocumentArray.load_binary('../test_data_modelnet.bin') # load test dataset
+from finetuner.tuner.evaluation import Evaluator
 
-train_da.apply(preprocess)
-eval_da.apply(preprocess)
+train = DocumentArray.load_binary('../train_data_modelnet.bin') # load train dataset
+eval = DocumentArray.load_binary('../test_data_modelnet.bin') # load test dataset
+
+train.apply(preprocess)
+eval.apply(preprocess)
 
 tuned_model = MeshDataModel(model_name='pointconv', embed_dim=512) # create pointconv model with 512 dimensions
+pretrained_model = MeshDataModel(model_name='pointconv', embed_dim=512)
+
 tuned_model.load_state_dict(torch.load('checkpoints/finetuned-pointconv-d512.pth')) # load finetuned weights
+
 tuned_model.eval()
+pretrained_model.eval()
 
-train_da.embed(tuned_model, batch_size=128, device='cuda') # create embeddings
-eval_da.embed(tuned_model, batch_size=128, device='cuda')
+evaluator_finetuned = Evaluator(eval, train, tuned_model)
+print(evaluator_finetuned.evaluate())
 
-eval_da.match(train_da, limit=10)
-
-def mean_average_precision_at_k(da, topk=1):
-    hit = []
-    avg_pr = []
-    for d in da:
-        for m in d.matches[:topk]:
-            if d.uri.split('/')[-1].split('_')[0] == m.uri.split('/')[-1].split('_')[0]:
-                hit.append(1)
-            else:
-                hit.append(0)
-        avg_pr.append(average_precision(hit))
-    return np.mean(avg_pr)
-
-
-for k in range(1, 11):
-    print(f'mAP@{k}:  finetuned: {mean_average_precision_at_k(eval_da, k):.3f}')
+evaluator_pretrained = Evaluator(eval, train, pretrained_model)
+print(evaluator_pretrained.evaluate())
 ```
 ````
 
@@ -297,7 +255,6 @@ train_da.embed(tuned_model, batch_size=128, device='cuda')
 eval_da.embed(tuned_model, batch_size=128, device='cuda')
 
 eval_da.match(train_da, limit=10)
-visualize(eval_da.matches[0].uri)
 ```
 ````
 
