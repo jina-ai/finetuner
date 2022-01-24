@@ -1,5 +1,5 @@
 import pytest
-from jina import Document, DocumentArray, DocumentArrayMemmap
+from docarray import Document, DocumentArray
 
 from finetuner import __default_tag_key__
 from finetuner.tuner.dataset import ClassDataset
@@ -46,86 +46,18 @@ def test_da_input(labels):
         assert ds[i][1] == [0, 1, 0][i]
 
 
-@pytest.mark.parametrize('labels', ([1, 2, 1], ['1', '2', '1']))
-def test_dam_input(tmp_path, labels):
-    data = DocumentArrayMemmap(tmp_path)
-    data.extend(
-        [
-            Document(text='text1', tags=_class(labels[0])),
-            Document(text='text2', tags=_class(labels[1])),
-            Document(text='text1a', tags=_class(labels[2])),
-        ]
-    )
-
-    ds = ClassDataset(data)
-
-    assert len(ds) == 3
-    assert ds.labels == [0, 1, 0]
-
-    for i in range(len(ds)):
-        assert ds[i][0] == data[i].text
-        assert ds[i][1] == [0, 1, 0][i]
-
-
-@pytest.mark.parametrize('labels', ([1, 2, 1], ['1', '2', '1']))
-def test_list_input(labels):
-    data = [
-        Document(text='text1', tags=_class(labels[0])),
-        Document(text='text2', tags=_class(labels[1])),
-        Document(text='text1a', tags=_class(labels[2])),
-    ]
-
-    ds = ClassDataset(data)
-
-    assert len(ds) == 3
-    assert ds.labels == [0, 1, 0]
-
-    for i in range(len(ds)):
-        assert ds[i][0] == data[i].text
-        assert ds[i][1] == [0, 1, 0][i]
-
-
-@pytest.mark.parametrize('labels', ([1, 2, 1], ['1', '2', '1']))
-def test_custom_document_sequence_input(labels):
-    """Test that we really support Sequence[Document], and not
-    only lists/tuples"""
-
-    class MySequence:
-        def __init__(self, data):
-            self.data = data
-
-        def __len__(self) -> int:
-            return len(self.data)
-
-        def __getitem__(self, ind: int) -> Document:
-            return self.data[ind]
-
-    docs = [
-        Document(text='text1', tags=_class(labels[0])),
-        Document(text='text2', tags=_class(labels[1])),
-        Document(text='text1a', tags=_class(labels[2])),
-    ]
-    data = MySequence(docs)
-    ds = ClassDataset(data)
-
-    assert len(ds) == 3
-    assert ds.labels == [0, 1, 0]
-
-    for i in range(len(ds)):
-        assert ds[i][0] == docs[i].text
-        assert ds[i][1] == [0, 1, 0][i]
-
-
 def test_preprocess_fn():
     def preprocess(d: Document):
         _d = Document(d, copy=True)
         return _d.text + '_new'
 
-    data = [
-        Document(text='text1', tags=_class(1)),
-        Document(text='text2', tags=_class(2)),
-        Document(text='text1a', tags=_class(1)),
-    ]
+    data = DocumentArray(
+        [
+            Document(text='text1', tags=_class(1)),
+            Document(text='text2', tags=_class(2)),
+            Document(text='text1a', tags=_class(1)),
+        ]
+    )
     ds = ClassDataset(data, preprocess_fn=preprocess)
     for (content, _), doc in zip(ds, data):
         assert content == doc.text + '_new'

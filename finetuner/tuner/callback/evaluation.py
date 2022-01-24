@@ -2,12 +2,12 @@ import math
 from typing import TYPE_CHECKING, Optional
 
 from ... import embed
-from ..dataset.helper import batch_document_sequence
 from ..evaluation import Evaluator
 from .base import BaseCallback
 
 if TYPE_CHECKING:
-    from ...helper import DocumentSequence
+    from docarray import DocumentArray
+
     from ..base import BaseTuner
 
 
@@ -20,8 +20,8 @@ class EvaluationCallback(BaseCallback):
 
     def __init__(
         self,
-        query_data: 'DocumentSequence',
-        index_data: Optional['DocumentSequence'] = None,
+        query_data: 'DocumentArray',
+        index_data: Optional['DocumentArray'] = None,
         limit: int = 20,
         distance: str = 'cosine',
         num_workers: int = 1,
@@ -67,9 +67,7 @@ class EvaluationCallback(BaseCallback):
         )
 
         # embed queries
-        for _, batch in enumerate(
-            batch_document_sequence(self._query_data, size=tuner._batch_size)
-        ):
+        for batch in self._query_data.batch(tuner._batch_size):
             embed(
                 batch,
                 tuner._embed_model,
@@ -94,9 +92,7 @@ class EvaluationCallback(BaseCallback):
             )
 
             # embed index
-            for _, batch in enumerate(
-                batch_document_sequence(self._index_data, size=tuner._batch_size)
-            ):
+            for batch in self._index_data.batch(tuner._batch_size):
                 embed(
                     batch,
                     tuner._embed_model,
@@ -124,9 +120,6 @@ class EvaluationCallback(BaseCallback):
         # compute metrics
         evaluator = Evaluator(self._query_data, index_data)
         tuner.state.eval_metrics = evaluator.evaluate(
-            limit=self._limit,
-            distance=self._distance,
-            label=f'epoch#{tuner.state.epoch}',
-            num_workers=self._num_workers,
+            limit=self._limit, distance=self._distance, num_workers=self._num_workers
         )
         tuner._progress_bar.update(task_id=self._match_pbar_id, visible=False)

@@ -39,7 +39,7 @@ You can use `finetuner.embed()` method to compute the embeddings of a `DocumentA
 
 ```python
 import finetuner
-from jina import DocumentArray
+from docarray import DocumentArray
 
 docs = DocumentArray(...)
 
@@ -61,7 +61,7 @@ from typing import List
 import finetuner
 import torch
 from finetuner.toydata import generate_qa
-from jina import Document
+from docarray import Document
 
 VOCAB_SIZE = 5000
 PAD_TOKEN = '<pad>'
@@ -128,7 +128,7 @@ finetuner.save(model, './saved-model')
 ```
 
 ```python
-from jina import DocumentArray
+from docarray import DocumentArray
 
 all_q = DocumentArray(generate_qa())
 finetuner.embed(all_q, model, preprocess_fn=preprocess_fn, collate_fn=collate_fn)

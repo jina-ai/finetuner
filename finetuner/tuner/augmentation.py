@@ -10,7 +10,7 @@ def vision_preprocessor(
     normalize: bool = False,
     phase: str = 'train',
 ):
-    """Randomly augments a Document with `blob` field.
+    """Randomly augments a Document with `tensor` field.
     The method applies flipping, color jitter, cropping, gaussian blur and random rectangle erase
     to the given image.
 
@@ -18,7 +18,7 @@ def vision_preprocessor(
     :param width: image width.
     :param default_channel_axis: The color channel of the input image, by default -1, the expected input is H, W, C.
     :param target_channel_axis: The color channel of the output image, by default 0, the expected output is C, H, W.
-    :param normalize: Normalize uint8 image :attr:`.blob` into a float32 image :attr:`.blob` inplace.
+    :param normalize: Normalize uint8 image :attr:`.tensor` into a float32 image :attr:`.tensor` inplace.
     :param phase: phase of experiment, either `train` or `validation`. At `validation` phase, will not apply
       random transformation.
     """
@@ -46,7 +46,8 @@ def _vision_preprocessor(
     normalize: bool = False,
     phase: str = 'train',
 ):
-    """Randomly augments a Document with `blob` field.
+    """
+    Randomly augments a Document with `tensor` field.
     The method applies flipping, color jitter, cropping, gaussian blur and random rectangle erase
     to the given image.
 
@@ -55,31 +56,31 @@ def _vision_preprocessor(
     :param width: image width.
     :param default_channel_axis: The color channel of the input image, by default -1, the expected input is H, W, C.
     :param target_channel_axis: The color channel of the output image, by default 0, the expected output is C, H, W.
-    :param normalize: Normalize uint8 image :attr:`.blob` into a float32 image :attr:`.blob` inplace.
+    :param normalize: Normalize uint8 image :attr:`.tensor` into a float32 image :attr:`.tensor` inplace.
     :param phase: stage of experiment, either `train` or `validation`. At `validation` phase, will not apply
         random transformation.
     """
     import albumentations as A
 
-    blob = doc.blob
+    tensor = doc.tensor
 
-    if blob is None:
+    if tensor is None:
         if doc.uri:
-            doc.load_uri_to_image_blob(
+            doc.load_uri_to_image_tensor(
                 width=width, height=height, channel_axis=default_channel_axis
             )
-            blob = doc.blob
+            tensor = doc.tensor
         else:
             raise AttributeError(
-                f'Document `blob` is None, loading it from url: {doc.uri} failed.'
+                f'Document `tensor` is None, loading it from url: {doc.uri} failed.'
             )
     if normalize:
-        doc.set_image_blob_normalization(channel_axis=default_channel_axis)
-        blob = doc.blob
-    if blob.dtype == np.float64:
-        blob = np.float32(blob)
+        doc.set_image_tensor_normalization(channel_axis=default_channel_axis)
+        tensor = doc.tensor
+    if tensor.dtype == np.float64:
+        tensor = np.float32(tensor)
     if default_channel_axis not in [-1, 2]:
-        blob = np.moveaxis(blob, default_channel_axis, -1)
+        tensor = np.moveaxis(tensor, default_channel_axis, -1)
     if phase == 'train':
         transform = A.Compose(
             [
@@ -92,7 +93,7 @@ def _vision_preprocessor(
                 ),  # random erase 0.2 percent of image with 0.5 probability
             ]
         )
-        blob = transform(image=blob)['image']
+        tensor = transform(image=tensor)['image']
     if target_channel_axis != -1:
-        blob = np.moveaxis(blob, -1, target_channel_axis)
-    return blob
+        tensor = np.moveaxis(tensor, -1, target_channel_axis)
+    return tensor

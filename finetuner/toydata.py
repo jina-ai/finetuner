@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Generator, Optional
 
 import numpy as np
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 from rich.progress import track
 
 from finetuner import __default_tag_key__
@@ -93,6 +93,8 @@ def _download_qa_data(
     with open(targets['covid-csv']['filename']) as fp:
         lines = csv.DictReader(fp)
         for idx, value in enumerate(lines):
+            if len(value['answer']) < 1:
+                continue  # Filter out badly formatted row
             if is_testset is None:
                 yield Document(value)
             elif is_testset:
@@ -113,7 +115,7 @@ def generate_fashion(
 ) -> DocumentArray:
     """Get a Generator of fashion-mnist Documents.
 
-    Each document in the array will have the image content saved as ``blob``, and
+    Each document in the array will have the image content saved as ``tensor``, and
     the label saved as a tag under ``tags['finetuner__label']``.
 
     :param num_total: the total number of documents to return
@@ -181,12 +183,11 @@ def generate_fashion(
 
         doc = Document(
             content=raw_img,
-            tags={
-                __default_tag_key__: int(lbl),
-            },
+            tags={__default_tag_key__: int(lbl)},
+            mime_type='image/png',
         )
-        doc.convert_image_blob_to_uri()
-        doc.blob = (doc.blob / 255.0).astype(np.float32)
+        doc.convert_image_tensor_to_uri()
+        doc.tensor = (doc.tensor / 255.0).astype(np.float32)
         docs.append(doc)
 
     return docs

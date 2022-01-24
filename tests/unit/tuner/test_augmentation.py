@@ -13,7 +13,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
     'doc, height, width, num_channels, default_channel_axis, target_channel_axis, normalize, phase',
     [
         (
-            Document(blob=np.random.rand(224, 224, 3)),
+            Document(tensor=np.random.rand(224, 224, 3)),
             224,
             224,
             3,
@@ -23,7 +23,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
             'train',
         ),
         (
-            Document(blob=np.random.rand(256, 256, 3)),
+            Document(tensor=np.random.rand(256, 256, 3)),
             256,
             256,
             3,
@@ -33,7 +33,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
             'train',
         ),
         (
-            Document(blob=np.random.rand(256, 256, 3).astype('uint8')),
+            Document(tensor=np.random.rand(256, 256, 3).astype('uint8')),
             256,
             256,
             3,
@@ -43,7 +43,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
             'train',
         ),
         (
-            Document(blob=np.random.rand(256, 256, 1)),
+            Document(tensor=np.random.rand(256, 256, 1)),
             256,
             256,
             1,
@@ -53,7 +53,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
             'train',
         ),  # grayscale
         (
-            Document(blob=np.random.rand(256, 256, 3)),
+            Document(tensor=np.random.rand(256, 256, 3)),
             256,
             256,
             3,
@@ -63,7 +63,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
             'train',
         ),  # different target channel axis
         (
-            Document(blob=np.random.rand(3, 224, 224)),
+            Document(tensor=np.random.rand(3, 224, 224)),
             224,
             224,
             3,
@@ -83,7 +83,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
             'train',
         ),  # load from uri
         (
-            Document(blob=np.random.rand(224, 224, 3)),
+            Document(tensor=np.random.rand(224, 224, 3)),
             224,
             224,
             3,
@@ -93,7 +93,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
             'validation',
         ),
         (
-            Document(blob=np.random.rand(256, 256, 3)),
+            Document(tensor=np.random.rand(256, 256, 3)),
             256,
             256,
             3,
@@ -103,7 +103,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
             'validation',
         ),
         (
-            Document(blob=np.random.rand(256, 256, 3).astype('uint8')),
+            Document(tensor=np.random.rand(256, 256, 3).astype('uint8')),
             256,
             256,
             3,
@@ -123,7 +123,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
             'validation',
         ),  # grayscale
         (
-            Document(blob=np.random.rand(256, 256, 3)),
+            Document(tensor=np.random.rand(256, 256, 3)),
             256,
             256,
             3,
@@ -133,7 +133,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
             'validation',
         ),  # different target channel axis
         (
-            Document(blob=np.random.rand(3, 224, 224)),
+            Document(tensor=np.random.rand(3, 224, 224)),
             224,
             224,
             3,
@@ -164,8 +164,8 @@ def test_vision_preprocessor_train(
     normalize,
     phase,
 ):
-    original_blob = doc.blob
-    augmented_blob = _vision_preprocessor(
+    original_tensor = doc.tensor
+    augmented_tensor = _vision_preprocessor(
         doc,
         height,
         width,
@@ -174,21 +174,21 @@ def test_vision_preprocessor_train(
         normalize,
         phase,
     )
-    assert augmented_blob is not None
-    assert not np.array_equal(original_blob, augmented_blob)
-    assert np.issubdtype(augmented_blob.dtype, np.floating)
+    assert augmented_tensor is not None
+    assert not np.array_equal(original_tensor, augmented_tensor)
+    assert np.issubdtype(augmented_tensor.dtype, np.floating)
     if target_channel_axis == -1:
-        assert augmented_blob.shape == (height, width, num_channels)
+        assert augmented_tensor.shape == (height, width, num_channels)
     elif target_channel_axis == 0:
-        assert augmented_blob.shape == (num_channels, height, width)
+        assert augmented_tensor.shape == (num_channels, height, width)
 
 
 def test_blob_equal_given_uint_image_and_validation():
     def preproc_fn(doc):
         return (
             doc.load_uri_to_image_blob(height=224, width=224)
-            .set_image_blob_normalization()
-            .set_image_blob_channel_axis(-1, 0)
+            .set_image_tensor_normalization()
+            .set_image_tensor_channel_axis(-1, 0)
         )
 
     doc_1 = Document(uri=os.path.join(cur_dir, 'resources/lena.png'))
@@ -196,11 +196,11 @@ def test_blob_equal_given_uint_image_and_validation():
     blob_vision_preprocessor = _vision_preprocessor(
         doc_1, 224, 224, normalize=True, phase='validation'
     )
-    blob_jina_preprocessor = preproc_fn(doc_2).blob
+    blob_jina_preprocessor = preproc_fn(doc_2).tensor
     assert np.array_equal(blob_vision_preprocessor, blob_jina_preprocessor)
 
 
-def test_vision_preprocessor_fail_given_no_blob_and_uri():
+def test_vision_preprocessor_fail_given_no_tensor_and_uri():
     doc = Document()
     with pytest.raises(AttributeError):
         _vision_preprocessor(doc)

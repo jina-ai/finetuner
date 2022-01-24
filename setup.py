@@ -39,7 +39,7 @@ setup(
     long_description_content_type='text/markdown',
     zip_safe=False,
     setup_requires=['setuptools>=18.0', 'wheel'],
-    install_requires=['jina>=2.4.9', 'matplotlib'],
+    install_requires=['docarray>=0.4.2'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',

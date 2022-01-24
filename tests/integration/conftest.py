@@ -3,7 +3,7 @@ from time import perf_counter, sleep
 
 import numpy as np
 import pytest
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 
 from finetuner import __default_tag_key__
 from finetuner.tuner.callback.base import BaseCallback
@@ -51,7 +51,7 @@ def create_easy_data_class():
 
         docs = []
         for vec, label in zip(rand_vecs, labels):
-            docs.append(Document(blob=vec, tags={__default_tag_key__: label}))
+            docs.append(Document(tensor=vec, tags={__default_tag_key__: label}))
 
         return docs, rand_vecs
 
@@ -93,16 +93,16 @@ def create_easy_data_session():
             anchor_ind = i % (2 * n_cls)
             pos_ind = anchor_ind - 1 if anchor_ind % 2 == 1 else anchor_ind + 1
 
-            d = Document(blob=rand_vecs[anchor_ind])
+            d = Document(tensor=rand_vecs[anchor_ind])
             d.matches.append(
-                Document(blob=rand_vecs[pos_ind], tags={__default_tag_key__: 1})
+                Document(tensor=rand_vecs[pos_ind], tags={__default_tag_key__: 1})
             )
 
             neg_inds = [j for j in range(2 * n_cls) if j not in [anchor_ind, pos_ind]]
             for neg_ind in neg_inds:
                 d.matches.append(
                     Document(
-                        blob=rand_vecs[neg_ind],
+                        tensor=rand_vecs[neg_ind],
                         tags={__default_tag_key__: -1},
                     )
                 )
@@ -136,7 +136,7 @@ def create_easy_data_instance():
 
         docs = []
         for vec in rand_vecs:
-            docs.append(Document(blob=vec))
+            docs.append(Document(tensor=vec))
         return docs, rand_vecs
 
     return create_easy_data_fn

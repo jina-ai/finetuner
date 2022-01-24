@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 import torch
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 
 from finetuner import __default_tag_key__
 from finetuner.tuner.evaluation import (
@@ -34,7 +34,7 @@ def query_session_data():
     for i in range(DATASET_SIZE):
         doc = Document(
             id=str(i),
-            blob=np.array([i]),
+            tensor=np.array([i]),
             matches=[Document(id=str(DATASET_SIZE + i))],
         )
         data.append(doc)
@@ -46,7 +46,7 @@ def index_session_data():
     """The index data in session format"""
     return DocumentArray(
         [
-            Document(id=str(DATASET_SIZE + i), blob=np.array([i]))
+            Document(id=str(DATASET_SIZE + i), tensor=np.array([i]))
             for i in range(DATASET_SIZE)
         ]
     )
@@ -56,7 +56,7 @@ def index_session_data():
 def query_class_data():
     """The query data in class format"""
     return DocumentArray(
-        Document(id=str(i), blob=np.array([i]), tags={__default_tag_key__: str(i)})
+        Document(id=str(i), tensor=np.array([i]), tags={__default_tag_key__: str(i)})
         for i in range(DATASET_SIZE)
     )
 
@@ -67,7 +67,7 @@ def index_class_data():
     return DocumentArray(
         Document(
             id=str(DATASET_SIZE + i),
-            blob=np.array([i]),
+            tensor=np.array([i]),
             tags={__default_tag_key__: str(i)},
         )
         for i in range(DATASET_SIZE)
@@ -125,12 +125,12 @@ def test_evaluator_perfect_scores(
         (query_class_data, index_class_data),
     ]:
         evaluator = Evaluator(_query_data, _index_data, embed_model)
-        metrics = evaluator.evaluate(label='foo', limit=1, distance='euclidean')
+        metrics = evaluator.evaluate(limit=1, distance='euclidean')
         print(metrics)
         for _, v in metrics.items():
             assert v == 1.0
         for doc in _query_data:
-            for _, v in doc.tags[__evaluator_metrics_key__]['foo'].items():
+            for _, v in doc.tags[__evaluator_metrics_key__].items():
                 assert v == 1.0
 
 
@@ -151,7 +151,7 @@ def test_evaluator_half_precision(
         (query_class_data, index_class_data),
     ]:
         evaluator = Evaluator(_query_data, _index_data, embed_model)
-        metrics = evaluator.evaluate(label='foo', limit=2, distance='euclidean')
+        metrics = evaluator.evaluate(limit=2, distance='euclidean')
         for k, v in metrics.items():
             if k == 'precision_at_k':
                 assert v == 0.5
@@ -160,7 +160,7 @@ def test_evaluator_half_precision(
             else:
                 assert v == 1.0
         for doc in _query_data:
-            for k, v in doc.tags[__evaluator_metrics_key__]['foo'].items():
+            for k, v in doc.tags[__evaluator_metrics_key__].items():
                 if k == 'precision_at_k':
                     assert v == 0.5
                 elif k == 'f1_score_at_k':

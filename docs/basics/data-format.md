@@ -54,7 +54,7 @@ array.
 ```python
 import numpy as np
 from finetuner import fit
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 
 dataset = DocumentArray([
   Document(uri='path/to/image.jpg', tags={'finetuner_label': 1}}),
@@ -62,8 +62,8 @@ dataset = DocumentArray([
 ])
 
 def load_image(d: Document) -> np.ndarray:
-    d.load_uri_to_image_blob()
-    return d.blob
+    d.load_uri_to_image_tensor()
+    return d.tensor
 
 model = ...
 fit(model, train_data=dataset, preprocess_fn=load_image)
@@ -77,10 +77,10 @@ Next, let's take a look at an example where we apply some basic image augmentati
 import albumentations as A
 import numpy as np
 from finetuner import fit
-from jina import Document, DocumentArray
+from docarray import Document, DocumentArray
 
 dataset = DocumentArray([
-  Document(blob=np.random.rand(3, 128, 128), tags={'finetuner_label': 1}}),
+  Document(tensor=np.random.rand(3, 128, 128), tags={'finetuner_label': 1}}),
   # ...
 ])
 
@@ -90,7 +90,7 @@ def augment_image(doc: Document) -> np.ndarray:
     A.RandomBrightnessContrast(p=0.2),
   ])
   
-  return transform(image=doc.blob)['image']
+  return transform(image=doc.tensor)['image']
 
 model = ...
 fit(model, train_data=dataset, preprocess_fn=augment_image)
