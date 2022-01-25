@@ -257,9 +257,7 @@ Learn more about {term}`Tailor`, {term}`Tuner` and {term}`Labeler`.
 
 get-started/swiss-roll/index
 get-started/totally-looks-like/index
-get-started/fashion-mnist
 get-started/covid-qa
-get-started/celeba
 get-started/3d-mesh/index
 ```
 
