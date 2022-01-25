@@ -31,6 +31,16 @@ def _to_device(
         return [x.to(device) for x in inputs]
 
 
+class CollateAll:
+    def __init__(self, content_collate_fn: 'CollateFnType'):
+        self._content_collate_fn = content_collate_fn
+
+    def __call__(self, inputs):
+        batch_content = self._content_collate_fn([x[0] for x in inputs])
+        batch_labels = default_collate([x[1] for x in inputs])
+        return batch_content, batch_labels
+
+
 class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
     def _get_loss(self, loss: Union[nn.Module, str]) -> nn.Module:
         """Get the loss layer."""
@@ -52,12 +62,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         """Get the dataloader for the dataset."""
 
         if collate_fn:
-
-            def collate_fn_all(inputs):
-                batch_content = collate_fn([x[0] for x in inputs])
-                batch_labels = default_collate([x[1] for x in inputs])
-                return batch_content, batch_labels
-
+            collate_fn_all = CollateAll(collate_fn)
         else:
             collate_fn_all = None
 
