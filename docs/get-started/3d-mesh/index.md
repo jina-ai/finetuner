@@ -1,4 +1,4 @@
-# Finetuning PointConv on PartNet Dataset
+# Finetuning PointConv on ModelNet40 Dataset
 
 In this tutorial we will finetune PointConv on [ModelNet40 dataset](https://arxiv.org/pdf/1406.5670v3.pdf).
 The ModelNet40 dataset contains synthetic object point clouds. As the most widely used benchmark for point cloud analysis, ModelNet40 is popular because of its various categories, clean shapes, well-constructed dataset.
@@ -192,6 +192,7 @@ and then search for test 3d objects (the query) in our training data (index). We
 We'll use two metrics to evaluate our two models (pretrained, straight out of the box model and finetuned model) on the search task:
 
 **mAP@k** : We'll calculate the average precision at 1, 5 and 10, then we'll calculate the mean of those average precisions for all documents in our test data (these are our queries) because we care about how accurate and precise our retrieved 3D objects are.
+
 **mNDCG@k**: We'll calculate NDCG at 1,5 and 10, then we'll calculate the mean of those for all documents in our test data  because we care about the order of the retrieved 3D objects.
 
 ````{dropdown} Complete source code
