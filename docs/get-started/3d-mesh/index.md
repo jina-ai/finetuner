@@ -10,7 +10,7 @@ ModelNet: a consistent, large-scale dataset of 3D objects annotated with fine-gr
 The corresponding point cloud data points are uniformly sampled from the mesh surfaces, and then further preprocessed by moving to the origin and scaling into a unit sphere. This dataset is used to establish three benchmarking tasks for evaluating 3D part recognition: fine-grained semantic segmentation and classification. In our case we'll use it to finetune PointConv which was pretrained on [ShapeNet dataset](https://arxiv.org/abs/1512.03012).
 ```
 
-You can download ModelNet dataset on the official [Princeton website](https://modelnet.cs.princeton.edu/).
+You can download ModelNet dataset from the official [Princeton website](https://modelnet.cs.princeton.edu/).
 
 ```shell
 wget http://modelnet.cs.princeton.edu/ModelNet40.zip
@@ -40,9 +40,9 @@ Before we go further let's look at some examples from our data:
 :width: 70%
 ```
 
-Now let's go to loading our data. We'll use `DocumentArray` from the library `docarray`. We'll go through
+Now let's go to loading our data. We'll use `DocumentArray` from the library [DocArray]((https://github.com/jina-ai/docarray)). We'll go through
 all the files in our directory and we'll recursively read all files that end with .off.
-We split the files between two `DocumentArray`s depending on their uri to train and test.
+We split the files into two `DocumentArray`s depending on their uri to train and test.
 
 Finally we save the resulting `DocumentArray`s into binary files for later use.
 
@@ -59,7 +59,7 @@ test = DocumentArray()
 data_path = 'ModelNet40'
 all_docs = DocumentArray.from_files(os.path.join(data_path,'/**/**/*.off'))
 for doc in all_docs:
-    if 'test' in doc.uri :
+    if 'test' in doc.uri:
         test.append(doc)
     else:
         train.append(doc)
@@ -76,8 +76,8 @@ Now that we have our data ready, we need a model that creates embeddings so that
 In order to not reinvent the wheel we will use this model. We will also use Jina's 3D Mesh Encoder which wraps these two models in an executor.
 This executor receives Documents containing point sets data in its blob attribute, with shape (N, 3) and encodes them to embeddings of shape (D,). Now, the following pretrained models are ready to be used to create embeddings:
 
-- PointConv-Shapenet-d512: A PointConv model resulted in 512 dimension of embeddings, which is finetuned on ShapeNet dataset.
-- PointConv-Shapenet-d1024: A PointConv model resulted in 1024 dimension of embeddings, which is finetuned on ShapeNet dataset.
+- PointConv-Shapenet-d512: A PointConv model finetuned on ShapeNet dataset, resulting in 512 dimension of embeddings.
+- PointConv-Shapenet-d1024: A PointConv model finetuned on ShapeNet dataset, resulting in 1024 dimension of embeddings.
 
 As we already have an Encoder that uses `PointConv` to embed data let's use it.  
 
@@ -160,9 +160,22 @@ the mentioned label coming with every `Document` which we specified during prepr
 and then sample examples with different label as negatives.
 
 The triplet loss's goal is to pull `Documents` with same class together and those with different classes away from each other thus improving
-the final representation.
+the final representation. If you wish to learn more about triplet loss and miners click [here](https://finetuner.jina.ai/components/tuner/loss/#loss-and-miners).
+
+We also use our built-in callback `WandBLogger` to be able to track our training. Note you must first download the wandb client and log into your account which you can do like this:
+
+```shell
+pip install wandb
+wandb login
+```
+
+To learn more about callbacks click [here](https://finetuner.jina.ai/components/tuner/callbacks/#callbacks), now let's go to finetuning:
 
 ```python
+from finetuner.tuner.callback import WandBLogger 
+
+logger = WandBLogger()
+
 tuned_model = finetuner.fit(
     model,
     train,
@@ -176,6 +189,7 @@ tuned_model = finetuner.fit(
     configure_optimizer=configure_optimizer,
     learning_rate=5e-4,
     device='cuda',
+    callbacks=[logger],
 )
 # saving the finetuner model
 torch.save(
