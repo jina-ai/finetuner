@@ -167,7 +167,7 @@ print(metrics)
 ```
 
 To customize the computed metrics, an optional `metrics` argument can be provided in
-the Evaluator constructor, that maps metric names to metric functions and keyword
+the Evaluator constructor, that maps metric names to metric functions and their keyword
 arguments. For example:
 
 ```python
@@ -176,7 +176,7 @@ from docarray.math.evaluation import precision_at_k, recall_at_k
 def f_score_at_k(binary_relevance, max_rel, k=None, beta=1.0):
     precision = precision_at_k(binary_relevance, k=k)
     recall = recall_at_k(binary_relevance, max_rel, k=k)
-    return ((1+ beta**2) * precision * recall) / (beta**2 * precision + recall)
+    return ((1 + beta**2) * precision * recall) / (beta**2 * precision + recall)
 
 metrics = {
     'precision@5': (precision_at_k, {'k': 5}),

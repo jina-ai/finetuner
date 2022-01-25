@@ -42,8 +42,8 @@ class Evaluator:
             representations. If set to None, documents are assumed to carry
             representations.
         :param metrics: A dictionary that specifies the metrics to calculate. It maps
-            metric names to tuples of metric functions and keyword arguments. If set to
-            None, default metrics are computed.
+            metric names to tuples of metric functions and their keyword arguments. If
+            set to None, default metrics are computed.
         :return: None
         """
         self._query_data = query_data
@@ -176,7 +176,7 @@ class Evaluator:
         """
         Compute evaluation metrics.
         :param exclude_self: Whether to exclude self when matching.
-        :param limit: The number of top search results to consider, when computing the
+        :param limit: The number of top search results to consider when computing the
             evaluation metrics.
         :param distance: The type of distance metric to use when matching query and
             index docs, available options are ``'cosine'``, ``'euclidean'`` and

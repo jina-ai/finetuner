@@ -36,10 +36,10 @@ class EvaluationCallback(BaseCallback):
         :param index_data: Index data or catalog used by the evaluator at the end of
             each epoch, to evaluate the model.
         :param metrics: A dictionary that specifies the metrics to calculate. It maps
-            metric names to tuples of metric functions and keyword arguments. If set
-            to None, default metrics are computed.
+            metric names to tuples of metric functions and their keyword arguments. If
+            set to None, default metrics are computed.
         :param exclude_self: Whether to exclude self when matching.
-        :param limit: The number of top search results to consider, when computing the
+        :param limit: The number of top search results to consider when computing the
             evaluation metrics.
         :param distance: The type of distance metric to use when matching query and
             index docs, available options are ``'cosine'``, ``'euclidean'`` and
