@@ -108,6 +108,27 @@ def test_default_metrics(embed_model):
         _ = func([1, 0], max_rel=2)
 
 
+def test_evaluator_exceptions(query_class_data, query_session_data, index_session_data):
+    """
+    Test thrown exceptions
+    """
+
+    # check no class label
+    query_class_data.append(Document())
+    with pytest.raises(ValueError):
+        _ = Evaluator(query_class_data)
+
+    # check match not in index
+    with pytest.raises(ValueError):
+        evaluator = Evaluator(query_session_data)
+        _ = evaluator.evaluate()
+
+    # check empty embedding
+    with pytest.raises(ValueError):
+        evaluator = Evaluator(query_session_data, index_session_data)
+        _ = evaluator.evaluate()
+
+
 def test_evaluator_perfect_scores(
     embed_model,
     query_session_data,
