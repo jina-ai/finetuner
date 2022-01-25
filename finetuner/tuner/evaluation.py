@@ -11,7 +11,9 @@ if TYPE_CHECKING:
 
 
 class Evaluator:
-    """The evaluator class"""
+    """
+    The evaluator class.
+    """
 
     def __init__(
         self,
@@ -24,13 +26,13 @@ class Evaluator:
         Build an Evaluator object that can be used to evaluate the performance on a
         retrieval task.
 
-        :param query_data: A sequence of documents. Both class and session format is
+        :param query_data: The evaluation data. Both class and session format is
             accepted. In the case of session data, each document should contain ground
             truth matches from the index data under ``doc.matches``. In the case of
             class format, each document should be mapped to a class, which is specified
             under ``doc.tags[finetuner.__default_tag_key__]``.
-        :param index_data: A sequence of documents, against which the query data will
-            be matched. If not provided, query data will be matched against themselves.
+        :param index_data: The data against which the query data will be matched.
+            If not provided, query data will be matched against themselves.
             Both class and session format is accepted. In the case of session data,
             ground truth matches are included in the `query_data`, so no additional
             information is required in the index data. In the case of class data, each
@@ -63,7 +65,7 @@ class Evaluator:
         """
         label = doc.tags.get(__default_tag_key__)
         if label is None:
-            raise ValueError(f'No label found in index doc with id: {doc.id}')
+            raise ValueError(f'No label found in doc with id: {doc.id}')
         return label
 
     def _parse_class_docs(self) -> DocumentArray:
@@ -172,7 +174,7 @@ class Evaluator:
         **embed_kwargs,
     ) -> Dict[str, float]:
         """
-        Run evaluation
+        Compute evaluation metrics.
         :param exclude_self: Whether to exclude self when matching.
         :param limit: The number of top search results to consider, when computing the
             evaluation metrics.

@@ -40,7 +40,7 @@ class EvaluationCallback(BaseCallback):
             to None, default metrics are computed.
         :param exclude_self: Whether to exclude self when matching.
         :param limit: The number of top search results to consider, when computing the
-            valuation metrics.
+            evaluation metrics.
         :param distance: The type of distance metric to use when matching query and
             index docs, available options are ``'cosine'``, ``'euclidean'`` and
             ``'sqeuclidean'``.
