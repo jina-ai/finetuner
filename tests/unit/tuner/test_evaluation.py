@@ -4,12 +4,7 @@ import torch
 from docarray import Document, DocumentArray
 
 from finetuner import __default_tag_key__
-from finetuner.tuner.evaluation import (
-    METRICS,
-    Evaluator,
-    __evaluator_metrics_key__,
-    __evaluator_targets_key__,
-)
+from finetuner.tuner.evaluation import Evaluator
 
 DATASET_SIZE = 1000
 EMBEDDING_SIZE = 10
@@ -79,12 +74,13 @@ def test_parse_session_docs(query_session_data, index_session_data):
     Test the conversion from session docs to the internal evaluator representation
     """
     evaluator = Evaluator(query_session_data, index_session_data)
-    summarydocs = evaluator._parse_session_docs()
-    for evaldoc, summarydoc in zip(query_session_data, summarydocs):
-        assert evaldoc.id == summarydoc.id
-        assert summarydoc.content is None
-        assert evaldoc.matches[0].id in summarydoc.tags[__evaluator_targets_key__]
-        assert summarydoc.tags[__evaluator_targets_key__][evaldoc.matches[0].id] == 1
+    ground_truth = evaluator._parse_session_docs()
+    for query_doc, ground_truth_doc in zip(query_session_data, ground_truth):
+        assert query_doc.id == ground_truth_doc.id
+        assert ground_truth_doc.content is None
+        query_doc_matches = [m.id for m in query_doc.matches]
+        ground_truth_doc_matches = [m.id for m in ground_truth_doc.matches]
+        assert query_doc_matches == ground_truth_doc_matches
 
 
 def test_parse_class_docs(query_class_data, index_class_data):
@@ -92,21 +88,45 @@ def test_parse_class_docs(query_class_data, index_class_data):
     Test the conversion from class docs to the internal evaluator representation
     """
     evaluator = Evaluator(query_class_data, index_class_data)
-    summarydocs = evaluator._parse_class_docs()
-    for evaldoc, summarydoc in zip(query_class_data, summarydocs):
-        assert evaldoc.id == summarydoc.id
-        assert summarydoc.content is None
-        targets = list(summarydoc.tags[__evaluator_targets_key__].items())
-        assert len(targets) == 1
-        target, relevance = targets[0]
-        assert relevance == 1
+    ground_truth = evaluator._parse_class_docs()
+    for query_doc, ground_truth_doc in zip(query_class_data, ground_truth):
+        assert query_doc.id == ground_truth_doc.id
+        assert ground_truth_doc.content is None
+        ground_truth_doc_matches = [m.id for m in ground_truth_doc.matches]
+        assert len(ground_truth_doc_matches) == 1
 
 
-def test_list_available_metrics(embed_model):
+def test_default_metrics(embed_model):
     """
-    Test the listing of available metrics
+    Test the listing of default metrics
     """
-    assert Evaluator.list_available_metrics() == list(METRICS.keys())
+    metrics = Evaluator.default_metrics()
+    for key, (func, kwargs) in metrics.items():
+        assert isinstance(key, str)
+        assert callable(func)
+        assert isinstance(kwargs, dict)
+        _ = func([1, 0], max_rel=2)
+
+
+def test_evaluator_exceptions(query_class_data, query_session_data, index_session_data):
+    """
+    Test thrown exceptions
+    """
+
+    # check no class label
+    query_class_data.append(Document())
+    with pytest.raises(ValueError):
+        _ = Evaluator(query_class_data)
+
+    # check match not in index
+    with pytest.raises(ValueError):
+        evaluator = Evaluator(query_session_data)
+        _ = evaluator.evaluate()
+
+    # check empty embedding
+    with pytest.raises(ValueError):
+        evaluator = Evaluator(query_session_data, index_session_data)
+        _ = evaluator.evaluate()
 
 
 def test_evaluator_perfect_scores(
@@ -130,8 +150,8 @@ def test_evaluator_perfect_scores(
         for _, v in metrics.items():
             assert v == 1.0
         for doc in _query_data:
-            for _, v in doc.tags[__evaluator_metrics_key__].items():
-                assert v == 1.0
+            for _, v in doc.evaluations.items():
+                assert v.value == 1.0
 
 
 def test_evaluator_half_precision(
@@ -142,8 +162,8 @@ def test_evaluator_half_precision(
     index_class_data,
 ):
     """
-    Test the evaluator when the matching limit is set 2. We expect all metrics == 1.0 except
-    precision == 0.5 and f1score == 2/3
+    Test the evaluator when the matching limit is set 2. We expect all metrics == 1.0
+    except precision == 0.5 and f1score == 2/3
     """
     # test both for session and class data
     for _query_data, _index_data in [
@@ -160,13 +180,13 @@ def test_evaluator_half_precision(
             else:
                 assert v == 1.0
         for doc in _query_data:
-            for k, v in doc.tags[__evaluator_metrics_key__].items():
+            for k, v in doc.evaluations.items():
                 if k == 'precision_at_k':
-                    assert v == 0.5
+                    assert v.value == 0.5
                 elif k == 'f1_score_at_k':
-                    assert 0.66 < v < 0.67
+                    assert 0.66 < v.value < 0.67
                 else:
-                    assert v == 1.0
+                    assert v.value == 1.0
 
 
 def test_evaluator_no_index_data(embed_model, query_class_data):
@@ -175,3 +195,22 @@ def test_evaluator_no_index_data(embed_model, query_class_data):
     """
     evaluator = Evaluator(query_class_data, embed_model=embed_model)
     _ = evaluator.evaluate()
+
+
+def test_evaluator_custom_metric(embed_model, query_class_data):
+    """
+    Test using custom metrics
+    """
+
+    def my_metric(*_, **__):
+        return 0.5
+
+    evaluator = Evaluator(
+        query_class_data,
+        embed_model=embed_model,
+        metrics={'my_metric': (my_metric, {})},
+    )
+    metrics = evaluator.evaluate()
+    assert len(metrics) == 1
+    assert 'my_metric' in metrics
+    assert metrics['my_metric'] == 0.5

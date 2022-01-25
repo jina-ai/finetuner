@@ -8,7 +8,7 @@ or integrated in the training loop via the [evaluation callback](#using-the-eval
 
 ## Using the evaluator
 
-The evaluator can be used standalone in order to compute the evaluation metrics on a sequence
+The evaluator can be used standalone in order to compute evaluation metrics on a sequence
 of documents:
 ```python
 from finetuner.tuner.evaluation import Evaluator
@@ -27,14 +27,14 @@ The `query_data` (or eval data) are the documents that will be evaluated. They c
 {term}`class dataset` or the {term}`session dataset` format. They should contain ground truths, in the form of
 matches (`doc.matches`) when using session format and in the form of labels when using class format.
 
-If an embedding model is given, the query docs are embedded, otherwise they are assumed to carry
+If an embedding model is given, both query and index docs are embedded, otherwise they are assumed to carry
 representations.
 
 The `index_data` (or catalog) is an optional argument that defines the dataset against which the
 query docs are matched. If not provided, query docs are matched against themselves.
 
 The `evaluate()` method returns the computed metrics as a dictionary, mapping metric names to values.
-The computed metrics are the following:
+By default, the following metrics are computed:
 
 - Precision
 - Recall
@@ -46,7 +46,7 @@ The computed metrics are the following:
 - DCG
 - NDCG
 
-More information on Information Retrieval metrics can be found
+More details on these Information Retrieval metrics can be found
 [here](https://en.wikipedia.org/wiki/Evaluation_measures_(information_retrieval)).
 
 Let's consider an example. First, let's build a model that receives a NumPy array with a single element as input, and
@@ -63,7 +63,6 @@ class EmbeddingModel(torch.nn.Module):
         output_shape: (bs, 10)
         """
         return inputs.repeat(1, 10)
-
 ```
 
 Now let's create some example data. We will divide into 2 sets, the evaluation data and the index data. The
@@ -134,7 +133,7 @@ evaluator = Evaluator(query_data, index_data, embed_model)
 metrics = evaluator.evaluate(limit=1, distance='euclidean')
 print(metrics)
 ```
-```
+```json
 {
   "r_precision": 1.0,
   "precision_at_k": 1.0,
@@ -153,7 +152,7 @@ When evaluating with a bigger matching limit, we expect precision to drop:
 metrics = evaluator.evaluate(limit=2, distance='euclidean')
 print(metrics)
 ```
-```
+```json
 {
   "r_precision": 1.0,
   "precision_at_k": 0.5,
@@ -164,6 +163,35 @@ print(metrics)
   "reciprocal_rank": 1.0,
   "dcg_at_k": 1.0,
   "ndcg_at_k": 1.0
+}
+```
+
+To customize the computed metrics, an optional `metrics` argument can be provided in
+the Evaluator constructor, that maps metric names to metric functions and their keyword
+arguments. For example:
+
+```python
+from docarray.math.evaluation import precision_at_k, recall_at_k
+
+def f_score_at_k(binary_relevance, max_rel, k=None, beta=1.0):
+    precision = precision_at_k(binary_relevance, k=k)
+    recall = recall_at_k(binary_relevance, max_rel, k=k)
+    return ((1 + beta**2) * precision * recall) / (beta**2 * precision + recall)
+
+metrics = {
+    'precision@5': (precision_at_k, {'k': 5}),
+    'recall@5': (recall_at_k, {'k': 5}),
+    'f1score@5': (f_score_at_k, {'k': 5, 'beta': 1.0})
+}
+
+evaluator = Evaluator(query_data, index_data, embed_model, metrics=metrics)
+print(evaluator.evaluate(limit=2, distance='euclidean'))
+```
+```json
+{
+  "precision@5": 0.2,
+  "recall@5": 1.0,
+  "f1score@5": 0.33333333333333337
 }
 ```
 
