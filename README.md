@@ -45,153 +45,60 @@ Requires Python 3.7+ and *one of* [PyTorch](https://pytorch.org/)(>=1.9) or [Ten
 pip install finetuner
 ```
 
-## [Documentation](https://finetuner.jina.ai)
-
-## Usage
-
-<table>
-<thead>
-  <tr>
-    <th colspan="2" rowspan="2">Usage</th>
-    <th colspan="2">Do you have an <a href="https://finetuner.jina.ai/basics/glossary/#term-Embedding-model">embedding model</a>?</th>
-  </tr>
-  <tr>
-    <th>Yes</th>
-    <th>No</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="2"><b>Do you have <a href="https://finetuner.jina.ai/basics/glossary/#term-Labeled-dataset">labeled data</a>?</b></td>
-    <td><b>Yes</b></td>
-    <td align="center">🟠</td>
-    <td align="center">🟡</td>
-  </tr>
-  <tr>
-    <td><b>No</b></td>
-    <td align="center">🟢</td>
-    <td align="center">🔵</td>
-  </tr>
-</tbody>
-</table>
-
-### 🟠 Have embedding model and labeled data
-
-Perfect! Now `embed_model` and `labeled_data` are given by you already, simply do:
-
-```python
-import finetuner
-
-tuned_model = finetuner.fit(
-    embed_model,
-    train_data=labeled_data
-)
-```
-
-### 🟢 Have embedding model and unlabeled data
-
-You have an `embed_model` to use, but no labeled data for finetuning this model. No worry, that's good enough already!
-You can use Finetuner to interactive label data and train `embed_model` as below:
-
-```python
-import finetuner
-
-tuned_model = finetuner.fit(
-    embed_model,
-    train_data=unlabeled_data,
-    interactive=True
-)
-```
-
-### 🟡 Have general model and labeled data
-
-You have a `general_model` which does not output embeddings. Luckily you provide some `labeled_data` for training. No
-worries, Finetuner can convert your model into an embedding model and train it via:
-
-```python
-import finetuner
-
-tuned_model = finetuner.fit(
-    general_model,
-    train_data=labeled_data,
-    to_embedding_model=True,
-    layer_name='my_embedding_layer',
-    freeze=['layer_1', 'layer_2'],
-)
-```
-
-### 🔵 Have general model and unlabeled data
-
-You have a `general_model` which is not for embeddings. Meanwhile, you don't have labeled data for training. But no
-worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly:
-
-```python
-import finetuner
-
-tuned_model = finetuner.fit(
-    general_model,
-    train_data=unlabeled_data,
-    interactive=True,
-    to_embedding_model=True,
-    layer_name='my_embedding_layer',
-    freeze=['layer_1', 'layer_2'],
-)
-```
-
-## Finetuning ResNet50 on CelebA
-
-> ⚡ To get the best experience, you will need a GPU-machine for this example. For CPU users, we provide [finetuning a MLP on FashionMNIST](https://finetuner.jina.ai/get-started/fashion-mnist/) and [finetuning a Bi-LSTM on CovidQA](https://finetuner.jina.ai/get-started/covid-qa/) that run out the box on low-profile machines. Check out more examples in [our docs](https://finetuner.jina.ai)!
-
+## Finetuning ResNet18 on CelebA
 
 1. Download [CelebA-small dataset (7.7MB)](https://static.jina.ai/celeba/celeba-img.zip) and decompress it to `'./img_align_celeba'`. [Full dataset can be found here.](https://drive.google.com/drive/folders/0B7EVK8r0v71pWEZsZE9oNnFzTm8?resourcekey=0-5BR16BdXnb8hVj6CNHKzLg)
-2. Finetuner accepts Jina `DocumentArray`/`DocumentArrayMemmap`, so we load CelebA image into this format using a generator:
+2. Finetuner accepts docarray `DocumentArray`, so we load CelebA image into this format using a generator:
     ```python
-    from jina.types.document.generators import from_files
-
+    from docarray import DocumentArray
+    
     # please change the file path to your data path
-    data = list(from_files('img_align_celeba/*.jpg', size=100, to_dataturi=True))
-
-    for doc in data:
-        doc.load_uri_to_image_tensor(
-            height=224, width=224
-        ).set_image_tensor_normalization().set_image_tensor_channel_axis(
-            -1, 0
+    data = DocumentArray.from_files('img_align_celeba/*.jpg')
+    
+    
+    def preproc(doc):
+        return (
+            doc.load_uri_to_image_tensor(224, 224)
+            .set_image_tensor_normalization()
+            .set_image_tensor_channel_axis(-1, 0)
         )  # No need for changing channel axes line if you are using tf/keras
+    
+    
+    data.apply(preproc)
     ```
 3. Load pretrained ResNet50 using PyTorch/Keras/Paddle:
     - PyTorch
       ```python
       import torchvision
-      model = torchvision.models.resnet50(pretrained=True)
+      resnet = torchvision.models.resnet18(pretrained=True)
       ```
     - Keras
       ```python
       import tensorflow as tf
-      model = tf.keras.applications.resnet50.ResNet50(weights='imagenet')
+      resnet = tf.keras.applications.resnet18.ResNet18(weights='imagenet')
       ```
     - Paddle
       ```python
       import paddle
-      model = paddle.vision.models.resnet50(pretrained=True)
+      resnet = paddle.vision.models.resnet18(pretrained=True)
       ```
 4. Start the Finetuner:
     ```python
-    import finetuner
+    import finetuner as ft
     
-    finetuner.fit(
-        model=model,
-        interactive=True,
+    tuned_model = ft.fit(
+        model=resnet,
         train_data=data,
-        freeze=True,
+        loss='TripletLoss',
+        epochs=20,
+        device='cuda',
+        batch_size=128,
         to_embedding_model=True,
         input_size=(3, 224, 224),
-        layer_name='my_embedding_layer',
-        freeze=['layer_1', 'layer_2'],
+        layer_name='adaptiveavgpool2d_67', # layer before fc as feature extractor
+        freeze=False,
     )
     ```
-5. After downloading the model and loading the data (takes ~20s depending on your network/CPU/GPU), your browser will open the Labeler UI as below. You can now label the relevance of celebrity faces via mouse/keyboard. The ResNet50 model will get finetuned and improved as you are labeling. If you are running this example on a CPU machine, it may take up to 20 seconds for each labeling round.
-
-![Finetuning ResNet50 on CelebA with interactive labeling](docs/get-started/celeba-labeler.gif)
 
 
 <!-- start support-pitch -->
