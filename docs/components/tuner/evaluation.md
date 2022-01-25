@@ -27,7 +27,7 @@ The `query_data` (or eval data) are the documents that will be evaluated. They c
 {term}`class dataset` or the {term}`session dataset` format. They should contain ground truths, in the form of
 matches (`doc.matches`) when using session format and in the form of labels when using class format.
 
-If an embedding model is given, the query docs are embedded, otherwise they are assumed to carry
+If an embedding model is given, both query and index docs are embedded, otherwise they are assumed to carry
 representations.
 
 The `index_data` (or catalog) is an optional argument that defines the dataset against which the
