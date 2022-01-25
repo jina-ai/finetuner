@@ -40,9 +40,9 @@ Before we go further let's look at some examples from our data:
 :width: 70%
 ```
 
-Now let's go to loading our data. We'll use `DocumentArray` from the library `docarray`. We'll go through all the files in our directory.
-And we'll recursively read all files that end with `.off`. We split the files between two `DocumentArray`s depending on their uri to train
-and test.
+Now let's go to loading our data. We'll use `DocumentArray` from the library `docarray`. We'll go through
+all the files in our directory and we'll recursively read all files that end with .off.
+We split the files between two `DocumentArray`s depending on their uri to train and test.
 
 Finally we save the resulting `DocumentArray`s into binary files for later use.
 
@@ -71,13 +71,13 @@ test.save_binary('test_data_modelnet.bin')
 
 ## Model Training
 
-Now that we have our data ready, we need a model that creates embeddings we will later use those embeddings for searching similar matches for different queries. A lot of work and research has been done in the field of 3D data embeddings there are some powerful models like [PointConv](https://arxiv.org/abs/1811.07246) which have been trained on [ShapeNet dataset](https://arxiv.org/pdf/1512.03012.pdf)
+Now that we have our data ready, we need a model that creates embeddings so that we can later use these embeddings for searching similar matches for different queries. A lot of work and research has been done in the field of 3D data embeddings and there are some powerful models like [PointConv](https://arxiv.org/abs/1811.07246) which have been trained on [ShapeNet dataset](https://arxiv.org/pdf/1512.03012.pdf)
 
-In order to not reivent the wheel we will use this model. We will also use Jina's 3D Mesh Encoder which wraps these two models in an executor.
-This executor receives Documents containing point sets data in its blob attribute, with shape (N, 3) and encodes it to embeddings of shape (D,). Now, the following pretrained models are ready to be used to create embeddings:
+In order to not reinvent the wheel we will use this model. We will also use Jina's 3D Mesh Encoder which wraps these two models in an executor.
+This executor receives Documents containing point sets data in its blob attribute, with shape (N, 3) and encodes them to embeddings of shape (D,). Now, the following pretrained models are ready to be used to create embeddings:
 
-- PointConv-Shapenet-d512: A PointConv model resulted in 512 dimension of embeddings, which is finetuned based on ShapeNet dataset.
-- PointConv-Shapenet-d1024: A PointConv model resulted in 1024 dimension of embeddings, which is finetuned based on ShapeNet dataset.
+- PointConv-Shapenet-d512: A PointConv model resulted in 512 dimension of embeddings, which is finetuned on ShapeNet dataset.
+- PointConv-Shapenet-d1024: A PointConv model resulted in 1024 dimension of embeddings, which is finetuned on ShapeNet dataset.
 
 As we already have an Encoder that uses `PointConv` to embed data let's use it.  
 
@@ -136,7 +136,7 @@ def preprocess(doc: 'Document', num_points: int = 1024, data_aug: bool = True):
 ```
 
 In the following code snippet we create MeshData model which encapsulates a `PointConv` model with 512 dimensions, we then load
-training and evaluation data from the binary fs we saved before. We create an optimizer and a learning rate scheduler. In this case with use
+training and evaluation data from the binary files we saved before. We create an optimizer and a learning rate scheduler. In this case with use
 an Adam optimizer and MultiStepLR scheduler but you can change those depending on your data and preferences.
 
 ```python
@@ -155,7 +155,7 @@ def configure_optimizer(model):
     return optimizer, scheduler
 ```
 
-We leverage finetuner's mining strategy to imprive and finetuning the embeddings. By this we mean that the finetuner will use
+We leverage finetuner's mining strategy to improve and finetune the embeddings. By this we mean that the finetuner will use
 the mentioned label coming with every `Document` which we specified during preprocessing and will sample it as a positive example
 and then sample examples with different label as negatives.
 
@@ -201,10 +201,10 @@ We'll use two metrics to evaluate our two models (pretrained, straight out of th
 from finetuner.tuner.evaluation import Evaluator
 
 train = DocumentArray.load_binary('../train_data_modelnet.bin') # load train dataset
-eval = DocumentArray.load_binary('../test_data_modelnet.bin') # load test dataset
+val = DocumentArray.load_binary('../test_data_modelnet.bin') # load test dataset
 
 train.apply(preprocess)
-eval.apply(preprocess)
+val.apply(preprocess)
 
 tuned_model = MeshDataModel(model_name='pointconv', embed_dim=512) # create pointconv model with 512 dimensions
 pretrained_model = MeshDataModel(model_name='pointconv', embed_dim=512)
@@ -214,10 +214,10 @@ tuned_model.load_state_dict(torch.load('checkpoints/finetuned-pointconv-d512.pth
 tuned_model.eval()
 pretrained_model.eval()
 
-evaluator_finetuned = Evaluator(eval, train, tuned_model)
+evaluator_finetuned = Evaluator(val, train, tuned_model)
 print(evaluator_finetuned.evaluate())
 
-evaluator_pretrained = Evaluator(eval, train, pretrained_model)
+evaluator_pretrained = Evaluator(val, train, pretrained_model)
 print(evaluator_pretrained.evaluate())
 ```
 ````
