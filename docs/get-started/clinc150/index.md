@@ -162,7 +162,7 @@ given some input text and it has been pre-trained on large text corpora. To use 
 defined above, we need to be able to convert raw text to the tensor format that our model
 accepts as input. To do that, we need to use the BPE tokenizer, provided by the `transformers`
 package, that converts texts to BPE encoded arrays that our model accepts as input. We make
-use of the collate function that `finetuner`supports. The collate function offers a way to
+use of the collate function that `finetuner` supports. The collate function offers a way to
 specify the conversion of batch elements to model input tensors.
 
 ```python
@@ -187,8 +187,9 @@ def collate_fn(inputs: List[str]):
 
 Before proceeding with the fine-tuning, we should evaluate the performance of the
 pre-trained model, so that after fine-tuning we can evaluate again and compare the results.
-To evaluate the model, we can use the built-in `Evaluator` component that allows us to
-compute information retireval metrics. We will evaluate on the test split of our dataset:
+To evaluate the model, we can use the built-in `Evaluator` component of `finetuner` that
+allows us to compute information retrieval metrics. We will evaluate on the test split
+of our dataset:
 
 ```python
 from finetuner.tuner.evaluation import Evaluator
@@ -233,7 +234,7 @@ similar texts nearby in the embedding space. Let's see if we can improve using `
 ## Fine-tuning
 
 We will finetune the model for 6 epochs using a batch size of 256. We are using a learning
-rate of 1e-4, with the AdamW optimizer and a linear learning rate schedule with warmup.
+rate of 1e-4, with the AdamW optimizer and a linear learning rate scheduler with warmup.
 This weight update strategy is often recommended for finetuning transformer models.
 Finetuner allows us to configure the optimizer and the scheduler, via the
 `configure_optimizer` argument which should be a function that accepts the model as input
@@ -248,7 +249,7 @@ so that metrics are computed on the val set after each epoch, the `EarlyStopping
 callback which monitors the average precision to trigger early stopping if the metric stops
 increasing, the `BestModelCheckpoint` that saves the best performing model (in terms of
 average precision) every epoch and finally the `WandBLogger` callback that logs our
-training information using Weights and Biases.
+training information using [Weights and Biases](https://wandb.ai/site).
 
 To use the weights and biases logger, you should install the `wandb` client and login,
 provided you have an active account:
@@ -457,7 +458,7 @@ embed(
 Let's now use this method to run some test cases.
 
 ```python
-utterance = 'Where do you thing I should travel to this Christmas?'
+utterance = 'Where do you think I should travel to this Christmas?'
 intents_pretrained = predict_intents(utterance, pretrained_model, pretrained_index, k=1)
 intents_finetuned = predict_intents(utterance, finetuned_model, finetuned_index, k=1)
 print(f'Utterance: {utterance}')
@@ -465,7 +466,7 @@ print(f'Predicted intents (pre-trained model, k=1): {intents_pretrained}')
 print(f'Predicted intents (fine-tuned model, k=1): {intents_finetuned}')
 ```
 ```
-Utterance: Where do you thing I should travel to this Christmas?
+Utterance: Where do you think I should travel to this Christmas?
 Predicted intents (pre-trained model, k=1): [('next_holiday', 1.0)]
 Predicted intents (fine-tuned model, k=1): [('travel_suggestion', 1.0)]
 ```
@@ -477,7 +478,7 @@ print(f'Predicted intents (pre-trained model, k=20): {intents_pretrained}')
 print(f'Predicted intents (fine-tuned model, k=20): {intents_finetuned}')
 ```
 ```
-Utterance: Where do you thing I should travel to this Christmas?
+Utterance: Where do you think I should travel to this Christmas?
 Predicted intents (pre-trained model, k=20): [('next_holiday', 0.8513703171594686), ('travel_suggestion', 0.10293094273676406), ('spending_history', 0.045698740103767115)]
 Predicted intents (fine-tuned model, k=20): [('travel_suggestion', 0.9999999999999999)]
 ```
@@ -792,7 +793,7 @@ embed(
 )
 
 # Let's predict!
-utterance = 'Where do you thing I should travel to this Christmas?'
+utterance = 'Where do you think I should travel to this Christmas?'
 intents_pretrained = predict_intents(utterance, pretrained_model, pretrained_index, k=1)
 intents_finetuned = predict_intents(utterance, finetuned_model, finetuned_index, k=1)
 print(f'Utterance: {utterance}')
