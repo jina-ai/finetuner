@@ -54,7 +54,7 @@ ax.scatter(
 
 ## Nearest neighbour in original space
 
-If we consider each 3D point as a {class}`~jina.Document`, then the dataset is basically a {class}`~jina.DocumentArray`. We can easily fill the generated data into a `DocumentArray`.
+If we consider each 3D point as a {class}`Document`, then the dataset is basically a {class}`DocumentArray`. We can easily fill the generated data into a `DocumentArray`.
 
 ```python
 from docarray import DocumentArray
