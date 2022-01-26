@@ -1,11 +1,9 @@
 (data-format)=
 # Data Format
 
-Finetuner uses Jina [`Document`](https://docs.jina.ai/fundamentals/document/) as the primitive data type. In
-particular, [`DocumentArray`](https://docs.jina.ai/fundamentals/document/documentarray-api/)
-and [`DocumentArrayMemap`](https://docs.jina.ai/fundamentals/document/documentarraymemmap-api/) are the input data type
-in the high-level `finetuner.fit()` API. This means, your training dataset and evaluation dataset should be stored in
-`DocumentArray` or `DocumentArrayMemap`, where each training or evaluation instance is a `Document` object:
+Finetuner uses DocArray [`Document`](https://docarray.jina.ai/fundamentals/document/) as the primitive data type.
+In particular, [`DocumentArray`](https://docarray.jina.ai/fundamentals/documentarray/) are the input data type in the high-level `finetuner.fit()` API. This means, your training dataset and evaluation dataset should be stored in `DocumentArray`,
+where each training or evaluation instance is a `Document` object:
 
 ```python
 import finetuner
@@ -25,7 +23,6 @@ There are four different types of datasets:
 datasets/class-dataset
 datasets/session-dataset
 datasets/instance-dataset
-datasets/unlabeled-dataset
 ```
 
 ## Lazy loading
