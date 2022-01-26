@@ -669,7 +669,7 @@ with the method called ``to_embedding_model`` method.
           model=model,
           layer_name='adaptiveavgpool2d_173',
           freeze=['conv2d_1', 'batchnorm2d_2'],  # or set to True to freeze the entire model
-          bottleneck_net=SimpleMLP(),
+          projection_head=SimpleMLP(),
           input_size=(3, 224, 224),
       )
     ```
@@ -691,7 +691,7 @@ with the method called ``to_embedding_model`` method.
         model=model,
         layer_name='avg_pool',
         freeze=['conv1_conv', 'conv1_bn'],  # or set to True to freeze the entire model
-        bottleneck_net=bottleneck_model,
+        projection_head=bottleneck_model,
         input_size=(3, 224, 224),
     )
     ```
@@ -718,7 +718,7 @@ with the method called ``to_embedding_model`` method.
         model=model,
         layer_name='adaptiveavgpool2d_173',
         freeze=['conv2d_1', 'batchnorm2d_2'],  # or set to True to freeze the entire model
-        bottleneck_net=SimpleMLP(),
+        projection_head=SimpleMLP(),
         input_size=(3, 224, 224),
     )
     ```

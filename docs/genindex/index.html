@@ -191,9 +191,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../get-started/swiss-roll/">Finetuning MLP on Swiss Roll Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../get-started/totally-looks-like/">Finetuning ResNet50 on Totally Looks Like Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../get-started/fashion-mnist/">Finetuning MLP for Fashion Image Search</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../get-started/covid-qa/">Finetuning a Transformer for Question-Answering</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../get-started/celeba/">Finetuning Pretrained ResNet for Celebrity Face Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../get-started/3d-mesh/">Finetuning PointConv on ModelNet40 Dataset</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
@@ -202,7 +200,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../basics/datasets/class-dataset/">Class Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../basics/datasets/session-dataset/">Session Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../basics/datasets/instance-dataset/">Instance dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../basics/datasets/unlabeled-dataset/">Unlabeled Dataset</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/glossary/">Glossary</a></li>
@@ -217,33 +214,28 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../components/tailor/">Tailor</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../components/labeler/">Labeler</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/finetuner/">finetuner package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../api/finetuner.labeler/">finetuner.labeler package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/finetuner.labeler.executor/">finetuner.labeler.executor module</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../api/finetuner.tailor/">finetuner.tailor package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tailor.keras/">finetuner.tailor.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/finetuner.tailor/">finetuner.tailor package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tailor.keras/">finetuner.tailor.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tailor.keras.projection_head/">finetuner.tailor.keras.projection_head module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tailor.paddle/">finetuner.tailor.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tailor.paddle/">finetuner.tailor.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tailor.paddle.projection_head/">finetuner.tailor.paddle.projection_head module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tailor.pytorch/">finetuner.tailor.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tailor.pytorch/">finetuner.tailor.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tailor.pytorch.projection_head/">finetuner.tailor.pytorch.projection_head module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../api/finetuner.tailor.base/">finetuner.tailor.base module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../api/finetuner.tuner/">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.callback/">finetuner.tuner.callback package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/finetuner.tuner/">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.callback/">finetuner.tuner.callback package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
@@ -253,31 +245,30 @@
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.dataset.helper/">finetuner.tuner.dataset.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.keras.data/">finetuner.tuner.keras.data module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.keras.losses/">finetuner.tuner.keras.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.keras.miner/">finetuner.tuner.keras.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.miner.base/">finetuner.tuner.miner.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.miner.mining_strategies/">finetuner.tuner.miner.mining_strategies module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.paddle.miner/">finetuner.tuner.paddle.miner module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../api/finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.pytorch.datasets/">finetuner.tuner.pytorch.datasets module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.pytorch.losses/">finetuner.tuner.pytorch.losses module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/finetuner.tuner.pytorch.miner/">finetuner.tuner.pytorch.miner module</a></li>
@@ -355,22 +346,20 @@
                 
 <section class="genindex-section">
   <h1 id="index">Index</h1>
-  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a></div>
+  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a></div>
 </section>
 <section id="A" class="genindex-section">
   <h2>A</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.DataIterator.add_fit_data">add_fit_data() (finetuner.labeler.executor.DataIterator method)</a>
-</li>
         <li><a href="../api/finetuner.helper/#finetuner.helper.AnyDataLoader">AnyDataLoader (in module finetuner.helper)</a>
 </li>
         <li><a href="../api/finetuner.helper/#finetuner.helper.AnyDNN">AnyDNN (in module finetuner.helper)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.helper/#finetuner.helper.AnyOptimizer">AnyOptimizer (in module finetuner.helper)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.helper/#finetuner.helper.AnyScheduler">AnyScheduler (in module finetuner.helper)</a>
 </li>
         <li><a href="../api/finetuner.helper/#finetuner.helper.AnyTensor">AnyTensor (in module finetuner.helper)</a>
@@ -395,17 +384,15 @@
 </li>
         <li><a href="../api/finetuner.tuner.miner.base/#finetuner.tuner.miner.base.BaseMiner">BaseMiner (class in finetuner.tuner.miner.base)</a>
 </li>
-        <li><a href="../api/finetuner.tuner.dataset.base/#finetuner.tuner.dataset.base.BaseSampler">BaseSampler (class in finetuner.tuner.dataset.base)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="../api/finetuner.tuner.dataset.base/#finetuner.tuner.dataset.base.BaseSampler">BaseSampler (class in finetuner.tuner.dataset.base)</a>
+</li>
         <li><a href="../api/finetuner.tuner.miner.base/#finetuner.tuner.miner.base.BaseSessionMiner">BaseSessionMiner (class in finetuner.tuner.miner.base)</a>
 </li>
         <li><a href="../api/finetuner.tailor.base/#finetuner.tailor.base.BaseTailor">BaseTailor (class in finetuner.tailor.base)</a>
 </li>
         <li><a href="../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner">BaseTuner (class in finetuner.tuner.base)</a>
-</li>
-        <li><a href="../api/finetuner.tuner.dataset.helper/#finetuner.tuner.dataset.helper.batch_document_sequence">batch_document_sequence() (in module finetuner.tuner.dataset.helper)</a>
 </li>
         <li><a href="../api/finetuner.tuner.state/#finetuner.tuner.state.TunerState.batch_index">batch_index (finetuner.tuner.state.TunerState attribute)</a>
 </li>
@@ -433,6 +420,10 @@
 </li>
         <li><a href="../api/finetuner.tuner.dataset.samplers/#finetuner.tuner.dataset.samplers.ClassSampler">ClassSampler (class in finetuner.tuner.dataset.samplers)</a>
 </li>
+        <li><a href="../api/finetuner.tuner.pytorch/#finetuner.tuner.pytorch.CollateAll">CollateAll (class in finetuner.tuner.pytorch)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.tuner.base/#finetuner.tuner.base.BaseLoss.compute">compute() (finetuner.tuner.base.BaseLoss method)</a>
 
         <ul>
@@ -449,8 +440,6 @@
           <li><a href="../api/finetuner.tuner.pytorch.losses/#finetuner.tuner.pytorch.losses.TripletLoss.compute">(finetuner.tuner.pytorch.losses.TripletLoss method)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.tuner.state/#finetuner.tuner.state.TunerState.current_loss">current_loss (finetuner.tuner.state.TunerState attribute)</a>
 </li>
     </ul></td>
@@ -461,7 +450,7 @@
   <h2>D</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.DataIterator">DataIterator (class in finetuner.labeler.executor)</a>
+        <li><a href="../api/finetuner.tuner.evaluation/#finetuner.tuner.evaluation.Evaluator.default_metrics">default_metrics() (finetuner.tuner.evaluation.Evaluator static method)</a>
 </li>
         <li><a href="../api/finetuner.excepts/#finetuner.excepts.DimensionMismatchException">DimensionMismatchException</a>
 </li>
@@ -485,12 +474,8 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.tuner.callback.early_stopping/#finetuner.tuner.callback.early_stopping.EarlyStopping">EarlyStopping (class in finetuner.tuner.callback.early_stopping)</a>
 </li>
-        <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.embed">embed() (finetuner.labeler.executor.FTExecutor method)</a>
-
-        <ul>
-          <li><a href="../api/finetuner.embedding/#finetuner.embedding.embed">(in module finetuner.embedding)</a>
+        <li><a href="../api/finetuner.embedding/#finetuner.embedding.embed">embed() (in module finetuner.embedding)</a>
 </li>
-        </ul></li>
         <li><a href="../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.embed_model">embed_model (finetuner.tuner.base.BaseTuner property)</a>
 </li>
         <li><a href="../basics/glossary/#term-Embedding-model"><strong>Embedding model</strong></a>
@@ -551,20 +536,6 @@
 
         <ul>
           <li><a href="../api/finetuner.helper/#module-finetuner.helper">module</a>
-</li>
-        </ul></li>
-        <li>
-    finetuner.labeler
-
-        <ul>
-          <li><a href="../api/finetuner.labeler/#module-finetuner.labeler">module</a>
-</li>
-        </ul></li>
-        <li>
-    finetuner.labeler.executor
-
-        <ul>
-          <li><a href="../api/finetuner.labeler.executor/#module-finetuner.labeler.executor">module</a>
 </li>
         </ul></li>
         <li>
@@ -714,6 +685,8 @@
           <li><a href="../api/finetuner.tuner.dataset/#module-finetuner.tuner.dataset">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     finetuner.tuner.dataset.base
 
@@ -721,20 +694,11 @@
           <li><a href="../api/finetuner.tuner.dataset.base/#module-finetuner.tuner.dataset.base">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     finetuner.tuner.dataset.datasets
 
         <ul>
           <li><a href="../api/finetuner.tuner.dataset.datasets/#module-finetuner.tuner.dataset.datasets">module</a>
-</li>
-        </ul></li>
-        <li>
-    finetuner.tuner.dataset.helper
-
-        <ul>
-          <li><a href="../api/finetuner.tuner.dataset.helper/#module-finetuner.tuner.dataset.helper">module</a>
 </li>
         </ul></li>
         <li>
@@ -870,14 +834,10 @@
           <li><a href="../api/finetuner.tuner.state/#module-finetuner.tuner.state">module</a>
 </li>
         </ul></li>
-        <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.fit">fit() (finetuner.labeler.executor.FTExecutor method)</a>
+        <li><a href="../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.fit">fit() (finetuner.tuner.base.BaseTuner method)</a>
 
         <ul>
-          <li><a href="../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.fit">(finetuner.tuner.base.BaseTuner method)</a>
-</li>
           <li><a href="../api/finetuner/#finetuner.fit">(in module finetuner)</a>
-</li>
-          <li><a href="../api/finetuner.labeler/#finetuner.labeler.fit">(in module finetuner.labeler)</a>
 </li>
           <li><a href="../api/finetuner.tuner/#finetuner.tuner.fit">(in module finetuner.tuner)</a>
 </li>
@@ -896,8 +856,6 @@
           <li><a href="../api/finetuner.tuner.pytorch.losses/#finetuner.tuner.pytorch.losses.PytorchTupleLoss.forward">(finetuner.tuner.pytorch.losses.PytorchTupleLoss method)</a>
 </li>
         </ul></li>
-        <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor">FTExecutor (class in finetuner.labeler.executor)</a>
-</li>
     </ul></td>
   </tr></table>
 </section>
@@ -911,8 +869,6 @@
         <li><a href="../api/finetuner.toydata/#finetuner.toydata.generate_fashion">generate_fashion() (in module finetuner.toydata)</a>
 </li>
         <li><a href="../api/finetuner.toydata/#finetuner.toydata.generate_qa">generate_qa() (in module finetuner.toydata)</a>
-</li>
-        <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.get_collate_fn">get_collate_fn() (finetuner.labeler.executor.FTExecutor method)</a>
 </li>
         <li><a href="../api/finetuner.tuner.base/#finetuner.tuner.base.BaseLoss.get_default_miner">get_default_miner() (finetuner.tuner.base.BaseLoss method)</a>
 
@@ -948,17 +904,11 @@
           <li><a href="../api/finetuner.tuner.pytorch.losses/#finetuner.tuner.pytorch.losses.get_distance">(in module finetuner.tuner.pytorch.losses)</a>
 </li>
         </ul></li>
-        <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.get_embed_model">get_embed_model() (finetuner.labeler.executor.FTExecutor method)</a>
-</li>
         <li><a href="../api/finetuner.helper/#finetuner.helper.get_framework">get_framework() (in module finetuner.helper)</a>
-</li>
-        <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.get_preprocess_fn">get_preprocess_fn() (finetuner.labeler.executor.FTExecutor method)</a>
 </li>
         <li><a href="../api/finetuner.tuner.miner/#finetuner.tuner.miner.get_session_pairs">get_session_pairs() (in module finetuner.tuner.miner)</a>
 </li>
         <li><a href="../api/finetuner.tuner.miner/#finetuner.tuner.miner.get_session_triplets">get_session_triplets() (in module finetuner.tuner.miner)</a>
-</li>
-        <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.get_stop_event">get_stop_event() (finetuner.labeler.executor.FTExecutor method)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -968,6 +918,8 @@
   <h2>I</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="../basics/glossary/#term-Instance-dataset"><strong>Instance dataset</strong></a>
+</li>
         <li><a href="../api/finetuner.tuner.dataset.datasets/#finetuner.tuner.dataset.datasets.InstanceDataset">InstanceDataset (class in finetuner.tuner.dataset.datasets)</a>
 </li>
     </ul></td>
@@ -1002,10 +954,6 @@
   <h2>L</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../basics/glossary/#term-Labeled-dataset"><strong>Labeled dataset</strong></a>
-</li>
-        <li><a href="../basics/glossary/#term-Labeler"><strong>Labeler</strong></a>
-</li>
         <li><a href="../api/finetuner.tuner.dataset.base/#finetuner.tuner.dataset.base.BaseDataset.labels">labels (finetuner.tuner.dataset.base.BaseDataset property)</a>
 
         <ul>
@@ -1017,8 +965,6 @@
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.tuner.state/#finetuner.tuner.state.TunerState.learning_rates">learning_rates (finetuner.tuner.state.TunerState attribute)</a>
-</li>
-        <li><a href="../api/finetuner.tuner.evaluation/#finetuner.tuner.evaluation.Evaluator.list_available_metrics">list_available_metrics() (finetuner.tuner.evaluation.Evaluator class method)</a>
 </li>
         <li><a href="../api/finetuner.tuner.callback.best_model_checkpoint/#finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint.load">load() (finetuner.tuner.callback.best_model_checkpoint.BestModelCheckpoint static method)</a>
 
@@ -1092,10 +1038,6 @@
 </li>
           <li><a href="../api/finetuner.helper/#module-finetuner.helper">finetuner.helper</a>
 </li>
-          <li><a href="../api/finetuner.labeler/#module-finetuner.labeler">finetuner.labeler</a>
-</li>
-          <li><a href="../api/finetuner.labeler.executor/#module-finetuner.labeler.executor">finetuner.labeler.executor</a>
-</li>
           <li><a href="../api/finetuner.tailor/#module-finetuner.tailor">finetuner.tailor</a>
 </li>
           <li><a href="../api/finetuner.tailor.base/#module-finetuner.tailor.base">finetuner.tailor.base</a>
@@ -1141,8 +1083,6 @@
           <li><a href="../api/finetuner.tuner.dataset.base/#module-finetuner.tuner.dataset.base">finetuner.tuner.dataset.base</a>
 </li>
           <li><a href="../api/finetuner.tuner.dataset.datasets/#module-finetuner.tuner.dataset.datasets">finetuner.tuner.dataset.datasets</a>
-</li>
-          <li><a href="../api/finetuner.tuner.dataset.helper/#module-finetuner.tuner.dataset.helper">finetuner.tuner.dataset.helper</a>
 </li>
           <li><a href="../api/finetuner.tuner.dataset.samplers/#module-finetuner.tuner.dataset.samplers">finetuner.tuner.dataset.samplers</a>
 </li>
@@ -1361,29 +1301,13 @@
   </tr></table>
 </section>
 
-<section id="R" class="genindex-section">
-  <h2>R</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.DataIterator.requests">requests (finetuner.labeler.executor.DataIterator attribute)</a>
-
-        <ul>
-          <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.requests">(finetuner.labeler.executor.FTExecutor attribute)</a>
-</li>
-        </ul></li>
-    </ul></td>
-  </tr></table>
-</section>
-
 <section id="S" class="genindex-section">
   <h2>S</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.save">save() (finetuner.labeler.executor.FTExecutor method)</a>
+        <li><a href="../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.save">save() (finetuner.tuner.base.BaseTuner method)</a>
 
         <ul>
-          <li><a href="../api/finetuner.tuner.base/#finetuner.tuner.base.BaseTuner.save">(finetuner.tuner.base.BaseTuner method)</a>
-</li>
           <li><a href="../api/finetuner.tuner.keras/#finetuner.tuner.keras.KerasTuner.save">(finetuner.tuner.keras.KerasTuner method)</a>
 </li>
           <li><a href="../api/finetuner.tuner.paddle/#finetuner.tuner.paddle.PaddleTuner.save">(finetuner.tuner.paddle.PaddleTuner method)</a>
@@ -1443,8 +1367,6 @@
           <li><a href="../api/finetuner.tuner.pytorch/#finetuner.tuner.pytorch.PytorchTuner.state">(finetuner.tuner.pytorch.PytorchTuner attribute)</a>
 </li>
         </ul></li>
-        <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.DataIterator.store_data">store_data() (finetuner.labeler.executor.DataIterator method)</a>
-</li>
         <li><a href="../api/finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.summary">summary() (finetuner.tailor.base.BaseTailor method)</a>
 
         <ul>
@@ -1464,10 +1386,6 @@
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../basics/glossary/#term-Tailor"><strong>Tailor</strong></a>
-</li>
-        <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.DataIterator.take_batch">take_batch() (finetuner.labeler.executor.DataIterator method)</a>
-</li>
-        <li><a href="../api/finetuner.labeler.executor/#finetuner.labeler.executor.FTExecutor.terminate">terminate() (finetuner.labeler.executor.FTExecutor method)</a>
 </li>
         <li><a href="../api/finetuner.tailor.base/#finetuner.tailor.base.BaseTailor.to_embedding_model">to_embedding_model() (finetuner.tailor.base.BaseTailor method)</a>
 
@@ -1531,16 +1449,6 @@
   </tr></table>
 </section>
 
-<section id="U" class="genindex-section">
-  <h2>U</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../basics/glossary/#term-Unlabeled-dataset"><strong>Unlabeled dataset</strong></a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
 <section id="V" class="genindex-section">
   <h2>V</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
@@ -1578,7 +1486,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 18, 2022.
+                    Last updated on Jan 26, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
