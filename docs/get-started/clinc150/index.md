@@ -323,13 +323,10 @@ Let's go through the weights and biases run for various training stats. Below is
 learning rate schedule, our training and validation loss and some evaluation metrics
 calculcated in our val split:
 
-Learning Rate  | Train Loss           | Val Loss
-:-------------:|:--------------------:|:------------------:
-![](lr.png)    | ![](train_loss.png)  | ![](val_loss.png)
-
-Average Precision          | F1 Score          | NDCG
-:-------------------------:|:-----------------:|:------------------:
-![](average_precision.png) | ![](f1_score.png) | ![](ndcg.png)
+```{figure} wandb01.png
+```
+```{figure} wandb02.png
+```
 
 Now it's time to see how much we improved. Let's re-run the evaluation on our test data,
 this time using the tuned model:
@@ -536,6 +533,7 @@ Fine-tuned model accuracy: 0.946
 
 For reference, the full tutorial code is given in the snippet below.
 
+````{dropdown} Complete source code
 ```python
 import json
 import math
@@ -841,3 +839,4 @@ finetuned_acc = sum(
 print(f'Pre-trained model accuracy: {pretrained_acc}')
 print(f'Fine-tuned model accuracy: {finetuned_acc}')
 ```
+````
