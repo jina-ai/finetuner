@@ -39,7 +39,7 @@ unzip left.zip
 unzip right.zip
 ```
 
-Afterward, we load all images from unzipped `left` and `right` folders and turn them into sorted order as jina `DocumentArray`.
+Afterward, we load all images from unzipped `left` and `right` folders and turn them into sorted order as DocArray `DocumentArray`.
 80% of the dataset will be used to train the machine learning model.
 While 20% of the dataset will be used to evaluate the quality of embeddings on the search task.
 
@@ -60,7 +60,7 @@ train_da = left_da[:train_size] + right_da[:train_size]
 
 ### Preparing training data
 
-After loading data into jina `DocumentArray`, we can prepare documents for training.
+After loading data into DocArray `DocumentArray`, we can prepare documents for training.
 Finetuner will do the most challenging work for you, all you need to do is to:
 
 1. Assign a label into each `Document` named `finetuner_label` as its class name.
@@ -136,7 +136,7 @@ tuned_model = ft.fit(
 
 But how does it work?:
 
-1. Finetuner will "look into" your labels defined in the `tag` of the jina `Document`, and find the positive sample and find a hard-negative (as we use `neg_strategy='hard''`) sample as triplets.
+1. Finetuner will "look into" your labels defined in the `tag` of the DocArray `Document`, and find the positive sample and find a hard-negative (as we use `neg_strategy='hard''`) sample as triplets.
 2. Finetuner try to optimize the `TripletLoss`, aiming at pulling documents with the same classes closer, while pushing documents with different class away.
 
 ![metric_learning](metric_learning.png)
