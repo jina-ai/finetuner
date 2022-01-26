@@ -106,26 +106,6 @@ Answer the questions below and quickly find out what you need to learn:
 +++
 Learn more about {term}`embedding model`.
 
-:::
-:::{grid-item-card} Do you have labeled data?
-
-<div>
-  <input type="radio" id="labeled_yes" name="labeled" value="0"
-         checked>
-  <label for="labeled_yes">Yes</label>
-</div>
-
-<div>
-  <input type="radio" id="labeled_no" name="labeled" value="1">
-  <label for="labeled_no">No</label>
-</div>
-
-+++
-Learn more about {term}`labeled dataset`.
-
-
-:::
-::::
 
 <div class="usage-card" id="usage-00" style="display: block">
 
