@@ -37,7 +37,7 @@ For more info on the CLINC150 dataset, check out the
 [dataset repo](https://github.com/clinc/oos-eval).
 
 Firstly, let's clone the dataset locally:
-```
+```bash
 git clone https://github.com/clinc/oos-eval.git
 ```
 

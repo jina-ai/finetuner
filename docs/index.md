@@ -232,9 +232,9 @@ Learn more about {term}`Tailor`, {term}`Tuner` and {term}`Labeler`.
 :caption: Get Started
 :hidden:
 
-get-started/clinc150/index
 get-started/swiss-roll/index
 get-started/totally-looks-like/index
+get-started/clinc150/index
 get-started/3d-mesh/index
 ```
 
