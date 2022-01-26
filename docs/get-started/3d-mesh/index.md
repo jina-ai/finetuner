@@ -314,4 +314,8 @@ Finetuned PointConv:
 :width: 70%
 ```
 
+Query                      |  Pretrained PointConv     | Finetuned PointConv
+:-------------------------:|:-------------------------:|:--------------------:
+![](dresser_query.gif)  |  ![](dresser_oob.gif) | ![](dresser_finetuned.gif)
+
 We can clearly see that after finetuning PointConv has enhanced embeddings, and that's how you finetune a 3D model.
