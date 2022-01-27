@@ -20,12 +20,13 @@ intents and semantic entities. For example:
 
 The intent classification task is usually formulated as text classification i.e. we build
 a classifier to predict intents on input text. In this example, we will formulate
-the problem as a search task and use `finetuner` to tune text representations. We will build
-an embedding model that embeds text to a high dimensional space and then we will tune the
-model so that texts that belong to the same class (intent) are represented in proximity
-and texts that belong to separate classes are pulled apart in our embedding space. To 
-convert our embedding model back to a useful intent prediction model, we will implement a
-simple nearest neighbor rule.
+the problem as a search task and use `finetuner` to tune text representations.
+
+We will build an embedding model that embeds text to a high dimensional space and then
+we will tune the model so that texts that belong to the same class (intent) are
+represented in proximity and texts that belong to separate classes are pulled apart in
+our embedding space. To convert our embedding model back to a useful intent prediction
+model, we will implement a simple nearest neighbor rule.
 
 
 ## CLINC150
@@ -33,20 +34,47 @@ simple nearest neighbor rule.
 We will use the CLINC150 dataset as the base of our experiment. It is a dataset of
 utterance-intent pairs and is commonly used for evaluating intent models. It comes
 in train, val and test splits and contains 150 intents from various chatbot domains.
-For more info on the CLINC150 dataset, check out the
-[dataset repo](https://github.com/clinc/oos-eval).
-
-Firstly, let's clone the dataset locally:
-```bash
-git clone https://github.com/clinc/oos-eval.git
-```
 
 CLINC150 comes in different sizes with regards to the number of utterances per intent,
 to facilitate experimentation on few-shot learning methods. We will use the full version
-which should be located in `./oos-eval-master/data/data_full.json`.
+which includes 100, 20 and 30 utterances per intent in the train, val and test
+splits respectively.
+
+For more info on the CLINC150 dataset, check out the
+[dataset repo](https://github.com/clinc/oos-eval).
+
+Firstly, let's dowload the dataset:
+```bash
+curl -o data_full.json https://raw.githubusercontent.com/clinc/oos-eval/master/data/data_full.json
+```
+
+Let's look at some examples:
+
+```json
+{
+  "examples": [
+    [
+      "how much is $1 usd in euros", 
+      "exchange_rate"
+    ],
+    [
+      "what am i listening to right now", 
+      "what_song"
+    ],
+    [
+      "can you check if meeting rooms are available between 4 and 5", 
+      "schedule_meeting"
+    ], 
+    [
+      "you know procedure to cook apple pie", 
+      "recipe"
+    ]
+  ]
+}
+```
 
 The dataset is a JSON file with utterance intent pairs. We convert the train, val and
-test split to `DocumentArray`s and attach the intent label for each doc in 
+test splits to `DocumentArray`s and attach the intent label for each doc in 
 `doc.tags['finetuner_label']`.
 
 ```python
@@ -54,7 +82,7 @@ import json
 
 from docarray import Document, DocumentArray
 
-DATASET_PATH = 'oos-eval-master/data/data_full.json'
+DATASET_PATH = 'data_full.json'
 
 with open(DATASET_PATH, 'r') as f:
     data = json.load(f)
@@ -77,10 +105,6 @@ test_data = DocumentArray(
         for utterance, intent in data['test']
     ]
 )
-
-print(f'Num train samples: {len(train_data)}')
-print(f'Num val samples: {len(val_data)}')
-print(f'Num test samples: {len(test_data)}')
 ```
 ```
 Num train samples: 15000
@@ -88,49 +112,15 @@ Num val samples: 3000
 Num test samples: 4500
 ```
 
-Let's investigate the intent distribution. We use `collections.Counter` to compute
-the distribution of our train, val and test intents as well as the average number of
-utterances per intent in all 3 splits.
-
-```python
-from collections import Counter
-
-train_intents = Counter([doc.tags['finetuner_label'] for doc in train_data]).most_common()
-val_intents = Counter([doc.tags['finetuner_label'] for doc in val_data]).most_common()
-test_intents = Counter([doc.tags['finetuner_label'] for doc in test_data]).most_common()
-
-num_utts_per_intent_train = sum([v for _, v in train_intents]) / len(train_intents)
-num_utts_per_intent_val = sum([v for _, v in val_intents]) / len(val_intents)
-num_utts_per_intent_test = sum([v for _, v in test_intents]) / len(test_intents)
-
-print(f'Num train intents: {len(train_intents)}')
-print(f'Num val intents: {len(val_intents)}')
-print(f'Num test intents: {len(test_intents)}')
-
-print(f'Avg num utterances per intent in train set: {num_utts_per_intent_train}')
-print(f'Avg num utterances per intent in val set: {num_utts_per_intent_val}')
-print(f'Avg num utterances per intent in test set: {num_utts_per_intent_test}')
-```
-```
-Num train intents: 150
-Num val intents: 150
-Num test intents: 150
-Avg num utterances per intent in train set: 100.0
-Avg num utterances per intent in val set: 20.0
-Avg num utterances per intent in test set: 30.0
-```
 
 ## Embedding model
 
 As described above, we will use `finetuner` to finetune an embedding model in order
 to bring representations of the same intent, closer in the embedding space. For that
 we will use the `transformers` library to define a transformer-based embedding model.
-We will load a pre-trained transformer as our starting point, the `paraphrase-MiniLM-L6-v2`
-model from `sentence-transformers`. Check out the links below for more information on
-this specific model as well as sentence transformers in general:
-
-* <https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2>
-* <https://www.sbert.net/index.html>
+We will load a pre-trained transformer as our starting point,
+the [paraphrase-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2)
+model from [sentence-transformers](https://www.sbert.net/index.html).
 
 ```python
 import torch
@@ -157,13 +147,16 @@ class TransformerEmbedder(torch.nn.Module):
         return mean_pooling(out, inputs['attention_mask'])
 ```
 
-Our model is a pre-trained embedding model, i.e. it outputs a high-dimensional representation
-given some input text and it has been pre-trained on large text corpora. To use the model
-defined above, we need to be able to convert raw text to the tensor format that our model
-accepts as input. To do that, we need to use the BPE tokenizer, provided by the `transformers`
-package, that converts texts to BPE encoded arrays that our model accepts as input. We make
-use of the collate function that `finetuner` supports. The collate function offers a way to
-specify the conversion of batch elements to model input tensors.
+Our model is a pre-trained embedding model, i.e. it outputs a high-dimensional
+representation given some input text and it has been pre-trained on large text corpora.
+
+To use the model defined above, we need to be able to convert raw text to the tensor
+format that our model accepts as input. To do that, we need to use the BPE tokenizer,
+provided by the `transformers` package, that converts texts to BPE encoded arrays that
+our model accepts as input.
+
+We make use of the collate function that `finetuner` supports. The collate function
+offers a way to specify the conversion of batch elements to model input tensors.
 
 ```python
 from typing import List
@@ -201,30 +194,25 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 pretrained_model = TransformerEmbedder()
 evaluator = Evaluator(test_data, embed_model=pretrained_model)
 metrics = evaluator.evaluate(
-    limit=int(num_utts_per_intent_test),
+    limit=30,
     num_workers=NUM_WORKERS,
     batch_size=BATCH_SIZE,
     device=DEVICE,
     collate_fn=collate_fn,
 )
+```
 
-print('Evaluating PRE-TRAINED model on test data:')
-print(json.dumps(metrics, indent=2))
-```
-```
-Evaluating PRE-TRAINED model on test data:
-{
-  "r_precision": 0.6597606769142386,
-  "precision_at_k": 0.5920919540229873,
-  "recall_at_k": 0.5920919540229873,
-  "f1_score_at_k": 0.5920919540229873,
-  "average_precision": 0.817989559018391,
-  "hit_at_k": 0.9962222222222222,
-  "reciprocal_rank": 0.9344587442949851,
-  "dcg_at_k": 6.55171986283775,
-  "ndcg_at_k": 0.908690691171733
-}
-```
+| metrics           | pre-trained |
+|:-----------------:|:-----------:|
+| r_precision       | 0.660       |
+| precision_at_k    | 0.592       |
+| recall_at_k       | 0.592       |
+| f1_score_at_k     | 0.592       |
+| average_precision | 0.818       |
+| hit_at_k          | 0.996       |
+| reciprocal_rank   | 0.934       |
+| dcg_at_k          | 6.552       |
+| ndcg_at_k         | 0.909       |
 
 Out of the box, the pre-trained model has a solid performance on our dataset. This means
 that pre-training enables the model to learn good representations that map semantically
@@ -291,9 +279,7 @@ def configure_optimizer(model: torch.nn.Module):
     )
     return optimizer, scheduler
 
-evaluation_callback = EvaluationCallback(
-    val_data, limit=int(num_utts_per_intent_val), num_workers=NUM_WORKERS
-)
+evaluation_callback = EvaluationCallback(val_data, limit=20, num_workers=NUM_WORKERS)
 wandb_logger = WandBLogger()
 early_stopping = EarlyStopping(patience=1, monitor='average_precision')
 best_model_ckpt = BestModelCheckpoint(
@@ -335,29 +321,25 @@ this time using the tuned model:
 ```python
 evaluator = Evaluator(test_data, embed_model=finetuned_model)
 metrics = evaluator.evaluate(
-    limit=int(num_utts_per_intent_test),
+    limit=30,
     num_workers=NUM_WORKERS,
     batch_size=BATCH_SIZE,
     device=DEVICE,
     collate_fn=collate_fn,
 )
-print('Evaluating FINE-TUNED model on test data:')
-print(json.dumps(metrics, indent=2))
 ```
-```
-Evaluating FINE-TUNED model on test data:
-{
-  "r_precision": 0.9152863975803448,
-  "precision_at_k": 0.8819923371647765,
-  "recall_at_k": 0.8819923371647765,
-  "f1_score_at_k": 0.8819923371647765,
-  "average_precision": 0.9500754908924715,
-  "hit_at_k": 0.9917777777777778,
-  "reciprocal_rank": 0.9711110828700991,
-  "dcg_at_k": 8.840575660386225,
-  "ndcg_at_k": 0.9684599889599816
-}
-```
+
+| metrics           | pre-trained | fine-tuned |
+|:-----------------:|:-----------:|:----------:|
+| r_precision       | 0.660       | **0.915**  |
+| precision_at_k    | 0.592       | **0.882**  |
+| recall_at_k       | 0.592       | **0.882**  |
+| f1_score_at_k     | 0.592       | **0.882**  |
+| average_precision | 0.818       | **0.950**  |
+| hit_at_k          | **0.996**   | 0.992      |
+| reciprocal_rank   | 0.934       | **0.971**  |
+| dcg_at_k          | 6.552       | **8.841**  |
+| ndcg_at_k         | 0.909       | **0.968**  |
 
 We gained a siginificant improvement in precision, recall and F1 score as well as DCG and
 NDCG!
@@ -435,7 +417,6 @@ from copy import deepcopy
 
 pretrained_model = TransformerEmbedder()
 
-# First let's index our data
 pretrained_index = deepcopy(train_data)
 finetuned_index = deepcopy(train_data)
 
@@ -461,42 +442,36 @@ Let's now use this method to run some test cases.
 utterance = 'Where do you think I should travel to this Christmas?'
 intents_pretrained = predict_intents(utterance, pretrained_model, pretrained_index, k=1)
 intents_finetuned = predict_intents(utterance, finetuned_model, finetuned_index, k=1)
-print(f'Utterance: {utterance}')
-print(f'Predicted intents (pre-trained model, k=1): {intents_pretrained}')
-print(f'Predicted intents (fine-tuned model, k=1): {intents_finetuned}')
 ```
-```
-Utterance: Where do you think I should travel to this Christmas?
-Predicted intents (pre-trained model, k=1): [('next_holiday', 1.0)]
-Predicted intents (fine-tuned model, k=1): [('travel_suggestion', 1.0)]
-```
+| model `k=1` | Where do you think I should travel to this Christmas? |
+|:-----------:|:-----------------------------------------------------:|
+| pre-trained | ('next_holiday', 1.0)                                 |
+| fine-tuned  | ('travel_suggestion', 1.0)                            |
+
+Trying with `k=20`.
 ```python
+utterance = 'Where do you think I should travel to this Christmas?'
 intents_pretrained = predict_intents(utterance, pretrained_model, pretrained_index, k=20)
 intents_finetuned = predict_intents(utterance, finetuned_model, finetuned_index, k=20)
-print(f'Utterance: {utterance}')
-print(f'Predicted intents (pre-trained model, k=20): {intents_pretrained}')
-print(f'Predicted intents (fine-tuned model, k=20): {intents_finetuned}')
 ```
-```
-Utterance: Where do you think I should travel to this Christmas?
-Predicted intents (pre-trained model, k=20): [('next_holiday', 0.8513703171594686), ('travel_suggestion', 0.10293094273676406), ('spending_history', 0.045698740103767115)]
-Predicted intents (fine-tuned model, k=20): [('travel_suggestion', 0.9999999999999999)]
-```
+
+| model `k=20`| Where do you think I should travel to this Christmas?                              |
+|:-----------:|:----------------------------------------------------------------------------------:|
+| pre-trained | ('next_holiday', 0.851), ('travel_suggestion', 0.103), ('spending_history', 0.046) |
+| fine-tuned  | ('travel_suggestion', 1.0)                                                         |
+
 
 What about utterances with 2 intents?
 ```python
 utterance = 'What is my location right now? Can you share it with Dave?'
 intents_pretrained = predict_intents(utterance, pretrained_model, pretrained_index, k=20)
 intents_finetuned = predict_intents(utterance, finetuned_model, finetuned_index, k=20)
-print(f'Utterance: {utterance}')
-print(f'Predicted intents (pre-trained model, k=20): {intents_pretrained}')
-print(f'Predicted intents (fine-tuned model, k=20): {intents_finetuned}')
 ```
-```
-Utterance: What is my location right now? Can you share it with Dave?
-Predicted intents (pre-trained model, k=20): [('current_location', 0.6282832992190853), ('share_location', 0.37171670078091484)]
-Predicted intents (fine-tuned model, k=20): [('share_location', 0.744758204441033), ('current_location', 0.255241795558967)]
-```
+
+| model `k=20`| What is my location right now? Can you share it with Dave?  |
+|:-----------:|:-----------------------------------------------------------:|
+| pre-trained | ('current_location', 0.628), ('share_location', 0.372)      |
+| fine-tuned  | ('share_location', 0.745), ('current_location', 0.255)      |
 
 Since we have a way to predict classes in text data, we can evaluate the model
 using classification metrics. Let's try to compare pre-trained and fine-tuned
@@ -520,15 +495,13 @@ pretrained_acc = sum(
 finetuned_acc = sum(
     [int(t == p) for t, p in zip(true_intents, finetuned_predicted_intents)]
 ) / len(test_data)
-
-print(f'Pre-trained model accuracy: {pretrained_acc}')
-print(f'Fine-tuned model accuracy: {finetuned_acc}')
 ```
 
-```
-Pre-trained model accuracy: 0.874
-Fine-tuned model accuracy: 0.946
-```
+| model `k=20`| accuracy  |
+|:-----------:|:---------:|
+| pre-trained | 0.874     |
+| fine-tuned  | **0.946** |
+
 
 ## Full tutorial
 
@@ -538,7 +511,7 @@ For reference, the full tutorial code is given in the snippet below.
 ```python
 import json
 import math
-from collections import Counter, defaultdict
+from collections import defaultdict
 from copy import deepcopy
 from typing import List, Tuple
 
@@ -562,7 +535,7 @@ from finetuner.tuner.pytorch.miner import TripletEasyHardMiner
 
 # ---- DATA ----------------------------------------------------------------------------
 
-DATASET_PATH = 'oos-eval-master/data/data_full.json'
+DATASET_PATH = 'data_full.json'
 
 # Load the CLINC150 dataset
 with open(DATASET_PATH, 'r') as f:
@@ -592,28 +565,6 @@ print(f'Num train samples: {len(train_data)}')
 print(f'Num val samples: {len(val_data)}')
 print(f'Num test samples: {len(test_data)}')
 
-# Let's investigate the intent distribution
-
-train_intents = Counter(
-    [doc.tags['finetuner_label'] for doc in train_data]
-).most_common()
-
-val_intents = Counter([doc.tags['finetuner_label'] for doc in val_data]).most_common()
-
-test_intents = Counter([doc.tags['finetuner_label'] for doc in test_data]).most_common()
-
-num_utts_per_intent_train = sum([v for _, v in train_intents]) / len(train_intents)
-num_utts_per_intent_val = sum([v for _, v in val_intents]) / len(val_intents)
-num_utts_per_intent_test = sum([v for _, v in test_intents]) / len(test_intents)
-
-print(f'Num train intents: {len(train_intents)}')
-print(f'Num val intents: {len(val_intents)}')
-print(f'Num test intents: {len(test_intents)}')
-
-print(f'Avg num utterances per intent in train set: {num_utts_per_intent_train}')
-print(f'Avg num utterances per intent in val set: {num_utts_per_intent_val}')
-print(f'Avg num utterances per intent in test set: {num_utts_per_intent_test}')
-
 
 # ---- MODEL ---------------------------------------------------------------------------
 
@@ -626,6 +577,7 @@ MAX_SEQ_LEN = 50
 
 tokenizer = AutoTokenizer.from_pretrained(TRANSFORMER_MODEL)
 
+
 def collate_fn(inputs: List[str]):
     return tokenizer(
         inputs,
@@ -634,6 +586,7 @@ def collate_fn(inputs: List[str]):
         padding=True,
         return_tensors='pt',
     )
+
 
 def mean_pooling(model_output, attention_mask):
     token_embeddings = model_output[0]
@@ -644,6 +597,7 @@ def mean_pooling(model_output, attention_mask):
         input_mask_expanded.sum(1), min=1e-9
     )
 
+
 class TransformerEmbedder(torch.nn.Module):
     def __init__(self):
         super().__init__()
@@ -652,6 +606,7 @@ class TransformerEmbedder(torch.nn.Module):
     def forward(self, inputs):
         out = self.model(**inputs)
         return mean_pooling(out, inputs['attention_mask'])
+
 
 pretrained_model = TransformerEmbedder()
 
@@ -676,11 +631,12 @@ def configure_optimizer(model: torch.nn.Module):
     )
     return optimizer, scheduler
 
+
 # First let's evaluate the pre-trained model on
 # the test data
 evaluator = Evaluator(test_data, embed_model=pretrained_model)
 metrics = evaluator.evaluate(
-    limit=int(num_utts_per_intent_test),
+    limit=30,
     num_workers=NUM_WORKERS,
     batch_size=BATCH_SIZE,
     device=DEVICE,
@@ -688,12 +644,10 @@ metrics = evaluator.evaluate(
 )
 
 print('Evaluating PRE-TRAINED model on test data:')
-print(json.dumps(metrics, indent=2))
+print('\n'.join([f'{k}:{v:.3f}' for k, v in metrics.items()]))
 
 # Let's now run the fine-tuning!
-evaluation_callback = EvaluationCallback(
-    val_data, limit=int(num_utts_per_intent_val), num_workers=NUM_WORKERS
-)
+evaluation_callback = EvaluationCallback(val_data, limit=20, num_workers=NUM_WORKERS)
 wandb_logger = WandBLogger()
 early_stopping = EarlyStopping(patience=1, monitor='average_precision')
 best_model_ckpt = BestModelCheckpoint(
@@ -723,7 +677,7 @@ finetuned_model = finetuner.fit(
 # this time using the fine-tuned model
 evaluator = Evaluator(test_data, embed_model=finetuned_model)
 metrics = evaluator.evaluate(
-    limit=int(num_utts_per_intent_test),
+    limit=30,
     num_workers=NUM_WORKERS,
     batch_size=BATCH_SIZE,
     device=DEVICE,
@@ -731,7 +685,7 @@ metrics = evaluator.evaluate(
 )
 
 print('Evaluating FINE-TUNED model on test data:')
-print(json.dumps(metrics, indent=2))
+print('\n'.join([f'{k}:{v:.3f}' for k, v in metrics.items()]))
 
 # ---- INFERENCE -----------------------------------------------------------------------
 
@@ -771,6 +725,7 @@ def predict_intents(
 # using our embedding model
 # Let's try it out!
 
+
 pretrained_model = TransformerEmbedder()
 
 # First let's index our data
@@ -801,7 +756,9 @@ print(f'Predicted intents (pre-trained model, k=1): {intents_pretrained}')
 print(f'Predicted intents (fine-tuned model, k=1): {intents_finetuned}')
 
 # Let's try with k=20
-intents_pretrained = predict_intents(utterance, pretrained_model, pretrained_index, k=20)
+intents_pretrained = predict_intents(
+    utterance, pretrained_model, pretrained_index, k=20
+)
 intents_finetuned = predict_intents(utterance, finetuned_model, finetuned_index, k=20)
 print(f'Utterance: {utterance}')
 print(f'Predicted intents (pre-trained model, k=20): {intents_pretrained}')
@@ -809,7 +766,9 @@ print(f'Predicted intents (fine-tuned model, k=20): {intents_finetuned}')
 
 # How about utterances with two intents?
 utterance = 'What is my location right now? Can you share it with Dave?'
-intents_pretrained = predict_intents(utterance, pretrained_model, pretrained_index, k=20)
+intents_pretrained = predict_intents(
+    utterance, pretrained_model, pretrained_index, k=20
+)
 intents_finetuned = predict_intents(utterance, finetuned_model, finetuned_index, k=20)
 print(f'Utterance: {utterance}')
 print(f'Predicted intents (pre-trained model, k=20): {intents_pretrained}')
@@ -837,7 +796,8 @@ finetuned_acc = sum(
     [int(t == p) for t, p in zip(true_intents, finetuned_predicted_intents)]
 ) / len(test_data)
 
-print(f'Pre-trained model accuracy: {pretrained_acc}')
-print(f'Fine-tuned model accuracy: {finetuned_acc}')
+print(f'Pre-trained model accuracy: {pretrained_acc:.3f}')
+print(f'Fine-tuned model accuracy: {finetuned_acc:.3f}')
+
 ```
 ````
