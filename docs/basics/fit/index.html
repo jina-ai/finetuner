@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://finetuner.jina.ai/basics/fit.html" />
   <meta property="og:site_name" content="Finetuner 0.3.1 Documentation" />
-  <meta property="og:description" content="Finetuner is extremely easy to learn: all you need is finetuner.fit()! Answer the questions below and quickly find out what you need to learn: Do you have an embedding model? Learn more about embedding model. Finetuner usage 1 Perfect! Now that embed_model and train_data are already provided by y..." />
+  <meta property="og:description" content="Note, finetuner.fit always returns the tuned model. You can save the model via finetuner.save(model). Save model: Display model: More information can be found here. Embed documents: You can use finetuner.embed() method to compute the embeddings of a DocumentArray or DocumentArrayMemmap. Note that..." />
   <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   <meta property="og:image:alt" content="Finetuner 0.3.1 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
@@ -219,6 +219,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/swiss-roll/">Finetuning MLP on Swiss Roll Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/totally-looks-like/">Finetuning ResNet50 on Totally Looks Like Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/clinc150/">Finetuning a Transformer for Intent Classification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/3d-mesh/">Finetuning PointConv on ModelNet40 Dataset</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
@@ -373,131 +374,6 @@
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="one-liner-fit">
 <h1>One-liner <code class="docutils literal notranslate"><span class="pre">fit()</span></code><a class="headerlink" href="#one-liner-fit" title="Permalink to this headline">¶</a></h1>
-<p>Finetuner is extremely easy to learn: all you need is <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code>!</p>
-<p>Answer the questions below and quickly find out what you need to learn:</p>
-<div class="sd-col sd-d-flex-row docutils">
-<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-Do you have an embedding model?</div>
-<div>
-<input checked="" id="embed_model_yes" name="embed_model" type="radio" value="0"/>
-<label for="embed_model_yes">Yes</label>
-</div>
-<div>
-<input id="embed_model_no" name="embed_model" type="radio" value="1"/>
-<label for="embed_model_no">No</label>
-</div>
-<p class="sd-card-text">Learn more about <a class="reference internal" href="../glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>.</p>
-<div class="usage-card" id="usage-00" style="display: block">
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-Finetuner usage 1</div>
-<p class="sd-card-text">Perfect! Now that <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> and <code class="docutils literal notranslate"><span class="pre">train_data</span></code> are already provided by you, simply do:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-
-<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">embed_model</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="sd-card-footer docutils">
-<p class="sd-card-text">Learn more about <a class="reference internal" href="../glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a>.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="usage-card" id="usage-01">
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-Finetuner usage 2</div>
-<p class="sd-card-text">You have an <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> to use, but no labeled data for fine-tuning this model. No worries, you can use Finetuner to interactively label data and train <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-
-<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">embed_model</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="n">unlabeled_data</span><span class="p">,</span>
-<span class="hll">    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span>
-</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="sd-card-footer docutils">
-<p class="sd-card-text">Learn more about <a class="reference internal" href="../glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a> and <span class="xref std std-term">Labeler</span>.</p>
-</div>
-</div>
-</div>
-<div class="usage-card" id="usage-10">
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-Finetuner usage 3</div>
-<p class="sd-card-text">You have a <code class="docutils literal notranslate"><span class="pre">general_model</span></code> but it does not output embeddings. Luckily, you’ve got some <code class="docutils literal notranslate"><span class="pre">labeled_data</span></code> for training. No worries, Finetuner can convert your model into an embedding model and train it via:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-
-<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">general_model</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="n">labeled_data</span><span class="p">,</span>
-<span class="hll">    <span class="n">to_embedding_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span class="hll">    <span class="n">freeze</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="sd-card-footer docutils">
-<p class="sd-card-text">Learn more about <a class="reference internal" href="../glossary/#term-Tailor"><span class="xref std std-term">Tailor</span></a> and <a class="reference internal" href="../glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a>.</p>
-</div>
-</div>
-</div>
-<div class="usage-card" id="usage-11">
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-Finetuner usage 4</div>
-<p class="sd-card-text">You have a <code class="docutils literal notranslate"><span class="pre">general_model</span></code> which is not for embeddings. Meanwhile, you don’t have any labeled data for training. But no worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-
-<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">general_model</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="n">labeled_data</span><span class="p">,</span>
-<span class="hll">    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span class="hll">    <span class="n">to_embedding_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span>    <span class="n">freeze</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="sd-card-footer docutils">
-<p class="sd-card-text">Learn more about <a class="reference internal" href="../glossary/#term-Tailor"><span class="xref std std-term">Tailor</span></a>, <a class="reference internal" href="../glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a> and <span class="xref std std-term">Labeler</span>.</p>
-</div>
-</div>
-</div>
-<script>
-    function init() {
-        document.getElementById('embed_model_yes').click();
-        document.getElementById('labeled_yes').click()
-    }
-    window.onload = init;
-    function myfunction(event) {
-        const answer = document.querySelector('input[name="embed_model"]:checked').value +document.querySelector('input[name="labeled"]:checked').value;
-         document.querySelectorAll(".usage-card").forEach((input) => {
-                 input.style.display= 'None'
-             });
-        document.getElementById("usage-"+answer).style.display = 'block'
-    }
-    document.querySelectorAll("input[name='embed_model']").forEach((input) => {
-        input.addEventListener('change', myfunction);
-    });
-    document.querySelectorAll("input[name='labeled']").forEach((input) => {
-        input.addEventListener('change', myfunction);
-    });
-</script>
 <p>Note, <code class="docutils literal notranslate"><span class="pre">finetuner.fit</span></code> always returns the tuned model. You can save the model via <code class="docutils literal notranslate"><span class="pre">finetuner.save(model)</span></code>.</p>
 <section id="save-model">
 <h2>Save model<a class="headerlink" href="#save-model" title="Permalink to this headline">¶</a></h2>
@@ -662,7 +538,7 @@ Finetuner usage 4</div>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 26, 2022.
+                    Last updated on Jan 27, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

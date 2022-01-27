@@ -29,7 +29,7 @@
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.3"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="&lt;no title&gt;" href="../../basics/" /><link rel="prev" title="Finetuning ResNet50 on Totally Looks Like Dataset" href="../totally-looks-like/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="&lt;no title&gt;" href="../../basics/" /><link rel="prev" title="Finetuning a Transformer for Intent Classification" href="../clinc150/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
         <title>Finetuning PointConv on ModelNet40 Dataset - Finetuner 0.3.1 documentation</title>
@@ -219,6 +219,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../swiss-roll/">Finetuning MLP on Swiss Roll Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../totally-looks-like/">Finetuning ResNet50 on Totally Looks Like Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clinc150/">Finetuning a Transformer for Intent Classification</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Finetuning PointConv on ModelNet40 Dataset</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
@@ -548,7 +549,7 @@ wandb login
 and then search for test 3d objects (the query) in our training data (index). We do this using the pretrained model and the finetuned model and then compare top matches.</p>
 <p>We’ll use two metrics to evaluate our two models (pretrained, straight out of the box model and finetuned model) on the search task:</p>
 <p><strong>mAP@k</strong> : We’ll calculate the average precision at 1, 5 and 10, then we’ll calculate the mean of those average precisions for all documents in our test data (these are our queries) because we care about how accurate and precise our retrieved 3D objects are.</p>
-<p><strong>mNDCG@k</strong>: We’ll calculate NDCG at 1,5 and 10, then we’ll calculate the mean of those for all documents in our test data  because we care about the order of the retrieved 3D objects.</p>
+<p><em>nDCG@k</em>*: We’ll calculate nDCG at 1,5 and 10, then we’ll calculate the mean of those for all documents in our test data  because we care about the order of the retrieved 3D objects.</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
 Complete source code<div class="sd-summary-down docutils">
@@ -610,24 +611,24 @@ Complete source code<div class="sd-summary-down docutils">
 <div class="table-wrapper"><table border="1" class="docutils">
 <thead>
 <tr>
-<th>mNDCG@k</th>
+<th>nDCG@k</th>
 <th>pre-trained</th>
 <th>fine-tuned</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>mNDCG@1</td>
+<td>nDCG@1</td>
 <td>0.563</td>
 <td>0.927</td>
 </tr>
 <tr>
-<td>mNDCG@5</td>
+<td>nDCG@5</td>
 <td>0.617</td>
 <td>0.931</td>
 </tr>
 <tr>
-<td>mNDCG@10</td>
+<td>nDCG@10</td>
 <td>0.647</td>
 <td>0.935</td>
 </tr>
@@ -701,7 +702,7 @@ Complete source code<div class="sd-summary-down docutils">
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../totally-looks-like/">
+                    <a class="prev-page" href="../clinc150/">
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -710,7 +711,7 @@ Complete source code<div class="sd-summary-down docutils">
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">Finetuning ResNet50 on Totally Looks Like Dataset</div>
+                            <div class="title">Finetuning a Transformer for Intent Classification</div>
                             
                         </div>
                     </a>
@@ -718,7 +719,7 @@ Complete source code<div class="sd-summary-down docutils">
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 26, 2022.
+                    Last updated on Jan 27, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

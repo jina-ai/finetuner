@@ -207,7 +207,7 @@ We'll use two metrics to evaluate our two models (pretrained, straight out of th
 
 **mAP@k** : We'll calculate the average precision at 1, 5 and 10, then we'll calculate the mean of those average precisions for all documents in our test data (these are our queries) because we care about how accurate and precise our retrieved 3D objects are.
 
-**mNDCG@k**: We'll calculate NDCG at 1,5 and 10, then we'll calculate the mean of those for all documents in our test data  because we care about the order of the retrieved 3D objects.
+*nDCG@k**: We'll calculate nDCG at 1,5 and 10, then we'll calculate the mean of those for all documents in our test data  because we care about the order of the retrieved 3D objects.
 
 ````{dropdown} Complete source code
 
@@ -244,11 +244,11 @@ The difference is shown in the tables below:
 | mAP@5  | 0.113       | 0.697      |
 | mAP@10 | 0.100       | 0.686      |
 
-| mNDCG@k  | pre-trained | fine-tuned |
-|--------|-------------|--------------|
-| mNDCG@1  | 0.563       | 0.927      |
-| mNDCG@5  | 0.617       | 0.931      |
-| mNDCG@10 | 0.647       | 0.935      |
+| nDCG@k  | pre-trained | fine-tuned |
+|---------|-------------|--------------|
+| nDCG@1  | 0.563       | 0.927      |
+| nDCG@5  | 0.617       | 0.931      |
+| nDCG@10 | 0.647       | 0.935      |
 
 Now let's do some queries ourselves and check the visualizations
 

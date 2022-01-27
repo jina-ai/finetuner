@@ -219,6 +219,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="get-started/swiss-roll/">Finetuning MLP on Swiss Roll Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="get-started/totally-looks-like/">Finetuning ResNet50 on Totally Looks Like Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get-started/clinc150/">Finetuning a Transformer for Intent Classification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="get-started/3d-mesh/">Finetuning PointConv on ModelNet40 Dataset</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
@@ -378,9 +379,9 @@ accompanies <a class="reference external" href="https://github.com/jina-ai/jina"
 applications.</p>
 <p>🎛 <strong>Designed for finetuning</strong>: a human-in-the-loop deep learning tool for leveling up your pretrained models in domain-specific neural search applications.</p>
 <p>🔱 <strong>Powerful yet intuitive</strong>: all you need is <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code> - a one-liner that unlocks rich features such as
-siamese/triplet network, interactive labeling, layer pruning, weights freezing, dimensionality reduction.</p>
+siamese/triplet network, metric learning, self-supervised pretraining, layer pruning, weights freezing, dimensionality reduction.</p>
 <p>⚛️ <strong>Framework-agnostic</strong>: promise an identical API &amp; user experience on PyTorch, Tensorflow/Keras and PaddlePaddle deep learning backends.</p>
-<p>🧈 <strong>Jina integration</strong>: buttery smooth integration with Jina, reducing the cost of context-switch between experiment
+<p>🧈 <strong>DocArray integration</strong>: buttery smooth integration with DocArray, reducing the cost of context-switch between experiment
 and production.</p>
 <section id="quick-start">
 <h2>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
@@ -390,71 +391,65 @@ and production.</p>
 </pre></div>
 </div>
 </li>
-<li><p>In this example, we want to tune the 32-dim embedding vectors from a 2-layer MLP on the Fashion-MNIST dataset. Let’s write a model with any of the following frameworks:</p>
+<li><p>In this example, we want to tune the embedding vectors from a ResNet18 on a <a class="reference external" href="https://static.jina.ai/celeba/celeba-img.zip">customized Celeba dataset</a>.Finetuner accepts docarray DocumentArray, so we load CelebA image into this format:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+
+<span class="c1"># please change the file path to your data path</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">'img_align_celeba/*.jpg'</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">preproc</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">set_image_tensor_normalization</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">set_image_tensor_channel_axis</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">)</span>  <span class="c1"># No need for changing channel axes line if you are using tf/keras</span>
+
+<span class="n">data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">preproc</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Let’s write a model with any of the following frameworks:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">PyTorch</label><div class="tab-content docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchvision</span>
 
-<span class="n">embed_model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
-    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
-    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-        <span class="n">in_features</span><span class="o">=</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">,</span>
-        <span class="n">out_features</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
-    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">))</span>
+<span class="n">resnet</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">Keras</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 
-<span class="n">embed_model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
-    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)),</span>
-    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'relu'</span><span class="p">),</span>
-    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">)])</span>
+<span class="n">resnet</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">applications</span><span class="o">.</span><span class="n">resnet18</span><span class="o">.</span><span class="n">ResNet18</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="s1">'imagenet'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--3">Paddle</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">paddle</span>
 
-<span class="n">embed_model</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
-    <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
-    <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-        <span class="n">in_features</span><span class="o">=</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">,</span>
-        <span class="n">out_features</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
-    <span class="n">paddle</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">32</span><span class="p">))</span>
+<span class="n">resnet</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">vision</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 </li>
-<li><p>Now feed the model and Fashion-MNIST data into Finetuner.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-<span class="kn">from</span> <span class="nn">finetuner.toydata</span> <span class="kn">import</span> <span class="n">generate_fashion</span>
+<li><p>Now feed the model and Celeba data into Finetuner.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span> <span class="k">as</span> <span class="nn">ft</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">embed_model</span><span class="p">,</span>
-    <span class="n">generate_fashion</span><span class="p">(),</span> 
-    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">ft</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">resnet</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="n">loss</span><span class="o">=</span><span class="s1">'TripletLoss'</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">device</span><span class="o">=</span><span class="s1">'cuda'</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+    <span class="n">to_embedding_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">input_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">),</span>
+    <span class="n">layer_name</span><span class="o">=</span><span class="s1">'adaptiveavgpool2d_67'</span><span class="p">,</span> <span class="c1"># layer before fc as feature extractor</span>
+    <span class="n">freeze</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
-</div>
-</li>
-<li><p>You can now label the data in an interactive way. The model will get tuned and improved as you are labeling.</p>
-<div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">Frontend</label><div class="tab-content docutils">
-<figure class="align-center">
-<img alt="img/labeler-on-fashion-mnist.gif" src="img/labeler-on-fashion-mnist.gif"/>
-</figure>
-</div>
-<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--2">Backend</label><div class="tab-content docutils">
-<figure class="align-center">
-<img alt="_images/labeler-backend-on-fashion-mnist.gif" src="_images/labeler-backend-on-fashion-mnist.gif"/>
-</figure>
-</div>
 </div>
 </li>
 </ol>
@@ -464,131 +459,6 @@ and production.</p>
 <h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
 <!-- start fit-method -->
 <p>Finetuner is extremely easy to learn: all you need is <code class="docutils literal notranslate"><span class="pre">finetuner.fit()</span></code>!</p>
-<p>Answer the questions below and quickly find out what you need to learn:</p>
-<div class="sd-col sd-d-flex-row docutils">
-<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-Do you have an embedding model?</div>
-<div>
-<input checked="" id="embed_model_yes" name="embed_model" type="radio" value="0"/>
-<label for="embed_model_yes">Yes</label>
-</div>
-<div>
-<input id="embed_model_no" name="embed_model" type="radio" value="1"/>
-<label for="embed_model_no">No</label>
-</div>
-<p class="sd-card-text">Learn more about <a class="reference internal" href="basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>.</p>
-<div class="usage-card" id="usage-00" style="display: block">
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-Finetuner usage 1</div>
-<p class="sd-card-text">Perfect! Now that <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> and <code class="docutils literal notranslate"><span class="pre">train_data</span></code> are already provided by you, simply do:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-
-<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">embed_model</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="sd-card-footer docutils">
-<p class="sd-card-text">Learn more about <a class="reference internal" href="basics/glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a>.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="usage-card" id="usage-01">
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-Finetuner usage 2</div>
-<p class="sd-card-text">You have an <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> to use, but no labeled data for fine-tuning this model. No worries, you can use Finetuner to interactively label data and train <code class="docutils literal notranslate"><span class="pre">embed_model</span></code> as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-
-<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">embed_model</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="n">unlabeled_data</span><span class="p">,</span>
-<span class="hll">    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span>
-</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="sd-card-footer docutils">
-<p class="sd-card-text">Learn more about <a class="reference internal" href="basics/glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a> and <span class="xref std std-term">Labeler</span>.</p>
-</div>
-</div>
-</div>
-<div class="usage-card" id="usage-10">
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-Finetuner usage 3</div>
-<p class="sd-card-text">You have a <code class="docutils literal notranslate"><span class="pre">general_model</span></code> but it does not output embeddings. Luckily, you’ve got some <code class="docutils literal notranslate"><span class="pre">labeled_data</span></code> for training. No worries, Finetuner can convert your model into an embedding model and train it via:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-
-<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">general_model</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="n">labeled_data</span><span class="p">,</span>
-<span class="hll">    <span class="n">to_embedding_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span class="hll">    <span class="n">freeze</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="sd-card-footer docutils">
-<p class="sd-card-text">Learn more about <a class="reference internal" href="basics/glossary/#term-Tailor"><span class="xref std std-term">Tailor</span></a> and <a class="reference internal" href="basics/glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a>.</p>
-</div>
-</div>
-</div>
-<div class="usage-card" id="usage-11">
-<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-Finetuner usage 4</div>
-<p class="sd-card-text">You have a <code class="docutils literal notranslate"><span class="pre">general_model</span></code> which is not for embeddings. Meanwhile, you don’t have any labeled data for training. But no worries, Finetuner can help you train an embedding model with interactive labeling on-the-fly:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-
-<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">general_model</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="n">labeled_data</span><span class="p">,</span>
-<span class="hll">    <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span class="hll">    <span class="n">to_embedding_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span>    <span class="n">freeze</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="sd-card-footer docutils">
-<p class="sd-card-text">Learn more about <a class="reference internal" href="basics/glossary/#term-Tailor"><span class="xref std std-term">Tailor</span></a>, <a class="reference internal" href="basics/glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a> and <span class="xref std std-term">Labeler</span>.</p>
-</div>
-</div>
-</div>
-<script>
-    function init() {
-        document.getElementById('embed_model_yes').click();
-        document.getElementById('labeled_yes').click()
-    }
-    window.onload = init;
-    function myfunction(event) {
-        const answer = document.querySelector('input[name="embed_model"]:checked').value +document.querySelector('input[name="labeled"]:checked').value;
-         document.querySelectorAll(".usage-card").forEach((input) => {
-                 input.style.display= 'None'
-             });
-        document.getElementById("usage-"+answer).style.display = 'block'
-    }
-    document.querySelectorAll("input[name='embed_model']").forEach((input) => {
-        input.addEventListener('change', myfunction);
-    });
-    document.querySelectorAll("input[name='labeled']").forEach((input) => {
-        input.addEventListener('change', myfunction);
-    });
-</script>
-<!-- end fit-method -->
 </section>
 <section id="support">
 <h2>Support<a class="headerlink" href="#support" title="Permalink to this headline">¶</a></h2>
@@ -643,7 +513,7 @@ and <a class="reference external" href="https://youtube.com/c/jina-ai">live stre
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 26, 2022.
+                    Last updated on Jan 27, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

@@ -1,7 +1,7 @@
-finetuner.toydata module
+finetuner.excepts module
 ========================
 
-.. automodule:: finetuner.toydata
+.. automodule:: finetuner.excepts
    :members:
    :undoc-members:
    :show-inheritance:
