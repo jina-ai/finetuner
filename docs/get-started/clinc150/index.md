@@ -129,8 +129,8 @@ We will load a pre-trained transformer as our starting point, the `paraphrase-Mi
 model from `sentence-transformers`. Check out the links below for more information on
 this specific model as well as sentence transformers in general:
 
-* https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2
-* https://www.sbert.net/index.html
+* <https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2>
+* <https://www.sbert.net/index.html>
 
 ```python
 import torch
@@ -196,7 +196,7 @@ from finetuner.tuner.evaluation import Evaluator
 
 BATCH_SIZE = 256
 NUM_WORKERS = 8
-DEVICE = 'gpu' if torch.cuda.is_available() else 'cpu'
+DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 pretrained_model = TransformerEmbedder()
 evaluator = Evaluator(test_data, embed_model=pretrained_model)
@@ -280,7 +280,7 @@ BATCH_SIZE = 256
 LEARNING_RATE = 1e-4
 NUM_WORKERS = 8
 NUM_ITEMS_PER_CLASS = 4
-DEVICE = 'gpu' if torch.cuda.is_available() else 'cpu'
+DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 def configure_optimizer(model: torch.nn.Module):
     optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
@@ -664,7 +664,7 @@ BATCH_SIZE = 256
 LEARNING_RATE = 1e-4
 NUM_WORKERS = 8
 NUM_ITEMS_PER_CLASS = 4
-DEVICE = 'gpu' if torch.cuda.is_available() else 'cpu'
+DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 
 def configure_optimizer(model: torch.nn.Module):
