@@ -14,6 +14,7 @@
 
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -561,4 +562,20 @@ The changes of each release is tracked by this file.
  - [[```c796bdd4```](https://github.com/jina-ai/finetuner/commit/c796bdd4d0314d4f83c75a5f3c26db5a9aad3511)] __-__ fix typos in covid-qa (#294) (*Nan Wang*)
  - [[```c51b044a```](https://github.com/jina-ai/finetuner/commit/c51b044a18cf627e8174eaec69502ec344959a09)] __-__ adapt to the latest changes (#267) (*Nan Wang*)
  - [[```61e99141```](https://github.com/jina-ai/finetuner/commit/61e99141d85250392eeaf596e08e3a031b162564)] __-__ __version__: the next version will be 0.3.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-4-0></a>
+## Release Note (`0.4.0`)
+
+> Release time: 2022-01-27 15:55:34
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Tadej Svetina,  Jina Dev Bot,  🙇
+
+
+### 🍹 Other Improvements
+
+ - [[```36c2339e```](https://github.com/jina-ai/finetuner/commit/36c2339e01ecb7dab35beaacb8971b53c003b3c6)] __-__ bump version (#360) (*Tadej Svetina*)
+ - [[```3bd15775```](https://github.com/jina-ai/finetuner/commit/3bd15775beb076e0ccb33ed65963f65255bebb09)] __-__ __version__: the next version will be 0.3.2 (*Jina Dev Bot*)
 
