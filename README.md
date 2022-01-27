@@ -23,11 +23,11 @@ applications.
 🎛 **Designed for finetuning**: a human-in-the-loop deep learning tool for leveling up your pretrained models in domain-specific neural search applications.
 
 🔱 **Powerful yet intuitive**: all you need is `finetuner.fit()` - a one-liner that unlocks rich features such as
-siamese/triplet network, interactive labeling, layer pruning, weights freezing, dimensionality reduction.
+siamese/triplet network, metric learning, self-supervised pretraining, layer pruning, weights freezing, dimensionality reduction.
 
 ⚛️ **Framework-agnostic**: promise an identical API & user experience on PyTorch, Tensorflow/Keras and PaddlePaddle deep learning backends.
 
-🧈 **Jina integration**: buttery smooth integration with Jina, reducing the cost of context-switch between experiment
+🧈 **DocArray integration**: buttery smooth integration with DocArray, reducing the cost of context-switch between experiment
 and production.
 
 <!-- end elevator-pitch -->
