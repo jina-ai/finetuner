@@ -66,7 +66,7 @@ pip install finetuner
     
     data.apply(preproc)
     ```
-3. Load pretrained ResNet50 using PyTorch/Keras/Paddle:
+3. Load pretrained ResNet18 using PyTorch/Keras/Paddle:
     - PyTorch
       ```python
       import torchvision
