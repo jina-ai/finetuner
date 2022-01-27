@@ -176,48 +176,6 @@ def collate_fn(inputs: List[str]):
     )
 ```
 
-## Pre-trained model performance
-
-Before proceeding with the fine-tuning, we should evaluate the performance of the
-pre-trained model, so that after fine-tuning we can evaluate again and compare the results.
-To evaluate the model, we can use the built-in `Evaluator` component of `finetuner` that
-allows us to compute information retrieval metrics. We will evaluate on the test split
-of our dataset:
-
-```python
-from finetuner.tuner.evaluation import Evaluator
-
-BATCH_SIZE = 256
-NUM_WORKERS = 8
-DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-pretrained_model = TransformerEmbedder()
-evaluator = Evaluator(test_data, embed_model=pretrained_model)
-metrics = evaluator.evaluate(
-    limit=30,
-    num_workers=NUM_WORKERS,
-    batch_size=BATCH_SIZE,
-    device=DEVICE,
-    collate_fn=collate_fn,
-)
-```
-
-| metrics           | pre-trained |
-|:-----------------:|:-----------:|
-| r_precision       | 0.660       |
-| precision_at_k    | 0.592       |
-| recall_at_k       | 0.592       |
-| f1_score_at_k     | 0.592       |
-| average_precision | 0.818       |
-| hit_at_k          | 0.996       |
-| reciprocal_rank   | 0.934       |
-| dcg_at_k          | 6.552       |
-| ndcg_at_k         | 0.909       |
-
-Out of the box, the pre-trained model has a solid performance on our dataset. This means
-that pre-training enables the model to learn good representations that map semantically
-similar texts nearby in the embedding space. Let's see if we can improve using `finetuner`.
-
 
 ## Fine-tuning
 
@@ -315,12 +273,26 @@ calculcated in our val split:
 ```{figure} wandb02.png
 ```
 
-Now it's time to see how much we improved. Let's re-run the evaluation on our test data,
-this time using the tuned model:
+Now it's time to see how much we improved. To evaluate the model, we can use the
+built-in `Evaluator` component of `finetuner` that allows us to compute information
+retrieval metrics. We will evaluate both the pre-trained and the fine-tuned model
+on the test split of our dataset:
 
 ```python
+from finetuner.tuner.evaluation import Evaluator
+
+pretrained_model = TransformerEmbedder()
+evaluator = Evaluator(test_data, embed_model=pretrained_model)
+pretrained_metrics = evaluator.evaluate(
+    limit=30,
+    num_workers=NUM_WORKERS,
+    batch_size=BATCH_SIZE,
+    device=DEVICE,
+    collate_fn=collate_fn,
+)
+
 evaluator = Evaluator(test_data, embed_model=finetuned_model)
-metrics = evaluator.evaluate(
+finetuned_metrics = evaluator.evaluate(
     limit=30,
     num_workers=NUM_WORKERS,
     batch_size=BATCH_SIZE,
@@ -328,6 +300,7 @@ metrics = evaluator.evaluate(
     collate_fn=collate_fn,
 )
 ```
+The evaluation metrics are presented in the table below:
 
 | metrics           | pre-trained | fine-tuned |
 |:-----------------:|:-----------:|:----------:|
@@ -341,8 +314,9 @@ metrics = evaluator.evaluate(
 | dcg_at_k          | 6.552       | **8.841**  |
 | ndcg_at_k         | 0.909       | **0.968**  |
 
-We gained a siginificant improvement in precision, recall and F1 score as well as DCG and
-NDCG!
+The pre-trained model has a solid performance in our dataset. Using `finetuner` though,
+we managed to gain a significant improvement in precision, recall and F1 score as
+well as DCG and NDCG!
 
 
 ## Back to the classification task
@@ -608,9 +582,6 @@ class TransformerEmbedder(torch.nn.Module):
         return mean_pooling(out, inputs['attention_mask'])
 
 
-pretrained_model = TransformerEmbedder()
-
-
 # ---- FINE-TUNING ---------------------------------------------------------------------
 
 
@@ -631,20 +602,6 @@ def configure_optimizer(model: torch.nn.Module):
     )
     return optimizer, scheduler
 
-
-# First let's evaluate the pre-trained model on
-# the test data
-evaluator = Evaluator(test_data, embed_model=pretrained_model)
-metrics = evaluator.evaluate(
-    limit=30,
-    num_workers=NUM_WORKERS,
-    batch_size=BATCH_SIZE,
-    device=DEVICE,
-    collate_fn=collate_fn,
-)
-
-print('Evaluating PRE-TRAINED model on test data:')
-print('\n'.join([f'{k}:{v:.3f}' for k, v in metrics.items()]))
 
 # Let's now run the fine-tuning!
 evaluation_callback = EvaluationCallback(val_data, limit=20, num_workers=NUM_WORKERS)
@@ -673,19 +630,31 @@ finetuned_model = finetuner.fit(
     callbacks=[evaluation_callback, wandb_logger, early_stopping, best_model_ckpt],
 )
 
-# Now we will re-run the evaluation on the test data
-# this time using the fine-tuned model
-evaluator = Evaluator(test_data, embed_model=finetuned_model)
-metrics = evaluator.evaluate(
+# Now we will evaluate both pre-trained and fine-tuned models in our test data
+
+pretrained_model = TransformerEmbedder()
+evaluator = Evaluator(test_data, embed_model=pretrained_model)
+pretrained_metrics = evaluator.evaluate(
     limit=30,
     num_workers=NUM_WORKERS,
     batch_size=BATCH_SIZE,
     device=DEVICE,
     collate_fn=collate_fn,
 )
+print('Evaluating PRE-TRAINED model on test data:')
+print('\n'.join([f'{k}:{v:.3f}' for k, v in pretrained_metrics.items()]))
 
+evaluator = Evaluator(test_data, embed_model=finetuned_model)
+finetuned_metrics = evaluator.evaluate(
+    limit=30,
+    num_workers=NUM_WORKERS,
+    batch_size=BATCH_SIZE,
+    device=DEVICE,
+    collate_fn=collate_fn,
+)
 print('Evaluating FINE-TUNED model on test data:')
-print('\n'.join([f'{k}:{v:.3f}' for k, v in metrics.items()]))
+print('\n'.join([f'{k}:{v:.3f}' for k, v in finetuned_metrics.items()]))
+
 
 # ---- INFERENCE -----------------------------------------------------------------------
 
