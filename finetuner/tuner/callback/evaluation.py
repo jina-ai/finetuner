@@ -1,7 +1,7 @@
 import math
 from typing import TYPE_CHECKING, Optional
 
-from ... import embed
+from ... import __default_tag_key__, embed
 from ..dataset.helper import batch_document_sequence
 from ..evaluation import Evaluator
 from .base import BaseCallback
@@ -25,6 +25,7 @@ class EvaluationCallback(BaseCallback):
         limit: int = 20,
         distance: str = 'cosine',
         num_workers: int = 1,
+        tag_key: str = __default_tag_key__,
     ):
         """
         :param query_data: Search data used by the evaluator at the end of each epoch, to evaluate the model.
@@ -42,6 +43,7 @@ class EvaluationCallback(BaseCallback):
         self._query_pbar_id = None
         self._index_pbar_id = None
         self._match_pbar_id = None
+        self._tag_key = tag_key
 
     def on_fit_begin(self, tuner: 'BaseTuner'):
         self._query_pbar_id = tuner._progress_bar.add_task(
@@ -122,7 +124,7 @@ class EvaluationCallback(BaseCallback):
         )
 
         # compute metrics
-        evaluator = Evaluator(self._query_data, index_data)
+        evaluator = Evaluator(self._query_data, index_data, self._tag_key)
         tuner.state.eval_metrics = evaluator.evaluate(
             limit=self._limit,
             distance=self._distance,
