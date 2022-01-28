@@ -124,7 +124,7 @@ class EvaluationCallback(BaseCallback):
         )
 
         # compute metrics
-        evaluator = Evaluator(self._query_data, index_data, self._tag_key)
+        evaluator = Evaluator(self._query_data, index_data, tag_key=self._tag_key)
         tuner.state.eval_metrics = evaluator.evaluate(
             limit=self._limit,
             distance=self._distance,
