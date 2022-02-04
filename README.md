@@ -61,7 +61,7 @@ pip install finetuner
             doc.load_uri_to_image_tensor(224, 224)
             .set_image_tensor_normalization()
             .set_image_tensor_channel_axis(-1, 0)
-        )  # No need for changing channel axes line if you are using tf/keras
+        )  # No need for normalization and changing channel axes line if you are using tf/keras
     
     
     data.apply(preproc)
@@ -70,17 +70,17 @@ pip install finetuner
     - PyTorch
       ```python
       import torchvision
-      resnet = torchvision.models.resnet18(pretrained=True)
+      resnet = torchvision.models.resnet50(pretrained=True)
       ```
     - Keras
       ```python
       import tensorflow as tf
-      resnet = tf.keras.applications.resnet18.ResNet18(weights='imagenet')
+      resnet = tf.keras.applications.resnet50.ResNet50(weights='imagenet')
       ```
     - Paddle
       ```python
       import paddle
-      resnet = paddle.vision.models.resnet18(pretrained=True)
+      resnet = paddle.vision.models.resnet50(pretrained=True)
       ```
 4. Start the Finetuner:
     ```python
@@ -94,8 +94,7 @@ pip install finetuner
         device='cuda',
         batch_size=128,
         to_embedding_model=True,
-        input_size=(3, 224, 224),
-        layer_name='adaptiveavgpool2d_67', # layer before fc as feature extractor
+        input_size=data.tensors.shape[1:],
         freeze=False,
     )
     ```
