@@ -94,7 +94,7 @@ pip install finetuner
         device='cuda',
         batch_size=128,
         to_embedding_model=True,
-        input_size=data.tensors.shape[1:],
+        input_size=(3, 224, 224), # for keras use (224, 224, 3)
         freeze=False,
     )
     ```
