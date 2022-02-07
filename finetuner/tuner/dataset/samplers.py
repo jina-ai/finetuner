@@ -150,6 +150,7 @@ class ClassSampler(BaseSampler):
             batches.append(batch)
 
         self._batches = batches
+        shuffle(self._batches)
 
 
 class SessionSampler(BaseSampler):
