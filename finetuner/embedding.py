@@ -13,7 +13,7 @@ def embed(
     docs: 'DocumentArray',
     embed_model: 'AnyDNN',
     device: str = 'cpu',
-    batch_size: int = 256,
+    batch_size: int = 64,
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
 ) -> None:
@@ -42,7 +42,7 @@ def _set_embeddings_keras(
     docs: 'DocumentArray',
     embed_model: 'AnyDNN',
     device: str = 'cpu',
-    batch_size: int = 256,
+    batch_size: int = 64,
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
 ):
@@ -66,7 +66,7 @@ def _set_embeddings_torch(
     docs: 'DocumentArray',
     embed_model: 'AnyDNN',
     device: str = 'cpu',
-    batch_size: int = 256,
+    batch_size: int = 64,
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
 ):
@@ -98,7 +98,7 @@ def _set_embeddings_paddle(
     docs,
     embed_model,
     device: str = 'cpu',
-    batch_size: int = 256,
+    batch_size: int = 64,
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
 ):
@@ -119,7 +119,7 @@ def _set_embeddings_paddle(
             contents = [preprocess_fn(d) for d in b]
         else:
             contents = b.contents
-        batch_inputs = paddle.to_tensor(collate_fn(contents), place=device)
+        batch_inputs = collate_fn(contents)
         batch_inputs = paddle.cast(batch_inputs, dtype='float32')
         b.embeddings = embed_model(batch_inputs).numpy()
     if is_training_before:
