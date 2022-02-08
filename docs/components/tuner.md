@@ -1,6 +1,6 @@
 # Tuner
 
-Tuner is one of the three key components of Finetuner. Given an {term}`embedding model` and {term}`labeled dataset` (see {ref}`the guide on data formats<data-format>` for more information), Tuner trains the model to fit the data.
+Tuner is one of the two key components of Finetuner. Given an {term}`embedding model` and {term}`labeled dataset` (see {ref}`the guide on data formats<data-format>` for more information), Tuner trains the model to fit the data.
 
 With Tuner, you can customize the training process to best fit your data, and track your experiements in a clear and transparent manner. You can do things like
 - Choose between different loss functions, use hard negative mining for triplets/pairs
