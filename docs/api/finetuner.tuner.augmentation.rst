@@ -1,7 +1,7 @@
-finetuner.tuner.keras.losses module
+finetuner.tuner.augmentation module
 ===================================
 
-.. automodule:: finetuner.tuner.keras.losses
+.. automodule:: finetuner.tuner.augmentation
    :members:
    :undoc-members:
    :show-inheritance:
