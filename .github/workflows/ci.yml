@@ -100,7 +100,7 @@ jobs:
 
   test-gpu:
     needs: prep-testbed
-    runs-on: [self-hosted, gpu]
+    runs-on: [self-hosted, x64, gpu, linux]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
