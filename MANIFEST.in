@@ -1,4 +1,3 @@
-recursive-include finetuner/labeler/ui *
 include extra-requirements.txt
 include LICENSE
 prune tests/
