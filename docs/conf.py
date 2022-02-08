@@ -243,7 +243,7 @@ def setup(app):
     app.add_config_value(
         name='server_address',
         default=os.getenv(
-            'FINETUNER_DOCSBOT_SERVER', 'https://finetuner-docsbot.jina.ai'
+            'FINETUNER_DOCSBOT_SERVER', 'https://jina-ai-finetuner-docsqa.jina.ai'
         ),
         rebuild='',
     )
