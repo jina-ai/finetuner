@@ -39,7 +39,7 @@ unzip left.zip
 unzip right.zip
 ```
 
-Afterwars, we load all images from unzipped `left` and `right` folders and turn them into sorted order as DocArray `DocumentArray`.
+Afterwards, we load all images from unzipped `left` and `right` folders and turn them into sorted order as DocArray `DocumentArray`.
 80% of the dataset will be used to train the machine learning model.
 While 20% of the dataset will be used to evaluate the quality of embeddings on the search task.
 
