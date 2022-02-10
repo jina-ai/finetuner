@@ -206,8 +206,6 @@ class PaddleTailor(BaseTailor):
     
     def _set_device(self, device: str) -> None:
         self._device = get_device_paddle(device)
-        print('GET HERE')
-        print(type(self._device))
         self._model.to(self._device)
 
 
