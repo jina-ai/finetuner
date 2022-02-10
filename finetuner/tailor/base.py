@@ -11,6 +11,7 @@ class BaseTailor(abc.ABC):
         model: 'AnyDNN',
         input_size: Optional[Tuple[int, ...]] = None,
         input_dtype: str = 'float32',
+        device: Optional[str] = 'cpu',
     ):
         """Tailor converts a general DNN model into an embedding model.
 
@@ -20,6 +21,8 @@ class BaseTailor(abc.ABC):
         :param input_dtype: the data type of the input tensor.
         """
         self._model = model
+        
+        self._set_device(device)
 
         # multiple inputs to the network
         if isinstance(input_size, tuple):
@@ -28,6 +31,11 @@ class BaseTailor(abc.ABC):
         self._input_size = input_size
         self._input_dtype = input_dtype
 
+    @abc.abstractmethod
+    def _set_device(self, device: str) -> None:
+        ...
+        
+        
     @abc.abstractmethod
     def to_embedding_model(
         self,

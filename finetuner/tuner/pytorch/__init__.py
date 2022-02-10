@@ -9,6 +9,7 @@ from torch.utils.data.dataloader import DataLoader
 
 from ... import __default_tag_key__
 from ..base import BaseTuner
+from ...device import get_device_pytorch, to_device_pytorch
 from ..state import TunerState
 from . import losses
 from .datasets import PytorchClassDataset, PytorchInstanceDataset, PytorchSessionDataset
@@ -17,18 +18,6 @@ if TYPE_CHECKING:
     from docarray import DocumentArray
 
     from ...helper import CollateFnType, PreprocFnType
-
-
-def _to_device(
-    inputs: Union[torch.Tensor, Mapping[str, torch.Tensor], Sequence[torch.Tensor]],
-    device: torch.device,
-) -> Union[torch.Tensor, Dict[str, torch.Tensor], List[torch.Tensor]]:
-    if isinstance(inputs, torch.Tensor):
-        return inputs.to(device)
-    elif isinstance(inputs, Mapping):
-        return {k: v.to(device) for k, v in inputs.items()}
-    elif isinstance(inputs, Sequence):
-        return [x.to(device) for x in inputs]
 
 
 class CollateAll:
@@ -91,7 +80,7 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
 
     def _move_model_to_device(self):
         """Move the model to device and set device."""
-        self.device = get_device(self._device_name)
+        self.device = get_device_pytorch(self._device_name)
         self._embed_model = self._embed_model.to(self.device)
 
     def _default_configure_optimizer(self, model: nn.Module) -> Optimizer:
@@ -112,8 +101,8 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
                 self.state.learning_rates[f'group_{param_idx}'] = param_group['lr']
 
             self._trigger_callbacks('on_train_batch_begin')
-            inputs = _to_device(inputs, self.device)
-            labels = _to_device(labels, self.device)
+            inputs = to_device_pytorch(inputs, self.device)
+            labels = to_device_pytorch(labels, self.device)
 
             embeddings = self.embed_model(inputs)
             loss = self._loss(embeddings, labels)
@@ -137,8 +126,8 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
             self.state.batch_index = idx
             self._trigger_callbacks('on_val_batch_begin')
 
-            inputs = _to_device(inputs, self.device)
-            labels = _to_device(labels, self.device)
+            inputs = to_device_pytorch(inputs, self.device)
+            labels = to_device_pytorch(labels, self.device)
 
             with torch.no_grad():
                 embeddings = self.embed_model(inputs)
@@ -226,11 +215,3 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         """
         torch.save(self.embed_model.state_dict(), *args, **kwargs)
 
-
-def get_device(device: str):
-    """Get Pytorch compute device.
-
-    :param device: device name.
-    """
-    # translate our own alias into framework-compatible ones
-    return torch.device(device)

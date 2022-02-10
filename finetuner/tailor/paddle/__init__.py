@@ -8,6 +8,7 @@ from paddle import Tensor, nn
 
 from ...helper import is_seq_int
 from ..base import BaseTailor
+from ...device import get_device_paddle, to_device_paddle
 
 if TYPE_CHECKING:
     from ...helper import AnyDNN, LayerInfoType
@@ -90,6 +91,7 @@ class PaddleTailor(BaseTailor):
             paddle.cast(paddle.rand([2, *in_size]), dtype)
             for in_size, dtype in zip(self._input_size, dtypes)
         ]
+        x = to_device_paddle(x, self._device)
 
         # create properties
         summary = OrderedDict()
@@ -201,6 +203,12 @@ class PaddleTailor(BaseTailor):
             return embed_model_with_projection_head
 
         return model
+    
+    def _set_device(self, device: str) -> None:
+        self._device = get_device_paddle(device)
+        print('GET HERE')
+        print(type(self._device))
+        self._model.to(self._device)
 
 
 class _Identity(nn.Layer):
