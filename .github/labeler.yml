@@ -41,9 +41,6 @@ component/tailor:
 component/tuner:
   - finetuner/tuner/**/*
 
-component/labeler:
-  - finetuner/labeler/**/*
-
 component/misc:
   - finetuner/*.py
 
