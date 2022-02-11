@@ -15,7 +15,7 @@ The rationale for choosing TLL dataset is
 - it is a relatively small dataset and doesn't require training a large network from scratch. So we train only part of the ResNet-50 by freezing layers.
 - it consists of pairs of images that can be formed as positive pairs (same classes). A random image can be considered as a negative pair. We construct `triplet` and use the `TripletLoss`. 
 
-After fine-tuning, the distance between positive pairs is expected to be pulled closer, while the distance between positive and negative pairs is expected to be pushed away.
+After finetuning, the distance between positive pairs is expected to be pulled closer, while the distance between positive and negative pairs is expected to be pushed away.
 
 ```{figure} result.png
 :width: 70%
@@ -39,7 +39,7 @@ unzip left.zip
 unzip right.zip
 ```
 
-Afterward, we load all images from unzipped `left` and `right` folders and turn them into sorted order as DocArray `DocumentArray`.
+Afterwards, we load all images from unzipped `left` and `right` folders and turn them into sorted order as DocArray `DocumentArray`.
 80% of the dataset will be used to train the machine learning model.
 While 20% of the dataset will be used to evaluate the quality of embeddings on the search task.
 
@@ -61,10 +61,10 @@ train_da = left_da[:train_size] + right_da[:train_size]
 ### Preparing training data
 
 After loading data into DocArray `DocumentArray`, we can prepare documents for training.
-Finetuner will do the most challenging work for you, all you need to do is to:
+Finetuner will do the most challenging work for you, all you need to do is:
 
 1. Assign a label into each `Document` named `finetuner_label` as its class name.
-2. Perform pre-processing for the document. In this case, we load the image from URI, normalize the image and reshape the image from `H, W, C` to `C, H W` will `C` is the color channel of the image.
+2. Perform pre-processing for the document. In this case, we load the image from URI, normalize the image and reshape it from `H, W, C` to `C, H W` will `C` is the color channel of the image.
 
 
 ```python
@@ -77,8 +77,8 @@ train_da.apply(assign_label_and_preprocess)
 
 ## Choosing the base model
 
-We create a pre-trained ResNet-50 model from torchvision, and since we want to learn a better `embedding`,
-the first thing is to see which layer is suitable for use as an `embedding layer`.
+We create a pre-trained ResNet-50 model from `torchvision`, and since we want to learn a better `embedding`,
+the first thing we need is to see which layer is suitable to use as an `embedding layer`.
 You can call `finetuner.display(model, input_size)` to plot the model architecture.
 
 ```python
@@ -90,7 +90,7 @@ ft.display(resnet, (3, 224, 224))
 ```
 
 You can get more information in [Tailor docs](https://finetuner.jina.ai/components/tailor/).
-Since the model is pre-trained on ImageNet on a classification task, so the output `fc` layer should **not** be considered as `embedding layer`.
+Since the model is pre-trained on ImageNet on a classification task, the output `fc` layer should **not** be considered a `embedding layer`.
 We can use the pooling layer `adaptiveavgpool2d_173` as the output of the {term}`embedding model`.
 This layer generates a 2048 dimensional dense embedding as output.
 
@@ -102,15 +102,13 @@ In general, you have to remove the task-specific top from the pre-trained model.
 
 ## Training
 
-Model training is straitforward in finetuner. 
-You'll need to config several hyperparameters,
-plugin your model and training set, that's it.
+Model training is straight forward in Finetuner. 
+You'll need to configure several hyperparameters, plug in your model and training set, and that's it.
 
-The script below demonstrates how to combine {term}`Tailor` + {term}`Tuner` interface for model fine-tuning.
+The script below demonstrates how to combine {term}`Tailor` + {term}`Tuner` interface for model finetuning.
 The parameter above ``to_embedding_model=True`` are {term}`Tuner` parameters, the rest are {term}`Tailor` parameters.
 
-We save the returned {term}`embedding model` as ``tuned_model``,
-given an input image, at inference time, this model generates a *representation* of the image (2048 dimensional vectors).
+We save the returned {term}`embedding model` as ``tuned_model``, and give an input image at inference time. The model then generates a *representation* of the image (2048 dimensional vectors).
 
 ```python
 import finetuner as ft
@@ -134,9 +132,9 @@ tuned_model = ft.fit(
 )
 ```
 
-But how does it work?:
+But how does it work?
 
-1. Finetuner will "look into" your labels defined in the `tag` of the DocArray `Document`, and find the positive sample and find a hard-negative (as we use `neg_strategy='hard''`) sample as triplets.
+1. Finetuner will look into your labels defined in the `tag` of the DocArray `Document`, find the positive sample and find a hard-negative (as we use `neg_strategy='hard''`) sample as triplets.
 2. Finetuner try to optimize the `TripletLoss`, aiming at pulling documents with the same classes closer, while pushing documents with different class away.
 
 ![metric_learning](metric_learning.png)
@@ -146,7 +144,7 @@ But how does it work?:
 We'll use **hit@10** to measure the quality of the representation on the search task.
 **hit@10** means for all the test data, how likely the positive `match` ranked within the top 10 matches with respect to the `query` Document.
 
-Remind that we have the `train_da` ready, now we need to perform the same preprocessing on test DocumentArray:
+Remember that we have the `train_da` ready, now we need to perform the same preprocessing on test `DocumentArray`:
 
 
 ```python
@@ -160,7 +158,7 @@ test_left_da.apply(preprocess)
 test_right_da.apply(preprocess)
 ```
 
-And we create embeddings on our test set using the fine-tuned model:
+And we create embeddings on our test set using the finetuned model:
 
 ```python
 # use finetuned model to create embeddings， only test data
@@ -171,7 +169,7 @@ test_right_da.embed(tuned_model, device='cuda')
 Last but not least,
 we match `test_left_da` against `test_right_da`.
 
-You can consider `test_left_da` as user queries, while `test_right_da` is our indexed document collection.
+You can consider `test_left_da` as user queries, and `test_right_da` as our indexed document collection.
 For each `test_left_da`, `match` function will find top-10 nearest embeddings in `test_right_da`.
 And we evaluate result with **hit@10**
 
@@ -191,12 +189,12 @@ for k in range(1, 11):
     print(f'hit@{k}:  finetuned: {hit_rate(test_left_da, k):.3f}')
 ```
 
-Compare fine-tuned model and pre-trained model, 
-how much performance gain we get?
-We conducted an experiment using pre-trained ResNet50 on ImageNet, by chopping off the last classification layer,
+Compare the finetuned model and pre-trained model, how much performance gain we get?
+
+We did an experiment using pretrained `ResNet50` on `ImageNet`, by chopping off the last classification layer,
 the rest of the model serves as a feature extractor.
 
-The result is demonstrated in the table below:
+The result are shown in the table below:
 
 | hit@k  | pre-trained | fine-tuned |
 |--------|-------------|------------|
@@ -204,7 +202,7 @@ The result is demonstrated in the table below:
 | hit@5  | 0.142       | 0.230      |
 | hit@10 | 0.183       | 0.301      |
 
-Now let's look at some results that Finetuned model did good and pretrained ResNet50 did bad.
+Now let's look at some results where `finetuned` model performed well and pretrained `ResNet50` performed bad.
 
 ```{figure} result-final1.png
 ```
@@ -212,7 +210,7 @@ Now let's look at some results that Finetuned model did good and pretrained ResN
 ```{figure} result-final2.png
 ```
 
-Here are some results in reverse: i.e. pretrained ResNet did "good" but Finetuned did "wrong".
+Here are some results in reverse: i.e. pretrained `ResNet50` performed well but `finetuned` performed bad
 
 ```{figure} result-final3.png
 ```
