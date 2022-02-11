@@ -137,7 +137,7 @@ def preprocess(doc: 'Document', num_points: int = 1024, data_aug: bool = True):
 
 In the following code snippet we create MeshData model which encapsulates a `PointConv` model with 512 dimensions, we then load
 training and evaluation data from the binary files we saved before. We create an optimizer and a learning rate scheduler. In this case with use
-an Adam optimizer and MultiStepLR scheduler but you can change those depending on your data and preferences.
+an Adam optimizer and `MultiStepLR` scheduler but you can change those depending on your data and preferences.
 
 ```python
 model = MeshDataModel(model_name='pointconv', embed_dim=512) # create pointconv model with 512 dimensions
@@ -194,7 +194,7 @@ tuned_model = finetuner.fit(
 # saving the finetuner model
 torch.save(
     tuned_model.state_dict(),
-    str(checkpoint_dir / f'finetuned-{model_name}-d{embed_dim}.pth'),
+    str(checkpoint_dir / f'finetuned-pointconv-d512.pth'),
 )
 ```
 
@@ -207,7 +207,7 @@ We'll use two metrics to evaluate our two models (pretrained, straight out of th
 
 **mAP@k** : We'll calculate the average precision at 1, 5 and 10, then we'll calculate the mean of those average precisions for all documents in our test data (these are our queries) because we care about how accurate and precise our retrieved 3D objects are.
 
-*nDCG@k**: We'll calculate nDCG at 1,5 and 10, then we'll calculate the mean of those for all documents in our test data  because we care about the order of the retrieved 3D objects.
+**nDCG@k**: We'll calculate nDCG at 1,5 and 10, then we'll calculate the mean of those for all documents in our test data  because we care about the order of the retrieved 3D objects.
 
 ````{dropdown} Complete source code
 
