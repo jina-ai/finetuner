@@ -126,3 +126,113 @@ original, it's time to deploy it 🚀.
 
 
 ## Deploying using the ONNX Encoder
+
+You have already finetune your own model and transfer it to onnx format. Let's start deploying in Jina flow. If you are not familiar with Jina-Hub or Jina flow, check this:
+[Use Hub Executor](https://docs.jina.ai/advanced/hub/use-hub-executor/)
+[Use Jina Flow](https://docs.jina.ai/fundamentals/flow/)
+
+Here are steps you can follow:
+
+### Add ONNXEncoder to Jina flow
+
+We already have onnx encoder on Jina-Hub, let's add ONNXEncoder to jina flow:
+
+using docker image:
+
+```python
+from jina import Flow
+
+f = Flow().add(uses='jinahub+docker://ONNXEncoder',
+                uses_with={'model_path': 'tuned-model.onnx'})
+```
+
+or using source code:
+
+```python
+from jina import Flow
+
+f = Flow().add(uses='jinahub://ONNXEncoder',
+                uses_with={'model_path': 'tuned-model.onnx'})
+```
+
+model_path is the path of onnx model you exported.
+
+### Complete the flow by adding indexer and starting the service
+
+```python
+from jina import DocumentArray, Executor, requests, Flow
+from typing import Optional
+import numpy as np
+
+
+class SimpleIndexer(Executor):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._dam = DocumentArray()
+
+    @requests(on='/index')
+    def index(self, docs: DocumentArray, **kwargs):
+        self._dam.extend(docs)
+
+    @requests(on='/search')
+    def search(self, docs: DocumentArray, **kwargs):
+        docs.match(self._dam)
+        
+
+f = Flow(port_expose=12345, 
+         protocol="http").add(uses='jinahub://ONNXEncoder', 
+                              uses_with={'model_path': 'tuned-model.onnx'},
+                              name="Encoder").add(uses=SimpleIndexer, 
+                                                  name="Indexer")
+        
+with f:
+    f.post('/index', data, show_progress=True)
+    f.block()
+```
+
+You will see something like:
+
+```bash
+    Flow@6260[I]:🎉 Flow is ready to use!                                           
+    🔗 Protocol:            HTTP
+    🏠 Local access:        0.0.0.0:12345
+    🔒 Private network:     192.168.31.213:12345
+    💬 Swagger UI:          http://localhost:12345/docs
+    📚 Redoc:               http://localhost:12345/redoc
+⠼       DONE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸ 0:00:14 100% ETA: 0 seconds 80 steps done in 14 seconds
+```
+
+which means that the service has been successfully started.
+
+### Start to query!
+
+Finally it's time to see what we can get from our service. Start a client and try to query using the service we have just built. 
+
+```python
+from jina import Client, Document, DocumentArray
+from jina.types.request.data import Response
+
+def print_matches(resp: Response):  # the callback function invoked when task is done
+   
+    for idx, d in enumerate(resp.docs[0].matches[:3]):  # print top-3 matches
+        print(f'[{idx}]{d.scores["cosine"].value:2f}')
+
+
+data = DocumentArray.from_files('img_align_celeba/*.jpg')
+
+def preprocess(doc):
+    return (
+        doc.load_uri_to_image_tensor(224, 224)
+        .set_image_tensor_normalization()
+        .set_image_tensor_channel_axis(-1, 0)
+    )
+
+
+data.apply(preprocess)
+
+c = Client(protocol='http', port=12345)  # connect to localhost:12345
+c.post('/search', inputs=process_document(), on_done=print_matches)
+```
+
+Congratulations! You have implemented the pipeline which inlcudes finetuning model, converting to ONNX and deploying in Jina Flow.
