@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 import paddle
 from paddle import nn
@@ -8,8 +8,8 @@ from paddle.optimizer import Adam, Optimizer
 from paddle.optimizer.lr import LRScheduler
 
 from ... import __default_tag_key__
-from ..base import BaseTuner
 from ...device import get_device_paddle, to_device_paddle
+from ..base import BaseTuner
 from ..state import TunerState
 from . import losses
 from .datasets import PaddleClassDataset, PaddleInstanceDataset, PaddleSessionDataset
