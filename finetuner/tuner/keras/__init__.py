@@ -7,8 +7,8 @@ from tensorflow.keras.optimizers import Optimizer
 from tensorflow.keras.optimizers.schedules import LearningRateSchedule
 
 from ... import __default_tag_key__
-from ..base import BaseLoss, BaseTuner
 from ...device import get_device_keras
+from ..base import BaseLoss, BaseTuner
 from ..dataset import ClassDataset, SessionDataset
 from ..dataset.datasets import InstanceDataset
 from ..state import TunerState
@@ -195,4 +195,3 @@ class KerasTuner(
             model.
         """
         self.embed_model.save(*args, **kwargs)
-

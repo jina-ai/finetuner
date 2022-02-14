@@ -41,6 +41,7 @@ def test_trim_fail_given_unexpected_layer_idx(
             model=torch_model,
             input_size=input_size,
             input_dtype=input_dtype,
+            device='cuda',
         )
         paddle_tailor.to_embedding_model(
             freeze=False,
@@ -114,6 +115,20 @@ def test_to_embedding_model(
         input_ = input_.type(torch.LongTensor)
     out = model(input_)
     assert list(out.size()) == expected_output_shape
+
+
+@pytest.mark.gpu
+def test_to_embedding_model_with_cuda_tensor(torch_simple_cnn_model):
+    device = torch.device('cuda:0')
+
+    pytorch_tailor = PytorchTailor(
+        input_size=(1, 28, 28), input_dtype='float32', device='cuda'
+    )
+
+    model = torch_simple_cnn_model.to(device)
+
+    model = pytorch_tailor.to_embedding_model(model)
+    assert model
 
 
 @pytest.mark.parametrize(

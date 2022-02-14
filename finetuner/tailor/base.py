@@ -21,7 +21,7 @@ class BaseTailor(abc.ABC):
         :param input_dtype: the data type of the input tensor.
         """
         self._model = model
-        
+
         self._set_device(device)
 
         # multiple inputs to the network
@@ -34,8 +34,7 @@ class BaseTailor(abc.ABC):
     @abc.abstractmethod
     def _set_device(self, device: str) -> None:
         ...
-        
-        
+
     @abc.abstractmethod
     def to_embedding_model(
         self,

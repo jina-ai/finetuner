@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 import torch
 from torch import nn
@@ -8,8 +8,8 @@ from torch.utils.data._utils.collate import default_collate
 from torch.utils.data.dataloader import DataLoader
 
 from ... import __default_tag_key__
-from ..base import BaseTuner
 from ...device import get_device_pytorch, to_device_pytorch
+from ..base import BaseTuner
 from ..state import TunerState
 from . import losses
 from .datasets import PytorchClassDataset, PytorchInstanceDataset, PytorchSessionDataset
@@ -214,4 +214,3 @@ class PytorchTuner(BaseTuner[nn.Module, DataLoader, Optimizer, _LRScheduler]):
         :param kwargs: Keyword arguments to pass to ``torch.save`` function.
         """
         torch.save(self.embed_model.state_dict(), *args, **kwargs)
-

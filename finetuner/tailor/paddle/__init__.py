@@ -6,9 +6,10 @@ import numpy as np
 import paddle
 from paddle import Tensor, nn
 
+from ...device import get_device_paddle, to_device_paddle
+from ...excepts import DeviceError
 from ...helper import is_seq_int
 from ..base import BaseTailor
-from ...device import get_device_paddle, to_device_paddle
 
 if TYPE_CHECKING:
     from ...helper import AnyDNN, LayerInfoType
@@ -203,10 +204,12 @@ class PaddleTailor(BaseTailor):
             return embed_model_with_projection_head
 
         return model
-    
+
     def _set_device(self, device: str) -> None:
         self._device = get_device_paddle(device)
-        self._model.to(self._device)
+        for param in self._model.parameters():
+            if param.place == paddle.CUDAPlace(0):
+                raise DeviceError('Paddle models are expected to be placed on the CPU')
 
 
 class _Identity(nn.Layer):

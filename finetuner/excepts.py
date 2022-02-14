@@ -3,3 +3,7 @@
 
 class DimensionMismatchException(Exception):
     """Dimensionality mismatch given input and output layers."""
+
+
+class DeviceError(Exception):
+    """Model is placed on the wrong device."""

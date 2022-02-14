@@ -3,6 +3,7 @@ import paddle
 import paddle.nn as nn
 import pytest
 
+from finetuner.excepts import DeviceError
 from finetuner.tailor.paddle import PaddleTailor
 
 
@@ -210,6 +211,19 @@ def test_to_embedding_model(
     np.testing.assert_array_equal(weight, weight_after_convert)
     out = model(paddle.cast(paddle.rand(input_), input_dtype))
     assert list(out.shape) == expected_output_shape
+
+
+@pytest.mark.gpu
+def test_to_embedding_model_with_cuda_tensor(paddle_simple_cnn_model):
+
+    pytorch_tailor = PaddleTailor(
+        input_size=(1, 28, 28), input_dtype='float32', device='cuda'
+    )
+    model = paddle_simple_cnn_model.to(paddle.CUDAPlace(0))
+    with pytest.raises(DeviceError):
+        model = pytorch_tailor.to_embedding_model(model)
+
+    assert model
 
 
 def test_paddle_lstm_model_parser():

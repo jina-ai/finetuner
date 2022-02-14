@@ -6,9 +6,9 @@ import numpy as np
 import torch
 from torch import nn
 
+from ...device import get_device_pytorch, to_device_pytorch
 from ...helper import is_seq_int
 from ..base import BaseTailor
-from ...device import get_device_pytorch, to_device_pytorch
 
 if TYPE_CHECKING:
     from ...helper import AnyDNN, LayerInfoType
@@ -199,7 +199,7 @@ class PytorchTailor(BaseTailor):
             return embed_model_with_projection_head
 
         return model
-    
+
     def _set_device(self, device: str) -> None:
         self._device = get_device_pytorch(device)
         self._model = self._model.to(self._device)
