@@ -1,17 +1,15 @@
 # Using ONNX to deploy a finetuned model
 
-Imagine a scenario where you succesfully used finetuner to finetune a model on your
-specific search problem using data from the respective domain. What comes next?
+Imagine a scenario where you successfully used Finetuner to finetune a model on your search problem using data from the respective domain. What comes next?
 
-Naturally you would want to deploy your embedding model in a service and use it to
+Naturally, you would want to deploy your embedding model in a service and use it to
 encode data as part of a bigger search application. Jina's [core framework](https://docs.jina.ai/)
 provides the infrastructure layer to help you build and deploy neural search components.
 By implementing custom executors or using existing ones from [Jina Hub](https://hub.jina.ai/)
 you can define the building blocks of your search application and glue everything
 together in a fully-fledged search pipeline.
 
-In order to use your model with Jina, you would have to build a new executor tailored to your model
-specifically and upload it to the hub. You can then use a Jina Flow to deploy your search
+To use your model with Jina, you would have to build a new executor tailored to your model and upload it to the hub. You can then use a Jina Flow to deploy your search
 application locally or in the cloud using kubernetes.
 
 It is difficult to provide a unified executor that can support all models trained with finetuner,
@@ -91,7 +89,7 @@ tuned_model = ft.fit(
 We can now export the model to the ONNX format, using the `to_onnx` method provided
 by finetuner. The `onnx` package is required to use this functionality. Also, if
 you are using TensorFlow or PaddlePaddle you will need to install additional packages
-for the ONNX conversion. Specifically you will need 
+for the ONNX conversion. Specifically you will need: 
 [tf2onnx](https://github.com/onnx/tensorflow-onnx) for TensorFlow and
 [paddle2onnx](https://github.com/PaddlePaddle/Paddle2ONNX) for PaddlePaddle.
 
@@ -121,21 +119,21 @@ validate_onnx_export(tuned_model, 'tuned-model.onnx', input_shape=[3, 224, 224])
 This function compares the outputs of the native model and its ONNX counterpart against
 the same random input. If the outputs differ an assertion error is raised.
 
-Now that we have our model exported and have verified that it has the same behaviour as the
+Now that we have our model exported and have verified that it has the same behavior as the
 original, it's time to deploy it 🚀.
 
 
 ## Deploying using the ONNX Encoder
 
-You have already finetune your own model and transfer it to onnx format. Let's start deploying in Jina flow. If you are not familiar with Jina-Hub or Jina flow, check this:
+You have already finetuned your own model and transferred it to ONNX format. Let's start deploying in the Jina flow. If you are not familiar with Jina-Hub or Jina flow, check this:
 [Use Hub Executor](https://docs.jina.ai/advanced/hub/use-hub-executor/)
 [Use Jina Flow](https://docs.jina.ai/fundamentals/flow/)
 
-Here are steps you can follow:
+Here are the steps you can follow:
 
 ### Add ONNXEncoder to Jina flow
 
-We already have onnx encoder on Jina-Hub, let's add ONNXEncoder to jina flow:
+We already have an ONNX encoder on Jina-Hub, let's add `ONNXEncoder` to Jina flow:
 
 using docker image:
 
@@ -155,7 +153,7 @@ f = Flow().add(uses='jinahub://ONNXEncoder',
                 uses_with={'model_path': 'tuned-model.onnx'})
 ```
 
-model_path is the path of onnx model you exported.
+`model_path` is the path of the ONNX model you exported.
 
 ### Complete the flow by adding indexer and starting the service
 
@@ -181,17 +179,17 @@ class SimpleIndexer(Executor):
         
 
 f = Flow(port_expose=12345, 
-         protocol="http").add(uses='jinahub://ONNXEncoder', 
+         protocol='http').add(uses='jinahub://ONNXEncoder', 
                               uses_with={'model_path': 'tuned-model.onnx'},
-                              name="Encoder").add(uses=SimpleIndexer, 
-                                                  name="Indexer")
+                              name='Encoder').add(uses=SimpleIndexer, 
+                                                  name='Indexer')
         
 with f:
     f.post('/index', data, show_progress=True)
     f.block()
 ```
 
-You will see something like:
+You will see something like this:
 
 ```bash
     Flow@6260[I]:🎉 Flow is ready to use!                                           
@@ -213,9 +211,11 @@ Finally it's time to see what we can get from our service. Start a client and tr
 from jina import Client, Document, DocumentArray
 from jina.types.request.data import Response
 
-def print_matches(resp: Response):  # the callback function invoked when task is done
+# the callback function invoked when task is done
+def print_matches(resp: Response):
    
-    for idx, d in enumerate(resp.docs[0].matches[:3]):  # print top-3 matches
+    # print top-3 matches for first doc
+    for idx, d in enumerate(resp.docs[0].matches[:3]):
         print(f'[{idx}]{d.scores["cosine"].value:2f}')
 
 
@@ -231,8 +231,19 @@ def preprocess(doc):
 
 data.apply(preprocess)
 
-c = Client(protocol='http', port=12345)  # connect to localhost:12345
+# connect to localhost:12345
+c = Client(protocol='http', port=12345)
 c.post('/search', inputs=process_document(), on_done=print_matches)
 ```
 
-Congratulations! You have implemented the pipeline which inlcudes finetuning model, converting to ONNX and deploying in Jina Flow.
+And outputs will be like this:
+
+```bash
+[0]0.000001
+[1]0.080417
+[2]0.115125
+```
+
+The first column is the index of images and the second column is the cosine distance.
+
+Congratulations! You have implemented the pipeline which includes finetuning the model, converting to ONNX and deploying in Jina Flow.
