@@ -41,7 +41,6 @@ def test_trim_fail_given_unexpected_layer_idx(
             model=torch_model,
             input_size=input_size,
             input_dtype=input_dtype,
-            device='cuda',
         )
         paddle_tailor.to_embedding_model(
             freeze=False,
