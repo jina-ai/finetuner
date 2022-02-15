@@ -44,18 +44,6 @@ def test_to_embedding_model(tf_model, layer_name, expected_output_shape):
     assert model.output_shape == expected_output_shape
 
 
-@pytest.mark.gpu
-def test_to_embedding_model_with_cuda_tensor(tf_simple_cnn_model):
-    device = tf.device('gpu')
-
-    model = tf_simple_cnn_model.to(device)
-
-    keras_tailor = KerasTailor(model, device='cuda')
-
-    model = keras_tailor.to_embedding_model()
-    assert model
-
-
 def test_weights_preserved_given_pretrained_model(tf_vgg16_cnn_model):
     weights = tf_vgg16_cnn_model.layers[0].get_weights()
     keras_tailor = KerasTailor(tf_vgg16_cnn_model)

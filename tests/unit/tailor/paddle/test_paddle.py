@@ -225,8 +225,6 @@ def test_to_embedding_model_with_cuda_tensor(paddle_simple_cnn_model):
 
         model = paddle_tailor.to_embedding_model()
 
-    assert model
-
 
 def test_paddle_lstm_model_parser():
     user_model = paddle.nn.Sequential(
