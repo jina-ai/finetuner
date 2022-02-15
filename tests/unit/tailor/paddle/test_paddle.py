@@ -216,7 +216,8 @@ def test_to_embedding_model(
 @pytest.mark.gpu
 def test_to_embedding_model_with_cuda_tensor(paddle_simple_cnn_model):
 
-    model = paddle_simple_cnn_model.to(paddle.CUDAPlace(0))
+    model = paddle_simple_cnn_model
+    model.to(paddle.CUDAPlace(0))
 
     with pytest.raises(DeviceError):
         paddle_tailor = PaddleTailor(
