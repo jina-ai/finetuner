@@ -3,17 +3,17 @@
 Imagine a scenario where you successfully used Finetuner to finetune a model on your search problem using data from the respective domain. What comes next?
 
 Naturally, you would want to deploy your embedding model in a service and use it to
-encode data as part of a bigger search application. Jina's [core framework](https://docs.jina.ai/)
+encode data as part of a bigger search application. [Jina](https://docs.jina.ai/)
 provides the infrastructure layer to help you build and deploy neural search components.
 By implementing custom executors or using existing ones from [Jina Hub](https://hub.jina.ai/)
 you can define the building blocks of your search application and glue everything
 together in a fully-fledged search pipeline.
 
-To use your model with Jina, you would have to build a new executor tailored to your model and upload it to the hub. You can then use a Jina Flow to deploy your search
+To use your model with Jina, you would have to build a new `Executor` tailored to your model and upload it to Jina Hub. You can then use a Jina `Flow` to deploy your search
 application locally or in the cloud using kubernetes.
 
-It is difficult to provide a unified executor that can support all models trained with finetuner,
-since finetuner supports different computational frameworks and each model differs in terms
+It is difficult to provide a unified Executor that can support all models trained with Finetuner,
+since Finetuner supports different computational frameworks and each model differs in terms
 of pre-processing required, input type etc.
 
 There is an alternative though, that can be useful for standardizing your deployment
@@ -23,18 +23,17 @@ TensorFlow or PaddlePaddle. The ONNX format is an open standard for defining
 neural network architectures. You can find out more in the [ONNX webpage](https://onnx.ai/).
 
 After converting a trained model to the ONNX format, you can use the
-[ONNX encoder](https://hub.jina.ai/executor/2cuinbko) from Jina Hub to deploy your embedding
-model. The encoder simply loads your embedding model in ONNX format and uses the ONNX
-runtime for running inference. The document tensors are fed to the ONNX model as input
+[ONNX encoder](https://hub.jina.ai/executor/2cuinbko) from Jina Hub to deploy your `embedding
+model`. The encoder simply loads your embedding model in ONNX format and uses the ONNX
+runtime for inference. The document tensors are fed to the ONNX model as input
 and the output NumPy vectors are assigned to the documents as embeddings.
 
 The ONNX encoder takes care of the embedding part and the only thing left is to add a custom
-executor for pre-processing in case there is the need for one. Additionally, you gain
-a boost in efficiency, since the conversion to ONNX already optimizes the model in various
-ways.
+`Executor` for pre-processing in case there is the need for one. Additionally, you gain
+a boost in efficiency, since the conversion to ONNX already optimizes the model based on the platform/hardware device.
 
 This tutorial will walk you through a simple model finetuning and how you can convert to
-ONNX and use the ONNX encoder to deploy a Jina Flow.
+ONNX and use the `ONNXEncoder` to deploy a Jina `Flow`.
 
 ````{info}
 Jina, onnx, torch and torchvision are required to run this example. You can install the packages using:
@@ -52,10 +51,10 @@ Let's fine-tune a ResNet18 on a customized CelebA dataset.
 `'./img_align_celeba'`.
 
 ```python
-import finetuner as ft
 import torchvision
 from docarray import DocumentArray
 
+import finetuner as ft
 
 data = DocumentArray.from_files('img_align_celeba/*.jpg')
 
@@ -125,7 +124,7 @@ original, it's time to deploy it 🚀.
 
 ## Deploying using the ONNX Encoder
 
-You have already finetuned your own model and transferred it to ONNX format. Let's start deploying in the Jina flow. If you are not familiar with Jina-Hub or Jina flow, check this:
+You have already finetuned your own model and transferred it to ONNX format. Let's start deploying in the Jina flow. If you are not familiar with Jina Hub or Jina `Flow`, check this:
 [Use Hub Executor](https://docs.jina.ai/advanced/hub/use-hub-executor/)
 [Use Jina Flow](https://docs.jina.ai/fundamentals/flow/)
 
@@ -133,7 +132,7 @@ Here are the steps you can follow:
 
 ### Add ONNXEncoder to Jina flow
 
-We already have an ONNX encoder on Jina-Hub, let's add `ONNXEncoder` to Jina flow:
+We already have an ONNX encoder on Jina Hub, let's add `ONNXEncoder` to Jina `Flow`:
 
 using docker image:
 
@@ -158,24 +157,27 @@ f = Flow().add(uses='jinahub://ONNXEncoder',
 ### Complete the flow by adding indexer and starting the service
 
 ```python
-from jina import DocumentArray, Executor, requests, Flow
 from typing import Optional
+
 import numpy as np
+from docarray import Document, DocumentArray
+
+from jina import Executor, Flow, requests
 
 
 class SimpleIndexer(Executor):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._dam = DocumentArray()
+        self._da = DocumentArray()
 
     @requests(on='/index')
     def index(self, docs: DocumentArray, **kwargs):
-        self._dam.extend(docs)
+        self._da.extend(docs)
 
     @requests(on='/search')
     def search(self, docs: DocumentArray, **kwargs):
-        docs.match(self._dam)
+        docs.match(self._da)
         
 
 f = Flow(port_expose=12345, 
@@ -208,7 +210,9 @@ which means that the service has been successfully started.
 Finally it's time to see what we can get from our service. Start a client and try to query using the service we have just built. 
 
 ```python
-from jina import Client, Document, DocumentArray
+from docarray import Document, DocumentArray
+
+from jina import Client
 from jina.types.request.data import Response
 
 # the callback function invoked when task is done
@@ -233,7 +237,7 @@ data.apply(preprocess)
 
 # connect to localhost:12345
 c = Client(protocol='http', port=12345)
-c.post('/search', inputs=process_document(), on_done=print_matches)
+c.post('/search', inputs=data, on_done=print_matches)
 ```
 
 And outputs will be like this:
@@ -246,4 +250,4 @@ And outputs will be like this:
 
 The first column is the index of images and the second column is the cosine distance.
 
-Congratulations! You have implemented the pipeline which includes finetuning the model, converting to ONNX and deploying in Jina Flow.
+Congratulations! You have implemented the pipeline which includes finetuning the model, converting to ONNX and deploying in Jina `Flow`.
