@@ -2,17 +2,17 @@
 
 Imagine a scenario where you successfully used Finetuner to finetune a model on your search problem using data from the respective domain. What comes next?
 
-Naturally, you would want to deploy your embedding model in a service and use it to
+Naturally, you would want to deploy your {term}`embedding model` in a service and use it to
 encode data as part of a bigger search application. [Jina](https://docs.jina.ai/)
 provides the infrastructure layer to help you build and deploy neural search components.
-By implementing custom executors or using existing ones from [Jina Hub](https://hub.jina.ai/)
+By implementing custom `Executor` or using existing ones from [Jina Hub](https://hub.jina.ai/)
 you can define the building blocks of your search application and glue everything
 together in a fully-fledged search pipeline.
 
 To use your model with Jina, you would have to build a new `Executor` tailored to your model and upload it to Jina Hub. You can then use a Jina `Flow` to deploy your search
 application locally or in the cloud using kubernetes.
 
-It is difficult to provide a unified Executor that can support all models trained with Finetuner,
+It is difficult to provide a unified `Executor` that can support all models trained with Finetuner,
 since Finetuner supports different computational frameworks and each model differs in terms
 of pre-processing required, input type etc.
 
@@ -23,12 +23,12 @@ TensorFlow or PaddlePaddle. The ONNX format is an open standard for defining
 neural network architectures. You can find out more in the [ONNX webpage](https://onnx.ai/).
 
 After converting a trained model to the ONNX format, you can use the
-[ONNX encoder](https://hub.jina.ai/executor/2cuinbko) from Jina Hub to deploy your `embedding
-model`. The encoder simply loads your embedding model in ONNX format and uses the ONNX
-runtime for inference. The document tensors are fed to the ONNX model as input
-and the output NumPy vectors are assigned to the documents as embeddings.
+[ONNXEncoder](https://hub.jina.ai/executor/2cuinbko) from Jina Hub to deploy your {term}`embedding
+model`. The encoder simply loads your {term}`embedding model` in ONNX format and uses the ONNX
+runtime for inference. The `Document` tensors are fed to the ONNX model as input
+and the output NumPy vectors are assigned to the `Document` as embeddings.
 
-The ONNX encoder takes care of the embedding part and the only thing left is to add a custom
+The `ONNXEncoder` takes care of the embedding part and the only thing left is to add a custom
 `Executor` for pre-processing in case there is the need for one. Additionally, you gain
 a boost in efficiency, since the conversion to ONNX already optimizes the model based on the platform/hardware device.
 
@@ -86,7 +86,7 @@ tuned_model = ft.fit(
 ```
 
 We can now export the model to the ONNX format, using the `to_onnx` method provided
-by finetuner. The `onnx` package is required to use this functionality. Also, if
+by Finetuner. The `onnx` package is required to use this functionality. Also, if
 you are using TensorFlow or PaddlePaddle you will need to install additional packages
 for the ONNX conversion. Specifically you will need: 
 [tf2onnx](https://github.com/onnx/tensorflow-onnx) for TensorFlow and
@@ -122,17 +122,17 @@ Now that we have our model exported and have verified that it has the same behav
 original, it's time to deploy it 🚀.
 
 
-## Deploying using the ONNX Encoder
+## Deploying using the `ONNXEncoder`
 
-You have already finetuned your own model and transferred it to ONNX format. Let's start deploying in the Jina flow. If you are not familiar with Jina Hub or Jina `Flow`, check this:
+You have already finetuned your own model and transferred it to ONNX format. Let's start deploying in the Jina `Flow`. If you are not familiar with Jina Hub or Jina `Flow`, check this:
 [Use Hub Executor](https://docs.jina.ai/advanced/hub/use-hub-executor/)
 [Use Jina Flow](https://docs.jina.ai/fundamentals/flow/)
 
 Here are the steps you can follow:
 
-### Add ONNXEncoder to Jina flow
+### Add `ONNXEncoder` to Jina `Flow`
 
-We already have an ONNX encoder on Jina Hub, let's add `ONNXEncoder` to Jina `Flow`:
+We already have `ONNXEncoder` on Jina Hub, let's add `ONNXEncoder` to Jina `Flow`:
 
 using docker image:
 
@@ -154,7 +154,7 @@ f = Flow().add(uses='jinahub://ONNXEncoder',
 
 `model_path` is the path of the ONNX model you exported.
 
-### Complete the flow by adding indexer and starting the service
+### Complete the `Flow` by adding indexer and starting the service
 
 ```python
 from typing import Optional
