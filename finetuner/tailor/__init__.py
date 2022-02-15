@@ -31,6 +31,7 @@ def to_embedding_model(
     input_dtype: str = 'float32',
     freeze: Union[bool, List[str]] = False,
     projection_head: Optional['AnyDNN'] = None,
+    device: Optional[str] = 'cpu',
     **kwargs
 ) -> 'AnyDNN':
     """Convert a general model from :py:attr:`.model` to an embedding model.
@@ -43,10 +44,12 @@ def to_embedding_model(
     :param input_dtype: The input data type of the DNN model.
     :param freeze: if set as True, will freeze all layers before :py:`attr`:`layer_name`. If set as list of str, will freeze layers by names.
     :param projection_head: Attach a module at the end of model, this module should be always trainable.
+    :param device: The device to which to move the model. Supported options are
+            ``"cpu"`` and ``"cuda"`` (for GPU).
     """
     ft = _get_tailor_class(model)
 
-    return ft(model, input_size, input_dtype).to_embedding_model(
+    return ft(model, input_size, input_dtype, device=device).to_embedding_model(
         layer_name=layer_name,
         projection_head=projection_head,
         freeze=freeze,

@@ -19,6 +19,8 @@ class BaseTailor(abc.ABC):
         :param input_size: a sequence of integers defining the shape of the input tensor. Note, batch size is *not* part
             of ``input_size``. It is required for :py:class:`PytorchTailor` and  :py:class:`PaddleTailor`, but not :py:class:`C`
         :param input_dtype: the data type of the input tensor.
+        :param device: The device to which to move the model. Supported options are
+            ``"cpu"`` and ``"cuda"`` (for GPU).
         """
         self._model = model
 
