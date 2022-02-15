@@ -48,11 +48,11 @@ def test_to_embedding_model(tf_model, layer_name, expected_output_shape):
 def test_to_embedding_model_with_cuda_tensor(tf_simple_cnn_model):
     device = tf.device('gpu')
 
-    keras_tailor = KerasTailor(device='cuda')
-
     model = tf_simple_cnn_model.to(device)
 
-    model = keras_tailor.to_embedding_model(model)
+    keras_tailor = KerasTailor(model, device='cuda')
+
+    model = keras_tailor.to_embedding_model()
     assert model
 
 

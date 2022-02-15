@@ -216,12 +216,14 @@ def test_to_embedding_model(
 @pytest.mark.gpu
 def test_to_embedding_model_with_cuda_tensor(paddle_simple_cnn_model):
 
-    pytorch_tailor = PaddleTailor(
-        input_size=(1, 28, 28), input_dtype='float32', device='cuda'
-    )
     model = paddle_simple_cnn_model.to(paddle.CUDAPlace(0))
+
     with pytest.raises(DeviceError):
-        model = pytorch_tailor.to_embedding_model(model)
+        paddle_tailor = PaddleTailor(
+            model, input_size=(1, 28, 28), input_dtype='float32', device='cuda'
+        )
+
+        model = paddle_tailor.to_embedding_model()
 
     assert model
 

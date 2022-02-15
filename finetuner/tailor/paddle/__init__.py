@@ -208,7 +208,7 @@ class PaddleTailor(BaseTailor):
     def _set_device(self, device: str) -> None:
         self._device = get_device_paddle(device)
         for param in self._model.parameters():
-            if param.place == paddle.CUDAPlace(0):
+            if str(param.place) == 'CUDAPlace(0)':
                 raise DeviceError('Paddle models are expected to be placed on the CPU')
 
 
