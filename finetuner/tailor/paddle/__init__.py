@@ -209,7 +209,9 @@ class PaddleTailor(BaseTailor):
         self._device = get_device_paddle(device)
         for param in self._model.parameters():
             if str(param.place) == 'CUDAPlace(0)':
-                raise DeviceError('Paddle models are expected to be placed on the CPU')
+                raise DeviceError(
+                    'Tailoring a PaddlePaddle model placed on the GPU is currently not supported. Try placing to CPU instead.'
+                )
 
 
 class _Identity(nn.Layer):

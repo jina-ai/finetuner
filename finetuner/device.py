@@ -17,7 +17,7 @@ def get_device_pytorch(device: str):
 def to_device_pytorch(
     inputs: Union[AnyTensor, Mapping[str, AnyTensor], Sequence[AnyTensor]], device
 ) -> Union[AnyTensor, Dict[str, AnyTensor], List[AnyTensor]]:
-    """Map various of input type to device.
+    """Maps various input types to device.
     :param inputs: Inputs to be placed onto device.
     :param device: The torch device to be placed on.
     :return: The inputs on the specified device.
@@ -54,7 +54,7 @@ def get_device_paddle(device: str):
 def to_device_paddle(
     inputs: Union[AnyTensor, Mapping[str, AnyTensor], Sequence[AnyTensor]], device
 ) -> Union[AnyTensor, Dict[str, AnyTensor], List[AnyTensor]]:
-    """Map various of input type to device.
+    """Maps various input types to device.
     :param inputs: Inputs to be placed onto device.
     :param device: The paddle device to be placed on.
     :return: The inputs on the specified device.
