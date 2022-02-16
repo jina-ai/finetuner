@@ -6,6 +6,7 @@ import numpy as np
 import torch
 from torch import nn
 
+from ...device import get_device_pytorch, to_device_pytorch
 from ...helper import is_seq_int
 from ..base import BaseTailor
 
@@ -82,6 +83,7 @@ class PytorchTailor(BaseTailor):
             torch.rand(2, *in_size).type(dt)
             for in_size, dt in zip(self._input_size, dtypes)
         ]
+        x = to_device_pytorch(x, self._device)
 
         # create properties
         summary = OrderedDict()
@@ -197,3 +199,7 @@ class PytorchTailor(BaseTailor):
             return embed_model_with_projection_head
 
         return model
+
+    def _set_device(self, device: str) -> None:
+        self._device = get_device_pytorch(device)
+        self._model = self._model.to(self._device)

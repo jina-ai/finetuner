@@ -7,6 +7,7 @@ from tensorflow.keras.optimizers import Optimizer
 from tensorflow.keras.optimizers.schedules import LearningRateSchedule
 
 from ... import __default_tag_key__
+from ...device import get_device_keras
 from ..base import BaseLoss, BaseTuner
 from ..dataset import ClassDataset, SessionDataset
 from ..dataset.datasets import InstanceDataset
@@ -153,7 +154,7 @@ class KerasTuner(
         self.state = TunerState(num_epochs=epochs)
         self._trigger_callbacks('on_fit_begin')
 
-        with get_device(self._device_name):
+        with get_device_keras(self._device_name):
             for epoch in range(epochs):
 
                 # Setting here as re-shuffling can change number of batches
@@ -194,16 +195,3 @@ class KerasTuner(
             model.
         """
         self.embed_model.save(*args, **kwargs)
-
-
-def get_device(device: str):
-    """Get tensorflow compute device.
-
-    :param device: device name.
-    """
-    # translate our own alias into framework-compatible ones
-    if device == 'cuda':
-        device = '/GPU:0'
-    elif device == 'cpu':
-        device = '/CPU:0'
-    return tf.device(device)

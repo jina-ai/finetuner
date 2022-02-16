@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 import paddle
 from paddle import nn
@@ -8,6 +8,7 @@ from paddle.optimizer import Adam, Optimizer
 from paddle.optimizer.lr import LRScheduler
 
 from ... import __default_tag_key__
+from ...device import get_device_paddle, to_device_paddle
 from ..base import BaseTuner
 from ..state import TunerState
 from . import losses
@@ -17,18 +18,6 @@ if TYPE_CHECKING:
     from docarray import DocumentArray
 
     from ...helper import CollateFnType, PreprocFnType
-
-
-def _to_device(
-    inputs: Union[paddle.Tensor, Mapping[str, paddle.Tensor], Sequence[paddle.Tensor]],
-    device,
-) -> Union[paddle.Tensor, Dict[str, paddle.Tensor], List[paddle.Tensor]]:
-    if isinstance(inputs, paddle.Tensor):
-        return paddle.to_tensor(inputs, place=device)
-    elif isinstance(inputs, Mapping):
-        return {k: paddle.to_tensor(v, place=device) for k, v in inputs.items()}
-    elif isinstance(inputs, Sequence):
-        return [paddle.to_tensor(x, place=device) for x in inputs]
 
 
 class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
@@ -86,7 +75,7 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
 
     def _move_model_to_device(self):
         """Move the model to device and set device."""
-        self.device = get_device(self._device_name)
+        self.device = get_device_paddle(self._device_name)
         self._embed_model.to(device=self.device)
 
     def _default_configure_optimizer(self, model: nn.Layer) -> Optimizer:
@@ -106,8 +95,8 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
 
             self._trigger_callbacks('on_train_batch_begin')
 
-            inputs = _to_device(inputs, self.device)
-            labels = _to_device(labels, self.device)
+            inputs = to_device_paddle(inputs, self.device)
+            labels = to_device_paddle(labels, self.device)
 
             embeddings = self.embed_model(inputs)
             loss = self._loss(embeddings, labels)
@@ -132,8 +121,8 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
             self.state.batch_index = idx
             self._trigger_callbacks('on_val_batch_begin')
 
-            inputs = _to_device(inputs, self.device)
-            labels = _to_device(labels, self.device)
+            inputs = to_device_paddle(inputs, self.device)
+            labels = to_device_paddle(labels, self.device)
 
             embeddings = self.embed_model(inputs)
             loss = self._loss(embeddings, labels)
@@ -222,19 +211,3 @@ class PaddleTuner(BaseTuner[nn.Layer, DataLoader, Optimizer, LRScheduler]):
         :param kwargs: Keyword arguments to pass to ``paddle.save`` function.
         """
         paddle.save(self.embed_model.state_dict(), *args, **kwargs)
-
-
-def get_device(device: str):
-    """Get Paddle compute device.
-
-    :param device: device name.
-    """
-    # translate our own alias into framework-compatible ones
-    if device == 'cuda':
-        return paddle.CUDAPlace(0)
-    elif device == 'cpu':
-        return paddle.CPUPlace()
-    else:
-        raise ValueError(
-            f'Device {device} not recognized, only "cuda" and "cpu" are accepted'
-        )

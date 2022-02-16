@@ -46,12 +46,12 @@ def _set_embeddings_keras(
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
 ):
-    from .tuner.keras import get_device
+    from .device import get_device_keras
 
     if not collate_fn:
         collate_fn = lambda x: np.array(x)  # noqa
 
-    device = get_device(device)
+    device = get_device_keras(device)
     with device:
         for b in docs.batch(batch_size):
             if preprocess_fn:
@@ -70,9 +70,9 @@ def _set_embeddings_torch(
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
 ):
-    from .tuner.pytorch import get_device
+    from .device import get_device_pytorch
 
-    device = get_device(device)
+    device = get_device_pytorch(device)
 
     import torch
 
@@ -102,9 +102,9 @@ def _set_embeddings_paddle(
     preprocess_fn: Optional['PreprocFnType'] = None,
     collate_fn: Optional['CollateFnType'] = None,
 ):
-    from .tuner.paddle import get_device
+    from .device import get_device_paddle
 
-    device = get_device(device)
+    device = get_device_paddle(device)
 
     import paddle
 

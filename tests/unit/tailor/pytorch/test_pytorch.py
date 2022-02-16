@@ -116,6 +116,20 @@ def test_to_embedding_model(
     assert list(out.size()) == expected_output_shape
 
 
+@pytest.mark.gpu
+def test_to_embedding_model_with_cuda_tensor(torch_simple_cnn_model):
+    device = torch.device('cuda:0')
+
+    model = torch_simple_cnn_model.to(device)
+
+    pytorch_tailor = PytorchTailor(
+        model, input_size=(1, 28, 28), input_dtype='float32', device='cuda'
+    )
+
+    model = pytorch_tailor.to_embedding_model()
+    assert model
+
+
 @pytest.mark.parametrize(
     'torch_model, layer_name, input_size, input_dtype',
     [

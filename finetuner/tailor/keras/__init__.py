@@ -123,3 +123,6 @@ class KerasTailor(BaseTailor):
             model = tf.keras.Model(model.input, x)
 
         return model
+
+    def _set_device(self, device: str) -> None:
+        ...
