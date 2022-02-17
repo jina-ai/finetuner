@@ -93,6 +93,7 @@ get-started/swiss-roll/index
 get-started/totally-looks-like/index
 get-started/clinc150/index
 get-started/3d-mesh/index
+get-started/onnx/index
 ```
 
 
