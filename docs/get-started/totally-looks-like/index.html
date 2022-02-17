@@ -31,14 +31,14 @@
 <script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.3"></script>
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Finetuning a Transformer for Intent Classification" href="../clinc150/" /><link rel="prev" title="Finetuning MLP on Swiss Roll Dataset" href="../swiss-roll/" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.14.1"/>
         <title>Finetuning ResNet50 on Totally Looks Like Dataset - Finetuner 0.4.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=a8f031f701c6af50c9919b48f173a5785af06fac" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.59c74d8c95b765a7fd995ac71d459ebe.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/docbot.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -79,17 +79,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke="none" d="M0 0h24v24H0z" />
-      <line x1="4" y1="6" x2="20" y2="6" />
-      <line x1="10" y1="12" x2="20" y2="12" />
-      <line x1="6" y1="18" x2="20" y2="18" />
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
     </svg>
   </symbol>
   <symbol id="svg-menu" viewBox="0 0 24 24">
     <title>Menu</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
       <line x1="3" y1="12" x2="21" y2="12"></line>
       <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -98,14 +94,14 @@
   </symbol>
   <symbol id="svg-arrow-right" viewBox="0 0 24 24">
     <title>Expand</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
       <polyline points="9 18 15 12 9 6"></polyline>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
     <title>Light mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
       <circle cx="12" cy="12" r="5"></circle>
       <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -120,7 +116,7 @@
   </symbol>
   <symbol id="svg-moon" viewBox="0 0 24 24">
     <title>Dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
@@ -128,7 +124,7 @@
   </symbol>
   <symbol id="svg-sun-half" viewBox="0 0 24 24">
     <title>Auto light/dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <circle cx="12" cy="12" r="9" />
@@ -221,6 +217,7 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Finetuning ResNet50 on Totally Looks Like Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../clinc150/">Finetuning a Transformer for Intent Classification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../3d-mesh/">Finetuning PointConv on ModelNet40 Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../onnx/">Using ONNX to deploy a finetuned model</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
@@ -310,6 +307,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.state/">finetuner.tuner.state module</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.device/">finetuner.device module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.embedding/">finetuner.embedding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.helper/">finetuner.helper module</a></li>
@@ -340,6 +338,7 @@
     </ul>
 </div>
 </div>
+
             </div>
             
         </div>
@@ -373,7 +372,7 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="finetuning-resnet50-on-totally-looks-like-dataset">
-<h1>Finetuning ResNet50 on Totally Looks Like Dataset<a class="headerlink" href="#finetuning-resnet50-on-totally-looks-like-dataset" title="Permalink to this headline">¶</a></h1>
+<h1>Finetuning ResNet50 on Totally Looks Like Dataset<a class="headerlink" href="#finetuning-resnet50-on-totally-looks-like-dataset" title="Permalink to this headline">#</a></h1>
 <p>In this tutorial, we will use Finetuner to finetune embeddings on <a class="reference external" href="https://sites.google.com/view/totally-looks-like-dataset">Totally Looks Like dataset</a> (TLL) dataset.
 The dataset consists of 6016 pairs of images (12032 in total).</p>
 <div class="admonition tip">
@@ -388,12 +387,12 @@ The dataset consists of 6016 pairs of images (12032 in total).</p>
 <li><p>it is a relatively small dataset and doesn’t require training a large network from scratch. So we train only part of the ResNet-50 by freezing layers.</p></li>
 <li><p>it consists of pairs of images that can be formed as positive pairs (same classes). A random image can be considered as a negative pair. We construct <code class="docutils literal notranslate"><span class="pre">triplet</span></code> and use the <code class="docutils literal notranslate"><span class="pre">TripletLoss</span></code>.</p></li>
 </ul>
-<p>After fine-tuning, the distance between positive pairs is expected to be pulled closer, while the distance between positive and negative pairs is expected to be pushed away.</p>
+<p>After finetuning, the distance between positive pairs is expected to be pulled closer, while the distance between positive and negative pairs is expected to be pushed away.</p>
 <figure class="align-default">
 <a class="reference internal image-reference" href="../../_images/result.png"><img alt="../../_images/result.png" src="../../_images/result.png" style="width: 70%;"/></a>
 </figure>
 <section id="data-preparation">
-<h2>Data preparation<a class="headerlink" href="#data-preparation" title="Permalink to this headline">¶</a></h2>
+<h2>Data preparation<a class="headerlink" href="#data-preparation" title="Permalink to this headline">#</a></h2>
 <p>We will download <code class="docutils literal notranslate"><span class="pre">left.zip</span></code> and <code class="docutils literal notranslate"><span class="pre">right.zip</span></code>, as stated before,
 each of them consists of 6016 images which can be formed into pairs based on the same file name.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install gdown
@@ -407,7 +406,7 @@ unzip left.zip
 unzip right.zip
 </pre></div>
 </div>
-<p>Afterward, we load all images from unzipped <code class="docutils literal notranslate"><span class="pre">left</span></code> and <code class="docutils literal notranslate"><span class="pre">right</span></code> folders and turn them into sorted order as DocArray <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>.
+<p>Afterwards, we load all images from unzipped <code class="docutils literal notranslate"><span class="pre">left</span></code> and <code class="docutils literal notranslate"><span class="pre">right</span></code> folders and turn them into sorted order as DocArray <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>.
 80% of the dataset will be used to train the machine learning model.
 While 20% of the dataset will be used to evaluate the quality of embeddings on the search task.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -425,12 +424,12 @@ While 20% of the dataset will be used to evaluate the quality of embeddings on t
 </pre></div>
 </div>
 <section id="preparing-training-data">
-<h3>Preparing training data<a class="headerlink" href="#preparing-training-data" title="Permalink to this headline">¶</a></h3>
+<h3>Preparing training data<a class="headerlink" href="#preparing-training-data" title="Permalink to this headline">#</a></h3>
 <p>After loading data into DocArray <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>, we can prepare documents for training.
-Finetuner will do the most challenging work for you, all you need to do is to:</p>
+Finetuner will do the most challenging work for you, all you need to do is:</p>
 <ol class="simple">
 <li><p>Assign a label into each <code class="docutils literal notranslate"><span class="pre">Document</span></code> named <code class="docutils literal notranslate"><span class="pre">finetuner_label</span></code> as its class name.</p></li>
-<li><p>Perform pre-processing for the document. In this case, we load the image from URI, normalize the image and reshape the image from <code class="docutils literal notranslate"><span class="pre">H,</span> <span class="pre">W,</span> <span class="pre">C</span></code> to <code class="docutils literal notranslate"><span class="pre">C,</span> <span class="pre">H</span> <span class="pre">W</span></code> will <code class="docutils literal notranslate"><span class="pre">C</span></code> is the color channel of the image.</p></li>
+<li><p>Perform pre-processing for the document. In this case, we load the image from URI, normalize the image and reshape it from <code class="docutils literal notranslate"><span class="pre">H,</span> <span class="pre">W,</span> <span class="pre">C</span></code> to <code class="docutils literal notranslate"><span class="pre">C,</span> <span class="pre">H</span> <span class="pre">W</span></code> will <code class="docutils literal notranslate"><span class="pre">C</span></code> is the color channel of the image.</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">assign_label_and_preprocess</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
     <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">'finetuner_label'</span><span class="p">]</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
@@ -442,9 +441,9 @@ Finetuner will do the most challenging work for you, all you need to do is to:</
 </section>
 </section>
 <section id="choosing-the-base-model">
-<h2>Choosing the base model<a class="headerlink" href="#choosing-the-base-model" title="Permalink to this headline">¶</a></h2>
-<p>We create a pre-trained ResNet-50 model from torchvision, and since we want to learn a better <code class="docutils literal notranslate"><span class="pre">embedding</span></code>,
-the first thing is to see which layer is suitable for use as an <code class="docutils literal notranslate"><span class="pre">embedding</span> <span class="pre">layer</span></code>.
+<h2>Choosing the base model<a class="headerlink" href="#choosing-the-base-model" title="Permalink to this headline">#</a></h2>
+<p>We create a pre-trained ResNet-50 model from <code class="docutils literal notranslate"><span class="pre">torchvision</span></code>, and since we want to learn a better <code class="docutils literal notranslate"><span class="pre">embedding</span></code>,
+the first thing we need is to see which layer is suitable to use as an <code class="docutils literal notranslate"><span class="pre">embedding</span> <span class="pre">layer</span></code>.
 You can call <code class="docutils literal notranslate"><span class="pre">finetuner.display(model,</span> <span class="pre">input_size)</span></code> to plot the model architecture.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span> <span class="k">as</span> <span class="nn">ft</span>
 <span class="kn">import</span> <span class="nn">torchvision</span>
@@ -454,7 +453,7 @@ You can call <code class="docutils literal notranslate"><span class="pre">finetu
 </pre></div>
 </div>
 <p>You can get more information in <a class="reference external" href="https://finetuner.jina.ai/components/tailor/">Tailor docs</a>.
-Since the model is pre-trained on ImageNet on a classification task, so the output <code class="docutils literal notranslate"><span class="pre">fc</span></code> layer should <strong>not</strong> be considered as <code class="docutils literal notranslate"><span class="pre">embedding</span> <span class="pre">layer</span></code>.
+Since the model is pre-trained on ImageNet on a classification task, the output <code class="docutils literal notranslate"><span class="pre">fc</span></code> layer should <strong>not</strong> be considered a <code class="docutils literal notranslate"><span class="pre">embedding</span> <span class="pre">layer</span></code>.
 We can use the pooling layer <code class="docutils literal notranslate"><span class="pre">adaptiveavgpool2d_173</span></code> as the output of the <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a>.
 This layer generates a 2048 dimensional dense embedding as output.</p>
 <div class="admonition tip">
@@ -464,14 +463,12 @@ In general, you have to remove the task-specific top from the pre-trained model.
 </div>
 </section>
 <section id="training">
-<h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
-<p>Model training is straitforward in finetuner.
-You’ll need to config several hyperparameters,
-plugin your model and training set, that’s it.</p>
-<p>The script below demonstrates how to combine <a class="reference internal" href="../../basics/glossary/#term-Tailor"><span class="xref std std-term">Tailor</span></a> + <a class="reference internal" href="../../basics/glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a> interface for model fine-tuning.
+<h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">#</a></h2>
+<p>Model training is straight forward in Finetuner.
+You’ll need to configure several hyperparameters, plug in your model and training set, and that’s it.</p>
+<p>The script below demonstrates how to combine <a class="reference internal" href="../../basics/glossary/#term-Tailor"><span class="xref std std-term">Tailor</span></a> + <a class="reference internal" href="../../basics/glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a> interface for model finetuning.
 The parameter above <code class="docutils literal notranslate"><span class="pre">to_embedding_model=True</span></code> are <a class="reference internal" href="../../basics/glossary/#term-Tuner"><span class="xref std std-term">Tuner</span></a> parameters, the rest are <a class="reference internal" href="../../basics/glossary/#term-Tailor"><span class="xref std std-term">Tailor</span></a> parameters.</p>
-<p>We save the returned <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a> as <code class="docutils literal notranslate"><span class="pre">tuned_model</span></code>,
-given an input image, at inference time, this model generates a <em>representation</em> of the image (2048 dimensional vectors).</p>
+<p>We save the returned <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a> as <code class="docutils literal notranslate"><span class="pre">tuned_model</span></code>, and give an input image at inference time. The model then generates a <em>representation</em> of the image (2048 dimensional vectors).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span> <span class="k">as</span> <span class="nn">ft</span>
 <span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch.losses</span> <span class="kn">import</span> <span class="n">TripletLoss</span>
 <span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch.miner</span> <span class="kn">import</span> <span class="n">TripletEasyHardMiner</span>
@@ -493,18 +490,18 @@ given an input image, at inference time, this model generates a <em>representati
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>But how does it work?:</p>
+<p>But how does it work?</p>
 <ol class="simple">
-<li><p>Finetuner will “look into” your labels defined in the <code class="docutils literal notranslate"><span class="pre">tag</span></code> of the DocArray <code class="docutils literal notranslate"><span class="pre">Document</span></code>, and find the positive sample and find a hard-negative (as we use <code class="docutils literal notranslate"><span class="pre">neg_strategy='hard''</span></code>) sample as triplets.</p></li>
+<li><p>Finetuner will look into your labels defined in the <code class="docutils literal notranslate"><span class="pre">tag</span></code> of the DocArray <code class="docutils literal notranslate"><span class="pre">Document</span></code>, find the positive sample and find a hard-negative (as we use <code class="docutils literal notranslate"><span class="pre">neg_strategy='hard''</span></code>) sample as triplets.</p></li>
 <li><p>Finetuner try to optimize the <code class="docutils literal notranslate"><span class="pre">TripletLoss</span></code>, aiming at pulling documents with the same classes closer, while pushing documents with different class away.</p></li>
 </ol>
 <p><img alt="metric_learning" src="../../_images/metric_learning.png"/></p>
 </section>
 <section id="evaluating-the-embedding-quality">
-<h2>Evaluating the embedding quality<a class="headerlink" href="#evaluating-the-embedding-quality" title="Permalink to this headline">¶</a></h2>
+<h2>Evaluating the embedding quality<a class="headerlink" href="#evaluating-the-embedding-quality" title="Permalink to this headline">#</a></h2>
 <p>We’ll use <strong>hit@10</strong> to measure the quality of the representation on the search task.
 <strong>hit@10</strong> means for all the test data, how likely the positive <code class="docutils literal notranslate"><span class="pre">match</span></code> ranked within the top 10 matches with respect to the <code class="docutils literal notranslate"><span class="pre">query</span></code> Document.</p>
-<p>Remind that we have the <code class="docutils literal notranslate"><span class="pre">train_da</span></code> ready, now we need to perform the same preprocessing on test DocumentArray:</p>
+<p>Remember that we have the <code class="docutils literal notranslate"><span class="pre">train_da</span></code> ready, now we need to perform the same preprocessing on test <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">doc</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span><span class="o">.</span><span class="n">set_image_tensor_normalization</span><span class="p">()</span><span class="o">.</span><span class="n">set_image_tensor_channel_axis</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
@@ -515,7 +512,7 @@ given an input image, at inference time, this model generates a <em>representati
 <span class="n">test_right_da</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">preprocess</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>And we create embeddings on our test set using the fine-tuned model:</p>
+<p>And we create embeddings on our test set using the finetuned model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># use finetuned model to create embeddings， only test data</span>
 <span class="n">test_left_da</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">tuned_model</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">'cuda'</span><span class="p">)</span>
 <span class="n">test_right_da</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">tuned_model</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">'cuda'</span><span class="p">)</span>
@@ -523,7 +520,7 @@ given an input image, at inference time, this model generates a <em>representati
 </div>
 <p>Last but not least,
 we match <code class="docutils literal notranslate"><span class="pre">test_left_da</span></code> against <code class="docutils literal notranslate"><span class="pre">test_right_da</span></code>.</p>
-<p>You can consider <code class="docutils literal notranslate"><span class="pre">test_left_da</span></code> as user queries, while <code class="docutils literal notranslate"><span class="pre">test_right_da</span></code> is our indexed document collection.
+<p>You can consider <code class="docutils literal notranslate"><span class="pre">test_left_da</span></code> as user queries, and <code class="docutils literal notranslate"><span class="pre">test_right_da</span></code> as our indexed document collection.
 For each <code class="docutils literal notranslate"><span class="pre">test_left_da</span></code>, <code class="docutils literal notranslate"><span class="pre">match</span></code> function will find top-10 nearest embeddings in <code class="docutils literal notranslate"><span class="pre">test_right_da</span></code>.
 And we evaluate result with <strong>hit@10</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_left_da</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">test_right_da</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
@@ -541,11 +538,10 @@ And we evaluate result with <strong>hit@10</strong></p>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'hit@</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">:  finetuned: </span><span class="si">{</span><span class="n">hit_rate</span><span class="p">(</span><span class="n">test_left_da</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Compare fine-tuned model and pre-trained model,
-how much performance gain we get?
-We conducted an experiment using pre-trained ResNet50 on ImageNet, by chopping off the last classification layer,
+<p>Compare the finetuned model and pre-trained model, how much performance gain we get?</p>
+<p>We did an experiment using pretrained <code class="docutils literal notranslate"><span class="pre">ResNet50</span></code> on <code class="docutils literal notranslate"><span class="pre">ImageNet</span></code>, by chopping off the last classification layer,
 the rest of the model serves as a feature extractor.</p>
-<p>The result is demonstrated in the table below:</p>
+<p>The result are shown in the table below:</p>
 <div class="table-wrapper"><table border="1" class="docutils">
 <thead>
 <tr>
@@ -572,14 +568,14 @@ the rest of the model serves as a feature extractor.</p>
 </tr>
 </tbody>
 </table></div>
-<p>Now let’s look at some results that Finetuned model did good and pretrained ResNet50 did bad.</p>
+<p>Now let’s look at some results where <code class="docutils literal notranslate"><span class="pre">finetuned</span></code> model performed well and pretrained <code class="docutils literal notranslate"><span class="pre">ResNet50</span></code> performed bad.</p>
 <figure class="align-default">
 <img alt="../../_images/result-final1.png" src="../../_images/result-final1.png"/>
 </figure>
 <figure class="align-default">
 <img alt="../../_images/result-final2.png" src="../../_images/result-final2.png"/>
 </figure>
-<p>Here are some results in reverse: i.e. pretrained ResNet did “good” but Finetuned did “wrong”.</p>
+<p>Here are some results in reverse: i.e. pretrained <code class="docutils literal notranslate"><span class="pre">ResNet50</span></code> performed well but <code class="docutils literal notranslate"><span class="pre">finetuned</span></code> performed bad</p>
 <figure class="align-default">
 <img alt="../../_images/result-final3.png" src="../../_images/result-final3.png"/>
 </figure>
@@ -618,7 +614,7 @@ the rest of the model serves as a feature extractor.</p>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Feb 08, 2022.
+                    Last updated on Feb 17, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>

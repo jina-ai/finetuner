@@ -1,0 +1,688 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta property="og:title" content="Using ONNX to deploy a finetuned model" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://finetuner.jina.ai/get-started/onnx/index.html" />
+  <meta property="og:site_name" content="Finetuner 0.4.1 Documentation" />
+  <meta property="og:description" content="Imagine a scenario where you successfully used Finetuner to finetune a model on your search problem using data from the respective domain. What comes next? Naturally, you would want to deploy your embedding model in a service and use it to encode data as part of a bigger search application. Jina ..." />
+  <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
+  <meta property="og:image:alt" content="Finetuner 0.4.1 Documentation" />
+  <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description" content="Finetuner allows one to finetune any deep neural network for better embedding on search tasks.">
+<meta property="og:description" content="Finetuner allows one to finetune any deep neural network for better embedding on search tasks.">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1ESRNDCK35"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1ESRNDCK35');
+</script>
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.3"></script>
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="&lt;no title&gt;" href="../../basics/" /><link rel="prev" title="Finetuning PointConv on ModelNet40 Dataset" href="../3d-mesh/" />
+
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.14.1"/>
+        <title>Using ONNX to deploy a finetuned model - Finetuner 0.4.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=a8f031f701c6af50c9919b48f173a5785af06fac" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.59c74d8c95b765a7fd995ac71d459ebe.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/docbot.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+    <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+    <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+    <header class="mobile-header">
+        <div class="header-left">
+            <label class="nav-overlay-icon" for="__navigation">
+                <div class="visually-hidden">Toggle site navigation sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-menu"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+        <div class="header-center">
+            <a href="../../">
+                <div class="brand">Finetuner 0.4.1 documentation</div>
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="theme-toggle-container theme-toggle-header">
+                <button class="theme-toggle">
+                    <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                    <svg class="theme-icon-when-auto">
+                        <use href="#svg-sun-half"></use>
+                    </svg>
+                    <svg class="theme-icon-when-dark">
+                        <use href="#svg-moon"></use>
+                    </svg>
+                    <svg class="theme-icon-when-light">
+                        <use href="#svg-sun"></use>
+                    </svg>
+                </button>
+            </div>
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
+                <div class="visually-hidden">Toggle table of contents sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-toc"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+    </header>
+    <aside class="sidebar-drawer">
+        <div class="sidebar-container">
+            
+            <div class="sidebar-sticky"><a class="sidebar-brand" href="../../">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/logo-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a>
+<div class="sd-d-flex-row sd-align-major-spaced">
+  <a class="github-button" href="https://github.com/jina-ai/finetuner" data-icon="octicon-star" data-show-count="true" aria-label="Star jina-ai/finetuner on GitHub" style="opacity: 0;">Star</a>
+  
+</div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+    <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../swiss-roll/">Finetuning MLP on Swiss Roll Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../totally-looks-like/">Finetuning ResNet50 on Totally Looks Like Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clinc150/">Finetuning a Transformer for Intent Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3d-mesh/">Finetuning PointConv on ModelNet40 Dataset</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Using ONNX to deploy a finetuned model</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/fit/">One-liner <code class="docutils literal notranslate"><span class="pre">fit()</span></code></a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../basics/data-format/">Data Format</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/class-dataset/">Class Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/session-dataset/">Session Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../basics/datasets/instance-dataset/">Instance dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics/glossary/">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Components</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../components/overview/">Overview</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../components/tuner/">Tuner</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../components/tuner/loss/">Loss and Miners</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/tuner/callbacks/">Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/tuner/evaluation/">Evaluation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../components/tailor/">Tailor</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/finetuner/">finetuner package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.tailor/">finetuner.tailor package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tailor.keras/">finetuner.tailor.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tailor.keras.projection_head/">finetuner.tailor.keras.projection_head module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tailor.paddle/">finetuner.tailor.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tailor.paddle.projection_head/">finetuner.tailor.paddle.projection_head module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tailor.pytorch/">finetuner.tailor.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tailor.pytorch.projection_head/">finetuner.tailor.pytorch.projection_head module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tailor.base/">finetuner.tailor.base module</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.tuner/">finetuner.tuner package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.callback/">finetuner.tuner.callback package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.base/">finetuner.tuner.callback.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.best_model_checkpoint/">finetuner.tuner.callback.best_model_checkpoint module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.early_stopping/">finetuner.tuner.callback.early_stopping module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.evaluation/">finetuner.tuner.callback.evaluation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.progress_bar/">finetuner.tuner.callback.progress_bar module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.training_checkpoint/">finetuner.tuner.callback.training_checkpoint module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.callback.wandb_logger/">finetuner.tuner.callback.wandb_logger module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.dataset/">finetuner.tuner.dataset package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.base/">finetuner.tuner.dataset.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.datasets/">finetuner.tuner.dataset.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.dataset.samplers/">finetuner.tuner.dataset.samplers module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.keras/">finetuner.tuner.keras package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.keras.data/">finetuner.tuner.keras.data module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.keras.losses/">finetuner.tuner.keras.losses module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.keras.miner/">finetuner.tuner.keras.miner module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.miner/">finetuner.tuner.miner package</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.miner.base/">finetuner.tuner.miner.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.miner.mining_strategies/">finetuner.tuner.miner.mining_strategies module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.paddle/">finetuner.tuner.paddle package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.paddle.datasets/">finetuner.tuner.paddle.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.paddle.losses/">finetuner.tuner.paddle.losses module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.paddle.miner/">finetuner.tuner.paddle.miner module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/finetuner.tuner.pytorch/">finetuner.tuner.pytorch package</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.pytorch.datasets/">finetuner.tuner.pytorch.datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.pytorch.losses/">finetuner.tuner.pytorch.losses module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/finetuner.tuner.pytorch.miner/">finetuner.tuner.pytorch.miner module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.augmentation/">finetuner.tuner.augmentation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.base/">finetuner.tuner.base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.evaluation/">finetuner.tuner.evaluation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.onnx/">finetuner.tuner.onnx module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.tuner.state/">finetuner.tuner.state module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.device/">finetuner.device module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.embedding/">finetuner.embedding module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.helper/">finetuner.helper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.toydata/">finetuner.toydata module</a></li>
+</ul>
+</li>
+</ul>
+
+    <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
+    <ul>
+        <li class="toctree-l1">
+            <a class="reference external" href="https://docs.jina.ai">
+                <img class="sidebar-ecosys-logo only-light-line" src="../../_static/search-light.svg">
+                <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/search-dark.svg">
+                Jina</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/hub-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/hub-dark.svg">
+            Jina Hub</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="#">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/finetuner-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/finetuner-dark.svg">
+            Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
+            DocArray</a></li>
+    </ul>
+</div>
+</div>
+
+            </div>
+            
+        </div>
+    </aside>
+    <div class="main">
+        <div class="content">
+            <article role="main">
+                <div class="content-icon-container">
+                    <div class="theme-toggle-container theme-toggle-content">
+                        <button class="theme-toggle">
+                            <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                            <svg class="theme-icon-when-auto">
+                                <use href="#svg-sun-half"></use>
+                            </svg>
+                            <svg class="theme-icon-when-dark">
+                                <use href="#svg-moon"></use>
+                            </svg>
+                            <svg class="theme-icon-when-light">
+                                <use href="#svg-sun"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <label class="toc-overlay-icon toc-content-icon"
+                           for="__toc">
+                        <div class="visually-hidden">Toggle table of contents sidebar</div>
+                        <i class="icon">
+                            <svg>
+                                <use href="#svg-toc"></use>
+                            </svg>
+                        </i>
+                    </label>
+                </div>
+                <section class="tex2jax_ignore mathjax_ignore" id="using-onnx-to-deploy-a-finetuned-model">
+<h1>Using ONNX to deploy a finetuned model<a class="headerlink" href="#using-onnx-to-deploy-a-finetuned-model" title="Permalink to this headline">#</a></h1>
+<p>Imagine a scenario where you successfully used Finetuner to finetune a model on your search problem using data from the respective domain. What comes next?</p>
+<p>Naturally, you would want to deploy your <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a> in a service and use it to
+encode data as part of a bigger search application. <a class="reference external" href="https://docs.jina.ai/">Jina</a>
+provides the infrastructure layer to help you build and deploy neural search components.
+By implementing custom <code class="docutils literal notranslate"><span class="pre">Executor</span></code>s or using existing ones from <a class="reference external" href="https://hub.jina.ai/">Jina Hub</a>
+you can define the building blocks of your search application and glue everything
+together in a fully-fledged search pipeline.</p>
+<p>To use your model with Jina, you would have to build a new <code class="docutils literal notranslate"><span class="pre">Executor</span></code> tailored to your model and upload it to Jina Hub. You can then use a Jina <code class="docutils literal notranslate"><span class="pre">Flow</span></code> to deploy your search
+application locally or in the cloud using kubernetes.</p>
+<p>It is difficult to provide a unified <code class="docutils literal notranslate"><span class="pre">Executor</span></code> that can support all models trained with Finetuner,
+since Finetuner supports different computational frameworks and each model differs in terms
+of pre-processing required, input type etc.</p>
+<p>There is an alternative though, that can be useful for standardizing your deployment
+procedure and unifying different models. Finetuner allows the user to use ONNX for converting
+finetuned models to the ONNX format, whether these models have been trained with PyTorch,
+TensorFlow or PaddlePaddle. The ONNX format is an open standard for defining
+neural network architectures. You can find out more in the <a class="reference external" href="https://onnx.ai/">ONNX webpage</a>.</p>
+<p>After converting a trained model to the ONNX format, you can use the
+<a class="reference external" href="https://hub.jina.ai/executor/2cuinbko">ONNXEncoder</a> from Jina Hub to deploy your {term}<code class="docutils literal notranslate"><span class="pre">embedding</span> <span class="pre">model</span></code>. The encoder simply loads your <a class="reference internal" href="../../basics/glossary/#term-Embedding-model"><span class="xref std std-term">embedding model</span></a> in ONNX format and uses the ONNX
+runtime for inference. The <code class="docutils literal notranslate"><span class="pre">Document</span></code> tensors are fed to the ONNX model as input
+and the output NumPy vectors are assigned to the <code class="docutils literal notranslate"><span class="pre">Document</span></code> as embeddings.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ONNXEncoder</span></code> takes care of the embedding part and the only thing left is to add a custom
+<code class="docutils literal notranslate"><span class="pre">Executor</span></code> for pre-processing in case there is the need for one. Additionally, you gain
+a boost in efficiency, since the conversion to ONNX already optimizes the model based on the platform/hardware device.</p>
+<p>This tutorial will walk you through a simple model finetuning and how you can convert to
+ONNX and use the <code class="docutils literal notranslate"><span class="pre">ONNXEncoder</span></code> to deploy a Jina <code class="docutils literal notranslate"><span class="pre">Flow</span></code>.</p>
+<section id="exporting-to-onnx">
+<h2>Exporting to ONNX<a class="headerlink" href="#exporting-to-onnx" title="Permalink to this headline">#</a></h2>
+<p>Let’s fine-tune a ResNet18 on a customized CelebA dataset.
+<a class="reference external" href="https://static.jina.ai/celeba/celeba-img.zip">Download the dataset</a> and decompress it to
+<code class="docutils literal notranslate"><span class="pre">'./img_align_celeba'</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchvision</span>
+<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+
+<span class="kn">import</span> <span class="nn">finetuner</span> <span class="k">as</span> <span class="nn">ft</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">'img_align_celeba/*.jpg'</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">set_image_tensor_normalization</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">set_image_tensor_channel_axis</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="n">data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">preprocess</span><span class="p">)</span>
+
+<span class="n">resnet</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">ft</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">resnet</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="n">loss</span><span class="o">=</span><span class="s1">'TripletLoss'</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+    <span class="n">to_embedding_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">input_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">),</span>
+    <span class="n">layer_name</span><span class="o">=</span><span class="s1">'adaptiveavgpool2d_67'</span><span class="p">,</span>
+    <span class="n">freeze</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+
+</pre></div>
+</div>
+<p>We can now export the model to the ONNX format, using the <code class="docutils literal notranslate"><span class="pre">to_onnx</span></code> method provided
+by Finetuner. The <code class="docutils literal notranslate"><span class="pre">onnx</span></code> package is required to use this functionality. Also, if
+you are using TensorFlow or PaddlePaddle you will need to install additional packages
+for the ONNX conversion. Specifically you will need:
+<a class="reference external" href="https://github.com/onnx/tensorflow-onnx">tf2onnx</a> for TensorFlow and
+<a class="reference external" href="https://github.com/PaddlePaddle/Paddle2ONNX">paddle2onnx</a> for PaddlePaddle.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install onnx
+pip install tf2onnx
+pip install paddle2onnx
+</pre></div>
+</div>
+<p>Back to the ONNX conversion:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.tuner.onnx</span> <span class="kn">import</span> <span class="n">to_onnx</span>
+
+<span class="n">to_onnx</span><span class="p">(</span><span class="n">tuned_model</span><span class="p">,</span> <span class="s1">'tuned-model.onnx'</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">],</span> <span class="n">opset_version</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The ONNX exported model should be stored now at <code class="docutils literal notranslate"><span class="pre">tuned-model.onnx</span></code>.</p>
+<p>A helper function for validating the ONNX export is also provided:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.tuner.onnx</span> <span class="kn">import</span> <span class="n">validate_onnx_export</span>
+
+<span class="n">validate_onnx_export</span><span class="p">(</span><span class="n">tuned_model</span><span class="p">,</span> <span class="s1">'tuned-model.onnx'</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>This function compares the outputs of the native model and its ONNX counterpart against
+the same random input. If the outputs differ an assertion error is raised.</p>
+<p>Now that we have our model exported and have verified that it has the same behavior as the
+original, it’s time to deploy it 🚀.</p>
+</section>
+<section id="deploying-using-the-onnxencoder">
+<h2>Deploying using the <code class="docutils literal notranslate"><span class="pre">ONNXEncoder</span></code><a class="headerlink" href="#deploying-using-the-onnxencoder" title="Permalink to this headline">#</a></h2>
+<p>You have already finetuned your own model and transferred it to ONNX format. Let’s start deploying in the Jina <code class="docutils literal notranslate"><span class="pre">Flow</span></code>. If you are not familiar with Jina Hub or Jina <code class="docutils literal notranslate"><span class="pre">Flow</span></code>, check this:
+<a class="reference external" href="https://docs.jina.ai/advanced/hub/use-hub-executor/">Use Hub Executor</a>
+<a class="reference external" href="https://docs.jina.ai/fundamentals/flow/">Use Jina Flow</a></p>
+<p>Here are the steps you can follow:</p>
+<section id="add-onnxencoder-to-jina-flow">
+<h3>Add <code class="docutils literal notranslate"><span class="pre">ONNXEncoder</span></code> to Jina <code class="docutils literal notranslate"><span class="pre">Flow</span></code><a class="headerlink" href="#add-onnxencoder-to-jina-flow" title="Permalink to this headline">#</a></h3>
+<p>We already have <code class="docutils literal notranslate"><span class="pre">ONNXEncoder</span></code> on Jina Hub, let’s add <code class="docutils literal notranslate"><span class="pre">ONNXEncoder</span></code> to Jina <code class="docutils literal notranslate"><span class="pre">Flow</span></code>:</p>
+<p>using docker image:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="s1">'jinahub+docker://ONNXEncoder'</span><span class="p">,</span>
+                <span class="n">uses_with</span><span class="o">=</span><span class="p">{</span><span class="s1">'model_path'</span><span class="p">:</span> <span class="s1">'tuned-model.onnx'</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>or using source code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="s1">'jinahub://ONNXEncoder'</span><span class="p">,</span>
+                <span class="n">uses_with</span><span class="o">=</span><span class="p">{</span><span class="s1">'model_path'</span><span class="p">:</span> <span class="s1">'tuned-model.onnx'</span><span class="p">})</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">model_path</span></code> is the path of the ONNX model you exported.</p>
+</section>
+<section id="complete-the-flow-by-adding-indexer-and-starting-the-service">
+<h3>Complete the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> by adding indexer and starting the service<a class="headerlink" href="#complete-the-flow-by-adding-indexer-and-starting-the-service" title="Permalink to this headline">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">requests</span>
+
+
+<span class="k">class</span> <span class="nc">SimpleIndexer</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span>
+
+    <span class="nd">@requests</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="s1">'/index'</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+
+    <span class="nd">@requests</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="s1">'/search'</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">docs</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="p">)</span>
+        
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">port_expose</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span> 
+         <span class="n">protocol</span><span class="o">=</span><span class="s1">'http'</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="s1">'jinahub://ONNXEncoder'</span><span class="p">,</span> 
+                              <span class="n">uses_with</span><span class="o">=</span><span class="p">{</span><span class="s1">'model_path'</span><span class="p">:</span> <span class="s1">'tuned-model.onnx'</span><span class="p">},</span>
+                              <span class="n">name</span><span class="o">=</span><span class="s1">'Encoder'</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="n">SimpleIndexer</span><span class="p">,</span> 
+                                                  <span class="n">name</span><span class="o">=</span><span class="s1">'Indexer'</span><span class="p">)</span>
+        
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/index'</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You will see something like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>    Flow@6260<span class="o">[</span>I<span class="o">]</span>:🎉 Flow is ready to use!                                           
+    🔗 Protocol:            HTTP
+    🏠 Local access:        <span class="m">0</span>.0.0.0:12345
+    🔒 Private network:     <span class="m">192</span>.168.31.213:12345
+    💬 Swagger UI:          http://localhost:12345/docs
+    📚 Redoc:               http://localhost:12345/redoc
+⠼       DONE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸ <span class="m">0</span>:00:14 <span class="m">100</span>% ETA: <span class="m">0</span> seconds <span class="m">80</span> steps <span class="k">done</span> <span class="k">in</span> <span class="m">14</span> seconds
+</pre></div>
+</div>
+<p>which means that the service has been successfully started.</p>
+</section>
+<section id="start-to-query">
+<h3>Start to query!<a class="headerlink" href="#start-to-query" title="Permalink to this headline">#</a></h3>
+<p>Finally it’s time to see what we can get from our service. Start a client and try to query using the service we have just built.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">jina.types.request.data</span> <span class="kn">import</span> <span class="n">Response</span>
+
+<span class="c1"># the callback function invoked when task is done</span>
+<span class="k">def</span> <span class="nf">print_matches</span><span class="p">(</span><span class="n">resp</span><span class="p">:</span> <span class="n">Response</span><span class="p">):</span>
+   
+    <span class="c1"># print top-3 matches for first doc</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">docs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span><span class="p">[:</span><span class="mi">3</span><span class="p">]):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'[</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">]</span><span class="si">{</span><span class="n">d</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="s2">"cosine"</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s1">2f</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">'img_align_celeba/*.jpg'</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">set_image_tensor_normalization</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">set_image_tensor_channel_axis</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="n">data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">preprocess</span><span class="p">)</span>
+
+<span class="c1"># connect to localhost:12345</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'http'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/search'</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">on_done</span><span class="o">=</span><span class="n">print_matches</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And outputs will be like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span><span class="m">0</span><span class="o">]</span><span class="m">0</span>.000001
+<span class="o">[</span><span class="m">1</span><span class="o">]</span><span class="m">0</span>.080417
+<span class="o">[</span><span class="m">2</span><span class="o">]</span><span class="m">0</span>.115125
+</pre></div>
+</div>
+<p>The first column is the index of images and the second column is the cosine distance.</p>
+<p>Congratulations! You have implemented the pipeline which includes finetuning the model, converting to ONNX and deploying in Jina <code class="docutils literal notranslate"><span class="pre">Flow</span></code>.</p>
+</section>
+</section>
+</section>
+
+            </article>
+            <footer>
+                
+                <div class="related-pages">
+                    <a class="next-page" href="../../basics/">
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Next</span>
+                            </div>
+                            <div class="title">&lt;no title&gt;</div>
+                        </div>
+                        <svg>
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                    </a>
+                    <a class="prev-page" href="../3d-mesh/">
+                        <svg>
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Previous</span>
+                            </div>
+                            
+                            <div class="title">Finetuning PointConv on ModelNet40 Dataset</div>
+                            
+                        </div>
+                    </a>
+                </div>
+
+                <div class="related-information sd-d-inline-flex">
+                    <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
+                    Last updated on Feb 17, 2022.
+                    <div class="social-btns">
+                    <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
+                    <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
+                    <a class='social-btn' href="https://youtube.com/c/jina-ai" target="_blank"> <i class="fab fa-youtube"></i></a>
+                    <a class='social-btn' href="https://twitter.com/JinaAI_" target="_blank"> <i class="fab fa-twitter"></i></a>
+                    <a class='social-btn' href="https://www.linkedin.com/company/jinaai/" target="_blank"> <i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+            </footer>
+        </div>
+        <aside class="toc-drawer">
+            
+
+            <div class="toc-sticky toc-scroll">
+                
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">Using ONNX to deploy a finetuned model</a><ul>
+<li><a class="reference internal" href="#exporting-to-onnx">Exporting to ONNX</a></li>
+<li><a class="reference internal" href="#deploying-using-the-onnxencoder">Deploying using the <code class="docutils literal notranslate"><span class="pre">ONNXEncoder</span></code></a><ul>
+<li><a class="reference internal" href="#add-onnxencoder-to-jina-flow">Add <code class="docutils literal notranslate"><span class="pre">ONNXEncoder</span></code> to Jina <code class="docutils literal notranslate"><span class="pre">Flow</span></code></a></li>
+<li><a class="reference internal" href="#complete-the-flow-by-adding-indexer-and-starting-the-service">Complete the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> by adding indexer and starting the service</a></li>
+<li><a class="reference internal" href="#start-to-query">Start to query!</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+                
+                <qa-bot
+                    style="position: fixed; width: 15em"
+                    theme="follow"
+                >
+                    <dt>You can ask questions about our docs. Try:</dt>
+                    <dd>What is Tailor?</dd>
+                    <dd>How can I freeze layers?</dd>
+                    <dd>What is the input data format for finetuner?</dd>
+                </qa-bot>
+            </div>
+
+            
+        </aside>
+
+    </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() { 
+            document.querySelector("qa-bot").setAttribute("server", "https://jina-ai-finetuner-docsqa.jina.ai");
+        });
+        </script>
+    </body>
+</html>

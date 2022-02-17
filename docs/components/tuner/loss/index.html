@@ -31,14 +31,14 @@
 <script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.3"></script>
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Callbacks" href="../callbacks/" /><link rel="prev" title="Tuner" href="../" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.14.1"/>
         <title>Loss and Miners - Finetuner 0.4.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=a8f031f701c6af50c9919b48f173a5785af06fac" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.59c74d8c95b765a7fd995ac71d459ebe.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
     <link rel="stylesheet" type="text/css" href="../../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/docbot.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -79,17 +79,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke="none" d="M0 0h24v24H0z" />
-      <line x1="4" y1="6" x2="20" y2="6" />
-      <line x1="10" y1="12" x2="20" y2="12" />
-      <line x1="6" y1="18" x2="20" y2="18" />
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
     </svg>
   </symbol>
   <symbol id="svg-menu" viewBox="0 0 24 24">
     <title>Menu</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
       <line x1="3" y1="12" x2="21" y2="12"></line>
       <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -98,14 +94,14 @@
   </symbol>
   <symbol id="svg-arrow-right" viewBox="0 0 24 24">
     <title>Expand</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
       <polyline points="9 18 15 12 9 6"></polyline>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
     <title>Light mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
       <circle cx="12" cy="12" r="5"></circle>
       <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -120,7 +116,7 @@
   </symbol>
   <symbol id="svg-moon" viewBox="0 0 24 24">
     <title>Dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
@@ -128,7 +124,7 @@
   </symbol>
   <symbol id="svg-sun-half" viewBox="0 0 24 24">
     <title>Auto light/dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <circle cx="12" cy="12" r="9" />
@@ -221,6 +217,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../get-started/totally-looks-like/">Finetuning ResNet50 on Totally Looks Like Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../get-started/clinc150/">Finetuning a Transformer for Intent Classification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../get-started/3d-mesh/">Finetuning PointConv on ModelNet40 Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/onnx/">Using ONNX to deploy a finetuned model</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
@@ -310,6 +307,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.tuner.state/">finetuner.tuner.state module</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.device/">finetuner.device module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.embedding/">finetuner.embedding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.helper/">finetuner.helper module</a></li>
@@ -340,6 +338,7 @@
     </ul>
 </div>
 </div>
+
             </div>
             
         </div>
@@ -373,28 +372,28 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="loss-and-miners">
-<h1>Loss and Miners<a class="headerlink" href="#loss-and-miners" title="Permalink to this headline">¶</a></h1>
+<h1>Loss and Miners<a class="headerlink" href="#loss-and-miners" title="Permalink to this headline">#</a></h1>
 <p>When training your embedding model, it is crucial that the model learns to embed similar items close together in the latent space, and different items far from each other.</p>
 <p>For that, you can train your model using the <a class="reference external" href="#triplet-and-siamese-loss">Triplet or Siamese loss</a>. By default, these losses will look at all possible triplets/pairs of embeddings in the batch. As we can expect there to be many “easy” triplets/pairs, you may want to select only the hard ones, to make the model learn faster. For that, you can use <a class="reference external" href="#tuple-mining">tuple mining</a>.</p>
 <section id="triplet-and-siamese-loss">
-<h2>Triplet and Siamese Loss<a class="headerlink" href="#triplet-and-siamese-loss" title="Permalink to this headline">¶</a></h2>
+<h2>Triplet and Siamese Loss<a class="headerlink" href="#triplet-and-siamese-loss" title="Permalink to this headline">#</a></h2>
 <p>Triplet and Siamese loss both compare the distances between the embeddings of similar and dissimilar items, and create a loss that penalizes similar items being too far apart, or dissimilar ones being too close to each other.</p>
 <section id="triplet-loss">
-<h3>Triplet Loss<a class="headerlink" href="#triplet-loss" title="Permalink to this headline">¶</a></h3>
+<h3>Triplet Loss<a class="headerlink" href="#triplet-loss" title="Permalink to this headline">#</a></h3>
 <p>Triplet loss works with a triplet composed of an anchor, a positive sample (item similar to the anchor) and a negative sample (item dis-similar from the anchor). The loss for a single such triplet is then computed as</p>
 <div class="math-wrapper"><div class="math notranslate nohighlight">
 \[\ell_{i, p, n}=\max(0, d(\mathbf{x}_i, \mathbf{x}_p)-d(\mathbf{x}_i, \mathbf{x}_n)+m)\]</div></div>
 <p>Here <span class="math notranslate nohighlight">\(\mathbf{x}_i, \mathbf{x}_p, \mathbf{x}_n\)</span> and the embeddings of the anchor, positive and negative sample, respectively, <span class="math notranslate nohighlight">\(d\)</span> is a distance function, and <span class="math notranslate nohighlight">\(m\)</span> is a desired wedge between the distances of similar and dis-similar items.</p>
 </section>
 <section id="siamese-loss">
-<h3>Siamese Loss<a class="headerlink" href="#siamese-loss" title="Permalink to this headline">¶</a></h3>
+<h3>Siamese Loss<a class="headerlink" href="#siamese-loss" title="Permalink to this headline">#</a></h3>
 <p>Siamese loss works with a tuple of items, an anchor and either a positive or a negative sample. The loss for a single pair is computed as</p>
 <div class="math-wrapper"><div class="math notranslate nohighlight">
 \[\ell_{i,j} = \mathrm{sim}(i,j)d(\mathbf{x}_i, \mathbf{x}_j) + (1 - \mathrm{sim}(i,j))\max(m - d(\mathbf{x}_i, \mathbf{x}_j))\]</div></div>
 <p>Here <span class="math notranslate nohighlight">\(\mathrm{sim}(i,j)\)</span> denotes the similarity function, which returns 1 if items <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> are similar, and 0 if they are dis-similar.</p>
 </section>
 <section id="use-with-tuner">
-<h3>Use with Tuner<a class="headerlink" href="#use-with-tuner" title="Permalink to this headline">¶</a></h3>
+<h3>Use with Tuner<a class="headerlink" href="#use-with-tuner" title="Permalink to this headline">#</a></h3>
 <p>It’s straightforward to use these loss functions with the Tuner. You can just give the name of the loss function (as a string) as the <code class="docutils literal notranslate"><span class="pre">loss</span></code> argument on initialization, or you can instantiate the loss object, which allows you to customize parameters (including <a class="reference external" href="#tuple-miners">miners</a>)</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Pytorch</label><div class="tab-content docutils">
@@ -431,7 +430,7 @@
 </section>
 </section>
 <section id="tuple-miners">
-<h2>Tuple Miners<a class="headerlink" href="#tuple-miners" title="Permalink to this headline">¶</a></h2>
+<h2>Tuple Miners<a class="headerlink" href="#tuple-miners" title="Permalink to this headline">#</a></h2>
 <p>In order to support siamese and triplet training, the <code class="docutils literal notranslate"><span class="pre">Finetuner</span></code> implements different mining strategies.</p>
 <p>This <a class="reference external" href="https://openaccess.thecvf.com/content_WACV_2020/papers/Xuan_Improved_Embeddings_with_Easy_Positive_Triplet_Mining_WACV_2020_paper.pdf">paper</a> provides a thorough investigation of which mining strategies should be used and why. The image below illustrates the relative position of samples in the case of triplet training and will help us to define the necessary terminology.</p>
 <figure class="align-default">
@@ -485,7 +484,7 @@
 </div>
 </section>
 <section id="ntxent-loss">
-<h2>NTXent Loss<a class="headerlink" href="#ntxent-loss" title="Permalink to this headline">¶</a></h2>
+<h2>NTXent Loss<a class="headerlink" href="#ntxent-loss" title="Permalink to this headline">#</a></h2>
 <p>The NTXent (normalized cross-entropy) loss is a popular loss function used in self-supervised training. If is defined as</p>
 <div class="math-wrapper"><div class="math notranslate nohighlight">
 \[
@@ -493,7 +492,7 @@
 \]</div></div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf{x}_i\)</span> is the embedding of the i-th element, <span class="math notranslate nohighlight">\(\mathrm{cossim(\cdot, \cdot)}\)</span> is the cosine similarity function, and <span class="math notranslate nohighlight">\(\tau\)</span> is the temperature parameter.</p>
 <section id="id1">
-<h3>Use with Tuner<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<h3>Use with Tuner<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h3>
 <p>The use of this loss function with tuner is straightforward, as shown in the snippet below. Note that this loss will only work with the <a class="reference internal" href="../../../basics/datasets/instance-dataset/#instance-dataset"><span class="std std-ref">Instance dataset</span></a>.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"/><label class="tab-label" for="tab-set--2-input--1">Pytorch</label><div class="tab-content docutils">
@@ -543,7 +542,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Feb 08, 2022.
+                    Last updated on Feb 17, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
