@@ -5,7 +5,7 @@ Imagine a scenario where you successfully used Finetuner to finetune a model on 
 Naturally, you would want to deploy your {term}`embedding model` in a service and use it to
 encode data as part of a bigger search application. [Jina](https://docs.jina.ai/)
 provides the infrastructure layer to help you build and deploy neural search components.
-By implementing custom `Executor` or using existing ones from [Jina Hub](https://hub.jina.ai/)
+By implementing custom `Executor`s or using existing ones from [Jina Hub](https://hub.jina.ai/)
 you can define the building blocks of your search application and glue everything
 together in a fully-fledged search pipeline.
 
@@ -39,7 +39,7 @@ ONNX and use the `ONNXEncoder` to deploy a Jina `Flow`.
 Jina, onnx, torch and torchvision are required to run this example. You can install the packages using:
 
 ```
-pip install 'jina>=2.7' onnx torch torchvision
+pip install 'jina>=3.0' onnx torch torchvision
 ```
 ````
 
@@ -157,10 +157,8 @@ f = Flow().add(uses='jinahub://ONNXEncoder',
 ### Complete the `Flow` by adding indexer and starting the service
 
 ```python
-from typing import Optional
-
 import numpy as np
-from docarray import Document, DocumentArray
+from docarray import DocumentArray
 
 from jina import Executor, Flow, requests
 
@@ -210,7 +208,7 @@ which means that the service has been successfully started.
 Finally it's time to see what we can get from our service. Start a client and try to query using the service we have just built. 
 
 ```python
-from docarray import Document, DocumentArray
+from docarray import DocumentArray
 
 from jina import Client
 from jina.types.request.data import Response
