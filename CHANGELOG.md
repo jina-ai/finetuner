@@ -15,6 +15,7 @@
 
 
 
+
 # Changelog
 
 The changes of each release is tracked by this file.
@@ -578,4 +579,40 @@ The changes of each release is tracked by this file.
 
  - [[```36c2339e```](https://github.com/jina-ai/finetuner/commit/36c2339e01ecb7dab35beaacb8971b53c003b3c6)] __-__ bump version (#360) (*Tadej Svetina*)
  - [[```3bd15775```](https://github.com/jina-ai/finetuner/commit/3bd15775beb076e0ccb33ed65963f65255bebb09)] __-__ __version__: the next version will be 0.3.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-4-1></a>
+## Release Note (`0.4.1`)
+
+> Release time: 2022-02-17 15:25:53
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Jie Fu,  Michael Günther,  Aziz Belaweid,  CatStark,  Wang Bo,  Yanlong Wang,  Tadej Svetina,  Florian Hönicke,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```6314a0dd```](https://github.com/jina-ai/finetuner/commit/6314a0dda6929856228b21c655347d9a9396e1a0)] __-__ use small batch size by default (#366) (*Wang Bo*)
+ - [[```cb0e3d5e```](https://github.com/jina-ai/finetuner/commit/cb0e3d5e5d01624876867ceae8107349dfbe2946)] __-__ shuffle batches (#351) (*Florian Hönicke*)
+
+### 🧼 Code Refactoring
+
+ - [[```fb0dc916```](https://github.com/jina-ai/finetuner/commit/fb0dc916deb6c203218bae4ca9aeb02ea40f6dae)] __-__ add device option to tailor (*Michael Günther*)
+
+### 📗 Documentation
+
+ - [[```f4807162```](https://github.com/jina-ai/finetuner/commit/f48071629c6089e833bdaa8f0dce9084e0d7adb5)] __-__ fix code mesh tutorial (#372) (*Aziz Belaweid*)
+ - [[```9edcbe68```](https://github.com/jina-ai/finetuner/commit/9edcbe683a3bf59e8e30aba87996a0a1bac35bcb)] __-__ fix typos in tll tutorial(#370) (*CatStark*)
+ - [[```ae655e9b```](https://github.com/jina-ai/finetuner/commit/ae655e9b331d644432adef6ecbe9b298a975459d)] __-__ use new docsqa server address (#364) (*Yanlong Wang*)
+ - [[```dc9d306f```](https://github.com/jina-ai/finetuner/commit/dc9d306fdc1ef92fb884021d45c56252c9e1a39d)] __-__ change ResNet18 to ResNet50 in README example (#362) (*Michael Günther*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```7aeb8861```](https://github.com/jina-ai/finetuner/commit/7aeb8861f660f694bdc1e599b90ad3ca8067c56b)] __-__ fix gpu (#365) (*Tadej Svetina*)
+
+### 🍹 Other Improvements
+
+ - [[```adf7b2ee```](https://github.com/jina-ai/finetuner/commit/adf7b2ee77e25baa2476e6d02d608525366f5e77)] __-__ Docs onnx tutorial (#373) (*Jie Fu*)
+ - [[```40aa8087```](https://github.com/jina-ai/finetuner/commit/40aa8087ded606effc89ea4084b384831ac886bc)] __-__ __version__: the next version will be 0.4.1 (*Jina Dev Bot*)
 
