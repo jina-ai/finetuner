@@ -81,7 +81,10 @@ class ProgressBarCallback(BaseCallback):
     def on_train_batch_end(self, tuner: 'BaseTuner'):
         self.losses.append(tuner.state.current_loss)
         tuner._progress_bar.update(
-            task_id=self.train_pbar_id, advance=1, metrics=self.train_loss_str
+            task_id=self.train_pbar_id,
+            advance=1,
+            metrics=self.train_loss_str,
+            refresh=True,
         )
 
     def on_val_begin(self, tuner: 'BaseTuner'):
@@ -98,12 +101,19 @@ class ProgressBarCallback(BaseCallback):
     def on_val_batch_end(self, tuner: 'BaseTuner'):
         self.losses.append(tuner.state.current_loss)
         tuner._progress_bar.update(
-            task_id=self.val_pbar_id, advance=1, metrics=self.val_loss_str
+            task_id=self.val_pbar_id,
+            advance=1,
+            metrics=self.val_loss_str,
+            refresh=True,
         )
 
     def on_val_end(self, tuner: 'BaseTuner'):
         self.prev_val_loss = self._mean_loss
-        tuner._progress_bar.update(task_id=self.val_pbar_id, visible=False)
+        tuner._progress_bar.update(
+            task_id=self.val_pbar_id,
+            visible=False,
+            refresh=True,
+        )
 
     def on_fit_end(self, tuner: 'BaseTuner'):
         self._teardown(tuner)
