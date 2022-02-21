@@ -110,7 +110,9 @@ class ProgressBarCallback(BaseCallback):
     def on_val_end(self, tuner: 'BaseTuner'):
         self.prev_val_loss = self._mean_loss
         tuner._progress_bar.update(
-            task_id=self.val_pbar_id, visible=False, refresh=True
+            task_id=self.val_pbar_id,
+            visible=False,
+            refresh=True,
         )
 
     def on_fit_end(self, tuner: 'BaseTuner'):
