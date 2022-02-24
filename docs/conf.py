@@ -188,7 +188,7 @@ ogp_custom_meta_tags = [
 </script>
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-<script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.3"></script>
+<script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
     ''',
 ]
 
@@ -203,12 +203,36 @@ smv_branch_whitelist = smv_config(os.environ.get('SMV_BRANCH_WHITELIST', 'main')
 smv_remote_whitelist = None
 
 
-def set_qa_server_address(app):
+def configure_qa_bot_ui(app):
     # This sets the server address to <qa-bot>
     server_address = app.config['server_address']
     js_text = """
-        document.addEventListener("DOMContentLoaded", function() { 
-            document.querySelector("qa-bot").setAttribute("server", "%s");
+        document.addEventListener('DOMContentLoaded', function() { 
+            document.querySelector('qa-bot').setAttribute('server', '%s');
+            const theme = localStorage.getItem('theme');
+            if (theme) {
+                document.querySelector('qa-bot').setAttribute('theme', theme);
+            }
+        });
+        const ob = new MutationObserver(function(mutations) {
+            let shouldChange = false;
+            for (const m of mutations) {
+                if (m.type !== 'attributes') {
+                    continue;
+                }   
+                if (m.attributeName !== 'data-theme') {
+                    continue;
+                }
+                shouldChange = m.target.dataset.theme;
+            }
+            if (!shouldChange) {
+                return;
+            }
+            document.querySelector('qa-bot').setAttribute('theme', shouldChange);
+        });
+        ob.observe(document.body, {
+            attribute:true,
+            attributeFilter: ['data-theme']
         });
         """ % server_address
     app.add_js_file(None, body=js_text)
@@ -247,4 +271,4 @@ def setup(app):
         ),
         rebuild='',
     )
-    app.connect('builder-inited', set_qa_server_address)
+    app.connect('builder-inited', configure_qa_bot_ui)
