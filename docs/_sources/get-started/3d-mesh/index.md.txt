@@ -94,7 +94,7 @@ from functools import partial
 import numpy as np
 import torch
 from docarray import Document, DocumentArray
-from models import MeshDataModel
+from executor.models import MeshDataModel
 
 import finetuner
 from finetuner.tuner.pytorch.losses import TripletLoss
