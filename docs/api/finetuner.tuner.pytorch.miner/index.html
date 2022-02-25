@@ -33,7 +33,7 @@
 </script>
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-<script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.3"></script>
+<script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.tuner.augmentation module" href="../finetuner.tuner.augmentation/" /><link rel="prev" title="finetuner.tuner.pytorch.losses module" href="../finetuner.tuner.pytorch.losses/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
@@ -647,7 +647,7 @@ negative index of each triplet, respectively</p>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Feb 24, 2022.
+                    Last updated on Feb 25, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/finetuner/" target="_blank"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" target="_blank"> <i class="fab fa-slack"></i></a>
@@ -665,13 +665,16 @@ negative index of each triplet, respectively</p>
             <div class="toc-sticky toc-scroll">
                 
                 <qa-bot
-                    style="position: fixed; width: 15em"
-                    theme="follow"
+                    theme="auto"
+                    title="Finetuner Docs Bot"
+                    description="@JinaAI"
                 >
-                    <dt>You can ask questions about our docs. Try:</dt>
-                    <dd>What is Tailor?</dd>
-                    <dd>How can I freeze layers?</dd>
-                    <dd>What is the input data format for finetuner?</dd>
+                    <dl>
+                        <dt>You can ask questions about our docs. Try:</dt>
+                        <dd>What is Tailor?</dd>
+                        <dd>How can I freeze layers?</dd>
+                        <dd>What is the input data format for finetuner?</dd>
+                    </dl>
                 </qa-bot>
             </div>
 
@@ -689,8 +692,32 @@ negative index of each triplet, respectively</p>
     <script src="../../_static/tabs.js"></script>
     <script src="../../_static/design-tabs.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() { 
-            document.querySelector("qa-bot").setAttribute("server", "https://jina-ai-finetuner.docsqa.jina.ai");
+        document.addEventListener('DOMContentLoaded', function() { 
+            document.querySelector('qa-bot').setAttribute('server', 'https://jina-ai-finetuner.docsqa.jina.ai');
+            const theme = localStorage.getItem('theme');
+            if (theme) {
+                document.querySelector('qa-bot').setAttribute('theme', theme);
+            }
+        });
+        const ob = new MutationObserver(function(mutations) {
+            let shouldChange = false;
+            for (const m of mutations) {
+                if (m.type !== 'attributes') {
+                    continue;
+                }   
+                if (m.attributeName !== 'data-theme') {
+                    continue;
+                }
+                shouldChange = m.target.dataset.theme;
+            }
+            if (!shouldChange) {
+                return;
+            }
+            document.querySelector('qa-bot').setAttribute('theme', shouldChange);
+        });
+        ob.observe(document.body, {
+            attribute:true,
+            attributeFilter: ['data-theme']
         });
         </script>
     </body>
