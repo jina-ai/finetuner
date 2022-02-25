@@ -1,7 +1,7 @@
-finetuner.tuner.base module
+finetuner.tuner.onnx module
 ===========================
 
-.. automodule:: finetuner.tuner.base
+.. automodule:: finetuner.tuner.onnx
    :members:
    :undoc-members:
    :show-inheritance:
