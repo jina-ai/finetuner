@@ -182,23 +182,22 @@
                     </div>
                 </div>
                 {% endif %}
-                <qa-bot
-                    theme="auto"
-                    title="Finetuner Bot"
-                    description="Finetuning better embedding on neural search tasks"
-                >
-                    <dl>
-                        <dt>You can ask questions about our docs. Try:</dt>
-                        <dd>What is Tailor?</dd>
-                        <dd>How can I freeze layers?</dd>
-                        <dd>What is the input data format for finetuner?</dd>
-                    </dl>
-                </qa-bot>
             </div>
 
             {% endblock right_sidebar %}
         </aside>
 
     </div>
+    <qa-bot
+        title="Finetuner Bot"
+        description="Finetuning better embedding on neural search tasks"
+    >
+        <dl>
+            <dt>You can ask questions about our docs. Try:</dt>
+            <dd>What is Tailor?</dd>
+            <dd>How can I freeze layers?</dd>
+            <dd>What is the input data format for finetuner?</dd>
+        </dl>
+    </qa-bot>
 </div>
 {%- endblock %}
