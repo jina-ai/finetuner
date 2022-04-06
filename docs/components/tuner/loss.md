@@ -74,7 +74,7 @@ This [paper](https://openaccess.thecvf.com/content_WACV_2020/papers/Xuan_Improve
 The white circle in the middle (`A`) denotes our anchor sample $\mathrm{x}_i$ and the white circle on the left (`P`) denotes our positive sample $\mathrm{x}_p$. Depending on where our negative sample will fall, inside the encoding space, it will be either *hard*, *semihard* or an *easy* sample. More precisely, a negative sample is considered to be
 
 - **hard**, when its distance to the anchor sample is smaller than the distance between the anchor and the positive sample, formally $d(\mathrm{x}_i,\mathrm{x}_n) < d(\mathrm{x}_i,\mathrm{x}_p)$.
-- **semihard**, when it is just *a little* further from the postive sample $\mathrm{x}_i$, but within the margin, formally
+- **semihard**, when it is just *a little* further from the positive sample $\mathrm{x}_i$, but within the margin, formally
 $$d(\mathrm{x}_i,\mathrm{x}_p) < d(\mathrm{x}_i,\mathrm{x}_n) < d(\mathrm{x}_i,\mathrm{x}_p) + \mathrm{m}$$
 
 - **easy**, when it is even further away from the anchor, formally $d(\mathrm{x}_i,\mathrm{x}_n) > d(\mathrm{x}_i,\mathrm{x}_p) + \mathrm{m}$.
