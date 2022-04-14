@@ -616,3 +616,4 @@ The changes of each release is tracked by this file.
  - [[```adf7b2ee```](https://github.com/jina-ai/finetuner/commit/adf7b2ee77e25baa2476e6d02d608525366f5e77)] __-__ Docs onnx tutorial (#373) (*Jie Fu*)
  - [[```40aa8087```](https://github.com/jina-ai/finetuner/commit/40aa8087ded606effc89ea4084b384831ac886bc)] __-__ __version__: the next version will be 0.4.1 (*Jina Dev Bot*)
 
+
