@@ -5,9 +5,9 @@ from finetuner import Client
 
 @pytest.fixture
 def test_client(mocker):
-    def mock_handle_request(self, **kwargs):
+    def handle_request_mocker(self, **kwargs):
         return kwargs
 
-    mocker.patch.object(Client, 'handle_request', mock_handle_request)
+    mocker.patch.object(Client, 'handle_request', handle_request_mocker)
     client = Client(user_id=1)
     return client
