@@ -1,1 +1,3 @@
-.
+requests==2.27.1
+path==16.4.0
+python-dotenv==0.19.2

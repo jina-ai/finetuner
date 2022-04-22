@@ -1,0 +1,6 @@
+DELETE = 'DELETE'
+POST = 'POST'
+GET = 'GET'
+NAME = 'name'
+USER_ID = 'user_id'
+HOST = 'HOST'
