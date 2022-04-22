@@ -3,10 +3,11 @@ name: CI
 on: [push]
 
 env:
-  HOST: http://18:192:5:194
+  HOST: ${{ secrets.FINETUNER_HOST }}
 
 jobs:
-  style-lint-test:
+  check_code_quality:
+    name: Code Quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -18,5 +19,18 @@ jobs:
         run: make init
       - name: Lint with flake8, black and isort
         run: make style
+
+  run_tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Install requirements
+        run: make init
       - name: Run tests
         run: make test
+

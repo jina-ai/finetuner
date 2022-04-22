@@ -18,7 +18,7 @@ init:
 
 # ---------------------------------------------------------------- Test related targets
 
-PYTEST_ARGS = --show-capture no --full-trace --verbose --cov hubble/ --cov-report term-missing --cov-report html
+PYTEST_ARGS = --show-capture no --full-trace --verbose --cov finetuner/ --cov-report term-missing --cov-report html
 
 ## Run tests
 test:
