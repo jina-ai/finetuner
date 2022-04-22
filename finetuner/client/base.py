@@ -12,7 +12,6 @@ class BaseClient(object):
 
     :param user_id: Unique identifier of a user.
     """
-
     def __init__(self, user_id):
         self._user_id = user_id
         self._session = requests.session()
