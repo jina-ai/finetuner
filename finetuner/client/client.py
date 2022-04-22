@@ -4,27 +4,27 @@ from finetuner.constants import DELETE, GET, NAME, POST, USER_ID
 
 
 class Client(BaseClient):
-    def create_experiment(self, experiment_name: str):
+    def create_experiment(self, name: str):
         """Create a new experiment.
 
-        :param experiment_name: The name of the experiment
+        :param name: The name of the experiment
         :return: `requests.Response` object
         """
         url = self._base_url / Endpoints.experiments
         return self.handle_request(
             url=url,
             method=POST,
-            data={NAME: experiment_name},
+            data={NAME: name},
             params={USER_ID: self._user_id},
         )
 
-    def get_experiment(self, experiment_name: str):
+    def get_experiment(self, name: str):
         """Get an experiment by its name.
 
-        :param experiment_name: The name of the experiment
+        :param name: The name of the experiment
         :return: `requests.Response` object
         """
-        url = self._base_url / Endpoints.experiments / experiment_name
+        url = self._base_url / Endpoints.experiments / name
         return self.handle_request(url=url, method=GET, params={USER_ID: self._user_id})
 
     def list_experiments(self):
@@ -35,13 +35,13 @@ class Client(BaseClient):
         url = self._base_url / Endpoints.experiments
         return self.handle_request(url=url, method=GET, params={USER_ID: self._user_id})
 
-    def delete_experiment(self, experiment_name: str):
+    def delete_experiment(self, name: str):
         """Delete an experiment given its name.
 
-        :param experiment_name: The name of the experiment
+        :param name: The name of the experiment
         :return: `requests.Response` object
         """
-        url = self._base_url / Endpoints.experiments / experiment_name
+        url = self._base_url / Endpoints.experiments / name
         return self.handle_request(
             url=url, method=DELETE, params={USER_ID: self._user_id}
         )
