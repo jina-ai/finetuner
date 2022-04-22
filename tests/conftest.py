@@ -1,6 +1,6 @@
 import pytest
 
-from finetuner import Client
+from finetuner.client.client import Client
 
 
 @pytest.fixture

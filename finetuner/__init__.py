@@ -1,2 +1,3 @@
-from finetuner.client.client import Client
-from finetuner.client.endpoints import Endpoints
+from dotenv import load_dotenv
+
+load_dotenv()
