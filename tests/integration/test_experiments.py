@@ -1,10 +1,13 @@
+from tests.constants import USER_ID_FOR_TESTING
+
 from finetuner.client.client import Client
 
 
 def test_experiments(
     first_exp_name='first experiment', second_exp_name='second experiment'
 ):
-    client = Client(user_id=1)
+    # create a client
+    client = Client(user_id=USER_ID_FOR_TESTING)
     # create an experiment and retrieve it
     client.create_experiment(name=first_exp_name)
     response = client.get_experiment(name=first_exp_name).json()
