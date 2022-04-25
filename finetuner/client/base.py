@@ -24,17 +24,17 @@ class BaseClient(object):
         url: str,
         method: str,
         params: Optional[dict] = None,
-        data: Optional[dict] = None,
+        json: Optional[dict] = None,
     ):
         """The basis request handler.
 
         :param url: The url of the request.
         :param method: The request type (GET, POST or DELETE).
         :param params: Optional parameters for the request.
-        :param data: Optional data payloads to be send along with the request.
+        :param json: Optional data payloads to be send along with the request.
         :return: `requests.Response` object
         """
         response = self._session.request(
-            url=url, method=method, json=data, params=params
+            url=url, method=method, json=json, params=params
         )
         return response
