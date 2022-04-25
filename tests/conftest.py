@@ -17,7 +17,7 @@ def test_client(mocker):
 
 
 @pytest.fixture
-def run_config(path=RUN_CONFIG_PATH):
-    with open(path) as f:
+def run_config():
+    with open(RUN_CONFIG_PATH) as f:
         config = json.load(f)
     return config
