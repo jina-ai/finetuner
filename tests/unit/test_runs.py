@@ -23,7 +23,6 @@ def test_create_run(test_client, run_config, experiment_name='exp', run_name='ru
     assert sent_request['method'] == POST
     assert sent_request['json'][NAME] == run_name
     assert sent_request['json'][CONFIG] == run_config
-    assert sent_request['params'][USER_ID] == test_client._user_id
 
 
 def test_get_run(test_client, experiment_name='exp', run_name='run1'):
@@ -40,7 +39,6 @@ def test_get_run(test_client, experiment_name='exp', run_name='run1'):
         / run_name
     )
     assert sent_request['method'] == GET
-    assert sent_request['params'][USER_ID] == test_client._user_id
 
 
 def test_list_runs(test_client, experiment_name='exp'):
@@ -51,7 +49,6 @@ def test_list_runs(test_client, experiment_name='exp'):
         == test_client._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
     )
     assert sent_request['method'] == GET
-    assert sent_request['params'][USER_ID] == test_client._user_id
 
 
 def test_delete_run(test_client, experiment_name='exp', run_name='run1'):
@@ -68,7 +65,6 @@ def test_delete_run(test_client, experiment_name='exp', run_name='run1'):
         / run_name
     )
     assert sent_request['method'] == DELETE
-    assert sent_request['params'][USER_ID] == test_client._user_id
 
 
 def test_delete_runs(test_client, experiment_name='exp'):
@@ -78,7 +74,6 @@ def test_delete_runs(test_client, experiment_name='exp'):
         == test_client._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
     )
     assert sent_request['method'] == DELETE
-    assert sent_request['params'][USER_ID] == test_client._user_id
 
 
 def test_get_run_status(test_client, experiment_name='exp', run_name='run1'):
@@ -96,4 +91,3 @@ def test_get_run_status(test_client, experiment_name='exp', run_name='run1'):
         / STATUS
     )
     assert sent_request['method'] == GET
-    assert sent_request['params'][USER_ID] == test_client._user_id

@@ -1,23 +1,27 @@
 import os
 from typing import Optional
 
+import hubble
 import requests
 from path import Path
 
-from finetuner.constants import HOST
+from finetuner.constants import HOST, AUTHORIZATION, CHARSET, UTF_8, TOKEN_PREFIX
 
 
 class BaseClient(object):
-    """Base Finetuner API client.
+    """Base Finetuner API client."""
 
-    :param user_id: Unique identifier of a user.
-    """
-
-    def __init__(self, user_id):
-        self._user_id = user_id
-        self._session = requests.session()
+    def __init__(self):
         self._base_url = Path(os.environ.get(HOST))
-        self._session.headers.update({'Accept-Charset': 'utf-8'})
+        self._session = self._get_client_session()
+        self._hubble_client = hubble.Client(max_retries=None, timeout=10, jsonify=True)
+
+    @staticmethod
+    def _get_client_session():
+        session = requests.session()
+        api_token = TOKEN_PREFIX + str(hubble.Auth.get_auth_token())
+        session.headers.update({CHARSET: UTF_8, AUTHORIZATION: api_token})
+        return session
 
     def handle_request(
         self,

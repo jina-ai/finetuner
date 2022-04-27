@@ -1,13 +1,11 @@
 import json
 
-from tests.constants import USER_ID_FOR_TESTING
-
 from finetuner.client.client import Client
 
 
 def test_runs(run_config, experiment_name='exp', first_run='run1', second_run='run2'):
     # create a client
-    client = Client(user_id=USER_ID_FOR_TESTING)
+    client = Client()
     # create an experiment and retrieve it
     client.create_experiment(experiment_name)
     response = client.get_experiment(name=experiment_name).json()
@@ -58,7 +56,7 @@ def test_list_runs(
     run_config, first_exp='exp1', second_exp='exp2', first_run='run1', second_run='run2'
 ):
     # create a client
-    client = Client(user_id=USER_ID_FOR_TESTING)
+    client = Client()
     # create two experiments and list them
     client.create_experiment(name=first_exp)
     client.create_experiment(name=second_exp)

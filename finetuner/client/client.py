@@ -11,7 +11,10 @@ from finetuner.constants import (
     POST,
     RUNS,
     STATUS,
-    USER_ID,
+    DATA,
+    TRAIN_DATA,
+    EVAL_DATA,
+    FINETUNED_MODELS_DIR,
 )
 
 
@@ -27,7 +30,6 @@ class Client(BaseClient):
             url=url,
             method=POST,
             json={NAME: name, **kwargs},
-            params={USER_ID: self._user_id},
         )
 
     def get_experiment(self, name: str):
@@ -37,17 +39,15 @@ class Client(BaseClient):
         :return: `requests.Response` object.
         """
         url = self._base_url / API_VERSION / EXPERIMENTS / name
-        return self.handle_request(url=url, method=GET, params={USER_ID: self._user_id})
+        return self.handle_request(url=url, method=GET)
 
-    def list_experiments(self, **kwargs):
+    def list_experiments(self):
         """List all available experiments.
 
         :return: `requests.Response` object.
         """
         url = self._base_url / API_VERSION / EXPERIMENTS
-        return self.handle_request(
-            url=url, method=GET, params={USER_ID: self._user_id, **kwargs}
-        )
+        return self.handle_request(url=url, method=GET)
 
     def delete_experiment(self, name: str):
         """Delete an experiment given its name.
@@ -56,9 +56,7 @@ class Client(BaseClient):
         :return: `requests.Response` object.
         """
         url = self._base_url / API_VERSION / EXPERIMENTS / name
-        return self.handle_request(
-            url=url, method=DELETE, params={USER_ID: self._user_id}
-        )
+        return self.handle_request(url=url, method=DELETE)
 
     def delete_experiments(self):
         """Delete all experiments.
@@ -66,9 +64,7 @@ class Client(BaseClient):
         :return: `requests.Response` object.
         """
         url = self._base_url / API_VERSION / EXPERIMENTS
-        return self.handle_request(
-            url=url, method=DELETE, params={USER_ID: self._user_id}
-        )
+        return self.handle_request(url=url, method=DELETE)
 
     def create_run(
         self, experiment_name: str, run_name: str, config: Dict[str, Any], **kwargs
@@ -81,12 +77,12 @@ class Client(BaseClient):
         :param config: Configuration for the run.
         :return: `requests.Response` object.
         """
+        self._push_data_to_hubble(data=config.get(DATA))
         url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
         return self.handle_request(
             url=url,
             method=POST,
             json={NAME: run_name, CONFIG: config, **kwargs},
-            params={USER_ID: self._user_id},
         )
 
     def get_run(self, experiment_name: str, run_name: str):
@@ -104,7 +100,7 @@ class Client(BaseClient):
             / RUNS
             / run_name
         )
-        return self.handle_request(url=url, method=GET, params={USER_ID: self._user_id})
+        return self.handle_request(url=url, method=GET)
 
     def list_runs(self, experiment_name: Optional[str] = None):
         """List all created runs inside a given experiment.
@@ -122,11 +118,7 @@ class Client(BaseClient):
         response = []
         for experiment_name in target_experiments:
             url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
-            response.append(
-                self.handle_request(
-                    url=url, method=GET, params={USER_ID: self._user_id}
-                )
-            )
+            response.append(self.handle_request(url=url, method=GET))
         return response
 
     def delete_run(self, experiment_name: str, run_name: str):
@@ -144,9 +136,7 @@ class Client(BaseClient):
             / RUNS
             / run_name
         )
-        return self.handle_request(
-            url=url, method=DELETE, params={USER_ID: self._user_id}
-        )
+        return self.handle_request(url=url, method=DELETE)
 
     def delete_runs(self, experiment_name: str):
         """Delete all runs inside a given experiment.
@@ -155,9 +145,7 @@ class Client(BaseClient):
         :return: `requests.Response` object.
         """
         url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
-        return self.handle_request(
-            url=url, method=DELETE, params={USER_ID: self._user_id}
-        )
+        return self.handle_request(url=url, method=DELETE)
 
     def get_run_status(self, experiment_name: str, run_name: str):
         """Get a run status by its name and experiment.
@@ -175,4 +163,25 @@ class Client(BaseClient):
             / run_name
             / STATUS
         )
-        return self.handle_request(url=url, method=GET, params={USER_ID: self._user_id})
+        return self.handle_request(url=url, method=GET)
+
+    def _push_data_to_hubble(self, data: dict[str, Any]):
+        """Push user's data to Hubble.
+
+        :param data: A dictionary containing paths to train and evaluation data.
+        """
+        if train_path := data.get(TRAIN_DATA):
+            self._hubble_client.upload_artifact(path=train_path)
+        else:
+            # Raise an exception. We can refactor this later? in 'handle error messages' PR.
+            pass
+        if eval_path := data.get(EVAL_DATA):
+            self.hubble_client.upload_artifact(path=eval_path)
+
+    def download_model(self, artifact_id: str, path: str = FINETUNED_MODELS_DIR):
+        """Download finetuned model from Hubble by its ID.
+
+        :param artifact_id: ID of the model.
+        :param path: Directory where the model will be stored.
+        """
+        self._hubble_client.download_artifact(id=artifact_id, path=path)
