@@ -5,7 +5,15 @@ import hubble
 import requests
 from path import Path
 
-from finetuner.constants import HOST, AUTHORIZATION, CHARSET, UTF_8, TOKEN_PREFIX
+from finetuner.constants import (
+    AUTHORIZATION,
+    CHARSET,
+    DATA,
+    HOST,
+    HUBBLE_USER_ID,
+    TOKEN_PREFIX,
+    UTF_8,
+)
 
 
 class BaseClient(object):
@@ -15,6 +23,7 @@ class BaseClient(object):
         self._base_url = Path(os.environ.get(HOST))
         self._session = self._get_client_session()
         self._hubble_client = hubble.Client(max_retries=None, timeout=10, jsonify=True)
+        self._hubble_user_id = self._hubble_client.get_user_info()[DATA][HUBBLE_USER_ID]
 
     @staticmethod
     def _get_client_session():

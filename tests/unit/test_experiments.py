@@ -1,12 +1,4 @@
-from finetuner.constants import (
-    API_VERSION,
-    DELETE,
-    EXPERIMENTS,
-    GET,
-    NAME,
-    POST,
-    USER_ID,
-)
+from finetuner.constants import API_VERSION, DELETE, EXPERIMENTS, GET, NAME, POST
 
 
 def test_create_experiment(test_client, name='name'):
