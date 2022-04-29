@@ -1,8 +1,9 @@
-import docarray, json
-
-
 def test_runs(
-    test_client, get_image_data, experiment_name='exp', first_run='run1', second_run='run2'
+    test_client,
+    get_image_data,
+    experiment_name='exp',
+    first_run='run1',
+    second_run='run2',
 ):
     # get preprocessed data
     train_data, eval_data = get_image_data

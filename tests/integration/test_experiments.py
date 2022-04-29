@@ -1,6 +1,5 @@
 def test_experiments(
-        test_client,
-    first_exp_name='first experiment', second_exp_name='second experiment'
+    test_client, first_exp_name='first experiment', second_exp_name='second experiment'
 ):
     # create an experiment and retrieve it
     test_client.create_experiment(name=first_exp_name)

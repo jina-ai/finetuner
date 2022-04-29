@@ -1,6 +1,6 @@
+import json
 import os
 from typing import Optional
-import json
 
 import hubble
 import requests

@@ -1,3 +1,5 @@
+import docarray
+
 from finetuner.constants import (
     API_VERSION,
     CONFIG,
@@ -9,7 +11,6 @@ from finetuner.constants import (
     RUNS,
     STATUS,
 )
-import docarray
 
 
 def test_create_run(test_client, experiment_name='exp', run_name='run'):

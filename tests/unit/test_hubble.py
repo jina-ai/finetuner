@@ -1,6 +1,7 @@
-import pytest
 import docarray
-from finetuner.constants import TRAIN_DATA, EVAL_DATA
+import pytest
+
+from finetuner.constants import EVAL_DATA, TRAIN_DATA
 
 
 @pytest.mark.parametrize(

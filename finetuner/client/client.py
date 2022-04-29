@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Optional, Union
 
 from docarray import DocumentArray
 
@@ -12,7 +12,6 @@ from finetuner.constants import (
     EXPERIMENTS,
     FINETUNED_MODELS_DIR,
     GET,
-    ID,
     MODEL,
     NAME,
     POST,

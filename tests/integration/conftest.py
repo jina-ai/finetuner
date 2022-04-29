@@ -1,6 +1,7 @@
 import os
-import pytest
+
 import hubble
+import pytest
 from docarray import DocumentArray
 
 
@@ -54,4 +55,3 @@ def test_client(mocker):
     client = Client()
 
     return client
-

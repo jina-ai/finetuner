@@ -1,6 +1,6 @@
+import docarray
 import hubble
 import pytest
-import docarray
 
 
 @pytest.fixture
