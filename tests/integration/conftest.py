@@ -5,13 +5,6 @@ import pytest
 from docarray import DocumentArray
 
 
-@pytest.fixture(autouse=True)
-def overwrite_hubble_registry():
-    os.environ['JINA_HUBBLE_REGISTRY'] = 'https://apihubble.staging.jina.ai'
-    yield
-    del os.environ['JINA_HUBBLE_REGISTRY']
-
-
 @pytest.fixture()
 def get_image_data(data_path='resources/image_data'):
     left_da = DocumentArray.from_files(os.path.join(data_path, 'left/*.jpg'))
