@@ -12,11 +12,13 @@ from finetuner.constants import (
 import docarray
 
 
-def test_create_run(test_client, experiment_name='exp', run_name='run1'):
+def test_create_run(test_client, experiment_name='exp', run_name='run'):
     train_data = docarray.DocumentArray()
     sent_request = test_client.create_run(
-        model='resnet50', train_data=train_data,
-        experiment_name=experiment_name, run_name=run_name
+        model='resnet50',
+        train_data=train_data,
+        experiment_name=experiment_name,
+        run_name=run_name,
     )
     assert (
         sent_request['url']
@@ -24,7 +26,10 @@ def test_create_run(test_client, experiment_name='exp', run_name='run1'):
     )
     assert sent_request['method'] == POST
     assert sent_request['json'][NAME] == run_name
-    expected_config = {'model': 'resnet50', 'data': {'train_data': 'da name', 'eval_data': None}}
+    expected_config = {
+        'model': 'resnet50',
+        'data': {'train_data': '1-exp-run-train_data', 'eval_data': None},
+    }
     assert sent_request['json'][CONFIG] == expected_config
 
 

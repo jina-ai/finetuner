@@ -88,8 +88,15 @@ class Client(BaseClient):
         :param run_name: The name of the run.
         :return: `requests.Response` object.
         """
-        train_data, eval_data = self._push_data_to_hubble(train_data, kwargs.get(EVAL_DATA))
-        config = self._create_config_for_run(model=model, train_data=train_data, eval_data=eval_data, **kwargs)
+        train_data, kwargs[EVAL_DATA] = self._push_data_to_hubble(
+            train_data=train_data,
+            eval_data=kwargs.get(EVAL_DATA),
+            experiment_name=experiment_name,
+            run_name=run_name,
+        )
+        config = self._create_config_for_run(
+            model=model, train_data=train_data, **kwargs
+        )
         url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
         return self.handle_request(
             url=url,
@@ -98,14 +105,14 @@ class Client(BaseClient):
         )
 
     @staticmethod
-    def _create_config_for_run(model: str,
-                               train_data: str,
-                               eval_data: str,
-                               **kwargs,
-                               ):
+    def _create_config_for_run(
+        model: str,
+        train_data: str,
+        **kwargs,
+    ):
         config = {}
         config[MODEL] = model
-        config[DATA] = {TRAIN_DATA: train_data, EVAL_DATA: eval_data}
+        config[DATA] = {TRAIN_DATA: train_data, EVAL_DATA: kwargs.get(EVAL_DATA)}
         return config
 
     def get_run(self, experiment_name: str, run_name: str):
@@ -188,10 +195,12 @@ class Client(BaseClient):
         )
         return self.handle_request(url=url, method=GET)
 
-    @staticmethod
     def _push_data_to_hubble(
+        self,
         train_data: Union[DocumentArray, str],
         eval_data: Optional[Union[DocumentArray, str]],
+        experiment_name: str,
+        run_name: str,
     ):
         """Push DocumentArray for training and evaluation data on Hubble if it's not already uploaded.
 
@@ -202,11 +211,15 @@ class Client(BaseClient):
         :returns: Name(s) of pushed `DocumentArray`-s.
         """
         if isinstance(train_data, DocumentArray):
-            da_name = 'da name'  # needs to be discussed
+            da_name = '-'.join(
+                [self._hubble_user_id, experiment_name, run_name, TRAIN_DATA]
+            )
             train_data.push(name=da_name)
             train_data = da_name
         if isinstance(eval_data, DocumentArray):
-            da_name = 'da name'  # needs to be discussed
+            da_name = '-'.join(
+                [self._hubble_user_id, experiment_name, run_name, EVAL_DATA]
+            )
             eval_data.push(name=da_name)
             eval_data = da_name
         return train_data, eval_data
@@ -221,10 +234,6 @@ class Client(BaseClient):
         :param path: Directory where the model will be stored.
         :returns: A str object indicates the download path on localhost.
         """
-        experiment_id = self.get_experiment(name=experiment_name).json()[ID]
-        run_id = self.get_run(
-            experiment_name=experiment_name, run_name=run_name
-        ).json()[ID]
-        artifact_id = '-'.join([self._hubble_user_id, str(experiment_id), str(run_id)])
+        artifact_id = '-'.join([self._hubble_user_id, experiment_name, run_name, MODEL])
         response = self._hubble_client.download_artifact(id=artifact_id, path=path)
         return response

@@ -4,6 +4,7 @@ on: [push]
 
 env:
   HOST: ${{ secrets.FINETUNER_HOST }}
+  HUBBLE_STAGING_TOKEN: ${{ secrets.HUBBLE_STAGING_TOKEN }}
 
 jobs:
   check_code_quality:

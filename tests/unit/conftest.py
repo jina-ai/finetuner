@@ -19,4 +19,5 @@ def test_client(mocker):
     mocker.patch.object(hubble.Client, 'download_artifact', return_args)
     mocker.patch.object(docarray.DocumentArray, 'push', return_args)
     client = Client()
+    mocker.patch.object(client, '_hubble_user_id', '1')
     return client
