@@ -4,6 +4,13 @@ import pytest
 import os
 
 
+@pytest.fixture(autouse=True)
+def overwrite_hubble_registry():
+    os.environ['JINA_HUBBLE_REGISTRY'] = 'https://apihubble.staging.jina.ai'
+    yield
+    del os.environ['JINA_HUBBLE_REGISTRY']
+
+
 @pytest.fixture
 def test_client(mocker):
     def return_args(self, **kwargs):
