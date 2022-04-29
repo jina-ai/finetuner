@@ -1,6 +1,8 @@
 def test_experiments(
     test_client, first_exp_name='first experiment', second_exp_name='second experiment'
 ):
+    # delete experiments in case there are any
+    test_client.delete_experiments()
     # create an experiment and retrieve it
     test_client.create_experiment(name=first_exp_name)
     response = test_client.get_experiment(name=first_exp_name).json()

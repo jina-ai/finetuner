@@ -66,7 +66,6 @@ def test_list_runs(
 ):
     # get preprocessed data
     train_data, eval_data = get_image_data
-    test_client.delete_experiments()
     # create two experiments and list them
     test_client.create_experiment(name=first_exp)
     test_client.create_experiment(name=second_exp)
