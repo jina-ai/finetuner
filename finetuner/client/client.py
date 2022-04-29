@@ -74,8 +74,8 @@ class Client(BaseClient):
         self,
         model: str,
         train_data: Union[DocumentArray, str],
-        experiment_name: Optional[str],
-        run_name: Optional[str],
+        experiment_name: str,
+        run_name: str,
         **kwargs,
     ):
         """Create a run inside a given experiment.
@@ -99,10 +99,10 @@ class Client(BaseClient):
 
     @staticmethod
     def _create_config_for_run(model: str,
-        train_data: str,
-        eval_data: str,
-        **kwargs,
-    ):
+                               train_data: str,
+                               eval_data: str,
+                               **kwargs,
+                               ):
         config = {}
         config[MODEL] = model
         config[DATA] = {TRAIN_DATA: train_data, EVAL_DATA: eval_data}
@@ -202,11 +202,11 @@ class Client(BaseClient):
         :returns: Name(s) of pushed `DocumentArray`-s.
         """
         if isinstance(train_data, DocumentArray):
-            da_name = 'some name'  # needs to be discussed
+            da_name = 'da name'  # needs to be discussed
             train_data.push(name=da_name)
             train_data = da_name
         if isinstance(eval_data, DocumentArray):
-            da_name = 'some name'  # needs to be discussed
+            da_name = 'da name'  # needs to be discussed
             eval_data.push(name=da_name)
             eval_data = da_name
         return train_data, eval_data

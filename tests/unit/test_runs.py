@@ -8,13 +8,15 @@ from finetuner.constants import (
     POST,
     RUNS,
     STATUS,
-    USER_ID,
 )
+import docarray
 
 
-def test_create_run(test_client, run_config, experiment_name='exp', run_name='run1'):
+def test_create_run(test_client, experiment_name='exp', run_name='run1'):
+    train_data = docarray.DocumentArray()
     sent_request = test_client.create_run(
-        experiment_name=experiment_name, run_name=run_name, config=run_config
+        model='resnet50', train_data=train_data,
+        experiment_name=experiment_name, run_name=run_name
     )
     assert (
         sent_request['url']
@@ -22,7 +24,8 @@ def test_create_run(test_client, run_config, experiment_name='exp', run_name='ru
     )
     assert sent_request['method'] == POST
     assert sent_request['json'][NAME] == run_name
-    assert sent_request['json'][CONFIG] == run_config
+    expected_config = {'model': 'resnet50', 'data': {'train_data': 'da name', 'eval_data': None}}
+    assert sent_request['json'][CONFIG] == expected_config
 
 
 def test_get_run(test_client, experiment_name='exp', run_name='run1'):

@@ -1,5 +1,6 @@
 import os
 from typing import Optional
+import json
 
 import hubble
 import requests
@@ -23,7 +24,7 @@ class BaseClient(object):
         self._base_url = Path(os.environ.get(HOST))
         self._session = self._get_client_session()
         self._hubble_client = hubble.Client(max_retries=None, timeout=10, jsonify=True)
-        self._hubble_user_id = self._hubble_client.get_user_info()[DATA][HUBBLE_USER_ID]
+        self._hubble_user_id = json.loads(self._hubble_client.get_user_info())[DATA][HUBBLE_USER_ID]
 
     @staticmethod
     def _get_client_session():
