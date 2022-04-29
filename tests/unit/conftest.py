@@ -1,6 +1,7 @@
 import docarray
 import hubble
 import pytest
+import os
 
 
 @pytest.fixture
@@ -11,7 +12,11 @@ def test_client(mocker):
     def hubble_login_mocker():
         print('Successfully logged in to Hubble!')
 
+    def get_auth_token():
+        return os.environ.get('HUBBLE_STAGING_TOKEN')
+
     mocker.patch.object(hubble, 'login', hubble_login_mocker)
+    mocker.patch.object(hubble.Auth, 'get_auth_token', get_auth_token)
 
     from finetuner.client.client import Client
 
