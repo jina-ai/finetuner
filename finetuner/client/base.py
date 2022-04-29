@@ -32,7 +32,6 @@ class BaseClient(object):
     def _get_client_session():
         session = requests.session()
         api_token = TOKEN_PREFIX + str(hubble.Auth.get_auth_token())
-        print(api_token)
         session.headers.update({CHARSET: UTF_8, AUTHORIZATION: api_token})
         return session
 
