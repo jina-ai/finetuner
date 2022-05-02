@@ -1,4 +1,4 @@
-from typing import Any, Optional, Tuple, Union
+from typing import Any, Optional, Tuple, Union, Dict
 
 import requests
 from docarray import DocumentArray
@@ -109,7 +109,7 @@ class Client(BaseClient):
         model: str,
         train_data: str,
         **kwargs,
-    ) -> dict[str, Any]:
+    ) -> Dict[str, Any]:
         # Not sure what is the correct way to construct the whole config.
         # Maybe we can create a separate ticket for this.
         config = {}
