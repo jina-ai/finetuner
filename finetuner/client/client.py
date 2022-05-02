@@ -205,19 +205,19 @@ class Client(BaseClient):
     ):
         """Push DocumentArray for training and evaluation data on Hubble if it's not already uploaded.
 
+        Note: for now, let's assume that we only receive `DocumentArray`-s.
         :param train_data: Either a `DocumentArray` for training data that needs to be pushed on Hubble
                           or a name of the `DocumentArray` that is already uploaded.
         :param eval_data: Either a `DocumentArray` for evaluation data that needs to be pushed on Hubble
                           or a name of the `DocumentArray` that is already uploaded.
         :returns: Name(s) of pushed `DocumentArray`-s.
         """
-        if isinstance(train_data, DocumentArray):
-            da_name = '-'.join(
-                [self._hubble_user_id, experiment_name, run_name, TRAIN_DATA]
-            )
-            train_data.push(name=da_name)
-            train_data = da_name
-        if isinstance(eval_data, DocumentArray):
+        da_name = '-'.join(
+            [self._hubble_user_id, experiment_name, run_name, TRAIN_DATA]
+        )
+        train_data.push(name=da_name)
+        train_data = da_name
+        if eval_data:
             da_name = '-'.join(
                 [self._hubble_user_id, experiment_name, run_name, EVAL_DATA]
             )
