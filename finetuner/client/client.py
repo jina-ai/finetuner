@@ -109,6 +109,8 @@ class Client(BaseClient):
         train_data: str,
         **kwargs,
     ):
+        # Not sure what is the correct way to construct the whole config.
+        # Maybe we can create a separate ticket for this.
         config = {}
         config[MODEL] = model
         config[DATA] = {TRAIN_DATA: train_data, EVAL_DATA: kwargs.get(EVAL_DATA)}
