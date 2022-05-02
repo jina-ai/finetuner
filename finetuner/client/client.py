@@ -1,7 +1,7 @@
-from typing import Optional, Union
+from typing import Optional, Union, Any, Tuple
 
 from docarray import DocumentArray
-
+import requests
 from finetuner.client.base import BaseClient
 from finetuner.constants import (
     API_VERSION,
@@ -22,7 +22,7 @@ from finetuner.constants import (
 
 
 class Client(BaseClient):
-    def create_experiment(self, name: str, **kwargs):
+    def create_experiment(self, name: str, **kwargs) -> requests.Response:
         """Create a new experiment.
 
         :param name: The name of the experiment.
@@ -35,7 +35,7 @@ class Client(BaseClient):
             json={NAME: name, **kwargs},
         )
 
-    def get_experiment(self, name: str):
+    def get_experiment(self, name: str) -> requests.Response:
         """Get an experiment by its name.
 
         :param name: The name of the experiment.
@@ -44,7 +44,7 @@ class Client(BaseClient):
         url = self._base_url / API_VERSION / EXPERIMENTS / name
         return self.handle_request(url=url, method=GET)
 
-    def list_experiments(self):
+    def list_experiments(self) -> requests.Response:
         """List all available experiments.
 
         :return: `requests.Response` object.
@@ -52,7 +52,7 @@ class Client(BaseClient):
         url = self._base_url / API_VERSION / EXPERIMENTS
         return self.handle_request(url=url, method=GET)
 
-    def delete_experiment(self, name: str):
+    def delete_experiment(self, name: str) -> requests.Response:
         """Delete an experiment given its name.
 
         :param name: The name of the experiment.
@@ -61,7 +61,7 @@ class Client(BaseClient):
         url = self._base_url / API_VERSION / EXPERIMENTS / name
         return self.handle_request(url=url, method=DELETE)
 
-    def delete_experiments(self):
+    def delete_experiments(self) -> requests.Response:
         """Delete all experiments.
 
         :return: `requests.Response` object.
@@ -76,7 +76,7 @@ class Client(BaseClient):
         experiment_name: str,
         run_name: str,
         **kwargs,
-    ):
+    ) -> requests.Response:
         """Create a run inside a given experiment.
 
         For optional parameters please visit our documentation (link).
@@ -108,13 +108,15 @@ class Client(BaseClient):
         model: str,
         train_data: str,
         **kwargs,
-    ):
+    ) -> dict[str, Any]:
+        # Not sure what is the correct way to construct the whole config.
+        # Maybe we can create a separate ticket for this.
         config = {}
         config[MODEL] = model
         config[DATA] = {TRAIN_DATA: train_data, EVAL_DATA: kwargs.get(EVAL_DATA)}
         return config
 
-    def get_run(self, experiment_name: str, run_name: str):
+    def get_run(self, experiment_name: str, run_name: str) -> requests.Response:
         """Get a run by its name and experiment.
 
         :param experiment_name: The name of the experiment.
@@ -131,7 +133,7 @@ class Client(BaseClient):
         )
         return self.handle_request(url=url, method=GET)
 
-    def list_runs(self, experiment_name: Optional[str] = None):
+    def list_runs(self, experiment_name: Optional[str] = None) -> requests.Response:
         """List all created runs inside a given experiment.
 
         If no experiment is specified, list runs for all available experiments.
@@ -150,7 +152,7 @@ class Client(BaseClient):
             response.append(self.handle_request(url=url, method=GET))
         return response
 
-    def delete_run(self, experiment_name: str, run_name: str):
+    def delete_run(self, experiment_name: str, run_name: str) -> requests.Response:
         """Delete a run by its name and experiment.
 
         :param experiment_name: The name of the experiment.
@@ -167,7 +169,7 @@ class Client(BaseClient):
         )
         return self.handle_request(url=url, method=DELETE)
 
-    def delete_runs(self, experiment_name: str):
+    def delete_runs(self, experiment_name: str) -> requests.Response:
         """Delete all runs inside a given experiment.
 
         :param experiment_name: The name of the experiment.
@@ -176,7 +178,7 @@ class Client(BaseClient):
         url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
         return self.handle_request(url=url, method=DELETE)
 
-    def get_run_status(self, experiment_name: str, run_name: str):
+    def get_run_status(self, experiment_name: str, run_name: str) -> requests.Response:
         """Get a run status by its name and experiment.
 
         :param experiment_name: The name of the experiment.
@@ -200,7 +202,7 @@ class Client(BaseClient):
         eval_data: Optional[Union[DocumentArray, str]],
         experiment_name: str,
         run_name: str,
-    ):
+    ) -> Tuple[str, str]:
         """Push DocumentArray for training and evaluation data on Hubble if it's not already uploaded.
 
         :param train_data: Either a `DocumentArray` for training data that needs to be pushed on Hubble
@@ -215,7 +217,7 @@ class Client(BaseClient):
             )
             train_data.push(name=da_name)
             train_data = da_name
-        if isinstance(eval_data, DocumentArray):
+        if eval_data and isinstance(eval_data, DocumentArray):
             da_name = '-'.join(
                 [self._hubble_user_id, experiment_name, run_name, EVAL_DATA]
             )
@@ -225,7 +227,7 @@ class Client(BaseClient):
 
     def download_model(
         self, experiment_name: str, run_name: str, path: str = FINETUNED_MODELS_DIR
-    ):
+    ) -> requests.Response:
         """Download finetuned model from Hubble by its ID.
 
         :param experiment_name: The name of the experiment.

@@ -3,10 +3,13 @@ import os
 import hubble
 import pytest
 from docarray import DocumentArray
+from tests.constants import FINETUNER_LABEL
+import finetuner
+from finetuner.client.client import Client
 
 
 @pytest.fixture()
-def get_image_data(data_path='resources/image_data'):
+def get_image_data(data_path='tests/resources/image_data/'):
     left_da = DocumentArray.from_files(os.path.join(data_path, 'left/*.jpg'))
     right_da = DocumentArray.from_files(os.path.join(data_path, 'right/*.jpg'))
 
@@ -20,7 +23,7 @@ def get_image_data(data_path='resources/image_data'):
     eval_da = left_da[train_size:] + right_da[train_size:]
 
     def assign_label_and_preprocess(doc):
-        doc.tags['finetuner_label'] = doc.uri.split('/')[1]
+        doc.tags[FINETUNER_LABEL] = doc.uri.split('/')[1]
         return (
             doc.load_uri_to_image_tensor()
             .set_image_tensor_normalization()
@@ -43,8 +46,8 @@ def test_client(mocker):
 
     mocker.patch.object(hubble, 'login', hubble_login_mocker)
     mocker.patch.object(hubble.Auth, 'get_auth_token', get_auth_token)
-    from finetuner.client.client import Client
 
+    finetuner.login()
     client = Client()
 
     return client

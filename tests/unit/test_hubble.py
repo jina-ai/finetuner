@@ -7,8 +7,8 @@ from finetuner.constants import EVAL_DATA, TRAIN_DATA
 @pytest.mark.parametrize(
     'train_data, eval_data',
     [
-        [docarray.DocumentArray(), docarray.DocumentArray()],
-        [docarray.DocumentArray(), None],
+        [docarray.DocumentArray.empty(1), docarray.DocumentArray.empty(1)],
+        [docarray.DocumentArray.empty(1), None],
         ['train data', 'eval data'],
         ['train data', None],
     ],

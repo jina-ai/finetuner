@@ -1,3 +1,5 @@
 import hubble
 
-hubble.login()
+
+def login():
+    hubble.login()

@@ -24,13 +24,19 @@ class BaseClient(object):
         self._base_url = Path(os.environ.get(HOST))
         self._session = self._get_client_session()
         self._hubble_client = hubble.Client(max_retries=None, timeout=10, jsonify=True)
-        self._hubble_user_id = json.loads(self._hubble_client.get_user_info())[DATA][
-            HUBBLE_USER_ID
-        ]
+        self._hubble_user_id = self._get_hubble_user_id()
+
+    def _get_hubble_user_id(self) -> str:
+        user_info = json.loads(self._hubble_client.get_user_info())
+        if user_info['code'] >= 400:
+            # will implement error-handling later
+            pass
+        hubble_user_id = user_info[DATA][HUBBLE_USER_ID]
+        return hubble_user_id
 
     @staticmethod
-    def _get_client_session():
-        session = requests.session()
+    def _get_client_session() -> requests.Session:
+        session = requests.Session()
         api_token = TOKEN_PREFIX + str(hubble.Auth.get_auth_token())
         session.headers.update({CHARSET: UTF_8, AUTHORIZATION: api_token})
         return session
@@ -41,7 +47,7 @@ class BaseClient(object):
         method: str,
         params: Optional[dict] = None,
         json: Optional[dict] = None,
-    ):
+    ) -> requests.Response:
         """The basis request handler.
 
         :param url: The url of the request.

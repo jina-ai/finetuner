@@ -1,3 +1,6 @@
+from docarray import DocumentArray
+
+
 def test_runs(
     test_client,
     get_image_data,
@@ -7,6 +10,8 @@ def test_runs(
 ):
     # get preprocessed data
     train_data, eval_data = get_image_data
+    # delete experiments if there are any
+    test_client.delete_experiments()
     # create an experiment and retrieve it
     test_client.create_experiment(experiment_name)
     response = test_client.get_experiment(name=experiment_name).json()
@@ -66,6 +71,8 @@ def test_list_runs(
 ):
     # get preprocessed data
     train_data, eval_data = get_image_data
+    # delete experiments if there are any
+    test_client.delete_experiments()
     # create two experiments and list them
     test_client.create_experiment(name=first_exp)
     test_client.create_experiment(name=second_exp)

@@ -3,7 +3,8 @@ import os
 import docarray
 import hubble
 import pytest
-
+from finetuner.client.client import Client
+import finetuner
 
 @pytest.fixture
 def test_client(mocker):
@@ -18,12 +19,10 @@ def test_client(mocker):
 
     mocker.patch.object(hubble, 'login', hubble_login_mocker)
     mocker.patch.object(hubble.Auth, 'get_auth_token', get_auth_token)
-
-    from finetuner.client.client import Client
-
     mocker.patch.object(Client, 'handle_request', return_args)
     mocker.patch.object(hubble.Client, 'download_artifact', return_args)
     mocker.patch.object(docarray.DocumentArray, 'push', return_args)
+    finetuner.login()
     client = Client()
     mocker.patch.object(client, '_hubble_user_id', '1')
     return client

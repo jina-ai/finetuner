@@ -1,1 +1,1 @@
-RUN_CONFIG_PATH = 'tests/resources/run-config.json'
+FINETUNER_LABEL = 'finetuner_label'
