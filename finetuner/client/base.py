@@ -26,7 +26,7 @@ class BaseClient(object):
         self._hubble_client = hubble.Client(max_retries=None, timeout=10, jsonify=True)
         self._hubble_user_id = self._get_hubble_user_id()
 
-    def _get_hubble_user_id(self) -> str:
+    def _get_hubble_user_id(self):
         user_info = json.loads(self._hubble_client.get_user_info())
         if user_info['code'] >= 400:
             # will implement error-handling later

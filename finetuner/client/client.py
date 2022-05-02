@@ -205,6 +205,7 @@ class Client(BaseClient):
     ) -> Tuple[str, str]:
         """Push DocumentArray for training and evaluation data on Hubble if it's not already uploaded.
 
+        Note: for now, let's assume that we only receive `DocumentArray`-s.
         :param train_data: Either a `DocumentArray` for training data that needs to be pushed on Hubble
                           or a name of the `DocumentArray` that is already uploaded.
         :param eval_data: Either a `DocumentArray` for evaluation data that needs to be pushed on Hubble
