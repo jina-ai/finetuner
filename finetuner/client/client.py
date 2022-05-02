@@ -1,7 +1,8 @@
-from typing import Optional, Union, Any, Tuple
+from typing import Any, Optional, Tuple, Union
 
-from docarray import DocumentArray
 import requests
+from docarray import DocumentArray
+
 from finetuner.client.base import BaseClient
 from finetuner.constants import (
     API_VERSION,

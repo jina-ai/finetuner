@@ -1,4 +1,10 @@
 from dotenv import load_dotenv
-from finetuner.client import login
+
+import hubble
+
+
+def login():
+    hubble.login()
+
 
 load_dotenv()

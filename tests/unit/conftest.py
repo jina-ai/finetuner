@@ -3,8 +3,10 @@ import os
 import docarray
 import hubble
 import pytest
-from finetuner.client.client import Client
+
 import finetuner
+from finetuner.client.client import Client
+
 
 @pytest.fixture
 def test_client(mocker):
