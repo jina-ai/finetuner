@@ -1,6 +1,3 @@
-from docarray import DocumentArray
-
-
 def test_runs(
     test_client,
     get_image_data,
