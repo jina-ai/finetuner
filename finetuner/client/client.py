@@ -1,4 +1,4 @@
-from typing import Any, Optional, Tuple, Union, Dict
+from typing import Any, Dict, Optional, Tuple, Union
 
 import requests
 from docarray import DocumentArray
