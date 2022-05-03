@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Tuple, Union, List
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import requests
 from docarray import DocumentArray
@@ -30,7 +30,9 @@ class Client(BaseClient):
         :return: `requests.Response` object.
         """
         url = self._base_url / API_VERSION / EXPERIMENTS
-        return self._handle_request(url=url, method=POST, json_data={NAME: name, **kwargs})
+        return self._handle_request(
+            url=url, method=POST, json_data={NAME: name, **kwargs}
+        )
 
     def get_experiment(self, name: str) -> requests.Response:
         """Get an experiment by its name.
@@ -94,7 +96,9 @@ class Client(BaseClient):
             model=model, train_data=train_data, **kwargs
         )
         url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
-        return self._handle_request(url=url, method=POST, json_data={NAME: run_name, CONFIG: config, **kwargs})
+        return self._handle_request(
+            url=url, method=POST, json_data={NAME: run_name, CONFIG: config, **kwargs}
+        )
 
     @staticmethod
     def _create_config_for_run(
@@ -126,7 +130,9 @@ class Client(BaseClient):
         )
         return self._handle_request(url=url, method=GET)
 
-    def list_runs(self, experiment_name: Optional[str] = None) -> List[requests.Response]:
+    def list_runs(
+        self, experiment_name: Optional[str] = None
+    ) -> List[requests.Response]:
         """List all created runs inside a given experiment.
 
         If no experiment is specified, list runs for all available experiments.
