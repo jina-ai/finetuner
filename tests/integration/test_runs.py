@@ -1,87 +1,108 @@
-import json
-
-from tests.constants import USER_ID_FOR_TESTING
-
-from finetuner.client.client import Client
-
-
-def test_runs(run_config, experiment_name='exp', first_run='run1', second_run='run2'):
-    # create a client
-    client = Client(user_id=USER_ID_FOR_TESTING)
+def test_runs(
+    test_client,
+    get_image_data,
+    experiment_name='exp',
+    first_run='run1',
+    second_run='run2',
+):
+    # get preprocessed data
+    train_data, eval_data = get_image_data
+    # delete experiments if there are any
+    test_client.delete_experiments()
     # create an experiment and retrieve it
-    client.create_experiment(experiment_name)
-    response = client.get_experiment(name=experiment_name).json()
+    test_client.create_experiment(experiment_name)
+    response = test_client.get_experiment(name=experiment_name).json()
     assert response['name'] == experiment_name
     assert response['status'] == 'ACTIVE'
     # create a first run
-    client.create_run(
-        experiment_name=experiment_name, run_name=first_run, config=run_config
+    test_client.create_run(
+        model='resnet50',
+        train_data=train_data,
+        eval_data=eval_data,
+        experiment_name=experiment_name,
+        run_name=first_run,
     )
     # get the first run
-    response = client.get_run(
+    response = test_client.get_run(
         experiment_name=experiment_name, run_name=first_run
     ).json()
     assert response['name'] == first_run
-    assert json.loads(response['config']) == run_config
+    # assert json.loads(response['config']) == run_config
     # create another run
-    client.create_run(
-        experiment_name=experiment_name, run_name=second_run, config=run_config
+    test_client.create_run(
+        model='resnet50',
+        train_data=train_data,
+        eval_data=eval_data,
+        experiment_name=experiment_name,
+        run_name=second_run,
     )
     # list all runs
-    response = client.list_runs(experiment_name=experiment_name)
+    response = test_client.list_runs(experiment_name=experiment_name)
     assert len(response) == 1
     exp_runs = response[0].json()
     assert exp_runs[0]['name'] == first_run and exp_runs[1]['name'] == second_run
-    assert (
-        json.loads(exp_runs[0]['config'])
-        == json.loads(exp_runs[1]['config'])
-        == run_config
-    )
     # delete the first run
-    client.delete_run(experiment_name=experiment_name, run_name=first_run)
-    response = client.list_runs(experiment_name=experiment_name)
+    test_client.delete_run(experiment_name=experiment_name, run_name=first_run)
+    response = test_client.list_runs(experiment_name=experiment_name)
     exp_runs = response[0].json()
     assert len(exp_runs) == 1
     assert exp_runs[0]['name'] == second_run
     # delete all existing runs
-    client.delete_runs(experiment_name=experiment_name)
-    response = client.list_runs(experiment_name=experiment_name)
+    test_client.delete_runs(experiment_name=experiment_name)
+    response = test_client.list_runs(experiment_name=experiment_name)
     exp_runs = response[0].json()
     assert not exp_runs
     # delete experiment
-    client.delete_experiments()
-    response = client.list_experiments().json()
+    test_client.delete_experiments()
+    response = test_client.list_experiments().json()
     assert not response
 
 
 def test_list_runs(
-    run_config, first_exp='exp1', second_exp='exp2', first_run='run1', second_run='run2'
+    test_client,
+    get_image_data,
+    first_exp='exp1',
+    second_exp='exp2',
+    first_run='run1',
+    second_run='run2',
 ):
-    # create a client
-    client = Client(user_id=USER_ID_FOR_TESTING)
+    # get preprocessed data
+    train_data, eval_data = get_image_data
+    # delete experiments if there are any
+    test_client.delete_experiments()
     # create two experiments and list them
-    client.create_experiment(name=first_exp)
-    client.create_experiment(name=second_exp)
-    response = client.list_experiments().json()
+    test_client.create_experiment(name=first_exp)
+    test_client.create_experiment(name=second_exp)
+    response = test_client.list_experiments().json()
     assert len(response) == 2
     assert response[0]['name'] == first_exp and response[1]['name'] == second_exp
     # create a run for each experiment
-    client.create_run(experiment_name=first_exp, run_name=first_run, config=run_config)
-    client.create_run(
-        experiment_name=second_exp, run_name=second_run, config=run_config
+    test_client.create_run(
+        model='resnet50',
+        train_data=train_data,
+        eval_data=eval_data,
+        experiment_name=first_exp,
+        run_name=first_run,
+    )
+    test_client.create_run(
+        model='resnet50',
+        train_data=train_data,
+        eval_data=eval_data,
+        experiment_name=second_exp,
+        run_name=second_run,
     )
     # list all runs without specifying a target experiment
     # which should list all runs across all existing experiments
-    response = client.list_runs()
+    response = test_client.list_runs()
     response = [resp.json() for resp in response]
     assert len(response) == 2
     assert response[0][0]['name'] == first_run and response[1][0]['name'] == second_run
     # list all runs of only first experiment
-    response = client.list_runs(experiment_name=first_exp)
+    response = test_client.list_runs(experiment_name=first_exp)
     response = [resp.json() for resp in response]
     assert len(response) == 1
     assert response[0][0]['name'] == first_run
     # delete experiments
-    client.delete_experiments()
-    response = client.list_experiments().json()
+    test_client.delete_experiments()
+    response = test_client.list_experiments().json()
     assert not response

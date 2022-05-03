@@ -1,3 +1,5 @@
+import docarray
+
 from finetuner.constants import (
     API_VERSION,
     CONFIG,
@@ -8,22 +10,28 @@ from finetuner.constants import (
     POST,
     RUNS,
     STATUS,
-    USER_ID,
 )
 
 
-def test_create_run(test_client, run_config, experiment_name='exp', run_name='run1'):
+def test_create_run(test_client, experiment_name='exp', run_name='run'):
+    train_data = docarray.DocumentArray()
     sent_request = test_client.create_run(
-        experiment_name=experiment_name, run_name=run_name, config=run_config
+        model='resnet50',
+        train_data=train_data,
+        experiment_name=experiment_name,
+        run_name=run_name,
     )
     assert (
         sent_request['url']
         == test_client._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
     )
     assert sent_request['method'] == POST
-    assert sent_request['json'][NAME] == run_name
-    assert sent_request['json'][CONFIG] == run_config
-    assert sent_request['params'][USER_ID] == test_client._user_id
+    assert sent_request['json_data'][NAME] == run_name
+    expected_config = {
+        'model': 'resnet50',
+        'data': {'train_data': '1-exp-run-train_data', 'eval_data': None},
+    }
+    assert sent_request['json_data'][CONFIG] == expected_config
 
 
 def test_get_run(test_client, experiment_name='exp', run_name='run1'):
@@ -40,7 +48,6 @@ def test_get_run(test_client, experiment_name='exp', run_name='run1'):
         / run_name
     )
     assert sent_request['method'] == GET
-    assert sent_request['params'][USER_ID] == test_client._user_id
 
 
 def test_list_runs(test_client, experiment_name='exp'):
@@ -51,7 +58,6 @@ def test_list_runs(test_client, experiment_name='exp'):
         == test_client._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
     )
     assert sent_request['method'] == GET
-    assert sent_request['params'][USER_ID] == test_client._user_id
 
 
 def test_delete_run(test_client, experiment_name='exp', run_name='run1'):
@@ -68,7 +74,6 @@ def test_delete_run(test_client, experiment_name='exp', run_name='run1'):
         / run_name
     )
     assert sent_request['method'] == DELETE
-    assert sent_request['params'][USER_ID] == test_client._user_id
 
 
 def test_delete_runs(test_client, experiment_name='exp'):
@@ -78,7 +83,6 @@ def test_delete_runs(test_client, experiment_name='exp'):
         == test_client._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
     )
     assert sent_request['method'] == DELETE
-    assert sent_request['params'][USER_ID] == test_client._user_id
 
 
 def test_get_run_status(test_client, experiment_name='exp', run_name='run1'):
@@ -96,4 +100,3 @@ def test_get_run_status(test_client, experiment_name='exp', run_name='run1'):
         / STATUS
     )
     assert sent_request['method'] == GET
-    assert sent_request['params'][USER_ID] == test_client._user_id
