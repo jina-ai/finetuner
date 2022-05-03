@@ -1,8 +1,9 @@
 import os
 
 import hubble
+import numpy as np
 import pytest
-from docarray import DocumentArray
+from docarray import Document, DocumentArray
 from tests.constants import FINETUNER_LABEL
 
 import finetuner
@@ -10,29 +11,20 @@ from finetuner.client.client import Client
 
 
 @pytest.fixture()
-def get_image_data(data_path='tests/resources/image_data/'):
-    left_da = DocumentArray.from_files(os.path.join(data_path, 'left/*.jpg'))
-    right_da = DocumentArray.from_files(os.path.join(data_path, 'right/*.jpg'))
+def get_image_data():
+    def generate_random_data(num_classes, images_per_class):
+        da = DocumentArray()
+        for class_id in range(num_classes):
+            for _ in range(images_per_class):
+                doc = Document(
+                    tensor=np.random.rand(3, 224, 224),
+                    tags={FINETUNER_LABEL: str(class_id)},
+                )
+                da.append(doc)
+        return da
 
-    left_da = DocumentArray(sorted(left_da, key=lambda x: x.uri))
-    right_da = DocumentArray(sorted(right_da, key=lambda x: x.uri))
-
-    ratio = 0.8
-    train_size = int(ratio * len(left_da))
-
-    train_da = left_da[:train_size] + right_da[:train_size]
-    eval_da = left_da[train_size:] + right_da[train_size:]
-
-    def assign_label_and_preprocess(doc):
-        doc.tags[FINETUNER_LABEL] = doc.uri.split('/')[1]
-        return (
-            doc.load_uri_to_image_tensor()
-            .set_image_tensor_normalization()
-            .set_image_tensor_channel_axis(-1, 0)
-        )
-
-    train_da.apply(assign_label_and_preprocess)
-    eval_da.apply(assign_label_and_preprocess)
+    train_da = generate_random_data(num_classes=4, images_per_class=4)
+    eval_da = generate_random_data(num_classes=4, images_per_class=2)
 
     return train_da, eval_da
 
