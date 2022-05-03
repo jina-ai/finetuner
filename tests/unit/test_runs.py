@@ -26,12 +26,12 @@ def test_create_run(test_client, experiment_name='exp', run_name='run'):
         == test_client._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
     )
     assert sent_request['method'] == POST
-    assert sent_request['json'][NAME] == run_name
+    assert sent_request['json_data'][NAME] == run_name
     expected_config = {
         'model': 'resnet50',
         'data': {'train_data': '1-exp-run-train_data', 'eval_data': None},
     }
-    assert sent_request['json'][CONFIG] == expected_config
+    assert sent_request['json_data'][CONFIG] == expected_config
 
 
 def test_get_run(test_client, experiment_name='exp', run_name='run1'):

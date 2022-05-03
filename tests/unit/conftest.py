@@ -21,7 +21,7 @@ def test_client(mocker):
 
     mocker.patch.object(hubble, 'login', hubble_login_mocker)
     mocker.patch.object(hubble.Auth, 'get_auth_token', get_auth_token)
-    mocker.patch.object(Client, 'handle_request', return_args)
+    mocker.patch.object(Client, '_handle_request', return_args)
     mocker.patch.object(hubble.Client, 'download_artifact', return_args)
     mocker.patch.object(docarray.DocumentArray, 'push', return_args)
     finetuner.login()

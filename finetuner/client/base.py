@@ -41,22 +41,22 @@ class BaseClient(object):
         session.headers.update({CHARSET: UTF_8, AUTHORIZATION: api_token})
         return session
 
-    def handle_request(
+    def _handle_request(
         self,
         url: str,
         method: str,
         params: Optional[dict] = None,
-        json: Optional[dict] = None,
+        json_data: Optional[dict] = None,
     ) -> requests.Response:
-        """The basis request handler.
+        """The base request handler.
 
         :param url: The url of the request.
         :param method: The request type (GET, POST or DELETE).
         :param params: Optional parameters for the request.
-        :param json: Optional data payloads to be send along with the request.
+        :param json_data: Optional data payloads to be sent along with the request.
         :return: `requests.Response` object
         """
         response = self._session.request(
-            url=url, method=method, json=json, params=params
+            url=url, method=method, json=json_data, params=params
         )
         return response

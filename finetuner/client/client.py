@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union, List
 
 import requests
 from docarray import DocumentArray
@@ -30,11 +30,7 @@ class Client(BaseClient):
         :return: `requests.Response` object.
         """
         url = self._base_url / API_VERSION / EXPERIMENTS
-        return self.handle_request(
-            url=url,
-            method=POST,
-            json={NAME: name, **kwargs},
-        )
+        return self._handle_request(url=url, method=POST, json_data={NAME: name, **kwargs})
 
     def get_experiment(self, name: str) -> requests.Response:
         """Get an experiment by its name.
@@ -43,7 +39,7 @@ class Client(BaseClient):
         :return: `requests.Response` object.
         """
         url = self._base_url / API_VERSION / EXPERIMENTS / name
-        return self.handle_request(url=url, method=GET)
+        return self._handle_request(url=url, method=GET)
 
     def list_experiments(self) -> requests.Response:
         """List all available experiments.
@@ -51,7 +47,7 @@ class Client(BaseClient):
         :return: `requests.Response` object.
         """
         url = self._base_url / API_VERSION / EXPERIMENTS
-        return self.handle_request(url=url, method=GET)
+        return self._handle_request(url=url, method=GET)
 
     def delete_experiment(self, name: str) -> requests.Response:
         """Delete an experiment given its name.
@@ -60,7 +56,7 @@ class Client(BaseClient):
         :return: `requests.Response` object.
         """
         url = self._base_url / API_VERSION / EXPERIMENTS / name
-        return self.handle_request(url=url, method=DELETE)
+        return self._handle_request(url=url, method=DELETE)
 
     def delete_experiments(self) -> requests.Response:
         """Delete all experiments.
@@ -68,7 +64,7 @@ class Client(BaseClient):
         :return: `requests.Response` object.
         """
         url = self._base_url / API_VERSION / EXPERIMENTS
-        return self.handle_request(url=url, method=DELETE)
+        return self._handle_request(url=url, method=DELETE)
 
     def create_run(
         self,
@@ -98,11 +94,7 @@ class Client(BaseClient):
             model=model, train_data=train_data, **kwargs
         )
         url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
-        return self.handle_request(
-            url=url,
-            method=POST,
-            json={NAME: run_name, CONFIG: config, **kwargs},
-        )
+        return self._handle_request(url=url, method=POST, json_data={NAME: run_name, CONFIG: config, **kwargs})
 
     @staticmethod
     def _create_config_for_run(
@@ -132,14 +124,14 @@ class Client(BaseClient):
             / RUNS
             / run_name
         )
-        return self.handle_request(url=url, method=GET)
+        return self._handle_request(url=url, method=GET)
 
-    def list_runs(self, experiment_name: Optional[str] = None) -> requests.Response:
+    def list_runs(self, experiment_name: Optional[str] = None) -> List[requests.Response]:
         """List all created runs inside a given experiment.
 
         If no experiment is specified, list runs for all available experiments.
         :param experiment_name: The name of the experiment.
-        :return: `requests.Response` object.
+        :return: List of `requests.Response` object(s).
         """
         if not experiment_name:
             target_experiments = [
@@ -150,7 +142,7 @@ class Client(BaseClient):
         response = []
         for experiment_name in target_experiments:
             url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
-            response.append(self.handle_request(url=url, method=GET))
+            response.append(self._handle_request(url=url, method=GET))
         return response
 
     def delete_run(self, experiment_name: str, run_name: str) -> requests.Response:
@@ -168,7 +160,7 @@ class Client(BaseClient):
             / RUNS
             / run_name
         )
-        return self.handle_request(url=url, method=DELETE)
+        return self._handle_request(url=url, method=DELETE)
 
     def delete_runs(self, experiment_name: str) -> requests.Response:
         """Delete all runs inside a given experiment.
@@ -177,7 +169,7 @@ class Client(BaseClient):
         :return: `requests.Response` object.
         """
         url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
-        return self.handle_request(url=url, method=DELETE)
+        return self._handle_request(url=url, method=DELETE)
 
     def get_run_status(self, experiment_name: str, run_name: str) -> requests.Response:
         """Get a run status by its name and experiment.
@@ -195,7 +187,7 @@ class Client(BaseClient):
             / run_name
             / STATUS
         )
-        return self.handle_request(url=url, method=GET)
+        return self._handle_request(url=url, method=GET)
 
     def _push_data_to_hubble(
         self,

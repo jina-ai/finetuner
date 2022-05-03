@@ -5,7 +5,7 @@ def test_create_experiment(test_client, name='name'):
     response = test_client.create_experiment(name)
     assert response['url'] == test_client._base_url / API_VERSION / EXPERIMENTS
     assert response['method'] == POST
-    assert response['json'][NAME] == name
+    assert response['json_data'][NAME] == name
 
 
 def test_get_experiment(test_client, name='name'):
