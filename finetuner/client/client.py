@@ -138,8 +138,6 @@ class Client(BaseClient):
         :return: List of all runs.
         """
         if not experiment_name:
-            ls = self.list_experiments()
-            print(type(ls), type(ls[0]))
             target_experiments = [
                 experiment[NAME] for experiment in self.list_experiments()
             ]
