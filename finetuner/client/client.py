@@ -5,7 +5,6 @@ from docarray import DocumentArray
 from finetuner.client.base import BaseClient
 from finetuner.constants import (
     API_VERSION,
-    ARTIFACT_IDS,
     CONFIG,
     DATA,
     DELETE,
@@ -14,6 +13,7 @@ from finetuner.constants import (
     FINETUNED_MODELS_DIR,
     GET,
     MODEL,
+    MODEL_IDS,
     NAME,
     POST,
     RUNS,
@@ -234,7 +234,7 @@ class Client(BaseClient):
         :returns: A list of str object(s) that indicate the download path on localhost.
         """
         artifact_ids = self.get_run(experiment_name=experiment_name, run_name=run_name)[
-            ARTIFACT_IDS
+            MODEL_IDS
         ]
         response = [
             self._hubble_client.download_artifact(id=artifact_id, path=path)
