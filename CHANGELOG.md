@@ -39,3 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Delete all unnecessary files from the previous project. ([#384](https://github.com/jina-ai/finetuner/pull/384))
+
+### Changed
+
+- Change logic behind artifact-id and return jsonified `dicts` instead of `requests.Response` objects. ([#390](https://github.com/jina-ai/finetuner/pull/390))
