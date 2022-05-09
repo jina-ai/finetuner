@@ -232,16 +232,19 @@ class Client(BaseClient):
 
     def download_model(
         self, experiment_name: str, run_name: str, path: str = FINETUNED_MODELS_DIR
-    ) -> Union[requests.Response, dict]:
-        """Download finetuned model from Hubble by its ID.
+    ) -> List[dict]:
+        """Download finetuned model(s) from Hubble by its ID.
 
         :param experiment_name: The name of the experiment.
         :param run_name: The name of the run.
         :param path: Directory where the model will be stored.
         :returns: A str object indicates the download path on localhost.
         """
-        artifact_id = self.get_run(experiment_name=experiment_name, run_name=run_name)[
+        artifact_ids = self.get_run(experiment_name=experiment_name, run_name=run_name)[
             ARTIFACT_IDS
         ]
-        response = self._hubble_client.download_artifact(id=artifact_id, path=path)
+        response = [
+            self._hubble_client.download_artifact(id=artifact_id, path=path)
+            for artifact_id in artifact_ids
+        ]
         return response
