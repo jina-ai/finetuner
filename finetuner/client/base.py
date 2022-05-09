@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Optional
+from typing import Optional, Union
 
 import hubble
 import requests
@@ -18,13 +18,17 @@ from finetuner.constants import (
 
 
 class BaseClient(object):
-    """Base Finetuner API client."""
+    """Base Finetuner API client.
 
-    def __init__(self):
+    :param to_json: Convert `requests.Response` object to json.
+    """
+
+    def __init__(self, to_json: bool = False):
         self._base_url = Path(os.environ.get(HOST))
         self._session = self._get_client_session()
         self._hubble_client = hubble.Client(max_retries=None, timeout=10, jsonify=True)
         self._hubble_user_id = self._get_hubble_user_id()
+        self._to_json = to_json
 
     def _get_hubble_user_id(self):
         user_info = json.loads(self._hubble_client.get_user_info())
@@ -47,7 +51,7 @@ class BaseClient(object):
         method: str,
         params: Optional[dict] = None,
         json_data: Optional[dict] = None,
-    ) -> requests.Response:
+    ) -> Union[requests.Response, dict]:
         """The base request handler.
 
         :param url: The url of the request.
@@ -57,6 +61,9 @@ class BaseClient(object):
         :return: `requests.Response` object
         """
         response = self._session.request(
-            url=url, method=method, json=json_data, params=params
+            url=url, method=method, json=json_data, params=params, verify=False
         )
+        if self._to_json:
+            response = json.dumps(response.json(), indent=2)
+
         return response

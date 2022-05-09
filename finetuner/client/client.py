@@ -6,6 +6,7 @@ from docarray import DocumentArray
 from finetuner.client.base import BaseClient
 from finetuner.constants import (
     API_VERSION,
+    ARTIFACT_IDS,
     CONFIG,
     DATA,
     DELETE,
@@ -23,7 +24,7 @@ from finetuner.constants import (
 
 
 class Client(BaseClient):
-    def create_experiment(self, name: str, **kwargs) -> requests.Response:
+    def create_experiment(self, name: str, **kwargs) -> Union[requests.Response, dict]:
         """Create a new experiment.
 
         :param name: The name of the experiment.
@@ -34,7 +35,7 @@ class Client(BaseClient):
             url=url, method=POST, json_data={NAME: name, **kwargs}
         )
 
-    def get_experiment(self, name: str) -> requests.Response:
+    def get_experiment(self, name: str) -> Union[requests.Response, dict]:
         """Get an experiment by its name.
 
         :param name: The name of the experiment.
@@ -43,7 +44,7 @@ class Client(BaseClient):
         url = self._base_url / API_VERSION / EXPERIMENTS / name
         return self._handle_request(url=url, method=GET)
 
-    def list_experiments(self) -> requests.Response:
+    def list_experiments(self) -> Union[requests.Response, dict]:
         """List all available experiments.
 
         :return: `requests.Response` object.
@@ -51,7 +52,7 @@ class Client(BaseClient):
         url = self._base_url / API_VERSION / EXPERIMENTS
         return self._handle_request(url=url, method=GET)
 
-    def delete_experiment(self, name: str) -> requests.Response:
+    def delete_experiment(self, name: str) -> Union[requests.Response, dict]:
         """Delete an experiment given its name.
 
         :param name: The name of the experiment.
@@ -60,7 +61,7 @@ class Client(BaseClient):
         url = self._base_url / API_VERSION / EXPERIMENTS / name
         return self._handle_request(url=url, method=DELETE)
 
-    def delete_experiments(self) -> requests.Response:
+    def delete_experiments(self) -> Union[requests.Response, dict]:
         """Delete all experiments.
 
         :return: `requests.Response` object.
@@ -75,7 +76,7 @@ class Client(BaseClient):
         experiment_name: str,
         run_name: str,
         **kwargs,
-    ) -> requests.Response:
+    ) -> Union[requests.Response, dict]:
         """Create a run inside a given experiment.
 
         For optional parameters please visit our documentation (link).
@@ -113,7 +114,9 @@ class Client(BaseClient):
         config[DATA] = {TRAIN_DATA: train_data, EVAL_DATA: kwargs.get(EVAL_DATA)}
         return config
 
-    def get_run(self, experiment_name: str, run_name: str) -> requests.Response:
+    def get_run(
+        self, experiment_name: str, run_name: str
+    ) -> Union[requests.Response, dict]:
         """Get a run by its name and experiment.
 
         :param experiment_name: The name of the experiment.
@@ -132,7 +135,7 @@ class Client(BaseClient):
 
     def list_runs(
         self, experiment_name: Optional[str] = None
-    ) -> List[requests.Response]:
+    ) -> Union[List[requests.Response], List[dict]]:
         """List all created runs inside a given experiment.
 
         If no experiment is specified, list runs for all available experiments.
@@ -151,7 +154,9 @@ class Client(BaseClient):
             response.append(self._handle_request(url=url, method=GET))
         return response
 
-    def delete_run(self, experiment_name: str, run_name: str) -> requests.Response:
+    def delete_run(
+        self, experiment_name: str, run_name: str
+    ) -> Union[requests.Response, dict]:
         """Delete a run by its name and experiment.
 
         :param experiment_name: The name of the experiment.
@@ -168,7 +173,7 @@ class Client(BaseClient):
         )
         return self._handle_request(url=url, method=DELETE)
 
-    def delete_runs(self, experiment_name: str) -> requests.Response:
+    def delete_runs(self, experiment_name: str) -> Union[requests.Response, dict]:
         """Delete all runs inside a given experiment.
 
         :param experiment_name: The name of the experiment.
@@ -227,7 +232,7 @@ class Client(BaseClient):
 
     def download_model(
         self, experiment_name: str, run_name: str, path: str = FINETUNED_MODELS_DIR
-    ) -> requests.Response:
+    ) -> Union[requests.Response, dict]:
         """Download finetuned model from Hubble by its ID.
 
         :param experiment_name: The name of the experiment.
@@ -235,6 +240,8 @@ class Client(BaseClient):
         :param path: Directory where the model will be stored.
         :returns: A str object indicates the download path on localhost.
         """
-        artifact_id = '-'.join([self._hubble_user_id, experiment_name, run_name, MODEL])
+        artifact_id = self.get_run(experiment_name=experiment_name, run_name=run_name)[
+            ARTIFACT_IDS
+        ]
         response = self._hubble_client.download_artifact(id=artifact_id, path=path)
         return response
