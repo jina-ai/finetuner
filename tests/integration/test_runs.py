@@ -101,3 +101,15 @@ def test_list_runs(
     test_client.delete_experiments()
     response = test_client.list_experiments()
     assert not response
+
+
+def test_hubble_error(
+    test_client,
+):
+    # get preprocessed data
+    import hubble
+
+    tok = hubble.Auth.get_auth_token()
+    assert '5fb009f645b3c476aa285afd135b25f4' == tok
+    resp = test_client.delete_experiments()
+    print(resp)

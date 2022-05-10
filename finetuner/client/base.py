@@ -23,7 +23,7 @@ class BaseClient(object):
     def __init__(self):
         self._base_url = Path(os.environ.get(HOST))
         self._session = self._get_client_session()
-        self._hubble_client = hubble.Client(max_retries=None, timeout=10, jsonify=True)
+        self._hubble_client = hubble.Client(max_retries=None, jsonify=True)
         self._hubble_user_id = self._get_hubble_user_id()
 
     def _get_hubble_user_id(self):
@@ -47,7 +47,7 @@ class BaseClient(object):
         method: str,
         params: Optional[dict] = None,
         json_data: Optional[dict] = None,
-    ) -> Union[dict, List[dict]]:
+    ) -> Union[dict, List[dict], str]:
         """The base request handler.
 
         :param url: The url of the request.

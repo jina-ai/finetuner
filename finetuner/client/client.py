@@ -55,7 +55,7 @@ class Client(BaseClient):
         """Delete an experiment given its name.
 
         :param name: The name of the experiment.
-        :return: Experiment to be deleted
+        :return: Experiment to be deletegd
         """
         url = self._base_url / API_VERSION / EXPERIMENTS / name
         return self._handle_request(url=url, method=DELETE)
@@ -175,7 +175,7 @@ class Client(BaseClient):
         url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
         return self._handle_request(url=url, method=DELETE)
 
-    def get_run_status(self, experiment_name: str, run_name: str) -> dict:
+    def get_run_status(self, experiment_name: str, run_name: str) -> str:
         """Get a run status by its name and experiment.
 
         :param experiment_name: The name of the experiment.
