@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Optional
+from typing import List, Optional, Union
 
 import hubble
 import requests
@@ -47,16 +47,16 @@ class BaseClient(object):
         method: str,
         params: Optional[dict] = None,
         json_data: Optional[dict] = None,
-    ) -> requests.Response:
+    ) -> Union[dict, List[dict]]:
         """The base request handler.
 
         :param url: The url of the request.
         :param method: The request type (GET, POST or DELETE).
         :param params: Optional parameters for the request.
         :param json_data: Optional data payloads to be sent along with the request.
-        :return: `requests.Response` object
+        :return: Response to the request.
         """
         response = self._session.request(
-            url=url, method=method, json=json_data, params=params
-        )
+            url=url, method=method, json=json_data, params=params, verify=False
+        ).json()
         return response
