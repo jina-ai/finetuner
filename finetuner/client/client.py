@@ -231,7 +231,7 @@ class Client(BaseClient):
         :param experiment_name: The name of the experiment.
         :param run_name: The name of the run.
         :param path: Directory where the model will be stored.
-        :returns: A list of str object(s) that indicate the download path on localhost.
+        :returns: A list of str object(s) that indicate the download path.
         """
         artifact_ids = self.get_run(experiment_name=experiment_name, run_name=run_name)[
             MODEL_IDS
