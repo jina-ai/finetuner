@@ -28,6 +28,7 @@ class BaseClient(object):
 
     def _get_hubble_user_id(self):
         user_info = json.loads(self._hubble_client.get_user_info())
+        print(user_info)
         if user_info['code'] >= 400:
             # will implement error-handling later
             pass
