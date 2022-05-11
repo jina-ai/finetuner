@@ -32,9 +32,8 @@ class Finetuner:
 
     def _get_default_experiment(self) -> Experiment:
         """Create or retrieve (if it already exists) a default experiment."""
-        if experiment := self.get_experiment(name=DEFAULT_EXPERIMENT_NAME):
-            pass
-        else:
+        experiment = self.get_experiment(name=DEFAULT_EXPERIMENT_NAME)
+        if not experiment:
             experiment = self.create_experiment(name=DEFAULT_EXPERIMENT_NAME)
         return experiment
 
