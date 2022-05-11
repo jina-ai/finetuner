@@ -1,52 +1,234 @@
-# Configuration file for the Sphinx documentation builder.
-#
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
+import os
+import re
+import sys
+from os import path
 
-# -- Path setup --------------------------------------------------------------
+sys.path.insert(0, path.abspath('..'))
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+project = 'Finetuner'
+slug = re.sub(r'\W+', '-', project.lower())
+author = 'Jina AI'
+copyright = 'Jina AI Limited. All rights reserved.'
+source_suffix = ['.rst', '.md']
+master_doc = 'index'
+language = 'en'
+repo_dir = '../'
 
+try:
+    if 'FINETUNER_VERSION' not in os.environ:
+        pkg_name = 'finetuner'
+        libinfo_py = path.join(repo_dir, pkg_name, '__init__.py')
+        libinfo_content = open(libinfo_py, 'r').readlines()
+        version_line = [
+            l.strip() for l in libinfo_content if l.startswith('__version__')
+        ][0]
+        exec(version_line)
+    else:
+        __version__ = os.environ['FINETUNER_VERSION']
+except FileNotFoundError:
+    __version__ = '0.0.0'
 
-# -- Project information -----------------------------------------------------
+version = __version__
+release = __version__
 
-project = 'finetuner'
-copyright = '2022, jina'
-author = 'jina'
+templates_path = ['_templates']
+exclude_patterns = [
+    '_build',
+    'Thumbs.db',
+    '.DS_Store',
+    'tests',
+    'page_templates',
+    '.github',
+]
+pygments_style = 'rainbow_dash'
+html_theme = 'furo'
 
+base_url = '/'
+html_baseurl = 'https://finetuner.jina.ai'
+sitemap_url_scheme = '{link}'
+sitemap_locales = [None]
+sitemap_filename = "sitemap.xml"
 
-# -- General configuration ---------------------------------------------------
+html_theme_options = {
+    'light_logo': 'logo-light.svg',
+    'dark_logo': 'logo-dark.svg',
+    "sidebar_hide_name": True,
+    "light_css_variables": {
+        "color-brand-primary": "#009191",
+        "color-brand-content": "#009191",
+    },
+    "dark_css_variables": {
+        "color-brand-primary": "#FBCB67",
+        "color-brand-content": "#FBCB67",
+    },
 
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
+    # PLEASE DO NOT DELETE the empty line between `start-announce` and `end-announce`
+    # PLEASE DO NOT DELETE `start-announce`/ `end-announce` it is used for our dev bot to inject announcement from GH
+
+    # start-announce
+
+    # end-announce
+}
+
+html_static_path = ['_static']
+html_extra_path = ['html_extra']
+html_css_files = [
+    'main.css',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css',
+]
+html_js_files = [
+    'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js',
+    'https://cdn.jsdelivr.net/npm/qabot@0.4',
+    'source-in-links.js'
+    ]
+htmlhelp_basename = slug
+html_show_sourcelink = False
+html_favicon = '_static/favicon.png'
+
+latex_documents = [(master_doc, f'{slug}.tex', project, author, 'manual')]
+man_pages = [(master_doc, slug, project, [author], 1)]
+texinfo_documents = [
+    (master_doc, slug, project, author, slug, project, 'Miscellaneous')
+]
+epub_title = project
+epub_exclude_files = ['search.html']
+
+# -- Extension configuration -------------------------------------------------
+
 extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx_autodoc_typehints',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.coverage',
+    'sphinxcontrib.apidoc',
+    'sphinxarg.ext',
+    'sphinx_markdown_tables',
+    'sphinx_copybutton',
+    'sphinx_sitemap',
+    'sphinx.ext.intersphinx',
+    'sphinxext.opengraph',
+    'notfound.extension',
+    'myst_parser',
+    'sphinx_design',
+    'sphinx_inline_tabs',
 ]
 
-# Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+myst_enable_extensions = ['colon_fence', 'substitution']
 
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-# This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+# -- Custom 404 page
+
+# sphinx-notfound-page
+# https://github.com/readthedocs/sphinx-notfound-page
+notfound_context = {
+    'title': 'Page Not Found',
+    'body': '''
+<h1>Page Not Found</h1>
+<p>Oops, we couldn't find that page. </p>
+<p>You can try "asking our docs" on the right corner of the page to find answer.</p>
+<p>Otherwise, <a href="https://github.com/jina-ai/finetuner">please create a Github issue</a> and one of our team will respond.</p>
+
+''',
+}
+notfound_no_urls_prefix = True
+
+apidoc_module_dir = repo_dir
+apidoc_output_dir = 'api'
+apidoc_excluded_paths = ['tests', 'legacy', 'hub', 'toy*', 'setup.py']
+apidoc_separate_modules = True
+apidoc_extra_args = ['-t', 'template/']
+autodoc_member_order = 'bysource'
+autodoc_mock_imports = ['argparse', 'numpy', 'np', 'tensorflow', 'torch', 'scipy']
+autoclass_content = 'both'
+set_type_checking_flag = False
+html_last_updated_fmt = ''
+nitpicky = True
+nitpick_ignore = [('py:class', 'type')]
+linkcheck_ignore = [
+    # Avoid link check on local uri
+    'http://0.0.0.0:*',
+    'pods/encode.yml',
+    '.github/*',
+    'extra-requirements.txt',
+    'fastentrypoints.py' '../../101',
+    '../../102',
+    'http://www.twinsun.com/tz/tz-link.htm',  # Broken link from pytz library
+    'https://urllib3.readthedocs.io/en/latest/contrib.html#google-app-engine',  # Broken link from urllib3 library
+    'https://linuxize.com/post/how-to-add-swap-space-on-ubuntu-20-04/',
+    # This link works but gets 403 error on linkcheck
+]
+linkcheck_timeout = 20
+linkcheck_retries = 2
+linkcheck_anchors = False
+
+ogp_site_url = 'https://finetuner.jina.ai/'
+ogp_image = 'https://finetuner.jina.ai/_static/banner.png'
+ogp_use_first_image = True
+ogp_description_length = 300
+ogp_type = 'website'
+ogp_site_name = f'Finetuner {os.environ.get("SPHINX_MULTIVERSION_VERSION", version)} Documentation'
+
+ogp_custom_meta_tags = [
+    '<meta name="twitter:card" content="summary_large_image">',
+    '<meta name="twitter:site" content="@JinaAI_">',
+    '<meta name="twitter:creator" content="@JinaAI_">',
+    '<meta name="description" content="Finetuner is a library for tune the weights of any deep neural network for better embeddings on search tasks.">',
+    '<meta property="og:description" content="Finetuner allows one to tune the weights of any deep neural network for better embeddings on search tasks. It accompanies Jina to deliver the last mile of performance for domain-specific neural search applications.">',
+    '''
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48WE9V68SD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-48WE9V68SD');
+</script>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+    ''',
+]
 
 
-# -- Options for HTML output -------------------------------------------------
+def add_server_address(app):
+    # This makes variable `server_address` available to docbot.js
+    server_address = app.config['server_address']
+    js_text = "var server_address = '%s';" % server_address
+    app.add_js_file(None, body=js_text)
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
-html_theme = 'alabaster'
+def configure_qa_bot_ui(app):
+    # This sets the server address to <qa-bot>
+    server_address = app.config['server_address']
+    js_text = """
+        document.addEventListener('DOMContentLoaded', function() { 
+            document.querySelector('qa-bot').setAttribute('server', '%s');
+        });
+        """ % server_address
+    app.add_js_file(None, body=js_text)
 
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+
+def setup(app):
+    from sphinx.domains.python import PyField
+    from sphinx.util.docfields import Field
+    from sphinx.locale import _
+
+    app.add_object_type(
+        'confval',
+        'confval',
+        objname='configuration value',
+        indextemplate='pair: %s; configuration value',
+        doc_field_types=[
+            PyField(
+                'type',
+                label=_('Type'),
+                has_arg=False,
+                names=('type',),
+                bodyrolename='class',
+            ),
+            Field(
+                'default',
+                label=_('Default'),
+                has_arg=False,
+                names=('default',),
+            ),
+        ],
+    )
