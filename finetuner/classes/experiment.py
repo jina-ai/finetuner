@@ -2,8 +2,8 @@ from typing import List, Optional, Union
 
 from docarray import DocumentArray
 
-from finetuner.classes import Run
-from finetuner.client.client import Client
+from finetuner.classes.run import Run
+from finetuner.client import FinetunerV1Client
 from finetuner.constants import CONFIG, CREATED_AT, DESCRIPTION, NAME
 
 
@@ -19,7 +19,7 @@ class Experiment:
 
     def __init__(
         self,
-        client: Client,
+        client: FinetunerV1Client,
         name: str,
         status: str,
         created_at: str,

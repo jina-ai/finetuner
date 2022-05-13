@@ -17,8 +17,10 @@ from finetuner.constants import (
 )
 
 
-class BaseClient(object):
-    """Base Finetuner API client."""
+class _BaseClient:
+    """
+    Base Finetuner API client.
+    """
 
     def __init__(self):
         self._base_url = Path(os.environ.get(HOST))
