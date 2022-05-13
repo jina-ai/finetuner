@@ -2,15 +2,10 @@ from typing import List, Optional
 
 import hubble
 
-from finetuner.classes import Experiment, Run
-from finetuner.client.client import Client
-from finetuner.constants import (
-    CREATED_AT,
-    DEFAULT_EXPERIMENT_NAME,
-    DESCRIPTION,
-    NAME,
-    STATUS,
-)
+from ..client import FinetunerV1Client
+from ..constants import CREATED_AT, DEFAULT_EXPERIMENT_NAME, DESCRIPTION, NAME, STATUS
+from .experiment import Experiment
+from .run import Run
 
 
 class Finetuner:
@@ -27,7 +22,7 @@ class Finetuner:
         Note: Calling `login` is necessary for using finetuner.
         """
         hubble.login()
-        self._client = Client()
+        self._client = FinetunerV1Client()
         self._default_experiment = self._get_default_experiment()
 
     def _get_default_experiment(self) -> Experiment:
@@ -90,7 +85,8 @@ class Finetuner:
     ) -> Run:
         """Create a run.
 
-        If an experiment name is not specified, the run will be created in the default experiment.
+        If an experiment name is not specified, the run will be created in the default
+        experiment.
 
         :param run_name: Name of the run.
         :param model: Name of the model to be fine-tuned.
@@ -111,7 +107,8 @@ class Finetuner:
     def get_run(self, run_name: str, experiment_name: Optional[str] = None) -> Run:
         """Get run by its name and (optional) experiment.
 
-        If an experiment name is not specified, we'll look for the run in the default experiment.
+        If an experiment name is not specified, we'll look for the run in the default
+        experiment.
 
         :param run_name: Name of the run.
         :param experiment_name: Optional name of the experiment.
@@ -127,7 +124,8 @@ class Finetuner:
     def list_runs(self, experiment_name: Optional[str] = None) -> List[Run]:
         """List every run.
 
-        If an experiment name is not specified, we'll list every run across all experiments.
+        If an experiment name is not specified, we'll list every run across all
+        experiments.
 
         :param experiment_name: Optional name of the experiment.
         :returns: A list of `Run` objects.
@@ -144,7 +142,8 @@ class Finetuner:
     def delete_run(self, run_name: str, experiment_name: Optional[str] = None):
         """Delete a run.
 
-        If an experiment name is not specified, we'll look for the run in the default experiment.
+        If an experiment name is not specified, we'll look for the run in the default
+        experiment.
 
         :param run_name: Name of the run.
         :param experiment_name: Optional name of the experiment.
@@ -158,7 +157,8 @@ class Finetuner:
     def delete_runs(self, experiment_name: Optional[str] = None):
         """Delete every run.
 
-        If an experiment name is not specified, we'll delete every run across all experiments.
+        If an experiment name is not specified, we'll delete every run across all
+        experiments.
 
         :param experiment_name: Optional name of the experiment.
         """
