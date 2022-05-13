@@ -6,7 +6,7 @@ import hubble
 import requests
 from path import Path
 
-from ..constants import (
+from finetuner.constants import (
     AUTHORIZATION,
     CHARSET,
     DATA,

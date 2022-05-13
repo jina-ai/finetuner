@@ -1,6 +1,7 @@
 from typing import List, Optional
 
-from ..constants import (
+from finetuner.client.base import _BaseClient
+from finetuner.constants import (
     API_VERSION,
     CONFIG,
     DELETE,
@@ -11,7 +12,6 @@ from ..constants import (
     RUNS,
     STATUS,
 )
-from .base import _BaseClient
 
 
 class FinetunerV1Client(_BaseClient):

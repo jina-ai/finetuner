@@ -1,1 +1,1 @@
-from .client import FinetunerV1Client  # noqa: F401
+from finetuner.client.client import FinetunerV1Client  # noqa: F401

@@ -2,10 +2,16 @@ from typing import List, Optional
 
 import hubble
 
-from ..client import FinetunerV1Client
-from ..constants import CREATED_AT, DEFAULT_EXPERIMENT_NAME, DESCRIPTION, NAME, STATUS
-from .experiment import Experiment
-from .run import Run
+from finetuner.classes.experiment import Experiment
+from finetuner.classes.run import Run
+from finetuner.client import FinetunerV1Client
+from finetuner.constants import (
+    CREATED_AT,
+    DEFAULT_EXPERIMENT_NAME,
+    DESCRIPTION,
+    NAME,
+    STATUS,
+)
 
 
 class Finetuner:

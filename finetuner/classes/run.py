@@ -1,7 +1,7 @@
 from typing import Optional
 
-from ..client import FinetunerV1Client
-from ..constants import FINETUNED_MODELS_DIR, FINISHED
+from finetuner.client import FinetunerV1Client
+from finetuner.constants import FINETUNED_MODELS_DIR, FINISHED
 
 
 class Run:

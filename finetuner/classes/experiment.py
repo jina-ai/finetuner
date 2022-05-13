@@ -2,9 +2,9 @@ from typing import List, Optional, Union
 
 from docarray import DocumentArray
 
-from ..client import FinetunerV1Client
-from ..constants import CONFIG, CREATED_AT, DESCRIPTION, NAME
-from .run import Run
+from finetuner.classes.run import Run
+from finetuner.client import FinetunerV1Client
+from finetuner.constants import CONFIG, CREATED_AT, DESCRIPTION, NAME
 
 
 class Experiment:
