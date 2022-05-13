@@ -37,6 +37,11 @@ Don't worry, call `finetuner.list_models`, we will help you to choose the best f
 
 ## How it works?
 
+**Finetuner** brings SOTA research ideas such as [transfer learning]() and [metric learning]() into production.
+
++ *Transfer Learning* means we adopt a pre-trained model, while we only re-train part of the deep learning model on our own dataset. This allows fine-tuning much more computational effective if you do not have enough labeled data.
++ *Metric Learning* means **Finetuner** samples training data from your **DocumentArray** as triplets such as `(anchor, positive, negative)`. The objective of fine-tuning is to bring `anchor` as close as `positive` item, while pull `anchor` apart from `negative` item.
+
 
 
 
