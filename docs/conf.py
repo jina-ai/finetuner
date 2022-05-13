@@ -12,7 +12,7 @@ copyright = 'Jina AI Limited. All rights reserved.'
 source_suffix = ['.rst', '.md']
 master_doc = 'index'
 language = 'en'
-repo_dir = '../'
+repo_dir = '/'
 
 try:
     if 'FINETUNER_VERSION' not in os.environ:
