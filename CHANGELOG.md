@@ -1,21 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -35,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Create run endpoints. ([#387](https://github.com/jina-ai/finetuner/pull/387))
 
 - Add Hubble authentication. ([#388](https://github.com/jina-ai/finetuner/pull/388))
+
+- Add docs and netlify deployment. ([#392](https://github.com/jina-ai/finetuner/pull/392)) 
 
 ### Removed
 

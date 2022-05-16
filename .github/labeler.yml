@@ -1,4 +1,3 @@
-# Add 'label1' to any changes within 'example' folder or any subfolders
 area/docs:
   - docs/**/*
   - ./*.md
@@ -8,16 +7,8 @@ area/testing:
 
 area/setup:
   - setup.py
-  - extra-requirements.txt
-  - requirements.txt
+  - requirements*
   - MANIFEST.in
-  - fastentrypoints.py
-
-area/core:
-  - finetuner/**/*
-
-area/entrypoint:
-  - finetuner/__init__.py
 
 area/housekeeping:
   - .github/**/*
@@ -32,15 +23,8 @@ area/docker:
   - Dockerfiles/**/*
   - ./.dockerignore
 
-area/script:
-  - script/**/*
+area/core:
+  - finetuner/**/*
 
-component/tailor:
-  - finetuner/tailor/**/*
-
-component/tuner:
-  - finetuner/tuner/**/*
-
-component/misc:
-  - finetuner/*.py
-
+area/entrypoint:
+  - finetuner/__init__.py
