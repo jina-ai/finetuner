@@ -2,6 +2,7 @@ from typing import Optional
 
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import FINETUNED_MODELS_DIR, FINISHED
+from finetuner.hubble import download_model
 
 
 class Run:
@@ -54,8 +55,11 @@ class Run:
         :returns: A list of str object(s) that indicate the download path.
         """
         if self.status() == FINISHED:
-            download_path = self._client.download_model(
-                experiment_name=self.experiment_name, run_name=self.name, path=path
+            download_path = download_model(
+                client=self._client,
+                experiment_name=self.experiment_name,
+                run_name=self.name,
+                path=path,
             )
         else:
             # tell users that the run hasn't finished yet, thus they can't download
