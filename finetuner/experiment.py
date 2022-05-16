@@ -34,7 +34,7 @@ class Experiment:
         name: str,
         status: str,
         created_at: str,
-        description: Optional[str] = "",
+        description: Optional[str] = '',
     ):
         self._client = client
         self._name = name

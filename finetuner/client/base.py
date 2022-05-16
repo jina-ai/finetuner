@@ -30,7 +30,7 @@ class _BaseClient:
 
     def _get_hubble_user_id(self):
         user_info = json.loads(self.hubble_client.get_user_info())
-        if user_info["code"] >= 400:
+        if user_info['code'] >= 400:
             # will implement error-handling later
             pass
         hubble_user_id = user_info[DATA][HUBBLE_USER_ID]

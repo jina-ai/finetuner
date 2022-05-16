@@ -28,7 +28,7 @@ class Finetuner:
     def _get_default_experiment(self) -> Experiment:
         """Create or retrieve (if it already exists) a default experiment
         for the current working directory."""
-        experiment_name = os.getcwd().split("/")[-1]
+        experiment_name = os.getcwd().split('/')[-1]
         for experiment in self.list_experiments():
             if experiment.get_name() == experiment_name:
                 return experiment

@@ -32,13 +32,13 @@ def get_image_data():
 @pytest.fixture()
 def test_client(mocker):
     def hubble_login_mocker():
-        print("Successfully logged in to Hubble!")
+        print('Successfully logged in to Hubble!')
 
     def get_auth_token():
-        return os.environ.get("HUBBLE_STAGING_TOKEN")
+        return os.environ.get('HUBBLE_STAGING_TOKEN')
 
-    mocker.patch.object(hubble, "login", hubble_login_mocker)
-    mocker.patch.object(hubble.Auth, "get_auth_token", get_auth_token)
+    mocker.patch.object(hubble, 'login', hubble_login_mocker)
+    mocker.patch.object(hubble.Auth, 'get_auth_token', get_auth_token)
 
     finetuner.login()
     client = FinetunerV1Client()

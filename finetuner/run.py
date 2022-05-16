@@ -22,7 +22,7 @@ class Run:
         experiment_name: str,
         config: dict,
         created_at: str,
-        description: Optional[str] = "",
+        description: Optional[str] = '',
     ):
         self._client = client
         self._name = name
@@ -45,7 +45,7 @@ class Run:
 
         :returns: A string dump of the run logs.
         """
-        raise NotImplementedError("Not yet implemented, stay tuned!")
+        raise NotImplementedError('Not yet implemented, stay tuned!')
 
     def save_model(self, path: str = FINETUNED_MODELS_DIR):
         """Save model(s) if the run is finished.

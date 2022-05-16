@@ -6,25 +6,25 @@ from finetuner.hubble import push_data_to_hubble
 
 
 @pytest.mark.parametrize(
-    "train_data, eval_data",
+    'train_data, eval_data',
     [
         [docarray.DocumentArray.empty(1), docarray.DocumentArray.empty(1)],
         [docarray.DocumentArray.empty(1), None],
-        ["train data", "eval data"],
-        ["train data", None],
+        ['train data', 'eval data'],
+        ['train data', None],
     ],
 )
 def test_push_data_to_hubble(
-    test_client, train_data, eval_data, experiment_name="exp", run_name="run"
+    test_client, train_data, eval_data, experiment_name='exp', run_name='run'
 ):
     if isinstance(train_data, docarray.DocumentArray):
-        expected_train_name = "-".join(
+        expected_train_name = '-'.join(
             [test_client.hubble_user_id, experiment_name, run_name, TRAIN_DATA]
         )
     else:
         expected_train_name = train_data
     if isinstance(eval_data, docarray.DocumentArray):
-        expected_eval_name = "-".join(
+        expected_eval_name = '-'.join(
             [test_client.hubble_user_id, experiment_name, run_name, EVAL_DATA]
         )
     else:
