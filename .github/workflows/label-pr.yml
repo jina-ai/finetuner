@@ -5,6 +5,7 @@ on:
 
 jobs:
   assign-label-to-pr:
+    name: Assign label to PR
     runs-on: ubuntu-latest
     if: ${{ !github.event.pull_request.head.repo.fork }}
     steps:
@@ -26,6 +27,7 @@ jobs:
       docs: ${{ steps.docs_updated.outputs.docs }}
 
   deploy-to-netlify:
+    name: Deploy docs to netlify
     runs-on: ubuntu-latest
 #    needs: [assign-label-to-pr]
 #    if: ${{ needs.assign-label-to-pr.outputs.docs == 'true' }}
