@@ -2,10 +2,10 @@ import json
 import os
 from typing import List, Optional, Union
 
-import hubble
 import requests
 from path import Path
 
+import hubble
 from finetuner.constants import (
     AUTHORIZATION,
     CHARSET,
@@ -25,13 +25,12 @@ class _BaseClient:
     def __init__(self):
         self._base_url = Path(os.environ.get(HOST))
         self._session = self._get_client_session()
-        self._hubble_client = hubble.Client(max_retries=None, jsonify=True)
-        self._hubble_user_id = self._get_hubble_user_id()
+        self.hubble_client = hubble.Client(max_retries=None, jsonify=True)
+        self.hubble_user_id = self._get_hubble_user_id()
 
     def _get_hubble_user_id(self):
-        user_info = json.loads(self._hubble_client.get_user_info())
-        print(user_info)
-        if user_info['code'] >= 400:
+        user_info = json.loads(self.hubble_client.get_user_info())
+        if user_info["code"] >= 400:
             # will implement error-handling later
             pass
         hubble_user_id = user_info[DATA][HUBBLE_USER_ID]

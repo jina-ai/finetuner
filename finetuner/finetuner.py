@@ -1,17 +1,11 @@
+import os
 from typing import List, Optional
 
 import hubble
-
-from finetuner.classes.experiment import Experiment
-from finetuner.classes.run import Run
 from finetuner.client import FinetunerV1Client
-from finetuner.constants import (
-    CREATED_AT,
-    DEFAULT_EXPERIMENT_NAME,
-    DESCRIPTION,
-    NAME,
-    STATUS,
-)
+from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
+from finetuner.experiment import Experiment
+from finetuner.run import Run
 
 
 class Finetuner:
@@ -32,10 +26,13 @@ class Finetuner:
         self._default_experiment = self._get_default_experiment()
 
     def _get_default_experiment(self) -> Experiment:
-        """Create or retrieve (if it already exists) a default experiment."""
-        experiment = self.get_experiment(name=DEFAULT_EXPERIMENT_NAME)
-        if not experiment:
-            experiment = self.create_experiment(name=DEFAULT_EXPERIMENT_NAME)
+        """Create or retrieve (if it already exists) a default experiment
+        for the current working directory."""
+        experiment_name = os.getcwd().split("/")[-1]
+        for experiment in self.list_experiments():
+            if experiment.get_name() == experiment_name:
+                return experiment
+        experiment = self.create_experiment(name=experiment_name)
         return experiment
 
     def create_experiment(self, name: str) -> Experiment:
@@ -68,7 +65,12 @@ class Finetuner:
         """List every experiment."""
         experiment_infos = self._client.list_experiments()
         experiments = [
-            Experiment(name=experiment_info[NAME], client=self._client)
+            Experiment(
+                client=self._client,
+                name=experiment_info[NAME],
+                status=experiment_info[STATUS],
+                created_at=experiment_info[CREATED_AT],
+            )
             for experiment_info in experiment_infos
         ]
         return experiments
