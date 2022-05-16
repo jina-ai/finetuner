@@ -39,7 +39,7 @@ class Finetuner:
     def create_experiment(self, name: Optional[str] = None) -> Experiment:
         """Create an experiment.
 
-        :param: Name of the experiment.
+        :param: Optional name of the experiment.
         :returns: An `Experiment` object.
         """
         if not name:
