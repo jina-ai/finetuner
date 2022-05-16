@@ -7,7 +7,7 @@ def test_experiments(
     test_client.create_experiment(name=first_exp_name)
     response = test_client.get_experiment(name=first_exp_name)
     assert response["name"] == first_exp_name
-    assert response["status"] == "ACTIVE"
+    assert response["status"] == 'ACTIVE'
     # create another experiment and list all experiments
     test_client.create_experiment(second_exp_name)
     response = test_client.list_experiments()
@@ -25,11 +25,3 @@ def test_experiments(
     test_client.delete_experiments()
     response = test_client.list_experiments()
     assert not response
-
-
-def test_api_error(test_client):
-    # doesn't delete experiments
-    test_client.delete_experiments()
-
-    response = test_client.list_experiments()
-    print(len(response))
