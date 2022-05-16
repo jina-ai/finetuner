@@ -25,3 +25,11 @@ def test_experiments(
     test_client.delete_experiments()
     response = test_client.list_experiments()
     assert not response
+
+
+def test_api_error(test_client):
+    # doesn't delete experiments
+    test_client.delete_experiments()
+
+    response = test_client.list_experiments()
+    print(len(response))
