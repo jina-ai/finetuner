@@ -5,8 +5,8 @@ import hubble
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
 from finetuner.experiment import Experiment
-from finetuner.run import Run
 from finetuner.names import get_random_name
+from finetuner.run import Run
 
 
 class Finetuner:
