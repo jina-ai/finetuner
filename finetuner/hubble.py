@@ -18,12 +18,10 @@ def push_data_to_hubble(
     Note: for now, let's assume that we only receive `DocumentArray`-s.
 
     :param client: The Finetuner API client.
-    :param train_data: Either a `DocumentArray` for training data that needs
-                       to be pushed on Hubble or a name of the `DocumentArray`
-                       that is already uploaded.
-    :param eval_data: Either a `DocumentArray` for evaluation data that needs
-                      to be pushed on Hubble or a name of the `DocumentArray`
-                      that is already uploaded.
+    :param train_data: Either a `DocumentArray` for training data that needs to be
+        pushed on Hubble or a name of the `DocumentArray` that is already uploaded.
+    :param eval_data: Either a `DocumentArray` for evaluation data that needs to be
+        pushed on Hubble or a name of the `DocumentArray` that is already uploaded.
     :param experiment_name: Name of the experiment.
     :param run_name: Name of the run.
     :returns: Name(s) of pushed `DocumentArray`-s.

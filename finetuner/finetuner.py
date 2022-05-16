@@ -101,7 +101,7 @@ class Finetuner:
 
         :param model: Name of the model to be fine-tuned.
         :param train_data: Either a `DocumentArray` for training data or a
-                           name of the `DocumentArray` that is pushed on Hubble.
+            name of the `DocumentArray` that is pushed on Hubble.
         :param run_name: Optional name of the run.
         :param experiment_name: Optional name of the experiment.
         :returns: A `Run` object.

@@ -11,6 +11,7 @@ from finetuner.constants import (
     POST,
     RUNS,
     STATUS,
+    DESCRIPTION,
 )
 
 
@@ -21,15 +22,16 @@ class FinetunerV1Client(_BaseClient):
 
     """ Experiment API """
 
-    def create_experiment(self, name: str, **kwargs) -> dict:
+    def create_experiment(self, name: str, description: Optional[str] = '') -> dict:
         """Create a new experiment.
 
         :param name: The name of the experiment.
+        :param description: Optional description of the experiment.
         :return: Created experiment.
         """
         url = self._base_url / API_VERSION / EXPERIMENTS
         return self._handle_request(
-            url=url, method=POST, json_data={NAME: name, **kwargs}
+            url=url, method=POST, json_data={NAME: name, DESCRIPTION: description}
         )
 
     def get_experiment(self, name: str) -> dict:

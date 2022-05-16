@@ -49,9 +49,9 @@ def fit(
 
     :param model: Name of the model to be fine-tuned.
     :param train_data: Either a `DocumentArray` for training data or a
-                       name of the `DocumentArray` that is pushed on Hubble.
+        name of the `DocumentArray` that is pushed on Hubble.
     :param eval_data: Either a `DocumentArray` for evaluation data or a
-                      name of the `DocumentArray` that is pushed on Hubble.
+        name of the `DocumentArray` that is pushed on Hubble.
     :param name: Name of the run.
     :param description: Run description.
     :param experiment_name: Name of the experiment.
