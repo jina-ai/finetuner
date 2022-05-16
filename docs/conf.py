@@ -61,12 +61,9 @@ html_theme_options = {
         "color-brand-primary": "#FBCB67",
         "color-brand-content": "#FBCB67",
     },
-
     # PLEASE DO NOT DELETE the empty line between `start-announce` and `end-announce`
     # PLEASE DO NOT DELETE `start-announce`/ `end-announce` it is used for our dev bot to inject announcement from GH
-
     # start-announce
-
     # end-announce
 }
 
@@ -79,8 +76,8 @@ html_css_files = [
 html_js_files = [
     'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js',
     'https://cdn.jsdelivr.net/npm/qabot@0.4',
-    'source-in-links.js'
-    ]
+    'source-in-links.js',
+]
 htmlhelp_basename = slug
 html_show_sourcelink = False
 html_favicon = '_static/favicon.png'
@@ -165,7 +162,9 @@ ogp_image = 'https://finetuner.jina.ai/_static/banner.png'
 ogp_use_first_image = True
 ogp_description_length = 300
 ogp_type = 'website'
-ogp_site_name = f'Finetuner {os.environ.get("SPHINX_MULTIVERSION_VERSION", version)} Documentation'
+ogp_site_name = (
+    f'Finetuner {os.environ.get("SPHINX_MULTIVERSION_VERSION", version)} Documentation'
+)
 
 ogp_custom_meta_tags = [
     '<meta name="twitter:card" content="summary_large_image">',
@@ -195,21 +194,25 @@ def add_server_address(app):
     js_text = "var server_address = '%s';" % server_address
     app.add_js_file(None, body=js_text)
 
+
 def configure_qa_bot_ui(app):
     # This sets the server address to <qa-bot>
     server_address = app.config['server_address']
-    js_text = """
+    js_text = (
+        """
         document.addEventListener('DOMContentLoaded', function() { 
             document.querySelector('qa-bot').setAttribute('server', '%s');
         });
-        """ % server_address
+        """
+        % server_address
+    )
     app.add_js_file(None, body=js_text)
 
 
 def setup(app):
     from sphinx.domains.python import PyField
-    from sphinx.util.docfields import Field
     from sphinx.locale import _
+    from sphinx.util.docfields import Field
 
     app.add_object_type(
         'confval',
