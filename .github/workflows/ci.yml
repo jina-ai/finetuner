@@ -21,17 +21,17 @@ jobs:
       - name: Lint with flake8, black and isort
         run: make style
 
-  run_tests:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-      - name: Install requirements
-        run: make init
-      - name: Run tests
-        run: make test
+#  run_tests:
+#    name: Run Tests
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Set up Python 3.7
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: 3.7
+#      - name: Install requirements
+#        run: make init
+#      - name: Run tests
+#        run: make test
 
