@@ -6,6 +6,7 @@ from finetuner.client import FinetunerV1Client
 from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
 from finetuner.experiment import Experiment
 from finetuner.run import Run
+from finetuner.names import get_random_name
 
 
 class Finetuner:
@@ -35,12 +36,14 @@ class Finetuner:
         experiment = self.create_experiment(name=experiment_name)
         return experiment
 
-    def create_experiment(self, name: str) -> Experiment:
+    def create_experiment(self, name: Optional[str] = None) -> Experiment:
         """Create an experiment.
 
         :param: Name of the experiment.
         :returns: An `Experiment` object.
         """
+        if not name:
+            name = get_random_name()
         experiment_info = self._client.create_experiment(name=name)
         experiment = Experiment(
             client=self._client,
@@ -85,9 +88,9 @@ class Finetuner:
 
     def create_run(
         self,
-        run_name: str,
         model: str,
         train_data,
+        run_name: Optional[str] = None,
         experiment_name: Optional[str] = None,
         **kwargs,
     ) -> Run:
@@ -96,10 +99,10 @@ class Finetuner:
         If an experiment name is not specified, the run will be created in the default
         experiment.
 
-        :param run_name: Name of the run.
         :param model: Name of the model to be fine-tuned.
         :param train_data: Either a `DocumentArray` for training data or a
                            name of the `DocumentArray` that is pushed on Hubble.
+        :param run_name: Optional name of the run.
         :param experiment_name: Optional name of the experiment.
         :returns: A `Run` object.
         """
@@ -108,7 +111,7 @@ class Finetuner:
         else:
             experiment = self.get_experiment(name=experiment_name)
         run = experiment.create_run(
-            run_name=run_name, model=model, train_data=train_data, **kwargs
+            model=model, train_data=train_data, run_name=run_name, **kwargs
         )
         return run
 
