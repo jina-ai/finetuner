@@ -5,13 +5,13 @@ from finetuner.constants import (
     API_VERSION,
     CONFIG,
     DELETE,
+    DESCRIPTION,
     EXPERIMENTS,
     GET,
     NAME,
     POST,
     RUNS,
     STATUS,
-    DESCRIPTION,
 )
 
 
