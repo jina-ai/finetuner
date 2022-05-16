@@ -5,52 +5,58 @@
 :end-before: <!-- end elevator-pitch -->
 ```
 
-## Why I need it?
+Finetuner is an open-source offering by [Jina AI](https://jina.ai/) ✨
 
-Search quality matters.
-When you bring pre-trained model to encode your data as embeddings.
-You are likely to get irrelevant search results.
-Deep learning models are mostly likely to be trained on a large dataset.
-While this large dataset always has a different *data distribution* over your own dataset.
-We refer it as *distribution shift*.
+It enables users to fine-tune large pre-trained deep learning models in their specific domains and datasets. It handles the
+infrastructure and the complexity of the fine-tuning task and provides a simple interface to submit fine-tuning jobs on the Jina Cloud.
+Finetuner primarily targets business users and engineers with limited knowledge in Machine Learning, but also attempts to expose
+lots of configuration options for experienced professionals!
 
-**Finetuner** aims at take a pre-trained model from a large dataset,
-fine-tune the parameters of the model on your dataset.
-Once fine-tune is done,
-you get a model adapted to your domain.
-This new model leverage better search performance on your-task-of-interest.
+## Overview
 
-Fine-tuning is non-trivial for business owners/engineers who lack of practical deep learning knowledge.
-**Finetuner** could be as easy as:
+### Why do I need this? 🤔
 
-1. Login to Jina ecosystem with `finetuner.login`.
-2. Specify your `DocumentArray` as input.
-3. Specify one of the model backbones we supported.
-4. Call the `finetuner.fit` function and everything happens in the Jina cloud.
-5. Call the `finetuner.download` function to get your tuned model.
+Search quality matters. When you bring a pre-trained model to encode your data to embeddings, you are likely to get irrelevant search results.
+Pre-trained deep learning models are usually trained on large-scale datasets, that have a different *data distribution* over your own datasets or domains.
+This is referred to as a *distribution shift*.
+
+**Finetuner** provides a solution to this problem by taking a pre-trained model from a large dataset and fine-tuning the parameters of
+this model on your dataset. Once fine-tuninng is done, you get a model adapted to your domain. This new model leverages better search
+performance on your-task-of-interest.
+
+Fine-tuning a pre-trained model includes a certain complexity and requires Machine Learning plus domain knowledge (on NLP, Computer Vision e.t.c).
+Thus, it is a non-trivial task for business owners and engineers who lack the practical deep learning knowledge. **Finetuner** attempts
+to address this by providing a simple interface, which can be as easy as:
+
+1. Login to the Jina ecosystem with `finetuner.login()`.
+2. Specify your `DocumentArray` as input. 
+3. Specify one of the model backbones we support.
+4. Call the `finetuner.fit()` function and submit your fine-tuning job in the cloud.
+5. Monitor the status and the logs of your job, via `run.status()` and `run.logs()`.
+6. Call the `finetuner.download()` function to get your tuned model.
+
+Submitted fine-tuning jobs run efficiently on the Jina Cloud on either CPU or GPU enabled hardware. Finetuner fully owns the
+complexity of setting up and maintaining the model training infrastructure as well as   
 
 ```{Important}
 Not sure which model to use?
 
-Don't worry, call `finetuner.list_models`, we will help you to choose the best fit.
+Don't worry, call `finetuner.list_models()` and we will help you choose the best fit.
 ```
 
-## How it works?
+### How it works? 🧐
 
-**Finetuner** brings SOTA research ideas such as [transfer learning]() and [metric learning]() into production.
+**Finetuner** brings SOTA research ideas from [transfer learning](https://en.wikipedia.org/wiki/Transfer_learning), [representation learning](https://en.wikipedia.org/wiki/Transfer_learning) and *metric learning* into production.
 
-+ *Transfer Learning* means we adopt a pre-trained model, while we only re-train part of the deep learning model on our own dataset. This allows fine-tuning much more computational effective if you do not have enough labeled data.
-+ *Metric Learning* means **Finetuner** samples training data from your **DocumentArray** as triplets such as `(anchor, positive, negative)`. The objective of fine-tuning is to bring `anchor` as close as `positive` item, while pull `anchor` apart from `negative` item.
-
-
++ *Transfer Learning* means we adapt a pre-trained model, while we only re-train part of the deep learning model on our own dataset. This makes fine-tuning more effective in cases where you do not have enough labeled data.
++ *Metric Learning* means **Finetuner** samples training data from your **DocumentArray**s as triplets such as `(anchor, positive, negative)`. The objective of fine-tuning is to bring `anchor`s as close as possible to `positive` items, while pulling `anchor`s apart from `negative` items.
 
 
-
-## Install
+## Installation 🚀
 
 ![PyPI](https://img.shields.io/pypi/v/finetuner?color=%23ffffff&label=%20) is the latest version.
 
-Make sure you have Python 3.7+ installed on Linux/Mac/Windows:
+Make sure you have `Python 3.7+` installed on Linux/Mac/Windows:
 
 ````{tab} Basic install
 
@@ -70,15 +76,12 @@ conda install -c conda-forge finetuner
 No extra dependency will be installed.
 ````
 
-
+Check your installation with:
 ```pycon
 >>> import finetuner
 >>> finetuner.__version__
 '0.1.0'
 ```
-
-
-
 
 ```{important}
 Jina 3.x users do not need to install `docarray` separately, as it is shipped with Jina. To check your Jina version, type `jina -vf` in the console.
@@ -86,6 +89,26 @@ Jina 3.x users do not need to install `docarray` separately, as it is shipped wi
 However, if the printed version is smaller than `0.1.0`, say `0.0.x`, then you are 
 not installing `docarray` correctly. You are probably still using an old `docarray` shipped with Jina 2.x. 
 ```
+
+## Getting started
+
+Submitting your job in Jina Cloud in straight-forward. Log-in to Jina Cloud and then call `finetuner.fit()`:
+
+```python
+import finetuner
+
+from docarray import DocumentArray
+
+finetuner.login()
+train_data = DocumentArray(...)
+run = finetuner.fit(train_data=train_data, model='resnet50')
+print(run.logs())
+```
+
+
+## Recipes
+
+Add config files as recipes.
 
 
 
@@ -123,7 +146,6 @@ fundamentals/fastapi-support/index
 advanced/graphql-support/index
 ```
 
-
 ```{toctree}
 :caption: Developer References
 :hidden:
@@ -133,7 +155,6 @@ api/docarray
 proto/index
 changelog/index
 ```
-
 
 ---
 {ref}`genindex` | {ref}`modindex`
