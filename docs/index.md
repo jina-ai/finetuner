@@ -9,6 +9,7 @@ Finetuner is an open-source offering by [Jina AI](https://jina.ai/) ✨
 
 It enables users to fine-tune large pre-trained deep learning models in their specific domains and datasets. It handles the
 infrastructure and the complexity of the fine-tuning task and provides a simple interface to submit fine-tuning jobs on the Jina Cloud.
+
 Finetuner primarily targets business users and engineers with limited knowledge in Machine Learning, but also attempts to expose
 lots of configuration options for experienced professionals!
 
@@ -20,9 +21,10 @@ Search quality matters. When you bring a pre-trained model to encode your data t
 Pre-trained deep learning models are usually trained on large-scale datasets, that have a different *data distribution* over your own datasets or domains.
 This is referred to as a *distribution shift*.
 
-**Finetuner** provides a solution to this problem by taking a pre-trained model from a large dataset and fine-tuning the parameters of
-this model on your dataset. Once fine-tuninng is done, you get a model adapted to your domain. This new model leverages better search
-performance on your-task-of-interest.
+**Finetuner** provides a solution to this problem by leveraging a pre-trained model from a large dataset and fine-tuning the parameters of
+this model on your dataset.
+
+Once fine-tuning is done, you get a model adapted to your domain. This new model leverages better search performance on your-task-of-interest.
 
 Fine-tuning a pre-trained model includes a certain complexity and requires Machine Learning plus domain knowledge (on NLP, Computer Vision e.t.c).
 Thus, it is a non-trivial task for business owners and engineers who lack the practical deep learning knowledge. **Finetuner** attempts
@@ -35,8 +37,10 @@ to address this by providing a simple interface, which can be as easy as:
 5. Monitor the status and the logs of your job, via `run.status()` and `run.logs()`.
 6. Call the `finetuner.download()` function to get your tuned model.
 
-Submitted fine-tuning jobs run efficiently on the Jina Cloud on either CPU or GPU enabled hardware. Finetuner fully owns the
-complexity of setting up and maintaining the model training infrastructure as well as   
+Submitted fine-tuning jobs run efficiently on the Jina Cloud on either CPU or GPU enabled hardware.
+
+Finetuner fully owns the complexity of setting up and maintaining the model training infrastructure plus the complexity of delivering SOTA training
+methods to production use cases.
 
 ```{Important}
 Not sure which model to use?
