@@ -1,14 +1,14 @@
 repos:
   - repo: https://github.com/ambv/black
-    rev: '22.3.0'
+    rev: 20.8b1
     hooks:
       - id: black
         types: [python]
   - repo: https://github.com/pycqa/flake8
-    rev: '4.0.1'
+    rev: "4.0.1"
     hooks:
       - id: flake8
   - repo: https://github.com/pycqa/isort
-    rev: '5.10.1'
+    rev: "5.10.1"
     hooks:
       - id: isort

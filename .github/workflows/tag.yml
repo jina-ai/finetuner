@@ -3,7 +3,7 @@ name: Release CD
 on:
   push:
     tags:
-      - 'v*' # push to version tags trigger the build
+      - "v*" # push to version tags trigger the build
 
 #on:
 #  push:
@@ -18,7 +18,7 @@ jobs:
         with:
           workflow: Manual Docs Build
           token: ${{ secrets.JINA_DEV_BOT }}
-          inputs: '{ 'release_token': '${{ env.release_token }}', 'triggered_by': 'TAG'}'
+          inputs: '{ "release_token": "${{ env.release_token }}", "triggered_by": "TAG"}'
         env:
           release_token: ${{ secrets.FINETUNER_RELEASE_TOKEN }}
 
@@ -29,7 +29,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          ref: 'main'
+          ref: "main"
       - uses: actions/setup-python@v2
         with:
           python-version: 3.7
@@ -43,6 +43,6 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: 💫 Patch ${{ github.ref }}
-          body_path: 'tmp.md'
+          body_path: "tmp.md"
           draft: false
           prerelease: false

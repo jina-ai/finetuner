@@ -20,8 +20,6 @@ def list_models():
         'resnet152',
         'efficientnet_b0',
         'efficientnet_b4',
-        'bert-base-uncased',
-        'google/vit-base-patch16-224',
         'openai/clip-vit-base-patch32',
     ]
 
@@ -47,7 +45,32 @@ def fit(
     cpu: bool = False,
     wandb_api_key: Optional[str] = None,
 ):
-    """Start a finetuner run!"""
+    """Start a finetuner run!
+
+    :param model: Name of the model to be fine-tuned.
+    :param train_data: Either a `DocumentArray` for training data or a
+                       name of the `DocumentArray` that is pushed on Hubble.
+    :param eval_data: Either a `DocumentArray` for evaluation data or a
+                      name of the `DocumentArray` that is pushed on Hubble.
+    :param name: Name of the run.
+    :param description: Run description.
+    :param experiment_name: Name of the experiment.
+    :param loss: Name of the loss function used for fine-tuning.
+    :param miner: Name of the miner to create tuple indices for the loss function.
+    :param optimizer: Name of the optimizer used for fine-tuning.
+    :param learning_rate: learning rate for the optimizer.
+    :param epochs: Number of epochs for fine-tuning.
+    :param batch_size: Number of items to include in a batch.
+    :param freeze: If set to True, will freeze all layers except the last one.
+    :param output_dim: The expected output dimension.
+                       If set, will attach a projection head.
+    :param multi_modal: Boolean value, if `True`,
+                        required argument to the `DataLoader`.
+    :param image_modality: The modality of the image `Document`.
+    :param text_modality: The modality of the text `Document`.
+    :param cpu: Whether to use the CPU, or GPU.
+    :param wandb_api_key: WandB key.
+    """
     run = ft.create_run(
         model=model,
         train_data=train_data,
