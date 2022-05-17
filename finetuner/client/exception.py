@@ -1,14 +1,11 @@
 from typing import Optional
 
 
-class BaseError(Exception):
-    code = -1
-    message = "An unknown error occurred"
-
+class FinetunerServerError(Exception):
     def __init__(
         self,
-        message: Optional[str] = None,
-        code: Optional[int] = None,
+        message: Optional[str] = 'An unknown error occurred',
+        code: Optional[int] = -1,
     ):
         if message:
             self.message = message

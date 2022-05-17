@@ -6,7 +6,7 @@ import requests
 from path import Path
 
 import hubble
-from finetuner.client.exception import BaseError
+from finetuner.client.exception import FinetunerServerError
 from finetuner.constants import (
     AUTHORIZATION,
     CHARSET,
@@ -44,10 +44,6 @@ class _BaseClient:
         session.headers.update({CHARSET: UTF_8, AUTHORIZATION: api_token})
         return session
 
-    @staticmethod
-    def _handle_error_request(response: requests.Response):
-        raise BaseError(message=response.reason, code=response.status_code)
-
     def _handle_request(
         self,
         url: str,
@@ -67,6 +63,6 @@ class _BaseClient:
             url=url, method=method, json=json_data, params=params, verify=False
         )
         if not response.ok:
-            self._handle_error_request(response)
+            raise FinetunerServerError(message=response.reason, code=response.status_code)
 
         return response.json()
