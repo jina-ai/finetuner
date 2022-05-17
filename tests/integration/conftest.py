@@ -1,13 +1,13 @@
 import os
 
-import hubble
 import numpy as np
 import pytest
 from docarray import Document, DocumentArray
 from tests.constants import FINETUNER_LABEL
 
 import finetuner
-from finetuner.client.client import Client
+import hubble
+from finetuner.client import FinetunerV1Client
 
 
 @pytest.fixture()
@@ -41,6 +41,6 @@ def test_client(mocker):
     mocker.patch.object(hubble.Auth, 'get_auth_token', get_auth_token)
 
     finetuner.login()
-    client = Client()
+    client = FinetunerV1Client()
 
     return client

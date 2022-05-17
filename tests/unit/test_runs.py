@@ -11,15 +11,17 @@ from finetuner.constants import (
     RUNS,
     STATUS,
 )
+from finetuner.experiment import Experiment
 
 
 def test_create_run(test_client, experiment_name='exp', run_name='run'):
-    train_data = docarray.DocumentArray()
+    config = Experiment._create_config_for_run(
+        model='resnet50', train_data=docarray.DocumentArray()
+    )
     sent_request = test_client.create_run(
-        model='resnet50',
-        train_data=train_data,
         experiment_name=experiment_name,
         run_name=run_name,
+        run_config=config,
     )
     assert (
         sent_request['url']
@@ -27,11 +29,7 @@ def test_create_run(test_client, experiment_name='exp', run_name='run'):
     )
     assert sent_request['method'] == POST
     assert sent_request['json_data'][NAME] == run_name
-    expected_config = {
-        'model': 'resnet50',
-        'data': {'train_data': '1-exp-run-train_data', 'eval_data': None},
-    }
-    assert sent_request['json_data'][CONFIG] == expected_config
+    assert sent_request['json_data'][CONFIG] == config
 
 
 def test_get_run(test_client, experiment_name='exp', run_name='run1'):
@@ -51,7 +49,8 @@ def test_get_run(test_client, experiment_name='exp', run_name='run1'):
 
 
 def test_list_runs(test_client, experiment_name='exp'):
-    # Note: we'll test the case when experiment_name is not specified in integration tests
+    # Note: we'll test the case when experiment_name
+    # is not specified in integration tests
     sent_request = test_client.list_runs(experiment_name=experiment_name)[0]
     assert (
         sent_request['url']

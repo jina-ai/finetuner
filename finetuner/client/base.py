@@ -2,10 +2,10 @@ import json
 import os
 from typing import List, Optional, Union
 
-import hubble
 import requests
 from path import Path
 
+import hubble
 from finetuner.constants import (
     AUTHORIZATION,
     CHARSET,
@@ -17,17 +17,19 @@ from finetuner.constants import (
 )
 
 
-class BaseClient(object):
-    """Base Finetuner API client."""
+class _BaseClient:
+    """
+    Base Finetuner API client.
+    """
 
     def __init__(self):
         self._base_url = Path(os.environ.get(HOST))
         self._session = self._get_client_session()
-        self._hubble_client = hubble.Client(max_retries=None, timeout=10, jsonify=True)
-        self._hubble_user_id = self._get_hubble_user_id()
+        self.hubble_client = hubble.Client(max_retries=None, jsonify=True)
+        self.hubble_user_id = self._get_hubble_user_id()
 
     def _get_hubble_user_id(self):
-        user_info = json.loads(self._hubble_client.get_user_info())
+        user_info = json.loads(self.hubble_client.get_user_info())
         if user_info['code'] >= 400:
             # will implement error-handling later
             pass
@@ -47,7 +49,7 @@ class BaseClient(object):
         method: str,
         params: Optional[dict] = None,
         json_data: Optional[dict] = None,
-    ) -> Union[dict, List[dict]]:
+    ) -> Union[dict, List[dict], str]:
         """The base request handler.
 
         :param url: The url of the request.
