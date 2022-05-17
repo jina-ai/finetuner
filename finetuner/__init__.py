@@ -28,7 +28,7 @@ def fit(
     model: str,
     train_data: Union[str, DocumentArray],
     eval_data: Optional[Union[str, DocumentArray]] = None,
-    name: Optional[str] = None,
+    run_name: Optional[str] = None,
     description: Optional[str] = None,
     experiment_name: Optional[str] = None,
     loss: str = 'TripletMarginLoss',
@@ -52,7 +52,7 @@ def fit(
         name of the `DocumentArray` that is pushed on Hubble.
     :param eval_data: Either a `DocumentArray` for evaluation data or a
         name of the `DocumentArray` that is pushed on Hubble.
-    :param name: Name of the run.
+    :param run_name: Name of the run.
     :param description: Run description.
     :param experiment_name: Name of the experiment.
     :param loss: Name of the loss function used for fine-tuning.
@@ -75,7 +75,7 @@ def fit(
         model=model,
         train_data=train_data,
         eval_data=eval_data,
-        run_name=name,
+        run_name=run_name,
         description=description,
         experiment_name=experiment_name,
         loss=loss,
