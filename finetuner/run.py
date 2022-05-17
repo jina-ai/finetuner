@@ -53,10 +53,7 @@ class Run:
         :returns: A list of str object(s) that indicate the download path.
         """
         if self.status() != FINISHED:
-            # tell users that the run hasn't finished yet, thus they can't download
-            # the model.
-            # will implement a proper error-handling in a separate pr.
-            raise ValueError
+            raise Exception('The run needs to be finished in order to save the model.')
 
         download_path = download_model(
             client=self._client,
