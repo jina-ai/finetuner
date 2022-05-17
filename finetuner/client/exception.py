@@ -4,10 +4,8 @@ class FinetunerServerError(Exception):
         message: str = 'An unknown error occurred',
         code: int = -1,
     ):
-        if message:
-            self.message = message
-        if code:
-            self.code = code
+        self.message = message
+        self.code = code
 
     def __str__(self):
         if self.code:
