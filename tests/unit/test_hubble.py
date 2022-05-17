@@ -6,37 +6,30 @@ from finetuner.hubble import push_data_to_hubble
 
 
 @pytest.mark.parametrize(
-    'train_data, eval_data',
+    'data, data_type',
     [
-        [docarray.DocumentArray.empty(1), docarray.DocumentArray.empty(1)],
-        [docarray.DocumentArray.empty(1), None],
-        ['train data', 'eval data'],
-        ['train data', None],
+        [docarray.DocumentArray.empty(1), TRAIN_DATA],
+        [docarray.DocumentArray.empty(1), EVAL_DATA],
+        ['train data', TRAIN_DATA],
+        ['eval data', EVAL_DATA],
     ],
 )
 def test_push_data_to_hubble(
-    test_client, train_data, eval_data, experiment_name='exp', run_name='run'
+    test_client, data, data_type, experiment_name='exp', run_name='run'
 ):
-    if isinstance(train_data, docarray.DocumentArray):
-        expected_train_name = '-'.join(
-            [test_client.hubble_user_id, experiment_name, run_name, TRAIN_DATA]
+    if isinstance(data, docarray.DocumentArray):
+        expected_name = '-'.join(
+            [test_client.hubble_user_id, experiment_name, run_name, data_type]
         )
     else:
-        expected_train_name = train_data
-    if isinstance(eval_data, docarray.DocumentArray):
-        expected_eval_name = '-'.join(
-            [test_client.hubble_user_id, experiment_name, run_name, EVAL_DATA]
-        )
-    else:
-        expected_eval_name = eval_data
+        expected_name = data
 
-    train_da_name, eval_da_name = push_data_to_hubble(
+    da_name = push_data_to_hubble(
         client=test_client,
-        train_data=train_data,
-        eval_data=eval_data,
+        data=data,
+        data_type=data_type,
         experiment_name=experiment_name,
         run_name=run_name,
     )
 
-    assert train_da_name == expected_train_name
-    assert eval_da_name == expected_eval_name
+    assert da_name == expected_name

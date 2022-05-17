@@ -8,8 +8,8 @@ from finetuner.constants import EVAL_DATA, FINETUNED_MODELS_DIR, MODEL_IDS, TRAI
 
 def push_data_to_hubble(
     client: FinetunerV1Client,
-    train_data: Union[DocumentArray, str],
-    eval_data: Optional[Union[DocumentArray, str]],
+    data: Union[DocumentArray, str],
+    data_type: str,
     experiment_name: str,
     run_name: str,
 ) -> Tuple[str, str]:
@@ -18,27 +18,20 @@ def push_data_to_hubble(
     Note: for now, let's assume that we only receive `DocumentArray`-s.
 
     :param client: The Finetuner API client.
-    :param train_data: Either a `DocumentArray` for training data that needs to be
-        pushed on Hubble or a name of the `DocumentArray` that is already uploaded.
-    :param eval_data: Either a `DocumentArray` for evaluation data that needs to be
-        pushed on Hubble or a name of the `DocumentArray` that is already uploaded.
+    :param data: Either a `DocumentArray` that needs to be pushed on Hubble
+        or a name of the `DocumentArray` that is already uploaded.
+    :param data_type: Either `TRAIN_DATA` or `EVAL_DATA`.
     :param experiment_name: Name of the experiment.
     :param run_name: Name of the run.
     :returns: Name(s) of pushed `DocumentArray`-s.
     """
-    if isinstance(train_data, DocumentArray):
+    if isinstance(data, DocumentArray):
         da_name = '-'.join(
-            [client.hubble_user_id, experiment_name, run_name, TRAIN_DATA]
+            [client.hubble_user_id, experiment_name, run_name, data_type]
         )
-        train_data.push(name=da_name)
-        train_data = da_name
-    if eval_data and isinstance(eval_data, DocumentArray):
-        da_name = '-'.join(
-            [client.hubble_user_id, experiment_name, run_name, EVAL_DATA]
-        )
-        eval_data.push(name=da_name)
-        eval_data = da_name
-    return train_data, eval_data
+        data.push(name=da_name)
+        data = da_name
+    return data
 
 
 def download_model(

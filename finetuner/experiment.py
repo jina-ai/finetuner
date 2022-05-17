@@ -96,13 +96,21 @@ class Experiment:
         """
         if not run_name:
             run_name = get_random_name()
-        train_data, kwargs[EVAL_DATA] = push_data_to_hubble(
+        train_data = push_data_to_hubble(
             client=self._client,
-            train_data=train_data,
-            eval_data=kwargs.get(EVAL_DATA),
+            data=train_data,
+            data_type=TRAIN_DATA,
             experiment_name=self._name,
             run_name=run_name,
         )
+        if kwargs.get(EVAL_DATA):
+            kwargs[EVAL_DATA] = push_data_to_hubble(
+                client=self._client,
+                data=kwargs.get(EVAL_DATA),
+                data_type=EVAL_DATA,
+                experiment_name=self._name,
+                run_name=run_name,
+            )
         config = self._create_config_for_run(
             model=model, train_data=train_data, **kwargs
         )
