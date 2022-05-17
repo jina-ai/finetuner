@@ -1,5 +1,3 @@
-import docarray
-
 from finetuner.constants import (
     API_VERSION,
     CONFIG,
@@ -14,9 +12,47 @@ from finetuner.constants import (
 from finetuner.experiment import Experiment
 
 
+def test_create_experiment(test_client, name='name'):
+    response = test_client.create_experiment(name)
+    assert response['url'] == test_client._base_url / API_VERSION / EXPERIMENTS
+    assert response['method'] == POST
+    assert response['json_data'][NAME] == name
+
+
+def test_get_experiment(test_client, name='name'):
+    sent_request = test_client.get_experiment(name)
+    assert (
+        sent_request['url'] == test_client._base_url / API_VERSION / EXPERIMENTS / name
+    )
+    assert sent_request['method'] == GET
+
+
+def test_list_experiments(test_client):
+    sent_request = test_client.list_experiments()
+    assert sent_request['url'] == test_client._base_url / API_VERSION / EXPERIMENTS
+    assert sent_request['method'] == GET
+
+
+def test_delete_experiment(test_client, name='name'):
+    sent_request = test_client.delete_experiment(name)
+    assert (
+        sent_request['url'] == test_client._base_url / API_VERSION / EXPERIMENTS / name
+    )
+    assert sent_request['method'] == DELETE
+
+
+def test_delete_experiments(test_client):
+    sent_request = test_client.delete_experiments()
+    assert sent_request['url'] == test_client._base_url / API_VERSION / EXPERIMENTS
+    assert sent_request['method'] == DELETE
+
+
 def test_create_run(test_client, experiment_name='exp', run_name='run'):
     config = Experiment._create_config_for_run(
-        model='resnet50', train_data=docarray.DocumentArray()
+        model='resnet50',
+        train_data='data name',
+        experiment_name=experiment_name,
+        run_name=run_name,
     )
     sent_request = test_client.create_run(
         experiment_name=experiment_name,
