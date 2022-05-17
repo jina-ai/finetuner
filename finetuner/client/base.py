@@ -64,7 +64,9 @@ class _BaseClient:
         )
         if not response.ok:
             raise FinetunerServerError(
-                message=response.reason, code=response.status_code
+                message=response.reason,
+                code=response.status_code,
+                details=response.json()['detail'],
             )
 
         return response.json()
