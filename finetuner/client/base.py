@@ -46,9 +46,7 @@ class _BaseClient:
 
     @staticmethod
     def _handle_error_request(response: requests.Response):
-        message = response.reason
-        code = response.status_code
-        raise BaseError(response=response.json(), message=message, code=code)
+        raise BaseError(message=response.reason, code=response.status_code)
 
     def _handle_request(
         self,
