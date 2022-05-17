@@ -53,7 +53,14 @@ class Experiment:
         :return: A `Run` object.
         """
         run_info = self._client.get_run(experiment_name=self._name, run_name=name)
-        run = Run(name=run_info[NAME], experiment_name=self._name, client=self._client)
+        run = Run(
+            name=run_info[NAME],
+            config=run_info[CONFIG],
+            created_at=run_info[CREATED_AT],
+            description=run_info[DESCRIPTION],
+            experiment_name=self._name,
+            client=self._client,
+        )
         return run
 
     def list_runs(self) -> List[Run]:
@@ -62,11 +69,17 @@ class Experiment:
         :return: List of `Run` objects.
         """
         run_infos = self._client.list_runs(experiment_name=self._name)
-        runs = [
-            Run(name=run_info[NAME], experiment_name=self._name, client=self._client)
+        return [
+            Run(
+                name=run_info[NAME],
+                config=run_info[CONFIG],
+                created_at=run_info[CREATED_AT],
+                description=run_info[DESCRIPTION],
+                experiment_name=self._name,
+                client=self._client,
+            )
             for run_info in run_infos
         ]
-        return runs
 
     def delete_run(self, name: str):
         """Delete a run by its name.

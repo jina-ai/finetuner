@@ -1,5 +1,3 @@
-from typing import Optional
-
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import FINETUNED_MODELS_DIR, FINISHED
 from finetuner.hubble import download_model

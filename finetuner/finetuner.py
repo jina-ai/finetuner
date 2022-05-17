@@ -63,7 +63,13 @@ class Finetuner:
         :returns: An `Experiment` object.
         """
         experiment_info = self._client.get_experiment(name=name)
-        return Experiment(name=experiment_info[NAME], client=self._client)
+        return Experiment(
+            client=self._client,
+            name=experiment_info[NAME],
+            status=experiment_info[STATUS],
+            created_at=experiment_info[CREATED_AT],
+            description=experiment_info[DESCRIPTION],
+        )
 
     def list_experiments(self) -> List[Experiment]:
         """List every experiment."""
@@ -75,6 +81,7 @@ class Finetuner:
                 name=experiment_info[NAME],
                 status=experiment_info[STATUS],
                 created_at=experiment_info[CREATED_AT],
+                description=experiment_info[DESCRIPTION],
             )
             for experiment_info in experiment_infos
         ]

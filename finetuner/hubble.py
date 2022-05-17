@@ -1,9 +1,9 @@
-from typing import List, Optional, Tuple, Union
+from typing import List, Union
 
 from docarray import DocumentArray
 
 from finetuner.client import FinetunerV1Client
-from finetuner.constants import EVAL_DATA, FINETUNED_MODELS_DIR, MODEL_IDS, TRAIN_DATA
+from finetuner.constants import FINETUNED_MODELS_DIR, MODEL_IDS
 
 
 def push_data_to_hubble(
@@ -12,7 +12,7 @@ def push_data_to_hubble(
     data_type: str,
     experiment_name: str,
     run_name: str,
-) -> Tuple[str, str]:
+) -> str:
     """Push DocumentArray for training and evaluation data on Hubble
     if it's not already uploaded.
     Note: for now, let's assume that we only receive `DocumentArray`-s.
