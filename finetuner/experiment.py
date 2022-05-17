@@ -12,6 +12,21 @@ from finetuner.constants import (
     MODEL,
     NAME,
     TRAIN_DATA,
+    FREEZE,
+    OUTPUT_DIM,
+    MULTI_MODAL,
+    TEXT_MODALITY,
+    IMAGE_MODALITY,
+    HYPER_PARAMETERS,
+    LOSS,
+    OPTIMIZER,
+    MINER,
+    BATCH_SIZE,
+    LEARNING_RATE,
+    EPOCHS,
+    EXPERIMENT_NAME,
+    RUN_NAME,
+    OPTIMIZER_OPTIONS,
 )
 from finetuner.hubble import push_data_to_hubble
 from finetuner.names import get_random_name
@@ -105,6 +120,7 @@ class Experiment:
         :param train_data: Either a `DocumentArray` for training data or a
             name of the `DocumentArray` that is pushed on Hubble.
         :param run_name: Optional name of the run.
+        :param kwargs: Optional keyword arguments for the run config.
         :return: A `Run` object.
         """
         if not run_name:
@@ -125,7 +141,11 @@ class Experiment:
                 run_name=run_name,
             )
         config = self._create_config_for_run(
-            model=model, train_data=train_data, **kwargs
+            model=model,
+            train_data=train_data,
+            experiment_name=self._name,
+            run_name=run_name,
+            **kwargs,
         )
         run_info = self._client.create_run(
             run_name=run_name,
@@ -146,17 +166,42 @@ class Experiment:
     def _create_config_for_run(
         model: str,
         train_data: str,
+        experiment_name: str,
+        run_name: str,
         **kwargs,
     ) -> Dict[str, Any]:
         """Create config for a run.
 
-        Note: not a final version yet.
         :param model: Name of the model to be fine-tuned.
         :param train_data: Either a `DocumentArray` for training data or a
             name of the `DocumentArray` that is pushed on Hubble.
+        :param experiment_name: Name of the experiment.
+        :param run_name: Name of the run.
+        :param kwargs: Optional keyword arguments for the run config.
         :return: Run parameters wrapped up as a config dict.
         """
         return {
-            MODEL: model,
-            DATA: {TRAIN_DATA: train_data, EVAL_DATA: kwargs.get(EVAL_DATA)},
+            MODEL: {
+                NAME: model,
+                FREEZE: kwargs.get(FREEZE),
+                OUTPUT_DIM: kwargs.get(OUTPUT_DIM),
+                MULTI_MODAL: kwargs.get(MULTI_MODAL),
+            },
+            DATA: {
+                TRAIN_DATA: train_data,
+                EVAL_DATA: kwargs.get(EVAL_DATA),
+                IMAGE_MODALITY: kwargs.get(IMAGE_MODALITY),
+                TEXT_MODALITY: kwargs.get(TEXT_MODALITY),
+            },
+            HYPER_PARAMETERS: {
+                LOSS: kwargs.get(LOSS),
+                OPTIMIZER: kwargs.get(OPTIMIZER),
+                OPTIMIZER_OPTIONS: {},
+                MINER: kwargs.get(MINER),
+                BATCH_SIZE: kwargs.get(BATCH_SIZE),
+                LEARNING_RATE: kwargs.get(LEARNING_RATE),
+                EPOCHS: kwargs.get(EPOCHS),
+            },
+            EXPERIMENT_NAME: experiment_name,
+            RUN_NAME: run_name,
         }
