@@ -63,9 +63,9 @@ def fit(
     :param batch_size: Number of items to include in a batch.
     :param freeze: If set to True, will freeze all layers except the last one.
     :param output_dim: The expected output dimension.
-                       If set, will attach a projection head.
+        If set, will attach a projection head.
     :param multi_modal: Boolean value, if `True`,
-                        required argument to the `DataLoader`.
+        required argument to the `DataLoader`.
     :param image_modality: The modality of the image `Document`.
     :param text_modality: The modality of the text `Document`.
     :param cpu: Whether to use the CPU, or GPU.

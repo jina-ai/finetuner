@@ -23,7 +23,7 @@ class Run:
         experiment_name: str,
         config: dict,
         created_at: str,
-        description: Optional[str] = '',
+        description: str = '',
     ):
         self._client = client
         self._name = name
@@ -54,15 +54,16 @@ class Run:
         :param path: Directory where the model(s) will be stored.
         :returns: A list of str object(s) that indicate the download path.
         """
-        if self.status() == FINISHED:
-            download_path = download_model(
-                client=self._client,
-                experiment_name=self.experiment_name,
-                run_name=self.name,
-                path=path,
-            )
-        else:
+        if self.status() != FINISHED:
             # tell users that the run hasn't finished yet, thus they can't download
             # the model.
-            pass
+            # will implement a proper error-handling in a separate pr.
+            raise ValueError
+
+        download_path = download_model(
+            client=self._client,
+            experiment_name=self._experiment_name,
+            run_name=self._name,
+            path=path,
+        )
         return download_path
