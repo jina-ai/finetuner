@@ -1,7 +1,7 @@
 import pytest
+from tests.unit.mocks import create_client_mocker, create_request_mocker
 
 from finetuner import Finetuner
-from tests.unit.mocks import create_request_mocker, create_client_mocker
 
 
 @pytest.fixture

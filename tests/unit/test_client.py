@@ -22,7 +22,8 @@ def test_create_experiment(client_mocker, name='name'):
 def test_get_experiment(client_mocker, name='name'):
     sent_request = client_mocker.get_experiment(name)
     assert (
-        sent_request['url'] == client_mocker._base_url / API_VERSION / EXPERIMENTS / name
+        sent_request['url']
+        == client_mocker._base_url / API_VERSION / EXPERIMENTS / name
     )
     assert sent_request['method'] == GET
 
@@ -36,7 +37,8 @@ def test_list_experiments(client_mocker):
 def test_delete_experiment(client_mocker, name='name'):
     sent_request = client_mocker.delete_experiment(name)
     assert (
-        sent_request['url'] == client_mocker._base_url / API_VERSION / EXPERIMENTS / name
+        sent_request['url']
+        == client_mocker._base_url / API_VERSION / EXPERIMENTS / name
     )
     assert sent_request['method'] == DELETE
 

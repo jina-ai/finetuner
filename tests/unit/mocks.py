@@ -92,4 +92,3 @@ def create_client_mocker(mocker):
     mocker.patch.object(base_mocker, 'delete_runs', return_runs)
 
     return base_mocker
-
