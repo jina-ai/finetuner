@@ -30,6 +30,14 @@ class Run:
         self._created_at = created_at
         self._description = description
 
+    def get_name(self) -> str:
+        """Get the name of the run."""
+        return self._name
+
+    def get_config(self) -> dict:
+        """Get the run config."""
+        return self._config
+
     def status(self) -> str:
         """Run status.
 

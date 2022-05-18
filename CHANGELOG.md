@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Create a complete version of the run config. ([#395](https://github.com/jina-ai/finetuner/pull/395))
 
+- Improve unit testing. ([#396](https://github.com/jina-ai/finetuner/pull/396))
+
 ### Removed
 
 - Delete all unnecessary files from the previous project. ([#384](https://github.com/jina-ai/finetuner/pull/384))
