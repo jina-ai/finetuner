@@ -26,16 +26,16 @@ class Finetuner:
         self._default_experiment = self._get_default_experiment()
 
     @staticmethod
-    def get_cwd() -> str:
+    def _get_cwd() -> str:
         """Returns current working directory."""
         return os.getcwd().split('/')[-1]
 
     def _get_default_experiment(self) -> Experiment:
         """Create or retrieve (if it already exists) a default experiment
         for the current working directory."""
-        experiment_name = self.get_cwd()
+        experiment_name = self._get_cwd()
         for experiment in self.list_experiments():
-            if experiment.get_name() == experiment_name:
+            if experiment.name == experiment_name:
                 return experiment
         return self.create_experiment(name=experiment_name)
 
@@ -46,7 +46,7 @@ class Finetuner:
         :returns: An `Experiment` object.
         """
         if not name:
-            name = self.get_cwd()
+            name = self._get_cwd()
         experiment_info = self._client.create_experiment(name=name)
         return Experiment(
             client=self._client,

@@ -57,8 +57,8 @@ class Experiment:
         self._created_at = created_at
         self._description = description
 
-    def get_name(self):
-        """Get name of the experiment."""
+    @property
+    def name(self) -> str:
         return self._name
 
     def get_run(self, name: str) -> Run:

@@ -1,29 +1,18 @@
-import os
-
-import docarray
 import pytest
+from tests.unit.mocks import create_client_mocker, create_request_mocker
 
-import hubble
-from finetuner.client import FinetunerV1Client
+from finetuner import Finetuner
 
 
 @pytest.fixture
-def test_client(mocker):
-    def return_args(self, **kwargs):
-        return kwargs
+def client_mocker(mocker):
+    return create_request_mocker(mocker)
 
-    def hubble_login_mocker():
-        print('Successfully logged in to Hubble!')
 
-    def get_auth_token():
-        return os.environ.get('HUBBLE_STAGING_TOKEN')
-
-    mocker.patch.object(hubble, 'login', hubble_login_mocker)
-    mocker.patch.object(hubble.Auth, 'get_auth_token', get_auth_token)
-    mocker.patch.object(FinetunerV1Client, '_handle_request', return_args)
-    mocker.patch.object(hubble.Client, 'download_artifact', return_args)
-    mocker.patch.object(docarray.DocumentArray, 'push', return_args)
-    hubble.login()
-    client = FinetunerV1Client()
-    mocker.patch.object(client, 'hubble_user_id', '1')
-    return client
+@pytest.fixture
+def finetuner_mocker(mocker):
+    base = create_client_mocker(mocker)
+    finetuner = Finetuner()
+    finetuner._client = base
+    finetuner._default_experiment = finetuner._get_default_experiment()
+    return finetuner

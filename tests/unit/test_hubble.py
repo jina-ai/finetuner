@@ -15,17 +15,17 @@ from finetuner.hubble import push_data_to_hubble
     ],
 )
 def test_push_data_to_hubble(
-    test_client, data, data_type, experiment_name='exp', run_name='run'
+    client_mocker, data, data_type, experiment_name='exp', run_name='run'
 ):
     if isinstance(data, docarray.DocumentArray):
         expected_name = '-'.join(
-            [test_client.hubble_user_id, experiment_name, run_name, data_type]
+            [client_mocker.hubble_user_id, experiment_name, run_name, data_type]
         )
     else:
         expected_name = data
 
     da_name = push_data_to_hubble(
-        client=test_client,
+        client=client_mocker,
         data=data,
         data_type=data_type,
         experiment_name=experiment_name,
