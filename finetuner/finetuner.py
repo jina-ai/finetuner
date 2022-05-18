@@ -35,7 +35,7 @@ class Finetuner:
         for the current working directory."""
         experiment_name = self._get_cwd()
         for experiment in self.list_experiments():
-            if experiment.get_name() == experiment_name:
+            if experiment.name == experiment_name:
                 return experiment
         return self.create_experiment(name=experiment_name)
 

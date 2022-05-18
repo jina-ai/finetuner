@@ -32,9 +32,9 @@ from finetuner.experiment import Experiment
 
 
 @pytest.fixture
-def experiment(test_finetuner):
+def experiment(finetuner_mocker):
     experiment = Experiment(
-        client=test_finetuner._client,
+        client=finetuner_mocker._client,
         name='experiment name',
         status='ACTIVE',
         created_at='some time',
@@ -44,12 +44,12 @@ def experiment(test_finetuner):
 
 
 def test_get_experiment_name(experiment):
-    assert experiment.get_name() == 'experiment name'
+    assert experiment.name == 'experiment name'
 
 
 def test_get_run(experiment):
     run = experiment.get_run(name='run name')
-    assert run.get_name() == 'run name'
+    assert run.name == 'run name'
     assert run.status() in [CREATED, STARTED, FINISHED, FAILED]
 
 
@@ -58,7 +58,7 @@ def test_list_runs(experiment):
     # depends on `return_runs` in `unit/conftest.py`
     assert len(runs) == 2
     for run, expected_name in zip(runs, ['first run', 'second run']):
-        assert run.get_name() == expected_name
+        assert run.name == expected_name
         assert run.status() in [CREATED, STARTED, FINISHED, FAILED]
 
 
@@ -66,7 +66,7 @@ def test_create_run(experiment):
     data = docarray.DocumentArray().empty(1)
     run_name = 'run1'
     data_name = '-'.join(
-        [HUBBLE_USER_TEST_ID, experiment.get_name(), run_name, TRAIN_DATA]
+        [HUBBLE_USER_TEST_ID, experiment.name, run_name, TRAIN_DATA]
     )
     run = experiment.create_run(
         model='resnet50',
@@ -76,12 +76,12 @@ def test_create_run(experiment):
     expected_config = Experiment._create_config_for_run(
         model='resnet50',
         train_data=data_name,
-        experiment_name=experiment.get_name(),
+        experiment_name=experiment.name,
         run_name=run_name,
     )
-    assert run.get_name() == run_name
+    assert run.name == run_name
     assert run.status() in [CREATED, STARTED, FINISHED, FAILED]
-    assert run.get_config() == expected_config
+    assert run.config == expected_config
 
 
 def test_create_run_config():
