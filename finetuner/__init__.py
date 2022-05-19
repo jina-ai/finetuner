@@ -37,6 +37,7 @@ def fit(
     learning_rate: float = 0.001,
     epochs: int = 20,
     batch_size: int = 8,
+    scheduler_step: str = 'batch',
     freeze: bool = False,
     output_dim: Optional[int] = None,
     multi_modal: bool = False,
@@ -61,6 +62,8 @@ def fit(
     :param learning_rate: learning rate for the optimizer.
     :param epochs: Number of epochs for fine-tuning.
     :param batch_size: Number of items to include in a batch.
+    :param scheduler_step: At which interval should the learning rate sheduler's
+        step function be called. Valid options are "batch" and "epoch".
     :param freeze: If set to True, will freeze all layers except the last one.
     :param output_dim: The expected output dimension.
         If set, will attach a projection head.
@@ -84,6 +87,7 @@ def fit(
         learning_rate=learning_rate,
         epochs=epochs,
         batch_size=batch_size,
+        scheduler_step=scheduler_step,
         freeze=freeze,
         output_dim=output_dim,
         multi_modal=multi_modal,

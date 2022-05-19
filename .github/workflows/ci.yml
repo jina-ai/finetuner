@@ -4,7 +4,7 @@ on: [push]
 
 env:
   HOST: ${{ secrets.FINETUNER_HOST }}
-  HUBBLE_STAGING_TOKEN: ${{ secrets.HUBBLE_STAGING_TOKEN }}
+  JINA_AUTH_TOKEN: ${{ secrets.JINA_AUTH_TOKEN }}
 
 jobs:
   check-codestyle:

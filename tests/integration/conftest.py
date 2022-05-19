@@ -35,7 +35,7 @@ def test_client(mocker):
         print('Successfully logged in to Hubble!')
 
     def get_auth_token():
-        return os.environ.get('HUBBLE_STAGING_TOKEN')
+        return os.environ.get('JINA_AUTH_TOKEN')
 
     mocker.patch.object(hubble, 'login', hubble_login_mocker)
     mocker.patch.object(hubble.Auth, 'get_auth_token', get_auth_token)

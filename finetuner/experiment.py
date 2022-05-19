@@ -25,6 +25,7 @@ from finetuner.constants import (
     OPTIMIZER_OPTIONS,
     OUTPUT_DIM,
     RUN_NAME,
+    SCHEDULER_STEP,
     TEXT_MODALITY,
     TRAIN_DATA,
 )
@@ -201,6 +202,7 @@ class Experiment:
                 BATCH_SIZE: kwargs.get(BATCH_SIZE),
                 LEARNING_RATE: kwargs.get(LEARNING_RATE),
                 EPOCHS: kwargs.get(EPOCHS),
+                SCHEDULER_STEP: kwargs.get(SCHEDULER_STEP),
             },
             EXPERIMENT_NAME: experiment_name,
             RUN_NAME: run_name,

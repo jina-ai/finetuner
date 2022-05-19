@@ -48,6 +48,7 @@ def download_model(
     artifact_ids = client.get_run(experiment_name=experiment_name, run_name=run_name)[
         MODEL_IDS
     ]
+    print('idebi', artifact_ids)
     response = [
         client.hubble_client.download_artifact(id=artifact_id, path=path)
         for artifact_id in artifact_ids
