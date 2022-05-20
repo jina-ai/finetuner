@@ -17,14 +17,14 @@ def get_distance(embeddings: tf.Tensor, distance: str) -> tf.Tensor:
         emb_norm, _ = tf.linalg.normalize(embeddings, ord=2, axis=1)
         dists = 1 - tf.linalg.matmul(emb_norm, tf.transpose(emb_norm))
     elif distance == 'euclidean':
-        embed = tf.reduce_sum(embeddings ** 2, axis=1, keepdims=True)
+        embed = tf.reduce_sum(embeddings**2, axis=1, keepdims=True)
         prod = tf.linalg.matmul(embeddings, tf.transpose(embeddings))
         dists = embed + tf.transpose(embed) - 2 * prod
         dists = tf.sqrt(
             tf.clip_by_value(dists, clip_value_min=0, clip_value_max=tf.float64.max)
         )
     elif distance == 'sqeuclidean':
-        embed = tf.reduce_sum(embeddings ** 2, axis=1, keepdims=True)
+        embed = tf.reduce_sum(embeddings**2, axis=1, keepdims=True)
         prod = tf.linalg.matmul(embeddings, tf.transpose(embeddings))
         dists = embed + tf.transpose(embed) - 2 * prod
 
