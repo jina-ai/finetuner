@@ -19,12 +19,12 @@ def get_distance(embeddings: paddle.Tensor, distance: str) -> paddle.Tensor:
         emb_norm = F.normalize(embeddings, p=2, axis=1)
         dists = 1 - paddle.mm(emb_norm, emb_norm.t())
     elif distance == 'euclidean':
-        emb2 = (embeddings ** 2).sum(axis=1, keepdim=True)
+        emb2 = (embeddings**2).sum(axis=1, keepdim=True)
         prod = paddle.mm(embeddings, embeddings.t())
         dists = emb2 + emb2.t() - 2 * prod
         dists = paddle.sqrt(dists.clip(0))
     elif distance == 'sqeuclidean':
-        emb2 = (embeddings ** 2).sum(axis=1, keepdim=True)
+        emb2 = (embeddings**2).sum(axis=1, keepdim=True)
         prod = paddle.mm(embeddings, embeddings.t())
         dists = emb2 + emb2.t() - 2 * prod
 
