@@ -103,7 +103,7 @@ class FinetunerV1Client(_BaseClient):
         response = []
         for experiment_name in target_experiments:
             url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
-            response.append(self._handle_request(url=url, method=GET))
+            response.extend(self._handle_request(url=url, method=GET))
         return response
 
     def delete_run(self, experiment_name: str, run_name: str) -> dict:

@@ -86,17 +86,6 @@ def test_get_run(client_mocker, experiment_name='exp', run_name='run1'):
     assert sent_request['method'] == GET
 
 
-def test_list_runs(client_mocker, experiment_name='exp'):
-    # Note: we'll test the case when experiment_name
-    # is not specified in integration tests
-    sent_request = client_mocker.list_runs(experiment_name=experiment_name)[0]
-    assert (
-        sent_request['url']
-        == client_mocker._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
-    )
-    assert sent_request['method'] == GET
-
-
 def test_delete_run(client_mocker, experiment_name='exp', run_name='run1'):
     sent_request = client_mocker.delete_run(
         experiment_name=experiment_name, run_name=run_name
