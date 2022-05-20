@@ -4,11 +4,11 @@ from finetuner.constants import (
     DELETE,
     EXPERIMENTS,
     GET,
+    LOGS,
     NAME,
     POST,
     RUNS,
     STATUS,
-    LOGS,
 )
 from finetuner.experiment import Experiment
 
