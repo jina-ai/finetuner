@@ -38,4 +38,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- CI unit tests failing because of hubble invalid token. ([#398](https://github.com/jina-ai/finetuner/pull/398)) 
+- resolve CI tests. ([#398](https://github.com/jina-ai/finetuner/pull/398)) 

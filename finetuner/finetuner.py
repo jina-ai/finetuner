@@ -150,7 +150,7 @@ class Finetuner:
         if not experiment_name:
             experiments = self.list_experiments()
         else:
-            experiments = [experiment_name]
+            experiments = [self.get_experiment(name=experiment_name)]
         runs = []
         for experiment in experiments:
             runs.extend(experiment.list_runs())
@@ -182,6 +182,6 @@ class Finetuner:
         if not experiment_name:
             experiments = self.list_experiments()
         else:
-            experiments = [experiment_name]
+            experiments = [self.get_experiment(name=experiment_name)]
         for experiment in experiments:
             experiment.delete_runs()

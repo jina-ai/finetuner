@@ -62,6 +62,10 @@ class Experiment:
     def name(self) -> str:
         return self._name
 
+    @property
+    def status(self) -> str:
+        return self._status
+
     def get_run(self, name: str) -> Run:
         """Get a run by its name.
 
