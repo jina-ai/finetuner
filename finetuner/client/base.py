@@ -1,4 +1,3 @@
-import json
 import os
 from typing import List, Optional, Union
 
@@ -30,7 +29,7 @@ class _BaseClient:
         self.hubble_user_id = self._get_hubble_user_id()
 
     def _get_hubble_user_id(self):
-        user_info = json.loads(self.hubble_client.get_user_info())
+        user_info = self.hubble_client.get_user_info()
         if user_info['code'] >= 400:
             # will implement error-handling later
             pass
