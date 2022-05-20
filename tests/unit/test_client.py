@@ -143,4 +143,3 @@ def test_get_run_logs(client_mocker, experiment_name='exp', run_name='run1'):
         / LOGS
     )
     assert sent_request['method'] == GET
-
