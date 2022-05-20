@@ -7,7 +7,8 @@ from finetuner.constants import (
     NAME,
     POST,
     RUNS,
-    STATUS, LOGS,
+    STATUS,
+    LOGS,
 )
 from finetuner.experiment import Experiment
 
