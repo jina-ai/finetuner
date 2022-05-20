@@ -8,6 +8,7 @@ from finetuner.constants import (
     DESCRIPTION,
     EXPERIMENTS,
     GET,
+    LOGS,
     NAME,
     POST,
     RUNS,
@@ -132,7 +133,7 @@ class FinetunerV1Client(_BaseClient):
         url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
         return self._handle_request(url=url, method=DELETE)
 
-    def get_run_status(self, experiment_name: str, run_name: str) -> str:
+    def get_run_status(self, experiment_name: str, run_name: str) -> dict:
         """Get a run status by its name and experiment.
 
         :param experiment_name: The name of the experiment.
@@ -147,6 +148,24 @@ class FinetunerV1Client(_BaseClient):
             / RUNS
             / run_name
             / STATUS
+        )
+        return self._handle_request(url=url, method=GET)
+
+    def get_run_logs(self, experiment_name: str, run_name: str) -> str:
+        """Get a run logs by its name and experiment.
+
+        :param experiment_name: The name of the experiment.
+        :param run_name: The name of the run.
+        :return: Run logs.
+        """
+        url = (
+            self._base_url
+            / API_VERSION
+            / EXPERIMENTS
+            / experiment_name
+            / RUNS
+            / run_name
+            / LOGS
         )
         return self._handle_request(url=url, method=GET)
 

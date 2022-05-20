@@ -1,4 +1,3 @@
-import json
 import os
 from typing import List, Optional, Union
 
@@ -13,6 +12,7 @@ from finetuner.constants import (
     DATA,
     HOST,
     HUBBLE_USER_ID,
+    TEXT,
     TOKEN_PREFIX,
     UTF_8,
 )
@@ -30,7 +30,7 @@ class _BaseClient:
         self.hubble_user_id = self._get_hubble_user_id()
 
     def _get_hubble_user_id(self):
-        user_info = json.loads(self.hubble_client.get_user_info())
+        user_info = self.hubble_client.get_user_info()
         if user_info['code'] >= 400:
             # will implement error-handling later
             pass
@@ -68,5 +68,6 @@ class _BaseClient:
                 code=response.status_code,
                 details=response.json()['detail'],
             )
-
+        if TEXT in response.headers['content-type']:
+            return response.text
         return response.json()

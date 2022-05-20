@@ -61,7 +61,10 @@ def create_client_mocker(mocker):
         return [return_experiment(name=name) for name in names]
 
     def return_status(**kwargs):
-        return random.choice([CREATED, STARTED, FINISHED, FAILED])
+        return {
+            'status': random.choice([CREATED, STARTED, FINISHED, FAILED]),
+            'details': '',
+        }
 
     def return_run(**kwargs):
         name = kwargs.get(RUN_NAME) or 'run name'

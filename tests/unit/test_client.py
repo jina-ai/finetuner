@@ -4,6 +4,7 @@ from finetuner.constants import (
     DELETE,
     EXPERIMENTS,
     GET,
+    LOGS,
     NAME,
     POST,
     RUNS,
@@ -124,5 +125,22 @@ def test_get_run_status(client_mocker, experiment_name='exp', run_name='run1'):
         / RUNS
         / run_name
         / STATUS
+    )
+    assert sent_request['method'] == GET
+
+
+def test_get_run_logs(client_mocker, experiment_name='exp', run_name='run1'):
+    sent_request = client_mocker.get_run_logs(
+        experiment_name=experiment_name, run_name=run_name
+    )
+    assert (
+        sent_request['url']
+        == client_mocker._base_url
+        / API_VERSION
+        / EXPERIMENTS
+        / experiment_name
+        / RUNS
+        / run_name
+        / LOGS
     )
     assert sent_request['method'] == GET

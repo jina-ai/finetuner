@@ -1,4 +1,4 @@
-from finetuner.constants import CREATED, FAILED, FINISHED, STARTED
+from finetuner.constants import CREATED, FAILED, FINISHED, STARTED, STATUS
 from finetuner.run import Run
 
 
@@ -14,5 +14,5 @@ def test_run_obj(finetuner_mocker):
     )
 
     assert run.name == 'run name'
-    assert run.status() in [CREATED, STARTED, FINISHED, FAILED]
+    assert run.status()[STATUS] in [CREATED, STARTED, FINISHED, FAILED]
     assert run.config == test_config

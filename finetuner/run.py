@@ -1,5 +1,5 @@
 from finetuner.client import FinetunerV1Client
-from finetuner.constants import FINETUNED_MODELS_DIR, FINISHED
+from finetuner.constants import FINETUNED_MODELS_DIR, FINISHED, STATUS
 from finetuner.hubble import download_model
 
 
@@ -38,7 +38,7 @@ class Run:
     def config(self) -> dict:
         return self._config
 
-    def status(self) -> str:
+    def status(self) -> dict:
         """Run status.
 
         :returns: A string representing the run status.
@@ -52,7 +52,9 @@ class Run:
 
         :returns: A string dump of the run logs.
         """
-        raise NotImplementedError('Not yet implemented, stay tuned!')
+        return self._client.get_run_logs(
+            experiment_name=self._experiment_name, run_name=self._name
+        )
 
     def save_model(self, path: str = FINETUNED_MODELS_DIR):
         """Save model(s) if the run is finished.
@@ -60,7 +62,7 @@ class Run:
         :param path: Directory where the model(s) will be stored.
         :returns: A list of str object(s) that indicate the download path.
         """
-        if self.status() != FINISHED:
+        if self.status()[STATUS] != FINISHED:
             raise Exception('The run needs to be finished in order to save the model.')
 
         download_path = download_model(

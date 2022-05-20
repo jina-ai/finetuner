@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improve unit testing. ([#396](https://github.com/jina-ai/finetuner/pull/396))
 
+- Implement getting run logs. ([#400](https://github.com/jina-ai/finetuner/pull/400))
+
 ### Removed
 
 - Delete all unnecessary files from the previous project. ([#384](https://github.com/jina-ai/finetuner/pull/384))
@@ -35,6 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Change logic behind artifact-id and return jsonified `dicts` instead of `requests.Response` objects. ([#390](https://github.com/jina-ai/finetuner/pull/390))
+
+- Adapt getting run status. ([#400](https://github.com/jina-ai/finetuner/pull/400))
 
 ### Fixed
 
