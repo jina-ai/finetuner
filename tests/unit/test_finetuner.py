@@ -3,7 +3,7 @@ import os
 import docarray
 import pytest
 
-from finetuner.constants import CREATED, FAILED, FINISHED, STARTED
+from finetuner.constants import CREATED, FAILED, FINISHED, STARTED, STATUS
 
 
 @pytest.mark.parametrize(
@@ -45,7 +45,7 @@ def test_create_run(finetuner_mocker, experiment_name):
         experiment_name=experiment_name,
     )
     assert run.name == run_name
-    assert run.status() in [CREATED, STARTED, FINISHED, FAILED]
+    assert run.status()[STATUS] in [CREATED, STARTED, FINISHED, FAILED]
     assert run._experiment_name == exp_name
 
 

@@ -38,14 +38,14 @@ class Run:
     def config(self) -> dict:
         return self._config
 
-    def status(self) -> str:
+    def status(self) -> dict:
         """Run status.
 
         :returns: A string representing the run status.
         """
         return self._client.get_run_status(
             experiment_name=self._experiment_name, run_name=self._name
-        )[STATUS]
+        )
 
     def logs(self) -> str:
         """Check the run logs.
@@ -62,7 +62,7 @@ class Run:
         :param path: Directory where the model(s) will be stored.
         :returns: A list of str object(s) that indicate the download path.
         """
-        if self.status() != FINISHED:
+        if self.status()[STATUS] != FINISHED:
             raise Exception('The run needs to be finished in order to save the model.')
 
         download_path = download_model(

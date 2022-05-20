@@ -12,6 +12,7 @@ from finetuner.constants import (
     DATA,
     HOST,
     HUBBLE_USER_ID,
+    TEXT,
     TOKEN_PREFIX,
     UTF_8,
 )
@@ -67,5 +68,6 @@ class _BaseClient:
                 code=response.status_code,
                 details=response.json()['detail'],
             )
-
+        if TEXT in response.headers['content-type']:
+            return response.text
         return response.json()

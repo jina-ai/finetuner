@@ -26,6 +26,7 @@ from finetuner.constants import (
     RUN_NAME,
     SCHEDULER_STEP,
     STARTED,
+    STATUS,
     TEXT_MODALITY,
     TRAIN_DATA,
 )
@@ -51,7 +52,7 @@ def test_get_experiment_name(experiment):
 def test_get_run(experiment):
     run = experiment.get_run(name='run name')
     assert run.name == 'run name'
-    assert run.status() in [CREATED, STARTED, FINISHED, FAILED]
+    assert run.status()[STATUS] in [CREATED, STARTED, FINISHED, FAILED]
 
 
 def test_list_runs(experiment):
@@ -60,7 +61,7 @@ def test_list_runs(experiment):
     assert len(runs) == 2
     for run, expected_name in zip(runs, ['first run', 'second run']):
         assert run.name == expected_name
-        assert run.status() in [CREATED, STARTED, FINISHED, FAILED]
+        assert run.status()[STATUS] in [CREATED, STARTED, FINISHED, FAILED]
 
 
 def test_create_run(experiment):
@@ -79,7 +80,7 @@ def test_create_run(experiment):
         run_name=run_name,
     )
     assert run.name == run_name
-    assert run.status() in [CREATED, STARTED, FINISHED, FAILED]
+    assert run.status()[STATUS] in [CREATED, STARTED, FINISHED, FAILED]
     assert run.config == expected_config
 
 
