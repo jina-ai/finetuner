@@ -14,7 +14,8 @@ def test_experiments(
     finetuner_mocker.create_experiment(second_exp_name)
     exps = finetuner_mocker.list_experiments()
     assert len(exps) == 2
-    assert exps[0].name == first_exp_name and exps[1].name == second_exp_name
+    experiment_names = sorted([exp.name for exp in exps])
+    assert experiment_names == [first_exp_name, second_exp_name]
     assert exps[0].status == exps[1].status == 'ACTIVE'
     # delete the first experiment
     finetuner_mocker.delete_experiment(first_exp_name)
