@@ -63,4 +63,4 @@ jobs:
         run: |
           pip install twine wheel
           python setup.py sdist
-          twine upload dist/
+          twine upload dist/*

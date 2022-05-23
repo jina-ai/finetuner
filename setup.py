@@ -9,7 +9,7 @@ _name = 'finetuner-client'
 # package version
 __version__ = '0.0.0'
 try:
-    libinfo_py = os.path.join(_name, '__init__.py')
+    libinfo_py = os.path.join('finetuner', '__init__.py')
     libinfo_content = open(libinfo_py, 'r', encoding='utf8').readlines()
     version_line = [
         line.strip() for line in libinfo_content if line.startswith('__version__')
