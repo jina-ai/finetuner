@@ -45,3 +45,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Resolve CI tests. ([#398](https://github.com/jina-ai/finetuner/pull/398)) 
+
+- Fix `download_artifact`. ([#401](https://github.com/jina-ai/finetuner/pull/401))
