@@ -1,3 +1,4 @@
+import json
 from typing import List, Union
 
 from docarray import DocumentArray
@@ -48,6 +49,7 @@ def download_model(
     artifact_ids = client.get_run(experiment_name=experiment_name, run_name=run_name)[
         MODEL_IDS
     ]
+    artifact_ids = json.loads(artifact_ids)
     response = [
         client.hubble_client.download_artifact(id=artifact_id, path=path)
         for artifact_id in artifact_ids
