@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add experiment-related methods to finetuner. ([#402](https://github.com/jina-ai/finetuner/pull/402))
 
-- Add CD step for PyPI release. ([]())
+- Add CD step for PyPI release. ([#403](https://github.com/jina-ai/finetuner/pull/403))
 
 ### Removed
 
