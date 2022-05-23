@@ -71,6 +71,17 @@ install-docs:
 init: pre-commit install-dev install-docs
 
 
+# ----------------------------------------------------------------------- Build targets
+
+## Build wheel
+build:
+	python setup.py bdist_wheel
+
+## Build source dist
+build-sdist:
+	python setup.py sdist
+
+
 # ---------------------------------------------------------------- Test related targets
 
 PYTEST_ARGS = --show-capture no --full-trace --verbose --cov finetuner/ --cov-report term-missing --cov-report html

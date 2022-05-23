@@ -1,9 +1,14 @@
 [tool.black]
 line-length = 88
 skip-string-normalization = true
+extend-exclude = 'docs/conf.py'
 
 [tool.isort]
-profile = "black"
-extend_skip = ["setup.py"]
+profile = 'black'
+extend_skip = ['docs/conf.py']
 skip_gitignore = true
-src_paths = ["finetuner"]
+src_paths = ['finetuner']
+
+[tool.mypy]
+python_version = 3.9
+ignore_missing_imports = true
