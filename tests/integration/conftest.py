@@ -16,13 +16,13 @@ def get_image_data():
         for class_id in range(num_classes):
             for _ in range(images_per_class):
                 doc = Document(
-                    tensor=np.random.rand(3, 224, 224),
+                    tensor=np.random.rand(28, 28, 3),
                     tags={FINETUNER_LABEL: str(class_id)},
                 )
                 da.append(doc)
         return da
 
-    train_da = generate_random_data(num_classes=4, images_per_class=4)
+    train_da = generate_random_data(num_classes=10, images_per_class=10)
     eval_da = generate_random_data(num_classes=4, images_per_class=2)
 
     return train_da, eval_da

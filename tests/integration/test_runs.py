@@ -1,3 +1,8 @@
+import os
+
+from finetuner.constants import FAILED, FINISHED, STATUS
+
+
 def test_runs(
     finetuner_mocker,
     get_image_data,
@@ -99,6 +104,30 @@ def test_list_runs(
     assert len(runs) == 1
     assert runs[0].name == first_run
     # delete experiments
+    finetuner_mocker.delete_experiments()
+    exps = finetuner_mocker.list_experiments()
+    assert not exps
+
+
+def test_create_run_and_save_model(finetuner_mocker, get_image_data, tmp_path):
+    import time
+
+    train_da, _ = get_image_data
+    run = finetuner_mocker.create_run(
+        model='resnet50',
+        train_data=train_da,
+        loss='TripletMarginLoss',
+        optimizer='Adam',
+        learning_rate=0.001,
+        batch_size=10,
+        epochs=2,
+    )
+    while run.status()[STATUS] not in [FINISHED, FAILED]:
+        time.sleep(3)
+    assert run.status()[STATUS] == FINISHED
+    run.save_model(path=tmp_path / 'finetuned_model')
+    assert os.path.exists(tmp_path / 'finetuned_model')
+    # delete all experiments (and runs)
     finetuner_mocker.delete_experiments()
     exps = finetuner_mocker.list_experiments()
     assert not exps
