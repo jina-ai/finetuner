@@ -1,8 +1,9 @@
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 from docarray import DocumentArray
 from dotenv import load_dotenv
 
+from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
 
 load_dotenv()
@@ -22,6 +23,39 @@ def list_models():
         'efficientnet_b4',
         'openai/clip-vit-base-patch32',
     ]
+
+
+def create_experiment(name: Optional[str] = None) -> Experiment:
+    """Create an experiment.
+
+    :param name: Optional name of the experiment.
+    :return: An `Experiment` object.
+    """
+    return ft.create_experiment(name=name)
+
+
+def get_experiment(name: str) -> Experiment:
+    """Get an experiment by its name.
+
+    :param name: Name of the experiment.
+    :return: An `Experiment` object.
+    """
+    return ft.get_experiment(name=name)
+
+
+def list_experiments() -> List[Experiment]:
+    """List every experiment."""
+    return ft.list_experiments()
+
+
+def delete_experiment(name: str):
+    """Delete an experiment by its name."""
+    ft.delete_experiment(name=name)
+
+
+def delete_experiments():
+    """Delete every experiment."""
+    ft.delete_experiments()
 
 
 def fit(
