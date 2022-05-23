@@ -7,6 +7,7 @@ env:
   JINA_AUTH_TOKEN: ${{ secrets.JINA_AUTH_TOKEN }}
 
 jobs:
+
   check-codestyle:
     name: Check codestyle
     runs-on: ubuntu-latest

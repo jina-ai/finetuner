@@ -1,6 +1,5 @@
 area/docs:
   - docs/**/*
-  - ./*.md
 
 area/testing:
   - tests/**/*
@@ -28,3 +27,6 @@ area/core:
 
 area/entrypoint:
   - finetuner/__init__.py
+
+area/client:
+  - finetuner/client/**/*

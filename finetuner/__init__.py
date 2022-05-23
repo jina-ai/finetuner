@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
 
+__version__ = '0.1.0'
+
+
 load_dotenv()
 ft = Finetuner()
 
