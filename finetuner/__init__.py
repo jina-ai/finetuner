@@ -28,7 +28,8 @@ def list_models():
 def create_experiment(name: Optional[str] = None) -> Experiment:
     """Create an experiment.
 
-    :param name: Optional name of the experiment.
+    :param name: Optional name of the experiment. If `None`,
+        the experiment is named after the current directory.
     :return: An `Experiment` object.
     """
     return ft.create_experiment(name=name)
