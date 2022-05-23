@@ -23,7 +23,7 @@ def get_image_data():
         return da
 
     train_da = generate_random_data(num_classes=10, images_per_class=10)
-    eval_da = generate_random_data(num_classes=4, images_per_class=2)
+    eval_da = generate_random_data(num_classes=10, images_per_class=2)
 
     return train_da, eval_da
 
