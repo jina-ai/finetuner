@@ -42,8 +42,9 @@ class Finetuner:
     def create_experiment(self, name: Optional[str] = None) -> Experiment:
         """Create an experiment.
 
-        :param: Optional name of the experiment.
-        :returns: An `Experiment` object.
+        :param name: Optional name of the experiment. If `None`,
+            the experiment is named after the current directory.
+        :return: An `Experiment` object.
         """
         if not name:
             name = self._get_cwd()
@@ -60,7 +61,7 @@ class Finetuner:
         """Get an experiment by its name.
 
         :param name: Name of the experiment.
-        :returns: An `Experiment` object.
+        :return: An `Experiment` object.
         """
         experiment_info = self._client.get_experiment(name=name)
         return Experiment(
@@ -112,7 +113,7 @@ class Finetuner:
             name of the `DocumentArray` that is pushed on Hubble.
         :param run_name: Optional name of the run.
         :param experiment_name: Optional name of the experiment.
-        :returns: A `Run` object.
+        :return: A `Run` object.
         """
         if not experiment_name:
             experiment = self._default_experiment
@@ -130,7 +131,7 @@ class Finetuner:
 
         :param run_name: Name of the run.
         :param experiment_name: Optional name of the experiment.
-        :returns: A `Run` object.
+        :return: A `Run` object.
         """
         if not experiment_name:
             experiment = self._default_experiment
@@ -145,7 +146,7 @@ class Finetuner:
         experiments.
 
         :param experiment_name: Optional name of the experiment.
-        :returns: A list of `Run` objects.
+        :return: A list of `Run` objects.
         """
         if not experiment_name:
             experiments = self.list_experiments()

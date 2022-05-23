@@ -43,7 +43,8 @@ def test_runs(
     # list all runs
     runs = finetuner_mocker.list_runs(experiment_name=experiment_name)
     assert len(runs) == 2
-    assert runs[0].name == first_run and runs[1].name == second_run
+    run_names = sorted([run.name for run in runs])
+    assert run_names == [first_run, second_run]
     # delete the first run
     finetuner_mocker.delete_run(experiment_name=experiment_name, run_name=first_run)
     runs = finetuner_mocker.list_runs(experiment_name=experiment_name)
@@ -75,8 +76,9 @@ def test_list_runs(
     finetuner_mocker.create_experiment(name=first_exp)
     finetuner_mocker.create_experiment(name=second_exp)
     exps = finetuner_mocker.list_experiments()
+    experiment_names = sorted([exp.name for exp in exps])
+    assert experiment_names == [first_exp, second_exp]
     assert len(exps) == 2
-    assert exps[0].name == first_exp and exps[1].name == second_exp
     # create a run for each experiment
     finetuner_mocker.create_run(
         model='resnet50',
@@ -98,7 +100,8 @@ def test_list_runs(
     # which should list all runs across all existing experiments
     runs = finetuner_mocker.list_runs()
     assert len(runs) == 2
-    assert runs[0].name == first_run and runs[1].name == second_run
+    run_names = sorted([run.name for run in runs])
+    assert run_names == [first_run, second_run]
     # list all runs of only first experiment
     runs = finetuner_mocker.list_runs(experiment_name=first_exp)
     assert len(runs) == 1
