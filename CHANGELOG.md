@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Expose arguments `cpu`, `num_workers` and `queue` in `finetuner.fit`. ([#411](https://github.com/jina-ai/finetuner/pull/411))
+
 ### Removed
 
 ### Changed
