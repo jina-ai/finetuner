@@ -61,6 +61,10 @@ def test_create_run(client_mocker, experiment_name='exp', run_name='run'):
         experiment_name=experiment_name,
         run_name=run_name,
         run_config=config,
+        queue='standard',
+        device='cpu',
+        cpus=1,
+        gpus=1,
     )
     assert (
         sent_request['url']

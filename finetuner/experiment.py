@@ -6,6 +6,7 @@ from finetuner.client import FinetunerV1Client
 from finetuner.constants import (
     BATCH_SIZE,
     CONFIG,
+    CPU,
     CREATED_AT,
     DATA,
     DESCRIPTION,
@@ -21,9 +22,11 @@ from finetuner.constants import (
     MODEL,
     MULTI_MODAL,
     NAME,
+    NUM_WORKERS,
     OPTIMIZER,
     OPTIMIZER_OPTIONS,
     OUTPUT_DIM,
+    QUEUE,
     RUN_NAME,
     SCHEDULER_STEP,
     TEXT_MODALITY,
@@ -130,6 +133,7 @@ class Experiment:
         """
         if not run_name:
             run_name = get_random_name()
+
         train_data = push_data_to_hubble(
             client=self._client,
             data=train_data,
@@ -152,10 +156,19 @@ class Experiment:
             run_name=run_name,
             **kwargs,
         )
+
+        queue = kwargs.get(QUEUE, 'standard')
+        cpu = kwargs.get(CPU, True)
+        num_workers = kwargs.get(NUM_WORKERS, 4)
+
         run_info = self._client.create_run(
             run_name=run_name,
             experiment_name=self._name,
             run_config=config,
+            queue=queue,
+            device='cpu' if cpu else 'gpu',
+            cpus=num_workers,
+            gpus=1,
         )
         run = Run(
             client=self._client,
