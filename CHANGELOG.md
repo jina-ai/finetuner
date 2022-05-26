@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add default values for finetuner `HOST` and `JINA_HUBBLE_REGISTRY`. ([#410](https://github.com/jina-ai/finetuner/pull/410))
+
 ### Removed
 
 ### Changed
