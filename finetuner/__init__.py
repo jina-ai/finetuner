@@ -1,7 +1,21 @@
+import os
 from typing import List, Optional, Union
 
 from docarray import DocumentArray
 from dotenv import load_dotenv
+
+from finetuner.constants import (
+    DEFAULT_FINETUNER_HOST,
+    DEFAULT_HUBBLE_REGISTRY,
+    HOST,
+    HUBBLE_REGISTRY,
+)
+
+if HOST not in os.environ:
+    os.environ[HOST] = DEFAULT_FINETUNER_HOST
+
+if HUBBLE_REGISTRY not in os.environ:
+    os.environ[HUBBLE_REGISTRY] = DEFAULT_HUBBLE_REGISTRY
 
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner

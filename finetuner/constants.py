@@ -4,7 +4,12 @@ GET = 'GET'
 NAME = 'name'
 HUBBLE_USER_ID = '_id'
 ID = 'id'
+
 HOST = 'HOST'
+HUBBLE_REGISTRY = 'JINA_HUBBLE_REGISTRY'
+DEFAULT_FINETUNER_HOST = 'https://api-staging.finetuner.fit'
+DEFAULT_HUBBLE_REGISTRY = 'https://apihubble.staging.jina.ai'
+
 CONFIG = 'config'
 RUNS = 'runs'
 STATUS = 'status'
