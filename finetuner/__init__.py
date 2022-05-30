@@ -95,8 +95,8 @@ def fit(
     multi_modal: bool = False,
     image_modality: Optional[str] = None,
     text_modality: Optional[str] = None,
-    cpu: bool = False,
-    wandb_api_key: Optional[str] = None,
+    cpu: bool = True,
+    num_workers: int = 4,
 ):
     """Start a finetuner run!
 
@@ -123,8 +123,9 @@ def fit(
         required argument to the `DataLoader`.
     :param image_modality: The modality of the image `Document`.
     :param text_modality: The modality of the text `Document`.
-    :param cpu: Whether to use the CPU, or GPU.
-    :param wandb_api_key: WandB key.
+    :param cpu: Whether to use the CPU. If set to `False` a GPU will be used.
+    :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
+        workers used by the dataloader.
     """
     run = ft.create_run(
         model=model,
@@ -146,6 +147,6 @@ def fit(
         image_modality=image_modality,
         text_modality=text_modality,
         cpu=cpu,
-        wandb_api_key=wandb_api_key,
+        num_workers=num_workers,
     )
     return run

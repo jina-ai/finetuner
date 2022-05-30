@@ -1,9 +1,11 @@
 from finetuner.constants import (
     API_VERSION,
     CONFIG,
+    CPUS,
     DELETE,
     EXPERIMENTS,
     GET,
+    GPUS,
     LOGS,
     NAME,
     POST,
@@ -61,6 +63,9 @@ def test_create_run(client_mocker, experiment_name='exp', run_name='run'):
         experiment_name=experiment_name,
         run_name=run_name,
         run_config=config,
+        device='cpu',
+        cpus=1,
+        gpus=1,
     )
     assert (
         sent_request['url']
@@ -69,6 +74,8 @@ def test_create_run(client_mocker, experiment_name='exp', run_name='run'):
     assert sent_request['method'] == POST
     assert sent_request['json_data'][NAME] == run_name
     assert sent_request['json_data'][CONFIG] == config
+    assert sent_request['json_data'][CPUS] == 1
+    assert sent_request['json_data'][GPUS] == 1
 
 
 def test_get_run(client_mocker, experiment_name='exp', run_name='run1'):

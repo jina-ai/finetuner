@@ -1,4 +1,4 @@
-docarray[common]==0.13.3
+docarray[common]==0.13.17
 jina-hubble-sdk==0.5.1
 path==16.4.0
 python-dotenv==0.19.2
