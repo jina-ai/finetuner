@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bump `docarray` to `v0.13.17`. ([#411](https://github.com/jina-ai/finetuner/pull/411))
+
 ### Fixed
 
 
