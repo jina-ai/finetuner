@@ -14,7 +14,6 @@ from finetuner.constants import (
     LOGS,
     NAME,
     POST,
-    QUEUE,
     RUNS,
     STATUS,
 )
@@ -178,7 +177,6 @@ class FinetunerV1Client(_BaseClient):
         experiment_name: str,
         run_name: str,
         run_config: dict,
-        queue: str,
         device: str,
         cpus: int,
         gpus: int,
@@ -189,7 +187,6 @@ class FinetunerV1Client(_BaseClient):
         :param experiment_name: The name of the experiment.
         :param run_name: The name of the run.
         :param run_config: The run configuration.
-        :param queue: The queue to use, either `standard`, `optimal` or `superior`.
         :param device: The device to use, either `cpu` or `gpu`.
         :param cpus: The number of CPUs to use.
         :param gpus: The number of GPUs to use.
@@ -202,7 +199,6 @@ class FinetunerV1Client(_BaseClient):
             json_data={
                 NAME: run_name,
                 CONFIG: run_config,
-                QUEUE: queue,
                 DEVICE: device,
                 CPUS: cpus,
                 GPUS: gpus,

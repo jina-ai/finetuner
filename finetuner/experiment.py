@@ -26,7 +26,6 @@ from finetuner.constants import (
     OPTIMIZER,
     OPTIMIZER_OPTIONS,
     OUTPUT_DIM,
-    QUEUE,
     RUN_NAME,
     SCHEDULER_STEP,
     TEXT_MODALITY,
@@ -157,7 +156,6 @@ class Experiment:
             **kwargs,
         )
 
-        queue = kwargs.get(QUEUE, 'standard')
         cpu = kwargs.get(CPU, True)
         num_workers = kwargs.get(NUM_WORKERS, 4)
 
@@ -165,7 +163,6 @@ class Experiment:
             run_name=run_name,
             experiment_name=self._name,
             run_config=config,
-            queue=queue,
             device='cpu' if cpu else 'gpu',
             cpus=num_workers,
             gpus=1,
