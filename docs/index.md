@@ -108,6 +108,13 @@ Check your installation with:
 2_step_by_step/index
 ```
 
+```{toctree}
+:caption: Finetune in Action
+:hidden:
+
+3_finetune_in_action/index
+```
+
 
 ---
 {ref}`genindex` | {ref}`modindex`
