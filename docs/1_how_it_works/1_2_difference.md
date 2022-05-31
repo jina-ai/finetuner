@@ -7,7 +7,7 @@ what makes Finetuner unique?
 
 Finetuner is not designed to improve classification,
 sentiment analysis or object detection.
-Finetuner only care about the quality of embeddings,
+Finetuner cares the quality of embeddings,
 and this is what the fine-tuned model will produce.
 
 Given a query `Document` embedded into `embeddings`,

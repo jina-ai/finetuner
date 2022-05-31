@@ -14,19 +14,20 @@ For example, if your pre-trained model is trained for cat-dog classification,
 Finetuner is going to remove the cat-dog classifier and turn your model into an *embedding model*.
 
 This embedding model does not make predictions or outputs a probability,
-but instead outputs a feature vector to represent your data
+but instead outputs a feature vector to represent your data.
 
-### Step 2: Triplets Construction and Training on-the-fly
+### Step 2: Triplet construction and training on-the-fly
 
-Finetuner "looks" into the label of your training data.
-Each `Document` and `Document`s share the same ****`finetuner_label` is considered as a *Positive*.
-In the meanwhile, each `Document` and `Documents` which share a different `finetuner_label` is considered as a *Negative*.
+Finetuner works on labeled data.
+It expects a `DocumentArray` consisting of `Document`s where each one contains `finetuner_label` corresponding to a class of a specific training example.
 
-During model fine-tuning, Finetuner is creating *Triplets*  ``(anchor, positive, negative)`` on-the-fly.
-Finetuner then uses the triplets to perform training,
-the objective is to pull `Document`s which belong to the same class together,
+During the fine-tuning, Finetuner creates Triplets `(anchor, positive, negative)` on-the-fly.
+For each anchor,
+which can be any training example,
+Finetuner looks for a `Document` with the same `finetuner_label` (positive),
+and a `Document` with a different `finetuner_label` (negative).
+The objective is to pull `Document`s which belong to the same class together,
 while pushing the `Document`s which belong to a different class away from each other.
-
 
 
 ## Cloud-based fine-tuning ⛅
