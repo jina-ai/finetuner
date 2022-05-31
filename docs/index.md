@@ -13,7 +13,7 @@ infrastructure and the complexity of the fine-tuning task and provides a simple 
 Finetuner primarily targets business users and engineers with limited knowledge in Machine Learning, but also attempts to expose
 lots of configuration options for experienced professionals!
 
-## Why do I need Finetuner? 🤔
+## Why do I need Finetuner?
 
 Search quality matters. When you bring a pre-trained model to encode your data to embeddings, you are likely to get irrelevant search results.
 Pre-trained deep learning models are usually trained on large-scale datasets, that have a different *data distribution* over your own datasets or domains.
