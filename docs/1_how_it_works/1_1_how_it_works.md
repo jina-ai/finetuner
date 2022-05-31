@@ -2,28 +2,28 @@
 
 ## Contrastive Metric Learning 👓
 
-From the algorithmic perspective,
+From an algorithmic perspective,
 **Finetuner** leverage contrastive metric learning approach to improve your model.
-How it works?
+How does it work?
 
 ### Step 1: Convert your model into an Embedding Model
 
-Finetuner interpret your model architecture,
-remove the default *head*, apply *pooling* and freeze layers not necessary to train.
-For example, if your pre-trained model is trained for cat-dog classification.
+Finetuner interprets your model architecture,
+removes the default *head*, applies *pooling* and freezes layers that do not need to be trained..
+For example, if your pre-trained model is trained for cat-dog classification,
 Finetuner is going to remove the cat-dog classifier and turn your model into an *embedding model*.
 
-This *embedding model* do not make predictions and output a probability,
-but output a *feature vector* to represent your data.
+This embedding model does not make predictions or outputs a probability,
+but instead outputs a feature vector to represent your data
 
 ### Step 2: Triplets Construction and Training on-the-fly
 
 Finetuner "looks" into the label of your training data.
-Each `Document` and `Document`s share the same `finetuner_label` is considered as a *Positive*.
-In the meanwhile, each `Document` and `Documents` share a different `finetuner_label` is considered as a *Negative*.
+Each `Document` and `Document`s share the same ****`finetuner_label` is considered as a *Positive*.
+In the meanwhile, each `Document` and `Documents` which share a different `finetuner_label` is considered as a *Negative*.
 
 During model fine-tuning, Finetuner is creating *Triplets*  ``(anchor, positive, negative)`` on-the-fly.
-Finetuner then use the triplets to perform training,
+Finetuner then uses the triplets to perform training,
 the objective is to pull `Document`s belongs to the same class together,
 while push the `Document`s belongs to the different class away from each other.
 
