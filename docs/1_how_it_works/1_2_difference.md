@@ -1,9 +1,9 @@
-# Difference between Finetuner and Others
+# Difference between Finetuner and Other Frameworks
 
 There are several fancy machine learning libraries available,
 what makes Finetuner unique?
 
-## Finetuner care about the quality of Embeddings 🧬
+## Care about the quality of Embeddings 🧬
 
 Finetuner is not designed to improve classification,
 sentiment analysis or object detection.
@@ -14,7 +14,7 @@ Given a query `Document` embedded into `embeddings`,
 you can compare the similarity/distance of the query `Document`s against all indexed (embedded) `Document`s in your storage backend.
 
 
-## Finetuner is dedicated to optimizing your search task 🎯
+## Dedicated to optimizing your search task 🎯
 
 Finetuner helps you boost your search system performance on different modalities of data:
 
@@ -33,7 +33,7 @@ Across these three tasks,
 You can also observe significant performance improvement on other search metrics,
 such as mean recipal rank (mRR) or normalized discounted cumulative gain (nDCG).
 
-## Finetuner is extremely easy to use 🚀
+## Easy to use 🚀
 
 Finetuner gives user the flexibility to choose machine learning hyper-parameters,
 while all these parameters are `Optional`.
