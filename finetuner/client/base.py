@@ -63,10 +63,11 @@ class _BaseClient:
             url=url, method=method, json=json_data, params=params, verify=False
         )
         if not response.ok:
+            details = response.json().get('detail') or response.json().get('message')
             raise FinetunerServerError(
                 message=response.reason,
                 code=response.status_code,
-                details=response.json()['detail'],
+                details=details,
             )
         if TEXT in response.headers['content-type']:
             return response.text

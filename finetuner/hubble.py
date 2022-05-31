@@ -4,7 +4,7 @@ from typing import List, Union
 from docarray import DocumentArray
 
 from finetuner.client import FinetunerV1Client
-from finetuner.constants import FINETUNED_MODELS_DIR, MODEL_IDS
+from finetuner.constants import FINETUNED_MODELS_DIR, MODEL_IDS, DEFAULT_HUBBLE_REGISTRY, GET
 
 
 def push_data_to_hubble(
@@ -33,6 +33,15 @@ def push_data_to_hubble(
         data.push(name=da_name)
         data = da_name
     return data
+
+
+def check_data_exists(
+    client: FinetunerV1Client,
+    da_name: str,
+):
+    url = f'{DEFAULT_HUBBLE_REGISTRY}/v2/rpc/artifact.getDownloadUrl?name={da_name}'
+    resp = client._handle_request(url=url, method=GET)
+    return resp
 
 
 def download_model(
