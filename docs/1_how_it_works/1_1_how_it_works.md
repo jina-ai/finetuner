@@ -3,7 +3,7 @@
 ## Contrastive Metric Learning 👓
 
 From an algorithmic perspective,
-**Finetuner** leverage contrastive metric learning approach to improve your model.
+**Finetuner** leverages a contrastive metric learning approach to improve your model.
 How does it work?
 
 ### Step 1: Convert your model into an Embedding Model
