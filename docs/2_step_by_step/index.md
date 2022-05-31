@@ -1,7 +1,7 @@
 ```{toctree}
 :hidden:
 
-2_1_finetune_in_the_cloud
+2_1_install
 2_2_experiment_and_run
 2_3_login_to_jina_ecosystem
 2_4_create_training_data

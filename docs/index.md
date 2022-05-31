@@ -57,37 +57,6 @@ Not sure which model to use?
 Don't worry, call `finetuner.list_models()` and we will help you choose the best fit.
 ```
 
-## Installation 🚀
-
-![PyPI](https://img.shields.io/pypi/v/finetuner?color=%23ffffff&label=%20) is the latest version.
-
-Make sure you have `Python 3.7+` installed on Linux/Mac/Windows:
-
-````{tab} Basic install
-
-```bash
-pip install finetuner
-```
-
-No extra dependency will be installed.
-````
-
-````{tab} Basic install via Conda
-
-```bash
-conda install -c conda-forge finetuner
-```
-
-No extra dependency will be installed.
-````
-
-Check your installation with:
-```pycon
->>> import finetuner
->>> finetuner.__version__
-'0.1.0'
-```
-
 
 ```{include} ../README.md
 :start-after: <!-- start support-pitch -->
