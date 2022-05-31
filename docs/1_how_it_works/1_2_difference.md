@@ -14,13 +14,17 @@ Given a query `Document` embedded into `embeddings`,
 you can compare the similarity/distance of the query `Document`s against all indexed (embedded) `Document`s in your storage backend.
 
 
-## Finetuner is dedicated to optimize search task 🎯
+## Finetuner is dedicated to optimizing your search task 🎯
 
-Finetuner helps you boost your search system performance on different modalities of data.
-Text-to-text, image-to-image, text-to-image and more is coming!
+Finetuner helps you boost your search system performance on different modalities of data:
+
++ text-to-text search (or dense vector search)
++ image-to-image search (or content-based image search)
++ text-to-image search (based on [OpenAI CLIP](https://openai.com/blog/clip/))
++ more is coming!
 
 Search performance depends on a lot of factors.
-Internally we have conducted a lot of experiments on varies tasks,
+Internally we have conducted a lot of experiments on various tasks,
 such as image-to-image search,
 text-to-text search,
 cross-modal search.
@@ -31,10 +35,10 @@ such as mean recipal rank (mRR) or normalized discounted cumulative gain (nDCG).
 
 ## Finetuner is extremely easy to use 🚀
 
-Finetuner give user the flexibility to choose machine learning hyper-parameters,
+Finetuner gives user the flexibility to choose machine learning hyper-parameters,
 while all these parameters are `Optional`.
 
-If you do not have machine learning background,
+If you do not have a machine learning background,
 not a problem.
 As was stated before, you only need to send us the training data organized as a [DocumentArray](https://docarray.jina.ai/).
 In case you do not know which backbone to choose,
