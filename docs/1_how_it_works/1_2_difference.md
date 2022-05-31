@@ -42,4 +42,4 @@ If you do not have a machine learning background,
 not a problem.
 As was stated before, you only need to send us the training data organized as a [DocumentArray](https://docarray.jina.ai/).
 In case you do not know which backbone to choose,
-use `finetuner.list_models()` to let Finetuner suggest a backbone model for you.
+use `list_models()` to let Finetuner suggest a backbone model for you.
