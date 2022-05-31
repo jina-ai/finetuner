@@ -6,9 +6,9 @@ From an algorithmic perspective,
 **Finetuner** leverages a contrastive metric learning approach to improve your model.
 How does it work?
 
-### Step 1: Convert your model into an Embedding Model
+### Step 1: Convert a model into an Embedding Model
 
-Finetuner interprets your model architecture,
+Finetuner interprets the backbone model architecture,
 removes the default *head*, applies *pooling* and freezes layers that do not need to be trained..
 For example, if your pre-trained model is trained for cat-dog classification,
 Finetuner is going to remove the cat-dog classifier and turn your model into an *embedding model*.
