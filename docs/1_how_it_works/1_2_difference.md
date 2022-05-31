@@ -5,13 +5,13 @@ what makes Finetuner unique?
 
 ## Finetuner care about the quality of Embeddings 🧬
 
-Finetuner is not designed to make better classification,
+Finetuner is not designed to improve classification,
 sentiment analysis or object detection.
-Finetuner only care about the quality of embeddings.
-The fine-tuned model only produces embeddings.
+Finetuner only care about the quality of embeddings,
+and this is what the fine-tuned model will produce.
 
-Given a query `Document` embeded into `embeddings`,
-you can compare the similarity/distance of the query `Document`s against all indexed (embeded) `Document`s in your storage backend.
+Given a query `Document` embedded into `embeddings`,
+you can compare the similarity/distance of the query `Document`s against all indexed (embedded) `Document`s in your storage backend.
 
 
 ## Finetuner is dedicated to optimize search task 🎯

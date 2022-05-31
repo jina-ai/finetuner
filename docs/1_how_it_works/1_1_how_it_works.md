@@ -24,16 +24,15 @@ In the meanwhile, each `Document` and `Documents` which share a different `finet
 
 During model fine-tuning, Finetuner is creating *Triplets*  ``(anchor, positive, negative)`` on-the-fly.
 Finetuner then uses the triplets to perform training,
-the objective is to pull `Document`s belongs to the same class together,
-while push the `Document`s belongs to the different class away from each other.
+the objective is to pull `Document`s which belong to the same class together,
+while pushing the `Document`s which belong to a different class away from each other.
 
 
 
 ## Cloud-based Fine-tuning ⛅
 
-From engineering perspective,
-we have hide all the complexity of machine learning algorithms,
-resources setup (such as GPU),
+From an engineering perspective,
+we have hidden all the complexity of machine learning algorithms and resources configuration (such as GPU).
 all you need to do is to decide your backbone model and prepare your training data.
 
 Once you logged into Jina Ecosystem with `finetuner.login()`,
@@ -42,10 +41,10 @@ At the same time, we will spin-up an isolated computational resource
 with proper memory, CPU, GPU dedicated for your fine-tune job.
 
 Once fine-tuning is done, Finetuner will again push your `tuned_model` to the *Cloud Artifact Storage*
-and available for you to pull it back to your machine,
+and make it available for you to pull it back to your machine,
 that's it!
 
 On the other hand,
-if you have certain level of machine learning knowledge,
+if you have a certain level of machine learning knowledge,
 Finetuner gives you enough flexibility to adjust the training parameters.
 This will be explained in the later section.
