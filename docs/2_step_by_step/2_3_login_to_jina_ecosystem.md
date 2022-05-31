@@ -1,1 +1,1 @@
-# Login to Jina Ecosystem
+# Login to Jina ecosystem

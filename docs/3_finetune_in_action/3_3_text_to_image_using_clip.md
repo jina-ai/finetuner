@@ -1,1 +1,1 @@
-# Text to Image search using CLIP
+# Text to image search using CLIP

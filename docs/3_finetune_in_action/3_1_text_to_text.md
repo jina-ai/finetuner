@@ -1,1 +1,1 @@
-# Text-to-Text search using Bert
+# Text to text search using Bert

@@ -1,9 +1,9 @@
-# Difference between Finetuner and Other Frameworks
+# Difference between Finetuner and other frameworks
 
 There are several fancy machine learning libraries available,
 what makes Finetuner unique?
 
-## Care about the quality of Embeddings 🧬
+## Care about the quality of embeddings 🧬
 
 Finetuner is not designed to improve classification,
 sentiment analysis or object detection.

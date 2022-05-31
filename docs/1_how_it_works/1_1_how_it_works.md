@@ -1,6 +1,6 @@
-# How Finetuner Works
+# How Finetuner works
 
-## Contrastive Metric Learning 👓
+## Contrastive metric learning 👓
 
 From an algorithmic perspective,
 **Finetuner** leverages a contrastive metric learning approach to improve your model.
@@ -29,7 +29,7 @@ while pushing the `Document`s which belong to a different class away from each o
 
 
 
-## Cloud-based Fine-tuning ⛅
+## Cloud-based fine-tuning ⛅
 
 From an engineering perspective,
 we have hidden all the complexity of machine learning algorithms and resources configuration (such as GPU).

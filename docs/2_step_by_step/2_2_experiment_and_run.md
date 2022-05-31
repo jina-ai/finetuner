@@ -1,1 +1,1 @@
-# Two Basic Concepts: `Experiment` and `Run`
+# Two basic concepts: `Experiment` and `Run`
