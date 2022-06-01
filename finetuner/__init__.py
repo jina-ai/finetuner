@@ -42,6 +42,17 @@ def list_models():
     ]
 
 
+def list_callbacks():
+    """List available callbacks."""
+    return [
+        'BestModelCheckpoint',
+        'TrainingCheckpoint',
+        'EarlyStopping',
+        'WandBLogger',
+        'MLFlowLogger',
+    ]
+
+
 def create_experiment(name: Optional[str] = None) -> Experiment:
     """Create an experiment.
 
@@ -89,6 +100,7 @@ def fit(
     learning_rate: float = 0.001,
     epochs: int = 20,
     batch_size: int = 8,
+    callbacks: Optional[list] = None,
     scheduler_step: str = 'batch',
     freeze: bool = False,
     output_dim: Optional[int] = None,
@@ -114,7 +126,8 @@ def fit(
     :param learning_rate: learning rate for the optimizer.
     :param epochs: Number of epochs for fine-tuning.
     :param batch_size: Number of items to include in a batch.
-    :param scheduler_step: At which interval should the learning rate sheduler's
+    :param callbacks: List of callbacks.
+    :param scheduler_step: At which interval should the learning rate scheduler's
         step function be called. Valid options are "batch" and "epoch".
     :param freeze: If set to True, will freeze all layers except the last one.
     :param output_dim: The expected output dimension.
@@ -140,6 +153,7 @@ def fit(
         learning_rate=learning_rate,
         epochs=epochs,
         batch_size=batch_size,
+        callbacks=callbacks,
         scheduler_step=scheduler_step,
         freeze=freeze,
         output_dim=output_dim,

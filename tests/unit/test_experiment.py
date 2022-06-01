@@ -2,8 +2,10 @@ import docarray
 import pytest
 from tests.constants import HUBBLE_USER_TEST_ID
 
+from finetuner.callbacks import TrainingCheckpoint
 from finetuner.constants import (
     BATCH_SIZE,
+    CALLBACKS,
     CREATED,
     DATA,
     EPOCHS,
@@ -22,6 +24,7 @@ from finetuner.constants import (
     NAME,
     OPTIMIZER,
     OPTIMIZER_OPTIONS,
+    OPTIONS,
     OUTPUT_DIM,
     RUN_NAME,
     SCHEDULER_STEP,
@@ -108,6 +111,16 @@ def test_create_run_config():
             EPOCHS: 20,
             SCHEDULER_STEP: 'batch',
         },
+        CALLBACKS: [
+            {
+                NAME: 'TrainingCheckpoint',
+                OPTIONS: {
+                    'save_dir': 'training_chckpt',
+                    'last_k_epochs': 2,
+                    'verbose': False,
+                },
+            }
+        ],
         EXPERIMENT_NAME: 'exp name',
         RUN_NAME: 'run name',
     }
@@ -124,6 +137,7 @@ def test_create_run_config():
         learning_rate=0.001,
         epochs=20,
         batch_size=8,
+        callbacks=[TrainingCheckpoint(last_k_epochs=2, verbose=False)],
         scheduler_step='batch',
         freeze=False,
         output_dim=None,

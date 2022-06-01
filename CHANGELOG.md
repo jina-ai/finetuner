@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add default values for finetuner `HOST` and `JINA_HUBBLE_REGISTRY`. ([#410](https://github.com/jina-ai/finetuner/pull/410))
 
+- Support passing callbacks to the run configuration. ([#415](https://github.com/jina-ai/finetuner/pull/415))
 
 ### Removed
 

@@ -1,3 +1,4 @@
+from dataclasses import fields
 from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
@@ -5,6 +6,7 @@ from docarray import DocumentArray
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import (
     BATCH_SIZE,
+    CALLBACKS,
     CONFIG,
     CPU,
     CREATED_AT,
@@ -25,6 +27,7 @@ from finetuner.constants import (
     NUM_WORKERS,
     OPTIMIZER,
     OPTIMIZER_OPTIONS,
+    OPTIONS,
     OUTPUT_DIM,
     RUN_NAME,
     SCHEDULER_STEP,
@@ -195,6 +198,16 @@ class Experiment:
         :param kwargs: Optional keyword arguments for the run config.
         :return: Run parameters wrapped up as a config dict.
         """
+        callbacks = [
+            {
+                NAME: callback.__class__.__name__,
+                OPTIONS: {
+                    field.name: getattr(callback, field.name)
+                    for field in fields(callback)
+                },
+            }
+            for callback in kwargs.get(CALLBACKS, [])
+        ]
         return {
             MODEL: {
                 NAME: model,
@@ -218,6 +231,7 @@ class Experiment:
                 EPOCHS: kwargs.get(EPOCHS),
                 SCHEDULER_STEP: kwargs.get(SCHEDULER_STEP),
             },
+            CALLBACKS: callbacks,
             EXPERIMENT_NAME: experiment_name,
             RUN_NAME: run_name,
         }
