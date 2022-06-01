@@ -4,10 +4,13 @@ from finetuner.client.base import _BaseClient
 from finetuner.constants import (
     API_VERSION,
     CONFIG,
+    CPUS,
     DELETE,
     DESCRIPTION,
+    DEVICE,
     EXPERIMENTS,
     GET,
+    GPUS,
     LOGS,
     NAME,
     POST,
@@ -174,6 +177,9 @@ class FinetunerV1Client(_BaseClient):
         experiment_name: str,
         run_name: str,
         run_config: dict,
+        device: str,
+        cpus: int,
+        gpus: int,
     ) -> dict:
         """Create a run inside a given experiment.
 
@@ -181,9 +187,20 @@ class FinetunerV1Client(_BaseClient):
         :param experiment_name: The name of the experiment.
         :param run_name: The name of the run.
         :param run_config: The run configuration.
+        :param device: The device to use, either `cpu` or `gpu`.
+        :param cpus: The number of CPUs to use.
+        :param gpus: The number of GPUs to use.
         :return: Created run.
         """
         url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
         return self._handle_request(
-            url=url, method=POST, json_data={NAME: run_name, CONFIG: run_config}
+            url=url,
+            method=POST,
+            json_data={
+                NAME: run_name,
+                CONFIG: run_config,
+                DEVICE: device,
+                CPUS: cpus,
+                GPUS: gpus,
+            },
         )
