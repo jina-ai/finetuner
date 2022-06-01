@@ -219,7 +219,7 @@ class Experiment:
                 EPOCHS: kwargs.get(EPOCHS),
                 SCHEDULER_STEP: kwargs.get(SCHEDULER_STEP),
             },
-            CALLBACKS: kwargs.get(CALLBACKS),
+            CALLBACKS: kwargs.get(CALLBACKS, []),
             EXPERIMENT_NAME: experiment_name,
             RUN_NAME: run_name,
         }

@@ -28,7 +28,7 @@ from finetuner.constants import (
     STARTED,
     STATUS,
     TEXT_MODALITY,
-    TRAIN_DATA,
+    TRAIN_DATA, CALLBACKS,
 )
 from finetuner.experiment import Experiment
 
@@ -108,6 +108,7 @@ def test_create_run_config():
             EPOCHS: 20,
             SCHEDULER_STEP: 'batch',
         },
+        CALLBACKS: [],
         EXPERIMENT_NAME: 'exp name',
         RUN_NAME: 'run name',
     }
