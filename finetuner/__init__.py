@@ -1,5 +1,5 @@
 import os
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
 
 from docarray import DocumentArray
 from dotenv import load_dotenv
@@ -89,7 +89,7 @@ def fit(
     learning_rate: float = 0.001,
     epochs: int = 20,
     batch_size: int = 8,
-    callbacks: List[Dict[str, any]] = None,
+    callbacks: list = None,
     scheduler_step: str = 'batch',
     freeze: bool = False,
     output_dim: Optional[int] = None,

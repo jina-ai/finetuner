@@ -26,6 +26,7 @@ from finetuner.constants import (
     NUM_WORKERS,
     OPTIMIZER,
     OPTIMIZER_OPTIONS,
+    OPTIONS,
     OUTPUT_DIM,
     RUN_NAME,
     SCHEDULER_STEP,
@@ -196,6 +197,10 @@ class Experiment:
         :param kwargs: Optional keyword arguments for the run config.
         :return: Run parameters wrapped up as a config dict.
         """
+        callbacks = [
+            {NAME: callback.name, OPTIONS: callback.options}
+            for callback in kwargs.get(CALLBACKS, [])
+        ]
         return {
             MODEL: {
                 NAME: model,
@@ -219,7 +224,7 @@ class Experiment:
                 EPOCHS: kwargs.get(EPOCHS),
                 SCHEDULER_STEP: kwargs.get(SCHEDULER_STEP),
             },
-            CALLBACKS: kwargs.get(CALLBACKS, []),
+            CALLBACKS: callbacks,
             EXPERIMENT_NAME: experiment_name,
             RUN_NAME: run_name,
         }
