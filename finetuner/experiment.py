@@ -1,3 +1,4 @@
+from dataclasses import fields
 from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
@@ -198,7 +199,13 @@ class Experiment:
         :return: Run parameters wrapped up as a config dict.
         """
         callbacks = [
-            {NAME: callback.name, OPTIONS: callback.get_options()}
+            {
+                NAME: callback.__class__.__name__,
+                OPTIONS: {
+                    field.name: getattr(callback, field.name)
+                    for field in fields(callback)
+                },
+            }
             for callback in kwargs.get(CALLBACKS, [])
         ]
         return {
