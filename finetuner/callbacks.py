@@ -92,6 +92,7 @@ class MLFlowLogger:
         return {'experiment': self.experiment, 'tracking_uri': self.tracking_uri}
 
 
+@dataclass()
 class LoggerCallback:
     """
     :param batch_period: Log progress only at batches that are multiples of this
