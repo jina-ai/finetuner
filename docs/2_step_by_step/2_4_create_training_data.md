@@ -89,3 +89,14 @@ During fine-tuning, we're optimizing two models in parallel.
 
 At the model saving time, you will discover we are saving two models to your local directory. 
 ```
+
+If you need to evaluate metrics on a seperate evaluation data,
+you're recommended to create another `DocumentArray` as above only for evaluation purpose.
+
+```{admonition} What happened underneath?
+:class: hint
+Finetuner will push your training data and evaluation data to the cloud storage.
+During fine-tuning, your DocumentArray will be converted into Pytorch DataLoader using Distributed Data Parallel. 
+```
+
+Carry on, you're almost there!
