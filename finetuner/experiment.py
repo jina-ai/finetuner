@@ -198,7 +198,7 @@ class Experiment:
         :return: Run parameters wrapped up as a config dict.
         """
         callbacks = [
-            {NAME: callback.name, OPTIONS: callback.options}
+            {NAME: callback.name, OPTIONS: callback.get_options()}
             for callback in kwargs.get(CALLBACKS, [])
         ]
         return {

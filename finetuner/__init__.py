@@ -89,7 +89,7 @@ def fit(
     learning_rate: float = 0.001,
     epochs: int = 20,
     batch_size: int = 8,
-    callbacks: list = None,
+    callbacks: Optional[list] = None,
     scheduler_step: str = 'batch',
     freeze: bool = False,
     output_dim: Optional[int] = None,
