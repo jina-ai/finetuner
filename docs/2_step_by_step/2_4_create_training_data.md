@@ -4,16 +4,6 @@ Finetuner accept [docarray](https://docarray.jina.ai/) `DocumentArray` as traini
 Because Finetuner follows a [supervised-learning](https://en.wikipedia.org/wiki/Supervised_learning) scheme,
 you should assign label to each `Document` inside `DocumentArray` with:
 
-```python
-from docarray import Document, DocumentArray
-
-train_da = DocumentArray([
-    Document(content=..., tags={'finetuner_label': 'skirt'}),
-    Document(content=..., tags={'finetuner_label': 't-shirt'}),
-    ...,
-])
-```
-
 ````{tab} text-to-text search
 ```python
 from docarray import Document, DocumentArray
@@ -84,3 +74,18 @@ train_da = DocumentArray([
 ])
 ```
 ````
+
+As shown in the above code blocks.
+For single-modality model fine-tuning, you only need to create a `Document` with `content` and `tags` with the `finetuner_label`.
+
+For cross-modality (text-to-image) fine-tuning with CLIP,
+you should create a root `Document` which wraps two `chunks` with the `image` and `text` modality.
+The image and text form a pair.
+
+```{admonition} CLIP model explained
+:class: hint
+OpenAI CLIP model wraps two models: a vision transformer and a text transformer.
+During fine-tuning, we're optimizing two models in parallel.
+
+At the model saving time, you will discover we are saving two models to your local directory. 
+```
