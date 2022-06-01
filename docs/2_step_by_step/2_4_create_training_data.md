@@ -1,6 +1,6 @@
 # Create training and evaluation (Optional) data
 
-Finetuner accept [docarray](https://docarray.jina.ai/) `DocumentArray` as training data and evaluation data.
+Finetuner accepts [docarray](https://docarray.jina.ai/) `DocumentArray` as training data and evaluation data.
 Because Finetuner follows a [supervised-learning](https://en.wikipedia.org/wiki/Supervised_learning) scheme,
 you should assign label to each `Document` inside `DocumentArray` with:
 

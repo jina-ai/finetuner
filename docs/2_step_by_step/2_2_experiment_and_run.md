@@ -1,6 +1,6 @@
 # Two basic concepts: Experiment and Run
 
-Finetuner organize your training based on two concepts: **Experiment** and **Run**.
+Finetuner organizes your training based on two concepts: **Experiment** and **Run**.
 
 An Experiment is defined as a general purpose machine learning task you're fine-tuning for.
 A Run is a piece of code that performs the Experiment with specific configurations.
@@ -8,7 +8,7 @@ An Experiment contains a list of Runs,
 each with different configurations.
 For example:
 
-+ Experiment: Fine-tune transformer on QuoraQA dataset.
++ Experiment: Fine-tune a transformer on QuoraQA dataset.
   - Run1: Use bert-based model
   - Run2: Use setence-transformer model.
 + Experiment: Fine-tune ResNet on WILD dataset.
@@ -29,5 +29,5 @@ finetuner.fit(
 ```
 
 Please note that these two arguments are `Optional`.
-Finetuner will use the current working directory as default `experiment_name`,
+Finetuner will use the current working directory as a default `experiment_name`,
 and generate a random `run_name` for you.
