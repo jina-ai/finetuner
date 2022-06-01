@@ -4,6 +4,7 @@ from tests.constants import HUBBLE_USER_TEST_ID
 
 from finetuner.constants import (
     BATCH_SIZE,
+    CALLBACKS,
     CREATED,
     DATA,
     EPOCHS,
@@ -28,7 +29,7 @@ from finetuner.constants import (
     STARTED,
     STATUS,
     TEXT_MODALITY,
-    TRAIN_DATA, CALLBACKS,
+    TRAIN_DATA,
 )
 from finetuner.experiment import Experiment
 
