@@ -11,7 +11,8 @@ import finetuner
 finetuner.login()
 ```
 
-You should see this in your terminal:
+The browser should pop-up with login options,
+you will see this in your terminal:
 
 ```bash
 🔐 Successfully login to Jina Ecosystem!
