@@ -1,5 +1,5 @@
 import os
-from typing import List, Optional, Union, Dict
+from typing import Dict, List, Optional, Union
 
 from docarray import DocumentArray
 from dotenv import load_dotenv

@@ -5,6 +5,7 @@ from docarray import DocumentArray
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import (
     BATCH_SIZE,
+    CALLBACKS,
     CONFIG,
     CPU,
     CREATED_AT,
@@ -29,7 +30,7 @@ from finetuner.constants import (
     RUN_NAME,
     SCHEDULER_STEP,
     TEXT_MODALITY,
-    TRAIN_DATA, CALLBACKS,
+    TRAIN_DATA,
 )
 from finetuner.hubble import push_data_to_hubble
 from finetuner.names import get_random_name
