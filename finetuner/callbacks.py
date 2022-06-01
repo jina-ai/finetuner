@@ -5,6 +5,12 @@ from typing import Optional
 @dataclass
 class BestModelCheckpoint:
     """
+    Callback to save the best model across all epochs
+
+    An option this callback provides include:
+    - Definition of 'best'; which quantity to monitor and whether it should be
+        maximized or minimized.
+
     :param monitor: if `monitor='train_loss'` best model saved will be according
         to the training loss, while if `monitor='val_loss'` best model saved will be
         according to the validation loss.
@@ -26,6 +32,8 @@ class BestModelCheckpoint:
 @dataclass
 class TrainingCheckpoint:
     """
+    Callback that saves the tuner state at every epoch or the last k epochs.
+
     :param last_k_epochs: This parameter is an integer. Only the most
         recent k checkpoints will be kept. Older checkpoints are deleted.
     :param verbose: Whether to log notifications when a checkpoint is saved/deleted.
@@ -39,9 +47,16 @@ class TrainingCheckpoint:
 @dataclass
 class WandBLogger:
     """
+    `Weights & Biases <https://wandb.ai/site>`_ logger to log metrics for training and
+    validation.
+    To use this logger, make sure to have a WandB account created, install the WandB
+    client (which you can do using ``pip install wandb``) and setting the API key as
+    environmental variable.
+
     :param experiment: name of the experiment corresponding to the name of a
         weights and biases project.
     :param wandb_args: Keyword arguments that are passed to ``wandb.init`` function.
+    :param api_key: Key for wandb login.
     """
 
     experiment: str
@@ -52,6 +67,11 @@ class WandBLogger:
 @dataclass
 class MLFlowLogger:
     """
+    Callback to send data to MLFlow tracking tools. The collects parameters of the
+    tuner and metrics during finetuning and validation.
+
+    For the initialization of the MLFlowLogger, the name of the experiment it
+    belongs to and a tracking_uri must be specified.
     :param experiment: The name of the experiment of the current finetuning run.
     :param tracking_uri: URI which refers to a storage backend. This can either be
         a file url or a SQLAlchemy connection string. Detailed information about
@@ -66,6 +86,8 @@ class MLFlowLogger:
 @dataclass()
 class LoggerCallback:
     """
+    This callback logs training progress using a python logger.
+
     :param batch_period: Log progress only at batches that are multiples of this
         period.
     :param cloudwatch: Boolean value, if sync logs to aws cloud watch.
@@ -83,6 +105,10 @@ class ProgressBarCallback:
 @dataclass
 class EarlyStopping:
     """
+    Callback to stop training when a monitored metric has stopped improving.
+    A `finetuner.fit()` training loop will check at the end of every epoch whether
+    the monitored metric is still improving or not.
+
     :param monitor: if `monitor='train_loss'` best model saved will be according
         to the training loss, while if `monitor='val_loss'` best model saved will be
         according to the validation loss.
