@@ -78,7 +78,7 @@ Don't worry, call `finetuner.list_models()` and we will help you choose the best
 ```
 
 ```{toctree}
-:caption: Finetune in Action
+:caption: Finetuner in Action
 :hidden:
 
 3_finetune_in_action/index

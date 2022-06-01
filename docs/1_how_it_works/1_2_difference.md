@@ -1,13 +1,13 @@
 # Difference between Finetuner and other frameworks
 
-There are several fancy machine learning libraries available,
-what makes Finetuner unique?
+There are several fancy machine learning libraries out there,
+so what makes Finetuner unique?
 
 ## Care about the quality of embeddings
 
 Finetuner is not designed to improve classification,
 sentiment analysis or object detection.
-Finetuner cares the quality of embeddings,
+Finetuner cares the quality of the embeddings,
 and this is what the fine-tuned model will produce.
 
 Given a query `Document` embedded into `embeddings`,
@@ -16,7 +16,7 @@ you can compare the similarity/distance of the query `Document`s against all ind
 
 ## Dedicated to optimizing your search task
 
-Finetuner helps you boost your search system performance on different modalities of data:
+Finetuner helps you boost your search system performance on different uses cases:
 
 + text-to-text search (or dense vector search)
 + image-to-image search (or content-based image search)
@@ -39,7 +39,7 @@ Finetuner gives user the flexibility to choose machine learning hyper-parameters
 while all these parameters are `Optional`.
 
 If you do not have a machine learning background,
-not a problem.
-As was stated before, you only need to send us the training data organized as a [DocumentArray](https://docarray.jina.ai/).
+don't worry about it.
+As was stated before, you only need to provide the training data organized as a [DocumentArray](https://docarray.jina.ai/).
 In case you do not know which backbone to choose,
 use `list_models()` to let Finetuner suggest a backbone model for you.

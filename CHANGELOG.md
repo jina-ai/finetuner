@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add documentation structure and how it works section. ([#412](https://github.com/jina-ai/finetuner/pull/412))
+
 ### Removed
 
 ### Changed
