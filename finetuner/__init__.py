@@ -42,6 +42,17 @@ def list_models():
     ]
 
 
+def list_callbacks():
+    """List available callbacks."""
+    return [
+        'BestModelCheckpoint',
+        'TrainingCheckpoint',
+        'EarlyStopping',
+        'WandBLogger',
+        'MLFlowLogger',
+    ]
+
+
 def create_experiment(name: Optional[str] = None) -> Experiment:
     """Create an experiment.
 
