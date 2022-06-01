@@ -46,6 +46,24 @@ print(run.logs())
 run.save_model(path='.')
 ```
 
+You should see this in your terminal:
+
+```bash
+🔐 Successfully login to Jina Ecosystem!
+Run name: vigilant-tereshkova
+Run logs:
+
+  Training [2/2] ━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:00:00 0:01:08 • loss: 0.050
+[09:13:23] INFO     [__main__] Done ✨                           __main__.py:214
+           INFO     [__main__] Saving fine-tuned models ...      __main__.py:217
+           INFO     [__main__] Saving model 'model' in           __main__.py:228
+                    /usr/src/app/tuned-models/model ...                         
+           INFO     [__main__] Pushing saved model to Hubble ... __main__.py:232
+[09:13:54] INFO     [__main__] Pushed model artifact ID:         __main__.py:238
+                    '62972acb5de25a53fdbfcecc'                                  
+           INFO     [__main__] Finished 🚀                       __main__.py:240
+```
+
 Submitted fine-tuning jobs run efficiently on the Jina Cloud on either CPU or GPU enabled hardware.
 
 Finetuner fully owns the complexity of setting up and maintaining the model training infrastructure plus the complexity of delivering SOTA training
