@@ -19,3 +19,20 @@ For example:
   - Run1: Use batch size of 128 and SGD optimizer.
   - Run2: Use batch size of 256 and SGD optimizer.
   - Run3: Use batch size of 256 and Adam optimizer.
+
+When you start the fine-tuning job, you can declare the `experiment_name` and `run_name` like this:
+
+```python
+import finetuner
+
+finetuner.fit(
+  ...,
+  experiment_name='quora-qa-finetune',
+  run_name='quora-qa-finetune-bert',
+)
+```
+
+It is good that you want to property "organize" your Experiments and Runs in this way,
+while please noted that these two arguments are `Optional`.
+Finetuner will use the current working directory as default `experiment_name`,
+and generate a random `run_name` for you.
