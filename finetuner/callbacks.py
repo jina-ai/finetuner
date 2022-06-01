@@ -83,25 +83,6 @@ class MLFlowLogger:
     tracking_uri: str
 
 
-@dataclass()
-class LoggerCallback:
-    """
-    This callback logs training progress using a python logger.
-
-    :param batch_period: Log progress only at batches that are multiples of this
-        period.
-    :param cloudwatch: Boolean value, if sync logs to aws cloud watch.
-    """
-
-    batch_period: int = 100
-    cloudwatch: bool = False
-
-
-@dataclass
-class ProgressBarCallback:
-    """A progress bar callback, using the rich progress bar."""
-
-
 @dataclass
 class EarlyStopping:
     """
