@@ -29,7 +29,7 @@ from finetuner.constants import (
     RUN_NAME,
     SCHEDULER_STEP,
     TEXT_MODALITY,
-    TRAIN_DATA,
+    TRAIN_DATA, CALLBACKS,
 )
 from finetuner.hubble import push_data_to_hubble
 from finetuner.names import get_random_name
@@ -218,6 +218,7 @@ class Experiment:
                 EPOCHS: kwargs.get(EPOCHS),
                 SCHEDULER_STEP: kwargs.get(SCHEDULER_STEP),
             },
+            CALLBACKS: kwargs.get(CALLBACKS),
             EXPERIMENT_NAME: experiment_name,
             RUN_NAME: run_name,
         }
