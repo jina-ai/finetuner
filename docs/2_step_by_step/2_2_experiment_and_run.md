@@ -12,13 +12,9 @@ For example:
   - Run1: Use bert-based model
   - Run2: Use setence-transformer model.
 + Experiment: Fine-tune ResNet on WILD dataset.
-  - Run1: Use ResNet18 with learning rate 0.01.
-  - Run2: Use ResNet50 with learning rate 0.01.
-  - Run3: Use ResNet50 with learning rate 0.0001.
-+ Experiment: Fine-tune CLIP on H&M Fashion dataset.
-  - Run1: Use batch size of 128 and SGD optimizer.
-  - Run2: Use batch size of 256 and SGD optimizer.
-  - Run3: Use batch size of 256 and Adam optimizer.
+  - Run1: Use ResNet18 with learning rate 0.01 and SGD optimizer.
+  - Run2: Use ResNet50 with learning rate 0.01 and SGD optimizer.
+  - Run3: Use ResNet50 with learning rate 0.0001 and Adam optimizer.
 
 When you start the fine-tuning job, you can declare the `experiment_name` and `run_name` like this:
 
@@ -32,7 +28,6 @@ finetuner.fit(
 )
 ```
 
-It is good that you want to property "organize" your Experiments and Runs in this way,
-while please noted that these two arguments are `Optional`.
+Please note that these two arguments are `Optional`.
 Finetuner will use the current working directory as default `experiment_name`,
 and generate a random `run_name` for you.
