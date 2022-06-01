@@ -19,8 +19,14 @@ train_da = DocumentArray([
 from docarray import Document, DocumentArray
 
 train_da = DocumentArray([
-    Document(content='pencil skirt slim fit available for sell', tags={'finetuner_label': 'skirt'}),
-    Document(content='stripped over-sized shirt for sell', tags={'finetuner_label': 't-shirt'}),
+    Document(
+        content='pencil skirt slim fit available for sell',
+        tags={'finetuner_label': 'skirt'}
+    ),
+    Document(
+        content='stripped over-sized shirt for sell',
+        tags={'finetuner_label': 't-shirt'}
+    ),
     ...,
 ])
 ```
@@ -30,8 +36,14 @@ train_da = DocumentArray([
 from docarray import Document, DocumentArray
 
 train_da = DocumentArray([
-    Document(content='https://...skirt-1.png', tags={'finetuner_label': 'skirt'}),
-    Document(content='https://...t-shirt-1.png', tags={'finetuner_label': 't-shirt'}),
+    Document(
+        content='https://...skirt-1.png',
+        tags={'finetuner_label': 'skirt'},
+    ),
+    Document(
+        content='https://...t-shirt-1.png',
+        tags={'finetuner_label': 't-shirt'},
+    ),
     ...,
 ])
 ```
@@ -43,14 +55,30 @@ from docarray import Document, DocumentArray
 train_da = DocumentArray([
     Document(
         chunks=[
-            Document(content='pencil skirt slim fit available for sell', modality='text', tags={'finetuner_label': 'skirt-1'}),
-            Document(content='https://...skirt-1.png', modality='image', tags={'finetuner_label': 'skirt-1'}),
+            Document(
+                content='pencil skirt slim fit available for sell',
+                modality='text',
+                tags={'finetuner_label': 'skirt-1'}
+            ),
+            Document(
+                content='https://...skirt-1.png',
+                modality='image',
+                tags={'finetuner_label': 'skirt-1'}
+            ),
         ],
     ),
     Document(
         chunks=[
-            Document(content='stripped over-sized shirt for sell', modality='text', tags={'finetuner_label': 'shirt-1'}),
-            Document(content='https://...shirt-1.png', modality='image', tags={'finetuner_label': 'shirt-1'}),
+            Document(
+                content='stripped over-sized shirt for sell',
+                modality='text',
+                tags={'finetuner_label': 'shirt-1'}
+            ),
+            Document(
+                content='https://...shirt-1.png',
+                modality='image',
+                tags={'finetuner_label': 'shirt-1'}
+            ),
         ],
     ),
 ])
