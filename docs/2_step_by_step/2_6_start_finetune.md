@@ -68,9 +68,7 @@ run = finetuner.fit(
 ```
 
 ```{Important}
-The available options for loss, miner, optimizer and scheduler_step
-
-Please check the developer reference page to check the available options.
+Please check the developer reference to get the available options for `loss`, `miner`, `optimizer` and `scheduler_step`.
 ```
 
 ```{Important}
@@ -95,6 +93,13 @@ doc = Document(
         ),
     ]
 )
+# in this case, image_modality and text_modality should be set correspondingly
+finetuner.fit(
+    ...,
+    image_modality='image',
+    text_modality='text',
+    multi_modal=True,
+    ...,
+)
 ```
-In this case, `image_modality` and `text_modality` should be set to `image` and `text` respectively.
 ```
