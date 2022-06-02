@@ -36,5 +36,6 @@ To get a list of supported models:
 
 It should be noted that:
 
++ resnet/efficientnet models are loaded from [timm](https://github.com/rwightman/pytorch-image-models) library.
 + transformer based models are loaded from huggingface [transformers](https://github.com/huggingface/transformers) library.
 + `msmarco-distilbert-base-v3` has been fine-tuned once by [sentence-transformers](https://www.sbert.net/) on [MS MARCO](https://microsoft.github.io/msmarco/) dataset on top of Bert.
