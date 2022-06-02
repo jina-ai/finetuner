@@ -80,7 +80,7 @@ def list_models():
             'task': 'text-to-text',
             'output_dim': 768,
             'details': '''Pretrained on BookCorpus and English Wikipedia, has been
-            fine-tuned on the msmarco dataset.
+            fine-tuned on the msmarco dataset from sentence-transformers.
             ''',
         },
     ]
