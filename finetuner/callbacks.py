@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, Union
+
+from docarray import DocumentArray
 
 
 @dataclass
@@ -117,3 +119,21 @@ class EarlyStopping:
     min_delta: int = 0
     baseline: Optional[float] = None
     verbose: bool = False
+
+
+@dataclass
+class EvaluationCallback:
+    """
+    A callback that uses the Evaluator to calculate IR metrics at the end of each epoch.
+    When used with other callbacks that rely on metrics, like checkpoints and logging,
+    this callback should be defined first, so that it precedes in execution.
+
+    :param query_data: Search data used by the evaluator at the end of each epoch,
+        to evaluate the model. If `None`, evaluation data will be used as query data.
+        If evaluation data doesn't exist, training data will be chosen.
+    :param index_data: Index data or catalog used by the evaluator at the end of
+        each epoch, to evaluate the model.
+    """
+
+    query_data: Optional[Union[DocumentArray, str]] = None
+    index_data: Optional[Union[DocumentArray, str]] = None
