@@ -3,3 +3,4 @@ jina-hubble-sdk==0.5.1
 path==16.4.0
 python-dotenv==0.19.2
 requests==2.27.1
+rich==12.4.4
