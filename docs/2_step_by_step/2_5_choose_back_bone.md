@@ -10,14 +10,31 @@ Finetuner will convert these backbone models as embedding models by removing
 the *head* or apply *pooling*,
 fine-tune and produce the embedding model.
 
-The supported backbones are listed below:
+You can call:
+```python
+import finetuner
 
-| name                          | task           | output_dim | description                                                                                      |
-|-------------------------------|----------------|------------|--------------------------------------------------------------------------------------------------|
-| resnet50                      | image-to-image | 2048       | Trained on ImageNet                                                                              |
-| resnet152                     | image-to-image | 2048       | Trained on ImageNet                                                                              |
-| efficientnet-b0               | image-to-image | 1280       | Trained on ImageNet                                                                              |
-| efficientnet-b4               | image-to-image | 1280       | Trained on ImageNet                                                                              |
-| openai/clip-vit-base-patch32  | text-to-image  | 768        | Trained on image text pairs from [OpenAI](https://openai.com/blog/clip/)                         |
-| bert-base-cased  | text-to-text   | 768        | Trained on BookCorpus and English Wikipedia                                                      |
-| sentence-transformers/msmarco-distilbert-base-v3'  | text-to-text   | 768        | Trained based on Bert, fine-tuned on msmarco from [sentence-transformers](https://www.sbert.net/) |
+finetuner.list_models()
+```
+
+To get a list of supported models:
+
+```bash
+                                                                  Finetuner backbones                                                                   
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                            model ┃           task ┃ output_dim ┃ architecture ┃                                          description ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│                                         resnet50 │ image-to-image │       2048 │          CNN │                               Pretrained on ImageNet │
+│                                        resnet152 │ image-to-image │       2048 │          CNN │                               Pretrained on ImageNet │
+│                                  efficientnet_b0 │ image-to-image │       1280 │          CNN │                               Pretrained on ImageNet │
+│                                  efficientnet_b4 │ image-to-image │       1280 │          CNN │                               Pretrained on ImageNet │
+│                     openai/clip-vit-base-patch32 │  text-to-image │        768 │  transformer │ Pretrained on millions of text image pairs by OpenAI │
+│                                  bert-base-cased │   text-to-text │        768 │  transformer │       Pretrained on BookCorpus and English Wikipedia │
+│ sentence-transformers/msmarco-distilbert-base-v3 │   text-to-text │        768 │  transformer │           Pretrained on Bert, fine-tuned on MS Marco │
+└──────────────────────────────────────────────────┴────────────────┴────────────┴──────────────┴──────────────────────────────────────────────────────┘
+```
+
+It should be noted that:
+
++ transformer based models are loaded from huggingface [transformers](https://github.com/huggingface/transformers) library.
++ `msmarco-distilbert-base-v3` has been fine-tuned once by [sentence-transformers](https://www.sbert.net/) on [MS MARCO](https://microsoft.github.io/msmarco/) dataset on top of Bert.
