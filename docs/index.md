@@ -99,7 +99,7 @@ Don't worry, call `finetuner.list_models()` and we will help you choose the best
 :caption: Finetuner in Action
 :hidden:
 
-3_finetune_in_action/index
+3_finetuner_in_action/index
 ```
 
 
