@@ -67,3 +67,34 @@ run = finetuner.fit(
 )
 ```
 
+```{Important}
+The available options for loss, miner, optimizer and scheduler_step
+
+Please check the developer reference page to check the available options.
+```
+
+```{Important}
+CLIP specific parameters
+
+`multi_modal`: Need to be set to True when you are fine-tuning CLIP since we are fine-tuning two models.
+`image_modality` and `text_modality`: Need to be set to the corresponded value of the `modality` when you are creating training data.
+
+For example:
+```python
+doc = Document(
+    chunks=[
+        Document(
+            content='this is the text chunk',
+            modality='text',
+            tags={'finetuner_label': 1}
+        ),
+        Document(
+            content='https://...picture.png',
+            modality='image',
+            tags={'finetuner_label': 1}
+        ),
+    ]
+)
+```
+In this case, `image_modality` and `text_modality` should be set to `image` and `text` respectively.
+```
