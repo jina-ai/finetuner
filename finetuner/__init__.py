@@ -3,6 +3,8 @@ from typing import List, Optional, Union
 
 from docarray import DocumentArray
 from dotenv import load_dotenv
+from rich.console import Console
+from rich.table import Table
 
 from finetuner.constants import (
     DEFAULT_FINETUNER_HOST,
@@ -33,57 +35,38 @@ def login():
 
 def list_models():
     """List available models for training."""
-    return [
-        {
-            'model': 'resnet50',
-            'task': 'image-to-image',
-            'output_dim': 2048,
-            'details': 'Pretrained on ImageNet dataset.',
-        },
-        {
-            'model': 'resnet152',
-            'task': 'image-to-image',
-            'output_dim': 2048,
-            'details': 'Pretrained on ImageNet dataset.',
-        },
-        {
-            'model': 'efficientnet_b0',
-            'task': 'image-to-image',
-            'output_dim': 1280,
-            'details': 'Pretrained on ImageNet dataset.',
-        },
-        {
-            'model': 'efficientnet_b0',
-            'task': 'image-to-image',
-            'output_dim': 1280,
-            'details': 'Pretrained on ImageNet dataset.',
-        },
-        {
-            'model': 'openai/clip-vit-base-patch32',
-            'task': 'text-to-image',
-            'output_dim': 768,
-            'details': '''Pretrained on millions of text image pairs by OpenAI,
-             It should be noted that fine-tuning CLIP will produce 2 models,
-             a text encoder and an image encoder. Given a text query, you should use
-             text encoder to extract textual features, and pre-compute (offline)
-             visual features using the image encoder.
-            ''',
-        },
-        {
-            'model': 'bert-base-cased',
-            'task': 'text-to-text',
-            'output_dim': 768,
-            'details': 'Pretrained on BookCorpus and English Wikipedia.',
-        },
-        {
-            'model': 'sentence-transformers/msmarco-distilbert-base-v3',
-            'task': 'text-to-text',
-            'output_dim': 768,
-            'details': '''Pretrained on BookCorpus and English Wikipedia, has been
-            fine-tuned on the msmarco dataset from sentence-transformers.
-            ''',
-        },
-    ]
+    table = Table(title='Finetuner backbones')
+
+    table.add_column('model', justify='right', style='cyan', no_wrap=True)
+    table.add_column('task', justify='right', style='cyan', no_wrap=True)
+    table.add_column('output_dim', justify='right', style='cyan', no_wrap=True)
+    table.add_column('description', justify='right', style='cyan', no_wrap=False)
+
+    table.add_row('resnet50', 'image-to-image', '2048', 'Pretrained on ImageNet')
+    table.add_row('resnet152', 'image-to-image', '2048', 'Pretrained on ImageNet')
+    table.add_row('efficientnet_b0', 'image-to-image', '1280', 'Pretrained on ImageNet')
+    table.add_row('efficientnet_b4', 'image-to-image', '1280', 'Pretrained on ImageNet')
+    table.add_row(
+        'openai/clip-vit-base-patch32',
+        'text-to-image',
+        '768',
+        'Pretrained on millions of text image pairs by OpenAI',
+    )
+    table.add_row(
+        'bert-base-cased',
+        'text-to-text',
+        '768',
+        'Pretrained on BookCorpus and English Wikipedia',
+    )
+    table.add_row(
+        'sentence-transformers/msmarco-distilbert-base-v3',
+        'text-to-text',
+        '768',
+        'Pretrained on BookCorpus and English Wikipedia, fine-tuned on MS Marco',
+    )
+
+    console = Console()
+    console.print(table)
 
 
 def list_callbacks():
