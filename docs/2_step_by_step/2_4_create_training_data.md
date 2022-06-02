@@ -92,12 +92,6 @@ At the model saving time, you will discover, we are saving two models to your lo
 ```
 
 If you need to evaluate metrics on seperate evaluation data,
-you're recommended to create another `DocumentArray` as above only for evaluation purpose.
-
-```{admonition} What happened underneath?
-:class: hint
-Finetuner will push your training data and evaluation data to the cloud storage.
-During fine-tuning, your `DocumentArray` will be converted into Pytorch DataLoader using Distributed Data Parallel. 
-```
+It is recommended to create another `DocumentArray` as above only for evaluation purpose.
 
 Carry on, you're almost there!
