@@ -35,30 +35,53 @@ def list_models():
     """List available models for training."""
     return [
         {
-            'resnet50': '''This model was pre-trained on ImageNet dataset, it is recommended to use the model when you want to fine-tune your model on image-to-image search task. The output feature vector dimensionality is 2048.'''
+            'model': 'resnet50',
+            'task': 'image-to-image',
+            'output_dim': 2048,
+            'details': 'Pretrained on ImageNet dataset.',
         },
         {
-            'resnet152': '''This model was pre-trained on ImageNet dataset, it is recommended to use the model when you want to fine-tune your model on image-to-image search task. The output feature vector dimensionality is 2048.'''
+            'model': 'resnet152',
+            'task': 'image-to-image',
+            'output_dim': 2048,
+            'details': 'Pretrained on ImageNet dataset.',
         },
         {
-            'efficientnet_b0': '''This model was pre-trained on ImageNet dataset, it is recommended to use the model when you want to fine-tune your model on image-to-image search task. The output feature vector dimensionality is 1280. Compared with ResNet, efficientnet is smaller and faster to train and inference.
-            '''
+            'model': 'efficientnet_b0',
+            'task': 'image-to-image',
+            'output_dim': 1280,
+            'details': 'Pretrained on ImageNet dataset.',
         },
         {
-            'efficientnet_b4': '''This model was pre-trained on ImageNet dataset, it is recommended to use the model when you want to fine-tune your model on image-to-image search task. The output feature vector dimensionality is 1792. Compared with ResNet, efficientnet is smaller and faster to train and inference.
-            '''
+            'model': 'efficientnet_b0',
+            'task': 'image-to-image',
+            'output_dim': 1280,
+            'details': 'Pretrained on ImageNet dataset.',
         },
         {
-            'openai/clip-vit-base-patch32': '''This model was pre-trained on millions of text image pairs by OpenAI, it is recommended to use the model when you want to fine-tune your model on text-to-image search task. In this case, you directly search image with text with no annotations. The output feature vector dimensionality is 768. It should be noted that fine-tuning CLIP will produce 2 models, a text encoder and an image encoder. Given a text query, you should use text encoder to extract textual features, and pre-compute (offline) visual features using the image encoder.
-            '''
+            'model': 'openai/clip-vit-base-patch32',
+            'task': 'text-to-image',
+            'output_dim': 768,
+            'details': '''Pretrained on millions of text image pairs by OpenAI,
+             It should be noted that fine-tuning CLIP will produce 2 models,
+             a text encoder and an image encoder. Given a text query, you should use
+             text encoder to extract textual features, and pre-compute (offline)
+             visual features using the image encoder.
+            ''',
         },
         {
-            'bert-base-cased': '''This model was pre-trained on BookCorpus and English Wikipedia, it is recommended to use the model when you want to fine-tune your model on text-to-text search task. It is commonly named as dense retrieval. The output feature vector dimensionality is 768.
-            '''
+            'model': 'bert-base-cased',
+            'task': 'text-to-text',
+            'output_dim': 768,
+            'details': 'Pretrained on BookCorpus and English Wikipedia.',
         },
         {
-            'sentence-transformers/msmarco-distilbert-base-v3': '''This model was pre-trained on BookCorpus and English Wikipedia, it is recommended to use the model when you want to fine-tune your model on text-to-text search task. It is commonly named as dense retrieval. The output feature vector dimensionality is 768. Compared with Bert-base-cased, this model has been fine-tuned on the msmarco dataset.
-            '''
+            'model': 'sentence-transformers/msmarco-distilbert-base-v3',
+            'task': 'text-to-text',
+            'output_dim': 768,
+            'details': '''Pretrained on BookCorpus and English Wikipedia, has been
+            fine-tuned on the msmarco dataset.
+            ''',
         },
     ]
 
