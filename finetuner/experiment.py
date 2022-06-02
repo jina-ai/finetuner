@@ -213,16 +213,13 @@ class Experiment:
         )
         eval_data_name = None
         if eval_data:
-            if eval_data == train_data:
-                eval_data_name = train_data_name
-            else:
-                eval_data_name = push_data_to_hubble(
-                    client=self._client,
-                    data=eval_data,
-                    data_type=EVAL_DATA,
-                    experiment_name=self._name,
-                    run_name=run_name,
-                )
+            eval_data_name = push_data_to_hubble(
+                client=self._client,
+                data=eval_data,
+                data_type=EVAL_DATA,
+                experiment_name=self._name,
+                run_name=run_name,
+            )
         if eval_callback:
             if not eval_callback.query_data:
                 eval_callback.query_data = (
