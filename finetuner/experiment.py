@@ -19,6 +19,7 @@ from finetuner.constants import (
     FREEZE,
     HYPER_PARAMETERS,
     IMAGE_MODALITY,
+    INDEX_DATA,
     LEARNING_RATE,
     LOSS,
     MINER,
@@ -30,12 +31,11 @@ from finetuner.constants import (
     OPTIMIZER_OPTIONS,
     OPTIONS,
     OUTPUT_DIM,
+    QUERY_DATA,
     RUN_NAME,
     SCHEDULER_STEP,
     TEXT_MODALITY,
     TRAIN_DATA,
-    QUERY_DATA,
-    INDEX_DATA,
 )
 from finetuner.hubble import push_data_to_hubble
 from finetuner.names import get_random_name
