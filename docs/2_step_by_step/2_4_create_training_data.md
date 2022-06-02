@@ -1,8 +1,8 @@
 # Create training and evaluation (Optional) data
 
-Finetuner accepts [docarray](https://docarray.jina.ai/) `DocumentArray` as training data and evaluation data.
+Finetuner accepts training data and evaluation data in the form of [docarray](https://docarray.jina.ai/) `DocumentArray` objects.
 Because Finetuner follows a [supervised-learning](https://en.wikipedia.org/wiki/Supervised_learning) scheme,
-you should assign label to each `Document` inside `DocumentArray` with:
+you should assign a label to each `Document` inside your `DocumentArray` as follows:
 
 ````{tab} text-to-text search
 ```python
@@ -75,8 +75,9 @@ train_da = DocumentArray([
 ```
 ````
 
-As shown in the above code blocks.
-For single-modality model fine-tuning, you only need to create a `Document` with `content` and `tags` with the `finetuner_label`.
+As was shown in the above code blocks,
+when fine-tuning a model with a single modality (e.g. image),
+you only need to create a `Document` with `content` and `tags` with the `finetuner_label`.
 
 For cross-modality (text-to-image) fine-tuning with CLIP,
 you should create a root `Document` which wraps two `chunks` with the `image` and `text` modality.
@@ -87,16 +88,16 @@ The image and text form a pair.
 OpenAI CLIP model wraps two models: a vision transformer and a text transformer.
 During fine-tuning, we're optimizing two models in parallel.
 
-At the model saving time, you will discover we are saving two models to your local directory. 
+At the model saving time, you will discover, we are saving two models to your local directory. 
 ```
 
-If you need to evaluate metrics on a seperate evaluation data,
+If you need to evaluate metrics on seperate evaluation data,
 you're recommended to create another `DocumentArray` as above only for evaluation purpose.
 
 ```{admonition} What happened underneath?
 :class: hint
 Finetuner will push your training data and evaluation data to the cloud storage.
-During fine-tuning, your DocumentArray will be converted into Pytorch DataLoader using Distributed Data Parallel. 
+During fine-tuning, your `DocumentArray` will be converted into Pytorch DataLoader using Distributed Data Parallel. 
 ```
 
 Carry on, you're almost there!
