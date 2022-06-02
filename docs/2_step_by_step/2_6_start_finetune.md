@@ -10,10 +10,60 @@ import finetuner
 from docarray import DocumentArray
 
 train_data = DocumentArray(...)
-model = 'efficientnet_b0'
 
 run = finetuner.fit(
-    model=model,
+    model='efficientnet_b0',
     train_data=train_data
 )
+print(f'Run name: {run.name}')
+print(f'Run status: {run.status}')
 ```
+
+You'll see this in the terminal:
+
+```bash
+Run name: vigilant-tereshkova
+Run status: Created
+```
+
+During fine-tuning,
+the run status changes from:
+1. Created: the Run has been created and submitted to the job queue.
+2. Started: the job is in progress
+3. Finished: the job finished successfully, model has been sent to cloud storage.
+4. Failed: the job failed, please check the logs for more details.
+
+Beyond the simplist use case,
+Finetuner gives you the flexibility to set hyper-parameters by yourself:
+
+```python
+import finetuner
+from docarray import DocumentArray
+
+train_data = DocumentArray(...)
+eval_data = DocumentArray(...)
+
+run = finetuner.fit(
+    model='efficientnet_b0',
+    train_data=train_data,
+    eval_data=eval_data, 
+    run_name='finetune-flickr-dataset-efficientnet-1',
+    description='this is a trial run on flickr8k dataset with efficientnet b0.',
+    experiment_name='finetune-flickr-dataset',
+    loss='TripletMarginLoss',
+    miner='TripletMarginMiner',
+    optimizer='Adam',
+    learning_rate = 1e-4,
+    epochs=10,
+    batch_size=128,
+    scheduler_step='batch',
+    freeze=False, # If applied will freeze the embedding model, only train the MLP.
+    output_dim=512, # Attach a MLP on top of embedding model.
+    multi_modal=True, # CLIP specific.
+    image_modality='image', # CLIP specific.
+    text_modality='text', # CLIP specific.
+    cpu=False,
+    num_workers=4,
+)
+```
+

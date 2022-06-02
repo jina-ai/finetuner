@@ -3,12 +3,11 @@
 Finetuner prepared several most widely used backbones for you,
 including `resnet`, `efficientnet`, `clip` and `bert` etc.
 
-These models has been tested inside Finetuner for tasks such as
-image-to-image search, text-to-text search and cross-modal search.
-
 Finetuner will convert these backbone models as embedding models by removing
 the *head* or apply *pooling*,
 fine-tune and produce the embedding model.
+The embedding model will be fine-tuned for text-to-text, image-to-image and text-to-image
+search tasks.
 
 You can call:
 ```python
