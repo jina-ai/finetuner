@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add documentation structure and how it works section. ([#412](https://github.com/jina-ai/finetuner/pull/412))
 
+- Add documentation step by step from install to create training data. ([#416](https://github.com/jina-ai/finetuner/pull/416))
+
 - Expose arguments `cpu` and `num_workers` in `finetuner.fit`. ([#411](https://github.com/jina-ai/finetuner/pull/411))
 
 - Add default values for finetuner `HOST` and `JINA_HUBBLE_REGISTRY`. ([#410](https://github.com/jina-ai/finetuner/pull/410))
