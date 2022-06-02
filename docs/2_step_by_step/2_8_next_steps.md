@@ -19,4 +19,3 @@ Load tuned model inside a Jina Executor.
 Finetune CLIP and use tuned model in Clip-as-Service.
 
 ::::
-::::
