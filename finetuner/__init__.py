@@ -40,29 +40,39 @@ def list_models():
     table.add_column('model', justify='right', style='cyan', no_wrap=True)
     table.add_column('task', justify='right', style='cyan', no_wrap=True)
     table.add_column('output_dim', justify='right', style='cyan', no_wrap=True)
+    table.add_column('architecture', justify='right', style='cyan', no_wrap=True)
     table.add_column('description', justify='right', style='cyan', no_wrap=False)
 
-    table.add_row('resnet50', 'image-to-image', '2048', 'Pretrained on ImageNet')
-    table.add_row('resnet152', 'image-to-image', '2048', 'Pretrained on ImageNet')
-    table.add_row('efficientnet_b0', 'image-to-image', '1280', 'Pretrained on ImageNet')
-    table.add_row('efficientnet_b4', 'image-to-image', '1280', 'Pretrained on ImageNet')
+    table.add_row('resnet50', 'image-to-image', '2048', 'CNN', 'Pretrained on ImageNet')
+    table.add_row(
+        'resnet152', 'image-to-image', '2048', 'CNN', 'Pretrained on ImageNet'
+    )
+    table.add_row(
+        'efficientnet_b0', 'image-to-image', '1280', 'CNN', 'Pretrained on ImageNet'
+    )
+    table.add_row(
+        'efficientnet_b4', 'image-to-image', '1280', 'CNN', 'Pretrained on ImageNet'
+    )
     table.add_row(
         'openai/clip-vit-base-patch32',
         'text-to-image',
         '768',
-        'Pretrained on millions of text image pairs by OpenAI',
+        'transformer',
+        'Pretrained on text image pairs by OpenAI',
     )
     table.add_row(
         'bert-base-cased',
         'text-to-text',
         '768',
+        'transformer',
         'Pretrained on BookCorpus and English Wikipedia',
     )
     table.add_row(
         'sentence-transformers/msmarco-distilbert-base-v3',
         'text-to-text',
         '768',
-        'Pretrained on BookCorpus and English Wikipedia, fine-tuned on MS Marco',
+        'transformer',
+        'Pretrained on Bert, fine-tuned on MS Marco',
     )
 
     console = Console()
