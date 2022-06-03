@@ -45,3 +45,18 @@ Run logs:
 [09:13:54] INFO     [__main__] Pushed model artifact ID:         __main__.py:238
                     '62972acb5de25a53fdbfcecc'                                  
            INFO     [__main__] Finished 🚀                       __main__.py:240```
+```
+
+If you need to reconnect to an old Experiment or Run,
+consider use:
+
+```python
+import finetuner
+
+# connect to an experiment.
+experiment = finetuner.get_experiment('finetune-flickr-dataset')
+# connect to a run.
+run = experiment.get_run('finetune-flickr-dataset-efficientnet-1')
+```
+
+You can check the developer reference on the built-in `Experiment` and `Run` classes.
