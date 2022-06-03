@@ -1,10 +1,10 @@
 # Two basic concepts: Experiment and Run
 
-Finetuner organizes your training based on two concepts: **Experiment** and **Run**.
+Finetuner organizes your training based on two concepts: `Experiment` and `Run`.
 
-An Experiment defines the machine learning task you're fine-tuning for.
-A Run is a piece of code that performs the Experiment with specific configurations.
-An Experiment contains a list of Runs,
+An `Experiment` defines the machine learning task you're fine-tuning for.
+A `Run` is a piece of code that performs the `Experiment` with specific configurations.
+An `Experiment` contains a list of `Run`s,
 each with different configurations.
 For example:
 

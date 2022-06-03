@@ -22,5 +22,5 @@ After login you will see this in your terminal:
 Login is required since Finetuner needs to push your `DocumentArray` into the cloud as training data.
 Once you have successfully logged in, your training data will be linked to your personal user profile and will only be visible to you.
 
-Once fine-tuning is ready, the fine-tuned model will be visible only to you in cloud.
+Once fine-tuning is completed, the fine-tuned model will be visible only to you in the cloud.
 ```
