@@ -1,7 +1,7 @@
 # Choose a backbone model
 
 Finetuner provides several widely used backbone models,
-including `resnet`, `efficientnet`, `clip` and `bert` etc.
+including `resnet`, `efficientnet`, `clip` and `bert`.
 
 Finetuner will convert these backbone models to embedding models by removing
 the *head* or applying *pooling*,
