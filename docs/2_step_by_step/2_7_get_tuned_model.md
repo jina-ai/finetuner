@@ -47,7 +47,7 @@ Run logs:
            INFO     [__main__] Finished 🚀                       __main__.py:240```
 ```
 
-If you need to reconnect to an old Experiment or Run,
+If you need to reconnect to an old `Experiment` or `Run`,
 consider use:
 
 ```python

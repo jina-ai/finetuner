@@ -28,7 +28,7 @@ Run status: CREATED
 
 During fine-tuning,
 the run status changes from:
-1. CREATED: the Run has been created and submitted to the job queue.
+1. CREATED: the `Run` has been created and submitted to the job queue.
 2. STARTED: the job is in progress
 3. FINISHED: the job finished successfully, model has been sent to cloud storage.
 4. FAILED: the job failed, please check the logs for more details.
