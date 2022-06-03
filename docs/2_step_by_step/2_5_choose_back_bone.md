@@ -1,12 +1,12 @@
 # Choose a backbone model
 
-Finetuner prepared several most widely used backbones for you,
+Finetuner provides several widely used backbone models,
 including `resnet`, `efficientnet`, `clip` and `bert` etc.
 
-Finetuner will convert these backbone models as embedding models by removing
-the *head* or apply *pooling*,
-fine-tune and produce the embedding model.
-The embedding model will be fine-tuned for text-to-text, image-to-image and text-to-image
+Finetuner will convert these backbone models to embedding models by removing
+the *head* or applying *pooling*,
+fine-tuning and producing the final embedding model.
+The embedding model can be fine-tuned for text-to-text, image-to-image or text-to-image
 search tasks.
 
 You can call:

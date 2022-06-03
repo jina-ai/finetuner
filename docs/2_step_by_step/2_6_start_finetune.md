@@ -1,7 +1,7 @@
 # Start fine-tuning
 
-Now you should have your training data and evaluation data (optional) prepared as `DocumentArray`,
-and have decided your backbone model.
+Now you should have your training data and evaluation data (optional) prepared as `DocumentArray`s,
+and have selected your backbone model.
 
 To start fine-tuning, you can call:
 
@@ -16,25 +16,25 @@ run = finetuner.fit(
     train_data=train_data
 )
 print(f'Run name: {run.name}')
-print(f'Run status: {run.status}')
+print(f'Run status: {run.status()}')
 ```
 
 You'll see this in the terminal:
 
 ```bash
 Run name: vigilant-tereshkova
-Run status: Created
+Run status: CREATED
 ```
 
 During fine-tuning,
 the run status changes from:
-1. Created: the Run has been created and submitted to the job queue.
-2. Started: the job is in progress
-3. Finished: the job finished successfully, model has been sent to cloud storage.
-4. Failed: the job failed, please check the logs for more details.
+1. CREATED: the Run has been created and submitted to the job queue.
+2. STARTED: the job is in progress
+3. FINISHED: the job finished successfully, model has been sent to cloud storage.
+4. FAILED: the job failed, please check the logs for more details.
 
-Beyond the simplist use case,
-Finetuner gives you the flexibility to set hyper-parameters by yourself:
+Beyond the simplest use case,
+Finetuner gives you the flexibility to set hyper-parameters explicitly:
 
 ```python
 import finetuner
@@ -43,13 +43,16 @@ from docarray import DocumentArray
 train_data = DocumentArray(...)
 eval_data = DocumentArray(...)
 
+# Create an experiment
+finetuner.create_experiment(name='finetune-flickr-dataset')
+
 run = finetuner.fit(
     model='efficientnet_b0',
     train_data=train_data,
     eval_data=eval_data, 
     run_name='finetune-flickr-dataset-efficientnet-1',
     description='this is a trial run on flickr8k dataset with efficientnet b0.',
-    experiment_name='finetune-flickr-dataset',
+    experiment_name='finetune-flickr-dataset', # link to the experiment created above.
     loss='TripletMarginLoss',
     miner='TripletMarginMiner',
     optimizer='Adam',
@@ -59,9 +62,9 @@ run = finetuner.fit(
     scheduler_step='batch',
     freeze=False, # If applied will freeze the embedding model, only train the MLP.
     output_dim=512, # Attach a MLP on top of embedding model.
-    multi_modal=True, # CLIP specific.
-    image_modality='image', # CLIP specific.
-    text_modality='text', # CLIP specific.
+    multi_modal=False, # CLIP specific.
+    image_modality=None, # CLIP specific.
+    text_modality=None, # CLIP specific.
     cpu=False,
     num_workers=4,
 )

@@ -2,10 +2,10 @@
 
 Perfect!
 Now you have started the fine-tuning job in the cloud.
-However, fine-tuning take times,
+However, fine-tuning takes time,
 it highly depends on the size of your training data, evaluation data and other hyper-parameters.
 
-Once fine-tuning is ready,
+Once fine-tuning is completed,
 you can get the tuned model with:
 
 ```python
@@ -22,7 +22,7 @@ run = finetuner.fit(
 )
 
 # get the training status and logs
-print(f'Run status: {run.status}')
+print(f'Run status: {run.status()}')
 print(f'Run logs: {run.logs()}')
 # save the model into your local directory
 run.save_model('.')
@@ -33,7 +33,7 @@ you can see this in the terminal:
 
 ```bash
 🔐 Successfully login to Jina Ecosystem!
-Run status: Finished
+Run status: FINISHED
 Run logs:
 
   Training [2/2] ━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:00:00 0:01:08 • loss: 0.050
