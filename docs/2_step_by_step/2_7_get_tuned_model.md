@@ -10,21 +10,16 @@ you can get the tuned model with:
 
 ```python
 import finetuner
-from docarray import DocumentArray
 
 finetuner.login()
 
-train_data = DocumentArray(...)
-
-run = finetuner.fit(
-    model='efficientnet_b0',
-    train_data=train_data,
-)
-
-# get the training status and logs
+# connect to the experiment we created previously.
+experiment = finetuner.get_experiment('finetune-flickr-dataset')
+# connect to the run we created previously.
+run = experiment.get_run('finetune-flickr-dataset-efficientnet-1')
 print(f'Run status: {run.status()}')
 print(f'Run logs: {run.logs()}')
-# save the model into your local directory
+# save the model.
 run.save_model('.')
 ```
 
@@ -46,17 +41,3 @@ Run logs:
                     '62972acb5de25a53fdbfcecc'                                  
            INFO     [__main__] Finished 🚀                       __main__.py:240```
 ```
-
-If you need to reconnect to an old `Experiment` or `Run`,
-consider use:
-
-```python
-import finetuner
-
-# connect to an experiment.
-experiment = finetuner.get_experiment('finetune-flickr-dataset')
-# connect to a run.
-run = experiment.get_run('finetune-flickr-dataset-efficientnet-1')
-```
-
-You can check the developer reference on the built-in `Experiment` and `Run` classes.
