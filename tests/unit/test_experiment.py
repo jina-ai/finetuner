@@ -1,12 +1,12 @@
 import docarray
 import pytest
-from tests.constants import HUBBLE_USER_TEST_ID
 
 from finetuner.callbacks import TrainingCheckpoint
 from finetuner.constants import (
     BATCH_SIZE,
     CALLBACKS,
     CREATED,
+    DA_PREFIX,
     DATA,
     EPOCHS,
     EVAL_DATA,
@@ -31,7 +31,7 @@ from finetuner.constants import (
     STARTED,
     STATUS,
     TEXT_MODALITY,
-    TRAIN_DATA, DA_PREFIX,
+    TRAIN_DATA,
 )
 from finetuner.experiment import Experiment
 

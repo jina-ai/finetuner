@@ -3,8 +3,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from docarray import DocumentArray
 
-from finetuner.client import FinetunerV1Client
-from finetuner.constants import FINETUNED_MODELS_DIR, MODEL_IDS, DA_PREFIX
+from finetuner.constants import DA_PREFIX, FINETUNED_MODELS_DIR, MODEL_IDS
 
 
 def push_data(
