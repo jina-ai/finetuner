@@ -120,6 +120,79 @@ class Experiment:
         """Delete every run inside the experiment."""
         self._client.delete_runs(experiment_name=self._name)
 
+    def _prepare_data(
+        self,
+        train_data: Union[DocumentArray, str],
+        run_name: str,
+        eval_data: Optional[Union[DocumentArray, str]] = None,
+        eval_callback: Optional[EvaluationCallback] = None,
+    ):
+        """Upload data to Hubble and returns their names.
+
+        Uploads all data needed for fine-tuning - training data,
+        evaluation data and query/index data for `EvaluationCallback`.
+
+        Checks not to upload same dataset twice.
+
+        :param train_data: Either a `DocumentArray` for training data or a
+            name of the `DocumentArray` that is pushed on Hubble.
+        :param run_name: Name of the run.
+        :param train_data: Either a `DocumentArray` for evaluation data or a
+            name of the `DocumentArray` that is pushed on Hubble.
+        :param eval_callback: Evaluation callback that contains query and index data
+            and gets modified in-place.
+        :return: Name(s) of the uploaded data.
+        """
+        train_data_name = push_data_to_hubble(
+            client=self._client,
+            data=train_data,
+            data_type=TRAIN_DATA,
+            experiment_name=self._name,
+            run_name=run_name,
+        )
+        eval_data_name = None
+        if eval_data:
+            eval_data_name = push_data_to_hubble(
+                client=self._client,
+                data=eval_data,
+                data_type=EVAL_DATA,
+                experiment_name=self._name,
+                run_name=run_name,
+            )
+        if eval_callback:
+            if not eval_callback.query_data:
+                eval_callback.query_data = (
+                    eval_data_name if eval_data_name else train_data_name
+                )
+            elif eval_callback.query_data == train_data:
+                eval_callback.query_data = train_data_name
+            elif eval_callback.query_data == eval_data:
+                eval_callback.query_data = eval_data_name
+            else:
+                eval_callback.query_data = push_data_to_hubble(
+                    client=self._client,
+                    data=eval_callback.query_data,
+                    data_type=QUERY_DATA,
+                    experiment_name=self._name,
+                    run_name=run_name,
+                )
+
+            if not eval_callback.index_data:
+                eval_callback.index_data = None
+            elif eval_callback.index_data == train_data:
+                eval_callback.index_data = train_data_name
+            elif eval_callback.index_data == eval_data:
+                eval_callback.index_data = eval_data_name
+            else:
+                eval_callback.index_data = push_data_to_hubble(
+                    client=self._client,
+                    data=eval_callback.index_data,
+                    data_type=INDEX_DATA,
+                    experiment_name=self._name,
+                    run_name=run_name,
+                )
+        return train_data_name, eval_data_name
+
     def create_run(
         self,
         model: str,
@@ -180,79 +253,6 @@ class Experiment:
             description=run_info[DESCRIPTION],
         )
         return run
-
-    def _prepare_data(
-        self,
-        train_data: Union[DocumentArray, str],
-        eval_data: Union[DocumentArray, str],
-        eval_callback: EvaluationCallback,
-        run_name: str,
-    ):
-        """Upload data to Hubble and returns their names.
-
-        Uploads all data needed for fine-tuning - training data,
-        evaluation data and query/index data for `EvaluationCallback`.
-
-        Checks not to upload same dataset twice.
-
-        :param train_data: Either a `DocumentArray` for training data or a
-            name of the `DocumentArray` that is pushed on Hubble.
-        :param train_data: Either a `DocumentArray` for evaluation data or a
-            name of the `DocumentArray` that is pushed on Hubble.
-        :param eval_callback: Evaluation callback that contains query and index data
-            and gets modified in-place.
-        :param run_name: Name of the run.
-        :return: Name(s) of the uploaded data.
-        """
-        train_data_name = push_data_to_hubble(
-            client=self._client,
-            data=train_data,
-            data_type=TRAIN_DATA,
-            experiment_name=self._name,
-            run_name=run_name,
-        )
-        eval_data_name = None
-        if eval_data:
-            eval_data_name = push_data_to_hubble(
-                client=self._client,
-                data=eval_data,
-                data_type=EVAL_DATA,
-                experiment_name=self._name,
-                run_name=run_name,
-            )
-        if eval_callback:
-            if not eval_callback.query_data:
-                eval_callback.query_data = (
-                    eval_data_name if eval_data_name else train_data_name
-                )
-            elif eval_callback.query_data == train_data:
-                eval_callback.query_data = train_data_name
-            elif eval_callback.query_data == eval_data:
-                eval_callback.query_data = eval_data_name
-            else:
-                eval_callback.query_data = push_data_to_hubble(
-                    client=self._client,
-                    data=eval_callback.query_data,
-                    data_type=QUERY_DATA,
-                    experiment_name=self._name,
-                    run_name=run_name,
-                )
-
-            if not eval_callback.index_data:
-                eval_callback.index_data = None
-            elif eval_callback.index_data == train_data:
-                eval_callback.index_data = train_data_name
-            elif eval_callback.index_data == eval_data:
-                eval_callback.index_data = eval_data_name
-            else:
-                eval_callback.index_data = push_data_to_hubble(
-                    client=self._client,
-                    data=eval_callback.index_data,
-                    data_type=INDEX_DATA,
-                    experiment_name=self._name,
-                    run_name=run_name,
-                )
-        return train_data_name, eval_data_name
 
     @staticmethod
     def _create_config_for_run(
