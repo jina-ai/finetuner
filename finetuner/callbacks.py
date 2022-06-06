@@ -129,7 +129,7 @@ class EvaluationCallback:
     this callback should be defined first, so that it precedes in execution.
 
     :param query_data: Search data used by the evaluator at the end of each epoch,
-        to evaluate the model. If `None`, evaluation data will be used as query data.
+        to evaluate the model.
     :param index_data: Index data or catalog used by the evaluator at the end of
         each epoch, to evaluate the model.
     :param batch_size: Batch size for computing embeddings.
