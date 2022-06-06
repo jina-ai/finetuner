@@ -254,4 +254,3 @@ def delete_experiment(name: str):
 def delete_experiments():
     """Delete every experiment."""
     ft.delete_experiments()
-
