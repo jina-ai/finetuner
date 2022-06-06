@@ -160,11 +160,7 @@ class Experiment:
                 run_name=run_name,
             )
         if eval_callback:
-            if not eval_callback.query_data:
-                eval_callback.query_data = (
-                    eval_data_name if eval_data_name else train_data_name
-                )
-            elif eval_callback.query_data == train_data:
+            if eval_callback.query_data == train_data:
                 eval_callback.query_data = train_data_name
             elif eval_callback.query_data == eval_data:
                 eval_callback.query_data = eval_data_name
@@ -178,7 +174,7 @@ class Experiment:
                 )
 
             if not eval_callback.index_data:
-                eval_callback.index_data = None
+                pass
             elif eval_callback.index_data == train_data:
                 eval_callback.index_data = train_data_name
             elif eval_callback.index_data == eval_data:

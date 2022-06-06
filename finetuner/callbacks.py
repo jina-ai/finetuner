@@ -143,7 +143,7 @@ class EvaluationCallback:
         ``'sqeuclidean'``.
     """
 
-    query_data: Optional[Union[DocumentArray, str]] = None
+    query_data: Union[DocumentArray, str]
     index_data: Optional[Union[DocumentArray, str]] = None
     batch_size: Optional[int] = 8
     metrics: Optional[List[str]] = None
