@@ -145,7 +145,7 @@ class EvaluationCallback:
 
     query_data: Union[DocumentArray, str]
     index_data: Optional[Union[DocumentArray, str]] = None
-    batch_size: Optional[int] = 8
+    batch_size: int = 8
     metrics: Optional[List[str]] = None
     exclude_self: bool = True
     limit: int = 20

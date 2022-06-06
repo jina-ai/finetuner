@@ -160,9 +160,7 @@ class Experiment:
                 run_name=run_name,
             )
         if eval_callback:
-            if eval_callback.query_data == train_data:
-                eval_callback.query_data = train_data_name
-            elif eval_callback.query_data == eval_data:
+            if eval_callback.query_data == eval_data:
                 eval_callback.query_data = eval_data_name
             else:
                 eval_callback.query_data = push_data_to_hubble(
@@ -173,13 +171,7 @@ class Experiment:
                     run_name=run_name,
                 )
 
-            if not eval_callback.index_data:
-                pass
-            elif eval_callback.index_data == train_data:
-                eval_callback.index_data = train_data_name
-            elif eval_callback.index_data == eval_data:
-                eval_callback.index_data = eval_data_name
-            else:
+            if eval_callback.index_data:
                 eval_callback.index_data = push_data_to_hubble(
                     client=self._client,
                     data=eval_callback.index_data,
