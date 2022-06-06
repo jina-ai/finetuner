@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Support passing callbacks to the run configuration. ([#415](https://github.com/jina-ai/finetuner/pull/415))
 
+- Docs add developer reference, Jina echosystem and style fix. ([#423](https://github.com/jina-ai/finetuner/pull/423))
+
 ### Removed
 
 ### Changed
