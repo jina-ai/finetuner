@@ -41,7 +41,7 @@ def push_data(
             if _id in ids2names:
                 return ids2names[_id]
             print(f'Pushing a DocumentArray to Hubble under the name {name} ...')
-            data.push(name=name, show_progress=True, public=False)
+            data.push(name=name, show_progress=True, public=True)
             ids2names[id(data)] = name
             return name
         return data
