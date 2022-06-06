@@ -112,8 +112,3 @@ api/finetuner
 
 ---
 {ref}`genindex` {ref}`modindex`
-
-
-
----
-{ref}`genindex` | {ref}`modindex`
