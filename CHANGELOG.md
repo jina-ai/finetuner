@@ -20,8 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add documentation step by step from install to create training data. ([#416](https://github.com/jina-ai/finetuner/pull/416))
 
-- Expose run methods. ([#425](https://github.com/jina-ai/finetuner/pull/425))
-
 ### Removed
 
 ### Changed
@@ -29,6 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump `docarray` to `v0.13.17`. ([#411](https://github.com/jina-ai/finetuner/pull/411))
 
 - Guide user to choose models in `list_models`. ([#419](https://github.com/jina-ai/finetuner/pull/419))
+
+- Expose run methods. ([#425](https://github.com/jina-ai/finetuner/pull/425))
 
 ### Fixed
 
