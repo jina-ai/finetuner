@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 from docarray import DocumentArray
 
@@ -130,10 +130,23 @@ class EvaluationCallback:
 
     :param query_data: Search data used by the evaluator at the end of each epoch,
         to evaluate the model. If `None`, evaluation data will be used as query data.
-        If evaluation data doesn't exist, training data will be chosen.
     :param index_data: Index data or catalog used by the evaluator at the end of
         each epoch, to evaluate the model.
+    :param batch_size: Batch size for computing embeddings.
+    :param metrics: A List of the metrics to calculate. If set to `None`,
+        default metrics are computed.
+    :param exclude_self: Whether to exclude self when matching.
+    :param limit: The number of top search results to consider when computing the
+        evaluation metrics.
+    :param distance: The type of distance metric to use when matching query and
+        index docs, available options are ``'cosine'``, ``'euclidean'`` and
+        ``'sqeuclidean'``.
     """
 
     query_data: Optional[Union[DocumentArray, str]] = None
     index_data: Optional[Union[DocumentArray, str]] = None
+    batch_size: Optional[int] = 8
+    metrics: Optional[List[str]] = None
+    exclude_self: bool = True
+    limit: int = 20
+    distance: str = 'cosine'
