@@ -19,7 +19,6 @@ from finetuner.constants import (
     FREEZE,
     HYPER_PARAMETERS,
     IMAGE_MODALITY,
-    INDEX_DATA,
     LEARNING_RATE,
     LOSS,
     MINER,
@@ -31,13 +30,12 @@ from finetuner.constants import (
     OPTIMIZER_OPTIONS,
     OPTIONS,
     OUTPUT_DIM,
-    QUERY_DATA,
     RUN_NAME,
     SCHEDULER_STEP,
     TEXT_MODALITY,
     TRAIN_DATA,
 )
-from finetuner.hubble import push_data_to_hubble
+from finetuner.hubble import push_data
 from finetuner.names import get_random_name
 from finetuner.run import Run
 
@@ -120,67 +118,6 @@ class Experiment:
         """Delete every run inside the experiment."""
         self._client.delete_runs(experiment_name=self._name)
 
-    def _prepare_data(
-        self,
-        train_data: Union[DocumentArray, str],
-        run_name: str,
-        eval_data: Optional[Union[DocumentArray, str]] = None,
-        eval_callback: Optional[EvaluationCallback] = None,
-    ):
-        """Upload data to Hubble and returns their names.
-
-        Uploads all data needed for fine-tuning - training data,
-        evaluation data and query/index data for `EvaluationCallback`.
-
-        Checks not to upload same dataset twice.
-
-        :param train_data: Either a `DocumentArray` for training data or a
-            name of the `DocumentArray` that is pushed on Hubble.
-        :param run_name: Name of the run.
-        :param train_data: Either a `DocumentArray` for evaluation data or a
-            name of the `DocumentArray` that is pushed on Hubble.
-        :param eval_callback: Evaluation callback that contains query and index data
-            and gets modified in-place.
-        :return: Name(s) of the uploaded data.
-        """
-        train_data_name = push_data_to_hubble(
-            client=self._client,
-            data=train_data,
-            data_type=TRAIN_DATA,
-            experiment_name=self._name,
-            run_name=run_name,
-        )
-        eval_data_name = None
-        if eval_data:
-            eval_data_name = push_data_to_hubble(
-                client=self._client,
-                data=eval_data,
-                data_type=EVAL_DATA,
-                experiment_name=self._name,
-                run_name=run_name,
-            )
-        if eval_callback:
-            if eval_callback.query_data == eval_data:
-                eval_callback.query_data = eval_data_name
-            else:
-                eval_callback.query_data = push_data_to_hubble(
-                    client=self._client,
-                    data=eval_callback.query_data,
-                    data_type=QUERY_DATA,
-                    experiment_name=self._name,
-                    run_name=run_name,
-                )
-
-            if eval_callback.index_data:
-                eval_callback.index_data = push_data_to_hubble(
-                    client=self._client,
-                    data=eval_callback.index_data,
-                    data_type=INDEX_DATA,
-                    experiment_name=self._name,
-                    run_name=run_name,
-                )
-        return train_data_name, eval_data_name
-
     def create_run(
         self,
         model: str,
@@ -206,12 +143,18 @@ class Experiment:
             if isinstance(callback, EvaluationCallback):
                 eval_callback = callback
 
-        train_data, eval_data = self._prepare_data(
+        train_data, eval_data, query_data, index_data = push_data(
+            experiment_name=self._name,
+            run_name=run_name,
             train_data=train_data,
             eval_data=kwargs.get(EVAL_DATA),
-            eval_callback=eval_callback,
-            run_name=run_name,
+            query_data=eval_callback.query_data if eval_callback else None,
+            index_data=eval_callback.index_data if eval_callback else None,
         )
+        if query_data or index_data:
+            eval_callback.query_data = query_data
+            eval_callback.index_data = index_data
+
         kwargs[EVAL_DATA] = eval_data
 
         config = self._create_config_for_run(
