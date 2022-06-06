@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Support passing callbacks to the run configuration. ([#415](https://github.com/jina-ai/finetuner/pull/415))
 
+- Add support for `EvaluationCallback`. ([#422](https://github.com/jina-ai/finetuner/pull/415))
+
 ### Removed
 
 ### Changed
