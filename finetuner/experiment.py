@@ -213,7 +213,8 @@ class Experiment:
             run_name = get_random_name()
 
         eval_callback = None
-        for callback in kwargs.get(CALLBACKS, []):
+        callbacks = kwargs[CALLBACKS] if kwargs.get(CALLBACKS) else []
+        for callback in callbacks:
             if isinstance(callback, EvaluationCallback):
                 eval_callback = callback
 
@@ -272,6 +273,7 @@ class Experiment:
         :param kwargs: Optional keyword arguments for the run config.
         :return: Run parameters wrapped up as a config dict.
         """
+        callbacks = kwargs[CALLBACKS] if kwargs.get(CALLBACKS) else []
         callbacks = [
             {
                 NAME: callback.__class__.__name__,
@@ -280,7 +282,7 @@ class Experiment:
                     for field in fields(callback)
                 },
             }
-            for callback in kwargs.get(CALLBACKS, [])
+            for callback in callbacks
         ]
         return {
             MODEL: {
