@@ -87,13 +87,35 @@ class Finetuner:
             for experiment_info in experiment_infos
         ]
 
-    def delete_experiment(self, name: str):
-        """Delete an experiment by its name."""
-        self._client.delete_experiment(name=name)
+    def delete_experiment(self, name: str) -> Experiment:
+        """Delete an experiment by its name.
+        :param name: Name of the experiment.
+        :return: Deleted experiment.
+        """
+        experiment_info = self._client.delete_experiment(name=name)
+        return Experiment(
+            client=self._client,
+            name=experiment_info[NAME],
+            status=experiment_info[STATUS],
+            created_at=experiment_info[CREATED_AT],
+            description=experiment_info[DESCRIPTION],
+        )
 
-    def delete_experiments(self):
-        """Delete every experiment."""
-        self._client.delete_experiments()
+    def delete_experiments(self) -> List[Experiment]:
+        """Delete every experiment.
+        :return: List of deleted experiments.
+        """
+        experiment_infos = self._client.delete_experiments()
+        return [
+            Experiment(
+                client=self._client,
+                name=experiment_info[NAME],
+                status=experiment_info[STATUS],
+                created_at=experiment_info[CREATED_AT],
+                description=experiment_info[DESCRIPTION],
+            )
+            for experiment_info in experiment_infos
+        ]
 
     def create_run(
         self,

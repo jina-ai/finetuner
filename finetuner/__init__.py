@@ -246,11 +246,16 @@ def list_experiments() -> List[Experiment]:
     return ft.list_experiments()
 
 
-def delete_experiment(name: str):
-    """Delete an experiment by its name."""
-    ft.delete_experiment(name=name)
+def delete_experiment(name: str) -> Experiment:
+    """Delete an experiment by its name.
+    :param name: Name of the experiment.
+    :return: Deleted experiment.
+    """
+    return ft.delete_experiment(name=name)
 
 
-def delete_experiments():
-    """Delete every experiment."""
-    ft.delete_experiments()
+def delete_experiments() -> List[Experiment]:
+    """Delete every experiment.
+    :return: List of deleted experiments.
+    """
+    return ft.delete_experiments()
