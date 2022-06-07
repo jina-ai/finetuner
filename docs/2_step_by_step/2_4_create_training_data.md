@@ -91,7 +91,7 @@ During fine-tuning, we're optimizing two models in parallel.
 At the model saving time, you will discover, we are saving two models to your local directory. 
 ```
 
-If you need to evaluate metrics on seperate evaluation data,
-It is recommended to create another `DocumentArray` as above only for evaluation purpose.
+ If you need to evaluate metrics on separate evaluation data,
+It is recommended to create another `DocumentArray` as above only for evaluation purposes.
 
 Carry on, you're almost there!
