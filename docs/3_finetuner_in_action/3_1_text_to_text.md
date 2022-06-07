@@ -79,17 +79,15 @@ Now that we have the training and evaluation datasets loaded as `DocumentArray`s
 
 ```python
 import finetuner
+from finetuner.client.callbacks import EvaluationCallback
 
 # Start fine-tuning as a run within an experiment
 finetuner.fit(
     model='sentence-transformers/msmarco-distilbert-base-v3',
     train_data=train_data,
-    query_data=query_data, 
-    index_data=index_data,
+    experiment_name='finetune-quora-dataset',
     run_name='finetune-quora-dataset-distilbert-1',
     description='this is a trial run on quora dataset with msmarco-distilbert-base-v3.',
-    experiment_name='finetune-quora-dataset',
-    run_name='finetuner-quora-dataset-distilbert',
     loss='TripletMarginLoss',
     miner='TripletMarginMiner',
     optimizer='Adam',
@@ -98,12 +96,13 @@ finetuner.fit(
     batch_size=128,
     scheduler_step='batch',
     freeze=False, # We are training the whole bert model, not an additional MLP.
-    output_dim=None
+    output_dim=None,
     multi_modal=False, # we only have textual data
     image_modality=None,
     text_modality=None,
     cpu=False,
     num_workers=4,
+    callbacks=[EvaluationCallback(query_data=query_data, index_data=index_data, batch_size=128)]
 )
 ```
 
@@ -111,7 +110,7 @@ You can check the status of your experiment and save the model when the experime
 
 ```python
 experiment = finetuner.get_experiment('finetune-quora-dataset')
-run = experiment.get_run('finetune-quora-dataset-distilbert')
+run = experiment.get_run('finetune-quora-dataset-distilbert-1')
 print(f'Run status: {run.status()}')
 print(f'Run logs: {run.logs()}')
 
