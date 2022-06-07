@@ -1,38 +1,66 @@
 import json
-from typing import List, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from docarray import DocumentArray
 
-from finetuner.client import FinetunerV1Client
-from finetuner.constants import FINETUNED_MODELS_DIR, MODEL_IDS
+from finetuner.constants import DA_PREFIX, FINETUNED_MODELS_DIR, MODEL_IDS
 
 
-def push_data_to_hubble(
-    client: FinetunerV1Client,
-    data: Union[DocumentArray, str],
-    data_type: str,
+def push_data(
     experiment_name: str,
     run_name: str,
-) -> str:
-    """Push DocumentArray for training and evaluation data on Hubble
-    if it's not already uploaded.
-    Note: for now, let's assume that we only receive `DocumentArray`-s.
+    train_data: Union[str, DocumentArray],
+    eval_data: Union[None, str, DocumentArray] = None,
+    query_data: Union[None, str, DocumentArray] = None,
+    index_data: Union[None, str, DocumentArray] = None,
+) -> Tuple[Optional[str], ...]:
+    """Upload data to Hubble and returns their names.
 
-    :param client: The Finetuner API client.
-    :param data: Either a `DocumentArray` that needs to be pushed on Hubble
-        or a name of the `DocumentArray` that is already uploaded.
-    :param data_type: Either `TRAIN_DATA` or `EVAL_DATA`.
+    Uploads all data needed for fine-tuning - training data,
+    evaluation data and query/index data for `EvaluationCallback`.
+
+    Data is given either as a `DocumentArray` or
+    a name of the `DocumentArray` that is already pushed to Hubble.
+
+    Checks not to upload same dataset twice.
+
     :param experiment_name: Name of the experiment.
     :param run_name: Name of the run.
-    :returns: Name(s) of pushed `DocumentArray`-s.
+    :param train_data: Training data.
+    :param eval_data: Evaluation data.
+    :param query_data: Query data for `EvaluationCallback`.
+    :param index_data: Index data for `EvaluationCallback`.
+    :return: Name(s) of the uploaded data.
     """
-    if isinstance(data, DocumentArray):
-        da_name = '-'.join(
-            [client.hubble_user_id, experiment_name, run_name, data_type]
-        )
-        data.push(name=da_name)
-        data = da_name
-    return data
+
+    def _push_docarray(
+        data: Union[None, str, DocumentArray], name: str, ids2names: Dict[int, str]
+    ) -> Optional[str]:
+        if isinstance(data, DocumentArray):
+            _id = id(data)  # get the reference id
+            if _id in ids2names:
+                return ids2names[_id]
+            print(f'Pushing a DocumentArray to Hubble under the name {name} ...')
+            data.push(name=name, show_progress=True, public=True)
+            ids2names[id(data)] = name
+            return name
+        return data
+
+    _ids2names = dict()
+    return (
+        _push_docarray(
+            train_data, f'{DA_PREFIX}.{experiment_name}.{run_name}.train', _ids2names
+        ),
+        _push_docarray(
+            eval_data, f'{DA_PREFIX}.{experiment_name}.{run_name}.eval', _ids2names
+        ),
+        _push_docarray(
+            query_data, f'{DA_PREFIX}.{experiment_name}.{run_name}.query', _ids2names
+        ),
+        _push_docarray(
+            index_data, f'{DA_PREFIX}.{experiment_name}.{run_name}.index', _ids2names
+        ),
+    )
 
 
 def download_model(

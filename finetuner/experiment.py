@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
 
+from finetuner.callbacks import EvaluationCallback
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import (
     BATCH_SIZE,
@@ -34,7 +35,7 @@ from finetuner.constants import (
     TEXT_MODALITY,
     TRAIN_DATA,
 )
-from finetuner.hubble import push_data_to_hubble
+from finetuner.hubble import push_data
 from finetuner.names import get_random_name
 from finetuner.run import Run
 
@@ -136,21 +137,26 @@ class Experiment:
         if not run_name:
             run_name = get_random_name()
 
-        train_data = push_data_to_hubble(
-            client=self._client,
-            data=train_data,
-            data_type=TRAIN_DATA,
+        eval_callback = None
+        callbacks = kwargs[CALLBACKS] if kwargs.get(CALLBACKS) else []
+        for callback in callbacks:
+            if isinstance(callback, EvaluationCallback):
+                eval_callback = callback
+
+        train_data, eval_data, query_data, index_data = push_data(
             experiment_name=self._name,
             run_name=run_name,
+            train_data=train_data,
+            eval_data=kwargs.get(EVAL_DATA),
+            query_data=eval_callback.query_data if eval_callback else None,
+            index_data=eval_callback.index_data if eval_callback else None,
         )
-        if kwargs.get(EVAL_DATA):
-            kwargs[EVAL_DATA] = push_data_to_hubble(
-                client=self._client,
-                data=kwargs.get(EVAL_DATA),
-                data_type=EVAL_DATA,
-                experiment_name=self._name,
-                run_name=run_name,
-            )
+        if query_data or index_data:
+            eval_callback.query_data = query_data
+            eval_callback.index_data = index_data
+
+        kwargs[EVAL_DATA] = eval_data
+
         config = self._create_config_for_run(
             model=model,
             train_data=train_data,
@@ -198,6 +204,7 @@ class Experiment:
         :param kwargs: Optional keyword arguments for the run config.
         :return: Run parameters wrapped up as a config dict.
         """
+        callbacks = kwargs[CALLBACKS] if kwargs.get(CALLBACKS) else []
         callbacks = [
             {
                 NAME: callback.__class__.__name__,
@@ -206,7 +213,7 @@ class Experiment:
                     for field in fields(callback)
                 },
             }
-            for callback in kwargs.get(CALLBACKS, [])
+            for callback in callbacks
         ]
         return {
             MODEL: {
