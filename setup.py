@@ -49,6 +49,7 @@ _classifiers = [
     'Topic :: Scientific/Engineering :: Artificial Intelligence',
 ]
 _project_urls = {
+    'Documentation': 'https://finetuner.jina.ai',
     'Source': 'https://github.com/jina-ai/finetuner/',
     'Tracker': 'https://github.com/jina-ai/finetuner/issues',
 }

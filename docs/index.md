@@ -102,6 +102,13 @@ Don't worry, call `finetuner.list_models()` and we will help you choose the best
 3_finetuner_in_action/index
 ```
 
+```{toctree}
+:caption: Developer Reference
+:hidden:
+:maxdepth: 1
+
+api/finetuner
+```
 
 ---
-{ref}`genindex` | {ref}`modindex`
+{ref}`genindex` {ref}`modindex`

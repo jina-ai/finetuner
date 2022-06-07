@@ -4,7 +4,7 @@ Perfect!
 Now you have started the fine-tuning job in the cloud.
 However, fine-tuning takes time. It highly depends on the size of your training data, evaluation data and other hyper-parameters. Because of this, you might have to close the session and reconnect to it several times.
 
-In the following example, we show how to connect to an existing run and download a tuned model:```
+In the following example, we show how to connect to an existing run and download a tuned model:
 
 ```python
 import finetuner
