@@ -1,6 +1,6 @@
 # Step by step
 
-We have gone through what is Finetuner and how Finetuner works.
+So far we have briefly gone through what Finetuner is and how it works.
 In this section,
 we'll guide you to use Finetuner step-by-step,
 from installation to retrieving your fine-tuned model:
