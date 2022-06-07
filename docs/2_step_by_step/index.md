@@ -1,6 +1,11 @@
-(finetuner in action)=
+# Step by step
+
+We have gone through what is Finetuner and how Finetuner works.
+In this section,
+we'll guide you to use Finetuner step-by-step,
+from installation to retrieving your fine-tuned model:
+
 ```{toctree}
-:hidden:
 
 2_1_install
 2_2_experiment_and_run
@@ -11,3 +16,5 @@
 2_7_get_tuned_model
 2_8_next_steps
 ```
+
+Let's get started!
