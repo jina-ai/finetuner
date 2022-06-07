@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
 
-from finetuner.callbacks import EvaluationCallback
+from finetuner.callback import EvaluationCallback
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import (
     BATCH_SIZE,

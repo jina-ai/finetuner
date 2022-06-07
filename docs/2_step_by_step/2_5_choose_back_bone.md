@@ -13,7 +13,7 @@ You can call:
 ```python
 import finetuner
 
-finetuner.list_models()
+finetuner.describe_models()
 ```
 
 To get a list of supported models:

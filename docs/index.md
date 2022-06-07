@@ -76,7 +76,7 @@ methods to production use cases.
 ```{Important}
 Not sure which model to use?
 
-Don't worry, call `finetuner.list_models()` and we will help you choose the best fit.
+Don't worry, call `finetuner.describe_models()` and we will help you choose the best fit.
 ```
 
 

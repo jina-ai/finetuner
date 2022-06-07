@@ -36,7 +36,7 @@ def _create_base_mocker(mocker):
     return client
 
 
-def _return_args(*args, **kwargs):
+def _return_args(*_, **kwargs):
     return kwargs
 
 
@@ -56,11 +56,11 @@ def create_client_mocker(mocker):
             CREATED_AT: 'some time',
         }
 
-    def return_experiments(**kwargs):
+    def return_experiments(**_):
         names = ['first experiment', 'second experiment']
         return [return_experiment(name=name) for name in names]
 
-    def return_status(**kwargs):
+    def return_status(**_):
         return {
             'status': random.choice([CREATED, STARTED, FINISHED, FAILED]),
             'details': '',
@@ -76,7 +76,7 @@ def create_client_mocker(mocker):
             CREATED_AT: 'some time',
         }
 
-    def return_runs(**kwargs):
+    def return_runs(**_):
         names = ['first run', 'second run']
         return [return_run(run_name=name) for name in names]
 

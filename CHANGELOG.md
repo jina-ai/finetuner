@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add support for MLP model. ([#428](https://github.com/jina-ai/finetuner/pull/428))
 
+- Add method `list_models` that returns the available model names. ([#428](https://github.com/jina-ai/finetuner/pull/428))
+
+- Organize supported model to model stubs under `finetuner.models`. ([#428](https://github.com/jina-ai/finetuner/pull/428))
+
 ### Removed
 
 ### Changed
@@ -35,6 +39,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Guide user to choose models in `list_models`. ([#419](https://github.com/jina-ai/finetuner/pull/419))
 
 - Expose run methods. ([#425](https://github.com/jina-ai/finetuner/pull/425))
+
+- Rename `list_models` to `describe_models`. ([#428](https://github.com/jina-ai/finetuner/pull/428))
+
+- Rename `finetuner.callbacks` to `finetuner.callback` to avoid name collision in `__init__.py`. ([#428](https://github.com/jina-ai/finetuner/pull/428))
 
 ### Fixed
 
