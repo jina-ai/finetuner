@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Docs add developer reference, Jina ecosystem and style fix. ([#423](https://github.com/jina-ai/finetuner/pull/423))
 
+- Add support for MLP model. ([#](https://github.com/jina-ai/finetuner/pull/))
 
 ### Removed
 

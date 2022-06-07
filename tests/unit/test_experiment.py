@@ -94,6 +94,7 @@ def test_create_run_config():
             FREEZE: False,
             OUTPUT_DIM: None,
             MULTI_MODAL: False,
+            OPTIONS: None,
         },
         DATA: {
             TRAIN_DATA: 'train_data',

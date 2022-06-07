@@ -1,5 +1,6 @@
+import inspect
 import os
-from typing import List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
 from dotenv import load_dotenv
@@ -20,6 +21,7 @@ if HOST not in os.environ:
 if HUBBLE_REGISTRY not in os.environ:
     os.environ[HUBBLE_REGISTRY] = DEFAULT_HUBBLE_REGISTRY
 
+from finetuner import callbacks as finetuner_callbacks
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
 
@@ -44,6 +46,7 @@ def list_models():
     table.add_column('architecture', justify='right', style='cyan', no_wrap=True)
     table.add_column('description', justify='right', style='cyan', no_wrap=False)
 
+    table.add_row('mlp', 'all', '-', 'MLP', 'Simple MLP encoder trained from scratch')
     table.add_row('resnet50', 'image-to-image', '2048', 'CNN', 'Pretrained on ImageNet')
     table.add_row(
         'resnet152', 'image-to-image', '2048', 'CNN', 'Pretrained on ImageNet'
@@ -83,11 +86,9 @@ def list_models():
 def list_callbacks():
     """List available callbacks."""
     return [
-        'BestModelCheckpoint',
-        'TrainingCheckpoint',
-        'EarlyStopping',
-        'WandBLogger',
-        'MLFlowLogger',
+        name
+        for name, obj in inspect.getmembers(finetuner_callbacks)
+        if inspect.isclass(obj)
     ]
 
 
@@ -98,6 +99,7 @@ def fit(
     run_name: Optional[str] = None,
     description: Optional[str] = None,
     experiment_name: Optional[str] = None,
+    model_options: Optional[Dict[str, Any]] = None,
     loss: str = 'TripletMarginLoss',
     miner: Optional[str] = None,
     optimizer: str = 'Adam',
@@ -124,6 +126,7 @@ def fit(
     :param run_name: Name of the run.
     :param description: Run description.
     :param experiment_name: Name of the experiment.
+    :param model_options: Additional arguments to pass to the model construction.
     :param loss: Name of the loss function used for fine-tuning.
     :param miner: Name of the miner to create tuple indices for the loss function.
     :param optimizer: Name of the optimizer used for fine-tuning.
@@ -144,13 +147,14 @@ def fit(
     :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
         workers used by the dataloader.
     """
-    run = ft.create_run(
+    return ft.create_run(
         model=model,
         train_data=train_data,
         eval_data=eval_data,
         run_name=run_name,
         description=description,
         experiment_name=experiment_name,
+        model_options=model_options,
         loss=loss,
         miner=miner,
         optimizer=optimizer,
@@ -167,7 +171,6 @@ def fit(
         cpu=cpu,
         num_workers=num_workers,
     )
-    return run
 
 
 # `create_run` and `fit` do the same
