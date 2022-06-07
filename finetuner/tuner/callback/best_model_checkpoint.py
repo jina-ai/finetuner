@@ -21,11 +21,11 @@ class BestModelCheckpoint(BaseCallback):
     """
 
     def __init__(
-            self,
-            save_dir: str,
-            monitor: str = 'val_loss',
-            mode: str = 'auto',
-            verbose: bool = False,
+        self,
+        save_dir: str,
+        monitor: str = 'val_loss',
+        mode: str = 'auto',
+        verbose: bool = False,
     ):
         """
         :param save_dir: string, path to save the model file.
