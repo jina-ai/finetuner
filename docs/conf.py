@@ -130,7 +130,7 @@ notfound_no_urls_prefix = True
 
 apidoc_module_dir = repo_dir
 apidoc_output_dir = 'api'
-apidoc_excluded_paths = ['tests', 'legacy', 'hub', 'toy*', 'setup.py']
+apidoc_excluded_paths = ['tests', 'legacy', 'hub', 'toy*', 'setup.py', 'finetuner/constants.py', 'finetuner/names.py', 'finetuner/hubble.py', 'finetuner/client/base.py', 'finetuner/client/exception.py']
 apidoc_separate_modules = True
 apidoc_extra_args = ['-t', 'template/']
 autodoc_member_order = 'bysource'
