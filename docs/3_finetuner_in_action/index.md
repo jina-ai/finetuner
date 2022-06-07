@@ -3,7 +3,7 @@
 
 Congratulations! ✨
 
-We hope you now have a clear understanding of Finetuner and how to use it.
+We hope you now have a clear understanding of Finetuner and its usage.
 In this section,
 we provide three guides on more concrete tasks:
 
