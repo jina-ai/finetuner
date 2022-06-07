@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import List, Optional, Union
+
+from docarray import DocumentArray
 
 
 @dataclass
@@ -117,3 +119,34 @@ class EarlyStopping:
     min_delta: int = 0
     baseline: Optional[float] = None
     verbose: bool = False
+
+
+@dataclass
+class EvaluationCallback:
+    """
+    A callback that uses the Evaluator to calculate IR metrics at the end of each epoch.
+    When used with other callbacks that rely on metrics, like checkpoints and logging,
+    this callback should be defined first, so that it precedes in execution.
+
+    :param query_data: Search data used by the evaluator at the end of each epoch,
+        to evaluate the model.
+    :param index_data: Index data or catalog used by the evaluator at the end of
+        each epoch, to evaluate the model.
+    :param batch_size: Batch size for computing embeddings.
+    :param metrics: A List of the metrics to calculate. If set to `None`,
+        default metrics are computed.
+    :param exclude_self: Whether to exclude self when matching.
+    :param limit: The number of top search results to consider when computing the
+        evaluation metrics.
+    :param distance: The type of distance metric to use when matching query and
+        index docs, available options are ``'cosine'``, ``'euclidean'`` and
+        ``'sqeuclidean'``.
+    """
+
+    query_data: Union[DocumentArray, str]
+    index_data: Optional[Union[DocumentArray, str]] = None
+    batch_size: int = 8
+    metrics: Optional[List[str]] = None
+    exclude_self: bool = True
+    limit: int = 20
+    distance: str = 'cosine'

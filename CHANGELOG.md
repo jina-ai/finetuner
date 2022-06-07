@@ -20,7 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add documentation step by step from install to create training data. ([#416](https://github.com/jina-ai/finetuner/pull/416))
 
+- Add support for `EvaluationCallback`. ([#422](https://github.com/jina-ai/finetuner/pull/422))
+
 - Docs add developer reference, Jina ecosystem and style fix. ([#423](https://github.com/jina-ai/finetuner/pull/423))
+
 
 ### Removed
 

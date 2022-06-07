@@ -1,12 +1,12 @@
 import docarray
 import pytest
-from tests.constants import HUBBLE_USER_TEST_ID
 
 from finetuner.callbacks import TrainingCheckpoint
 from finetuner.constants import (
     BATCH_SIZE,
     CALLBACKS,
     CREATED,
+    DA_PREFIX,
     DATA,
     EPOCHS,
     EVAL_DATA,
@@ -70,7 +70,7 @@ def test_list_runs(experiment):
 def test_create_run(experiment):
     data = docarray.DocumentArray().empty(1)
     run_name = 'run1'
-    data_name = '-'.join([HUBBLE_USER_TEST_ID, experiment.name, run_name, TRAIN_DATA])
+    data_name = f'{DA_PREFIX}.{experiment.name}.{run_name}.train'
     run = experiment.create_run(
         model='resnet50',
         train_data=data,
