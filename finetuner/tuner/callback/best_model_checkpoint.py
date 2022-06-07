@@ -21,11 +21,11 @@ class BestModelCheckpoint(BaseCallback):
     """
 
     def __init__(
-        self,
-        save_dir: str,
-        monitor: str = 'val_loss',
-        mode: str = 'auto',
-        verbose: bool = False,
+            self,
+            save_dir: str,
+            monitor: str = 'val_loss',
+            mode: str = 'auto',
+            verbose: bool = False,
     ):
         """
         :param save_dir: string, path to save the model file.
@@ -44,6 +44,12 @@ class BestModelCheckpoint(BaseCallback):
         self._logger = logging.getLogger('finetuner.' + self.__class__.__name__)
         self._logger.setLevel(logging.INFO if verbose else logging.WARNING)
         self._save_dir = save_dir
+
+        # make sure the save_dir exists
+        if not os.path.exists(self._save_dir):
+            self._logger.info(f"{self._save_dir} not exists, will create one.")
+            os.makedirs(self._save_dir)
+
         self._monitor = monitor
         self._train_losses = []
         self._val_losses = []
