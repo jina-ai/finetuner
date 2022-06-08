@@ -13,7 +13,7 @@ Totally-Looks-Like is a dataset and benchmark challenging machine-learned repres
 ```
 
 <p align="center">
-  <img src="../_static/ttl_overview.png" />
+  <img src="https://finetuner.jina.ai/_static/ttl_overview.png" />
 </p>
 
 The dataset consists of pairs of images, these are the positive pairs. Negative pairs are constructed by taking two different images, i.e. images that are not in the same pair initially. Following this approach, we construct triplets and use the `TripletLoss`.
