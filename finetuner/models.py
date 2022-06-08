@@ -53,7 +53,7 @@ class MLP(_ModelStub):
     def __init__(
         self,
         input_size: int,
-        hidden_sizes: Optional[List[int]] = None,
+        hidden_sizes: List[int],
         bias: bool = True,
         activation: Optional[str] = None,
         l2: bool = False,
