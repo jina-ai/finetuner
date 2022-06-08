@@ -1,6 +1,6 @@
 # Image to image search using ResNet
 
-This guide will show you how to fine-tune a ResNet model for image-to-image retrieval.
+This guide will show you how to fine-tune a ResNet model for image to image retrieval.
 
 ## Task Overview
 More specifically, we will fine-tune ResNet50 on [Totally Looks Like Dataset](https://sites.google.com/view/totally-looks-like-dataset).
@@ -38,11 +38,8 @@ finetuner.login()
 ```
 
 ## Choosing the model
-Now let's see what backbone models we can use. We can see available models either in [the docs](../2_step_by_step/2_5_choose_back_bone.md) or by calling:
+Now let's see what backbone models we can use. We can see available models either in [the docs](../2_step_by_step/2_5_choose_back_bone.md) or by calling `finetuner.describe_models()`.
 
-```python
-finetuner.describe_models()
-```
 For this example, we're gonna go with `resnet50`.
 
 ## Creating a fine-tuning job
@@ -74,6 +71,7 @@ run2 = finetuner.fit(
         callbacks=[BestModelCheckpoint()],
         epochs=6,
         freeze=True,
+        output_dim=2048,
     )
 ```
 Now, let's understand what this code means. 
