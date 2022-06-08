@@ -79,7 +79,7 @@ run2 = finetuner.fit(
 Now, let's understand what this code means. 
 ```{admonition} finetuner.fit parameters
 :class: tip
-The only mandatory parameters are `model` and `train_data`. We provide default values for others. Here is the [full list of the parameters](can't insert a link here). 
+The only mandatory parameters are `model` and `train_data`. We provide default values for others. Here is the [full list of the parameters](../../api/finetuner/#finetuner.fit). 
 ```
 As you can see, we have to provide the `model` which we picked before. We also set `run_name` and `description`, which are optional,
 but recommended in order to retrieve your run easily and have some context about it. Furthermore, we had to provide `train_data` and `eval_data`. As you can see,
