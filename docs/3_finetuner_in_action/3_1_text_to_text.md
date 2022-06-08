@@ -6,7 +6,7 @@ This guide will lead you through an example use-case to show you how Finetuner c
 
 In Finetuner, two models are supported as backbones, namely `bert-base-cased` and `sentence-transformers/msmarco-distilbert-base-v3`, both of which are models hosted on Hugging Face.
 
-In this example, we will fine-tune `sentence-transformers/msmarco-distilbert-base-v3` on the [Quora Question Pairs dataset](https://www.kaggle.com/competitions/quora-question-pairs), where the search task involves finding duplicate questions in the dataset. An example query for this search task might look as follows:
+In this example, we will fine-tune `bert-base-cased` on the [Quora Question Pairs dataset](https://www.kaggle.com/competitions/quora-question-pairs), where the search task involves finding duplicate questions in the dataset. An example query for this search task might look as follows:
 
 ```
 How can I be a good geologist?
@@ -83,15 +83,15 @@ from finetuner.client.callbacks import EvaluationCallback
 
 # Start fine-tuning as a run within an experiment
 finetuner.fit(
-    model='sentence-transformers/msmarco-distilbert-base-v3',
+    model='bert-base-cased',
     train_data=train_data,
     experiment_name='finetune-quora-dataset',
     run_name='finetune-quora-dataset-distilbert-1',
-    description='this is a trial run on quora dataset with msmarco-distilbert-base-v3.',
+    description='this is a trial run on quora dataset with bert-base-cased.',
     loss='TripletMarginLoss',
     miner='TripletMarginMiner',
     optimizer='Adam',
-    learning_rate = 1e-4,
+    learning_rate = 1e-5,
     epochs=3,
     batch_size=128,
     scheduler_step='batch',
@@ -102,7 +102,7 @@ finetuner.fit(
     text_modality=None,
     cpu=False,
     num_workers=4,
-    callbacks=[EvaluationCallback(query_data=query_data, index_data=index_data, batch_size=128)]
+    callbacks=[EvaluationCallback(query_data=query_data, index_data=index_data, batch_size=256)]
 )
 ```
 
