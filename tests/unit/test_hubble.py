@@ -1,35 +1,22 @@
 import docarray
-import pytest
 
-from finetuner.constants import EVAL_DATA, TRAIN_DATA
-from finetuner.hubble import push_data_to_hubble
+from finetuner.constants import DA_PREFIX
+from finetuner.hubble import push_data
 
 
-@pytest.mark.parametrize(
-    'data, data_type',
-    [
-        [docarray.DocumentArray.empty(1), TRAIN_DATA],
-        [docarray.DocumentArray.empty(1), EVAL_DATA],
-        ['train data', TRAIN_DATA],
-        ['eval data', EVAL_DATA],
-    ],
-)
-def test_push_data_to_hubble(
-    client_mocker, data, data_type, experiment_name='exp', run_name='run'
-):
-    if isinstance(data, docarray.DocumentArray):
-        expected_name = '-'.join(
-            [client_mocker.hubble_user_id, experiment_name, run_name, data_type]
-        )
-    else:
-        expected_name = data
+def test_push_data(client_mocker, experiment_name='exp', run_name='run'):
+    train_data = docarray.DocumentArray.empty(10)
+    eval_data = query_data = docarray.DocumentArray.empty(5)
+    index_data = None
 
-    da_name = push_data_to_hubble(
-        client=client_mocker,
-        data=data,
-        data_type=data_type,
+    train_name, eval_name, query_name, index_name = push_data(
         experiment_name=experiment_name,
         run_name=run_name,
+        train_data=train_data,
+        eval_data=eval_data,
+        query_data=query_data,
+        index_data=index_data,
     )
-
-    assert da_name == expected_name
+    assert train_name == f'{DA_PREFIX}.{experiment_name}.{run_name}.train'
+    assert eval_name == query_name == f'{DA_PREFIX}.{experiment_name}.{run_name}.eval'
+    assert not index_name

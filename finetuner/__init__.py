@@ -12,6 +12,7 @@ from finetuner.constants import (
     HOST,
     HUBBLE_REGISTRY,
 )
+from finetuner.run import Run
 
 if HOST not in os.environ:
     os.environ[HOST] = DEFAULT_FINETUNER_HOST
@@ -88,40 +89,6 @@ def list_callbacks():
         'WandBLogger',
         'MLFlowLogger',
     ]
-
-
-def create_experiment(name: Optional[str] = None) -> Experiment:
-    """Create an experiment.
-
-    :param name: Optional name of the experiment. If `None`,
-        the experiment is named after the current directory.
-    :return: An `Experiment` object.
-    """
-    return ft.create_experiment(name=name)
-
-
-def get_experiment(name: str) -> Experiment:
-    """Get an experiment by its name.
-
-    :param name: Name of the experiment.
-    :return: An `Experiment` object.
-    """
-    return ft.get_experiment(name=name)
-
-
-def list_experiments() -> List[Experiment]:
-    """List every experiment."""
-    return ft.list_experiments()
-
-
-def delete_experiment(name: str):
-    """Delete an experiment by its name."""
-    ft.delete_experiment(name=name)
-
-
-def delete_experiments():
-    """Delete every experiment."""
-    ft.delete_experiments()
 
 
 def fit(
@@ -201,3 +168,94 @@ def fit(
         num_workers=num_workers,
     )
     return run
+
+
+# `create_run` and `fit` do the same
+create_run = fit
+
+
+def get_run(run_name: str, experiment_name: Optional[str] = None) -> Run:
+    """Get run by its name and (optional) experiment.
+
+    If an experiment name is not specified, we'll look for the run in the default
+    experiment.
+
+    :param run_name: Name of the run.
+    :param experiment_name: Optional name of the experiment.
+    :return: A `Run` object.
+    """
+    return ft.get_run(run_name=run_name, experiment_name=experiment_name)
+
+
+def list_runs(experiment_name: Optional[str] = None) -> List[Run]:
+    """List every run.
+
+    If an experiment name is not specified, we'll list every run across all
+    experiments.
+
+    :param experiment_name: Optional name of the experiment.
+    :return: A list of `Run` objects.
+    """
+    return ft.list_runs(experiment_name=experiment_name)
+
+
+def delete_run(run_name: str, experiment_name: Optional[str] = None):
+    """Delete a run.
+
+    If an experiment name is not specified, we'll look for the run in the default
+    experiment.
+
+    :param run_name: Name of the run.
+    :param experiment_name: Optional name of the experiment.
+    """
+    ft.delete_run(run_name=run_name, experiment_name=experiment_name)
+
+
+def delete_runs(experiment_name: Optional[str] = None):
+    """Delete every run.
+
+    If an experiment name is not specified, we'll delete every run across all
+    experiments.
+
+    :param experiment_name: Optional name of the experiment.
+    """
+    ft.delete_runs(experiment_name=experiment_name)
+
+
+def create_experiment(name: Optional[str] = None) -> Experiment:
+    """Create an experiment.
+
+    :param name: Optional name of the experiment. If `None`,
+        the experiment is named after the current directory.
+    :return: An `Experiment` object.
+    """
+    return ft.create_experiment(name=name)
+
+
+def get_experiment(name: str) -> Experiment:
+    """Get an experiment by its name.
+
+    :param name: Name of the experiment.
+    :return: An `Experiment` object.
+    """
+    return ft.get_experiment(name=name)
+
+
+def list_experiments() -> List[Experiment]:
+    """List every experiment."""
+    return ft.list_experiments()
+
+
+def delete_experiment(name: str) -> Experiment:
+    """Delete an experiment by its name.
+    :param name: Name of the experiment.
+    :return: Deleted experiment.
+    """
+    return ft.delete_experiment(name=name)
+
+
+def delete_experiments() -> List[Experiment]:
+    """Delete every experiment.
+    :return: List of deleted experiments.
+    """
+    return ft.delete_experiments()

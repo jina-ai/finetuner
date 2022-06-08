@@ -12,7 +12,7 @@ copyright = 'Jina AI Limited. All rights reserved.'
 source_suffix = ['.rst', '.md']
 master_doc = 'index'
 language = 'en'
-repo_dir = '/'
+repo_dir = '../'
 
 try:
     if 'FINETUNER_VERSION' not in os.environ:
@@ -130,11 +130,11 @@ notfound_no_urls_prefix = True
 
 apidoc_module_dir = repo_dir
 apidoc_output_dir = 'api'
-apidoc_excluded_paths = ['tests', 'legacy', 'hub', 'toy*', 'setup.py']
+apidoc_excluded_paths = ['tests', 'legacy', 'hub', 'toy*', 'setup.py', 'finetuner/constants.py', 'finetuner/names.py', 'finetuner/hubble.py', 'finetuner/client/base.py', 'finetuner/client/exception.py']
 apidoc_separate_modules = True
 apidoc_extra_args = ['-t', 'template/']
 autodoc_member_order = 'bysource'
-autodoc_mock_imports = ['argparse', 'numpy', 'np', 'tensorflow', 'torch', 'scipy']
+autodoc_mock_imports = ['argparse', 'numpy', 'np', 'tensorflow', 'torch', 'scipy', 'dotenv', 'path', 'docarray', 'rich', 'requests', 'hubble']
 autoclass_content = 'both'
 set_type_checking_flag = False
 html_last_updated_fmt = ''
