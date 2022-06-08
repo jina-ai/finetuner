@@ -149,7 +149,7 @@ class SentenceTransformer(_ModelStub):
     """SentenceTransformer model stub."""
 
     name = 'sentence-transformers/msmarco-distilbert-base-v3'
-    description = 'Pretrained on Bert, fine-tuned on MS Marco'
+    description = 'Pretrained BERT, fine-tuned on MS Marco'
     task = 'text-to-text'
     output_dim = '768'
     architecture = 'transformer'
