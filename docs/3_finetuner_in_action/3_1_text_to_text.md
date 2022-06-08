@@ -6,7 +6,7 @@ This guide will lead you through an example use-case to show you how Finetuner c
 
 In Finetuner, two models are supported as backbones, namely `bert-base-cased` and `sentence-transformers/msmarco-distilbert-base-v3`, both of which are models hosted on Hugging Face.
 
-In this example, we will fine-tune `bert-base-cased` on the [Quora Question Pairs dataset](https://www.kaggle.com/competitions/quora-question-pairs), where the search task involves finding duplicate questions in the dataset. An example query for this search task might look as follows:
+In this example, we will fine-tune `bert-base-cased` on the [Quora Question Pairs](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) dataset, where the search task involves finding duplicate questions in the dataset. An example query for this search task might look as follows:
 
 ```
 How can I be a good geologist?
@@ -28,7 +28,7 @@ We will use Bert as an embedding model that embeds texts in a high dimensional s
 
 ## Quora Dataset
 
-We will use the Quora Question Pairs dataset to show-case Finetuner for text-to-text search. We have already pre-processed these and made them available for you to pull from hubble. Do this as follows:
+We will use the [Quora Question Pairs](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) dataset to show-case Finetuner for text-to-text search. We have already pre-processed these and made them available for you to pull from hubble. Do this as follows:
 
 ```python
 from docarray import DocumentArray
@@ -62,7 +62,7 @@ Your `train_data` `DocumentArray` summary should look like this:
 ╰──────────────────────────────────────────────────────────────╯
 ```
 
-So we have 104598 training `Documents`. Each `Document` consists of a text field that contains the question, as well as a `finetuner_label` which indicates the label to which the question belongs. If multiple questions have the same label, they are duplicates of one another. If they have different `finetuner_label`s, they are not duplicates of each other.
+So we have 104598 training `Document`s. Each `Document` consists of a text field that contains the question, as well as a `finetuner_label` which indicates the label to which the question belongs. If multiple questions have the same label, they are duplicates of one another. If they have different `finetuner_label`s, they are not duplicates of each other.
 
 As for the evaluation dataset, we load `query_data` and `index_data` seperately. The `query_data` has the same structure as the `train_data`, consisting of labelled documents. The `index_data` is the data against which the queries will be matched, and contains many documents, some of which may be irrelevant to the queries (ie. they have no duplicated in the `query_data`).
 If you look at the summaries for the `query_data` and `index_data`, you will find that they have the following number of instances:
