@@ -29,7 +29,7 @@ TOKEN_PREFIX = 'token '
 DATA = 'data'
 TRAIN_DATA = 'train_data'
 EVAL_DATA = 'eval_data'
-FINETUNED_MODELS_DIR = 'finetuned_models'
+FINETUNED_MODEL = 'finetuned_model'
 MODEL = 'model'
 MODEL_IDS = 'model_ids'
 # Run status

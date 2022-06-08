@@ -41,7 +41,7 @@ finetuner.login()
 Now let's see what backbone models we can use. We can see available models either in [the docs](../2_step_by_step/2_5_choose_back_bone.md) or by calling:
 
 ```python
-finetuner.list_models()
+finetuner.describe_models()
 ```
 For this example, we're gonna go with `resnet50`.
 
@@ -77,15 +77,16 @@ run2 = finetuner.fit(
     )
 ```
 Now, let's understand what this code means. 
-```{admonition} Optional Parameters
+```{admonition} finetuner.fit parameters
 :class: tip
-The only mandatory parameters here are `model` and `train_data`. We provide default values for others. Here is the [full list of the parameters](can't insert a link here). 
+The only mandatory parameters are `model` and `train_data`. We provide default values for others. Here is the [full list of the parameters](can't insert a link here). 
 ```
 As you can see, we have to provide the `model` which we picked before. We also set `run_name` and `description`, which are optional,
 but recommended in order to retrieve your run easily and have some context about it. Furthermore, we had to provide `train_data` and `eval_data`. As you can see,
 we used the names of the `DocumentArray`s that are already on Hubble, but we could also pass a `DocumentArray` object itself, which will be automatically uploaded to Hubble. As stated before, we want to use the `TripletLoss`, and that's what `loss='TripletMarginLoss'` corresponds to.
 We used `BestModelCheckpoint` callback and set `epochs` to 6. The only difference between these two runs comes with the parameter `freeze`. As explained in the `description` field of each run, `freeze=True` will freeze the existing weights, and train only the additional `MLP` layer, while `freeze=False` will fine-tune the whole model.
 
+Let's check the status of our runs.
 ```python
 print(run.name, '-', run1.status())
 print(run.name, '-', run2.status())
@@ -107,7 +108,7 @@ run1 = finetuner.get_run('resnet-ttl-1')
 run2 = finetuner.get_run('resnet-ttl-2')
 ```
 
-You can monitor your runs by checking the status - `run.status()` or the logs - `run.logs()`. 
+You can monitor the runs by checking the status - `run.status()` or the logs - `run.logs()`. 
 
 If your runs have finished successfully, you can save fine-tuned models in the following way:
 ```python
