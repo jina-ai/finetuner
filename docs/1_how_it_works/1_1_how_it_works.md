@@ -39,7 +39,7 @@ All you need to do is decide on your backbone model and prepare your training da
 Once you logged into the Jina Ecosystem with `finetuner.login()`,
 Finetuner will push your training data into our *Cloud Artifact Storage* (only visible to you).
 At the same time, we will spin-up an isolated computational resource
-with proper memory, CPU, GPU dedicated for your fine-tuning job.
+with proper memory, CPU, GPU dedicated to your fine-tuning job.
 
 Once fine-tuning is done, Finetuner will again push your `tuned_model` to the *Cloud Artifact Storage*
 and make it available for you to pull it back to your machine.
@@ -48,4 +48,4 @@ That's it!
 On the other hand,
 if you have a certain level of machine learning knowledge,
 Finetuner gives you enough flexibility to adjust the training parameters.
-This will be explained in the later section.
+This will be explained in a later section.

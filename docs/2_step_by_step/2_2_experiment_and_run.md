@@ -10,7 +10,7 @@ For example:
 
 + Experiment: Fine-tune a transformer on the QuoraQA dataset.
   - Run1: Use bert-based model.
-  - Run2: Use setence-transformer model.
+  - Run2: Use sentence-transformer model.
 + Experiment: Fine-tune ResNet on WILD dataset.
   - Run1: Use ResNet18 with learning rate 0.01 and SGD optimizer.
   - Run2: Use ResNet50 with learning rate 0.01 and SGD optimizer.
