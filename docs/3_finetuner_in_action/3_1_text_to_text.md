@@ -79,7 +79,7 @@ Now that we have the training and evaluation datasets loaded as `DocumentArray`s
 
 ```python
 import finetuner
-from finetuner.client.callbacks import EvaluationCallback
+from finetuner.callbacks import EvaluationCallback
 
 # Start fine-tuning as a run within an experiment
 finetuner.fit(
@@ -97,9 +97,6 @@ finetuner.fit(
     scheduler_step='batch',
     freeze=False, # We are training the whole bert model, not an additional MLP.
     output_dim=None,
-    multi_modal=False, # we only have textual data
-    image_modality=None,
-    text_modality=None,
     cpu=False,
     num_workers=4,
     callbacks=[EvaluationCallback(query_data=query_data, index_data=index_data, batch_size=256)]
@@ -116,3 +113,7 @@ print(f'Run logs: {run.logs()}')
 
 run.save_model('.')
 ```
+
+## Evaluation
+
+Coming soon! (performance comparison between pre-trained and fine-tuned models)
