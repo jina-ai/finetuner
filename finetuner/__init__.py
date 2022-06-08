@@ -85,10 +85,9 @@ def describe_models() -> None:
     """Describe available models in a table."""
     table = Table(title='Finetuner backbones')
     header = models._ModelStub.header()
-    _no_wraps = [True] * (len(header) - 1) + [False]
 
-    for column, no_wrap in zip(header, _no_wraps):
-        table.add_column(column, justify='right', style='cyan', no_wrap=no_wrap)
+    for column in header:
+        table.add_column(column, justify='right', style='cyan', no_wrap=True)
 
     for _, _model_class in _list_models().items():
         table.add_row(*_model_class.row())
