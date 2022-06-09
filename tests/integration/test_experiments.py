@@ -17,7 +17,7 @@ def test_experiments(
     experiments = finetuner_mocker.list_experiments()
     assert len(experiments) == 3
     experiment_names = [experiment.name for experiment in experiments]
-    assert first_exp_name and second_exp_name in experiment_names
+    assert first_exp_name in experiment_names and second_exp_name in experiment_names
 
     for experiment in experiments:
         assert experiment.status == 'ACTIVE'

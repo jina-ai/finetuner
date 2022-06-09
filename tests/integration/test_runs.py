@@ -51,7 +51,8 @@ def test_runs(
     # list all runs
     runs = finetuner_mocker.list_runs(experiment_name=experiment_name)
     assert len(runs) == 2
-    assert first_run and second_run in [run.name for run in runs]
+    run_names = [run.name for run in runs]
+    assert first_run in run_names and second_run in run_names
     # # delete the first run
     finetuner_mocker.delete_run(experiment_name=experiment_name, run_name=first_run)
     runs = finetuner_mocker.list_runs(experiment_name=experiment_name)
