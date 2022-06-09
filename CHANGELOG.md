@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Enable saving models for clip without overwriting. ([#432](https://github.com/jina-ai/finetuner/pull/432))
 
 ## [0.1.0] - 2022-05-23
 
