@@ -41,4 +41,6 @@ def finetuner_mocker(mocker):
 
     finetuner.login()
 
-    return finetuner.ft
+    yield finetuner.ft
+
+    finetuner.delete_experiments()
