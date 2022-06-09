@@ -16,11 +16,11 @@ from docarray import DocumentArray
 train_data = DocumentArray.pull('clip-fashion-train-data')
 eval_data = DocumentArray.pull('clip-fashion-eval-data')
 ```
-Or specify given `DocumentArray` names (`clip-fashion-train-data` and `clip-fashion-eval-data`) directly to the finetuner.
+Or specify given `DocumentArray` names (`clip-fashion-train-data` and `clip-fashion-eval-data`) directly to finetuner.
 
 
 ## Login to Finetuner
-As explained in the [Login to Jina ecosystem](../2_step_by_step/2_3_login_to_jina_ecosystem.md) section, first we need to login to Finetuner:
+As explained in the [Login to Jina ecosystem](../2_step_by_step/2_3_login_to_jina_ecosystem.md) section, first we need to login to Jina Cloud:
 ```python
 import finetuner
 finetuner.login()
