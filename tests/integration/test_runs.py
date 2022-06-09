@@ -61,7 +61,7 @@ def test_runs(
     runs = finetuner_mocker.list_runs(experiment_name=experiment_name)
     assert not runs
     # delete experiment
-    finetuner_mocker.delete_experiments()
+    finetuner_mocker.delete_experiment(experiment_name)
     experiments = finetuner_mocker.list_experiments()
     assert not experiments
 
@@ -88,7 +88,7 @@ def test_create_run_and_save_model(finetuner_mocker, get_image_data, tmp_path):
     assert run.status()[STATUS] == FINISHED
     run.save_model(path=tmp_path / 'finetuned_model')
     assert os.path.exists(tmp_path / 'finetuned_model')
-    # delete all experiments (and runs)
-    finetuner_mocker.delete_experiments()
+    # delete created experiments (and runs)
+    finetuner_mocker.delete_experiment(experiment_name)
     experiments = finetuner_mocker.list_experiments()
     assert not experiments

@@ -27,6 +27,6 @@ def test_experiments(
     assert len(experiments) == 2
     assert second_exp_name in [experiment.name for experiment in experiments]
     # delete all experiments
-    finetuner_mocker.delete_experiments()
+    finetuner_mocker.delete_experiment(second_exp_name)
     experiments = finetuner_mocker.list_experiments()
     assert not experiments
