@@ -142,7 +142,7 @@ Lastly, we provide an `EvaluationCallback` with our `query_data` and `index_data
 
 
 ## Monitoring your runs
-"Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()` or the logs - `run.logs()`. "
+Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()` or the logs - `run.logs()`. 
 ```python
 print(run.status())
 ```
@@ -151,7 +151,7 @@ print(run.status())
 {'status': 'CREATED', 'details': 'Run submitted and awaits execution'}
 ```
 
-"Since some runs might take up to several hours/days, you can reconnect to your run very easily to monitor its status."
+Since some runs might take up to several hours/days, you can reconnect to your run very easily to monitor its status.
 ```python
 import finetuner
 
