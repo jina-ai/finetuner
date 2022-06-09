@@ -1,6 +1,6 @@
 # Image to image search using ResNet
 
-This guide will show you how to fine-tune a ResNet model for image to image retrieval.
+This guide will demonstrate how to fine-tune a ResNet model for image to image retrieval.
 
 ## Task Overview
 More specifically, we will fine-tune ResNet50 on [Totally Looks Like Dataset](https://sites.google.com/view/totally-looks-like-dataset).
@@ -9,7 +9,7 @@ The dataset consists of 6016 pairs of images (12032 in total).
 
 ```{admonition} About TTL
 :class: tip
-Totally-Looks-Like is a dataset and benchmark challenging machine-learned representations to reproduce human perception of image similarity. As shown below, each image patch in the left has a corresponded similar image patch in the right. 
+Totally-Looks-Like is a dataset and benchmark challenging machine-learned representations to reproduce human perception of image similarity. As shown below, each image patch in the left has a corresponding similar image patch in the right. 
 ```
 
 <p align="center">
@@ -17,18 +17,18 @@ Totally-Looks-Like is a dataset and benchmark challenging machine-learned repres
 </p>
 
 The dataset consists of pairs of images, these are the positive pairs. Negative pairs are constructed by taking two different images, i.e. images that are not in the same pair initially. Following this approach, we construct triplets and use the `TripletLoss`.
-After the fine-tuning, the embeddings of positive pairs are expected to be pulled closer, while the embeddings for positive and negative pairs are expected to be pushed away.
+After fine-tuning, the embeddings of positive pairs are expected to be pulled closer, while the embeddings for negative pairs are expected to be pushed away.
 
 
 ## Preparing data
-Training and evaluation data is already prepared and pushed to Hubble following the [instructions](../2_step_by_step/2_4_create_training_data.md).
+Training and evaluation data are already prepared and pushed to Hubble following the [instructions](../2_step_by_step/2_4_create_training_data.md).
 You can either pull the data:
 ```python
 from docarray import DocumentArray
 train_data = DocumentArray.pull('resnet-ttl-train-data')
 eval_data = DocumentArray.pull('resnet-ttl-eval-data')
 ```
-Or specify given `DocumentArray` names (`resnet-ttl-train-data` and `resnet-ttl-eval-data`) directly to the finetuner.
+Or specify given `DocumentArray` names (`resnet-ttl-train-data` and `resnet-ttl-eval-data`) directly to Finetuner.
 
 ## Login to Finetuner
 As explained in the [Login to Jina ecosystem](../2_step_by_step/2_3_login_to_jina_ecosystem.md) section, first we need to login to Finetuner:
@@ -62,7 +62,7 @@ For this example, we're gonna go with `resnet50`.
 
 ## Creating a fine-tuning job
 You can easily start a fine-tuning run with `finetuner.fit`. With Finetuner you can create several fine-tuning jobs which will run in parallel.
-Let's use this advantage now and create two runs: in the first run we'll freeze the weights and train an additional `MLP` layer, and in the second one we'll fine-tune the whole model. 
+Let's use this advantage now and create two runs with different `learning_rate` values.
 
 ```python
 from finetuner.callbacks import BestModelCheckpoint
@@ -76,7 +76,7 @@ run1 = finetuner.fit(
         loss='TripletMarginLoss',
         callbacks=[BestModelCheckpoint()],
         epochs=6,
-        freeze=False,
+        learning_rate=0.001,
     )
 
 run2 = finetuner.fit(
@@ -88,19 +88,18 @@ run2 = finetuner.fit(
         loss='TripletMarginLoss',
         callbacks=[BestModelCheckpoint()],
         epochs=6,
-        freeze=True,
-        output_dim=2048,
+        learning_rate=0.01,
     )
 ```
-Now, let's understand what this code means. 
+Now, let's understand what this piece of code does. 
 ```{admonition} finetuner.fit parameters
 :class: tip
-The only mandatory parameters are `model` and `train_data`. We provide default values for others. Here is the [full list of the parameters](../../api/finetuner/#finetuner.fit). 
+The only required arguments are `model` and `train_data`. We provide default values for others. Here is the [full list of the parameters](../../api/finetuner/#finetuner.fit). 
 ```
 As you can see, we have to provide the `model` which we picked before. We also set `run_name` and `description`, which are optional,
 but recommended in order to retrieve your run easily and have some context about it. Furthermore, we had to provide `train_data` and `eval_data`. As you can see,
 we used the names of the `DocumentArray`s that are already on Hubble, but we could also pass a `DocumentArray` object itself, which will be automatically uploaded to Hubble. As stated before, we want to use the `TripletLoss`, and that's what `loss='TripletMarginLoss'` corresponds to.
-We used `BestModelCheckpoint` callback and set `epochs` to 6. The only difference between these two runs comes with the parameter `freeze`. As explained in the `description` field of each run, `freeze=True` will freeze the existing weights, and train only the additional `MLP` layer, while `freeze=False` will fine-tune the whole model.
+We used `BestModelCheckpoint` callback and set `epochs` to 6. Lastly, we have `learning_rate` which has a different value for each run.
 
 Let's check the status of our runs.
 ```python
@@ -133,4 +132,5 @@ run2.save_model('freezed-model')
 ```
 
 ## Evaluation
-coming soon!
+Currently, we don't have a user-friendly way to get evaluation metrics from the `EvaluationCallback` we initialized previously.
+What you can do for now is to call `run.logs()` in the end of the run and see evaluation results in the logs.
