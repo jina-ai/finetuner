@@ -32,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add a guide for image-to-image retrieval. ([#430](https://github.com/jina-ai/finetuner/pull/430))
 
+- Add a guide for text to image fine-tuning with `CLIP`. ([#433](https://github.com/jina-ai/finetuner/pull/433))
+
 ### Removed
 
 ### Changed
@@ -48,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Enable saving models for clip without overwriting. ([#432](https://github.com/jina-ai/finetuner/pull/432))
 
 ## [0.1.0] - 2022-05-23
 
