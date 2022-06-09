@@ -133,4 +133,47 @@ run2.save_model('freezed-model')
 
 ## Evaluation
 Currently, we don't have a user-friendly way to get evaluation metrics from the `EvaluationCallback` we initialized previously.
-What you can do for now is to call `run.logs()` in the end of the run and see evaluation results in the logs.
+What you can do for now is to call `run.logs()` in the end of the run and see evaluation results:
+
+```bash
+[10:37:49] DEBUG    Metric: 'model_average_precision' Value: 0.30105                                     __main__.py:217
+           DEBUG    Metric: 'model_dcg_at_k' Value: 0.43933                                              __main__.py:217
+           DEBUG    Metric: 'model_f1_score_at_k' Value: 0.06273                                         __main__.py:217
+           DEBUG    Metric: 'model_hit_at_k' Value: 0.69000                                              __main__.py:217
+           DEBUG    Metric: 'model_ndcg_at_k' Value: 0.43933                                             __main__.py:217
+           DEBUG    Metric: 'model_precision_at_k' Value: 0.03450                                        __main__.py:217
+           DEBUG    Metric: 'model_r_precision' Value: 0.30105                                           __main__.py:217
+           DEBUG    Metric: 'model_recall_at_k' Value: 0.34500                                           __main__.py:217
+           DEBUG    Metric: 'model_reciprocal_rank' Value: 0.30105                                       __main__.py:217
+           INFO     Done ✨                                                                              __main__.py:219
+           INFO     Saving fine-tuned models ...                                                         __main__.py:222
+           INFO     Saving model 'model' in /usr/src/app/tuned-models/model ...                          __main__.py:233
+           INFO     Pushing saved model to Hubble ...                                                    __main__.py:240
+[10:38:14] INFO     Pushed model artifact ID: '62a1af491597c219f6a330fe'                                 __main__.py:246
+           INFO     Finished 🚀                                                                          __main__.py:248
+```
+           
+           
+           \
+           
+           
+           
+           
+           
+           ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
