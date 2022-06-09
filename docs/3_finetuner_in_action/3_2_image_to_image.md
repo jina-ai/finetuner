@@ -31,7 +31,7 @@ eval_data = DocumentArray.pull('resnet-ttl-eval-data')
 Or specify given `DocumentArray` names (`resnet-ttl-train-data` and `resnet-ttl-eval-data`) directly to Finetuner.
 
 ## Login to Finetuner
-As explained in the [Login to Jina ecosystem](../2_step_by_step/2_3_login_to_jina_ecosystem.md) section, first we need to login to Finetuner:
+As explained in the [Login to Jina ecosystem](../2_step_by_step/2_3_login_to_jina_ecosystem.md) section, first we need to login to Jina Cloud:
 ```python
 import finetuner
 finetuner.login()
