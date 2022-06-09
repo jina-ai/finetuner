@@ -24,6 +24,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Docs add developer reference, Jina ecosystem and style fix. ([#423](https://github.com/jina-ai/finetuner/pull/423))
 
+- Add support for MLP model. ([#428](https://github.com/jina-ai/finetuner/pull/428))
+
+- Add method `list_models` that returns the available model names. ([#428](https://github.com/jina-ai/finetuner/pull/428))
+
+- Organize supported model to model stubs under `finetuner.models`. ([#428](https://github.com/jina-ai/finetuner/pull/428))
+
+- Add a guide for image-to-image retrieval. ([#430](https://github.com/jina-ai/finetuner/pull/430))
+
+- Add a guide for text to image fine-tuning with `CLIP`. ([#433](https://github.com/jina-ai/finetuner/pull/433))
+
 - Add template for guides in docs. ([#437](https://github.com/jina-ai/finetuner/pull/437))
 
 - Add text to text with Bert guide to docs. ([#426](https://github.com/jina-ai/finetuner/pull/426))
@@ -39,8 +49,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Expose run methods. ([#425](https://github.com/jina-ai/finetuner/pull/425))
 
+- Rename `list_models` to `describe_models`. ([#428](https://github.com/jina-ai/finetuner/pull/428))
+
+- Rename `finetuner.callbacks` to `finetuner.callback` to avoid name collision in `__init__.py`. ([#428](https://github.com/jina-ai/finetuner/pull/428))
+
 ### Fixed
 
+- Enable saving models for clip without overwriting. ([#432](https://github.com/jina-ai/finetuner/pull/432))
 
 ## [0.1.0] - 2022-05-23
 

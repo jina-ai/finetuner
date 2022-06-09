@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from docarray import DocumentArray
 
-from finetuner.constants import DA_PREFIX, FINETUNED_MODELS_DIR, MODEL_IDS
+from finetuner.constants import DA_PREFIX, FINETUNED_MODEL, MODEL_IDS
 
 
 def push_data(
@@ -41,7 +41,7 @@ def push_data(
             if _id in ids2names:
                 return ids2names[_id]
             print(f'Pushing a DocumentArray to Hubble under the name {name} ...')
-            data.push(name=name, show_progress=True, public=True)
+            data.push(name=name, show_progress=True, public=False)
             ids2names[id(data)] = name
             return name
         return data
@@ -64,22 +64,26 @@ def push_data(
 
 
 def download_model(
-    client, experiment_name: str, run_name: str, path: str = FINETUNED_MODELS_DIR
+    client, experiment_name: str, run_name: str, path: str = FINETUNED_MODEL
 ) -> List[str]:
     """Download finetuned model(s) from Hubble by its ID.
 
     :param client: The Finetuner API client.
     :param experiment_name: The name of the experiment.
     :param run_name: The name of the run.
-    :param path: Directory where the model will be stored.
+    :param path: Path where the model will be stored.
     :returns: A list of str object(s) that indicate the download path.
     """
     artifact_ids = client.get_run(experiment_name=experiment_name, run_name=run_name)[
         MODEL_IDS
     ]
     artifact_ids = json.loads(artifact_ids)
+    if len(artifact_ids) > 1:
+        paths = [path + '_' + id for id in artifact_ids]
+    else:
+        paths = [path]
     response = [
         client.hubble_client.download_artifact(id=artifact_id, path=path)
-        for artifact_id in artifact_ids
+        for artifact_id, path in zip(artifact_ids, paths)
     ]
     return response
