@@ -81,7 +81,6 @@ def test_create_run_and_save_model(finetuner_mocker, get_image_data, tmp_path):
         learning_rate=0.001,
         batch_size=10,
         epochs=2,
-        run_name=create_random_name(prefix='run'),
         experiment_name=experiment_name,
     )
     while run.status()[STATUS] not in [FINISHED, FAILED]:
