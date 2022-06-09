@@ -1,11 +1,14 @@
 from dataclasses import dataclass, field
-from typing import List, Optional, Union
+from typing import List, Optional, TypeVar, Union
 
 from docarray import DocumentArray
+
+CallbackStubType = TypeVar('CallbackStubType')
 
 
 @dataclass
 class BestModelCheckpoint:
+    # noinspection PyUnresolvedReferences
     """
     Callback to save the best model across all epochs
 
@@ -33,6 +36,7 @@ class BestModelCheckpoint:
 
 @dataclass
 class TrainingCheckpoint:
+    # noinspection PyUnresolvedReferences
     """
     Callback that saves the tuner state at every epoch or the last k epochs.
 
@@ -48,6 +52,7 @@ class TrainingCheckpoint:
 
 @dataclass
 class WandBLogger:
+    # noinspection PyUnresolvedReferences
     """
     `Weights & Biases <https://wandb.ai/site>`_ logger to log metrics for training and
     validation.
@@ -68,6 +73,7 @@ class WandBLogger:
 
 @dataclass
 class MLFlowLogger:
+    # noinspection PyUnresolvedReferences
     """
     Callback to send data to MLFlow tracking tools. The collects parameters of the
     tuner and metrics during finetuning and validation.
@@ -87,6 +93,7 @@ class MLFlowLogger:
 
 @dataclass
 class EarlyStopping:
+    # noinspection PyUnresolvedReferences
     """
     Callback to stop training when a monitored metric has stopped improving.
     A `finetuner.fit()` training loop will check at the end of every epoch whether
@@ -123,6 +130,7 @@ class EarlyStopping:
 
 @dataclass
 class EvaluationCallback:
+    # noinspection PyUnresolvedReferences
     """
     A callback that uses the Evaluator to calculate IR metrics at the end of each epoch.
     When used with other callbacks that rely on metrics, like checkpoints and logging,

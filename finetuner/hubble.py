@@ -41,7 +41,7 @@ def push_data(
             if _id in ids2names:
                 return ids2names[_id]
             print(f'Pushing a DocumentArray to Hubble under the name {name} ...')
-            data.push(name=name, show_progress=True, public=True)
+            data.push(name=name, show_progress=True, public=False)
             ids2names[id(data)] = name
             return name
         return data
@@ -78,8 +78,12 @@ def download_model(
         MODEL_IDS
     ]
     artifact_ids = json.loads(artifact_ids)
+    if len(artifact_ids) > 1:
+        paths = [path + '_' + id for id in artifact_ids]
+    else:
+        paths = [path]
     response = [
         client.hubble_client.download_artifact(id=artifact_id, path=path)
-        for artifact_id in artifact_ids
+        for artifact_id, path in zip(artifact_ids, paths)
     ]
     return response
