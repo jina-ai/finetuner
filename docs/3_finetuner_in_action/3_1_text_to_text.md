@@ -111,7 +111,7 @@ run = experiment.get_run('finetune-quora-dataset-distilbert-1')
 print(f'Run status: {run.status()}')
 print(f'Run logs: {run.logs()}')
 
-run.save_model('.')
+run.save_model('tuned_model')
 ```
 
 ## Evaluation
