@@ -64,7 +64,7 @@ def test_runs(
     # delete experiment
     finetuner_mocker.delete_experiment(experiment_name)
     experiments = finetuner_mocker.list_experiments()
-    assert not experiments
+    assert experiment_name not in [experiment.name for experiment in experiments]
 
 
 def test_create_run_and_save_model(finetuner_mocker, get_image_data, tmp_path):
@@ -92,4 +92,4 @@ def test_create_run_and_save_model(finetuner_mocker, get_image_data, tmp_path):
     # delete created experiments (and runs)
     finetuner_mocker.delete_experiment(experiment_name)
     experiments = finetuner_mocker.list_experiments()
-    assert not experiments
+    assert experiment_name not in [experiment.name for experiment in experiments]

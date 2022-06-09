@@ -29,4 +29,4 @@ def test_experiments(
     # delete all experiments
     finetuner_mocker.delete_experiment(second_exp_name)
     experiments = finetuner_mocker.list_experiments()
-    assert not experiments
+    assert second_exp_name not in [experiment.name for experiment in experiments]
