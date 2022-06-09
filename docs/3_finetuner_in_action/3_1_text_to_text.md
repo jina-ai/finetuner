@@ -98,7 +98,7 @@ Now that we have the training and evaluation datasets loaded as `DocumentArray`s
 
 ```python
 import finetuner
-from finetuner.callbacks import EvaluationCallback
+from finetuner.callback import EvaluationCallback
 
 # Make sure to login to Jina Cloud
 finetuner.login()
