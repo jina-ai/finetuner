@@ -78,8 +78,12 @@ def download_model(
         MODEL_IDS
     ]
     artifact_ids = json.loads(artifact_ids)
+    if len(artifact_ids) > 1:
+        paths = [path + '_' + id for id in artifact_ids]
+    else:
+        paths = [path]
     response = [
         client.hubble_client.download_artifact(id=artifact_id, path=path)
-        for artifact_id in artifact_ids
+        for artifact_id, path in zip(artifact_ids, paths)
     ]
     return response
