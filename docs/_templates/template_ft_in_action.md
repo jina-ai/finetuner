@@ -7,7 +7,7 @@ For more info on best practices for documentation, see Jina's [contribution guid
 ```
 
 ## Task overview
-Describe the task which this guide accomplishes, including which model will be fine-tuned and which dataset you will use for.
+Describe the task which this guide accomplishes, including which model will be fine-tuned and which dataset you will use.
 
 Also provide a brief description of what the task entails, what the dataset looks like and a high-level description of how the dataset is processed.
 
@@ -18,22 +18,10 @@ Add a link to supplementary dataset info, for example as a `See Also` {admonitio
 If you are outlining how to preprocess a dataset from scratch, use {dropdown} to hide long code snippets.
 
 
-## Login to Finetuner
-Explain how the user can login to Finetuner and why this is necessary. Feel free to also link to other documentation as well.
-
-Example:
-
-"As explained in the [Login to Jina ecosystem](../2_step_by_step/2_3_login_to_jina_ecosystem.md) section, first we need to login to Finetuner:"
-```python
-import finetuner
-finetuner.login()
-```
-
-
 ## Choosing the model
 Mention which model will be used in your fine-tuning task. Feel free to add a `See Also` {admonition} for supplementary info on the model, perhaps a relevant paper or site.
 
-You can also add a `Tip` {admonition} for how the user can view all available models, also referring to the `Choose back bone` documentation.
+You can also add a `Tip` {admonition} for how the user can view all available models, also referring to the `Choose backbone model` documentation.
 
 
 ## Creating a fine-tuning run
