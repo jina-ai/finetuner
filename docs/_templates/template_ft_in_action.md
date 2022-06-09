@@ -1,5 +1,5 @@
 # Finetuner in Action Template
-This is a template for the documentation guides of Finetuner in action, with the general structure and layout to be used for demonstrating how Finetuner can be deployed for different tasks.
+This is a template for the documentation guides of Finetuner in action, with the general structure and layout to be used for demonstrating how Finetuner can be applied to solve different tasks.
 
 ```{admonition} See Also: Jina Contribution Guidelines
 :class: seealso
@@ -36,7 +36,7 @@ Mention which model will be used in your fine-tuning task. Feel free to add a `S
 You can also add a `Tip` {admonition} for how the user can view all available models, also referring to the `Choose back bone` documentation.
 
 
-## Creating a fine-tuning job
+## Creating a fine-tuning run
 Show the user how to create a fine-tuning run, then explain why your example run has particular parameters and what they do. Also mention which parameters are optional or required.
 Provide a more detailed explanation of parameters that are important for your particular experiment. 
 
@@ -50,7 +50,7 @@ run = finetuner.fit(
 "Let's understand what this piece of code does ..."
 
 
-## Monitor your runs
+## Monitoring your runs
 
 Also show the user how they can monitor their run, and reconnect to it if they were disconnected. 
 
@@ -72,7 +72,7 @@ finetuner.login()
 run = finetuner.get_run('my_run')
 ```
 
-## Save your model
+## Saving your model
 Show the user how to save their model when fine-tuning has completed.
 
 Example:
@@ -82,5 +82,5 @@ Example:
 run.save_model('my_model')
 ```
 
-## Evaluation and performance
+## Evaluating your model
 Explain to the user how they can track the performance of the model(s) they have fine-tuned in their runs. If this is not implemented yet, show the user an example log and how they might deduce model performance from this log.
