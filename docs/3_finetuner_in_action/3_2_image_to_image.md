@@ -30,13 +30,6 @@ eval_data = DocumentArray.pull('resnet-ttl-eval-data')
 ```
 Or specify given `DocumentArray` names (`resnet-ttl-train-data` and `resnet-ttl-eval-data`) directly to Finetuner.
 
-## Login to Finetuner
-As explained in the [Login to Jina ecosystem](../2_step_by_step/2_3_login_to_jina_ecosystem.md) section, first we need to login to Jina Cloud:
-```python
-import finetuner
-finetuner.login()
-```
-
 ## Choosing the model
 Now let's see what backbone models we can use. You can see available models either in [the docs](../2_step_by_step/2_5_choose_back_bone.md) or by calling `finetuner.describe_models()`.
 
@@ -45,6 +38,11 @@ For this example, we're gonna go with `resnet50`.
 
 ## Creating a fine-tuning job
 You can easily start a fine-tuning run with `finetuner.fit`.
+
+```{admonition} Login to Jina Cloud
+:class: tip
+Before creating a run, you need to [Login to Jina ecosystem](../2_step_by_step/2_3_login_to_jina_ecosystem.md) by calling `finetuner.login()`.
+```
 
 ```python
 from finetuner.callback import BestModelCheckpoint, EvaluationCallback
@@ -72,7 +70,7 @@ we used the names of the `DocumentArray`s that are already on Hubble, but we cou
 Additionally, we use `BestModelCheckpoint` to save the best model after each epoch and `EvaluationCallback` for evaluation. Lastly, we set number of `epochs` and provide a `learning_rate`.
 
 
-## Monitor your runs
+## Monitoring your runs
 
 Let's check the status of our runs.
 ```python
@@ -94,14 +92,14 @@ run = finetuner.get_run('resnet-ttl')
 
 You can continue monitoring the runs by checking the status - `run.status()` or the logs - `run.logs()`. 
 
-## Save your model
+## Saving your model
 
 If your runs have finished successfully, you can save fine-tuned models in the following way:
 ```python
 run.save_model('resnet-model')
 ```
 
-## Evaluation and performance
+## Evaluating your model
 Currently, we don't have a user-friendly way to get evaluation metrics from the `EvaluationCallback` we initialized previously.
 What you can do for now is to call `run.logs()` in the end of the run and see evaluation results:
 
