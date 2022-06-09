@@ -34,14 +34,18 @@ from docarray import DocumentArray
 
 # Login to Jina ecosystem
 finetuner.login()
+
 # Prepare training data
-train = DocumentArray(...)
+train_data = DocumentArray(...)
+
 # Fine-tune in the cloud
 run = finetuner.fit(
-    model='resnet18', train_data=train, epochs=5, batch_size=128,
+    model='resnet18', train_data=train_data, epochs=5, batch_size=128,
 )
+
 print(run.name)
 print(run.logs())
+
 # When ready
 run.save_model(path='tuned_model')
 ```
@@ -72,7 +76,7 @@ methods to production use cases.
 ```{Important}
 Not sure which model to use?
 
-Don't worry, call `finetuner.list_models()` and we will help you choose the best fit.
+Don't worry, call `finetuner.describe_models()` and we will help you choose the best fit.
 ```
 
 

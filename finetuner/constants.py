@@ -31,6 +31,7 @@ TRAIN_DATA = 'train_data'
 EVAL_DATA = 'eval_data'
 FINETUNED_MODEL = 'finetuned_model'
 MODEL = 'model'
+MODEL_OPTIONS = 'model_options'
 MODEL_IDS = 'model_ids'
 # Run status
 CREATED = 'CREATED'

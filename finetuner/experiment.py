@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
 
-from finetuner.callbacks import EvaluationCallback
+from finetuner.callback import EvaluationCallback
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import (
     BATCH_SIZE,
@@ -23,6 +23,7 @@ from finetuner.constants import (
     LOSS,
     MINER,
     MODEL,
+    MODEL_OPTIONS,
     MULTI_MODAL,
     NAME,
     NUM_WORKERS,
@@ -221,6 +222,7 @@ class Experiment:
                 FREEZE: kwargs.get(FREEZE),
                 OUTPUT_DIM: kwargs.get(OUTPUT_DIM),
                 MULTI_MODAL: kwargs.get(MULTI_MODAL),
+                OPTIONS: kwargs.get(MODEL_OPTIONS),
             },
             DATA: {
                 TRAIN_DATA: train_data,
