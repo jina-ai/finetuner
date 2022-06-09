@@ -152,28 +152,3 @@ What you can do for now is to call `run.logs()` in the end of the run and see ev
 [10:38:14] INFO     Pushed model artifact ID: '62a1af491597c219f6a330fe'                                 __main__.py:246
            INFO     Finished 🚀                                                                          __main__.py:248
 ```
-           
-           
-           \
-           
-           
-           
-           
-           
-           ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
