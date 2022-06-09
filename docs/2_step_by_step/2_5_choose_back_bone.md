@@ -13,24 +13,26 @@ You can call:
 ```python
 import finetuner
 
-finetuner.list_models()
+finetuner.describe_models()
 ```
 
 To get a list of supported models:
 
 ```bash
-                                                                  Finetuner backbones                                                                   
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃                                            model ┃           task ┃ output_dim ┃ architecture ┃                                          description ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│                                         resnet50 │ image-to-image │       2048 │          CNN │                               Pretrained on ImageNet │
-│                                        resnet152 │ image-to-image │       2048 │          CNN │                               Pretrained on ImageNet │
-│                                  efficientnet_b0 │ image-to-image │       1280 │          CNN │                               Pretrained on ImageNet │
-│                                  efficientnet_b4 │ image-to-image │       1280 │          CNN │                               Pretrained on ImageNet │
-│                     openai/clip-vit-base-patch32 │  text-to-image │        768 │  transformer │ Pretrained on millions of text image pairs by OpenAI │
-│                                  bert-base-cased │   text-to-text │        768 │  transformer │       Pretrained on BookCorpus and English Wikipedia │
-│ sentence-transformers/msmarco-distilbert-base-v3 │   text-to-text │        768 │  transformer │           Pretrained on Bert, fine-tuned on MS Marco │
-└──────────────────────────────────────────────────┴────────────────┴────────────┴──────────────┴──────────────────────────────────────────────────────┘
+                                                               Finetuner backbones                                                                
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                            model ┃           task ┃ output_dim ┃ architecture ┃                                    description ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│                                              mlp │            all │          - │          MLP │        Simple MLP encoder trained from scratch │
+│                                         resnet50 │ image-to-image │       2048 │          CNN │                         Pretrained on ImageNet │
+│                                        resnet152 │ image-to-image │       2048 │          CNN │                         Pretrained on ImageNet │
+│                                  efficientnet_b0 │ image-to-image │       1280 │          CNN │                         Pretrained on ImageNet │
+│                                  efficientnet_b4 │ image-to-image │       1280 │          CNN │                         Pretrained on ImageNet │
+│                     openai/clip-vit-base-patch32 │  text-to-image │        768 │  transformer │       Pretrained on text image pairs by OpenAI │
+│                                  bert-base-cased │   text-to-text │        768 │  transformer │ Pretrained on BookCorpus and English Wikipedia │
+│ sentence-transformers/msmarco-distilbert-base-v3 │   text-to-text │        768 │  transformer │     Pretrained on Bert, fine-tuned on MS Marco │
+└──────────────────────────────────────────────────┴────────────────┴────────────┴──────────────┴────────────────────────────────────────────────┘
+
 ```
 
 It should be noted that:

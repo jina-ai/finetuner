@@ -53,6 +53,7 @@ run = finetuner.fit(
     run_name='finetune-flickr-dataset-efficientnet-1',
     description='this is a trial run on flickr8k dataset with efficientnet b0.',
     experiment_name='finetune-flickr-dataset', # link to the experiment created above.
+    model_options={}, # additional options to pass to the model constructor
     loss='TripletMarginLoss', # Use CLIPLoss for CLIP fine-tuning.
     miner='TripletMarginMiner',
     optimizer='Adam',
