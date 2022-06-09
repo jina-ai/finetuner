@@ -26,7 +26,11 @@ def test_runs(
         eval_data=eval_data,
         experiment_name=experiment_name,
         run_name=first_run,
-        epochs=1,
+        loss='TripletMarginLoss',
+        optimizer='Adam',
+        learning_rate=1e-3,
+        batch_size=10,
+        epochs=2,
     )
     # get the first run
     run = finetuner_mocker.get_run(experiment_name=experiment_name, run_name=first_run)
@@ -38,6 +42,10 @@ def test_runs(
         eval_data=eval_data,
         experiment_name=experiment_name,
         run_name=second_run,
+        loss='TripletMarginLoss',
+        optimizer='Adam',
+        learning_rate=1e-3,
+        batch_size=10,
         epochs=1,
     )
     # list all runs
