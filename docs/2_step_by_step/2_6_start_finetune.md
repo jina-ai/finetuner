@@ -53,7 +53,8 @@ run = finetuner.fit(
     run_name='finetune-flickr-dataset-efficientnet-1',
     description='this is a trial run on flickr8k dataset with efficientnet b0.',
     experiment_name='finetune-flickr-dataset', # link to the experiment created above.
-    loss='TripletMarginLoss',
+    model_options={}, # additional options to pass to the model constructor
+    loss='TripletMarginLoss', # Use CLIPLoss for CLIP fine-tuning.
     miner='TripletMarginMiner',
     optimizer='Adam',
     learning_rate = 1e-4,
@@ -99,6 +100,7 @@ doc = Document(
 # in this case, image_modality and text_modality should be set correspondingly
 finetuner.fit(
     ...,
+    loss='CLIPLoss',
     image_modality='image',
     text_modality='text',
     multi_modal=True,

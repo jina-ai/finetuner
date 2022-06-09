@@ -3,11 +3,11 @@
 There are several fancy machine learning libraries out there,
 so what makes Finetuner unique?
 
-## Care about the quality of embeddings
+## Focus on the quality of embeddings
 
 Finetuner is not designed to improve classification,
 sentiment analysis or object detection.
-Finetuner cares the quality of the embeddings,
+Finetuner cares about the quality of the embeddings,
 and this is what the fine-tuned model will produce.
 
 Given a query `Document` embedded into `embeddings`,
@@ -21,7 +21,7 @@ Finetuner helps you boost your search system performance on different uses cases
 + text-to-text search (or dense vector search)
 + image-to-image search (or content-based image search)
 + text-to-image search (based on [OpenAI CLIP](https://openai.com/blog/clip/))
-+ more is coming!
++ more is on the way!
 
 Search performance depends on a lot of factors.
 Internally we have conducted a lot of experiments on various tasks,
@@ -35,11 +35,11 @@ such as mean recipal rank (mRR) or normalized discounted cumulative gain (nDCG).
 
 ## Easy to use
 
-Finetuner gives user the flexibility to choose machine learning hyper-parameters,
+Finetuner gives the user flexibility to choose machine learning hyper-parameters,
 while all these parameters are `Optional`.
 
 If you do not have a machine learning background,
 don't worry about it.
 As was stated before, you only need to provide the training data organized as a [DocumentArray](https://docarray.jina.ai/).
 In case you do not know which backbone to choose,
-use `list_models()` to let Finetuner suggest a backbone model for you.
+use `describe_models()` to let Finetuner suggest a backbone model for you.
