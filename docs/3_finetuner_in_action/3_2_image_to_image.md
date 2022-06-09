@@ -65,7 +65,7 @@ You can easily start a fine-tuning run with `finetuner.fit`. With Finetuner you 
 Let's use this advantage now and create two runs with different `learning_rate` values.
 
 ```python
-from finetuner.callbacks import BestModelCheckpoint
+from finetuner.callback import BestModelCheckpoint, EvaluationCallback
 
 run1 = finetuner.fit(
         model='resnet50',
@@ -74,7 +74,7 @@ run1 = finetuner.fit(
         train_data='resnet-ttl-train-data',
         eval_data='resnet-ttl-eval-data',
         loss='TripletMarginLoss',
-        callbacks=[BestModelCheckpoint()],
+        callbacks=[BestModelCheckpoint(), EvaluationCallback(query_data='resnet-ttl-eval-data')],
         epochs=6,
         learning_rate=0.001,
     )
@@ -86,7 +86,7 @@ run2 = finetuner.fit(
         train_data='resnet-ttl-train-data',
         eval_data='resnet-ttl-eval-data',
         loss='TripletMarginLoss',
-        callbacks=[BestModelCheckpoint()],
+        callbacks=[BestModelCheckpoint(), EvaluationCallback(query_data='resnet-ttl-eval-data')],
         epochs=6,
         learning_rate=0.01,
     )
@@ -99,7 +99,7 @@ The only required arguments are `model` and `train_data`. We provide default val
 As you can see, we have to provide the `model` which we picked before. We also set `run_name` and `description`, which are optional,
 but recommended in order to retrieve your run easily and have some context about it. Furthermore, we had to provide `train_data` and `eval_data`. As you can see,
 we used the names of the `DocumentArray`s that are already on Hubble, but we could also pass a `DocumentArray` object itself, which will be automatically uploaded to Hubble. As stated before, we want to use the `TripletLoss`, and that's what `loss='TripletMarginLoss'` corresponds to.
-We used `BestModelCheckpoint` callback and set `epochs` to 6. Lastly, we have `learning_rate` which has a different value for each run.
+Additionally, we use `BestModelCheckpoint` to save the best model after each epoch and `EvaluationCallback` for evaluation. Lastly, we set `epochs` to 6 and provide different `learning_rate` for each run.
 
 Let's check the status of our runs.
 ```python
