@@ -1,5 +1,5 @@
 # Finetuner in Action Template
-This is a template for the documentation guides of Finetuner in action, with the general structure and layout to be used in demonstrating how Finetuner can be used for different tasks.
+This is a template for the documentation guides of Finetuner in action, with the general structure and layout to be used for demonstrating how Finetuner can be deployed for different tasks.
 
 ```{admonition} See Also: Jina Contribution Guidelines
 :class: seealso
@@ -32,7 +32,7 @@ finetuner.login()
 
 ## Choosing the model
 Always show the available models in your guide. Then mention which model will be used in your fine-tuning task. 
-Feel free to add a `See Also` {admonition} for supplementary info on the model.
+Feel free to add a `See Also` {admonition} for supplementary info on the model, perhaps a relevant paper or site.
 
 Example:
 
@@ -101,4 +101,4 @@ run.save_model('clip-model')
 ```
 
 ## Evaluation and performance
-Explain to the user how they can track the performance of the model(s) they have fine-tuned in their runs. If this is not implemented yet, show the user an example log and how they might deduce performance from this log.
+Explain to the user how they can track the performance of the model(s) they have fine-tuned in their runs. If this is not implemented yet, show the user an example log and how they might deduce model performance from this log.
