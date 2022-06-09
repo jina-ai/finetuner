@@ -31,30 +31,9 @@ finetuner.login()
 
 
 ## Choosing the model
-Always show the available models in your guide. Then mention which model will be used in your fine-tuning task. 
-Feel free to add a `See Also` {admonition} for supplementary info on the model, perhaps a relevant paper or site.
+Mention which model will be used in your fine-tuning task. Feel free to add a `See Also` {admonition} for supplementary info on the model, perhaps a relevant paper or site.
 
-Example:
-
-"You can see all available models either in [the docs](../2_step_by_step/2_5_choose_back_bone.md) or by calling:"
-```python
-finetuner.describe_models()
-```
-
-```bash
-                                                                  Finetuner backbones                                                                   
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃                                            model ┃           task ┃ output_dim ┃ architecture ┃                                          description ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│                                         resnet50 │ image-to-image │       2048 │          CNN │                               Pretrained on ImageNet │
-│                                        resnet152 │ image-to-image │       2048 │          CNN │                               Pretrained on ImageNet │
-│                                  efficientnet_b0 │ image-to-image │       1280 │          CNN │                               Pretrained on ImageNet │
-│                                  efficientnet_b4 │ image-to-image │       1280 │          CNN │                               Pretrained on ImageNet │
-│                     openai/clip-vit-base-patch32 │  text-to-image │        768 │  transformer │ Pretrained on millions of text image pairs by OpenAI │
-│                                  bert-base-cased │   text-to-text │        768 │  transformer │       Pretrained on BookCorpus and English Wikipedia │
-│ sentence-transformers/msmarco-distilbert-base-v3 │   text-to-text │        768 │  transformer │           Pretrained on Bert, fine-tuned on MS Marco │
-└──────────────────────────────────────────────────┴────────────────┴────────────┴──────────────┴──────────────────────────────────────────────────────┘
-```
+You can also add a `Tip` {admonition} for how the user can view all available models, also referring to the `Choose back bone` documentation.
 
 
 ## Creating a fine-tuning job
@@ -71,9 +50,13 @@ run = finetuner.fit(
 "Let's understand what this piece of code does ..."
 
 
-Also show the user how they can monitor their run. Example:
+## Monitor your runs
 
-"Now that we've created a run, let's see its status."
+Also show the user how they can monitor their run, and reconnect to it if they were disconnected. 
+
+Example:
+
+"Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()` or the logs - `run.logs()`. "
 ```python
 print(run.status())
 ```
@@ -82,22 +65,21 @@ print(run.status())
 {'status': 'CREATED', 'details': 'Run submitted and awaits execution'}
 ```
 
-
-## Reconnect and retrieve the runs
-Show the user how to connect to their run, look at their logs and and save their model when fine-tuning has completed.
-
-"Since some runs might take up to several hours/days, it's important to know how to reconnect to Finetuner and retrieve your run."
+"Since some runs might take up to several hours/days, you can reconnect to your run very easily to monitor its status and logs."
 ```python
 import finetuner
 finetuner.login()
 run = finetuner.get_run('my_run')
 ```
 
-"You can monitor the run by checking the status - `run.status()` or the logs - `run.logs()`. 
+## Save your model
+Show the user how to save their model when fine-tuning has completed.
 
-If your run has finished successfully, you can save fine-tuned models in the following way:"
+Example:
+
+"If your run has finished successfully, you can save fine-tuned models in the following way:"
 ```python
-run.save_model('clip-model')
+run.save_model('my_model')
 ```
 
 ## Evaluation and performance
