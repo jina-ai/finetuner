@@ -51,7 +51,7 @@ train_data.summary()
 
 Your `train_data` `DocumentArray` summary should look like this:
 
-```python
+```bash
 ╭──────────────── Documents Summary ────────────────╮
 │                                                   │
 │   Length                 104598                   │
@@ -88,7 +88,7 @@ Perhaps in the future, we might want to create another run where we experiment w
 
 ```{admonition} Backbones
 :class: tip
- Finetuner also supports fine-tuning other models, see the [Choose a backbone model]](../2_step_by_step/2_5_choose_back_bone.md) section.
+ Finetuner also supports fine-tuning other models, see the {ref}`choose backbone <choose-backbone>` section.
  ```
 
 

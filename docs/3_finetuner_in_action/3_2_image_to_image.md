@@ -12,10 +12,6 @@ The dataset consists of 6016 pairs of images (12032 in total).
 Totally-Looks-Like is a dataset and benchmark challenging machine-learned representations to reproduce human perception of image similarity. As shown below, each image patch in the left has a corresponding similar image patch in the right. 
 ```
 
-<p align="center">
-  <img src="https://finetuner.jina.ai/_static/ttl_overview.png" />
-</p>
-
 The dataset consists of pairs of images, these are the positive pairs. Negative pairs are constructed by taking two different images, i.e. images that are not in the same pair initially. Following this approach, we construct triplets and use the `TripletLoss`.
 After fine-tuning, the embeddings of positive pairs are expected to be pulled closer, while the embeddings for negative pairs are expected to be pushed away.
 
