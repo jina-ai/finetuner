@@ -34,6 +34,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add a guide for text to image fine-tuning with `CLIP`. ([#433](https://github.com/jina-ai/finetuner/pull/433))
 
+- Add template for guides in docs. ([#437](https://github.com/jina-ai/finetuner/pull/437))
+
+- Add text to text with Bert guide to docs. ([#426](https://github.com/jina-ai/finetuner/pull/426))
+
+
 ### Removed
 
 ### Changed
