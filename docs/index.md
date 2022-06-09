@@ -47,7 +47,7 @@ print(run.name)
 print(run.logs())
 
 # When ready
-run.save_model(path='.')
+run.save_model(path='tuned_model')
 ```
 
 You should see this in your terminal:
