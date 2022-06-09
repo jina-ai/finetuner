@@ -19,20 +19,17 @@ eval_data = DocumentArray.pull('clip-fashion-eval-data')
 Or specify given `DocumentArray` names (`clip-fashion-train-data` and `clip-fashion-eval-data`) directly to finetuner.
 
 
-## Login to Finetuner
-As explained in the [Login to Jina ecosystem](../2_step_by_step/2_3_login_to_jina_ecosystem.md) section, first we need to login to Jina Cloud:
-```python
-import finetuner
-finetuner.login()
-```
-
-
 ## Choosing the model
 Currently, we only support `openai/clip-vit-base-patch32` for text to image retrieval tasks. However, you can see all available models either in [the docs](../2_step_by_step/2_5_choose_back_bone.md) or by calling `finetuner.describe_models()`.
 
 
 ## Creating a fine-tuning job
 Now that everything's ready, let's create a fine-tuning run!
+
+```{admonition} Login to Jina Cloud
+:class: tip
+Before creating a run, you need to [Login to Jina ecosystem](../2_step_by_step/2_3_login_to_jina_ecosystem.md) by calling `finetuner.login()`.
+```
 
 ```python
 from finetuner.callback import BestModelCheckpoint, EvaluationCallback
@@ -58,7 +55,7 @@ and `text_modality` which are needed for `CLIP` model to distribute data across 
 We also need to provide a `CLIPloss` and set `multi_modal` to `True`.
 
 
-## Monitor your runs
+## Monitoring your runs
 
 We created a run! Now let's see its status.
 ```python
@@ -80,14 +77,14 @@ run = finetuner.get_run('clip-fashion')
 You can continue monitoring the run by checking the status - `run.status()` or the logs - `run.logs()`. 
 
 
-## Save your model
+## Saving your model
 
 If your run has finished successfully, you can save fine-tuned models in the following way:
 ```python
 run.save_model('clip-model')
 ```
 
-## Evaluation and performance
+## Evaluating your model
 Currently, we don't have a user-friendly way to get evaluation metrics from the `EvaluationCallback` we initialized previously.
 What you can do for now is to call `run.logs()` in the end of the run and see evaluation results:
 
