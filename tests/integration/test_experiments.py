@@ -1,11 +1,4 @@
-import random
-import string
-
-
-def create_random_experiment_name(length=6):
-    return 'experiment-' + ''.join(
-        random.choices(string.ascii_uppercase + string.digits, k=length)
-    )
+from tests.helper import create_random_name
 
 
 def test_experiments(
@@ -13,9 +6,7 @@ def test_experiments(
 ):
     # Always has one default Experiment.
     assert len(finetuner_mocker.list_experiments()) == 1
-    first_exp_name, second_exp_name = [
-        create_random_experiment_name() for _ in range(2)
-    ]
+    first_exp_name, second_exp_name = [create_random_name() for _ in range(2)]
     # create an experiment and retrieve it
     finetuner_mocker.create_experiment(name=first_exp_name)
     exp1 = finetuner_mocker.get_experiment(name=first_exp_name)
