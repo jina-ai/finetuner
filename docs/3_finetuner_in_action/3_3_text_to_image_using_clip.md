@@ -53,6 +53,8 @@ finetuner.describe_models()
 Now that everything's ready, let's create a fine-tuning run!
 
 ```python
+from finetuner.callbacks import BestModelCheckpoint, EvaluationCallback
+
 run = finetuner.fit(
         model='openai/clip-vit-base-patch32',
         run_name='clip-fashion-1',
@@ -60,6 +62,7 @@ run = finetuner.fit(
         eval_data='clip-fashion-eval-data',
         epochs=5,
         learning_rate= 1e-5,
+        callbacks=[BestModelCheckpoint(), EvaluationCallback(query_data='clip-fashion-eval-data')],
         loss='CLIPLoss',
         image_modality='image',
         text_modality='text',
@@ -68,7 +71,7 @@ run = finetuner.fit(
 ```
 Let's understand what this piece of code does.
 We start with providing `model`, `run_name`, names of training and evaluation data. We also provide some hyper-parameters
-such as number of `epochs` and a `learning_rate`. Now let's move on to CLIP-specific arguments. We provided `image_modality`
+such as number of `epochs` and a `learning_rate`. Additionally, we use `BestModelCheckpoint` to save the best model after each epoch and `EvaluationCallback` for evaluation. Now let's move on to CLIP-specific arguments. We provided `image_modality`
 and `text_modality` which are needed for `CLIP` model to distribute data across its two models properly. (More on this in the [create training data](../2_step_by_step/2_4_create_training_data.md) section).
 We also need to provide a `CLIPloss` and set `multi_modal` to `True`.
 
@@ -100,4 +103,5 @@ run.save_model('clip-model')
 ```
 
 ## Evaluation
-coming soon!
+Currently, we don't have a user-friendly way to get evaluation metrics from the `EvaluationCallback` we initialized previously.
+What you can do for now is to call `run.logs()` in the end of the run and see evaluation results in the logs.
