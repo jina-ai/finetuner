@@ -28,25 +28,7 @@ finetuner.login()
 
 
 ## Choosing the model
-Currently, we only support `openai/clip-vit-base-patch32` for text to image retrieval tasks. However, you can see all available models either in [the docs](../2_step_by_step/2_5_choose_back_bone.md) or by calling:
-```python
-finetuner.describe_models()
-```
-
-```bash
-                                                                  Finetuner backbones                                                                   
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃                                            model ┃           task ┃ output_dim ┃ architecture ┃                                          description ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│                                         resnet50 │ image-to-image │       2048 │          CNN │                               Pretrained on ImageNet │
-│                                        resnet152 │ image-to-image │       2048 │          CNN │                               Pretrained on ImageNet │
-│                                  efficientnet_b0 │ image-to-image │       1280 │          CNN │                               Pretrained on ImageNet │
-│                                  efficientnet_b4 │ image-to-image │       1280 │          CNN │                               Pretrained on ImageNet │
-│                     openai/clip-vit-base-patch32 │  text-to-image │        768 │  transformer │ Pretrained on millions of text image pairs by OpenAI │
-│                                  bert-base-cased │   text-to-text │        768 │  transformer │       Pretrained on BookCorpus and English Wikipedia │
-│ sentence-transformers/msmarco-distilbert-base-v3 │   text-to-text │        768 │  transformer │           Pretrained on Bert, fine-tuned on MS Marco │
-└──────────────────────────────────────────────────┴────────────────┴────────────┴──────────────┴──────────────────────────────────────────────────────┘
-```
+Currently, we only support `openai/clip-vit-base-patch32` for text to image retrieval tasks. However, you can see all available models either in [the docs](../2_step_by_step/2_5_choose_back_bone.md) or by calling `finetuner.describe_models()`.
 
 
 ## Creating a fine-tuning job
@@ -57,7 +39,7 @@ from finetuner.callback import BestModelCheckpoint, EvaluationCallback
 
 run = finetuner.fit(
         model='openai/clip-vit-base-patch32',
-        run_name='clip-fashion-1',
+        run_name='clip-fashion',
         train_data='clip-fashion-train-data',
         eval_data='clip-fashion-eval-data',
         epochs=5,
@@ -76,7 +58,9 @@ and `text_modality` which are needed for `CLIP` model to distribute data across 
 We also need to provide a `CLIPloss` and set `multi_modal` to `True`.
 
 
-Now that we've created a run, let's see its status.
+## Monitor your runs
+
+We created a run! Now let's see its status.
 ```python
 print(run.status())
 ```
@@ -85,24 +69,25 @@ print(run.status())
 {'status': 'CREATED', 'details': 'Run submitted and awaits execution'}
 ```
 
-
-## Reconnect and retrieve the runs
 Since some runs might take up to several hours/days, it's important to know how to reconnect to Finetuner and retrieve your run.
 
 ```python
 import finetuner
 finetuner.login()
-run = finetuner.get_run('clip-fashion-1')
+run = finetuner.get_run('clip-fashion')
 ```
 
-You can monitor the run by checking the status - `run.status()` or the logs - `run.logs()`. 
+You can continue monitoring the run by checking the status - `run.status()` or the logs - `run.logs()`. 
+
+
+## Save your model
 
 If your run has finished successfully, you can save fine-tuned models in the following way:
 ```python
 run.save_model('clip-model')
 ```
 
-## Evaluation
+## Evaluation and performance
 Currently, we don't have a user-friendly way to get evaluation metrics from the `EvaluationCallback` we initialized previously.
 What you can do for now is to call `run.logs()` in the end of the run and see evaluation results:
 
