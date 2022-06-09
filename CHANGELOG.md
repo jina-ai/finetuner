@@ -30,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Organize supported model to model stubs under `finetuner.models`. ([#428](https://github.com/jina-ai/finetuner/pull/428))
 
+- Add a guide for text to image fine-tuning with `CLIP`. ([#433](https://github.com/jina-ai/finetuner/pull/433))
+
 ### Removed
 
 ### Changed
