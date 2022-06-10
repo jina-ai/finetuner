@@ -1,3 +1,4 @@
+(install-finetuner)=
 # Installation
 
 ![PyPI](https://img.shields.io/pypi/v/finetuner-client?color=%23ffffff&label=%20) is the latest version.

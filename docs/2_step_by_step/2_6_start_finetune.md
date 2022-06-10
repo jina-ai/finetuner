@@ -1,3 +1,4 @@
+(start-finetuner)=
 # Start fine-tuning
 
 Now you should have your training data and evaluation data (optional) prepared as `DocumentArray`s,

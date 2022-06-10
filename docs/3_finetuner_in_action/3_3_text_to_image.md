@@ -1,3 +1,4 @@
+(text-to-image)=
 # Text to image search using CLIP
 
 This guide will showcase fine-tuning a `CLIP` model for text to image retrieval.

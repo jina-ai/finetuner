@@ -1,3 +1,4 @@
+(login-jina)=
 # Login to Jina ecosystem
 
 Since Finetuner leverages cloud resources for fine-tuning,
