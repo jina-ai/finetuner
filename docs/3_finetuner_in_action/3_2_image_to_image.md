@@ -18,7 +18,7 @@ After fine-tuning, the embeddings of positive pairs are expected to be pulled cl
 
 
 ## Preparing data
-Training and evaluation data are already prepared and pushed to Hubble following the [instructions](../2_step_by_step/2_4_create_training_data.md).
+Training and evaluation data are already prepared and pushed to Hubble following the {ref}`instructions <create-training-data>`.
 You can either pull the data:
 ```python
 from docarray import DocumentArray
@@ -28,7 +28,7 @@ eval_data = DocumentArray.pull('resnet-ttl-eval-data')
 Or specify given `DocumentArray` names (`resnet-ttl-train-data` and `resnet-ttl-eval-data`) directly to Finetuner.
 
 ## Choosing the model
-Now let's see what backbone models we can use. You can see available models either in [the docs](../2_step_by_step/2_5_choose_back_bone.md) or by calling `finetuner.describe_models()`.
+Now let's see what backbone models we can use. You can see available models either in {ref}`choose backbone <choose-backbone>` section or by calling `finetuner.describe_models()`.
 
 
 For this example, we're gonna go with `resnet50`.
@@ -38,7 +38,7 @@ You can easily start a fine-tuning run with `finetuner.fit`.
 
 ```{admonition} Login to Jina Cloud
 :class: tip
-Before creating a run, you need to [Login to Jina ecosystem](../2_step_by_step/2_3_login_to_jina_ecosystem.md) by calling `finetuner.login()`.
+Before creating a run, you need to {ref}`login to Jina ecosystem <login-to-jina-ecosystem>` by calling `finetuner.login()`.
 ```
 
 ```python
