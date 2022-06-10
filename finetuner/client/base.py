@@ -26,7 +26,7 @@ class _BaseClient:
     def __init__(self):
         self._base_url = Path(os.environ.get(HOST))
         self._session = self._get_client_session()
-        self.hubble_client = hubble.Client(max_retries=None, jsonify=True)
+        self.hubble_client = hubble.Client(max_retries=3, jsonify=True)
         self.hubble_user_id = self._get_hubble_user_id()
 
     def _get_hubble_user_id(self):
