@@ -10,7 +10,7 @@ For each product the dataset contains a title and images of multiple variants of
 
 
 ## Preparing data
-Training and evaluation data are already prepared and pushed to Hubble following the [instructions](../2_step_by_step/2_4_create_training_data.md).
+Training and evaluation data are already prepared and pushed to Hubble following the {ref}`instructions <create-training-data>`.
 You can either pull the data:
 ```python
 from docarray import DocumentArray
