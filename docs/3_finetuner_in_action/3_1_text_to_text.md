@@ -1,3 +1,4 @@
+(text-to-text)=
 # Text to text search using Bert
 
 Searching large amounts of text documents with text queries is a very popular use-case, so of course Finetuner enables you to accomplish this easily.
@@ -35,7 +36,7 @@ If you'd like more information about the Bert model we are fine-tuning please vi
 Supplementary information about the Quora Question Pairs dataset can be found on the [Sentence-Transformers](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) website.
 ```
 
-## Prepraring data
+## Preparing data
 
 We will use the [Quora Question Pairs](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) dataset to show-case Finetuner for text to text search. We have already pre-processed this dataset and made it available for you to pull from hubble. Do this as follows:
 
@@ -51,7 +52,7 @@ train_data.summary()
 
 Your `train_data` `DocumentArray` summary should look like this:
 
-```python
+```bash
 ╭──────────────── Documents Summary ────────────────╮
 │                                                   │
 │   Length                 104598                   │
@@ -73,7 +74,7 @@ Your `train_data` `DocumentArray` summary should look like this:
 
 So we have 104598 training `Document`s. Each `Document` consists of a text field that contains the question, as well as a `finetuner_label` which indicates the label to which the question belongs. If multiple questions have the same label, they are duplicates of one another. If they have different `finetuner_label`s, they are not duplicates of each other.
 
-As for the evaluation dataset, we load `query_data` and `index_data` seperately. The `query_data` has the same structure as the `train_data`, consisting of labelled documents. The `index_data` is the data against which the queries will be matched, and contains many documents, some of which may be irrelevant to the queries (ie. they have no duplicated in the `query_data`).
+As for the evaluation dataset, we load `query_data` and `index_data` separately. The `query_data` has the same structure as the `train_data`, consisting of labelled documents. The `index_data` is the data against which the queries will be matched, and contains many documents, some of which may be irrelevant to the queries (ie. they have no duplicated in the `query_data`).
 If you look at the summaries for the `query_data` and `index_data`, you will find that they have the following number of instances:
 
 ```
@@ -88,7 +89,7 @@ Perhaps in the future, we might want to create another run where we experiment w
 
 ```{admonition} Backbones
 :class: tip
- Finetuner also supports fine-tuning other models, see the [Choose a backbone model]](../2_step_by_step/2_5_choose_back_bone.md) section.
+ Finetuner also supports fine-tuning other models, see the {ref}`choose backbone <choose-backbone>` section.
  ```
 
 

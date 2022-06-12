@@ -1,3 +1,4 @@
+(text-to-image)=
 # Text to image search using CLIP
 
 This guide will showcase fine-tuning a `CLIP` model for text to image retrieval.
@@ -9,7 +10,7 @@ For each product the dataset contains a title and images of multiple variants of
 
 
 ## Preparing data
-Training and evaluation data are already prepared and pushed to Hubble following the [instructions](../2_step_by_step/2_4_create_training_data.md).
+Training and evaluation data are already prepared and pushed to Hubble following the {ref}`instructions <create-training-data>`.
 You can either pull the data:
 ```python
 from docarray import DocumentArray
@@ -20,7 +21,7 @@ Or specify given `DocumentArray` names (`clip-fashion-train-data` and `clip-fash
 
 
 ## Choosing the model
-Currently, we only support `openai/clip-vit-base-patch32` for text to image retrieval tasks. However, you can see all available models either in [the docs](../2_step_by_step/2_5_choose_back_bone.md) or by calling `finetuner.describe_models()`.
+Currently, we only support `openai/clip-vit-base-patch32` for text to image retrieval tasks. However, you can see all available models either in {ref}`choose backbone <choose-backbone>` or by calling `finetuner.describe_models()`.
 
 
 ## Creating a fine-tuning job
@@ -28,7 +29,7 @@ Now that everything's ready, let's create a fine-tuning run!
 
 ```{admonition} Login to Jina Cloud
 :class: tip
-Before creating a run, you need to [Login to Jina ecosystem](../2_step_by_step/2_3_login_to_jina_ecosystem.md) by calling `finetuner.login()`.
+Before creating a run, you need to {ref}`login to Jina ecosystem <login-to-jina-ecosystem>` by calling `finetuner.login()`.
 ```
 
 ```python

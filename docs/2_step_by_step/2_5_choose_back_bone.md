@@ -1,3 +1,4 @@
+(choose-backbone)=
 # Choose a backbone model
 
 Finetuner provides several widely used backbone models,

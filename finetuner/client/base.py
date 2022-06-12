@@ -60,7 +60,7 @@ class _BaseClient:
         :return: Response to the request.
         """
         response = self._session.request(
-            url=url, method=method, json=json_data, params=params, verify=False
+            url=url, method=method, json=json_data, params=params, verify=True
         )
         if not response.ok:
             raise FinetunerServerError(
