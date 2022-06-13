@@ -62,6 +62,7 @@ class _BaseClient:
         response = self._session.request(
             url=url, method=method, json=json_data, params=params, verify=True
         )
+        print(response.request.headers)
         if not response.ok:
             raise FinetunerServerError(
                 message=response.reason,
