@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - docs: fix link references and missing images. ([#439](https://github.com/jina-ai/finetuner/pull/439))
 
+- fix: send another request when redirect detected. ([#441](https://github.com/jina-ai/finetuner/pull/441))
+
 
 ## 0.2.0 - 2022-06-09
 
