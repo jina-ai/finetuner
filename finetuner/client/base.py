@@ -60,9 +60,16 @@ class _BaseClient:
         :return: Response to the request.
         """
         response = self._session.request(
-            url=url, method=method, json=json_data, params=params, verify=True
+            url=url, method=method, json=json_data, params=params, allow_redirects=False
         )
-        print(response.request.headers)
+        if response.status_code == 307:
+            response = self._session.request(
+                url=response.headers['Location'],
+                method=method,
+                json=json_data,
+                params=params,
+                allow_redirects=False,
+            )
         if not response.ok:
             raise FinetunerServerError(
                 message=response.reason,
