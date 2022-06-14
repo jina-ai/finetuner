@@ -2,7 +2,6 @@ import os
 from typing import List, Optional, Union
 
 import requests
-from path import Path
 
 import hubble
 from finetuner.client.exception import FinetunerServerError
@@ -24,7 +23,7 @@ class _BaseClient:
     """
 
     def __init__(self):
-        self._base_url = Path(os.environ.get(HOST))
+        self._base_url = os.environ.get(HOST)
         self._session = self._get_client_session()
         self.hubble_client = hubble.Client(max_retries=None, jsonify=True)
         self.hubble_user_id = self._get_hubble_user_id()
@@ -43,6 +42,10 @@ class _BaseClient:
         api_token = TOKEN_PREFIX + str(hubble.Auth.get_auth_token())
         session.headers.update({CHARSET: UTF_8, AUTHORIZATION: api_token})
         return session
+
+    @staticmethod
+    def _construct_url(*args) -> str:
+        return '/'.join(args)
 
     def _handle_request(
         self,

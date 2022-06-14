@@ -33,7 +33,7 @@ class FinetunerV1Client(_BaseClient):
         :param description: Optional description of the experiment.
         :return: Created experiment.
         """
-        url = self._base_url / API_VERSION / EXPERIMENTS
+        url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS)
         return self._handle_request(
             url=url, method=POST, json_data={NAME: name, DESCRIPTION: description}
         )
@@ -44,7 +44,7 @@ class FinetunerV1Client(_BaseClient):
         :param name: The name of the experiment.
         :return: Requested experiment.
         """
-        url = self._base_url / API_VERSION / EXPERIMENTS / name
+        url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS, name)
         return self._handle_request(url=url, method=GET)
 
     def list_experiments(self) -> List[dict]:
@@ -52,7 +52,7 @@ class FinetunerV1Client(_BaseClient):
 
         :return: List of all experiments.
         """
-        url = self._base_url / API_VERSION / EXPERIMENTS
+        url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS)
         return self._handle_request(url=url, method=GET)
 
     def delete_experiment(self, name: str) -> dict:
@@ -61,7 +61,7 @@ class FinetunerV1Client(_BaseClient):
         :param name: The name of the experiment.
         :return: Experiment to be deleted.
         """
-        url = self._base_url / API_VERSION / EXPERIMENTS / name
+        url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS, name)
         return self._handle_request(url=url, method=DELETE)
 
     def delete_experiments(self) -> List[dict]:
@@ -69,7 +69,7 @@ class FinetunerV1Client(_BaseClient):
 
         :return: Experiments to be deleted.
         """
-        url = self._base_url / API_VERSION / EXPERIMENTS
+        url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS)
         return self._handle_request(url=url, method=DELETE)
 
     """ Run API """
@@ -81,13 +81,8 @@ class FinetunerV1Client(_BaseClient):
         :param run_name: The name of the run.
         :return: Requested run.
         """
-        url = (
-            self._base_url
-            / API_VERSION
-            / EXPERIMENTS
-            / experiment_name
-            / RUNS
-            / run_name
+        url = self._construct_url(
+            self._base_url, API_VERSION, EXPERIMENTS, experiment_name, RUNS, run_name
         )
         return self._handle_request(url=url, method=GET)
 
@@ -106,7 +101,9 @@ class FinetunerV1Client(_BaseClient):
             target_experiments = [experiment_name]
         response = []
         for experiment_name in target_experiments:
-            url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
+            url = self._construct_url(
+                self._base_url, API_VERSION, EXPERIMENTS, experiment_name, RUNS
+            )
             response.extend(self._handle_request(url=url, method=GET))
         return response
 
@@ -117,13 +114,8 @@ class FinetunerV1Client(_BaseClient):
         :param run_name: The name of the run.
         :return: Deleted run.
         """
-        url = (
-            self._base_url
-            / API_VERSION
-            / EXPERIMENTS
-            / experiment_name
-            / RUNS
-            / run_name
+        url = self._construct_url(
+            self._base_url, API_VERSION, EXPERIMENTS, experiment_name, RUNS, run_name
         )
         return self._handle_request(url=url, method=DELETE)
 
@@ -133,7 +125,9 @@ class FinetunerV1Client(_BaseClient):
         :param experiment_name: The name of the experiment.
         :return: List of all deleted runs.
         """
-        url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
+        url = self._construct_url(
+            self._base_url, API_VERSION, EXPERIMENTS, experiment_name, RUNS
+        )
         return self._handle_request(url=url, method=DELETE)
 
     def get_run_status(self, experiment_name: str, run_name: str) -> dict:
@@ -143,14 +137,14 @@ class FinetunerV1Client(_BaseClient):
         :param run_name: The name of the run.
         :return: Run status.
         """
-        url = (
-            self._base_url
-            / API_VERSION
-            / EXPERIMENTS
-            / experiment_name
-            / RUNS
-            / run_name
-            / STATUS
+        url = self._construct_url(
+            self._base_url,
+            API_VERSION,
+            EXPERIMENTS,
+            experiment_name,
+            RUNS,
+            run_name,
+            STATUS,
         )
         return self._handle_request(url=url, method=GET)
 
@@ -161,14 +155,14 @@ class FinetunerV1Client(_BaseClient):
         :param run_name: The name of the run.
         :return: Run logs.
         """
-        url = (
-            self._base_url
-            / API_VERSION
-            / EXPERIMENTS
-            / experiment_name
-            / RUNS
-            / run_name
-            / LOGS
+        url = self._construct_url(
+            self._base_url,
+            API_VERSION,
+            EXPERIMENTS,
+            experiment_name,
+            RUNS,
+            run_name,
+            LOGS,
         )
         return self._handle_request(url=url, method=GET)
 
@@ -192,7 +186,9 @@ class FinetunerV1Client(_BaseClient):
         :param gpus: The number of GPUs to use.
         :return: Created run.
         """
-        url = self._base_url / API_VERSION / EXPERIMENTS / experiment_name / RUNS
+        url = self._construct_url(
+            self._base_url, API_VERSION, EXPERIMENTS, experiment_name, RUNS
+        )
         return self._handle_request(
             url=url,
             method=POST,
