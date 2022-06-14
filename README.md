@@ -1,10 +1,10 @@
 <p align="center">
-<img src="https://github.com/jina-ai/finetuner/blob/main/docs/_static/finetuner-logo-ani.svg?raw=true" alt="Finetuner logo: Finetuner helps you to create experiments with Finetuner in order to improve embeddings on search tasks. It accompanies Jina to deliver the last mile of performance-tuning for neural search applications." width="150px">
+<img src="https://github.com/jina-ai/finetuner/blob/main/docs/_static/finetuner-logo-ani.svg?raw=true" alt="Finetuner logo: Finetuner helps you to create experiments with Finetuner in order to improve embeddings on search tasks. It accompanies [Jina](https://github.com/jina-ai/jina) to deliver the last mile of performance-tuning for neural search applications." width="150px">
 </p>
 
 
 <p align="center">
-<b>Run fine-tuning experiments to improve embeddings for neural search tasks using Jina's Finetuner</b>
+<b>Run fine-tuning experiments to improve embeddings for neural search tasks using [Jina](https://github.com/jina-ai/jina)'s Finetuner</b>
 </p>
 
 <p align=center>
@@ -14,13 +14,14 @@
 
 <!-- start elevator-pitch -->
 
-Finetuner allows you to perform experiments for tuning deep neural networks for better embeddings on search tasks. It
-accompanies [Jina](https://github.com/jina-ai/jina) to deliver the last mile of performance for domain-specific neural search
-applications.
+Finetuner accompanies [Jina](https://github.com/jina-ai/jina) to deliver the last mile of performance for domain-specific neural search
+applications. It allows you to perform fine-tuning experiments on deep neural networks (DNNs) for better embeddings on search tasks. Finetuner will run your experiments in the cloud for you, by interacting with an API that takes care of your experiments.
 
 🎛 **Designed for finetuning**: a deep learning client for leveling up your pretrained models in domain-specific neural search applications.
 
-🍰 **Easy to use**: fine-tuning with Finetuner is a piece of cake! Easily create your fine-tuning experiments and runs in just a few lines of code.
+🍰 **Easy to use**: fine-tuning with Finetuner is a piece of cake! Easily create your fine-tuning experiments and runs in just a few lines of code by interacting with an API that runs the jobs for you.
+
+☁ **Finetune in the cloud**: Finetuner runs your fine-tuning jobs on [Jina Cloud](https://github.com/jina-ai/jcloud). You never have to worry about provisioning (cloud) resources!
 
 🔱 **Simple yet powerful**: although interacting with the Finetuner is really simple, it nonetheless supports rich features such as
 siamese/triplet loss, metric learning, self-supervised pretraining, layer pruning, weights freezing, dimensionality reduction, and much more!
@@ -41,7 +42,7 @@ and production.
 Requires Python 3.9+ and [PyTorch](https://pytorch.org/)(>=1.9) installed on Linux/MacOS.
 
 ```bash
-pip install -e .
+pip install -U finetuner-client
 ```
 
 
