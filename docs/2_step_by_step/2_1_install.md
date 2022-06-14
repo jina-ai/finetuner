@@ -27,5 +27,5 @@ Check your installation with:
 ```pycon
 >>> import finetuner
 >>> finetuner.__version__
-'0.2.0'
+'0.2.1'
 ```
