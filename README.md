@@ -1,10 +1,10 @@
 <p align="center">
-<img src="https://github.com/jina-ai/finetuner/blob/main/docs/_static/finetuner-logo-ani.svg?raw=true" alt="Finetuner logo: Finetuner helps you to create experiments with Finetuner in order to improve embeddings on search tasks. It accompanies [Jina](https://github.com/jina-ai/jina) to deliver the last mile of performance-tuning for neural search applications." width="150px">
+<img src="https://github.com/jina-ai/finetuner/blob/main/docs/_static/finetuner-logo-ani.svg?raw=true" alt="Finetuner logo: Finetuner helps you to create experiments with Finetuner in order to improve embeddings on search tasks. It accompanies Jina to deliver the last mile of performance-tuning for neural search applications." width="150px">
 </p>
 
 
 <p align="center">
-<b>Run fine-tuning experiments to improve embeddings for neural search tasks using [Jina](https://github.com/jina-ai/jina)'s Finetuner</b>
+<b>Run fine-tuning experiments to improve embeddings for neural search tasks using <a href='https://github.com/jina-ai/jina'>Jina</a>'s Finetuner</b>
 </p>
 
 <p align=center>
