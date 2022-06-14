@@ -4,7 +4,7 @@
 
 
 <p align="center">
-<b>Run fine-tuning experiments to improve embeddings for neural search tasks using <a href='https://github.com/jina-ai/jina'>Jina</a>'s Finetuner</b>
+<b>Cloud service to finetune embeddings on domain specific data.</b>
 </p>
 
 <p align=center>
@@ -14,8 +14,8 @@
 
 <!-- start elevator-pitch -->
 
-Finetuner accompanies [Jina](https://github.com/jina-ai/jina) to deliver the last mile of performance for domain-specific neural search
-applications. It allows you to perform fine-tuning experiments on deep neural networks (DNNs) for better embeddings on search tasks. Finetuner will run your experiments in the cloud for you, by interacting with an API that takes care of your experiments.
+Finetuning for neural search is not trivial, it requires expertise in ML and Information Retrieval which is a rare combination.
+Finetuner is a cloud service that makes finetuning simple and fast. Moving the process into the cloud, Finetuner handles all related complexity and infrastructure, making models performant and production ready.
 
 🎛 **Designed for finetuning**: a deep learning client for leveling up your pretrained models in domain-specific neural search applications.
 
