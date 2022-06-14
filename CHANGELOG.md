@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove dependencies for `path` and `dotenv`. ([#444](https://github.com/jina-ai/finetuner/pull/444))
+
 ### Changed
 
 ### Fixed
