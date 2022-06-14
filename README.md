@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/jina-ai/finetuner/blob/main/docs/_static/finetuner-logo-ani.svg?raw=true" alt="Finetuner logo: The Finetuner Client helps you to create experiments with Finetuner in order to improve embeddings on search tasks. It accompanies Jina to deliver the last mile of performance-tuning for neural search applications." width="150px">
+<img src="https://github.com/jina-ai/finetuner/blob/main/docs/_static/finetuner-logo-ani.svg?raw=true" alt="Finetuner logo: Finetuner helps you to create experiments with Finetuner in order to improve embeddings on search tasks. It accompanies Jina to deliver the last mile of performance-tuning for neural search applications." width="150px">
 </p>
 
 
@@ -14,15 +14,15 @@
 
 <!-- start elevator-pitch -->
 
-The Finetuner Client allows you to perform experiments for tuning deep neural networks for better embeddings on search tasks. It
+Finetuner allows you to perform experiments for tuning deep neural networks for better embeddings on search tasks. It
 accompanies [Jina](https://github.com/jina-ai/jina) to deliver the last mile of performance for domain-specific neural search
 applications.
 
 🎛 **Designed for finetuning**: a deep learning client for leveling up your pretrained models in domain-specific neural search applications.
 
-🍰 **Easy to use**: fine-tuning with Finetuner Client is a piece of cake! Easily create your fine-tuning experiments and runs in just a few lines of code.
+🍰 **Easy to use**: fine-tuning with Finetuner is a piece of cake! Easily create your fine-tuning experiments and runs in just a few lines of code.
 
-🔱 **Simple yet powerful**: although interacting with the Finetuner Client is really simple, it nonetheless supports rich features such as
+🔱 **Simple yet powerful**: although interacting with the Finetuner is really simple, it nonetheless supports rich features such as
 siamese/triplet loss, metric learning, self-supervised pretraining, layer pruning, weights freezing, dimensionality reduction, and much more!
 
 🧈 **DocArray integration**: buttery smooth integration with DocArray, reducing the cost of a context-switch between experiment
@@ -48,7 +48,7 @@ pip install -e .
 <!-- start support-pitch -->
 ## Support
 
-- Take a look at the [step by step](https://ft-docs-polish--jina-docs.netlify.app/2_step_by_step/) documentation for an overview of how the Finetuner Client works.
+- Take a look at the [step by step](https://ft-docs-polish--jina-docs.netlify.app/2_step_by_step/) documentation for an overview of how Finetuner works.
 - Get started with our example use-cases in the [Finetuner in action](https://ft-docs-polish--jina-docs.netlify.app/3_finetuner_in_action/) section.
 - Use [Discussions](https://github.com/jina-ai/finetuner/discussions) to talk about your use cases, questions, and
   support queries.
