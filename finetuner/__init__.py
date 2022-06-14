@@ -132,18 +132,35 @@ def fit(
     :param model_options: Additional arguments to pass to the model construction. These
         are model specific options and are different depending on the model you choose.
         Run `finetuner.list_model_options()` to see available options for every model.
-    :param loss: Name of the loss function used for fine-tuning.
+    :param loss: Name of the loss function used for fine-tuning. Default is
+        'TripletMarginLoss'. Options: 'CosFaceLoss', 'NTXLoss', 'AngularLoss',
+        'ArcFaceLoss', 'BaseMetricLossFunction', 'MultipleLosses',
+        'CentroidTripletLoss', 'CircleLoss', 'ContrastiveLoss', 'CrossBatchMemory',
+        'FastAPLoss', 'GenericPairLoss', 'IntraPairVarianceLoss',
+        'LargeMarginSoftmaxLoss', 'GeneralizedLiftedStructureLoss',
+        'LiftedStructureLoss', 'MarginLoss', 'EmbeddingRegularizerMixin',
+        'WeightRegularizerMixin', 'MultiSimilarityLoss', 'NPairsLoss', 'NCALoss',
+        'NormalizedSoftmaxLoss', 'ProxyAnchorLoss', 'ProxyNCALoss',
+        'SignalToNoiseRatioContrastiveLoss', 'SoftTripleLoss', 'SphereFaceLoss',
+        'SupConLoss', 'TripletMarginLoss', 'TupletMarginLoss', 'VICRegLoss',
+        'CLIPLoss'.
     :param miner: Name of the miner to create tuple indices for the loss function.
-    :param optimizer: Name of the optimizer used for fine-tuning.
+        Options: 'AngularMiner', 'BaseMiner', 'BaseSubsetBatchMiner', 'BaseTupleMiner',
+        'BatchEasyHardMiner', 'BatchHardMiner', 'DistanceWeightedMiner', 'HDCMiner',
+        'EmbeddingsAlreadyPackagedAsTriplets', 'MaximumLossMiner', 'PairMarginMiner',
+        'MultiSimilarityMiner', 'TripletMarginMiner', 'UniformHistogramMiner'.
+    :param optimizer: Name of the optimizer used for fine-tuning. Options: 'Adadelta',
+        'Adagrad', 'Adam', 'AdamW', 'SparseAdam', 'Adamax', 'ASGD', 'LBFGS', 'NAdam',
+        'RAdam', 'RMSprop', 'Rprop', 'SGD'.
     :param learning_rate: learning rate for the optimizer.
     :param epochs: Number of epochs for fine-tuning.
     :param batch_size: Number of items to include in a batch.
     :param callbacks: List of callback stub objects. See the `finetuner.callback`
         subpackage for available options, or run `finetuner.list_callbacks()`.
     :param scheduler_step: At which interval should the learning rate scheduler's
-        step function be called. Valid options are "batch" and "epoch".
-    :param freeze: If set to True, will freeze all layers except the last one.
-    :param output_dim: The expected output dimension.
+        step function be called. Valid options are 'batch' and 'epoch'.
+    :param freeze: If set to `True`, will freeze all layers except the last one.
+    :param output_dim: The expected output dimension as `int`.
         If set, will attach a projection head.
     :param multi_modal: Boolean value, set to `True` for the CLIP model.
     :param image_modality: The modality of the image `Document`.
@@ -213,7 +230,7 @@ def delete_run(run_name: str, experiment_name: Optional[str] = None) -> None:
     If an experiment name is not specified, we'll look for the run in the default
     experiment.
 
-    :param run_name: Name of the run.
+    :param run_name: Name of the run. View your runs with `list_runs`.
     :param experiment_name: Optional name of the experiment.
     """
     ft.delete_run(run_name=run_name, experiment_name=experiment_name)
@@ -226,6 +243,7 @@ def delete_runs(experiment_name: Optional[str] = None) -> None:
     experiments.
 
     :param experiment_name: Optional name of the experiment.
+        View your experiment names with `list_experiments()`.
     """
     ft.delete_runs(experiment_name=experiment_name)
 
@@ -257,6 +275,7 @@ def list_experiments() -> List[Experiment]:
 def delete_experiment(name: str) -> Experiment:
     """Delete an experiment by its name.
     :param name: Name of the experiment.
+        View your experiment names with `list_experiments()`.
     :return: Deleted experiment.
     """
     return ft.delete_experiment(name=name)
