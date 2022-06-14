@@ -34,7 +34,6 @@ def finetuner_mocker(mocker):
         print('Successfully logged in to Hubble!')
 
     def get_auth_token():
-        os.environ['JINA_AUTH_TOKEN'] = '5fb009f645b3c476aa285afd135b25f4'
         if not os.environ.get('JINA_AUTH_TOKEN'):
             raise ValueError('Please set `JINA_AUTH_TOKEN` as an environment variable.')
         return os.environ.get('JINA_AUTH_TOKEN')
