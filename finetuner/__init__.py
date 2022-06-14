@@ -3,7 +3,6 @@ import os
 from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
-from dotenv import load_dotenv
 from rich.console import Console
 from rich.table import Table
 
@@ -28,7 +27,6 @@ from finetuner.finetuner import Finetuner
 __version__ = '0.2.1'
 
 
-load_dotenv()
 ft = Finetuner()
 
 

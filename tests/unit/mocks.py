@@ -25,6 +25,8 @@ def _create_base_mocker(mocker):
         print('Successfully logged in to Hubble!')
 
     def get_auth_token():
+        if not os.environ.get('JINA_AUTH_TOKEN'):
+            raise ValueError('Please set `JINA_AUTH_TOKEN` as an environment variable.')
         return os.environ.get('JINA_AUTH_TOKEN')
 
     mocker.patch.object(hubble, 'login', hubble_login_mocker)
