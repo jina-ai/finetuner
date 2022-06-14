@@ -33,7 +33,7 @@ and production.
 
 ## How does it work
 
-<img src="https://github.com/jina-ai/finetuner/blob/docs-update-readme/docs/img/finetuner-client-journey.svg?raw=true" title="Finetuner Client user journey.">
+<img src="https://github.com/jina-ai/finetuner/blob/docs-update-readme/docs/_static/finetuner-client-journey.svg?raw=true" title="Finetuner Client user journey.">
 
 
 ## Install
