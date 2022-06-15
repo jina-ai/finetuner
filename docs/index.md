@@ -36,11 +36,11 @@ from docarray import DocumentArray
 finetuner.login()
 
 # Prepare training data
-train_data = DocumentArray(...)
+train_data = DocumentArray(...)ß
 
 # Fine-tune in the cloud
 run = finetuner.fit(
-    model='resnet18', train_data=train_data, epochs=5, batch_size=128,
+    model='resnet50', train_data=train_data, epochs=5, batch_size=128,
 )
 
 print(run.name)
