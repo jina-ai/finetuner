@@ -13,7 +13,7 @@ For example:
   - Run1: Use bert-based model.
   - Run2: Use sentence-transformer model.
 + Experiment: Fine-tune ResNet on WILD dataset.
-  - Run1: Use ResNet18 with learning rate 0.01 and SGD optimizer.
+  - Run1: Use ResNet50 with learning rate 0.01 and Adam optimizer.
   - Run2: Use ResNet50 with learning rate 0.01 and SGD optimizer.
   - Run3: Use ResNet50 with learning rate 0.0001 and Adam optimizer.
 

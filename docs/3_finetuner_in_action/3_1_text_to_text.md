@@ -104,6 +104,8 @@ from finetuner.callback import EvaluationCallback
 # Make sure to login to Jina Cloud
 finetuner.login()
 
+finetuner.create_experiment(name='finetune-quora-dataset')
+
 # Start fine-tuning as a run within an experiment
 finetuner.fit(
     model='bert-base-cased',
@@ -111,6 +113,7 @@ finetuner.fit(
     experiment_name='finetune-quora-dataset',
     run_name='finetune-quora-dataset-bert-base-cased',
     description='this is a trial run on quora dataset with bert-base-cased.',
+    model_options={'pooling':'max'},
     loss='TripletMarginLoss',
     miner='TripletMarginMiner',
     optimizer='Adam',
@@ -131,6 +134,8 @@ Our fine-tuning call has a lot of arguments. Let's discuss what the most importa
 Most importantly, we select our model with `model='bert-base-cased'` and pass our training data with `train_data=train_data`. These two arguments are required. 
 We set our `experiment_name` to `'finetune-quora-dataset'` and our `run_name` to `'finetune-quora-dataset-bert-base-cased'`. 
 This will make it easy for us to retrieve the experiment and run in the future. We also provide a short description of our run, just for some extra context. 
+
+Because we have selected the `bert-base-cased` model, we also need to add a pooling layer, since this is not automatically loaded. Options for this are `'mean'`, `'max'` or `'cls'`. We have selected `'max'` for this experiment.  
 
 For this run, we select Finetuner's `'TripletMarginLoss'` and `'TripletMarginMiner'`, as they are most relevant for our use-case. The `'TripletMarginLoss'` measures the similarity between three tensors, namely the anchor, a positive sample and a negative sample. This makes sense for our task, since we want duplicate questions to have representations closer together, while non-duplicates should have more dissimilar representations. Likewise, the `'TripletMarginMiner'` outputs a tuple of size 3, with an anchor, a positive sample and a negative sample.
 
