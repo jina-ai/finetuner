@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Change default registry to prod for api and hubble. ([#447](https://github.com/jina-ai/finetuner/pull/447))
+
 ### Fixed
 
 ## 0.2.1 - 2022-06-13
