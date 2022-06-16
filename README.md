@@ -98,7 +98,7 @@ This simple example code has the following steps:
 - Get started with our example use-cases in the [Finetuner in action](https://ft-docs-polish--jina-docs.netlify.app/3_finetuner_in_action/) section.
 - Use [Discussions](https://github.com/jina-ai/finetuner/discussions) to talk about your use cases, questions, and
   support queries.
-- Join our [Slack community](https://slack.jina.ai) and chat with other Jina community members about ideas.
+- Join our [Slack community](https://slack.jina.ai) and chat with other Jina AI community members about ideas.
 - Join our [Engineering All Hands](https://youtube.com/playlist?list=PL3UBBWOUVhFYRUa_gpYYKBqEAkO4sxmne) meet-up to discuss your use case and learn Jina's new features.
     - **When?** The second Tuesday of every month
     - **Where?**
