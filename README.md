@@ -21,21 +21,15 @@ Finetuner makes finetuning simple and fast by handling all related complexity an
 📈**Performance boost**: Finetuner significantly increases the performance of pretrained models on domain specific neural search applications.
 
 🔱 **Simple yet powerful**: Interacting with Finetuner is simple and seamless, and also supports rich features such as
-siamese/triplet loss, metric learning, self-supervised pretraining, layer pruning, weights freezing, dimensionality reduction, and much more.
+siamese/triplet loss, metric learning, layer pruning, weights freezing, dimensionality reduction, and much more.
 
-☁ **Finetune in the cloud**: Finetuner runs your fine-tuning jobs on [Jina Cloud](https://github.com/jina-ai/jcloud). You never have to worry about provisioning (cloud) resources! Finetuner handles all related complexity and infrastructure.
+☁ **Fine-tune in the cloud**: Finetuner runs your fine-tuning jobs in the cloud. You never have to worry about provisioning (cloud) resources! Finetuner handles all related complexity and infrastructure.
 
 <!-- end elevator-pitch -->
 
 ## What is the purpose of Finetuner?
 
-Finetuner enables performance gains on domain specific neural search tasks by allowing you to fine-tune models in the cloud. We have conducted experiments on three neural search tasks in different domains to illustrate these performance improvements.
-
-| Task              | ndcg score (pre-trained)  | ndcg score (fine-tuned)   | Performance gains (∂) | Time cost |
-|-------------------|--------------------------:|--------------------------:|----------------------:|----------:|
-| text-to-text      |                           |                           |                       |           |
-| image-to-image    |                           |                           |                       |           |
-| text-to-image     |                           |                           |                       |           |
+Finetuner enables performance gains on domain specific neural search tasks by allowing you to fine-tune models in the cloud. We have conducted experiments on various neural search tasks in different domains to illustrate these performance improvements.
 
 Finetuner also aims to make fine-tuning simple and fast. When interacting with Finetuner, the API takes care of all your fine-tuning jobs in the cloud. This only requires a few lines of code from you, as demonstrated in section 
 
@@ -57,7 +51,7 @@ pip install -U finetuner-client
 
 ```python
 import finetuner
-from finetuner.callback import BestModelCheckpoint, EvaluationCallback
+from finetuner.callback import EvaluationCallback
 
 finetuner.login()
 
@@ -65,15 +59,8 @@ finetuner.create_experiment(name='tll-experiment')
 
 run = finetuner.fit(
         model='resnet50',
-        experiment_name='tll-experiment',
-        run_name='resnet-tll',
-        description='fine-tune the whole model.',
         train_data='resnet-tll-train-data',
-        eval_data='resnet-tll-eval-data',
-        loss='TripletMarginLoss',
-        callbacks=[BestModelCheckpoint(), EvaluationCallback(query_data='resnet-tll-eval-data')],
-        epochs=6,
-        learning_rate=0.001,
+        callbacks=[EvaluationCallback(query_data='resnet-tll-eval-data')],
     )
 
 print(run.status())
@@ -82,13 +69,13 @@ print(run.logs())
 run.save_model('resnet-tll')
 ```
 
-This simple example code has the following steps:
+This minimal example code starts a fine-tuning run with only the necessary arguments. It has the following steps:
 
-  * login to Finetuner: this is necessary if you'd like to run fine-tuning jobs with Finetuner in the cloud.
-  * create experiment: this experiment will contain various runs with different configurations.
-  * start fine-tuning run: select backbone model, training and evaluation data and some additional hyper-parameters and callbacks.
-  * monitor: check the status and logs for progress on your fine-tuning run.
-  * save model: if your fine-tuning run has successfully completed, save it for further use and integration.
+  * Login to Finetuner: This is necessary if you'd like to run fine-tuning jobs with Finetuner in the cloud.
+  * Create experiment: This experiment will contain various runs with different configurations.
+  * Start fine-tuning run: Select backbone model, training and evaluation data for your evaluation callback.
+  * Monitor: Check the status and logs for progress on your fine-tuning run.
+  * Save model: If your fine-tuning run has successfully completed, save it for further use and integration.
 
 
 <!-- start support-pitch -->
