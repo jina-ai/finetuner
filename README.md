@@ -16,11 +16,11 @@
 
 Fine-tuning deep neural networks (DNNs) significantly improves performance on domain specific neural search tasks.
 However, fine-tuning for neural search is not trivial, as it requires a combination of expertise in ML and Information Retrieval.
-Finetuner makes finetuning simple and fast by handling all related complexity and infrastructure in the cloud. With Finetuner, you can easily make models more perfomant and production ready.
+Finetuner makes fine-tuning simple and fast by handling all related complexity and infrastructure in the cloud. With Finetuner, you can easily make models more performant and production ready.
 
 📈**Performance boost**: Finetuner significantly increases the performance of pretrained models on domain specific neural search applications.
 
-🔱 **Simple yet powerful**: Interacting with Finetuner is simple and seamless, and also supports rich features such as
+🔱 **Simple yet powerful**: Interacting with Finetuner is simple and seamless, and also supports rich features such as selections of different loss functions, e.g. 
 siamese/triplet loss, metric learning, layer pruning, weights freezing, dimensionality reduction, and much more.
 
 ☁ **Fine-tune in the cloud**: Finetuner runs your fine-tuning jobs in the cloud. You never have to worry about provisioning (cloud) resources! Finetuner handles all related complexity and infrastructure.
@@ -29,9 +29,9 @@ siamese/triplet loss, metric learning, layer pruning, weights freezing, dimensio
 
 ## What is the purpose of Finetuner?
 
-Finetuner enables performance gains on domain specific neural search tasks by allowing you to fine-tune models in the cloud. We have conducted experiments on various neural search tasks in different domains to illustrate these performance improvements.
+Finetuner enables performance gains on domain specific neural search tasks by fine-tuning models in the cloud. We have conducted experiments on various neural search tasks in different domains to illustrate these performance improvements.
 
-Finetuner also aims to make fine-tuning simple and fast. When interacting with Finetuner, the API takes care of all your fine-tuning jobs in the cloud. This only requires a few lines of code from you, as demonstrated in section 
+Finetuner also aims to make fine-tuning simple and fast. When interacting with Finetuner, the API takes care of all your fine-tuning jobs in the cloud. This only requires a few lines of code from you, as demonstrated in [below](#fine-tuning-resnet50-on-totally-looks-like-dataset).
 
 ## How does it work?
 
@@ -74,7 +74,7 @@ This minimal example code starts a fine-tuning run with only the necessary argum
   * Login to Finetuner: This is necessary if you'd like to run fine-tuning jobs with Finetuner in the cloud.
   * Create experiment: This experiment will contain various runs with different configurations.
   * Start fine-tuning run: Select backbone model, training and evaluation data for your evaluation callback.
-  * Monitor: Check the status and logs for progress on your fine-tuning run.
+  * Monitor: Check the status and logs of the progress on your fine-tuning run.
   * Save model: If your fine-tuning run has successfully completed, save it for further use and integration.
 
 
