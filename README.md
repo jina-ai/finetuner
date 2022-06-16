@@ -99,7 +99,7 @@ This simple example code has the following steps:
 - Use [Discussions](https://github.com/jina-ai/finetuner/discussions) to talk about your use cases, questions, and
   support queries.
 - Join our [Slack community](https://slack.jina.ai) and chat with other Jina AI community members about ideas.
-- Join our [Engineering All Hands](https://youtube.com/playlist?list=PL3UBBWOUVhFYRUa_gpYYKBqEAkO4sxmne) meet-up to discuss your use case and learn Jina's new features.
+- Join our [Engineering All Hands](https://youtube.com/playlist?list=PL3UBBWOUVhFYRUa_gpYYKBqEAkO4sxmne) meet-up to discuss your use case and learn Jina AI new features.
     - **When?** The second Tuesday of every month
     - **Where?**
       Zoom ([see our public events calendar](https://calendar.google.com/calendar/embed?src=c_1t5ogfp2d45v8fit981j08mcm4%40group.calendar.google.com&ctz=Europe%2FBerlin)/[.ical](https://calendar.google.com/calendar/ical/c_1t5ogfp2d45v8fit981j08mcm4%40group.calendar.google.com/public/basic.ics))
