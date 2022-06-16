@@ -8,7 +8,7 @@ ID = 'id'
 HOST = 'JINA_FINETUNER_REGISTRY'
 HUBBLE_REGISTRY = 'JINA_HUBBLE_REGISTRY'
 DEFAULT_FINETUNER_HOST = 'https://api.finetuner.fit'
-DEFAULT_HUBBLE_REGISTRY = 'https://apihubble.jina.ai'
+DEFAULT_HUBBLE_REGISTRY = 'https://api.hubble.jina.ai'
 
 CONFIG = 'config'
 DEVICE = 'device'
