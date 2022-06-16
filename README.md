@@ -61,7 +61,7 @@ run = finetuner.fit(
         model='resnet50',
         train_data='resnet-tll-train-data',
         callbacks=[EvaluationCallback(query_data='resnet-tll-eval-data')],
-    )
+)
 
 print(run.status())
 print(run.logs())
