@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Refactor the guide for image to image search. ([#458](https://github.com/jina-ai/finetuner/pull/458))
 
+- Refactor the guide for text to image search. ([#459](https://github.com/jina-ai/finetuner/pull/459))
+
 ### Fixed
 
 

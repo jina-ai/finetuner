@@ -1,36 +1,38 @@
 (text-to-image)=
-# Text to image search using CLIP
+# CLIP for text to image search
 
 This guide will showcase fine-tuning a `CLIP` model for text to image retrieval.
 
-## Task overview
-We'll be fine-tuning CLIP on a fashion captioning dataset which contains information about fashion products.
+## Task
+We'll be fine-tuning CLIP on the [fashion captioning dataset](https://github.com/xuewyang/Fashion_Captioning) which contains information about fashion products.
 
-For each product the dataset contains a title and images of multiple variants of the product. We constructed a parent `Document` for each picture, which contains two chunks: an image document and a text document holding the description of the product.
-
-
-## Preparing data
-Training and evaluation data are already prepared and pushed to Hubble following the {ref}`instructions <create-training-data>`.
-You can either pull the data:
-```python
-from docarray import DocumentArray
-train_data = DocumentArray.pull('clip-fashion-train-data')
-eval_data = DocumentArray.pull('clip-fashion-eval-data')
-```
-Or specify given `DocumentArray` names (`clip-fashion-train-data` and `clip-fashion-eval-data`) directly to finetuner.
+For each product the dataset contains a title and images of multiple variants of the product. We constructed a parent [`Document`](https://docarray.jina.ai/fundamentals/document/#document) for each picture, which contains two [chunks](https://docarray.jina.ai/fundamentals/document/nested/#nested-structure): an image document and a text document holding the description of the product.
 
 
-## Choosing the model
-Currently, we only support `openai/clip-vit-base-patch32` for text to image retrieval tasks. However, you can see all available models either in {ref}`choose backbone <choose-backbone>` or by calling `finetuner.describe_models()`.
+## Data
+Our journey starts locally. We have to {ref}`prepare the data and push it to the cloud <create-training-data>` and Finetuner will be able to get the dataset by its name. For this example,
+we already prepared the data, and we'll provide the names of training and evaluation data (`clip-fashion-train-data` and `clip-fashion-eval-data`) directly to Finetuner.
 
-
-## Creating a fine-tuning job
-Now that everything's ready, let's create a fine-tuning run!
-
-```{admonition} Login to Jina Cloud
+```{admonition} 
 :class: tip
-Before creating a run, you need to {ref}`login to Jina ecosystem <login-to-jina-ecosystem>` by calling `finetuner.login()`.
+We don't require you to push data to the cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
 ```
+
+
+## Backbone model
+Currently, we only support `openai/clip-vit-base-patch32` for text to image retrieval tasks. However, you can see all available models either in {ref}`choose backbone <choose-backbone>` section or by calling {meth}`~finetuner.describe_models()`.
+
+
+## Fine-tuning
+From now on, all the action happens in the cloud! 
+
+First you need to {ref}`login to Jina ecosystem <login-to-jina-ecosystem>`:
+```python
+import finetuner
+finetuner.login()
+```
+
+Now that everything's ready, let's create a fine-tuning run!
 
 ```python
 from finetuner.callback import BestModelCheckpoint, EvaluationCallback
@@ -49,14 +51,20 @@ run = finetuner.fit(
         multi_modal=True,
     )
 ```
-Let's understand what this piece of code does.
-We start with providing `model`, `run_name`, names of training and evaluation data. We also provide some hyper-parameters
-such as number of `epochs` and a `learning_rate`. Additionally, we use `BestModelCheckpoint` to save the best model after each epoch and `EvaluationCallback` for evaluation. Now let's move on to CLIP-specific arguments. We provided `image_modality`
-and `text_modality` which are needed for `CLIP` model to distribute data across its two models properly. (More on this in the [create training data](../2_step_by_step/2_4_create_training_data.md) section).
+Let's understand what this piece of code does:
+```{admonition} finetuner.fit parameters
+:class: tip
+The only required arguments are `model` and `train_data`. We provide default values for others. Here is the [full list of the parameters](../../api/finetuner/#finetuner.fit). 
+```
+* We start with providing `model`, `run_name`, names of training and evaluation data.
+* We also provide some hyper-parameters such as number of `epochs` and a `learning_rate`.
+* Additionally, we use {class}`~finetuner.callback.BestModelCheckpoint` to save the best model after each epoch and {class}`~finetuner.callback.EvaluationCallback` for evaluation.
+* Now let's move on to CLIP-specific arguments: We provided `image_modality`
+and `text_modality` which are needed for `CLIP` model to [distribute data across its two models properly](../2_step_by_step/2_4_create_training_data.md).
 We also need to provide a `CLIPloss` and set `multi_modal` to `True`.
 
-
-## Monitoring your runs
+  
+## Monitoring
 
 We created a run! Now let's see its status.
 ```python
@@ -75,19 +83,12 @@ finetuner.login()
 run = finetuner.get_run('clip-fashion')
 ```
 
-You can continue monitoring the run by checking the status - `run.status()` or the logs - `run.logs()`. 
+You can continue monitoring the run by checking the status - {meth}`~finetuner.run.Run.status()` or the logs - {meth}`~finetuner.run.Run.logs()`.
 
 
-## Saving your model
-
-If your run has finished successfully, you can save fine-tuned models in the following way:
-```python
-run.save_model('clip-model')
-```
-
-## Evaluating your model
-Currently, we don't have a user-friendly way to get evaluation metrics from the `EvaluationCallback` we initialized previously.
-What you can do for now is to call `run.logs()` in the end of the run and see evaluation results:
+## Evaluating
+Currently, we don't have a user-friendly way to get evaluation metrics from the {class}`~finetuner.callback.EvaluationCallback` we initialized previously.
+What you can do for now is to call {meth}`~finetuner.run.Run.logs()` in the end of the run and see evaluation results:
 
 ```bash
 [10:37:49] DEBUG    Metric: 'model_average_precision' Value: 0.30105                                     __main__.py:217
@@ -105,4 +106,11 @@ What you can do for now is to call `run.logs()` in the end of the run and see ev
            INFO     Pushing saved model to Hubble ...                                                    __main__.py:240
 [10:38:14] INFO     Pushed model artifact ID: '62a1af491597c219f6a330fe'                                 __main__.py:246
            INFO     Finished 🚀                                                                          __main__.py:248
+```
+
+## Saving
+
+After the run has finished successfully, you can download the tuned model on your local machine:
+```python
+run.save_model('clip-model')
 ```
