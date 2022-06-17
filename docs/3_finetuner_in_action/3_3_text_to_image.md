@@ -4,23 +4,23 @@
 This guide will showcase fine-tuning a `CLIP` model for text to image retrieval.
 
 ## Task
-We'll be fine-tuning CLIP on a fashion captioning dataset which contains information about fashion products.
+We'll be fine-tuning CLIP on the [fashion captioning dataset](https://github.com/xuewyang/Fashion_Captioning) which contains information about fashion products.
 
-For each product the dataset contains a title and images of multiple variants of the product. We constructed a parent `Document` for each picture, which contains two chunks: an image document and a text document holding the description of the product.
+For each product the dataset contains a title and images of multiple variants of the product. We constructed a parent `Document` for each picture, which contains two [chunks](https://docarray.jina.ai/fundamentals/document/nested/#nested-structure): an image document and a text document holding the description of the product.
 
 
 ## Data
-Out journey starts locally. We have to {ref}`prepare the data and push it to the cloud <create-training-data>` and Finetuner will be able to get the data by its name. For this example,
+Our journey starts locally. We have to {ref}`prepare the data and push it to the cloud <create-training-data>` and Finetuner will be able to get the dataset by its name. For this example,
 we already prepared the data, and we'll provide the names of training and evaluation data (`clip-fashion-train-data` and `clip-fashion-eval-data`) directly to Finetuner.
 
 ```{admonition} 
 :class: tip
-We don't require to push data to the cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
+We don't require you to push data to the cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
 ```
 
 
 ## Backbone model
-Currently, we only support `openai/clip-vit-base-patch32` for text to image retrieval tasks. However, you can see all available models either in {ref}`choose backbone <choose-backbone>` section or by calling [`finetuner.describe_models()`](../../api/finetuner/#finetuner.describe_models).
+Currently, we only support `openai/clip-vit-base-patch32` for text to image retrieval tasks. However, you can see all available models either in {ref}`choose backbone <choose-backbone>` section or by calling {meth}`~finetuner.describe_models()`.
 
 
 ## Fine-tuning
@@ -58,7 +58,7 @@ The only required arguments are `model` and `train_data`. We provide default val
 ```
 * We start with providing `model`, `run_name`, names of training and evaluation data.
 * We also provide some hyper-parameters such as number of `epochs` and a `learning_rate`.
-* Additionally, we use `BestModelCheckpoint` to save the best model after each epoch and `EvaluationCallback` for evaluation.
+* Additionally, we use {class}`~finetuner.callback.BestModelCheckpoint` to save the best model after each epoch and {class}`~finetuner.callback.EvaluationCallback` for evaluation.
 * Now let's move on to CLIP-specific arguments: We provided `image_modality`
 and `text_modality` which are needed for `CLIP` model to [distribute data across its two models properly](../2_step_by_step/2_4_create_training_data.md).
 We also need to provide a `CLIPloss` and set `multi_modal` to `True`.
@@ -83,12 +83,12 @@ finetuner.login()
 run = finetuner.get_run('clip-fashion')
 ```
 
-You can continue monitoring the run by checking the status - [`run.status()`](../../api/finetuner.run/#finetuner.run.Run.status) or the logs - [`run.logs()`](../../api/finetuner.run/#finetuner.run.Run.logs). 
+You can continue monitoring the run by checking the status - {meth}`~finetuner.run.Run.status()` or the logs - {meth}`~finetuner.run.Run.logs()`.
 
 
 ## Evaluating
-Currently, we don't have a user-friendly way to get evaluation metrics from the `EvaluationCallback` we initialized previously.
-What you can do for now is to call [`run.logs()`](../../api/finetuner.run/#finetuner.run.Run.logs) in the end of the run and see evaluation results:
+Currently, we don't have a user-friendly way to get evaluation metrics from the {class}`~finetuner.callback.EvaluationCallback` we initialized previously.
+What you can do for now is to call {meth}`~finetuner.run.Run.logs()` in the end of the run and see evaluation results:
 
 ```bash
 [10:37:49] DEBUG    Metric: 'model_average_precision' Value: 0.30105                                     __main__.py:217
