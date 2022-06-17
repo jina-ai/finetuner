@@ -13,7 +13,7 @@ infrastructure and the complexity of the fine-tuning task and provides a simple 
 Finetuner primarily targets business users and engineers with limited knowledge in Machine Learning, but also attempts to expose
 lots of configuration options for experienced professionals!
 
-## Why do I need Finetuner?
+## Why do I need it?
 
 Search quality matters. When you bring a pre-trained model to encode your data to embeddings, you are likely to get irrelevant search results.
 Pre-trained deep learning models are usually trained on large-scale datasets, that have a different *data distribution* over your own datasets or domains.
@@ -40,7 +40,7 @@ train_data = DocumentArray(...)
 
 # Fine-tune in the cloud
 run = finetuner.fit(
-    model='resnet18', train_data=train_data, epochs=5, batch_size=128,
+    model='resnet50', train_data=train_data, epochs=5, batch_size=128,
 )
 
 print(run.name)
@@ -60,7 +60,7 @@ Run logs:
   Training [2/2] ━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:00:00 0:01:08 • loss: 0.050
 [09:13:23] INFO     [__main__] Done ✨                           __main__.py:214
            INFO     [__main__] Saving fine-tuned models ...      __main__.py:217
-           INFO     [__main__] Saving model 'model' in           __main__.py:228
+           INFO     [__main__] Saving model 'tuned_model' in     __main__.py:228
                     /usr/src/app/tuned-models/model ...                         
            INFO     [__main__] Pushing saved model to Hubble ... __main__.py:232
 [09:13:54] INFO     [__main__] Pushed model artifact ID:         __main__.py:238
@@ -89,21 +89,31 @@ Don't worry, call `finetuner.describe_models()` and we will help you choose the 
 :caption: How it Works
 :hidden:
 
-1_how_it_works/index
+1_how_it_works/1_1_how_it_works.md
+1_how_it_works/1_2_difference.md
 ```
 
 ```{toctree}
-:caption: Step By Step
+:caption: Get Started
 :hidden:
 
-2_step_by_step/index
+2_step_by_step/2_1_install.md
+2_step_by_step/2_2_experiment_and_run.md
+2_step_by_step/2_3_login_to_jina_ecosystem.md
+2_step_by_step/2_4_create_training_data.md
+2_step_by_step/2_5_choose_backbone.md
+2_step_by_step/2_6_start_finetune.md
+2_step_by_step/2_7_get_tuned_model.md
+2_step_by_step/2_8_next_steps.md
 ```
 
 ```{toctree}
-:caption: Finetuner in Action
+:caption: User Guides
 :hidden:
 
-3_finetuner_in_action/index
+3_finetuner_in_action/3_1_text_to_text.md
+3_finetuner_in_action/3_2_image_to_image.md
+3_finetuner_in_action/3_3_text_to_image.md
 ```
 
 ```{toctree}

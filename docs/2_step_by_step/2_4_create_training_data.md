@@ -1,9 +1,9 @@
 (create-training-data)=
-# Create training and evaluation (Optional) data
+# Create Training and Evaluation Data
 
-Finetuner accepts training data and evaluation data in the form of [docarray](https://docarray.jina.ai/) `DocumentArray` objects.
+Finetuner accepts training data and evaluation data in the form of {class}`~docarray.array.document.DocumentArray` objects.
 Because Finetuner follows a [supervised-learning](https://en.wikipedia.org/wiki/Supervised_learning) scheme,
-you should assign a label to each `Document` inside your `DocumentArray` as follows:
+you should assign a label to each {class}`~docarray.document.Document` inside your {class}`~docarray.array.document.DocumentArray` as follows:
 
 ````{tab} text-to-text search
 ```python
@@ -81,7 +81,7 @@ when fine-tuning a model with a single modality (e.g. image),
 you only need to create a `Document` with `content` and `tags` with the `finetuner_label`.
 
 For cross-modality (text-to-image) fine-tuning with CLIP,
-you should create a root `Document` which wraps two `chunks` with the `image` and `text` modality.
+you should create a root `Document` which wraps two {class}`~docarray.array.chunk`s with the `image` and `text` modality.
 The image and text form a pair.
 
 ```{admonition} CLIP model explained

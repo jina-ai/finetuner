@@ -1,8 +1,10 @@
 (start-finetuner)=
-# Start fine-tuning
+# Start Fine-tuning
 
-Now you should have your training data and evaluation data (optional) prepared as `DocumentArray`s,
+Now you should have your training data and evaluation data (optional) prepared as {class}`~docarray.array.document.DocumentArray`s,
 and have selected your backbone model.
+
+Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud!
 
 To start fine-tuning, you can call:
 
@@ -20,7 +22,7 @@ print(f'Run name: {run.name}')
 print(f'Run status: {run.status()}')
 ```
 
-You'll see this in the terminal:
+You'll see something this in the terminal, with a different run name:
 
 ```bash
 Run name: vigilant-tereshkova
@@ -29,7 +31,7 @@ Run status: CREATED
 
 During fine-tuning,
 the run status changes from:
-1. CREATED: the `Run` has been created and submitted to the job queue.
+1. CREATED: the {class}`~finetuner.run.Run` has been created and submitted to the job queue.
 2. STARTED: the job is in progress
 3. FINISHED: the job finished successfully, model has been sent to cloud storage.
 4. FAILED: the job failed, please check the logs for more details.
@@ -73,7 +75,7 @@ run = finetuner.fit(
 ```
 
 ```{Important}
-Please check the developer reference to get the available options for `loss`, `miner`, `optimizer` and `scheduler_step`.
+Please check the [developer reference](../../api/finetuner/#finetuner.fit) to get the available options for `loss`, `miner`, `optimizer` and `scheduler_step`.
 ```
 
 ```{Important}
