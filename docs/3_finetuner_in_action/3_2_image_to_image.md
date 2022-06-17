@@ -18,17 +18,17 @@ After fine-tuning, the embeddings of positive pairs are expected to be pulled cl
 
 
 ## Data
-Out journey starts locally. We have to {ref}`prepare the data and push it to the cloud <create-training-data>` and Finetuner will be able to get the data by its name. For this example,
+Our journey starts locally. We have to {ref}`prepare the data and push it to the cloud <create-training-data>` and Finetuner will be able to get the dataset by its name. For this example,
 we already prepared the data, and we'll provide the names of training and evaluation data (`resnet-ttl-train-data` and `resnet-ttl-eval-data`) directly to Finetuner.
 
 ```{admonition} 
 :class: tip
-We don't require to push data to the cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
+We don't require you to push data to the cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
 ```
 
 
 ## Backbone model
-Now let's see which backbone models we can use. You can see available models either in {ref}`choose backbone <choose-backbone>` section or by calling [`finetuner.describe_models()`](../../api/finetuner/#finetuner.describe_models).
+Now let's see which backbone models we can use. You can see available models either in {ref}`choose backbone <choose-backbone>` section or by calling {meth}`~finetuner.describe_models()`.
 
 
 For this example, we're gonna go with `resnet50`.
@@ -42,7 +42,7 @@ import finetuner
 finetuner.login()
 ```
 
-Now, you can easily start a fine-tuning job with [`finetuner.fit`]((../../api/finetuner/#finetuner.fit)):
+Now, you can easily start a fine-tuning job with {meth}`~finetuner.fit`:
 ```python
 from finetuner.callback import BestModelCheckpoint, EvaluationCallback
 
@@ -68,7 +68,7 @@ The only required arguments are `model` and `train_data`. We provide default val
 but recommended in order to retrieve your run easily and have some context about it.
 * Furthermore, we had to provide names of the `train_data` and `eval_data`.
 * We set `TripletMarginLoss`.
-* Additionally, we use `BestModelCheckpoint` to save the best model after each epoch and `EvaluationCallback` for evaluation.
+* Additionally, we use {class}`~finetuner.callback.BestModelCheckpoint` to save the best model after each epoch and {class}`~finetuner.callback.EvaluationCallback` for evaluation.
 * Lastly, we set number of `epochs` and provide a `learning_rate`.
 
 
@@ -92,11 +92,11 @@ finetuner.login()
 run = finetuner.get_run('resnet-ttl')
 ```
 
-You can continue monitoring the runs by checking the status - [`run.status()`](../../api/finetuner.run/#finetuner.run.Run.status) or the logs - [`run.logs()`](../../api/finetuner.run/#finetuner.run.Run.logs). 
+You can continue monitoring the runs by checking the status - {meth}`~finetuner.run.Run.status()` or the logs - {meth}`~finetuner.run.Run.logs()`. 
 
 ## Evaluating
-Currently, we don't have a user-friendly way to get evaluation metrics from the `EvaluationCallback` we initialized previously.
-What you can do for now is to call [`run.logs()`](../../api/finetuner.run/#finetuner.run.Run.logs) in the end of the run and see evaluation results:
+Currently, we don't have a user-friendly way to get evaluation metrics from the {class}`~finetuner.callback.EvaluationCallback` we initialized previously.
+What you can do for now is to call {meth}`~finetuner.run.Run.logs()` in the end of the run and see evaluation results:
 
 ```bash
 [10:37:49] DEBUG    Metric: 'model_average_precision' Value: 0.30105                                     __main__.py:217
