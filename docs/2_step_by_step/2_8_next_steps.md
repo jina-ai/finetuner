@@ -1,5 +1,5 @@
 (next-steps)=
-# Next Steps
+# Next steps
 
 :::::{grid} 2
 :gutter: 3

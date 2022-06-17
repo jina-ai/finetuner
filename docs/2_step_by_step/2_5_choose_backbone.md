@@ -1,5 +1,5 @@
 (choose-backbone)=
-# Choose a Backbone Model
+# Choose a backbone model
 
 Finetuner provides several widely used backbone models,
 including `resnet`, `efficientnet`, `clip` and `bert`.

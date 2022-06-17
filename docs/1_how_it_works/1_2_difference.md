@@ -1,4 +1,4 @@
-# Comparison To Other Frameworks
+# Comparison to other frameworks
 
 There are several fancy machine learning libraries out there,
 so what makes Finetuner unique?

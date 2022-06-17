@@ -1,5 +1,5 @@
 (experiment-and-runs)=
-# Two Basic Concepts: Experiment and Run
+# Two basic concepts: Experiment and Run
 
 Finetuner organizes your training based on two concepts: {class}`~finetuner.experiment.Experiment` and {class}`~finetuner.run.Run`.
 
