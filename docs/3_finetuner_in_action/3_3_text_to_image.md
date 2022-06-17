@@ -6,7 +6,7 @@ This guide will showcase fine-tuning a `CLIP` model for text to image retrieval.
 ## Task
 We'll be fine-tuning CLIP on the [fashion captioning dataset](https://github.com/xuewyang/Fashion_Captioning) which contains information about fashion products.
 
-For each product the dataset contains a title and images of multiple variants of the product. We constructed a parent `Document` for each picture, which contains two [chunks](https://docarray.jina.ai/fundamentals/document/nested/#nested-structure): an image document and a text document holding the description of the product.
+For each product the dataset contains a title and images of multiple variants of the product. We constructed a parent [`Document`](https://docarray.jina.ai/fundamentals/document/#document) for each picture, which contains two [chunks](https://docarray.jina.ai/fundamentals/document/nested/#nested-structure): an image document and a text document holding the description of the product.
 
 
 ## Data
