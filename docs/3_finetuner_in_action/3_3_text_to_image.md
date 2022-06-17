@@ -83,12 +83,12 @@ finetuner.login()
 run = finetuner.get_run('clip-fashion')
 ```
 
-You can continue monitoring the run by checking the status - [`run.status()`](../../api/finetuner.run/#finetuner.run.Run.status) or the logs - `[run.logs()`](../../api/finetuner.run/#finetuner.run.Run.logs). 
+You can continue monitoring the run by checking the status - [`run.status()`](../../api/finetuner.run/#finetuner.run.Run.status) or the logs - [`run.logs()`](../../api/finetuner.run/#finetuner.run.Run.logs). 
 
 
 ## Evaluating
 Currently, we don't have a user-friendly way to get evaluation metrics from the `EvaluationCallback` we initialized previously.
-What you can do for now is to call `run.logs()` in the end of the run and see evaluation results:
+What you can do for now is to call [`run.logs()`](../../api/finetuner.run/#finetuner.run.Run.logs) in the end of the run and see evaluation results:
 
 ```bash
 [10:37:49] DEBUG    Metric: 'model_average_precision' Value: 0.30105                                     __main__.py:217
