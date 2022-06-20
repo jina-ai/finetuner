@@ -8,7 +8,7 @@ This guide will lead you through an example use-case to show you how Finetuner c
 
 ## Task
 
-In Finetuner, two Bert models are supported as backbones, namely `bert-base-cased` and `sentence-transformers/msmarco-distilbert-base-v3`, both of which are models hosted on Hugging Face.
+In Finetuner, two BERT models are supported as backbones, namely `bert-base-cased` and `sentence-transformers/msmarco-distilbert-base-v3`, both of which are models hosted on Hugging Face.
 
 In this example, we will fine-tune `bert-base-cased` on the [Quora Question Pairs](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) dataset, where the search task involves finding duplicate questions in the dataset. 
 An example query for this search task might look as follows:
@@ -28,7 +28,8 @@ What do geologists do?
 
 ```
 
-We will use Bert as an embedding model that embeds texts in a high dimensional space. We can fine-tune Bert so that questions that are duplicates of each other are represented in close proximity and questions that are not duplicates will have representations that are further apart in the embedding space. In this way, we can rank the embeddings in our search space by their proximity to the query question and return the highest ranking duplicates.
+We will use BERT as an embedding model that embeds texts in a high dimensional space.
+We can fine-tune BERT so that questions that are duplicates of each other are represented in close proximity and questions that are not duplicates will have representations that are further apart in the embedding space. In this way, we can rank the embeddings in our search space by their proximity to the query question and return the highest ranking duplicates.
 
 ```{admonition} See Also: Model and dataset info
 :class: seealso
@@ -83,9 +84,9 @@ Length of index DocumentArray: 15746
 ```
 
 ## Backbone model
-To keep things simple, we have decided to fine-tune the Bert model `bert-base-cased`. We could also have chosen `sentence-transformers/msmarco-distilbert-base-v3` as our base model, which has already been fine-tuned on the MSMarco dataset. 
+To keep things simple, we have decided to fine-tune the BERT model `bert-base-cased`. We could also have chosen `sentence-transformers/msmarco-distilbert-base-v3` as our base model, which has already been fine-tuned on the MSMarco dataset. 
 However, for the purpose of this experiment, we want to explore how much improvement in performance we can gain from fine-tuning `bert-base-cased` on the Quora Question Pairs dataset using Finetuner. 
-Perhaps in the future, we might want to create another run where we experiment with fine-tuning other Bert models.
+Perhaps in the future, we might want to create another run where we experiment with fine-tuning other BERT models.
 
 ```{admonition} Backbones
 :class: tip
@@ -105,10 +106,9 @@ from finetuner.callback import EvaluationCallback
 finetuner.login()
 
 # Start fine-tuning as a run within an experiment
-finetuner.fit(
+run = finetuner.fit(
     model='bert-base-cased',
     train_data=train_data,
-    experiment_name='finetune-quora-dataset',
     run_name='finetune-quora-dataset-bert-base-cased',
     description='this is a trial run on quora dataset with bert-base-cased.',
     loss='TripletMarginLoss',
@@ -117,9 +117,6 @@ finetuner.fit(
     learning_rate = 1e-5,
     epochs=3,
     batch_size=128,
-    scheduler_step='batch',
-    freeze=False, # We are training the whole bert model, not an additional MLP.
-    output_dim=None,
     cpu=False,
     num_workers=4,
     callbacks=[EvaluationCallback(query_data=query_data, index_data=index_data, batch_size=256)]
