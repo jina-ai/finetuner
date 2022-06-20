@@ -30,7 +30,7 @@ To get a list of supported models:
 │                                  efficientnet_b4 │ image-to-image │       1280 │          CNN │                         Pretrained on ImageNet │
 │                     openai/clip-vit-base-patch32 │  text-to-image │        768 │  transformer │       Pretrained on text image pairs by OpenAI │
 │                                  bert-base-cased │   text-to-text │        768 │  transformer │ Pretrained on BookCorpus and English Wikipedia │
-│ sentence-transformers/msmarco-distilbert-base-v3 │   text-to-text │        768 │  transformer │     Pretrained on Bert, fine-tuned on MS Marco │
+│ sentence-transformers/msmarco-distilbert-base-v3 │   text-to-text │        768 │  transformer │     Pretrained on BERT, fine-tuned on MS Marco │
 └──────────────────────────────────────────────────┴────────────────┴────────────┴──────────────┴────────────────────────────────────────────────┘
 
 ```
@@ -45,4 +45,4 @@ It should be noted that:
 
 + resnet/efficientnet models are loaded from the [torchvision](https://pytorch.org/vision/stable/index.html) library.
 + transformer based models are loaded from the huggingface [transformers](https://github.com/huggingface/transformers) library.
-+ `msmarco-distilbert-base-v3` has been fine-tuned once by [sentence-transformers](https://www.sbert.net/) on the [MS MARCO](https://microsoft.github.io/msmarco/) dataset on top of Bert.
++ `msmarco-distilbert-base-v3` has been fine-tuned once by [sentence-transformers](https://www.sbert.net/) on the [MS MARCO](https://microsoft.github.io/msmarco/) dataset on top of BERT.

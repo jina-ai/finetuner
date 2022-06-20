@@ -33,7 +33,7 @@ We can fine-tune BERT so that questions that are duplicates of each other are re
 
 ```{admonition} See Also: Model and dataset info
 :class: seealso
-If you'd like more information about the Bert model we are fine-tuning please visit [Hugging Face](https://huggingface.co/bert-base-cased). 
+If you'd like more information about the BERT model we are fine-tuning please visit [Hugging Face](https://huggingface.co/bert-base-cased). 
 Supplementary information about the Quora Question Pairs dataset can be found on the [Sentence-Transformers](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) website.
 ```
 
@@ -112,7 +112,6 @@ run = finetuner.fit(
     run_name='finetune-quora-dataset-bert-base-cased',
     description='this is a trial run on quora dataset with bert-base-cased.',
     loss='TripletMarginLoss',
-    miner='TripletMarginMiner',
     optimizer='Adam',
     learning_rate = 1e-5,
     epochs=3,
