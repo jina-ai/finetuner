@@ -5,8 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## [Unreleased] - 2022-MM-DD
+
+### Added
+
+### Removed
+
+### Changed
+
+- Refactor the guide for image to image search. ([#458](https://github.com/jina-ai/finetuner/pull/458))
+
+- Refactor the guide for text to image search. ([#459](https://github.com/jina-ai/finetuner/pull/459))
+
+### Fixed
+
+
+## 0.2.2 - 2022-06-16
 
 ### Added
 
@@ -19,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change default registry to prod for api and hubble. ([#447](https://github.com/jina-ai/finetuner/pull/447))
 
 - Polish the documentation structure and references. ([#460](https://github.com/jina-ai/finetuner/pull/460))
+
+- Update README.md with latest developments. ([#448](https://github.com/jina-ai/finetuner/pull/448))
+
 
 ### Fixed
 
