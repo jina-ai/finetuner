@@ -1,5 +1,5 @@
 (login-to-jina-ecosystem)=
-# Login to Jina Ecosystem
+# Login to Jina ecosystem
 
 Since Finetuner leverages cloud resources for fine-tuning,
 you are required to {meth}`~finetuner.login()` and obtain a token from Jina before starting a fine-tuning job.

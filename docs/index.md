@@ -53,7 +53,7 @@ run.save_model(path='tuned_model')
 You should see this in your terminal:
 
 ```bash
-🔐 Successfully login to Jina Ecosystem!
+🔐 Successfully login to Jina ecosystem!
 Run name: vigilant-tereshkova
 Run logs:
 
