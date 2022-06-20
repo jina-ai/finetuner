@@ -1,11 +1,11 @@
 (experiment-and-runs)=
 # Two basic concepts: Experiment and Run
 
-Finetuner organizes your training based on two concepts: `Experiment` and `Run`.
+Finetuner organizes your training based on two concepts: {class}`~finetuner.experiment.Experiment` and {class}`~finetuner.run.Run`.
 
-An `Experiment` defines the machine learning task you're fine-tuning for.
-A `Run` is a piece of code that performs the `Experiment` with specific configurations.
-An `Experiment` contains a list of `Run`s,
+An Experiment defines the machine learning task you're fine-tuning for.
+A Run is a piece of code that performs the Experiment with specific configurations.
+An Experiment contains a list of Runs,
 each with different configurations.
 For example:
 
@@ -29,7 +29,7 @@ finetuner.fit(
 )
 ```
 
-Please note that these two arguments are `Optional`.
+Please note that these two arguments are optional.
 If not supplied,
 Finetuner will use the current working directory as a default `experiment_name`,
 and generate a random `run_name` for you.

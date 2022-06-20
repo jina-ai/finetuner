@@ -32,7 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Change default registry to prod for api and hubble. ([#447](https://github.com/jina-ai/finetuner/pull/447))
 
+- Polish the documentation structure and references. ([#460](https://github.com/jina-ai/finetuner/pull/460))
+
 - Update README.md with latest developments. ([#448](https://github.com/jina-ai/finetuner/pull/448))
+
 
 ### Fixed
 

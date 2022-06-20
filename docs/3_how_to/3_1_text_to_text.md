@@ -1,12 +1,12 @@
 (text-to-text)=
-# Text to text search using Bert
+# BERT for text to text search
 
 Searching large amounts of text documents with text queries is a very popular use-case, so of course Finetuner enables you to accomplish this easily.
 
 This guide will lead you through an example use-case to show you how Finetuner can be used for text to text retrieval.
 
 
-## Task Overview
+## Task
 
 In Finetuner, two Bert models are supported as backbones, namely `bert-base-cased` and `sentence-transformers/msmarco-distilbert-base-v3`, both of which are models hosted on Hugging Face.
 
@@ -36,7 +36,7 @@ If you'd like more information about the Bert model we are fine-tuning please vi
 Supplementary information about the Quora Question Pairs dataset can be found on the [Sentence-Transformers](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) website.
 ```
 
-## Preparing data
+## Data
 
 We will use the [Quora Question Pairs](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) dataset to show-case Finetuner for text to text search. We have already pre-processed this dataset and made it available for you to pull from hubble. Do this as follows:
 
@@ -82,7 +82,7 @@ Length of queries DocumentArray: 5000
 Length of index DocumentArray: 15746
 ```
 
-## Choosing the model
+## Backbone model
 To keep things simple, we have decided to fine-tune the Bert model `bert-base-cased`. We could also have chosen `sentence-transformers/msmarco-distilbert-base-v3` as our base model, which has already been fine-tuned on the MSMarco dataset. 
 However, for the purpose of this experiment, we want to explore how much improvement in performance we can gain from fine-tuning `bert-base-cased` on the Quora Question Pairs dataset using Finetuner. 
 Perhaps in the future, we might want to create another run where we experiment with fine-tuning other Bert models.
@@ -93,7 +93,7 @@ Perhaps in the future, we might want to create another run where we experiment w
  ```
 
 
-## Creating a fine-tuning run
+## Fine-tuning
 
 Now that we have the training and evaluation datasets loaded as `DocumentArray`s and selected our model, we can start our fine-tuning run.
 
@@ -142,7 +142,7 @@ More information about `TripletMarginLoss` and `TripletMarginMiner` can be found
 Lastly, we provide an `EvaluationCallback` with our `query_data` and `index_data`. This evaluation is done at the end of each epoch and its results will be visible to us in the logs, which we will monitor in the next section. Since we have not specified which metrics should be applied, default metrics will be computed. The `Evaluation` section of this guide will show you the default metrics.
 
 
-## Monitoring your runs
+## Monitoring
 Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()` or the logs - `run.logs()`. 
 ```python
 print(run.status())
@@ -162,14 +162,7 @@ run = experiment.get_run('finetune-quora-dataset-bert-base-cased')
 print(f'Run status: {run.status()}')
 ```
 
-
-## Save your model
-Once your run has successfully completed, you can save your fine-tuned model in the following way:
-```python
-run.save_model('finetune-quora-dataset-bert-base-cased')
-```
-
-## Evaluation
+## Evaluating
 
 Our `EvaluationCallback` during fine-tuning ensures that after each epoch, an evaluation of our model is run. We can access the evaluation results in the logs as follows:
 
@@ -184,4 +177,11 @@ print(f'Run logs: {run.logs()}')
 
 ```bash
 (log output)
+```
+
+
+## Saving
+Once your run has successfully completed, you can save your fine-tuned model in the following way:
+```python
+run.save_model('finetune-quora-dataset-bert-base-cased')
 ```

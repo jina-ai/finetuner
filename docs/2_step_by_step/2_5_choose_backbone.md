@@ -24,7 +24,6 @@ To get a list of supported models:
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃                                            model ┃           task ┃ output_dim ┃ architecture ┃                                    description ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│                                              mlp │            all │          - │          MLP │        Simple MLP encoder trained from scratch │
 │                                         resnet50 │ image-to-image │       2048 │          CNN │                         Pretrained on ImageNet │
 │                                        resnet152 │ image-to-image │       2048 │          CNN │                         Pretrained on ImageNet │
 │                                  efficientnet_b0 │ image-to-image │       1280 │          CNN │                         Pretrained on ImageNet │
@@ -36,8 +35,14 @@ To get a list of supported models:
 
 ```
 
++ ResNets are suitable for image-to-image search tasks with high performance requirement.
++ EfficientNets are suitable for image-to-image search tasks with fast training and inference. The model is more light-weighted than ResNet.
++ CLIP is the one for text-to-image search, where the images do not need to have any text descriptors.
++ BERT is generally suitable for text-to-text search tasks.
++ Msmarco-distilbert-base-v3 is suitable for short text-to-text search.
+
 It should be noted that:
 
-+ resnet/efficientnet models are loaded from [timm](https://github.com/rwightman/pytorch-image-models) library.
-+ transformer based models are loaded from huggingface [transformers](https://github.com/huggingface/transformers) library.
-+ `msmarco-distilbert-base-v3` has been fine-tuned once by [sentence-transformers](https://www.sbert.net/) on [MS MARCO](https://microsoft.github.io/msmarco/) dataset on top of Bert.
++ resnet/efficientnet models are loaded from the [torchvision](https://pytorch.org/vision/stable/index.html) library.
++ transformer based models are loaded from the huggingface [transformers](https://github.com/huggingface/transformers) library.
++ `msmarco-distilbert-base-v3` has been fine-tuned once by [sentence-transformers](https://www.sbert.net/) on the [MS MARCO](https://microsoft.github.io/msmarco/) dataset on top of Bert.
