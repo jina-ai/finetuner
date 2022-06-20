@@ -108,12 +108,12 @@ Don't worry, call `finetuner.describe_models()` and we will help you choose the 
 ```
 
 ```{toctree}
-:caption: User Guides
+:caption: {octicon}`book` How-To
 :hidden:
 
-3_finetuner_in_action/3_1_text_to_text.md
-3_finetuner_in_action/3_2_image_to_image.md
-3_finetuner_in_action/3_3_text_to_image.md
+3_how_to/3_1_text_to_text.md
+3_how_to/3_2_image_to_image.md
+3_how_to/3_3_text_to_image.md
 ```
 
 ```{toctree}
