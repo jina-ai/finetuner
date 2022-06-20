@@ -5,9 +5,9 @@ so what makes Finetuner unique?
 
 ## Focus on the quality of embeddings
 
-Finetuner is not designed to improve classification,
-sentiment analysis or object detection.
-Finetuner cares about the quality of the embeddings,
+Finetuner is not designed to tackle classification,
+sentiment analysis or object detection task.
+Finetuner cares about the quality of the embeddings for neural search,
 and this is what the fine-tuned model will produce.
 
 Given a query {class}`~docarray.document.Document` represented by `embeddings`,
