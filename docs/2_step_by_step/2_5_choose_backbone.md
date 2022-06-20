@@ -35,6 +35,12 @@ To get a list of supported models:
 
 ```
 
++ ResNets are suitable for image-to-image search tasks with high performance requirement.
++ EfficientNets are suitable for image-to-image search tasks with fast training and inference. The model is more light-weighted than ResNet.
++ CLIP is the one for text-to-image search and the image  do not necessary to have any text descriptors.
++ BERT is generally suitable for text-to-text search tasks.
++ Msmarco-distilbert-base-v3 is suitable for short text-to-text search.
+
 It should be noted that:
 
 + resnet/efficientnet models are loaded from the [torchvision](https://pytorch.org/vision/stable/index.html) library.
