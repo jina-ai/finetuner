@@ -11,7 +11,7 @@ Finetuner cares about the quality of the embeddings,
 and this is what the fine-tuned model will produce.
 
 Given a query {class}`~docarray.document.Document` represented by `embeddings`,
-you can compare the similarity/distance of the query {class}`~docarray.document.Document`s against all indexed (embedded) {class}`~docarray.document.Document`s in your storage backend.
+you can compare the similarity/distance of the query Documents against all indexed (embedded) Documents in your storage backend.
 
 
 ## Dedicated to optimizing your search task

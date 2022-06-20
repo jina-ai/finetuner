@@ -11,11 +11,11 @@ import finetuner
 finetuner.login()
 ```
 
-A browser window should pop-up with different login options.
+A browser window should pop up with different login options.
 After {meth}`~finetuner.login()` you will see this in your terminal:
 
 ```bash
-🔐 Successfully login to Jina Ecosystem!
+🔐 Successfully login to Jina ecosystem!
 ```
 
 ```{admonition} Why do I need to login?

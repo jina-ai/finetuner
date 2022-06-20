@@ -1,5 +1,5 @@
 (start-finetuner)=
-# Start Fine-tuning
+# Start fine-tuning
 
 Now you should have your training data and evaluation data (optional) prepared as {class}`~docarray.array.document.DocumentArray`s,
 and have selected your backbone model.

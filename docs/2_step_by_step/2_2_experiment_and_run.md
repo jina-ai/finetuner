@@ -3,9 +3,9 @@
 
 Finetuner organizes your training based on two concepts: {class}`~finetuner.experiment.Experiment` and {class}`~finetuner.run.Run`.
 
-An {class}`~finetuner.experiment.Experiment` defines the machine learning task you're fine-tuning for.
-A {class}`~finetuner.run.Run` is a piece of code that performs the {class}`~finetuner.experiment.Experiment` with specific configurations.
-An {class}`~finetuner.experiment.Experiment` contains a list of {class}`~finetuner.run.Run`s,
+An Experiment defines the machine learning task you're fine-tuning for.
+A Run is a piece of code that performs the Experiment with specific configurations.
+An Experiment contains a list of Runs,
 each with different configurations.
 For example:
 
