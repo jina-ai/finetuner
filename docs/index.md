@@ -108,7 +108,7 @@ Don't worry, call `finetuner.describe_models()` and we will help you choose the 
 ```
 
 ```{toctree}
-:caption: {octicon}`book` How-To
+:caption: How-To
 :hidden:
 
 3_how_to/3_1_text_to_text.md
