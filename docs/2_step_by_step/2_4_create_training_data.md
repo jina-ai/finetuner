@@ -1,5 +1,5 @@
 (create-training-data)=
-# Create training and evaluation data
+# Create training data
 
 Finetuner accepts training data and evaluation data in the form of {class}`~docarray.array.document.DocumentArray` objects.
 Because Finetuner follows a [supervised-learning](https://en.wikipedia.org/wiki/Supervised_learning) scheme,
@@ -83,6 +83,7 @@ you only need to create a `Document` with `content` and `tags` with the `finetun
 For cross-modality (text-to-image) fine-tuning with CLIP,
 you should create a root `Document` which wraps two {class}`~docarray.array.chunk`s with the `image` and `text` modality.
 The image and text form a pair.
+Evaluation data should be created the same way as above.
 
 ```{admonition} CLIP model explained
 :class: hint

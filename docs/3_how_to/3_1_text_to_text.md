@@ -1,5 +1,5 @@
 (text-to-text)=
-# Bert for text to text search
+# BERT for text to text search
 
 Searching large amounts of text documents with text queries is a very popular use-case, so of course Finetuner enables you to accomplish this easily.
 
