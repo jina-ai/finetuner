@@ -4,29 +4,35 @@
 
 
 <p align="center">
-<b>Fine-tuning embeddings on domain specific data for better performance on neural search tasks.</b>
+<b>Domain-specific fine-tuning for better embeddings on neural search tasks</b>
 </p>
 
 <p align=center>
-<a href="https://pypi.org/project/finetuner/"><img src="https://img.shields.io/badge/Python-3.7%2B-blue alt="Python 3.7" title="Finetuner supports Python 3.9 and above"></a>
+<a href="https://pypi.org/project/finetuner/"><img src="https://img.shields.io/badge/Python-3.7%2B-blue alt="Python 3.7" title="Finetuner supports Python 3.7 and above"></a>
 <a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-2.2k%2B-blueviolet?logo=slack&amp;logoColor=white"></a>
 </p>
 
 <!-- start elevator-pitch -->
 
-Fine-tuning with domain specific data can improve the performance on neural search tasks.
+Fine-tuning with domain specific data can improve the performance on neural search tasks<sup>[*]()</sup>.
 However, it is non-trivial as it requires a combination of expertise of deep learning and information retrieval.
 
 Finetuner makes this procedure simpler, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud.
 With Finetuner, you can easily make pre-trained models more performant and production ready.
 
-📈**Performance boost**: Finetuner significantly increases the performance of pretrained models on domain specific neural search applications.
+📈**Performance boost**: Finetuner delivers SOTA performance on domain specific neural search applications.
 
 🔱 **Simple yet powerful**: Easily access features such as 40+ mainstream loss functions, 10+ optimisers, layer pruning, weights freezing, dimensionality reduction, hard-negative mining, cross modality fine-tuning, distributed training. 
 
 ☁ **All-in-cloud**: Manage your runs, experiments and artifacts on Jina Cloud ([for free!](https://docs.google.com/forms/d/e/1FAIpQLSeoEhJM_TWMgZyEgJBBpf33JddcWQgXHNglNjVMIOvlLjk-4A/viewform)) without worrying about provisioning resources. You never have to worry about provisioning (cloud) resources! Finetuner handles all related complexity and infrastructure.
 
 <!-- end elevator-pitch -->
+
+| task           | pre-trained Precision@20 | pre-trained Recall@20 | fine-tuned Precision@20 | fine-tuned Recall@20 | training time |
+|----------------|--------------------------|-----------------------|-------------------------|----------------------|---------------|
+| text-to-text   |                          |                       |                         |                      |               |
+| image-to-image |                          |                       |                         |                      |               |
+| text-to-image  |                          |                       |                         |                      |               |
 
 ## How does it work?
 
