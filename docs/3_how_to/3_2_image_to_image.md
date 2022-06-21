@@ -26,6 +26,10 @@ we already prepared the data, and we'll provide the names of training and evalua
 We don't require you to push data to the cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
 ```
 
+```{important}
+When working with Document where images are stored locally, please call `doc.load_uri_to_image_tensor(width=224, height=224)` or other image shape to reduce network transmission and speed up training.
+```
+
 
 ## Backbone model
 Now let's see which backbone models we can use. You can see available models either in {ref}`choose backbone <choose-backbone>` section or by calling {meth}`~finetuner.describe_models()`.
@@ -47,16 +51,16 @@ Now, you can easily start a fine-tuning job with {meth}`~finetuner.fit`:
 from finetuner.callback import BestModelCheckpoint, EvaluationCallback
 
 run = finetuner.fit(
-        model='resnet50',
-        run_name='resnet-ttl',
-        description='fine-tune the whole model.',
-        train_data='resnet-ttl-train-data',
-        eval_data='resnet-ttl-eval-data',
-        loss='TripletMarginLoss',
-        callbacks=[BestModelCheckpoint(), EvaluationCallback(query_data='resnet-ttl-eval-data')],
-        epochs=6,
-        learning_rate=0.001,
-    )
+    model='resnet50',
+    run_name='resnet-ttl',
+    description='fine-tune the whole model.',
+    train_data='tll-train-da',
+    eval_data='tll-eval-da',
+    loss='TripletMarginLoss',
+    epochs=6,
+    learning_rate=1e-5,
+    callbacks=[BestModelCheckpoint(), EvaluationCallback(query_data='tll-eval-da')],
+)
 ```
 Let's understand what this piece of code does:
 ```{admonition} finetuner.fit parameters
