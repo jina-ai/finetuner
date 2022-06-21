@@ -24,9 +24,7 @@ With Finetuner, you can easily make pre-trained models more performant and produ
 
 🔱 **Simple yet powerful**: Easily access features such as 40+ mainstream loss functions, 10+ optimisers, layer pruning, weights freezing, dimensionality reduction, hard-negative mining, cross modality fine-tuning, distributed training. 
 
-☁ **All-in-cloud**: Manage your runs, experiments and artifacts on Jina Cloud ([for free!]()) without worrying about provisioning resources.
-
-Finetuner runs your fine-tuning jobs in the cloud. You never have to worry about provisioning (cloud) resources! Finetuner handles all related complexity and infrastructure.
+☁ **All-in-cloud**: Manage your runs, experiments and artifacts on Jina Cloud ([for free!]()) without worrying about provisioning resources. You never have to worry about provisioning (cloud) resources! Finetuner handles all related complexity and infrastructure.
 
 <!-- end elevator-pitch -->
 
