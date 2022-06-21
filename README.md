@@ -20,10 +20,11 @@ Finetuner makes fine-tuning simple and fast by handling all related complexity a
 
 📈**Performance boost**: Finetuner significantly increases the performance of pretrained models on domain specific neural search applications.
 
-🔱 **Simple yet powerful**: Interacting with Finetuner is simple and seamless, and also supports rich features such as selections of different loss functions, e.g. 
-siamese/triplet loss, metric learning, layer pruning, weights freezing, dimensionality reduction, and much more.
+🔱 **Simple yet powerful**: Easily access features such as 40+ mainstream loss functions, 10+ optimisers, layer pruning, weights freezing, dimensionality reduction, hard-negative mining, cross modality fine-tuning, distributed training. 
 
-☁ **Fine-tune in the cloud**: Finetuner runs your fine-tuning jobs in the cloud. You never have to worry about provisioning (cloud) resources! Finetuner handles all related complexity and infrastructure.
+☁ **All-in-cloud**: Manage your runs, experiments and artifacts on Jina Cloud ([for free!]()) without worrying about provisioning resources.
+
+Finetuner runs your fine-tuning jobs in the cloud. You never have to worry about provisioning (cloud) resources! Finetuner handles all related complexity and infrastructure.
 
 <!-- end elevator-pitch -->
 
