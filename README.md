@@ -28,11 +28,15 @@ With Finetuner, you can easily make pre-trained models more performant and produ
 
 <!-- end elevator-pitch -->
 
-| task           | pre-trained Precision@20 | pre-trained Recall@20 | fine-tuned Precision@20 | fine-tuned Recall@20 | training time |
-|----------------|--------------------------|-----------------------|-------------------------|----------------------|---------------|
-| text-to-text   |                          |                       |                         |                      |               |
-| image-to-image |                          |                       |                         |                      |               |
-| text-to-image  |                          |                       |                         |                      |               |
+## Performance Boost
+
+The following table demonstrates what you can expect from Finetuner:
+
+| model  | pre-trained Precision@20 | pre-trained Recall@20 | fine-tuned Precision@20 | fine-tuned Recall@20 | training time |
+|--------|--------------------------|-----------------------|-------------------------|----------------------|---------------|
+| BERT   |                          |                       |                         |                      |               |
+| ResNet |                          |                       |                         |                      |               |
+| CLIP   |                          |                       |                         |                      |               |
 
 ## How does it work?
 
@@ -50,7 +54,7 @@ pip install -U finetuner
 
 ## Get Started
 
-The following code block illustrates how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset)
+The following code block illustrates how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset):
 ```python
 import finetuner
 from finetuner.callback import EvaluationCallback
