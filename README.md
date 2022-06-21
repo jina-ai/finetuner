@@ -49,7 +49,7 @@ The following table demonstrates what you can expect from Finetuner:
 <tbody>
   <tr>
     <td rowspan="2">BERT</td>
-    <td rowspan="2">[Quora](https://www.kaggle.com/c/quora-question-pairs) Question Answering</td>
+    <td rowspan="2"><a href="https://www.kaggle.com/c/quora-question-pairs">Quora</a> Question Answering</td>
     <td>Precision@20</td>
     <td>0%</td>
     <td>1%</td>
@@ -64,7 +64,7 @@ The following table demonstrates what you can expect from Finetuner:
   </tr>
   <tr>
     <td rowspan="2">ResNet</td>
-    <td rowspan="2">[TLL](https://sites.google.com/view/totally-looks-like-dataset) visual similarity search</td>
+    <td rowspan="2"><a href="https://sites.google.com/view/totally-looks-like-dataset">TLL</a> visual similarity search</td>
     <td>Precision@20</td>
     <td>0%</td>
     <td>1%</td>
@@ -79,7 +79,7 @@ The following table demonstrates what you can expect from Finetuner:
   </tr>
   <tr>
     <td rowspan="2">CLIP</td>
-    <td rowspan="2">[Deep Fashion](https://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html) cross-modality text to image search</td>
+    <td rowspan="2"><a href="https://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html">Deep Fashion</a> cross-modality text to image search</td>
     <td>Precision@20</td>
     <td>0%</td>
     <td>1%</td>
