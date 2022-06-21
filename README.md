@@ -14,7 +14,7 @@
 
 <!-- start elevator-pitch -->
 
-Fine-tuning with domain specific data can improve the performance on neural search tasks<sup>[*]()</sup>.
+Fine-tuning with domain specific data can improve the performance on neural search tasks.
 However, it is non-trivial as it requires a combination of expertise of deep learning and information retrieval.
 
 Finetuner makes this procedure simpler, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud.
@@ -28,21 +28,73 @@ With Finetuner, you can easily make pre-trained models more performant and produ
 
 <!-- end elevator-pitch -->
 
-## Performance Boost
+## [Documentation](https://finetuner.jina.ai/)
+
+## Benchmark
 
 The following table demonstrates what you can expect from Finetuner:
 
-| model  | pre-trained Precision@20 | pre-trained Recall@20 | fine-tuned Precision@20 | fine-tuned Recall@20 | training time |
-|--------|--------------------------|-----------------------|-------------------------|----------------------|---------------|
-| BERT   |                          |                       |                         |                      |               |
-| ResNet |                          |                       |                         |                      |               |
-| CLIP   |                          |                       |                         |                      |               |
+<table>
+<thead>
+  <tr>
+    <th>model</th>
+    <th>task</th>
+    <th>metric</th>
+    <th>pre-trained</th>
+    <th>fine-tuned</th>
+    <th>delta</th>
+    <th>time (minutes)</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td rowspan="2">BERT</td>
+    <td rowspan="2">text-to-text fine-tuning on Quora dataset</td>
+    <td>Precision@20</td>
+    <td>0%</td>
+    <td>1%</td>
+    <td>+1%</td>
+    <td rowspan="2">25</td>
+  </tr>
+  <tr>
+    <td>Recall@20</td>
+    <td>0%</td>
+    <td>1%</td>
+    <td>+1%</td>
+  </tr>
+  <tr>
+    <td rowspan="2">ResNet</td>
+    <td rowspan="2">image-to-image fine-tuning on Totally Looks Like dataset</td>
+    <td>Precision@20</td>
+    <td>0%</td>
+    <td>1%</td>
+    <td>+1%</td>
+    <td rowspan="2">25</td>
+  </tr>
+  <tr>
+    <td>Recall@20</td>
+    <td>0%</td>
+    <td>1%</td>
+    <td>+1%</td>
+  </tr>
+  <tr>
+    <td rowspan="2">CLIP</td>
+    <td rowspan="2">text-to-image fine-tuning on Deep Fashion dataset</td>
+    <td>Precision@20</td>
+    <td>0%</td>
+    <td>1%</td>
+    <td>+1%</td>
+    <td rowspan="2">25</td>
+  </tr>
+  <tr>
+    <td>Recall@20</td>
+    <td>0%</td>
+    <td>1%</td>
+    <td>+1%</td>
+  </tr>
 
-## How does it work?
-
-<img src="https://github.com/jina-ai/finetuner/blob/docs-update-readme/docs/_static/finetuner-client-journey.svg?raw=true" title="Finetuner Client user journey.">
-
-## [Documentation](https://finetuner.jina.ai/)
+</tbody>
+</table>
 
 ## Install
 
@@ -54,7 +106,7 @@ pip install -U finetuner
 
 ## Get Started
 
-The following code block illustrates how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset):
+The following code block describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), run as it is:
 ```python
 import finetuner
 from finetuner.callback import EvaluationCallback
@@ -73,7 +125,7 @@ print(run.logs())
 run.save_model('resnet-tll')
 ```
 
-This minimal example code starts a fine-tuning run with only the necessary arguments. It has the following steps:
+It has the following steps:
 
   * Login to Finetuner: This is necessary if you'd like to run fine-tuning jobs with Finetuner in the cloud.
   * Start fine-tuning run: Select backbone model, training and evaluation data for your evaluation callback.
