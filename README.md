@@ -14,9 +14,11 @@
 
 <!-- start elevator-pitch -->
 
-Fine-tuning deep neural networks (DNNs) significantly improves performance on domain specific neural search tasks.
-However, fine-tuning for neural search is not trivial, as it requires a combination of expertise in ML and Information Retrieval.
-Finetuner makes fine-tuning simple and fast by handling all related complexity and infrastructure in the cloud. With Finetuner, you can easily make models more performant and production ready.
+Fine-tuning with domain specific data can improve the performance on neural search tasks.
+However, it is non-trivial as it requires a combination of expertise of deep learning and information retrieval.
+
+Finetuner makes this procedure simpler, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud.
+With Finetuner, you can easily make pre-trained models more performant and production ready.
 
 📈**Performance boost**: Finetuner significantly increases the performance of pretrained models on domain specific neural search applications.
 
