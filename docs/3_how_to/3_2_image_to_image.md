@@ -27,7 +27,7 @@ We don't require you to push data to the cloud by yourself. Instead of a name, y
 ```
 
 ```{important}
-When working with Document where images are stored locally, please call `doc.load_uri_to_image_tensor(width=224, height=224)` or other image shape to reduce network transmission and speed up training.
+When working with Document where images are stored locally, please call `doc.load_uri_to_image_tensor(width=224, height=224)` or another image shape to reduce network transmission and speed up training.
 ```
 
 
@@ -87,7 +87,7 @@ print(run.status())
 {'status': 'CREATED', 'details': 'Run submitted and awaits execution'}
 ```
 
-Since some runs might take up to several hours/days, it's important to know how to reconnect to Finetuner and retrieve your runs.
+Since some runs might take up to several hours, it's important to know how to reconnect to Finetuner and retrieve your runs.
 
 ```python
 import finetuner
