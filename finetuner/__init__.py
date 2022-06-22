@@ -105,9 +105,9 @@ def fit(
     loss: str = 'TripletMarginLoss',
     miner: Optional[str] = None,
     optimizer: str = 'Adam',
-    learning_rate: float = 0.001,
-    epochs: int = 20,
-    batch_size: int = 8,
+    learning_rate: Optional[float] = None,
+    epochs: int = 5,
+    batch_size: int = 64,
     callbacks: Optional[List[callback.CallbackStubType]] = None,
     scheduler_step: str = 'batch',
     freeze: bool = False,
@@ -133,32 +133,32 @@ def fit(
         are model specific options and are different depending on the model you choose.
         Run `finetuner.list_model_options()` to see available options for every model.
     :param loss: Name of the loss function used for fine-tuning. Default is
-        'TripletMarginLoss'. Options: 'CosFaceLoss', 'NTXLoss', 'AngularLoss',
-        'ArcFaceLoss', 'BaseMetricLossFunction', 'MultipleLosses',
-        'CentroidTripletLoss', 'CircleLoss', 'ContrastiveLoss', 'CrossBatchMemory',
-        'FastAPLoss', 'GenericPairLoss', 'IntraPairVarianceLoss',
-        'LargeMarginSoftmaxLoss', 'GeneralizedLiftedStructureLoss',
-        'LiftedStructureLoss', 'MarginLoss', 'EmbeddingRegularizerMixin',
-        'WeightRegularizerMixin', 'MultiSimilarityLoss', 'NPairsLoss', 'NCALoss',
-        'NormalizedSoftmaxLoss', 'ProxyAnchorLoss', 'ProxyNCALoss',
-        'SignalToNoiseRatioContrastiveLoss', 'SoftTripleLoss', 'SphereFaceLoss',
-        'SupConLoss', 'TripletMarginLoss', 'TupletMarginLoss', 'VICRegLoss',
-        'CLIPLoss'.
+        `TripletMarginLoss`. Options: `CosFaceLoss`, `NTXLoss`, `AngularLoss`,
+        `ArcFaceLoss`, `BaseMetricLossFunction`, `MultipleLosses`,
+        `CentroidTripletLoss`, `CircleLoss`, `ContrastiveLoss`, `CrossBatchMemory`,
+        `FastAPLoss`, `GenericPairLoss`, `IntraPairVarianceLoss`,
+        `LargeMarginSoftmaxLoss`, `GeneralizedLiftedStructureLoss`,
+        `LiftedStructureLoss`, `MarginLoss`, `EmbeddingRegularizerMixin`,
+        `WeightRegularizerMixin`, `MultiSimilarityLoss`, `NPairsLoss`, `NCALoss`,
+        `NormalizedSoftmaxLoss`, `ProxyAnchorLoss`, `ProxyNCALoss`,
+        `SignalToNoiseRatioContrastiveLoss`, `SoftTripleLoss`, `SphereFaceLoss`,
+        `SupConLoss`, `TripletMarginLoss`, `TupletMarginLoss`, `VICRegLoss`,
+        `CLIPLoss`.
     :param miner: Name of the miner to create tuple indices for the loss function.
-        Options: 'AngularMiner', 'BaseMiner', 'BaseSubsetBatchMiner', 'BaseTupleMiner',
-        'BatchEasyHardMiner', 'BatchHardMiner', 'DistanceWeightedMiner', 'HDCMiner',
-        'EmbeddingsAlreadyPackagedAsTriplets', 'MaximumLossMiner', 'PairMarginMiner',
-        'MultiSimilarityMiner', 'TripletMarginMiner', 'UniformHistogramMiner'.
-    :param optimizer: Name of the optimizer used for fine-tuning. Options: 'Adadelta',
-        'Adagrad', 'Adam', 'AdamW', 'SparseAdam', 'Adamax', 'ASGD', 'LBFGS', 'NAdam',
-        'RAdam', 'RMSprop', 'Rprop', 'SGD'.
+        Options: `AngularMiner`, `BaseMiner`, `BaseSubsetBatchMiner`, `BaseTupleMiner`,
+        `BatchEasyHardMiner`, `BatchHardMiner`, `DistanceWeightedMiner`, `HDCMiner`,
+        `EmbeddingsAlreadyPackagedAsTriplets`, `MaximumLossMiner`, `PairMarginMiner`,
+        `MultiSimilarityMiner`, `TripletMarginMiner`, `UniformHistogramMiner`.
+    :param optimizer: Name of the optimizer used for fine-tuning. Options: `Adadelta`,
+        `Adagrad`, `Adam`, `AdamW`, `SparseAdam`, `Adamax`, `ASGD`, `LBFGS`, `NAdam`,
+        `RAdam`, `RMSprop`, `Rprop`, `SGD`.
     :param learning_rate: learning rate for the optimizer.
     :param epochs: Number of epochs for fine-tuning.
     :param batch_size: Number of items to include in a batch.
     :param callbacks: List of callback stub objects. See the `finetuner.callback`
         subpackage for available options, or run `finetuner.list_callbacks()`.
     :param scheduler_step: At which interval should the learning rate scheduler's
-        step function be called. Valid options are 'batch' and 'epoch'.
+        step function be called. Valid options are `batch` and `epoch`.
     :param freeze: If set to `True`, will freeze all layers except the last one.
     :param output_dim: The expected output dimension as `int`.
         If set, will attach a projection head.
