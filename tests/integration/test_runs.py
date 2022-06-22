@@ -86,7 +86,7 @@ def test_create_run_and_save_model(finetuner_mocker, get_image_data, tmp_path):
     while run.status()[STATUS] not in [FINISHED, FAILED]:
         time.sleep(3)
     assert run.status()[STATUS] == FINISHED
-    run.save_model(path=tmp_path / 'finetuned_model')
+    run.save_model(path=str(tmp_path / 'finetuned_model'))
     assert os.path.exists(tmp_path / 'finetuned_model')
     # delete created experiments (and runs)
     finetuner_mocker.delete_experiment(experiment_name)
