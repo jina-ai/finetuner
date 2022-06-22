@@ -83,7 +83,7 @@ def download_model(
     else:
         paths = [path]
     response = [
-        client.hubble_client.download_artifact(id=artifact_id, path=path)
+        client.hubble_client.download_artifact(id=artifact_id, f=path)
         for artifact_id, path in zip(artifact_ids, paths)
     ]
     return response
