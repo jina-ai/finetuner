@@ -48,18 +48,22 @@ finetuner.login()
 
 Now, you can easily start a fine-tuning job with {meth}`~finetuner.fit`:
 ```python
-from finetuner.callback import BestModelCheckpoint, EvaluationCallback
+from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
     model='resnet50',
-    run_name='resnet-ttl',
-    description='fine-tune the whole model.',
+    run_name='resnet-tll',
     train_data='tll-train-da',
-    eval_data='tll-eval-da',
-    loss='TripletMarginLoss',
-    epochs=6,
+    batch_size=128,
+    epochs=5,
     learning_rate=1e-5,
-    callbacks=[BestModelCheckpoint(), EvaluationCallback(query_data='tll-eval-da')],
+    cpu=False,
+    callbacks=[
+        EvaluationCallback(
+            query_data='tll-test-query-da',
+            index_data='tll-test-index-da',
+        )
+    ],
 )
 ```
 Let's understand what this piece of code does:
@@ -93,7 +97,7 @@ Since some runs might take up to several hours, it's important to know how to re
 import finetuner
 finetuner.login()
 
-run = finetuner.get_run('resnet-ttl')
+run = finetuner.get_run('resnet-tll')
 ```
 
 You can continue monitoring the runs by checking the status - {meth}`~finetuner.run.Run.status()` or the logs - {meth}`~finetuner.run.Run.logs()`. 
@@ -103,21 +107,22 @@ Currently, we don't have a user-friendly way to get evaluation metrics from the 
 What you can do for now is to call {meth}`~finetuner.run.Run.logs()` in the end of the run and see evaluation results:
 
 ```bash
-[10:37:49] DEBUG    Metric: 'model_average_precision' Value: 0.30105                                     __main__.py:217
-           DEBUG    Metric: 'model_dcg_at_k' Value: 0.43933                                              __main__.py:217
-           DEBUG    Metric: 'model_f1_score_at_k' Value: 0.06273                                         __main__.py:217
-           DEBUG    Metric: 'model_hit_at_k' Value: 0.69000                                              __main__.py:217
-           DEBUG    Metric: 'model_ndcg_at_k' Value: 0.43933                                             __main__.py:217
-           DEBUG    Metric: 'model_precision_at_k' Value: 0.03450                                        __main__.py:217
-           DEBUG    Metric: 'model_r_precision' Value: 0.30105                                           __main__.py:217
-           DEBUG    Metric: 'model_recall_at_k' Value: 0.34500                                           __main__.py:217
-           DEBUG    Metric: 'model_reciprocal_rank' Value: 0.30105                                       __main__.py:217
-           INFO     Done ✨                                                                              __main__.py:219
-           INFO     Saving fine-tuned models ...                                                         __main__.py:222
-           INFO     Saving model 'model' in /usr/src/app/tuned-models/model ...                          __main__.py:233
-           INFO     Pushing saved model to Hubble ...                                                    __main__.py:240
-[10:38:14] INFO     Pushed model artifact ID: '62a1af491597c219f6a330fe'                                 __main__.py:246
-           INFO     Finished 🚀                                                                          __main__.py:248
+  Training [5/5] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:00 0:03:15 • loss: 0.003
+[16:39:13] DEBUG    Metric: 'model_average_precision' Value: 0.16603                                     __main__.py:202
+           DEBUG    Metric: 'model_dcg_at_k' Value: 0.23632                                              __main__.py:202
+           DEBUG    Metric: 'model_f1_score_at_k' Value: 0.03544                                         __main__.py:202
+           DEBUG    Metric: 'model_hit_at_k' Value: 0.37209                                              __main__.py:202
+           DEBUG    Metric: 'model_ndcg_at_k' Value: 0.23632                                             __main__.py:202
+           DEBUG    Metric: 'model_precision_at_k' Value: 0.01860                                        __main__.py:202
+           DEBUG    Metric: 'model_r_precision' Value: 0.16603                                           __main__.py:202
+           DEBUG    Metric: 'model_recall_at_k' Value: 0.37209                                           __main__.py:202
+           DEBUG    Metric: 'model_reciprocal_rank' Value: 0.16603                                       __main__.py:202
+           INFO     Done ✨                                                                              __main__.py:204
+           INFO     Saving fine-tuned models ...                                                         __main__.py:207
+           INFO     Saving model 'model' in /usr/src/app/tuned-models/model ...                          __main__.py:218
+           INFO     Pushing saved model to Hubble ...                                                    __main__.py:225
+[16:39:41] INFO     Pushed model artifact ID: '62b33cb0037ad91ca7f20530'                                 __main__.py:231
+           INFO     Finished 🚀                                                                          __main__.py:233                           __main__.py:248
 ```
 
 ## Saving
