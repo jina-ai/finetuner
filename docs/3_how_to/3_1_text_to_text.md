@@ -106,19 +106,23 @@ from finetuner.callback import EvaluationCallback
 finetuner.login()
 
 # Start fine-tuning as a run within an experiment
-run = finetuner.fit(
+finetuner.fit(
     model='bert-base-cased',
-    train_data=train_data,
+    train_data='quora_train.da',
     run_name='finetune-quora-dataset-bert-base-cased',
-    description='this is a trial run on quora dataset with bert-base-cased.',
     loss='TripletMarginLoss',
     optimizer='Adam',
     learning_rate = 1e-5,
     epochs=3,
     batch_size=128,
     cpu=False,
-    num_workers=4,
-    callbacks=[EvaluationCallback(query_data=query_data, index_data=index_data, batch_size=256)]
+    callbacks=[
+        EvaluationCallback(
+            query_data='quora_query_dev.da',
+            index_data='quora_index_dev.da',
+            batch_size=32
+        )
+    ]
 )
 ```
 
@@ -148,13 +152,12 @@ print(run.status())
 {'status': 'CREATED', 'details': 'Run submitted and awaits execution'}
 ```
 
-Since some runs might take up to several hours/days, you can reconnect to your run very easily to monitor its status.
+Since some runs might take up to several hours, you can reconnect to your run very easily to monitor its status.
 ```python
 import finetuner
 
 finetuner.login()
-experiment = finetuner.get_experiment('finetune-quora-dataset')
-run = experiment.get_run('finetune-quora-dataset-bert-base-cased')
+run = finetuner.get_run('finetune-quora-dataset-bert-base-cased')
 print(f'Run status: {run.status()}')
 ```
 
@@ -166,13 +169,25 @@ Our `EvaluationCallback` during fine-tuning ensures that after each epoch, an ev
 import finetuner
 
 finetuner.login()
-experiment = finetuner.get_experiment('finetune-quora-dataset')
-run = experiment.get_run('finetune-quora-dataset-bert-base-cased')
+run = finetuner.get_run('finetune-quora-dataset-bert-base-cased')
 print(f'Run logs: {run.logs()}')
 ```
 
 ```bash
-(log output)
+  Training [3/3] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 818/818 0:00:00 0:03:12 • loss: 0.000
+[11:10:28] DEBUG    Metric: 'model_average_precision' Value: 0.95579                                     __main__.py:202
+           DEBUG    Metric: 'model_dcg_at_k' Value: 1.33802                                              __main__.py:202
+           DEBUG    Metric: 'model_f1_score_at_k' Value: 0.13451                                         __main__.py:202
+           DEBUG    Metric: 'model_hit_at_k' Value: 0.99620                                              __main__.py:202
+           DEBUG    Metric: 'model_ndcg_at_k' Value: 0.97453                                             __main__.py:202
+           DEBUG    Metric: 'model_precision_at_k' Value: 0.07643                                        __main__.py:202
+           DEBUG    Metric: 'model_r_precision' Value: 0.94262                                           __main__.py:202
+           DEBUG    Metric: 'model_recall_at_k' Value: 0.99167                                           __main__.py:202
+           DEBUG    Metric: 'model_reciprocal_rank' Value: 0.96537                                       __main__.py:202
+           INFO     Done ✨                                                                              __main__.py:204
+           INFO     Saving fine-tuned models ...                                                         __main__.py:207
+           INFO     Saving model 'model' in /usr/src/app/tuned-models/model ...                          __main__.py:218
+           INFO     Pushing saved model to Hubble ...                                                    __main__.py:225
 ```
 
 
