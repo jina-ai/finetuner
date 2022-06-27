@@ -54,7 +54,7 @@ The following table demonstrates what you can expect from Finetuner:
     <td>0.835</td>
     <td>0.967</td>
     <td>0.132</td>
-    <td rowspan="2">14 min 7 sec</td>
+    <td rowspan="2">14 min</td>
   </tr>
   <tr>
     <td>Recall@20</td>
@@ -69,7 +69,7 @@ The following table demonstrates what you can expect from Finetuner:
     <td>0.102</td>
     <td>0.166</td>
     <td>0.064</td>
-    <td rowspan="2">47 min 25 sec</td>
+    <td rowspan="2">47 min</td>
   </tr>
   <tr>
     <td>Recall@20</td>
