@@ -53,7 +53,7 @@ The following table demonstrates what you can expect from Finetuner:
     <td>mRR@20</td>
     <td>0.835</td>
     <td>0.967</td>
-    <td>+0.132</td>
+    <td>\xF0\x9F\x94\xBC 0.132</td>
     <td rowspan="2">14 min</td>
   </tr>
   <tr>
@@ -75,7 +75,7 @@ The following table demonstrates what you can expect from Finetuner:
     <td>Recall@20</td>
     <td>0.235</td>
     <td>0.372</td>
-    <td>```diff +0.137```</td>
+    <td>+0.137</td>
   </tr>
   <tr>
     <td rowspan="2">CLIP</td>
