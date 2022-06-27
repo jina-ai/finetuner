@@ -53,14 +53,14 @@ The following table demonstrates what you can expect from Finetuner:
     <td>mRR@20</td>
     <td>0.835</td>
     <td>0.967</td>
-    <td>0.132</td>
+    <td>+0.132</td>
     <td rowspan="2">14 min</td>
   </tr>
   <tr>
     <td>Recall@20</td>
     <td>0.915</td>
     <td>0.963</td>
-    <td>0.078</td>
+    <td>+0.078</td>
   </tr>
   <tr>
     <td rowspan="2">ResNet</td>
@@ -68,14 +68,14 @@ The following table demonstrates what you can expect from Finetuner:
     <td>mAP@20</td>
     <td>0.102</td>
     <td>0.166</td>
-    <td>0.064</td>
+    <td>+0.064</td>
     <td rowspan="2">47 min</td>
   </tr>
   <tr>
     <td>Recall@20</td>
     <td>0.235</td>
     <td>0.372</td>
-    <td>0.137</td>
+    <td>```diff +0.137```</td>
   </tr>
   <tr>
     <td rowspan="2">CLIP</td>
