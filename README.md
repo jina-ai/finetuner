@@ -58,24 +58,24 @@ The following table demonstrates what you can expect from Finetuner:
   </tr>
   <tr>
     <td>Recall@20</td>
-    <td>0%</td>
-    <td>1%</td>
-    <td>+1%</td>
+    <td>0.915</td>
+    <td>0.963</td>
+    <td>0.078</td>
   </tr>
   <tr>
     <td rowspan="2">ResNet</td>
     <td rowspan="2">visual similarity search on <a href="https://sites.google.com/view/totally-looks-like-dataset">Totally Looks Like</a></td>
-    <td>Precision@20</td>
-    <td>0%</td>
-    <td>1%</td>
-    <td>+1%</td>
-    <td rowspan="2">25</td>
+    <td>mAP@20</td>
+    <td>0.102</td>
+    <td>0.166</td>
+    <td>0.064</td>
+    <td rowspan="2">47 min 25 sec</td>
   </tr>
   <tr>
     <td>Recall@20</td>
-    <td>0%</td>
-    <td>1%</td>
-    <td>+1%</td>
+    <td>0.235</td>
+    <td>0.372</td>
+    <td>0.137</td>
   </tr>
   <tr>
     <td rowspan="2">CLIP</td>
