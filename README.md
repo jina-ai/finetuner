@@ -60,7 +60,7 @@ The following table demonstrates what you can expect from Finetuner:
     <td>Recall@20</td>
     <td>0.915</td>
     <td>0.963</td>
-    <td>+0.078</td>
+    <td>(&#x1F53A;) 0.078</td>
   </tr>
   <tr>
     <td rowspan="2">ResNet</td>
@@ -68,14 +68,14 @@ The following table demonstrates what you can expect from Finetuner:
     <td>mAP@20</td>
     <td>0.102</td>
     <td>0.166</td>
-    <td>+0.064</td>
+    <td>(&#x1F53A;) 0.064</td>
     <td rowspan="2">47 min</td>
   </tr>
   <tr>
     <td>Recall@20</td>
     <td>0.235</td>
     <td>0.372</td>
-    <td>+0.137</td>
+    <td>(&#x1F53A;) 0.137</td>
   </tr>
   <tr>
     <td rowspan="2">CLIP</td>
@@ -83,14 +83,14 @@ The following table demonstrates what you can expect from Finetuner:
     <td>Precision@20</td>
     <td>0%</td>
     <td>1%</td>
-    <td>+1%</td>
+    <td>(&#x1F53A;) 1%</td>
     <td rowspan="2">25</td>
   </tr>
   <tr>
     <td>Recall@20</td>
     <td>0%</td>
     <td>1%</td>
-    <td>+1%</td>
+    <td>(&#x1F53A;) 1%</td>
   </tr>
 
 </tbody>
@@ -106,7 +106,7 @@ pip install -U finetuner
 
 ## Get Started
 
-The following code block describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), run as it is:
+The following code block describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), can be run as-is:
 ```python
 import finetuner
 from finetuner.callback import EvaluationCallback
