@@ -43,18 +43,18 @@ The following table demonstrates what you can expect from Finetuner:
     <th>pre-trained</th>
     <th>fine-tuned</th>
     <th>delta</th>
-    <th>time (minutes)</th>
+    <th>time</th>
   </tr>
 </thead>
 <tbody>
   <tr>
     <td rowspan="2">BERT</td>
     <td rowspan="2"><a href="https://www.kaggle.com/c/quora-question-pairs">Quora</a> Question Answering/Duplicate Detection</td>
-    <td>Precision@20</td>
-    <td>0%</td>
-    <td>1%</td>
-    <td>+1%</td>
-    <td rowspan="2">25</td>
+    <td>mRR@20</td>
+    <td>0.835</td>
+    <td>0.967</td>
+    <td>0.132</td>
+    <td rowspan="2">14 min 7 sec</td>
   </tr>
   <tr>
     <td>Recall@20</td>
