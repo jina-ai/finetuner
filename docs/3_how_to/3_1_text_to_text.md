@@ -174,20 +174,22 @@ print(f'Run logs: {run.logs()}')
 ```
 
 ```bash
-  Training [3/3] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 818/818 0:00:00 0:03:12 • loss: 0.000
-[11:10:28] DEBUG    Metric: 'model_average_precision' Value: 0.95579                                     __main__.py:202
-           DEBUG    Metric: 'model_dcg_at_k' Value: 1.33802                                              __main__.py:202
-           DEBUG    Metric: 'model_f1_score_at_k' Value: 0.13451                                         __main__.py:202
-           DEBUG    Metric: 'model_hit_at_k' Value: 0.99620                                              __main__.py:202
-           DEBUG    Metric: 'model_ndcg_at_k' Value: 0.97453                                             __main__.py:202
-           DEBUG    Metric: 'model_precision_at_k' Value: 0.07643                                        __main__.py:202
-           DEBUG    Metric: 'model_r_precision' Value: 0.94262                                           __main__.py:202
-           DEBUG    Metric: 'model_recall_at_k' Value: 0.99167                                           __main__.py:202
-           DEBUG    Metric: 'model_reciprocal_rank' Value: 0.96537                                       __main__.py:202
+  Training [3/3] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 818/818 0:00:00 0:03:05 • loss: 0.000
+[15:36:40] DEBUG    Metric: 'model_average_precision' Value: 0.95728                                     __main__.py:202
+           DEBUG    Metric: 'model_dcg_at_k' Value: 1.33912                                              __main__.py:202
+           DEBUG    Metric: 'model_f1_score_at_k' Value: 0.13469                                         __main__.py:202
+           DEBUG    Metric: 'model_hit_at_k' Value: 0.99720                                              __main__.py:202
+           DEBUG    Metric: 'model_ndcg_at_k' Value: 0.97529                                             __main__.py:202
+           DEBUG    Metric: 'model_precision_at_k' Value: 0.07653                                        __main__.py:202
+           DEBUG    Metric: 'model_r_precision' Value: 0.94393                                           __main__.py:202
+           DEBUG    Metric: 'model_recall_at_k' Value: 0.99301                                           __main__.py:202
+           DEBUG    Metric: 'model_reciprocal_rank' Value: 0.96686                                       __main__.py:202
            INFO     Done ✨                                                                              __main__.py:204
            INFO     Saving fine-tuned models ...                                                         __main__.py:207
            INFO     Saving model 'model' in /usr/src/app/tuned-models/model ...                          __main__.py:218
-           INFO     Pushing saved model to Hubble ...                                                    __main__.py:225
+[15:36:41] INFO     Pushing saved model to Hubble ...                                                    __main__.py:225
+[15:37:32] INFO     Pushed model artifact ID: '62b9cb73a411d7e08d18bd16'                                 __main__.py:231
+           INFO     Finished 🚀                                                                          __main__.py:233                                                  __main__.py:225
 ```
 
 
