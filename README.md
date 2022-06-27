@@ -53,7 +53,7 @@ The following table demonstrates what you can expect from Finetuner:
     <td>mRR@20</td>
     <td>0.835</td>
     <td>0.967</td>
-    <td>\xF0\x9F\x94\xBC 0.132</td>
+    <td>(&#x1F53A;) 0.132</td>
     <td rowspan="2">14 min</td>
   </tr>
   <tr>
