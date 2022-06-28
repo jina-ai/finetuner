@@ -1,5 +1,5 @@
 (retrieve-tuned-model)=
-# Retrieve tuned model
+# Save Model
 
 Perfect!
 Now you have started the fine-tuning job in the cloud.

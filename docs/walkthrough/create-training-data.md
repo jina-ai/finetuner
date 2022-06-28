@@ -1,5 +1,5 @@
 (create-training-data)=
-# Create training data
+# Prepare Training Data
 
 Finetuner accepts training data and evaluation data in the form of {class}`~docarray.array.document.DocumentArray` objects.
 Because Finetuner follows a [supervised-learning](https://en.wikipedia.org/wiki/Supervised_learning) scheme,

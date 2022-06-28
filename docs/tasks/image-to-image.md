@@ -1,5 +1,5 @@
 (image-to-image)=
-# ResNet for image to image search
+# Image-to-Image Search via ResNet50
 
 This guide will demonstrate how to fine-tune a ResNet model for image to image retrieval.
 

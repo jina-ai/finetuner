@@ -1,4 +1,4 @@
-# How Finetuner works
+# How Does it Work?
 
 ## Contrastive metric learning
 
