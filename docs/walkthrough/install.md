@@ -16,8 +16,6 @@ pip install finetuner
 ````
 
 Check your installation with:
-```pycon
->>> import finetuner
->>> finetuner.__version__
-'0.5.0
+```bash
+pip show finetuner
 ```

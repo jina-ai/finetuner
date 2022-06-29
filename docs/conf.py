@@ -2,6 +2,7 @@ import os
 import re
 import sys
 from os import path
+import pkg_resources
 
 sys.path.insert(0, path.abspath('..'))
 
@@ -14,22 +15,8 @@ master_doc = 'index'
 language = 'en'
 repo_dir = '../'
 
-try:
-    if 'FINETUNER_VERSION' not in os.environ:
-        pkg_name = 'finetuner'
-        libinfo_py = path.join(repo_dir, pkg_name, '__init__.py')
-        libinfo_content = open(libinfo_py, 'r').readlines()
-        version_line = [
-            l.strip() for l in libinfo_content if l.startswith('__version__')
-        ][0]
-        exec(version_line)
-    else:
-        __version__ = os.environ['FINETUNER_VERSION']
-except FileNotFoundError:
-    __version__ = '0.0.0'
-
-version = __version__
-release = __version__
+version = pkg_resources.require("finetuner")[0].version
+release = version
 
 templates_path = ['_templates']
 exclude_patterns = [

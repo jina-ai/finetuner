@@ -1,28 +1,10 @@
-import os
-
 from setuptools import find_packages, setup
 
 # package name
 _name = 'finetuner'
 
-
-# package version
-__version__ = '0.0.0'
-try:
-    libinfo_py = os.path.join('finetuner', '__init__.py')
-    libinfo_content = open(libinfo_py, 'r', encoding='utf8').readlines()
-    version_line = [
-        line.strip() for line in libinfo_content if line.startswith('__version__')
-    ][0]
-    exec(version_line)  # gives __version__
-except FileNotFoundError:
-    pass
-
-
 # package metadata
-_description = (
-    'Task-oriented finetuning for better embeddings on neural search.'
-)
+_description = 'Task-oriented finetuning for better embeddings on neural search.'
 _setup_requires = ['setuptools>=18.0', 'wheel']
 _python_requires = '>=3.7.0'
 _author = 'Jina AI'
@@ -76,7 +58,6 @@ if __name__ == '__main__':
     setup(
         name=_name,
         packages=find_packages(exclude=_package_exclude),
-        version=__version__,
         include_package_data=True,
         description=_description,
         author=_author,
