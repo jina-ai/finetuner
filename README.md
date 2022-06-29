@@ -39,7 +39,7 @@ The following table demonstrates what you can expect from Finetuner:
   <tr>
     <th>MODEL</th>
     <th>TASK</th>
-    <th>METRIC</th>
+    <th>METRIC@20</th>
     <th>PRE-TRAINED</th>
     <th>FINE-TUNED</th>
     <th>DELTA</th>
@@ -50,29 +50,29 @@ The following table demonstrates what you can expect from Finetuner:
   <tr>
     <td rowspan="2">BERT</td>
     <td rowspan="2"><a href="https://www.kaggle.com/c/quora-question-pairs">Quora</a> Question Answering/Duplicate Detection</td>
-    <td>mRR@20</td>
+    <td>mRR</td>
     <td>0.835</td>
     <td>0.967</td>
     <td>:arrow_up_small: 0.132</td>
     <td rowspan="2">14 min</td>
   </tr>
   <tr>
-    <td>Recall@20</td>
+    <td>Recall</td>
     <td>0.915</td>
     <td>0.963</td>
     <td>:arrow_up_small: 0.078</td>
   </tr>
   <tr>
-    <td rowspan="2">RESNET</td>
+    <td rowspan="2">ResNet</td>
     <td rowspan="2">Visual similarity search on <a href="https://sites.google.com/view/totally-looks-like-dataset">Totally Looks Like</a></td>
-    <td>mAP@20</td>
+    <td>mAP</td>
     <td>0.102</td>
     <td>0.166</td>
     <td>:arrow_up_small: 0.064</td>
     <td rowspan="2">47 min</td>
   </tr>
   <tr>
-    <td>Recall@20</td>
+    <td>Recall</td>
     <td>0.235</td>
     <td>0.372</td>
     <td>:arrow_up_small: 0.137</td>
@@ -80,14 +80,14 @@ The following table demonstrates what you can expect from Finetuner:
   <tr>
     <td rowspan="2">CLIP</td>
     <td rowspan="2"><a href="https://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html">Deep Fashion</a> cross-modality text to image search</td>
-    <td>Precision@20</td>
+    <td>mRR</td>
     <td>0.192</td>
     <td>0.354</td>
     <td>:arrow_up_small: 0.162</td>
     <td rowspan="2">41 min</td>
   </tr>
   <tr>
-    <td>Recall@20</td>
+    <td>Recall</td>
     <td>0.108</td>
     <td>0.297</td>
     <td>:arrow_up_small: 0.189</td>
