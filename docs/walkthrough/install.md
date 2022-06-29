@@ -11,9 +11,7 @@ Make sure you have `Python 3.7+` installed on Linux/Mac/Windows:
 pip install finetuner
 ```
 
-No extra dependency will be installed.
 ````
-
 
 ````
 
