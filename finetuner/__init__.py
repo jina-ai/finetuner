@@ -2,11 +2,7 @@ import inspect
 import os
 from typing import Any, Dict, List, Optional, Union
 
-try:
-    from importlib_metadata import version  # type: ignore
-except ImportError:
-    from importlib.metadata import version  # type: ignore
-
+import pkg_resources
 from docarray import DocumentArray
 from rich.console import Console
 from rich.table import Table
@@ -29,7 +25,7 @@ from finetuner import callback, models
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
 
-__version__ = version('finetuner')
+version = pkg_resources.require("finetuner")[0].version
 
 ft = Finetuner()
 
