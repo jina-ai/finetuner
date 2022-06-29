@@ -5,11 +5,6 @@
 :end-before: <!-- end elevator-pitch -->
 ```
 
-**Finetuner** is an open-source offering by [Jina AI](https://jina.ai/) ✨
-
-It enables users to fine-tune large pre-trained deep learning models in their specific domains and datasets. It handles the
-infrastructure and the complexity of the fine-tuning task and provides a simple interface to submit fine-tuning jobs on the Jina Cloud.
-
 Finetuner primarily targets business users and engineers with limited knowledge in Machine Learning, but also attempts to expose
 lots of configuration options for experienced professionals!
 

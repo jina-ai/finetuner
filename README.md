@@ -81,16 +81,16 @@ The following table demonstrates what you can expect from Finetuner:
     <td rowspan="2">CLIP</td>
     <td rowspan="2"><a href="https://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html">Deep Fashion</a> cross-modality text to image search</td>
     <td>Precision@20</td>
-    <td>0%</td>
-    <td>1%</td>
-    <td>:arrow_up_small: 1%</td>
-    <td rowspan="2">41</td>
+    <td>0.192</td>
+    <td>0.354</td>
+    <td>:arrow_up_small: 0.162</td>
+    <td rowspan="2">41 min</td>
   </tr>
   <tr>
     <td>Recall@20</td>
-    <td>0%</td>
-    <td>1%</td>
-    <td>:arrow_up_small: 1%</td>
+    <td>0.108</td>
+    <td>0.297</td>
+    <td>:arrow_up_small: 0.189</td>
   </tr>
 
 </tbody>
