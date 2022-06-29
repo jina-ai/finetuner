@@ -19,31 +19,33 @@ jobs:
         env:
           release_token: ${{ secrets.FINETUNER_RELEASE_TOKEN }}
 
-  create-release:
-    name: Create GitHub release
-    needs: update-docs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: "main"
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-      - run: |
-          python scripts/get-last-release-note.py
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: 💫 ${{ github.ref }}
-          body_path: "tmp.md"
-          draft: false
-          prerelease: false
+# For now we will create manual release.
+# Once stable we integrate semantic release.
+#  create-release:
+#    name: Create GitHub release
+#    needs: update-docs
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#        with:
+#          ref: "main"
+#      - uses: actions/setup-python@v2
+#        with:
+#          python-version: 3.7
+#      - run: |
+#          python scripts/get-last-release-note.py
+#      - name: Create Release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+#        with:
+#          tag_name: ${{ github.ref }}
+#          release_name: 💫 ${{ github.ref }}
+#          body_path: "tmp.md"
+#          draft: false
+#          prerelease: false
 
   publish-to-pypi:
     name: Publish release to PyPI
