@@ -40,8 +40,8 @@ The following table demonstrates what you can expect from Finetuner:
     <th>MODEL</th>
     <th>TASK</th>
     <th>METRIC@20</th>
-    <th>PRE-TRAINED</th>
-    <th>FINE-TUNED</th>
+    <th>PRETRAINED</th>
+    <th>FINETUNED</th>
     <th>DELTA</th>
   </tr>
 </thead>
