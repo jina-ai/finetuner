@@ -78,15 +78,15 @@ The following table demonstrates what you can expect from Finetuner:
     <td rowspan="2">CLIP</td>
     <td rowspan="2"><a href="https://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html">Deep Fashion</a> text-to-image search</td>
     <td>mRR</td>
-    <td>0.192</td>
-    <td>0.354</td>
-    <td>:arrow_up_small: 84.4%</td>
+    <td>0.289</td>
+    <td>0.488</td>
+    <td>:arrow_up_small: 69.9%</td>
   </tr>
   <tr>
     <td>Recall</td>
-    <td>0.108</td>
-    <td>0.297</td>
-    <td>:arrow_up_small: 175%</td>
+    <td>0.109</td>
+    <td>0.346</td>
+    <td>:arrow_up_small: 217%</td>
   </tr>
 
 </tbody>
