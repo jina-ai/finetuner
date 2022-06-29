@@ -35,21 +35,20 @@ finetuner.login()
 Now that everything's ready, let's create a fine-tuning run!
 
 ```python
-from finetuner.callback import BestModelCheckpoint, EvaluationCallback
+import finetuner
 
 run = finetuner.fit(
-        model='openai/clip-vit-base-patch32',
-        run_name='clip-fashion',
-        train_data='clip-fashion-train-data',
-        eval_data='clip-fashion-eval-data',
-        epochs=5,
-        learning_rate= 1e-5,
-        callbacks=[BestModelCheckpoint(), EvaluationCallback(query_data='clip-fashion-eval-data')],
-        loss='CLIPLoss',
-        image_modality='image',
-        text_modality='text',
-        multi_modal=True,
-    )
+    model='openai/clip-vit-base-patch32',
+    run_name='clip-fashion',
+    train_data='clip-fashion-train-data',
+    eval_data='clip-fashion-eval-data',
+    epochs=5,
+    learning_rate= 1e-5,
+    loss='CLIPLoss',
+    image_modality='image',
+    text_modality='text',
+    multi_modal=True,
+)
 ```
 Let's understand what this piece of code does:
 ```{admonition} finetuner.fit parameters
@@ -91,15 +90,6 @@ Currently, we don't have a user-friendly way to get evaluation metrics from the 
 What you can do for now is to call {meth}`~finetuner.run.Run.logs()` in the end of the run and see evaluation results:
 
 ```bash
-[10:37:49] DEBUG    Metric: 'model_average_precision' Value: 0.30105                                     __main__.py:217
-           DEBUG    Metric: 'model_dcg_at_k' Value: 0.43933                                              __main__.py:217
-           DEBUG    Metric: 'model_f1_score_at_k' Value: 0.06273                                         __main__.py:217
-           DEBUG    Metric: 'model_hit_at_k' Value: 0.69000                                              __main__.py:217
-           DEBUG    Metric: 'model_ndcg_at_k' Value: 0.43933                                             __main__.py:217
-           DEBUG    Metric: 'model_precision_at_k' Value: 0.03450                                        __main__.py:217
-           DEBUG    Metric: 'model_r_precision' Value: 0.30105                                           __main__.py:217
-           DEBUG    Metric: 'model_recall_at_k' Value: 0.34500                                           __main__.py:217
-           DEBUG    Metric: 'model_reciprocal_rank' Value: 0.30105                                       __main__.py:217
            INFO     Done ✨                                                                              __main__.py:219
            INFO     Saving fine-tuned models ...                                                         __main__.py:222
            INFO     Saving model 'model' in /usr/src/app/tuned-models/model ...                          __main__.py:233
@@ -107,6 +97,28 @@ What you can do for now is to call {meth}`~finetuner.run.Run.logs()` in the end 
 [10:38:14] INFO     Pushed model artifact ID: '62a1af491597c219f6a330fe'                                 __main__.py:246
            INFO     Finished 🚀                                                                          __main__.py:248
 ```
+
+```{admonition} Evaluation of CLIP
+:class: hint
+
+In this example, we did not plug-in an `EvaluationCallback` since the callback can evaluate one model at one time.
+In most cases, we want to evaluate two models: i.e. use `CLIPTextEncoder` to encode textual Documents as `query_data` while use `CLIPImageEncoder` to encode image Documents as `index_data`.
+Then use the textual Documents to search image Documents.
+
+We have done the evaulation for you in the table below.
+```
+
+|                   | Before Finetuning | After Finetuning |
+|:------------------|----------:|---------:|
+| average_precision | 0.164922  | 0.30829  |
+| dcg_at_k          | 0.595971  | 1.54538  |
+| f1_score_at_k     | 0.0690783 | 0.190486 |
+| hit_at_k          | 0.4983    | 0.7058   |
+| ndcg_at_k         | 0.255551  | 0.416503 |
+| precision_at_k    | 0.067665  | 0.17919  |
+| r_precision       | 0.137981  | 0.259642 |
+| recall_at_k       | 0.1082    | 0.2973   |
+| reciprocal_rank   | 0.192005  | 0.35366  |
 
 ## Saving
 
