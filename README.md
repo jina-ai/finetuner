@@ -112,7 +112,7 @@ pip install finetuner==0.4.1
 ```
 
 We have backed up the 0.4.1 documentation in `docs/docs_41/` folder.
-Check [this page](docs/docs_41/README.md) to render finetuner 0.4.1 documentation locally.
+Check [this page](docs/docs_41/README.md) to render Finetuner 0.4.1 documentation locally.
 
 ## Get Started
 
