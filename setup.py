@@ -3,7 +3,7 @@ import os
 from setuptools import find_packages, setup
 
 # package name
-_name = 'finetuner-client'
+_name = 'finetuner'
 
 
 # package version
