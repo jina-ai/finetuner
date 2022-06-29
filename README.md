@@ -92,7 +92,7 @@ The following table demonstrates what you can expect from Finetuner:
 </tbody>
 </table>
 
-<sub><sup><a id="example-setup">[*]</a> All metrics evaluation on k@20, trained 5 epochs with Adam optimizer with learning rate of 1e-5.</sup></sub>
+<sub><sup><a id="example-setup">[*]</a> All metrics evaluation on k@20, trained 5 epochs using Adam optimizer with learning rate of 1e-5.</sup></sub>
 
 ## Install
 
