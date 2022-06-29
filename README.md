@@ -53,14 +53,14 @@ The following table demonstrates what you can expect from Finetuner:
     <td>mRR</td>
     <td>0.835</td>
     <td>0.967</td>
-    <td>:arrow_up_small: 0.132</td>
+    <td>:arrow_up_small: 15.8%</td>
     <td rowspan="2">14 min</td>
   </tr>
   <tr>
     <td>Recall</td>
     <td>0.915</td>
     <td>0.963</td>
-    <td>:arrow_up_small: 0.078</td>
+    <td>:arrow_up_small: 5.3%</td>
   </tr>
   <tr>
     <td rowspan="2">ResNet</td>
@@ -68,14 +68,14 @@ The following table demonstrates what you can expect from Finetuner:
     <td>mAP</td>
     <td>0.102</td>
     <td>0.166</td>
-    <td>:arrow_up_small: 0.064</td>
+    <td>:arrow_up_small: 62.7%</td>
     <td rowspan="2">47 min</td>
   </tr>
   <tr>
     <td>Recall</td>
     <td>0.235</td>
     <td>0.372</td>
-    <td>:arrow_up_small: 0.137</td>
+    <td>:arrow_up_small: 58.3%</td>
   </tr>
   <tr>
     <td rowspan="2">CLIP</td>
@@ -83,14 +83,14 @@ The following table demonstrates what you can expect from Finetuner:
     <td>mRR</td>
     <td>0.192</td>
     <td>0.354</td>
-    <td>:arrow_up_small: 0.162</td>
+    <td>:arrow_up_small: 84.4%</td>
     <td rowspan="2">41 min</td>
   </tr>
   <tr>
     <td>Recall</td>
     <td>0.108</td>
     <td>0.297</td>
-    <td>:arrow_up_small: 0.189</td>
+    <td>:arrow_up_small: 175%</td>
   </tr>
 
 </tbody>
