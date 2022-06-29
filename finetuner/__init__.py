@@ -20,9 +20,13 @@ if HOST not in os.environ:
 if HUBBLE_REGISTRY not in os.environ:
     os.environ[HUBBLE_REGISTRY] = DEFAULT_HUBBLE_REGISTRY
 
+import importlib.metadata
+
 from finetuner import callback, models
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
+
+__version__ = importlib.metadata.version('finetuner')
 
 ft = Finetuner()
 
