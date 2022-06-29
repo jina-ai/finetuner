@@ -48,7 +48,7 @@ The following table demonstrates what you can expect from Finetuner:
 <tbody>
   <tr>
     <td rowspan="2">BERT</td>
-    <td rowspan="2"><a href="https://www.kaggle.com/c/quora-question-pairs">Quora</a> Question Answering/De-duplication</td>
+    <td rowspan="2"><a href="https://www.kaggle.com/c/quora-question-pairs">Quora</a> Question Answering</td>
     <td>mRR</td>
     <td>0.835</td>
     <td>0.967</td>
@@ -62,7 +62,7 @@ The following table demonstrates what you can expect from Finetuner:
   </tr>
   <tr>
     <td rowspan="2">ResNet</td>
-    <td rowspan="2">Visual similarity search on <a href="https://sites.google.com/view/totally-looks-like-dataset">Totally Looks Like</a></td>
+    <td rowspan="2">Visual similarity search on <a href="https://sites.google.com/view/totally-looks-like-dataset">TLL</a></td>
     <td>mAP</td>
     <td>0.102</td>
     <td>0.166</td>
