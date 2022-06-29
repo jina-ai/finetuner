@@ -43,7 +43,6 @@ The following table demonstrates what you can expect from Finetuner:
     <th>PRE-TRAINED</th>
     <th>FINE-TUNED</th>
     <th>DELTA</th>
-    <th>TIME</th>
   </tr>
 </thead>
 <tbody>
@@ -54,7 +53,6 @@ The following table demonstrates what you can expect from Finetuner:
     <td>0.835</td>
     <td>0.967</td>
     <td>:arrow_up_small: 15.8%</td>
-    <td rowspan="2">14 min</td>
   </tr>
   <tr>
     <td>Recall</td>
@@ -69,7 +67,6 @@ The following table demonstrates what you can expect from Finetuner:
     <td>0.102</td>
     <td>0.166</td>
     <td>:arrow_up_small: 62.7%</td>
-    <td rowspan="2">47 min</td>
   </tr>
   <tr>
     <td>Recall</td>
@@ -84,7 +81,6 @@ The following table demonstrates what you can expect from Finetuner:
     <td>0.192</td>
     <td>0.354</td>
     <td>:arrow_up_small: 84.4%</td>
-    <td rowspan="2">41 min</td>
   </tr>
   <tr>
     <td>Recall</td>
