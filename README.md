@@ -48,7 +48,7 @@ The following table demonstrates what you can expect from Finetuner:
 <tbody>
   <tr>
     <td rowspan="2">BERT</td>
-    <td rowspan="2"><a href="https://www.kaggle.com/c/quora-question-pairs">Quora</a> Question Answering/Duplicate Detection</td>
+    <td rowspan="2"><a href="https://www.kaggle.com/c/quora-question-pairs">Quora</a> Question Answering/De-duplication</td>
     <td>mRR</td>
     <td>0.835</td>
     <td>0.967</td>
