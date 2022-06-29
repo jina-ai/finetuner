@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Various updates on style, how-to and templates. ([#462](https://github.com/jina-ai/finetuner/pull/462))
 
+- Remove time column from Readme table. ([#468](https://github.com/jina-ai/finetuner/pull/468))
+
 ### Fixed
 
 
