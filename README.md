@@ -37,13 +37,13 @@ The following table demonstrates what you can expect from Finetuner:
 <table>
 <thead>
   <tr>
-    <th>model</th>
-    <th>task</th>
-    <th>metric</th>
-    <th>pre-trained</th>
-    <th>fine-tuned</th>
-    <th>delta</th>
-    <th>time</th>
+    <th>MODEL</th>
+    <th>TASK</th>
+    <th>METRIC</th>
+    <th>PRE-TRAINED</th>
+    <th>FINE-TUNED</th>
+    <th>DELTA</th>
+    <th>TIME</th>
   </tr>
 </thead>
 <tbody>
@@ -63,8 +63,8 @@ The following table demonstrates what you can expect from Finetuner:
     <td>:arrow_up_small: 0.078</td>
   </tr>
   <tr>
-    <td rowspan="2">ResNet</td>
-    <td rowspan="2">visual similarity search on <a href="https://sites.google.com/view/totally-looks-like-dataset">Totally Looks Like</a></td>
+    <td rowspan="2">RESNET</td>
+    <td rowspan="2">Visual similarity search on <a href="https://sites.google.com/view/totally-looks-like-dataset">Totally Looks Like</a></td>
     <td>mAP@20</td>
     <td>0.102</td>
     <td>0.166</td>
