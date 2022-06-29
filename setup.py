@@ -21,8 +21,7 @@ except FileNotFoundError:
 
 # package metadata
 _description = (
-    'Finetuner allows one to tune the weights of any deep neural network for '
-    'better embeddings on search tasks.'
+    'Task-oriented finetuning for better embeddings on neural search.'
 )
 _setup_requires = ['setuptools>=18.0', 'wheel']
 _python_requires = '>=3.7.0'
