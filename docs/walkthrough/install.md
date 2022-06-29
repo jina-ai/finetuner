@@ -19,5 +19,5 @@ Check your installation with:
 ```pycon
 >>> import finetuner
 >>> finetuner.__version__
-'0.2.2'
+'0.5.0
 ```
