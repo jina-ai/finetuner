@@ -2,7 +2,6 @@ import inspect
 import os
 from typing import Any, Dict, List, Optional, Union
 
-import pkg_resources
 from docarray import DocumentArray
 from rich.console import Console
 from rich.table import Table
@@ -24,8 +23,6 @@ if HUBBLE_REGISTRY not in os.environ:
 from finetuner import callback, models
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
-
-version = pkg_resources.require("finetuner")[0].version
 
 ft = Finetuner()
 
