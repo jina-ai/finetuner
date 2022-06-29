@@ -14,13 +14,7 @@ pip install finetuner
 No extra dependency will be installed.
 ````
 
-````{tab} Basic install via Conda
 
-```bash
-conda install -c conda-forge finetuner
-```
-
-No extra dependency will be installed.
 ````
 
 Check your installation with:
