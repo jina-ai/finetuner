@@ -111,7 +111,7 @@ If you still want to use the last finetuner release which runs locally, please i
 pip install finetuner==0.4.1
 ```
 
-We backedup the 0.4.1 documentation in `docs/docs_41/` folder.
+We have backed up the 0.4.1 documentation in `docs/docs_41/` folder.
 Check [this page](docs/docs_41/README.md) to render finetuner 0.4.1 documentation locally.
 
 ## Get Started
@@ -125,10 +125,21 @@ finetuner.login()
 
 run = finetuner.fit(
     model='resnet50',
+    run_name='resnet50-tll-run',
     train_data='tll-train-da',
     callbacks=[EvaluationCallback(query_data='tll-eval-da')],
 )
+```
 
+Fine-tuning might take some time until finish.
+Once it is done, you can re-connect your run with:
+
+```python
+import finetuner
+
+finetuner.login()
+
+run = finetuner.get_run('resnet50-tll-run')
 print(run.status())
 print(run.logs())
 
