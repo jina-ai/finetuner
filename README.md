@@ -53,14 +53,14 @@ The following table demonstrates what you can expect from Finetuner:
     <td>mRR@20</td>
     <td>0.835</td>
     <td>0.967</td>
-    <td>(&#x1F53A;) 0.132</td>
+    <td>:arrow_up_small: 0.132</td>
     <td rowspan="2">14 min</td>
   </tr>
   <tr>
     <td>Recall@20</td>
     <td>0.915</td>
     <td>0.963</td>
-    <td>(&#x1F53A;) 0.078</td>
+    <td>:arrow_up_small: 0.078</td>
   </tr>
   <tr>
     <td rowspan="2">ResNet</td>
@@ -68,14 +68,14 @@ The following table demonstrates what you can expect from Finetuner:
     <td>mAP@20</td>
     <td>0.102</td>
     <td>0.166</td>
-    <td>(&#x1F53A;) 0.064</td>
+    <td>:arrow_up_small: 0.064</td>
     <td rowspan="2">47 min</td>
   </tr>
   <tr>
     <td>Recall@20</td>
     <td>0.235</td>
     <td>0.372</td>
-    <td>(&#x1F53A;) 0.137</td>
+    <td>:arrow_up_small: 0.137</td>
   </tr>
   <tr>
     <td rowspan="2">CLIP</td>
@@ -83,14 +83,14 @@ The following table demonstrates what you can expect from Finetuner:
     <td>Precision@20</td>
     <td>0%</td>
     <td>1%</td>
-    <td>(&#x1F53A;) 1%</td>
-    <td rowspan="2">25</td>
+    <td>:arrow_up_small: 1%</td>
+    <td rowspan="2">41</td>
   </tr>
   <tr>
     <td>Recall@20</td>
     <td>0%</td>
     <td>1%</td>
-    <td>(&#x1F53A;) 1%</td>
+    <td>:arrow_up_small: 1%</td>
   </tr>
 
 </tbody>
@@ -106,7 +106,7 @@ pip install -U finetuner
 
 ## Get Started
 
-The following code block describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), can be run as-is:
+The following code block describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), which can be run as-is:
 ```python
 import finetuner
 from finetuner.callback import EvaluationCallback
@@ -137,7 +137,7 @@ It has the following steps:
 - Take a look at the [step by step](https://ft-docs-polish--jina-docs.netlify.app/2_step_by_step/) documentation for an overview of how Finetuner works.
 - Get started with our example use-cases in the [Finetuner in action](https://ft-docs-polish--jina-docs.netlify.app/3_finetuner_in_action/) section.
 
-Intrigued? That's only scratching the surface of what DocArray is capable of. [Read our docs to learn more](https://finetuner.jina.ai/).
+Intrigued? That's only scratching the surface of what Finetuner is capable of. [Read our docs to learn more](https://finetuner.jina.ai/).
 
 <!-- start support-pitch -->
 ## Support
