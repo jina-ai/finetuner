@@ -49,7 +49,7 @@ The following table demonstrates what you can expect from Finetuner:
 <tbody>
   <tr>
     <td rowspan="2">BERT</td>
-    <td rowspan="2"><a href="https://www.kaggle.com/c/quora-question-pairs">Quora</a> Question Answering</td>
+    <td rowspan="2"><a href="https://www.kaggle.com/c/quora-question-pairs">Quora</a> Question Answering/Duplicate Detection</td>
     <td>mRR</td>
     <td>0.835</td>
     <td>0.967</td>
@@ -79,7 +79,7 @@ The following table demonstrates what you can expect from Finetuner:
   </tr>
   <tr>
     <td rowspan="2">CLIP</td>
-    <td rowspan="2"><a href="https://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html">Deep Fashion</a> cross-modality text to image search</td>
+    <td rowspan="2"><a href="https://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html">Deep Fashion</a> text-to-image search</td>
     <td>mRR</td>
     <td>0.192</td>
     <td>0.354</td>
