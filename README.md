@@ -104,6 +104,16 @@ Requires Python 3.7+.
 pip install -U finetuner
 ```
 
+Noted: Starting from 0.5.0, the finetuner becomes cloud-based.
+If you still want to use the last finetuner release which runs locally, please install with:
+
+```bash
+pip install finetuner==0.4.1
+```
+
+We backedup the 0.4.1 documentation in `docs/docs_41/` folder.
+Check [this page](docs/docs_41/README.md) to render finetuner 0.4.1 documentation locally.
+
 ## Get Started
 
 The following code block describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), which can be run as-is:
