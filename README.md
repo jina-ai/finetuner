@@ -105,7 +105,7 @@ pip install -U finetuner
 ```
 
 Noted: Starting from 0.5.0, Finetuner becomes cloud-based.
-If you still want to use the last finetuner release which runs locally, please install with:
+If you still want to use the last Finetuner release which runs locally, please install with:
 
 ```bash
 pip install finetuner==0.4.1
