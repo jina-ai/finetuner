@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Docs 0.4.1 backup. ([#462](https://github.com/jina-ai/finetuner/pull/462))
+
 ### Removed
 
 ### Changed
@@ -18,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactor the guide for text to image search. ([#459](https://github.com/jina-ai/finetuner/pull/459))
 
 - Refactor the default hyper-params and docstring format. ([#465](https://github.com/jina-ai/finetuner/pull/465))
+
+- Various updates on style, how-to and templates. ([#462](https://github.com/jina-ai/finetuner/pull/462))
 
 ### Fixed
 
