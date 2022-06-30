@@ -61,12 +61,28 @@ The only required argument is `artifact`. We provide default values for others.
 ## Example
 Let's say we want to use a tuned model that is already stored on our local machine.
 
+````{tab} Python
 ```python
 from jina import Flow
 	
-f = Flow().add(uses='jinahub+docker://FinetunerExecutor', 
-               uses_with={'artifact': 'model_dir/tuned_model',
-                          'batch_size': 16,
-                          'device': 'cuda'})
+f = Flow().add(
+    uses='jinahub+docker://FinetunerExecutor',
+    uses_with={'artifact': 'model_dir/tuned_model', 'batch_size': 16, 'device': 'cuda'},
+)
 ```
+````
+````{tab} YAML
+````
+
+```yaml
+jtype: Flow
+version: '1'
+with:
+  protocol: http
+executors:
+- name: myexec
+  uses: CustomExec  # located in executor.py
+
+```
+
  As you can see, it's super easy! We just provided the model path and values for the batch size and gpu inference.
