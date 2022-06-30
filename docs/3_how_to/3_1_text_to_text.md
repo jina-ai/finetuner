@@ -185,3 +185,4 @@ Once your run has successfully completed, you can save your fine-tuned model in 
 ```python
 run.save_model('finetune-quora-dataset-bert-base-cased')
 ```
+That's it! Now you have a fine-tuned model which is ready to be {ref}`integrated inside the Jina ecosystem <integrate-with-jina>`.
