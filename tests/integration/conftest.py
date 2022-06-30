@@ -29,6 +29,25 @@ def get_image_data():
 
 
 @pytest.fixture()
+def get_feature_data():
+    def generate_random_data(num_classes, samples_per_class, dim):
+        da = DocumentArray()
+        for class_id in range(num_classes):
+            for _ in range(samples_per_class):
+                doc = Document(
+                    tensor=np.random.rand(dim).astype(np.float32),
+                    tags={FINETUNER_LABEL: str(class_id)},
+                )
+                da.append(doc)
+        return da
+
+    train_da = generate_random_data(num_classes=10, samples_per_class=32, dim=128)
+    eval_da = generate_random_data(num_classes=10, samples_per_class=32, dim=128)
+
+    return train_da, eval_da
+
+
+@pytest.fixture()
 def finetuner_mocker(mocker):
     def hubble_login_mocker():
         print('Successfully logged in to Hubble!')

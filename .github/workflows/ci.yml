@@ -35,4 +35,3 @@ jobs:
         run: make init
       - name: Run tests
         run: make test
-

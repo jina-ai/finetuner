@@ -1,6 +1,6 @@
 from finetuner.client import FinetunerV1Client
-from finetuner.constants import FINETUNED_MODEL, FINISHED, STATUS
-from finetuner.hubble import download_model
+from finetuner.constants import ARTIFACTS_DIR, FINISHED, STATUS
+from finetuner.hubble import download_artifact
 
 
 class Run:
@@ -56,19 +56,18 @@ class Run:
             experiment_name=self._experiment_name, run_name=self._name
         )
 
-    def save_model(self, path: str = FINETUNED_MODEL):
-        """Save model(s) if the run is finished.
+    def save_artifact(self, directory: str = ARTIFACTS_DIR) -> str:
+        """Save artifact if the run is finished.
 
-        :param path: Path where the model(s) will be stored.
-        :returns: A list of str object(s) that indicate the download path.
+        :param directory: Directory where the artifact will be stored.
+        :returns: A string object that indicates the download path.
         """
         if self.status()[STATUS] != FINISHED:
             raise Exception('The run needs to be finished in order to save the model.')
 
-        download_path = download_model(
+        return download_artifact(
             client=self._client,
             experiment_name=self._experiment_name,
             run_name=self._name,
-            path=path,
+            directory=directory,
         )
-        return download_path

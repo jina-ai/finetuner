@@ -2,7 +2,7 @@ name: CD
 
 on:
   push:
-    tags:
+    branches:
       - main
 
 env:
