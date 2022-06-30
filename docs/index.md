@@ -5,11 +5,6 @@
 :end-before: <!-- end elevator-pitch -->
 ```
 
-**Finetuner** is an open-source offering by [Jina AI](https://jina.ai/) ✨
-
-It enables users to fine-tune large pre-trained deep learning models in their specific domains and datasets. It handles the
-infrastructure and the complexity of the fine-tuning task and provides a simple interface to submit fine-tuning jobs on the Jina Cloud.
-
 Finetuner primarily targets business users and engineers with limited knowledge in Machine Learning, but also attempts to expose
 lots of configuration options for experienced professionals!
 
@@ -86,34 +81,23 @@ Don't worry, call `finetuner.describe_models()` and we will help you choose the 
 ```
 
 ```{toctree}
-:caption: How it Works
-:hidden:
-
-1_how_it_works/1_1_how_it_works.md
-1_how_it_works/1_2_difference.md
-```
-
-```{toctree}
 :caption: Get Started
 :hidden:
 
-2_step_by_step/2_1_install.md
-2_step_by_step/2_2_experiment_and_run.md
-2_step_by_step/2_3_login_to_jina_ecosystem.md
-2_step_by_step/2_4_create_training_data.md
-2_step_by_step/2_5_choose_backbone.md
-2_step_by_step/2_6_start_finetune.md
-2_step_by_step/2_7_get_tuned_model.md
-2_step_by_step/2_8_next_steps.md
+get-started/how-it-works
+get-started/design-principles
+walkthrough/index
 ```
 
+
+
 ```{toctree}
-:caption: How-To
+:caption: Finetuning Tasks
 :hidden:
 
-3_how_to/3_1_text_to_text.md
-3_how_to/3_2_image_to_image.md
-3_how_to/3_3_text_to_image.md
+tasks/text-to-text
+tasks/image-to-image
+tasks/text-to-image
 ```
 
 ```{toctree}

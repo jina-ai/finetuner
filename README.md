@@ -37,64 +37,62 @@ The following table demonstrates what you can expect from Finetuner:
 <table>
 <thead>
   <tr>
-    <th>model</th>
-    <th>task</th>
-    <th>metric</th>
-    <th>pre-trained</th>
-    <th>fine-tuned</th>
-    <th>delta</th>
-    <th>time (minutes)</th>
+    <th>MODEL</th>
+    <th>TASK</th>
+    <th>METRIC</th>
+    <th>PRETRAINED</th>
+    <th>FINETUNED</th>
+    <th>DELTA</th>
   </tr>
 </thead>
 <tbody>
   <tr>
     <td rowspan="2">BERT</td>
-    <td rowspan="2"><a href="https://www.kaggle.com/c/quora-question-pairs">Quora</a> Question Answering/Duplicate Detection</td>
-    <td>Precision@20</td>
-    <td>0%</td>
-    <td>1%</td>
-    <td>+1%</td>
-    <td rowspan="2">25</td>
+    <td rowspan="2"><a href="https://www.kaggle.com/c/quora-question-pairs">Quora</a> Question Answering</td>
+    <td>mRR</td>
+    <td>0.835</td>
+    <td>0.967</td>
+    <td>:arrow_up_small: 15.8%</td>
   </tr>
   <tr>
-    <td>Recall@20</td>
-    <td>0%</td>
-    <td>1%</td>
-    <td>+1%</td>
+    <td>Recall</td>
+    <td>0.915</td>
+    <td>0.963</td>
+    <td>:arrow_up_small: 5.3%</td>
   </tr>
   <tr>
     <td rowspan="2">ResNet</td>
-    <td rowspan="2">visual similarity search on <a href="https://sites.google.com/view/totally-looks-like-dataset">Totally Looks Like</a></td>
-    <td>Precision@20</td>
-    <td>0%</td>
-    <td>1%</td>
-    <td>+1%</td>
-    <td rowspan="2">25</td>
+    <td rowspan="2">Visual similarity search on <a href="https://sites.google.com/view/totally-looks-like-dataset">TLL</a></td>
+    <td>mAP</td>
+    <td>0.102</td>
+    <td>0.166</td>
+    <td>:arrow_up_small: 62.7%</td>
   </tr>
   <tr>
-    <td>Recall@20</td>
-    <td>0%</td>
-    <td>1%</td>
-    <td>+1%</td>
+    <td>Recall</td>
+    <td>0.235</td>
+    <td>0.372</td>
+    <td>:arrow_up_small: 58.3%</td>
   </tr>
   <tr>
     <td rowspan="2">CLIP</td>
-    <td rowspan="2"><a href="https://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html">Deep Fashion</a> cross-modality text to image search</td>
-    <td>Precision@20</td>
-    <td>0%</td>
-    <td>1%</td>
-    <td>+1%</td>
-    <td rowspan="2">25</td>
+    <td rowspan="2"><a href="https://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html">Deep Fashion</a> text-to-image search</td>
+    <td>mRR</td>
+    <td>0.289</td>
+    <td>0.488</td>
+    <td>:arrow_up_small: 69.9%</td>
   </tr>
   <tr>
-    <td>Recall@20</td>
-    <td>0%</td>
-    <td>1%</td>
-    <td>+1%</td>
+    <td>Recall</td>
+    <td>0.109</td>
+    <td>0.346</td>
+    <td>:arrow_up_small: 217%</td>
   </tr>
 
 </tbody>
 </table>
+
+<sub><sup><a id="example-setup">[*]</a> All metrics evaluation on k@20, trained 5 epochs using Adam optimizer with learning rate of 1e-5.</sup></sub>
 
 ## Install
 
@@ -104,9 +102,19 @@ Requires Python 3.7+.
 pip install -U finetuner
 ```
 
+Noted: Starting from 0.5.0, Finetuner becomes cloud-based.
+If you still want to use the last Finetuner release which runs locally, please install with:
+
+```bash
+pip install finetuner==0.4.1
+```
+
+We have backed up the 0.4.1 documentation in `docs/docs_41/` folder.
+Check [this page](docs/docs_41/README.md) to render Finetuner 0.4.1 documentation locally.
+
 ## Get Started
 
-The following code block describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), run as it is:
+The following code block describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), which can be run as-is:
 ```python
 import finetuner
 from finetuner.callback import EvaluationCallback
@@ -115,10 +123,21 @@ finetuner.login()
 
 run = finetuner.fit(
     model='resnet50',
+    run_name='resnet50-tll-run',
     train_data='tll-train-da',
     callbacks=[EvaluationCallback(query_data='tll-eval-da')],
 )
+```
 
+Fine-tuning might take some time until finish.
+Once it is done, you can re-connect your run with:
+
+```python
+import finetuner
+
+finetuner.login()
+
+run = finetuner.get_run('resnet50-tll-run')
 print(run.status())
 print(run.logs())
 
@@ -134,10 +153,13 @@ It has the following steps:
 
 ### Next steps
 
-- Take a look at the [step by step](https://ft-docs-polish--jina-docs.netlify.app/2_step_by_step/) documentation for an overview of how Finetuner works.
-- Get started with our example use-cases in the [Finetuner in action](https://ft-docs-polish--jina-docs.netlify.app/3_finetuner_in_action/) section.
+- Take a look at the [walk through](https://finetuner.jina.ai/walkthrough/) documentation for an overview of how Finetuner works.
++ Get started with our example use-cases:
+  - [Text-to-Text Search via BERT](https://finetuner.jina.ai/tasks/text-to-text/)
+  - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/tasks/image-to-image/)
+  - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/tasks/text-to-image/)
 
-Intrigued? That's only scratching the surface of what DocArray is capable of. [Read our docs to learn more](https://finetuner.jina.ai/).
+Intrigued? That's only scratching the surface of what Finetuner is capable of. [Read our docs to learn more](https://finetuner.jina.ai/).
 
 <!-- start support-pitch -->
 ## Support

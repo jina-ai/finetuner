@@ -24,9 +24,6 @@ from finetuner import callback, models
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
 
-__version__ = '0.2.2'
-
-
 ft = Finetuner()
 
 
