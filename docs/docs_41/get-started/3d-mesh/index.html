@@ -1,0 +1,722 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+<meta property="og:title" content="Finetuning PointConv on ModelNet40 Dataset" />
+  
+<meta property="og:type" content="website" />
+  
+<meta property="og:url" content="https://finetuner.jina.ai/docs_41/get-started/3d-mesh/index/" />
+  
+<meta property="og:site_name" content="Finetuner Documentation" />
+  
+<meta property="og:description" content="In this tutorial we will finetune PointConv on ModelNet40 dataset. The ModelNet40 dataset contains synthetic object point clouds. As the most widely used benchmark for point cloud analysis, ModelNet40 is popular because of its various categories, clean shapes, well-constructed dataset. The origin..." />
+  
+<meta property="og:image" content="https://finetuner.jina.ai/docs_41/_images/airplane.gif" />
+  
+<meta property="og:image:alt" content="Finetuner Documentation" />
+  
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description" content="Finetuner is a library for tune the weights of any deep neural network for better embeddings on search tasks.">
+<meta property="og:description" content="Finetuner allows one to tune the weights of any deep neural network for better embeddings on search tasks. It accompanies Jina to deliver the last mile of performance for domain-specific neural search applications.">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48WE9V68SD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-48WE9V68SD');
+</script>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+    <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" />
+        <link rel="canonical" href="https://finetuner.jina.ai/docs_41/get-started/3d-mesh/index.html" />
+
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
+        <title>Finetuning PointConv on ModelNet40 Dataset - Finetuner documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+    <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+    <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+    <header class="mobile-header">
+        <div class="header-left">
+            <label class="nav-overlay-icon" for="__navigation">
+                <div class="visually-hidden">Toggle site navigation sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-menu"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+        <div class="header-center">
+            <a href="../../../">
+                <div class="brand">Finetuner  documentation</div>
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="theme-toggle-container theme-toggle-header">
+                <button class="theme-toggle">
+                    <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                    <svg class="theme-icon-when-auto">
+                        <use href="#svg-sun-half"></use>
+                    </svg>
+                    <svg class="theme-icon-when-dark">
+                        <use href="#svg-moon"></use>
+                    </svg>
+                    <svg class="theme-icon-when-light">
+                        <use href="#svg-sun"></use>
+                    </svg>
+                </button>
+            </div>
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
+                <div class="visually-hidden">Toggle table of contents sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-toc"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+    </header>
+    <aside class="sidebar-drawer">
+        <div class="sidebar-container">
+            
+            <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../../_static/logo-light.svg" alt="Light Logo" />
+    <img class="sidebar-logo only-dark" src="../../../_static/logo-dark.svg" alt="Dark Logo" />
+  </div>
+  
+  
+</a>
+<div class="sd-d-flex-row sd-align-major-spaced">
+  <a class="github-button" href="https://github.com/jina-ai/finetuner" data-icon="octicon-star" data-show-count="true" aria-label="Star jina-ai/jina on GitHub" style="opacity: 0;">Star</a>
+  
+</div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+    <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/how-it-works/">How Does it Work?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/design-principles/">Design Principles</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../walkthrough/">Walkthrough</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/install/">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/basic-concepts/">Basic Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/login/">Login</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/create-training-data/">Prepare Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/choose-backbone/">Backbone Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/run-job/">Run Job</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/save-model/">Save Model</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tasks/text-to-text/">Text-to-Text Search via BERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tasks/image-to-image/">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tasks/text-to-image/">Text-to-Image Search via CLIP</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/finetuner/">finetuner package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/finetuner.client/">finetuner.client package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.client.client/">finetuner.client.client module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.callback/">finetuner.callback module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.experiment/">finetuner.experiment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.run/">finetuner.run module</a></li>
+</ul>
+</li>
+</ul>
+
+    <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
+    <ul>
+        <li class="toctree-l1">
+            <a class="reference external" href="https://docs.jina.ai">
+                <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/search-light.svg">
+                <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/search-dark.svg">
+                Jina</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/hub-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/hub-dark.svg">
+            Jina Hub</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="#">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/finetuner-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/finetuner-dark.svg">
+            Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/docarray-dark.svg">
+            DocArray</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://clip-as-service.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/cas-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/cas-dark.svg">
+            CLIP-as-service</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jcloud">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/JCloud-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/JCloud-dark.svg">
+            JCloud</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/now">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/now-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/now-dark.svg">
+            NOW</a></li>
+    </ul>
+</div>
+</div>
+
+            </div>
+            
+        </div>
+    </aside>
+    <div class="main">
+        <div class="content">
+            <div class="article-container">
+                <a href="#" class="back-to-top muted-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+                    </svg>
+                    <span>Back to top</span>
+                </a>
+                <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+                        <button class="theme-toggle">
+                            <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                            <svg class="theme-icon-when-auto">
+                                <use href="#svg-sun-half"></use>
+                            </svg>
+                            <svg class="theme-icon-when-dark">
+                                <use href="#svg-moon"></use>
+                            </svg>
+                            <svg class="theme-icon-when-light">
+                                <use href="#svg-sun"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <label class="toc-overlay-icon toc-content-icon"
+                           for="__toc">
+                        <div class="visually-hidden">Toggle table of contents sidebar</div>
+                        <i class="icon">
+                            <svg>
+                                <use href="#svg-toc"></use>
+                            </svg>
+                        </i>
+                    </label>
+                </div>
+                <article role="main">
+                    <section class="tex2jax_ignore mathjax_ignore" id="finetuning-pointconv-on-modelnet40-dataset">
+<h1>Finetuning PointConv on ModelNet40 Dataset<a class="headerlink" href="#finetuning-pointconv-on-modelnet40-dataset" title="Permalink to this headline">#</a></h1>
+<p>In this tutorial we will finetune PointConv on <a class="reference external" href="https://arxiv.org/pdf/1406.5670v3.pdf">ModelNet40 dataset</a>.
+The ModelNet40 dataset contains synthetic object point clouds. As the most widely used benchmark for point cloud analysis, ModelNet40 is popular because of its various categories, clean shapes, well-constructed dataset.</p>
+<p>The original ModelNet40 consists of 12,311 CAD-generated meshes in 40 categories (such as airplane, car, plant, lamp), of which 9,843 are used for training while the rest 2,468 are reserved for testing.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>ModelNet: a consistent, large-scale dataset of 3D objects annotated with fine-grained, instance-level, and hierarchical 3D part information.
+The corresponding point cloud data points are uniformly sampled from the mesh surfaces, and then further preprocessed by moving to the origin and scaling into a unit sphere. This dataset is used to establish three benchmarking tasks for evaluating 3D part recognition: fine-grained semantic segmentation and classification. In our case we’ll use it to finetune PointConv which was pretrained on <a class="reference external" href="https://arxiv.org/abs/1512.03012">ShapeNet dataset</a>.</p>
+</div>
+<p>You can download ModelNet dataset from the official <a class="reference external" href="https://modelnet.cs.princeton.edu/">Princeton website</a>.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>wget http://modelnet.cs.princeton.edu/ModelNet40.zip
+</pre></div>
+</div>
+<section id="data-preparation">
+<h2>Data preparation<a class="headerlink" href="#data-preparation" title="Permalink to this headline">#</a></h2>
+<p>After downloading ModelNet data we need to unzip it.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install finetuner
+pip install trimesh
+
+unzip ModelNet40.zip
+</pre></div>
+</div>
+<p>Before we go further let’s look at some examples from our data:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../../../_images/airplane.gif"><img alt="../../../_images/airplane.gif" src="../../../_images/airplane.gif" style="width: 70%;" /></a>
+</figure>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../../../_images/lap.gif"><img alt="../../../_images/lap.gif" src="../../../_images/lap.gif" style="width: 70%;" /></a>
+</figure>
+<p>Now let’s go to loading our data. We’ll use <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> from the library <span class="xref myst">DocArray</span>. We’ll go through
+all the files in our directory and we’ll recursively read all files that end with .off.
+We split the files into two <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>s depending on their uri to train and test.</p>
+<p>Finally we save the resulting <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>s into binary files for later use.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">trimesh</span>
+<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+
+<span class="n">train</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="s1">&#39;ModelNet40&#39;</span>
+<span class="n">all_docs</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span><span class="s1">&#39;/**/**/*.off&#39;</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">all_docs</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s1">&#39;test&#39;</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">uri</span><span class="p">:</span>
+        <span class="n">test</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">train</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+
+<span class="n">train</span><span class="o">.</span><span class="n">save_binary</span><span class="p">(</span><span class="s1">&#39;train_data_modelnet.bin&#39;</span><span class="p">)</span>
+<span class="n">test</span><span class="o">.</span><span class="n">save_binary</span><span class="p">(</span><span class="s1">&#39;test_data_modelnet.bin&#39;</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</section>
+<section id="model-training">
+<h2>Model Training<a class="headerlink" href="#model-training" title="Permalink to this headline">#</a></h2>
+<p>Now that we have our data ready, we need a model that creates embeddings so that we can later use these embeddings for searching similar matches for different queries. A lot of work and research has been done in the field of 3D data embeddings and there are some powerful models like <a class="reference external" href="https://arxiv.org/abs/1811.07246">PointConv</a> which have been trained on <a class="reference external" href="https://arxiv.org/pdf/1512.03012.pdf">ShapeNet dataset</a></p>
+<p>In order to not reinvent the wheel we will use this model. We will also use Jina’s 3D Mesh Encoder which wraps these two models in an executor.
+This executor receives Documents containing point sets data in its blob attribute, with shape (N, 3) and encodes them to embeddings of shape (D,). Now, the following pretrained models are ready to be used to create embeddings:</p>
+<ul class="simple">
+<li><p>PointConv-Shapenet-d512: A PointConv model finetuned on ShapeNet dataset, resulting in 512 dimension of embeddings.</p></li>
+<li><p>PointConv-Shapenet-d1024: A PointConv model finetuned on ShapeNet dataset, resulting in 1024 dimension of embeddings.</p></li>
+</ul>
+<p>As we already have an Encoder that uses <code class="docutils literal notranslate"><span class="pre">PointConv</span></code> to embed data let’s use it.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/jina-ai/executor-3d-encoder.git
+</pre></div>
+</div>
+<p>We also import necessary libraries:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+<span class="kn">from</span> <span class="nn">executor.models</span> <span class="kn">import</span> <span class="n">MeshDataModel</span>
+
+<span class="kn">import</span> <span class="nn">finetuner</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch.losses</span> <span class="kn">import</span> <span class="n">TripletLoss</span>
+<span class="kn">from</span> <span class="nn">finetuner.tuner.pytorch.miner</span> <span class="kn">import</span> <span class="n">TripletEasyHardMiner</span>
+</pre></div>
+</div>
+<p>We define some helper functions for preprocessing and sampling. We convert every <code class="docutils literal notranslate"><span class="pre">Document</span></code> into a point cloud
+tensor using <code class="docutils literal notranslate"><span class="pre">.load_uri_to_point_cloud_tensor</span></code>, we can also pass the number of point you want, here we pass 2048.</p>
+<p>Along with loading point clouds, we also assign the <code class="docutils literal notranslate"><span class="pre">finetuner_label</span></code> as a tag. This label will be later used during finetuning.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">random_sample</span><span class="p">(</span><span class="n">pc</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+    <span class="n">permutation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pc</span><span class="p">))</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">permutation</span><span class="p">)</span>
+    <span class="n">pc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pc</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">pc</span> <span class="o">=</span> <span class="n">pc</span><span class="p">[</span><span class="n">permutation</span><span class="p">[:</span><span class="n">num</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">pc</span>
+
+
+
+<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">num_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span> <span class="n">data_aug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">load_uri_to_point_cloud_tensor</span><span class="p">(</span><span class="mi">2048</span><span class="p">)</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;finetuner_label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">random_sample</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">num_points</span><span class="p">)</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="n">points</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># center</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">points</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)),</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">points</span> <span class="o">/</span> <span class="n">dist</span>  <span class="c1"># scale</span>
+
+    <span class="k">if</span> <span class="n">data_aug</span><span class="p">:</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">rotation_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)],</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)]]</span>
+        <span class="p">)</span>
+        <span class="n">points</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">)</span>  <span class="c1"># random rotation</span>
+        <span class="n">points</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># random jitter</span>
+    <span class="k">return</span> <span class="n">points</span>
+</pre></div>
+</div>
+<p>In the following code snippet we create MeshData model which encapsulates a <code class="docutils literal notranslate"><span class="pre">PointConv</span></code> model with 512 dimensions, we then load
+training and evaluation data from the binary files we saved before. We create an optimizer and a learning rate scheduler. In this case with use
+an Adam optimizer and <code class="docutils literal notranslate"><span class="pre">MultiStepLR</span></code> scheduler but you can change those depending on your data and preferences.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">MeshDataModel</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s1">&#39;pointconv&#39;</span><span class="p">,</span> <span class="n">embed_dim</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span> <span class="c1"># create pointconv model with 512 dimensions</span>
+
+<span class="n">train</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span><span class="s1">&#39;train_data_modelnet.bin&#39;</span><span class="p">)</span> <span class="c1"># load train dataset</span>
+<span class="nb">eval</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span><span class="s1">&#39;test_data_modelnet.bin&#39;</span><span class="p">)</span> <span class="c1"># load eval dataset</span>
+
+<span class="k">def</span> <span class="nf">configure_optimizer</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">torch.optim</span> <span class="kn">import</span> <span class="n">Adam</span>
+    <span class="kn">from</span> <span class="nn">torch.optim.lr_scheduler</span> <span class="kn">import</span> <span class="n">MultiStepLR</span>
+    <span class="c1"># create Adam optimizer with MultistepLR scheduler</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">5e-4</span><span class="p">)</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">MultiStepLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">milestones</span><span class="o">=</span><span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler</span>
+</pre></div>
+</div>
+<p>We leverage finetuner’s mining strategy to improve and finetune the embeddings. By this we mean that the finetuner will use
+the mentioned label coming with every <code class="docutils literal notranslate"><span class="pre">Document</span></code> which we specified during preprocessing and will sample it as a positive example
+and then sample examples with different label as negatives.</p>
+<p>The triplet loss’s goal is to pull <code class="docutils literal notranslate"><span class="pre">Documents</span></code> with same class together and those with different classes away from each other thus improving
+the final representation. If you wish to learn more about triplet loss and miners click <a class="reference external" href="https://finetuner.jina.ai/components/tuner/loss/#loss-and-miners">here</a>.</p>
+<p>We also use our built-in callback <code class="docutils literal notranslate"><span class="pre">WandBLogger</span></code> to be able to track our training. Note you must first download the wandb client and log into your account which you can do like this:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install wandb
+wandb login
+</pre></div>
+</div>
+<p>To learn more about callbacks click <a class="reference external" href="https://finetuner.jina.ai/components/tuner/callbacks/#callbacks">here</a>, now let’s go to finetuning:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.tuner.callback</span> <span class="kn">import</span> <span class="n">WandBLogger</span> 
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">WandBLogger</span><span class="p">()</span>
+
+<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">train</span><span class="p">,</span>
+    <span class="n">eval_data</span><span class="o">=</span><span class="nb">eval</span><span class="p">,</span>
+    <span class="n">preprocess_fn</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">preprocess</span><span class="p">,</span> <span class="n">num_points</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span> <span class="n">data_aug</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+    <span class="n">loss</span><span class="o">=</span><span class="n">TripletLoss</span><span class="p">(</span>
+        <span class="n">miner</span><span class="o">=</span><span class="n">TripletEasyHardMiner</span><span class="p">(</span><span class="n">pos_strategy</span><span class="o">=</span><span class="s1">&#39;easy&#39;</span><span class="p">,</span> <span class="n">neg_strategy</span><span class="o">=</span><span class="s1">&#39;semihard&#39;</span><span class="p">)</span>
+    <span class="p">),</span>
+    <span class="n">configure_optimizer</span><span class="o">=</span><span class="n">configure_optimizer</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">5e-4</span><span class="p">,</span>
+    <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">logger</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="c1"># saving the finetuner model</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+    <span class="n">tuned_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
+    <span class="nb">str</span><span class="p">(</span><span class="n">checkpoint_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;finetuned-pointconv-d512.pth&#39;</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="evaluating-embedding-quality-results">
+<h2>Evaluating embedding quality &amp; Results<a class="headerlink" href="#evaluating-embedding-quality-results" title="Permalink to this headline">#</a></h2>
+<p>Now let’s see whether we made an improvement or not. We will use the training data as index and the testing data as query. We’ll embed them both
+and then search for test 3d objects (the query) in our training data (index). We do this using the pretrained model and the finetuned model and then compare top matches.</p>
+<p>We’ll use two metrics to evaluate our two models (pretrained, straight out of the box model and finetuned model) on the search task:</p>
+<p><strong>mAP&#64;k</strong> : We’ll calculate the average precision at 1, 5 and 10, then we’ll calculate the mean of those average precisions for all documents in our test data (these are our queries) because we care about how accurate and precise our retrieved 3D objects are.</p>
+<p><strong>nDCG&#64;k</strong>: We’ll calculate nDCG at 1,5 and 10, then we’ll calculate the mean of those for all documents in our test data  because we care about the order of the retrieved 3D objects.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+Complete source code<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.tuner.evaluation</span> <span class="kn">import</span> <span class="n">Evaluator</span>
+
+<span class="n">train</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span><span class="s1">&#39;../train_data_modelnet.bin&#39;</span><span class="p">)</span> <span class="c1"># load train dataset</span>
+<span class="n">val</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span><span class="s1">&#39;../test_data_modelnet.bin&#39;</span><span class="p">)</span> <span class="c1"># load test dataset</span>
+
+<span class="n">train</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">preprocess</span><span class="p">)</span>
+<span class="n">val</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">preprocess</span><span class="p">)</span>
+
+<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">MeshDataModel</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s1">&#39;pointconv&#39;</span><span class="p">,</span> <span class="n">embed_dim</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span> <span class="c1"># create pointconv model with 512 dimensions</span>
+<span class="n">pretrained_model</span> <span class="o">=</span> <span class="n">MeshDataModel</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s1">&#39;pointconv&#39;</span><span class="p">,</span> <span class="n">embed_dim</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
+
+<span class="n">tuned_model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;checkpoints/finetuned-pointconv-d512.pth&#39;</span><span class="p">))</span> <span class="c1"># load finetuned weights</span>
+
+<span class="n">tuned_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">pretrained_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+<span class="n">evaluator_finetuned</span> <span class="o">=</span> <span class="n">Evaluator</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">tuned_model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">evaluator_finetuned</span><span class="o">.</span><span class="n">evaluate</span><span class="p">())</span>
+
+<span class="n">evaluator_pretrained</span> <span class="o">=</span> <span class="n">Evaluator</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">pretrained_model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">evaluator_pretrained</span><span class="o">.</span><span class="n">evaluate</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</details><p>The difference is shown in the tables below:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>mAP@k</th>
+<th>pre-trained</th>
+<th>fine-tuned</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mAP@1</td>
+<td>0.147</td>
+<td>0.719</td>
+</tr>
+<tr>
+<td>mAP@5</td>
+<td>0.113</td>
+<td>0.697</td>
+</tr>
+<tr>
+<td>mAP@10</td>
+<td>0.100</td>
+<td>0.686</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>nDCG@k</th>
+<th>pre-trained</th>
+<th>fine-tuned</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nDCG@1</td>
+<td>0.563</td>
+<td>0.927</td>
+</tr>
+<tr>
+<td>nDCG@5</td>
+<td>0.617</td>
+<td>0.931</td>
+</tr>
+<tr>
+<td>nDCG@10</td>
+<td>0.647</td>
+<td>0.935</td>
+</tr>
+</tbody>
+</table>
+<p>Now let’s do some queries ourselves and check the visualizations</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+Complete source code<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span><span class="s1">&#39;../train_data_modelnet.bin&#39;</span><span class="p">)</span> <span class="c1"># load train dataset</span>
+<span class="n">eval_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span><span class="s1">&#39;../test_data_modelnet.bin&#39;</span><span class="p">)</span> <span class="c1"># load eval dataset</span>
+
+<span class="n">train_da</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">preprocess</span><span class="p">)</span>
+<span class="n">eval_da</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">preprocess</span><span class="p">)</span>
+
+<span class="n">tuned_model</span> <span class="o">=</span> <span class="n">MeshDataModel</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s1">&#39;pointconv&#39;</span><span class="p">,</span> <span class="n">embed_dim</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span> <span class="c1"># create pointconv model with 512 dimensions</span>
+<span class="n">tuned_model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;checkpoints/finetuned-pointconv-d512.pth&#39;</span><span class="p">))</span>
+<span class="n">tuned_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+<span class="n">train_da</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">tuned_model</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">eval_da</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">tuned_model</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+
+<span class="n">eval_da</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">train_da</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>Query:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../../../_images/radio_query.gif"><img alt="../../../_images/radio_query.gif" src="../../../_images/radio_query.gif" style="width: 70%;" /></a>
+</figure>
+<p>Pretrained PointConv:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../../../_images/radio_oob.gif"><img alt="../../../_images/radio_oob.gif" src="../../../_images/radio_oob.gif" style="width: 70%;" /></a>
+</figure>
+<p>Finetuned PointConv:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../../../_images/radio_finetuned.gif"><img alt="../../../_images/radio_finetuned.gif" src="../../../_images/radio_finetuned.gif" style="width: 70%;" /></a>
+</figure>
+<p>Query:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../../../_images/dresser_query.gif"><img alt="../../../_images/dresser_query.gif" src="../../../_images/dresser_query.gif" style="width: 70%;" /></a>
+</figure>
+<p>Pretrained PointConv:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../../../_images/dresser_oob.gif"><img alt="../../../_images/dresser_oob.gif" src="../../../_images/dresser_oob.gif" style="width: 70%;" /></a>
+</figure>
+<p>Finetuned PointConv:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../../../_images/dresser_finetuned.gif"><img alt="../../../_images/dresser_finetuned.gif" src="../../../_images/dresser_finetuned.gif" style="width: 70%;" /></a>
+</figure>
+<p>We can clearly see that after finetuning PointConv has enhanced embeddings, and that’s how you finetune a 3D model.</p>
+</section>
+</section>
+
+                </article>
+            </div>
+            <footer>
+                
+                <div class="related-pages">
+                    
+                    
+                </div>
+                <div class="bottom-of-page">
+                    <div class="left-details">
+                        <div class="copyright">
+                            Copyright &#169; Jina AI Limited. All rights reserved.
+                        </div><div class="last-updated">
+                            Last updated on Jun 30, 2022</div>
+                    </div>
+                    <div class="right-details">
+                        <div class="social-btns">
+                            <a class='social-btn' href="https://github.com/jina-ai/finetuner/" aria-label="GitHub"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
+                            <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank"
+                               rel="noreferrer"> <i class="fab fa-slack"></i></a>
+                            <a class='social-btn' href="https://youtube.com/c/jina-ai" aria-label="YouTube"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-youtube"></i></a>
+                            <a class='social-btn' href="https://twitter.com/JinaAI_" aria-label="Twitter"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-twitter"></i></a>
+                            <a class='social-btn' href="https://www.linkedin.com/company/jinaai/" aria-label="LinkedIn"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+            </footer>
+        </div>
+        <aside class="toc-drawer">
+            
+            
+            <div class="toc-sticky toc-scroll">
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">Finetuning PointConv on ModelNet40 Dataset</a><ul>
+<li><a class="reference internal" href="#data-preparation">Data preparation</a></li>
+<li><a class="reference internal" href="#model-training">Model Training</a></li>
+<li><a class="reference internal" href="#evaluating-embedding-quality-results">Evaluating embedding quality &amp; Results</a></li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+            </div>
+            
+            
+        </aside>
+</div>
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=e0caedb8-a833-4e85-983d-d3394a5f16d2" /><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/scripts/furo.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/tabs.js"></script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
+    <script src="../../../_static/source-in-links.js"></script>
+    </body>
+</html>

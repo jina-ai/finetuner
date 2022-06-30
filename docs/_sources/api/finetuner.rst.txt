@@ -7,8 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   finetuner.tailor
-   finetuner.tuner
+   finetuner.client
 
 Submodules
 ----------
@@ -16,11 +15,11 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   finetuner.device
-   finetuner.embedding
-   finetuner.excepts
-   finetuner.helper
-   finetuner.toydata
+   finetuner.callback
+   finetuner.experiment
+   finetuner.finetuner
+   finetuner.models
+   finetuner.run
 
 Module contents
 ---------------

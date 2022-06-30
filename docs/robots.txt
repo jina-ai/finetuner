@@ -1,2 +1,2 @@
 User-agent: *
-sitemap: https://docs.jina.ai/sitemap.xml
+sitemap: https://finetuner.jina.ai/sitemap.xml

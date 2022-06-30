@@ -1,0 +1,554 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+<meta property="og:title" content="Image-to-Image Search via ResNet50" />
+  
+<meta property="og:type" content="website" />
+  
+<meta property="og:url" content="https://finetuner.jina.ai/tasks/image-to-image/" />
+  
+<meta property="og:site_name" content="Finetuner Documentation" />
+  
+<meta property="og:description" content="This guide will demonstrate how to fine-tune a ResNet model for image to image retrieval. Task: More specifically, we will fine-tune ResNet50 on Totally Looks Like Dataset. The dataset consists of 6016 pairs of images (12032 in total). The dataset consists of pairs of images, these are the positi..." />
+  
+<meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
+  
+<meta property="og:image:alt" content="Finetuner Documentation" />
+  
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description" content="Finetuner is a library for tune the weights of any deep neural network for better embeddings on search tasks.">
+<meta property="og:description" content="Finetuner allows one to tune the weights of any deep neural network for better embeddings on search tasks. It accompanies Jina to deliver the last mile of performance for domain-specific neural search applications.">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48WE9V68SD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-48WE9V68SD');
+</script>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Text-to-Image Search via CLIP" href="../text-to-image/" /><link rel="prev" title="Text-to-Text Search via BERT" href="../text-to-text/" />
+        <link rel="canonical" href="https://finetuner.jina.ai/tasks/image-to-image.html" />
+
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
+        <title>Image-to-Image Search via ResNet50 - Finetuner documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+    <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+    <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+    <header class="mobile-header">
+        <div class="header-left">
+            <label class="nav-overlay-icon" for="__navigation">
+                <div class="visually-hidden">Toggle site navigation sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-menu"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+        <div class="header-center">
+            <a href="../../">
+                <div class="brand">Finetuner  documentation</div>
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="theme-toggle-container theme-toggle-header">
+                <button class="theme-toggle">
+                    <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                    <svg class="theme-icon-when-auto">
+                        <use href="#svg-sun-half"></use>
+                    </svg>
+                    <svg class="theme-icon-when-dark">
+                        <use href="#svg-moon"></use>
+                    </svg>
+                    <svg class="theme-icon-when-light">
+                        <use href="#svg-sun"></use>
+                    </svg>
+                </button>
+            </div>
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
+                <div class="visually-hidden">Toggle table of contents sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-toc"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+    </header>
+    <aside class="sidebar-drawer">
+        <div class="sidebar-container">
+            
+            <div class="sidebar-sticky"><a class="sidebar-brand" href="../../">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo-light.svg" alt="Light Logo" />
+    <img class="sidebar-logo only-dark" src="../../_static/logo-dark.svg" alt="Dark Logo" />
+  </div>
+  
+  
+</a>
+<div class="sd-d-flex-row sd-align-major-spaced">
+  <a class="github-button" href="https://github.com/jina-ai/finetuner" data-icon="octicon-star" data-show-count="true" aria-label="Star jina-ai/jina on GitHub" style="opacity: 0;">Star</a>
+  
+</div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+    <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/how-it-works/">How Does it Work?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/design-principles/">Design Principles</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../walkthrough/">Walkthrough</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/install/">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/basic-concepts/">Basic Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/login/">Login</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/create-training-data/">Prepare Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Model</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../text-to-text/">Text-to-Text Search via BERT</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text-to-image/">Text-to-Image Search via CLIP</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/finetuner/">finetuner package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.client/">finetuner.client package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.client.client/">finetuner.client.client module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.run/">finetuner.run module</a></li>
+</ul>
+</li>
+</ul>
+
+    <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
+    <ul>
+        <li class="toctree-l1">
+            <a class="reference external" href="https://docs.jina.ai">
+                <img class="sidebar-ecosys-logo only-light-line" src="../../_static/search-light.svg">
+                <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/search-dark.svg">
+                Jina</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/hub-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/hub-dark.svg">
+            Jina Hub</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="#">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/finetuner-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/finetuner-dark.svg">
+            Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
+            DocArray</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://clip-as-service.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/cas-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/cas-dark.svg">
+            CLIP-as-service</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jcloud">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/JCloud-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/JCloud-dark.svg">
+            JCloud</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/now">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/now-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/now-dark.svg">
+            NOW</a></li>
+    </ul>
+</div>
+</div>
+
+            </div>
+            
+        </div>
+    </aside>
+    <div class="main">
+        <div class="content">
+            <div class="article-container">
+                <a href="#" class="back-to-top muted-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+                    </svg>
+                    <span>Back to top</span>
+                </a>
+                <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+                        <button class="theme-toggle">
+                            <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                            <svg class="theme-icon-when-auto">
+                                <use href="#svg-sun-half"></use>
+                            </svg>
+                            <svg class="theme-icon-when-dark">
+                                <use href="#svg-moon"></use>
+                            </svg>
+                            <svg class="theme-icon-when-light">
+                                <use href="#svg-sun"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <label class="toc-overlay-icon toc-content-icon"
+                           for="__toc">
+                        <div class="visually-hidden">Toggle table of contents sidebar</div>
+                        <i class="icon">
+                            <svg>
+                                <use href="#svg-toc"></use>
+                            </svg>
+                        </i>
+                    </label>
+                </div>
+                <article role="main">
+                    <section class="tex2jax_ignore mathjax_ignore" id="image-to-image-search-via-resnet50">
+<span id="image-to-image"></span><h1>Image-to-Image Search via ResNet50<a class="headerlink" href="#image-to-image-search-via-resnet50" title="Permalink to this headline">#</a></h1>
+<p>This guide will demonstrate how to fine-tune a ResNet model for image to image retrieval.</p>
+<section id="task">
+<h2>Task<a class="headerlink" href="#task" title="Permalink to this headline">#</a></h2>
+<p>More specifically, we will fine-tune ResNet50 on <a class="reference external" href="https://sites.google.com/view/totally-looks-like-dataset">Totally Looks Like Dataset</a>.
+The dataset consists of 6016 pairs of images (12032 in total).</p>
+<div class="tip admonition">
+<p class="admonition-title">About TTL</p>
+<p>Totally-Looks-Like is a dataset and benchmark challenging machine-learned representations to reproduce human perception of image similarity. As shown below, each image patch in the left has a corresponding similar image patch in the right.</p>
+</div>
+<p>The dataset consists of pairs of images, these are the positive pairs. Negative pairs are constructed by taking two different images, i.e. images that are not in the same pair initially. Following this approach, we construct triplets and use the <code class="docutils literal notranslate"><span class="pre">TripletLoss</span></code>.
+After fine-tuning, the embeddings of positive pairs are expected to be pulled closer, while the embeddings for negative pairs are expected to be pushed away.</p>
+</section>
+<section id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">#</a></h2>
+<p>Our journey starts locally. We have to <a class="reference internal" href="../../walkthrough/create-training-data/#create-training-data"><span class="std std-ref">prepare the data and push it to the cloud</span></a> and Finetuner will be able to get the dataset by its name. For this example,
+we already prepared the data, and we’ll provide the names of training and evaluation data (<code class="docutils literal notranslate"><span class="pre">resnet-ttl-train-data</span></code> and <code class="docutils literal notranslate"><span class="pre">resnet-ttl-eval-data</span></code>) directly to Finetuner.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>When working with Document where images are stored locally, please call <code class="docutils literal notranslate"><span class="pre">doc.load_uri_to_image_tensor(width=224,</span> <span class="pre">height=224)</span></code> or another image shape to reduce network transmission and speed up training.</p>
+</div>
+</section>
+<section id="backbone-model">
+<h2>Backbone model<a class="headerlink" href="#backbone-model" title="Permalink to this headline">#</a></h2>
+<p>Now let’s see which backbone models we can use. You can see available models either in <a class="reference internal" href="../../walkthrough/choose-backbone/#choose-backbone"><span class="std std-ref">choose backbone</span></a> section or by calling <a class="reference internal" href="../../api/finetuner/#finetuner.describe_models" title="finetuner.describe_models"><code class="xref py py-meth docutils literal notranslate"><span class="pre">describe_models()</span></code></a>.</p>
+<p>For this example, we’re gonna go with <code class="docutils literal notranslate"><span class="pre">resnet50</span></code>.</p>
+</section>
+<section id="fine-tuning">
+<h2>Fine-tuning<a class="headerlink" href="#fine-tuning" title="Permalink to this headline">#</a></h2>
+<p>From now on, all the action happens in the cloud!</p>
+<p>First you need to <a class="reference internal" href="../../walkthrough/login/#login-to-jina-ecosystem"><span class="std std-ref">login to Jina ecosystem</span></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Now, you can easily start a fine-tuning job with <a class="reference internal" href="../../api/finetuner/#finetuner.fit" title="finetuner.fit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit()</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.callback</span> <span class="kn">import</span> <span class="n">EvaluationCallback</span>
+
+<span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;resnet50&#39;</span><span class="p">,</span>
+    <span class="n">run_name</span><span class="o">=</span><span class="s1">&#39;resnet-tll&#39;</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="s1">&#39;tll-train-da&#39;</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span>
+    <span class="n">cpu</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">EvaluationCallback</span><span class="p">(</span>
+            <span class="n">query_data</span><span class="o">=</span><span class="s1">&#39;tll-test-query-da&#39;</span><span class="p">,</span>
+            <span class="n">index_data</span><span class="o">=</span><span class="s1">&#39;tll-test-index-da&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Let’s understand what this piece of code does:</p>
+<div class="tip admonition">
+<p class="admonition-title">finetuner.fit parameters</p>
+<p>The only required arguments are <code class="docutils literal notranslate"><span class="pre">model</span></code> and <code class="docutils literal notranslate"><span class="pre">train_data</span></code>. We provide default values for others. Here is the <a class="reference external" href="../../api/finetuner/#finetuner.fit">full list of the parameters</a>.</p>
+</div>
+<ul class="simple">
+<li><p>As you can see, we have to provide the <code class="docutils literal notranslate"><span class="pre">model</span></code> which we picked before.</p></li>
+<li><p>We also set <code class="docutils literal notranslate"><span class="pre">run_name</span></code> and <code class="docutils literal notranslate"><span class="pre">description</span></code>, which are optional,
+but recommended in order to retrieve your run easily and have some context about it.</p></li>
+<li><p>Furthermore, we had to provide names of the <code class="docutils literal notranslate"><span class="pre">train_data</span></code> and <code class="docutils literal notranslate"><span class="pre">eval_data</span></code>.</p></li>
+<li><p>We set <code class="docutils literal notranslate"><span class="pre">TripletMarginLoss</span></code>.</p></li>
+<li><p>Additionally, we use <a class="reference internal" href="../../api/finetuner.callback/#finetuner.callback.BestModelCheckpoint" title="finetuner.callback.BestModelCheckpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BestModelCheckpoint</span></code></a> to save the best model after each epoch and <a class="reference internal" href="../../api/finetuner.callback/#finetuner.callback.EvaluationCallback" title="finetuner.callback.EvaluationCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationCallback</span></code></a> for evaluation.</p></li>
+<li><p>Lastly, we set number of <code class="docutils literal notranslate"><span class="pre">epochs</span></code> and provide a <code class="docutils literal notranslate"><span class="pre">learning_rate</span></code>.</p></li>
+</ul>
+</section>
+<section id="monitoring">
+<h2>Monitoring<a class="headerlink" href="#monitoring" title="Permalink to this headline">#</a></h2>
+<p>Let’s check the status of the run.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">status</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s1">&#39;status&#39;</span>: <span class="s1">&#39;CREATED&#39;</span>, <span class="s1">&#39;details&#39;</span>: <span class="s1">&#39;Run submitted and awaits execution&#39;</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Since some runs might take up to several hours, it’s important to know how to reconnect to Finetuner and retrieve your runs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
+
+<span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span><span class="s1">&#39;resnet-tll&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can continue monitoring the runs by checking the status - <a class="reference internal" href="../../api/finetuner.run/#finetuner.run.Run.status" title="finetuner.run.Run.status"><code class="xref py py-meth docutils literal notranslate"><span class="pre">status()</span></code></a> or the logs - <a class="reference internal" href="../../api/finetuner.run/#finetuner.run.Run.logs" title="finetuner.run.Run.logs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">logs()</span></code></a>.</p>
+</section>
+<section id="evaluating">
+<h2>Evaluating<a class="headerlink" href="#evaluating" title="Permalink to this headline">#</a></h2>
+<p>Currently, we don’t have a user-friendly way to get evaluation metrics from the <a class="reference internal" href="../../api/finetuner.callback/#finetuner.callback.EvaluationCallback" title="finetuner.callback.EvaluationCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationCallback</span></code></a> we initialized previously.
+What you can do for now is to call <a class="reference internal" href="../../api/finetuner.run/#finetuner.run.Run.logs" title="finetuner.run.Run.logs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">logs()</span></code></a> in the end of the run and see evaluation results:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>  Training <span class="o">[</span><span class="m">5</span>/5<span class="o">]</span> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="m">76</span>/76 <span class="m">0</span>:00:00 <span class="m">0</span>:03:15 • loss: <span class="m">0</span>.003
+<span class="o">[</span><span class="m">16</span>:39:13<span class="o">]</span> DEBUG    Metric: <span class="s1">&#39;model_average_precision&#39;</span> Value: <span class="m">0</span>.16603                                     __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_dcg_at_k&#39;</span> Value: <span class="m">0</span>.23632                                              __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_f1_score_at_k&#39;</span> Value: <span class="m">0</span>.03544                                         __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_hit_at_k&#39;</span> Value: <span class="m">0</span>.37209                                              __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_ndcg_at_k&#39;</span> Value: <span class="m">0</span>.23632                                             __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_precision_at_k&#39;</span> Value: <span class="m">0</span>.01860                                        __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_r_precision&#39;</span> Value: <span class="m">0</span>.16603                                           __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_recall_at_k&#39;</span> Value: <span class="m">0</span>.37209                                           __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_reciprocal_rank&#39;</span> Value: <span class="m">0</span>.16603                                       __main__.py:202
+           INFO     Done ✨                                                                              __main__.py:204
+           INFO     Saving fine-tuned models ...                                                         __main__.py:207
+           INFO     Saving model <span class="s1">&#39;model&#39;</span> <span class="k">in</span> /usr/src/app/tuned-models/model ...                          __main__.py:218
+           INFO     Pushing saved model to Hubble ...                                                    __main__.py:225
+<span class="o">[</span><span class="m">16</span>:39:41<span class="o">]</span> INFO     Pushed model artifact ID: <span class="s1">&#39;62b33cb0037ad91ca7f20530&#39;</span>                                 __main__.py:231
+           INFO     Finished 🚀                                                                          __main__.py:233                           __main__.py:248
+</pre></div>
+</div>
+</section>
+<section id="saving">
+<h2>Saving<a class="headerlink" href="#saving" title="Permalink to this headline">#</a></h2>
+<p>After the run has finished successfully, you can download the tuned model on your local machine:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">run</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="s1">&#39;resnet-model&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+                </article>
+            </div>
+            <footer>
+                
+                <div class="related-pages">
+                    <a class="next-page" href="../text-to-image/">
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Next</span>
+                            </div>
+                            <div class="title">Text-to-Image Search via CLIP</div>
+                        </div>
+                        <svg>
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                    </a>
+                    <a class="prev-page" href="../text-to-text/">
+                        <svg>
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Previous</span>
+                            </div>
+                            
+                            <div class="title">Text-to-Text Search via BERT</div>
+                            
+                        </div>
+                    </a>
+                </div>
+                <div class="bottom-of-page">
+                    <div class="left-details">
+                        <div class="copyright">
+                            Copyright &#169; Jina AI Limited. All rights reserved.
+                        </div><div class="last-updated">
+                            Last updated on Jun 30, 2022</div>
+                    </div>
+                    <div class="right-details">
+                        <div class="social-btns">
+                            <a class='social-btn' href="https://github.com/jina-ai/finetuner/" aria-label="GitHub"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
+                            <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank"
+                               rel="noreferrer"> <i class="fab fa-slack"></i></a>
+                            <a class='social-btn' href="https://youtube.com/c/jina-ai" aria-label="YouTube"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-youtube"></i></a>
+                            <a class='social-btn' href="https://twitter.com/JinaAI_" aria-label="Twitter"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-twitter"></i></a>
+                            <a class='social-btn' href="https://www.linkedin.com/company/jinaai/" aria-label="LinkedIn"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+            </footer>
+        </div>
+        <aside class="toc-drawer">
+            
+            
+            <div class="toc-sticky toc-scroll">
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">Image-to-Image Search via ResNet50</a><ul>
+<li><a class="reference internal" href="#task">Task</a></li>
+<li><a class="reference internal" href="#data">Data</a></li>
+<li><a class="reference internal" href="#backbone-model">Backbone model</a></li>
+<li><a class="reference internal" href="#fine-tuning">Fine-tuning</a></li>
+<li><a class="reference internal" href="#monitoring">Monitoring</a></li>
+<li><a class="reference internal" href="#evaluating">Evaluating</a></li>
+<li><a class="reference internal" href="#saving">Saving</a></li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+            </div>
+            
+            
+        </aside>
+</div>
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=e0caedb8-a833-4e85-983d-d3394a5f16d2" /><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
+    <script src="../../_static/source-in-links.js"></script>
+    </body>
+</html>
