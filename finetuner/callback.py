@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
-from typing import List, Optional, TypeVar, Union
+from dataclasses import dataclass
+from typing import Optional, TypeVar, Union
 
 from docarray import DocumentArray
 
@@ -25,13 +25,10 @@ class BestModelCheckpoint:
         For an evaluation metric, this should be `max`, for `val_loss` this should
         be `min`, etc. In `auto` mode, the mode is set to `min` if `monitor='loss'`
         or `monitor='val_loss'` and to `max` otherwise.
-    :param verbose: Whether to log notifications when a checkpoint is saved.
     """
 
-    save_dir: str = 'best_model_chckpt'
     monitor: str = 'val_loss'
     mode: str = 'auto'
-    verbose: bool = False
 
 
 @dataclass
@@ -42,12 +39,9 @@ class TrainingCheckpoint:
 
     :param last_k_epochs: This parameter is an integer. Only the most
         recent k checkpoints will be kept. Older checkpoints are deleted.
-    :param verbose: Whether to log notifications when a checkpoint is saved/deleted.
     """
 
-    save_dir: str = 'training_chckpt'
     last_k_epochs: int = 1
-    verbose: bool = False
 
 
 @dataclass
@@ -59,36 +53,8 @@ class WandBLogger:
     To use this logger, make sure to have a WandB account created, install the WandB
     client (which you can do using ``pip install wandb``) and setting the API key as
     environmental variable.
-
-    :param experiment: name of the experiment corresponding to the name of a
-        weights and biases project.
-    :param wandb_args: Keyword arguments that are passed to ``wandb.init`` function.
-    :param api_key: Key for wandb login.
     """
-
-    experiment: str
-    wandb_args: dict = field(default_factory=dict)
-    api_key: Optional[str] = None
-
-
-@dataclass
-class MLFlowLogger:
-    # noinspection PyUnresolvedReferences
-    """
-    Callback to send data to MLFlow tracking tools. The collects parameters of the
-    tuner and metrics during finetuning and validation.
-
-    For the initialization of the MLFlowLogger, the name of the experiment it
-    belongs to and a tracking_uri must be specified.
-    :param experiment: The name of the experiment of the current finetuning run.
-    :param tracking_uri: URI which refers to a storage backend. This can either be
-        a file url or a SQLAlchemy connection string. Detailed information about
-        the connection string is can be found at:
-        https://www.mlflow.org/docs/latest/python_api/mlflow.html#mlflow.set_tracking_uri
-    """
-
-    experiment: str
-    tracking_uri: str
+    ...
 
 
 @dataclass
@@ -117,7 +83,6 @@ class EarlyStopping:
     :param baseline: Baseline value for the monitored quantity.
         Training will stop if the model doesn't show improvement over the
         baseline.
-    :param verbose: Whether to log score improvement events.
     """
 
     monitor: str = 'val_loss'
@@ -125,7 +90,6 @@ class EarlyStopping:
     patience: int = 2
     min_delta: int = 0
     baseline: Optional[float] = None
-    verbose: bool = False
 
 
 @dataclass
@@ -154,7 +118,6 @@ class EvaluationCallback:
     query_data: Union[DocumentArray, str]
     index_data: Optional[Union[DocumentArray, str]] = None
     batch_size: int = 8
-    metrics: Optional[List[str]] = None
     exclude_self: bool = True
     limit: int = 20
     distance: str = 'cosine'

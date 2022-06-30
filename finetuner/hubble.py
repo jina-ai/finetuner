@@ -1,9 +1,9 @@
-import json
-from typing import Dict, List, Optional, Tuple, Union
+import os
+from typing import Dict, Optional, Tuple, Union
 
 from docarray import DocumentArray
 
-from finetuner.constants import DA_PREFIX, FINETUNED_MODEL, MODEL_IDS
+from finetuner.constants import ARTIFACTS_DIR, DA_PREFIX
 
 
 def push_data(
@@ -63,27 +63,22 @@ def push_data(
     )
 
 
-def download_model(
-    client, experiment_name: str, run_name: str, path: str = FINETUNED_MODEL
-) -> List[str]:
-    """Download finetuned model(s) from Hubble by its ID.
+def download_artifact(
+    client, experiment_name: str, run_name: str, directory: str = ARTIFACTS_DIR
+) -> str:
+    """Download artifact from Hubble by its ID.
 
     :param client: The Finetuner API client.
     :param experiment_name: The name of the experiment.
     :param run_name: The name of the run.
-    :param path: Path where the model will be stored.
-    :returns: A list of str object(s) that indicate the download path.
+    :param directory: Directory where the artifact will be stored.
+    :returns: A string that indicates the download path.
     """
-    artifact_ids = client.get_run(experiment_name=experiment_name, run_name=run_name)[
-        MODEL_IDS
-    ]
-    artifact_ids = json.loads(artifact_ids)
-    if len(artifact_ids) > 1:
-        paths = [path + '_' + id for id in artifact_ids]
-    else:
-        paths = [path]
-    response = [
-        client.hubble_client.download_artifact(id=artifact_id, path=path)
-        for artifact_id, path in zip(artifact_ids, paths)
-    ]
-    return response
+    os.makedirs(directory, exist_ok=True)
+
+    run = client.get_run(experiment_name=experiment_name, run_name=run_name)
+
+    artifact_id = run['artifact_id']
+    path = os.path.join(directory, f'{run["name"]}.zip')
+
+    return client.hubble_client.download_artifact(id=artifact_id, path=path)

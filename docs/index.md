@@ -42,7 +42,7 @@ print(run.name)
 print(run.logs())
 
 # When ready
-run.save_model(path='tuned_model')
+run.save_artifact(directory='experiment')
 ```
 
 You should see this in your terminal:

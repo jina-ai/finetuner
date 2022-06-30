@@ -18,13 +18,11 @@ from finetuner.constants import (
     EXPERIMENT_NAME,
     FREEZE,
     HYPER_PARAMETERS,
-    IMAGE_MODALITY,
     LEARNING_RATE,
     LOSS,
     MINER,
     MODEL,
     MODEL_OPTIONS,
-    MULTI_MODAL,
     NAME,
     NUM_WORKERS,
     OPTIMIZER,
@@ -33,7 +31,6 @@ from finetuner.constants import (
     OUTPUT_DIM,
     RUN_NAME,
     SCHEDULER_STEP,
-    TEXT_MODALITY,
     TRAIN_DATA,
 )
 from finetuner.hubble import push_data
@@ -221,15 +218,14 @@ class Experiment:
                 NAME: model,
                 FREEZE: kwargs.get(FREEZE),
                 OUTPUT_DIM: kwargs.get(OUTPUT_DIM),
-                MULTI_MODAL: kwargs.get(MULTI_MODAL),
-                OPTIONS: kwargs.get(MODEL_OPTIONS),
+                OPTIONS: kwargs.get(MODEL_OPTIONS) or {},
             },
             DATA: {
                 TRAIN_DATA: train_data,
                 EVAL_DATA: kwargs.get(EVAL_DATA),
-                IMAGE_MODALITY: kwargs.get(IMAGE_MODALITY),
-                TEXT_MODALITY: kwargs.get(TEXT_MODALITY),
+                NUM_WORKERS: kwargs.get(NUM_WORKERS),
             },
+            CALLBACKS: callbacks,
             HYPER_PARAMETERS: {
                 LOSS: kwargs.get(LOSS),
                 OPTIMIZER: kwargs.get(OPTIMIZER),
@@ -240,7 +236,6 @@ class Experiment:
                 EPOCHS: kwargs.get(EPOCHS),
                 SCHEDULER_STEP: kwargs.get(SCHEDULER_STEP),
             },
-            CALLBACKS: callbacks,
             EXPERIMENT_NAME: experiment_name,
             RUN_NAME: run_name,
         }
