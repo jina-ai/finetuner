@@ -21,8 +21,6 @@ f = Flow().add(uses='jinahub://FinetunerExecutor', uses_with=...)
 ```
 ````
 
-(Since core is private I think this is the only place where developers will be able to see what/how to provide inside this executor, so we should explain each argument and give an example here)
-
 ## Using [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc)
 
 Loading a tuned model is simple! You just need to provide a few parameters under the `uses_with` argument when adding the `FinetunerExecutor` to the [Flow]((https://docs.jina.ai/fundamentals/flow/)).
