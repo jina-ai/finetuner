@@ -9,8 +9,6 @@
 <b>Task-oriented finetuning for better embeddings on neural search</b>
 </p>
 
-<br>
-
 <p align=center>
 <a href="https://pypi.org/project/finetuner/"><img alt="PyPI" src="https://img.shields.io/pypi/v/finetuner?label=Release&style=flat-square"></a>
 <a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-3.2k-blueviolet?logo=slack&amp;logoColor=white&style=flat-square"></a>
