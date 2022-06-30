@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Docs 0.4.1 backup. ([#462](https://github.com/jina-ai/finetuner/pull/462))
 
+- Add CD back with semantic release. ([#472](https://github.com/jina-ai/finetuner/pull/472))
+
 ### Removed
 
 ### Changed
