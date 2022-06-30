@@ -40,7 +40,7 @@ The only required argument is `artifact`. We provide default values for others.
 
 ## Using the `FinetunerExecutor`
 
-Here's a simple code snippet demonstrating the `FinetunerExecutor` usage in the flow:
+Here's a simple code snippet demonstrating the `FinetunerExecutor` usage in the Flow:
 
 ```python
 from docarray import DocumentArray, Document
@@ -55,6 +55,5 @@ with f:
     returned_docs = f.post(on='/', inputs=DocumentArray([Document()]))
 
 for doc in returned_docs:
-    print(f'Document returned with text: "{doc.text}"')
     print(f'Shape of the embedding: {doc.embedding.shape}')
 ```
