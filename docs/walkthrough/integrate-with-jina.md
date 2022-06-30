@@ -59,7 +59,7 @@ The only required argument is `artifact`. We provide default values for others.
 
 
 ## Example
-Let's say we want to use a tuned model that is already stored on our local machine inside a [Jina Flow](https://docs.jina.ai/fundamentals/flow/).
+Let's say we want to use a tuned model that is already stored on our local machine.
 
 ```python
 from jina import Flow
