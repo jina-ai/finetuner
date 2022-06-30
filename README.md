@@ -27,9 +27,8 @@ With Finetuner, one can easily uplift pre-trained models to more performant and 
 
 ☁ **All-in-cloud**: instant training with our free GPU ([Apply here for free!](https://docs.google.com/forms/d/e/1FAIpQLSeoEhJM_TWMgZyEgJBBpf33JddcWQgXHNglNjVMIOvlLjk-4A/viewform)); manage runs, experiments and artifacts on Jina Cloud without worrying about provisioning resources, integration complexity and infrastructure.
 
-<!-- end elevator-pitch -->
 
-## [Documentation](https://finetuner.jina.ai/)
+
 
 ## Benchmark
 
@@ -100,6 +99,11 @@ pip install -U finetuner
 ```
 
 > From 0.5.0, Finetuner computing is hosted on Jina Cloud. THe last local version is `0.4.1`, one can install it via pip or check out [git tags/releases here](https://github.com/jina-ai/finetuner/releases).
+
+<!-- end elevator-pitch -->
+
+## [Documentation](https://finetuner.jina.ai/)
+
   
 ## Get Started
 
