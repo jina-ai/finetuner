@@ -56,4 +56,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PYPI_TOKEN: ${{ secrets.TWINE_PASSWORD }}
+          PYPI_USERNAME: ${{ secrets.TWINE_USERNAME }}
         run: npx semantic-release
