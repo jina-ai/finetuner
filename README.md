@@ -21,7 +21,7 @@ Fine-tuning is an effective way to improve the performance on neural search task
 Finetuner makes fine-tuning easier, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud.
 With Finetuner, one can easily uplift pre-trained models to more performant and production ready.
 
-📈**Performance promise**: deliver SOTA performance on domain specific neural search applications.
+📈 **Performance promise**: uplift pretrained model and deliver SOTA performance on domain-specific neural search applications.
 
 🔱 **Simple yet powerful**: easy access to 40+ mainstream losses, 10+ optimisers, layer pruning, weights freezing, dimensionality reduction, hard-negative mining, cross-modal model, distributed training. 
 
