@@ -147,8 +147,8 @@ Specifically, the code snippet describes the following steps:
 
 ### Next steps
 
-- Take a look at the [walk through](https://finetuner.jina.ai/walkthrough/) documentation for an overview of how Finetuner works.
-- Get started with our examples on different search tasks:
+- Take the [walkthrough](https://finetuner.jina.ai/walkthrough/) and submit your first fine-tuning job.
+- Try on different search tasks:
   - [Text-to-Text Search via BERT](https://finetuner.jina.ai/tasks/text-to-text/)
   - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/tasks/image-to-image/)
   - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/tasks/text-to-image/)
