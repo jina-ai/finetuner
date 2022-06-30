@@ -27,8 +27,9 @@ With Finetuner, one can easily uplift pre-trained models to more performant and 
 
 ☁ **All-in-cloud**: instant training with our free GPU ([Apply here for free!](https://docs.google.com/forms/d/e/1FAIpQLSeoEhJM_TWMgZyEgJBBpf33JddcWQgXHNglNjVMIOvlLjk-4A/viewform)); manage runs, experiments and artifacts on Jina Cloud without worrying about provisioning resources, integration complexity and infrastructure.
 
+<!-- end elevator-pitch -->
 
-
+## [Documentation](https://finetuner.jina.ai/)
 
 ## Benchmark
 
@@ -100,9 +101,8 @@ pip install -U finetuner
 
 > From 0.5.0, Finetuner computing is hosted on Jina Cloud. THe last local version is `0.4.1`, one can install it via pip or check out [git tags/releases here](https://github.com/jina-ai/finetuner/releases).
 
-<!-- end elevator-pitch -->
 
-## [Documentation](https://finetuner.jina.ai/)
+
 
   
 ## Get Started
@@ -147,7 +147,7 @@ Specifically, the code snippet describes the following steps:
 ### Next steps
 
 - Take a look at the [walk through](https://finetuner.jina.ai/walkthrough/) documentation for an overview of how Finetuner works.
-+ Get started with our examples on different search tasks:
+- Get started with our examples on different search tasks:
   - [Text-to-Text Search via BERT](https://finetuner.jina.ai/tasks/text-to-text/)
   - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/tasks/image-to-image/)
   - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/tasks/text-to-image/)
