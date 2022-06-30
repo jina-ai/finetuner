@@ -95,25 +95,16 @@ With Finetuner, one can easily uplift pre-trained models to more performant and 
 
 ## Install
 
-Requires Python 3.7+.
-
 ```bash
 pip install -U finetuner
 ```
 
-Noted: Starting from 0.5.0, Finetuner becomes cloud-based.
-If you still want to use the last Finetuner release which runs locally, please install with:
-
-```bash
-pip install finetuner==0.4.1
-```
-
-We have backed up the 0.4.1 documentation in `docs/docs_41/` folder.
-Check [this page](docs/docs_41/README.md) to render Finetuner 0.4.1 documentation locally.
-
+> From 0.5.0, Finetuner computing is hosted on Jina Cloud. THe last local version is `0.4.1`, one can install it via pip or check out [git tags/releases here](https://github.com/jina-ai/finetuner/releases).
+  
 ## Get Started
 
-The following code block describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), which can be run as-is:
+The following code snippet describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), it can be run as-is:
+
 ```python
 import finetuner
 from finetuner.callback import EvaluationCallback
@@ -128,8 +119,7 @@ run = finetuner.fit(
 )
 ```
 
-Fine-tuning might take some time until finish.
-Once it is done, you can re-connect your run with:
+Fine-tuning might take 5 minute to finish. You can later re-connect your run with:
 
 ```python
 import finetuner
@@ -143,7 +133,7 @@ print(run.logs())
 run.save_artifact('resnet-tll')
 ```
 
-It has the following steps:
+Specifically, the code snippet describes the following steps:
 
   * Login to Finetuner: This is necessary if you'd like to run fine-tuning jobs with Finetuner in the cloud.
   * Start fine-tuning run: Select backbone model, training and evaluation data for your evaluation callback.
@@ -153,7 +143,7 @@ It has the following steps:
 ### Next steps
 
 - Take a look at the [walk through](https://finetuner.jina.ai/walkthrough/) documentation for an overview of how Finetuner works.
-+ Get started with our example use-cases:
++ Get started with our examples on different search tasks:
   - [Text-to-Text Search via BERT](https://finetuner.jina.ai/tasks/text-to-text/)
   - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/tasks/image-to-image/)
   - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/tasks/text-to-image/)
