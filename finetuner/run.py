@@ -60,7 +60,7 @@ class Run:
         """Save artifact if the run is finished.
 
         :param directory: Directory where the artifact will be stored.
-        :returns: An str object that indicates the download path.
+        :returns: A string object that indicates the download path.
         """
         if self.status()[STATUS] != FINISHED:
             raise Exception('The run needs to be finished in order to save the model.')
