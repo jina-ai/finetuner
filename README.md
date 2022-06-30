@@ -139,10 +139,11 @@ run.save_artifact('resnet-tll')
 
 Specifically, the code snippet describes the following steps:
 
-  * Login to Finetuner: This is necessary if you'd like to run fine-tuning jobs with Finetuner in the cloud.
-  * Start fine-tuning run: Select backbone model, training and evaluation data for your evaluation callback.
-  * Monitor: Check the status and logs of the progress on your fine-tuning run.
-  * Save model: If your fine-tuning run has successfully completed, save it for further use and integration.
+  * Login to Finetuner ([Get free access here!](https://docs.google.com/forms/d/e/1FAIpQLSeoEhJM_TWMgZyEgJBBpf33JddcWQgXHNglNjVMIOvlLjk-4A/viewform))
+  * Select backbone model, training and evaluation data for your evaluation callback.
+  * Start the cloud run.
+  * Monitor the status: check the status and logs of the run.
+  * Save model for further use and integration.
 
 ### Next steps
 
