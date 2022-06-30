@@ -109,9 +109,6 @@ def fit(
     scheduler_step: str = 'batch',
     freeze: bool = False,
     output_dim: Optional[int] = None,
-    multi_modal: bool = False,
-    image_modality: Optional[str] = None,
-    text_modality: Optional[str] = None,
     cpu: bool = True,
     num_workers: int = 4,
 ) -> Run:
@@ -159,9 +156,6 @@ def fit(
     :param freeze: If set to `True`, will freeze all layers except the last one.
     :param output_dim: The expected output dimension as `int`.
         If set, will attach a projection head.
-    :param multi_modal: Boolean value, set to `True` for the CLIP model.
-    :param image_modality: The modality of the image `Document`.
-    :param text_modality: The modality of the text `Document`.
     :param cpu: Whether to use the CPU. If set to `False` a GPU will be used.
     :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
         workers used by the dataloader.
@@ -184,9 +178,6 @@ def fit(
         scheduler_step=scheduler_step,
         freeze=freeze,
         output_dim=output_dim,
-        multi_modal=multi_modal,
-        image_modality=image_modality,
-        text_modality=text_modality,
         cpu=cpu,
         num_workers=num_workers,
     )

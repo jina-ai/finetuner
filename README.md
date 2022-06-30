@@ -141,7 +141,7 @@ run = finetuner.get_run('resnet50-tll-run')
 print(run.status())
 print(run.logs())
 
-run.save_model('resnet-tll')
+run.save_artifact('resnet-tll')
 ```
 
 It has the following steps:

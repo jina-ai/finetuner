@@ -67,7 +67,7 @@ Example:
 
 "If your run has finished successfully, you can save fine-tuned models in the following way:"
 ```python
-run.save_model('my_model')
+run.save_artifact('my_model')
 ```
 
 ## Evaluating your model

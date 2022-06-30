@@ -129,6 +129,6 @@ What you can do for now is to call {meth}`~finetuner.run.Run.logs()` in the end 
 
 After the run has finished successfully, you can download the tuned model on your local machine:
 ```python
-run.save_model('resnet-model')
+run.save_artifact('resnet-model')
 ```
 That's it! Now you have a fine-tuned model which is ready to be {ref}`integrated inside the Jina ecosystem <integrate-with-jina>`.
