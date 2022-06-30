@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="Finetuner Documentation" />
   
-<meta property="og:description" content="Fine-tuning with domain specific data can improve the performance on neural search tasks. However, it is non-trivial as it requires a combination of expertise of deep learning and information retrieval. Finetuner makes this procedure simpler, faster and performant by streamlining the workflow and..." />
+<meta property="og:description" content="Fine-tuning is an effective way to improve the performance on neural search tasks. However, it is non-trivial for many deep learning engineers. Finetuner makes fine-tuning easier, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud. With ..." />
   
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   
@@ -333,71 +333,80 @@
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="welcome-to-finetuner">
 <h1>Welcome to Finetuner!<a class="headerlink" href="#welcome-to-finetuner" title="Permalink to this headline">#</a></h1>
-<p>Fine-tuning with domain specific data can improve the performance on neural search tasks.
-However, it is non-trivial as it requires a combination of expertise of deep learning and information retrieval.</p>
-<p>Finetuner makes this procedure simpler, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud.
-With Finetuner, you can easily make pre-trained models more performant and production ready.</p>
-<p>📈<strong>Performance boost</strong>: Finetuner delivers SOTA performance on domain specific neural search applications.</p>
-<p>🔱 <strong>Simple yet powerful</strong>: Easily access features such as 40+ mainstream loss functions, 10+ optimisers, layer pruning, weights freezing, dimensionality reduction, hard-negative mining, cross modality fine-tuning, distributed training.</p>
-<p>☁ <strong>All-in-cloud</strong>: Manage your runs, experiments and artifacts on Jina Cloud (<a class="reference external" href="https://docs.google.com/forms/d/e/1FAIpQLSeoEhJM_TWMgZyEgJBBpf33JddcWQgXHNglNjVMIOvlLjk-4A/viewform">for free!</a>) without worrying about provisioning resources. You never have to worry about provisioning (cloud) resources! Finetuner handles all related complexity and infrastructure.</p>
-<p>Finetuner primarily targets business users and engineers with limited knowledge in Machine Learning, but also attempts to expose
-lots of configuration options for experienced professionals!</p>
-<section id="why-do-i-need-it">
-<h2>Why do I need it?<a class="headerlink" href="#why-do-i-need-it" title="Permalink to this headline">#</a></h2>
-<p>Search quality matters. When you bring a pre-trained model to encode your data to embeddings, you are likely to get irrelevant search results.
-Pre-trained deep learning models are usually trained on large-scale datasets, that have a different <em>data distribution</em> over your own datasets or domains.
-This is referred to as a <em>distribution shift</em>.</p>
-<p>Finetuner provides a solution to this problem by leveraging a pre-trained model from a large dataset and fine-tuning the parameters of
-this model on your dataset.</p>
-<p>Once fine-tuning is done, you get a model adapted to your domain. This new model leverages better search performance on your-task-of-interest.</p>
-<p>Fine-tuning a pre-trained model includes a certain complexity and requires Machine Learning plus domain knowledge (on NLP, Computer Vision e.t.c).
-Thus, it is a non-trivial task for business owners and engineers who lack the practical deep learning knowledge. Finetuner attempts
-to address this by providing a simple interface, which can be as easy as:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
-
-<span class="c1"># Login to Jina ecosystem</span>
-<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
-
-<span class="c1"># Prepare training data</span>
-<span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-
-<span class="c1"># Fine-tune in the cloud</span>
-<span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;resnet50&#39;</span><span class="p">,</span> <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">logs</span><span class="p">())</span>
-
-<span class="c1"># When ready</span>
-<span class="n">run</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="s1">&#39;experiment&#39;</span><span class="p">)</span>
+<p>Fine-tuning is an effective way to improve the performance on neural search tasks. However, it is non-trivial for many deep learning engineers.</p>
+<p>Finetuner makes fine-tuning easier, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud.
+With Finetuner, one can easily uplift pre-trained models to more performant and production ready.</p>
+<p>📈 <strong>Performance promise</strong>: uplift pretrained model and deliver SOTA performance on domain-specific neural search applications.</p>
+<p>🔱 <strong>Simple yet powerful</strong>: easy access to 40+ mainstream losses, 10+ optimisers, layer pruning, weights freezing, dimensionality reduction, hard-negative mining, cross-modal model, distributed training.</p>
+<p>☁ <strong>All-in-cloud</strong>: instant training with our free GPU (<a class="reference external" href="https://docs.google.com/forms/d/e/1FAIpQLSeoEhJM_TWMgZyEgJBBpf33JddcWQgXHNglNjVMIOvlLjk-4A/viewform">Apply here for free!</a>); manage runs, experiments and artifacts on Jina Cloud without worrying about provisioning resources, integration complexity and infrastructure.</p>
+<section id="benchmark">
+<h2>Benchmark<a class="headerlink" href="#benchmark" title="Permalink to this headline">#</a></h2>
+<table>
+<thead>
+  <tr>
+    <th>Model</th>
+    <th>Task</th>
+    <th>Metric</th>
+    <th>Pretrained</th>
+    <th>Finetuned</th>
+    <th>Delta</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td rowspan="2">BERT</td>
+    <td rowspan="2"><a href="https://www.kaggle.com/c/quora-question-pairs">Quora</a> Question Answering</td>
+    <td>mRR</td>
+    <td>0.835</td>
+    <td>0.967</td>
+    <td>:arrow_up_small: 15.8%</td>
+  </tr>
+  <tr>
+    <td>Recall</td>
+    <td>0.915</td>
+    <td>0.963</td>
+    <td>:arrow_up_small: 5.3%</td>
+  </tr>
+  <tr>
+    <td rowspan="2">ResNet</td>
+    <td rowspan="2">Visual similarity search on <a href="https://sites.google.com/view/totally-looks-like-dataset">TLL</a></td>
+    <td>mAP</td>
+    <td>0.102</td>
+    <td>0.166</td>
+    <td>:arrow_up_small: 62.7%</td>
+  </tr>
+  <tr>
+    <td>Recall</td>
+    <td>0.235</td>
+    <td>0.372</td>
+    <td>:arrow_up_small: 58.3%</td>
+  </tr>
+  <tr>
+    <td rowspan="2">CLIP</td>
+    <td rowspan="2"><a href="https://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html">Deep Fashion</a> text-to-image search</td>
+    <td>mRR</td>
+    <td>0.289</td>
+    <td>0.488</td>
+    <td>:arrow_up_small: 69.9%</td>
+  </tr>
+  <tr>
+    <td>Recall</td>
+    <td>0.109</td>
+    <td>0.346</td>
+    <td>:arrow_up_small: 217.0%</td>
+  </tr>
+</tbody>
+</table>
+<p><sub><sup><a id="example-setup">[*]</a> All metrics evaluation on k&#64;20, trained 5 epochs using Adam optimizer with learning rate of 1e-5.</sup></sub></p>
+</section>
+<section id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -U finetuner
 </pre></div>
 </div>
-<p>You should see this in your terminal:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🔐 Successfully login to Jina ecosystem!
-Run name: vigilant-tereshkova
-Run logs:
-
-  Training <span class="o">[</span><span class="m">2</span>/2<span class="o">]</span> ━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="m">50</span>/50 <span class="m">0</span>:00:00 <span class="m">0</span>:01:08 • loss: <span class="m">0</span>.050
-<span class="o">[</span><span class="m">09</span>:13:23<span class="o">]</span> INFO     <span class="o">[</span>__main__<span class="o">]</span> Done ✨                           __main__.py:214
-           INFO     <span class="o">[</span>__main__<span class="o">]</span> Saving fine-tuned models ...      __main__.py:217
-           INFO     <span class="o">[</span>__main__<span class="o">]</span> Saving model <span class="s1">&#39;tuned_model&#39;</span> <span class="k">in</span>     __main__.py:228
-                    /usr/src/app/tuned-models/model ...                         
-           INFO     <span class="o">[</span>__main__<span class="o">]</span> Pushing saved model to Hubble ... __main__.py:232
-<span class="o">[</span><span class="m">09</span>:13:54<span class="o">]</span> INFO     <span class="o">[</span>__main__<span class="o">]</span> Pushed model artifact ID:         __main__.py:238
-                    <span class="s1">&#39;62972acb5de25a53fdbfcecc&#39;</span>                                  
-           INFO     <span class="o">[</span>__main__<span class="o">]</span> Finished 🚀                       __main__.py:240
-</pre></div>
-</div>
-<p>Submitted fine-tuning jobs run efficiently on the Jina Cloud on either CPU or GPU enabled hardware.</p>
-<p>Finetuner fully owns the complexity of setting up and maintaining the model training infrastructure plus the complexity of delivering SOTA training
-methods to production use cases.</p>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>Not sure which model to use?</p>
-<p>Don’t worry, call <code class="docutils literal notranslate"><span class="pre">finetuner.describe_models()</span></code> and we will help you choose the best fit.</p>
-</div>
+<blockquote>
+<div><p>From 0.5.0, Finetuner computing is hosted on Jina Cloud. THe last local version is <code class="docutils literal notranslate"><span class="pre">0.4.1</span></code>, one can install it via pip or check out <a class="reference external" href="https://github.com/jina-ai/finetuner/releases">git tags/releases here</a>.</p>
+</div></blockquote>
 </section>
 <section id="support">
 <h2>Support<a class="headerlink" href="#support" title="Permalink to this headline">#</a></h2>
@@ -486,7 +495,8 @@ and <a class="reference external" href="https://youtube.com/c/jina-ai">live stre
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">Welcome to Finetuner!</a><ul>
-<li><a class="reference internal" href="#why-do-i-need-it">Why do I need it?</a></li>
+<li><a class="reference internal" href="#benchmark">Benchmark</a></li>
+<li><a class="reference internal" href="#install">Install</a></li>
 <li><a class="reference internal" href="#support">Support</a></li>
 <li><a class="reference internal" href="#join-us">Join Us</a><ul>
 </ul>
