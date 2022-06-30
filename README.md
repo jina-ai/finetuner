@@ -4,21 +4,22 @@
 
 
 <p align="center">
-<b>Domain-specific fine-tuning for better embeddings on neural search tasks</b>
+<b>Task-oriented finetuning for better embeddings on neural search</b>
 </p>
 
+<br>
+
 <p align=center>
-<a href="https://pypi.org/project/finetuner/"><img src="https://img.shields.io/badge/Python-3.7%2B-blue alt="Python 3.7" title="Finetuner supports Python 3.7 and above"></a>
-<a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-2.2k%2B-blueviolet?logo=slack&amp;logoColor=white"></a>
+<a href="https://pypi.org/project/finetuner/"><img alt="PyPI" src="https://img.shields.io/pypi/v/finetuner?label=Release&style=flat-square"></a>
+<a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-3.2k-blueviolet?logo=slack&amp;logoColor=white&style=flat-square"></a>
 </p>
 
 <!-- start elevator-pitch -->
 
-Fine-tuning with domain specific data can improve the performance on neural search tasks.
-However, it is non-trivial as it requires a combination of expertise of deep learning and information retrieval.
+Fine-tuning can greatly improve the performance on neural search tasks. However, it is non-trivial due to the required strong expertise of deep learning and information retrieval.
 
-Finetuner makes this procedure simpler, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud.
-With Finetuner, you can easily make pre-trained models more performant and production ready.
+Finetuner makes this procedure easier, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud.
+With Finetuner, one can easily uplift pre-trained models to more performant and production ready.
 
 📈**Performance boost**: Finetuner delivers SOTA performance on domain specific neural search applications.
 
@@ -37,12 +38,12 @@ The following table demonstrates what you can expect from Finetuner:
 <table>
 <thead>
   <tr>
-    <th>MODEL</th>
-    <th>TASK</th>
-    <th>METRIC</th>
-    <th>PRETRAINED</th>
-    <th>FINETUNED</th>
-    <th>DELTA</th>
+    <th>Model</th>
+    <th>Task</th>
+    <th>Metric</th>
+    <th>Pretrained</th>
+    <th>Finetuned</th>
+    <th>Delta</th>
   </tr>
 </thead>
 <tbody>
