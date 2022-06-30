@@ -176,7 +176,7 @@ def fit(
         run_name=run_name,
         description=description,
         experiment_name=experiment_name,
-        model_options=model_options,
+        model_options=model_options or {},
         loss=loss,
         miner=miner,
         optimizer=optimizer,
