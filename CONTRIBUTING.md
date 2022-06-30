@@ -1,28 +1,86 @@
 # Contributing
 
-## Dev Install
 
-Finetuner requires your local `jina` as the latest master. It is the best if you have `jina` installed
-via `pip install -e .`.
+## Setup
 
-```bash
-git clone https://github.com/jina-ai/finetuner.git
-cd finetuner
-# pip install -r requirements.txt (only required when you do not have jina locally) 
-pip install -e .
-```
-
-## Install tests requirements
+### Install dev requirements
 
 ```bash
-pip install -r .github/requirements-test.txt
-pip install -r .github/requirements-cicd.txt
+make install-dev
 ```
 
-## Enable precommit hook
-
-The codebase is enforced with Black style, please enable precommit hook.
+### Install finetuner
 
 ```bash
-pre-commit install
+make install
 ```
+
+### Enable precommit hook
+
+To automatically ensure formatting with `black`, import sorting with `isort` and linting
+with `flake8`, you can install the pre-commit hooks 
+
+```bash
+make pre-commit
+```
+
+
+## Making a PR
+
+### Open an issue
+
+Each PR should reference an open issue, and this issue should be linked to your PR.
+
+### Running tests locally
+
+To run tests locally, all you need to do is
+
+```bash
+make test
+```
+
+### Adding an entry to the changelog
+
+Make an entry in [CHANGELOG.md](https://github.com/jina-ai/finetuner/blob/main/CHANGELOG.md),
+adding it to the `Unreleased` section (and the appropriate subsection), which should contain a
+short description of what you have done in the PR, as well as the PR's number, e.g.
+
+```
+- Add `NTXentLoss` loss class for supervised learning ([#24](https://github.com/jina-ai/finetuner.fit/pull/24))
+```
+
+To avoid merge conflicts when multiple people are simultaneously working on new features, make sure there
+is **an empty line above and below the entry**.
+
+
+## Releases
+
+To make a release, follow these steps, in order.
+
+### Update CHANGELOG.md
+
+In `CHANGELOG.md`, rename the top `Unreleased` entry with the with the version number (`X.Y.Z`), and enter the current date.
+
+Then, add a new empty `Unreleased` section on top of it - this is where the changes for the next version will accumulate.
+
+### Tag the commit on `main` branch
+
+In your repository, check out the `main` branch, and tag it with the appropriate version - it should match the one in `finetuner/__init__.py`!
+If it does not, change it there first.
+
+To tag the head commit in `main` branch, and then push this to remote, do the following steps
+(you can also do this automatially by creating a release on GitHub)
+
+```bash
+git checkout main
+git tag vX.Y.Z
+git push --tags
+```
+
+At this point the new version is officially released. At this point any automated actions connected
+to release would have been run.
+
+### Change version in `finetuner/__init__.py`
+
+Since now the `main` branch corresponds to the new development version, we need to change the version
+in `finetuner/__init__.py` to reflect that. So you should increment the version in that file.

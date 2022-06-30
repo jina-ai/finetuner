@@ -5,79 +5,74 @@
 :end-before: <!-- end elevator-pitch -->
 ```
 
-## Quick start
+Finetuner primarily targets business users and engineers with limited knowledge in Machine Learning, but also attempts to expose
+lots of configuration options for experienced professionals!
 
-1. Make sure that you have Python 3.7+ installed on Linux/MacOS. You have one of PyTorch (>=1.9), Tensorflow (>=2.5) or PaddlePaddle installed.
-   ```bash
-   pip install finetuner
-   ```
-2. In this example, we want to tune the embedding vectors from a ResNet18 on a [customized Celeba dataset](https://static.jina.ai/celeba/celeba-img.zip).Finetuner accepts docarray DocumentArray, so we load CelebA image into this format:
-   ```python
-   from docarray import DocumentArray
+## Why do I need it?
 
-   # please change the file path to your data path
-   data = DocumentArray.from_files('img_align_celeba/*.jpg')
+Search quality matters. When you bring a pre-trained model to encode your data to embeddings, you are likely to get irrelevant search results.
+Pre-trained deep learning models are usually trained on large-scale datasets, that have a different *data distribution* over your own datasets or domains.
+This is referred to as a *distribution shift*.
 
+Finetuner provides a solution to this problem by leveraging a pre-trained model from a large dataset and fine-tuning the parameters of
+this model on your dataset.
 
-   def preproc(doc):
-       return (
-           doc.load_uri_to_image_tensor(224, 224)
-           .set_image_tensor_normalization()
-           .set_image_tensor_channel_axis(-1, 0)
-       )  # No need for changing channel axes line if you are using tf/keras
+Once fine-tuning is done, you get a model adapted to your domain. This new model leverages better search performance on your-task-of-interest.
 
-   data.apply(preproc)
-   ```
-3. Let's write a model with any of the following frameworks:
-   ````{tab} PyTorch
-   
-   ```python
-   import torchvision
-   
-   resnet = torchvision.models.resnet18(pretrained=True)
-   ```
-   
-   ````
-   ````{tab} Keras
-   ```python
-   import tensorflow as tf
-   
-   resnet = tf.keras.applications.resnet18.ResNet18(weights='imagenet')
-   ```
-   ````
-   ````{tab} Paddle
-   ```python
-   import paddle
-   
-   resnet = paddle.vision.models.resnet18(pretrained=True)
-   ```
-   ````
-4. Now feed the model and Celeba data into Finetuner.
-   ```python
-   import finetuner as ft
+Fine-tuning a pre-trained model includes a certain complexity and requires Machine Learning plus domain knowledge (on NLP, Computer Vision e.t.c).
+Thus, it is a non-trivial task for business owners and engineers who lack the practical deep learning knowledge. Finetuner attempts
+to address this by providing a simple interface, which can be as easy as:
 
-   tuned_model = ft.fit(
-       model=resnet,
-       train_data=data,
-       loss='TripletLoss',
-       epochs=20,
-       device='cuda',
-       batch_size=128,
-       to_embedding_model=True,
-       input_size=(3, 224, 224),
-       layer_name='adaptiveavgpool2d_67', # layer before fc as feature extractor
-       freeze=False,
-   )
-   ```
+```python
+import finetuner
+from docarray import DocumentArray
 
-Now that you’re set up, let’s dive into more of how Finetuner works and improves the performance of your neural search apps.
+# Login to Jina ecosystem
+finetuner.login()
 
+# Prepare training data
+train_data = DocumentArray(...)
 
-## Next steps
+# Fine-tune in the cloud
+run = finetuner.fit(
+    model='resnet50', train_data=train_data, epochs=5, batch_size=128,
+)
 
-<!-- start fit-method -->
-Finetuner is extremely easy to learn: all you need is `finetuner.fit()`!
+print(run.name)
+print(run.logs())
 
+# When ready
+run.save_artifact(directory='experiment')
+```
+
+You should see this in your terminal:
+
+```bash
+🔐 Successfully login to Jina ecosystem!
+Run name: vigilant-tereshkova
+Run logs:
+
+  Training [2/2] ━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:00:00 0:01:08 • loss: 0.050
+[09:13:23] INFO     [__main__] Done ✨                           __main__.py:214
+           INFO     [__main__] Saving fine-tuned models ...      __main__.py:217
+           INFO     [__main__] Saving model 'tuned_model' in     __main__.py:228
+                    /usr/src/app/tuned-models/model ...                         
+           INFO     [__main__] Pushing saved model to Hubble ... __main__.py:232
+[09:13:54] INFO     [__main__] Pushed model artifact ID:         __main__.py:238
+                    '62972acb5de25a53fdbfcecc'                                  
+           INFO     [__main__] Finished 🚀                       __main__.py:240
+```
+
+Submitted fine-tuning jobs run efficiently on the Jina Cloud on either CPU or GPU enabled hardware.
+
+Finetuner fully owns the complexity of setting up and maintaining the model training infrastructure plus the complexity of delivering SOTA training
+methods to production use cases.
+
+```{Important}
+Not sure which model to use?
+
+Don't worry, call `finetuner.describe_models()` and we will help you choose the best fit.
+```
 
 
 ```{include} ../README.md
@@ -89,26 +84,20 @@ Finetuner is extremely easy to learn: all you need is `finetuner.fit()`!
 :caption: Get Started
 :hidden:
 
-get-started/swiss-roll/index
-get-started/totally-looks-like/index
-get-started/clinc150/index
-get-started/3d-mesh/index
-get-started/onnx/index
+get-started/how-it-works
+get-started/design-principles
+walkthrough/index
 ```
 
 
-```{toctree}
-:caption: Basics
-:hidden:
-
-basics/index
-```
 
 ```{toctree}
-:caption: Components
+:caption: Finetuning Tasks
 :hidden:
 
-components/index
+tasks/text-to-text
+tasks/image-to-image
+tasks/text-to-image
 ```
 
 ```{toctree}
@@ -121,4 +110,3 @@ api/finetuner
 
 ---
 {ref}`genindex` {ref}`modindex`
-

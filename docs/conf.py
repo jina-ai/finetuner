@@ -14,23 +14,6 @@ master_doc = 'index'
 language = 'en'
 repo_dir = '../'
 
-try:
-    if 'JINA_VERSION' not in os.environ:
-        pkg_name = 'finetuner'
-        libinfo_py = path.join(repo_dir, pkg_name, '__init__.py')
-        libinfo_content = open(libinfo_py, 'r').readlines()
-        version_line = [
-            l.strip() for l in libinfo_content if l.startswith('__version__')
-        ][0]
-        exec(version_line)
-    else:
-        __version__ = os.environ['JINA_VERSION']
-except FileNotFoundError:
-    __version__ = '0.0.0'
-
-version = __version__
-release = __version__
-
 templates_path = ['_templates']
 exclude_patterns = [
     '_build',
@@ -61,17 +44,22 @@ html_theme_options = {
         "color-brand-primary": "#FBCB67",
         "color-brand-content": "#FBCB67",
     },
+    # PLEASE DO NOT DELETE the empty line between `start-announce` and `end-announce`
+    # PLEASE DO NOT DELETE `start-announce`/ `end-announce` it is used for our dev bot to inject announcement from GH
+    # start-announce
+    # end-announce
 }
 
 html_static_path = ['_static']
 html_extra_path = ['html_extra']
 html_css_files = [
     'main.css',
-    'docbot.css',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css',
 ]
 html_js_files = [
-    'https://cdn.jsdelivr.net/npm/qabot@0.4'
+    'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js',
+    'https://cdn.jsdelivr.net/npm/qabot@0.4',
+    'source-in-links.js',
 ]
 htmlhelp_basename = slug
 html_show_sourcelink = False
@@ -103,11 +91,13 @@ extensions = [
     'myst_parser',
     'sphinx_design',
     'sphinx_inline_tabs',
-    'sphinx_multiversion',
 ]
 
-myst_enable_extensions = ['colon_fence', 'dollarmath']
-myst_dmath_double_inline = True
+# intersphinx references
+intersphinx_mapping = {'docarray': ('https://docarray.jina.ai/', None)}
+
+
+myst_enable_extensions = ['colon_fence', 'substitution']
 
 # -- Custom 404 page
 
@@ -118,9 +108,8 @@ notfound_context = {
     'body': '''
 <h1>Page Not Found</h1>
 <p>Oops, we couldn't find that page. </p>
-<p>You can try using the search box or check our menu on the left hand side of this page.</p>
-
-<p>If neither of those options work, please create a Github issue ticket <a href="https://github.com/jina-ai/finetuner/">here</a>, and one of our team will respond.</p>
+<p>You can try "asking our docs" on the right corner of the page to find answer.</p>
+<p>Otherwise, <a href="https://github.com/jina-ai/finetuner">please create a Github issue</a> and one of our team will respond.</p>
 
 ''',
 }
@@ -128,7 +117,18 @@ notfound_no_urls_prefix = True
 
 apidoc_module_dir = repo_dir
 apidoc_output_dir = 'api'
-apidoc_excluded_paths = ['tests', 'legacy', 'hub', 'toy*', 'setup.py']
+apidoc_excluded_paths = [
+    'tests',
+    'legacy',
+    'hub',
+    'toy*',
+    'setup.py',
+    'finetuner/constants.py',
+    'finetuner/names.py',
+    'finetuner/hubble.py',
+    'finetuner/client/base.py',
+    'finetuner/client/exception.py',
+]
 apidoc_separate_modules = True
 apidoc_extra_args = ['-t', 'template/']
 autodoc_member_order = 'bysource'
@@ -139,8 +139,12 @@ autodoc_mock_imports = [
     'tensorflow',
     'torch',
     'scipy',
-    'keras',
-    'paddle',
+    'dotenv',
+    'path',
+    'docarray',
+    'rich',
+    'requests',
+    'hubble',
 ]
 autoclass_content = 'both'
 set_type_checking_flag = False
@@ -151,7 +155,6 @@ linkcheck_ignore = [
     # Avoid link check on local uri
     'http://0.0.0.0:*',
     'pods/encode.yml',
-    'https://github.com/jina-ai/jina/commit/*',
     '.github/*',
     'extra-requirements.txt',
     'fastentrypoints.py' '../../101',
@@ -167,51 +170,51 @@ linkcheck_anchors = False
 
 ogp_site_url = 'https://finetuner.jina.ai/'
 ogp_image = 'https://finetuner.jina.ai/_static/banner.png'
-ogp_use_first_image = False
+ogp_use_first_image = True
 ogp_description_length = 300
 ogp_type = 'website'
-ogp_site_name = f'Finetuner {os.environ.get("SPHINX_MULTIVERSION_VERSION", version)} Documentation'
+ogp_site_name = f'Finetuner Documentation'
 
 ogp_custom_meta_tags = [
     '<meta name="twitter:card" content="summary_large_image">',
     '<meta name="twitter:site" content="@JinaAI_">',
     '<meta name="twitter:creator" content="@JinaAI_">',
-    '<meta name="description" content="Finetuner allows one to finetune any deep neural network for better embedding on search tasks.">',
-    '<meta property="og:description" content="Finetuner allows one to finetune any deep neural network for better embedding on search tasks.">',
+    '<meta name="description" content="Finetuner is a library for tune the weights of any deep neural network for better embeddings on search tasks.">',
+    '<meta property="og:description" content="Finetuner allows one to tune the weights of any deep neural network for better embeddings on search tasks. It accompanies Jina to deliver the last mile of performance for domain-specific neural search applications.">',
     '''
     <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1ESRNDCK35"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48WE9V68SD"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-1ESRNDCK35');
+  gtag('config', 'G-48WE9V68SD');
 </script>
-<!-- Place this tag in your head or just before your close body tag. -->
+
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     ''',
 ]
 
-def smv_config(string: str):
-    return r'^{}$'.format(string.strip().replace(' ', '|'))
 
-html_context = {
-    'latest_finetuner_version': os.environ.get('LATEST_FINETUNER_VERSION', 'main')
-}
-smv_tag_whitelist = smv_config(os.environ.get('SMV_TAG_WHITELIST', 'v2.4.7'))
-smv_branch_whitelist = smv_config(os.environ.get('SMV_BRANCH_WHITELIST', 'main'))
-smv_remote_whitelist = None
+def add_server_address(app):
+    # This makes variable `server_address` available to docbot.js
+    server_address = app.config['server_address']
+    js_text = "var server_address = '%s';" % server_address
+    app.add_js_file(None, body=js_text)
 
 
 def configure_qa_bot_ui(app):
     # This sets the server address to <qa-bot>
     server_address = app.config['server_address']
-    js_text = """
+    js_text = (
+        """
         document.addEventListener('DOMContentLoaded', function() { 
             document.querySelector('qa-bot').setAttribute('server', '%s');
         });
-        """ % server_address
+        """
+        % server_address
+    )
     app.add_js_file(None, body=js_text)
 
 
@@ -241,11 +244,3 @@ def setup(app):
             ),
         ],
     )
-    app.add_config_value(
-        name='server_address',
-        default=os.getenv(
-            'FINETUNER_DOCSBOT_SERVER', 'https://jina-ai-finetuner.docsqa.jina.ai'
-        ),
-        rebuild='',
-    )
-    app.connect('builder-inited', configure_qa_bot_ui)

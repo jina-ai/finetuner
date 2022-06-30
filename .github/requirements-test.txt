@@ -1,5 +1,0 @@
-pytest
-pytest-cov
-black==22.3.0
-flake8==4.0.1
-isort==5.10.1

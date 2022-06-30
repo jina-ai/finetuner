@@ -2,7 +2,7 @@
 
 set -ex
 
-if [[ $1 == "local-only" ]]; then 
+if [[ $1 == "local-only" ]]; then
   rm -rf api && make clean
   make dirhtml
 else

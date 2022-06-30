@@ -149,3 +149,7 @@ output/
 
 # Logging
 /wandb
+
+# env
+.env
+test.py

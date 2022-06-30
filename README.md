@@ -1,113 +1,173 @@
 <p align="center">
-<img src="https://github.com/jina-ai/finetuner/blob/main/docs/_static/finetuner-logo-ani.svg?raw=true" alt="Finetuner logo: Finetuner allows one to finetune any deep Neural Network for better embedding on search tasks. It accompanies Jina to deliver the last mile of performance-tuning for neural search applications." width="150px">
+<img src="https://github.com/jina-ai/finetuner/blob/main/docs/_static/finetuner-logo-ani.svg?raw=true" alt="Finetuner logo: Finetuner helps you to create experiments in order to improve embeddings on search tasks. It accompanies you to deliver the last mile of performance-tuning for neural search applications." width="150px">
 </p>
 
 
 <p align="center">
-<b>Finetuning any deep neural network for better embedding on neural search tasks</b>
+<b>Domain-specific fine-tuning for better embeddings on neural search tasks</b>
 </p>
 
 <p align=center>
-<a href="https://pypi.org/project/finetuner/"><img src="https://github.com/jina-ai/jina/blob/master/.github/badges/python-badge.svg?raw=true" alt="Python 3.7 3.8 3.9" title="Finetuner supports Python 3.7 and above"></a>
-<a href="https://pypi.org/project/finetuner/"><img src="https://img.shields.io/pypi/v/finetuner?color=%23099cec&amp;label=PyPI&amp;logo=pypi&amp;logoColor=white" alt="PyPI"></a>
-<a href="https://codecov.io/gh/jina-ai/finetuner"><img src="https://codecov.io/gh/jina-ai/finetuner/branch/main/graph/badge.svg?token=xSs4acAEaJ"/></a>
+<a href="https://pypi.org/project/finetuner/"><img src="https://img.shields.io/badge/Python-3.7%2B-blue alt="Python 3.7" title="Finetuner supports Python 3.7 and above"></a>
 <a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-2.2k%2B-blueviolet?logo=slack&amp;logoColor=white"></a>
 </p>
 
 <!-- start elevator-pitch -->
 
-Finetuner allows one to tune the weights of any deep neural network for better embeddings on search tasks. It
-accompanies [Jina](https://github.com/jina-ai/jina) to deliver the last mile of performance for domain-specific neural search
-applications.
+Fine-tuning with domain specific data can improve the performance on neural search tasks.
+However, it is non-trivial as it requires a combination of expertise of deep learning and information retrieval.
 
-🎛 **Designed for finetuning**: a human-in-the-loop deep learning tool for leveling up your pretrained models in domain-specific neural search applications.
+Finetuner makes this procedure simpler, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud.
+With Finetuner, you can easily make pre-trained models more performant and production ready.
 
-🔱 **Powerful yet intuitive**: all you need is `finetuner.fit()` - a one-liner that unlocks rich features such as
-siamese/triplet network, metric learning, self-supervised pretraining, layer pruning, weights freezing, dimensionality reduction.
+📈**Performance boost**: Finetuner delivers SOTA performance on domain specific neural search applications.
 
-⚛️ **Framework-agnostic**: promise an identical API & user experience on PyTorch, Tensorflow/Keras and PaddlePaddle deep learning backends.
+🔱 **Simple yet powerful**: Easily access features such as 40+ mainstream loss functions, 10+ optimisers, layer pruning, weights freezing, dimensionality reduction, hard-negative mining, cross modality fine-tuning, distributed training. 
 
-🧈 **DocArray integration**: buttery smooth integration with DocArray, reducing the cost of context-switch between experiment
-and production.
+☁ **All-in-cloud**: Manage your runs, experiments and artifacts on Jina Cloud ([for free!](https://docs.google.com/forms/d/e/1FAIpQLSeoEhJM_TWMgZyEgJBBpf33JddcWQgXHNglNjVMIOvlLjk-4A/viewform)) without worrying about provisioning resources. You never have to worry about provisioning (cloud) resources! Finetuner handles all related complexity and infrastructure.
 
 <!-- end elevator-pitch -->
 
-## How does it work
+## [Documentation](https://finetuner.jina.ai/)
 
-<img src="https://github.com/jina-ai/finetuner/blob/main/docs/img/finetuner-journey.svg?raw=true" alt="Python 3.7 3.8 3.9" title="Finetuner supports Python 3.7 and above">
+## Benchmark
 
+The following table demonstrates what you can expect from Finetuner:
+
+<table>
+<thead>
+  <tr>
+    <th>MODEL</th>
+    <th>TASK</th>
+    <th>METRIC</th>
+    <th>PRETRAINED</th>
+    <th>FINETUNED</th>
+    <th>DELTA</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td rowspan="2">BERT</td>
+    <td rowspan="2"><a href="https://www.kaggle.com/c/quora-question-pairs">Quora</a> Question Answering</td>
+    <td>mRR</td>
+    <td>0.835</td>
+    <td>0.967</td>
+    <td>:arrow_up_small: 15.8%</td>
+  </tr>
+  <tr>
+    <td>Recall</td>
+    <td>0.915</td>
+    <td>0.963</td>
+    <td>:arrow_up_small: 5.3%</td>
+  </tr>
+  <tr>
+    <td rowspan="2">ResNet</td>
+    <td rowspan="2">Visual similarity search on <a href="https://sites.google.com/view/totally-looks-like-dataset">TLL</a></td>
+    <td>mAP</td>
+    <td>0.102</td>
+    <td>0.166</td>
+    <td>:arrow_up_small: 62.7%</td>
+  </tr>
+  <tr>
+    <td>Recall</td>
+    <td>0.235</td>
+    <td>0.372</td>
+    <td>:arrow_up_small: 58.3%</td>
+  </tr>
+  <tr>
+    <td rowspan="2">CLIP</td>
+    <td rowspan="2"><a href="https://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html">Deep Fashion</a> text-to-image search</td>
+    <td>mRR</td>
+    <td>0.289</td>
+    <td>0.488</td>
+    <td>:arrow_up_small: 69.9%</td>
+  </tr>
+  <tr>
+    <td>Recall</td>
+    <td>0.109</td>
+    <td>0.346</td>
+    <td>:arrow_up_small: 217%</td>
+  </tr>
+
+</tbody>
+</table>
+
+<sub><sup><a id="example-setup">[*]</a> All metrics evaluation on k@20, trained 5 epochs using Adam optimizer with learning rate of 1e-5.</sup></sub>
 
 ## Install
 
-Requires Python 3.7+ and *one of* [PyTorch](https://pytorch.org/)(>=1.9) or [Tensorflow](https://tensorflow.org/)(>=2.5) or [PaddlePaddle](https://github.com/PaddlePaddle/Paddle) installed on Linux/MacOS.
+Requires Python 3.7+.
 
 ```bash
-pip install finetuner
+pip install -U finetuner
 ```
 
-## Finetuning ResNet50 on CelebA
+Noted: Starting from 0.5.0, Finetuner becomes cloud-based.
+If you still want to use the last Finetuner release which runs locally, please install with:
 
-1. Download [CelebA-small dataset (7.7MB)](https://static.jina.ai/celeba/celeba-img.zip) and decompress it to `'./img_align_celeba'`. [Full dataset can be found here.](https://drive.google.com/drive/folders/0B7EVK8r0v71pWEZsZE9oNnFzTm8?resourcekey=0-5BR16BdXnb8hVj6CNHKzLg)
-2. Finetuner accepts docarray `DocumentArray`, so we load CelebA image into this format using a generator:
-    ```python
-    from docarray import DocumentArray
-    
-    # please change the file path to your data path
-    data = DocumentArray.from_files('img_align_celeba/*.jpg')
-    
-    
-    def preproc(doc):
-        return (
-            doc.load_uri_to_image_tensor(224, 224)
-            .set_image_tensor_normalization()
-            .set_image_tensor_channel_axis(-1, 0)
-        )  # No need for normalization and changing channel axes line if you are using tf/keras
-    
-    
-    data.apply(preproc)
-    ```
-3. Load pretrained ResNet18 using PyTorch/Keras/Paddle:
-    - PyTorch
-      ```python
-      import torchvision
-      resnet = torchvision.models.resnet50(pretrained=True)
-      ```
-    - Keras
-      ```python
-      import tensorflow as tf
-      resnet = tf.keras.applications.resnet50.ResNet50(weights='imagenet')
-      ```
-    - Paddle
-      ```python
-      import paddle
-      resnet = paddle.vision.models.resnet50(pretrained=True)
-      ```
-4. Start the Finetuner:
-    ```python
-    import finetuner as ft
-    
-    tuned_model = ft.fit(
-        model=resnet,
-        train_data=data,
-        loss='TripletLoss',
-        epochs=20,
-        device='cuda',
-        batch_size=128,
-        to_embedding_model=True,
-        input_size=(3, 224, 224), # for keras use (224, 224, 3)
-        freeze=False,
-    )
-    ```
+```bash
+pip install finetuner==0.4.1
+```
 
+We have backed up the 0.4.1 documentation in `docs/docs_41/` folder.
+Check [this page](docs/docs_41/README.md) to render Finetuner 0.4.1 documentation locally.
+
+## Get Started
+
+The following code block describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), which can be run as-is:
+```python
+import finetuner
+from finetuner.callback import EvaluationCallback
+
+finetuner.login()
+
+run = finetuner.fit(
+    model='resnet50',
+    run_name='resnet50-tll-run',
+    train_data='tll-train-da',
+    callbacks=[EvaluationCallback(query_data='tll-eval-da')],
+)
+```
+
+Fine-tuning might take some time until finish.
+Once it is done, you can re-connect your run with:
+
+```python
+import finetuner
+
+finetuner.login()
+
+run = finetuner.get_run('resnet50-tll-run')
+print(run.status())
+print(run.logs())
+
+run.save_artifact('resnet-tll')
+```
+
+It has the following steps:
+
+  * Login to Finetuner: This is necessary if you'd like to run fine-tuning jobs with Finetuner in the cloud.
+  * Start fine-tuning run: Select backbone model, training and evaluation data for your evaluation callback.
+  * Monitor: Check the status and logs of the progress on your fine-tuning run.
+  * Save model: If your fine-tuning run has successfully completed, save it for further use and integration.
+
+### Next steps
+
+- Take a look at the [walk through](https://finetuner.jina.ai/walkthrough/) documentation for an overview of how Finetuner works.
++ Get started with our example use-cases:
+  - [Text-to-Text Search via BERT](https://finetuner.jina.ai/tasks/text-to-text/)
+  - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/tasks/image-to-image/)
+  - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/tasks/text-to-image/)
+
+Intrigued? That's only scratching the surface of what Finetuner is capable of. [Read our docs to learn more](https://finetuner.jina.ai/).
 
 <!-- start support-pitch -->
 ## Support
 
-- Check out the [Learning Bootcamp](https://learn.jina.ai) to get started with Finetuner.
 - Use [Discussions](https://github.com/jina-ai/finetuner/discussions) to talk about your use cases, questions, and
   support queries.
-- Join our [Slack community](https://slack.jina.ai) and chat with other Jina community members about ideas.
-- Join our [Engineering All Hands](https://youtube.com/playlist?list=PL3UBBWOUVhFYRUa_gpYYKBqEAkO4sxmne) meet-up to discuss your use case and learn Jina's new features.
+- Join our [Slack community](https://slack.jina.ai) and chat with other Jina AI community members about ideas.
+- Join our [Engineering All Hands](https://youtube.com/playlist?list=PL3UBBWOUVhFYRUa_gpYYKBqEAkO4sxmne) meet-up to discuss your use case and learn Jina AI new features.
     - **When?** The second Tuesday of every month
     - **Where?**
       Zoom ([see our public events calendar](https://calendar.google.com/calendar/embed?src=c_1t5ogfp2d45v8fit981j08mcm4%40group.calendar.google.com&ctz=Europe%2FBerlin)/[.ical](https://calendar.google.com/calendar/ical/c_1t5ogfp2d45v8fit981j08mcm4%40group.calendar.google.com/public/basic.ics))
