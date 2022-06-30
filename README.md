@@ -16,24 +16,22 @@
 
 <!-- start elevator-pitch -->
 
-Fine-tuning can greatly improve the performance on neural search tasks. However, it is non-trivial due to the required strong expertise of deep learning and information retrieval.
+Fine-tuning is an effective way to improve the performance on neural search tasks. However, it is non-trivial for many deep learning engineers.
 
-Finetuner makes this procedure easier, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud.
+Finetuner makes fine-tuning easier, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud.
 With Finetuner, one can easily uplift pre-trained models to more performant and production ready.
 
-📈**Performance boost**: Finetuner delivers SOTA performance on domain specific neural search applications.
+📈**Performance promise**: deliver SOTA performance on domain specific neural search applications.
 
-🔱 **Simple yet powerful**: Easily access features such as 40+ mainstream loss functions, 10+ optimisers, layer pruning, weights freezing, dimensionality reduction, hard-negative mining, cross modality fine-tuning, distributed training. 
+🔱 **Simple yet powerful**: easy access to 40+ mainstream losses, 10+ optimisers, layer pruning, weights freezing, dimensionality reduction, hard-negative mining, cross-modal model, distributed training. 
 
-☁ **All-in-cloud**: Manage your runs, experiments and artifacts on Jina Cloud ([for free!](https://docs.google.com/forms/d/e/1FAIpQLSeoEhJM_TWMgZyEgJBBpf33JddcWQgXHNglNjVMIOvlLjk-4A/viewform)) without worrying about provisioning resources. You never have to worry about provisioning (cloud) resources! Finetuner handles all related complexity and infrastructure.
+☁ **All-in-cloud**: instant training with our free GPU ([Apply here for free!](https://docs.google.com/forms/d/e/1FAIpQLSeoEhJM_TWMgZyEgJBBpf33JddcWQgXHNglNjVMIOvlLjk-4A/viewform)); manage runs, experiments and artifacts on Jina Cloud without worrying about provisioning resources, integration complexity and infrastructure.
 
 <!-- end elevator-pitch -->
 
 ## [Documentation](https://finetuner.jina.ai/)
 
 ## Benchmark
-
-The following table demonstrates what you can expect from Finetuner:
 
 <table>
 <thead>
@@ -87,7 +85,7 @@ The following table demonstrates what you can expect from Finetuner:
     <td>Recall</td>
     <td>0.109</td>
     <td>0.346</td>
-    <td>:arrow_up_small: 217%</td>
+    <td>:arrow_up_small: 217.0%</td>
   </tr>
 
 </tbody>
