@@ -15,13 +15,12 @@ from finetuner.constants import (
     FINISHED,
     FREEZE,
     HYPER_PARAMETERS,
-    IMAGE_MODALITY,
     LEARNING_RATE,
     LOSS,
     MINER,
     MODEL,
-    MULTI_MODAL,
     NAME,
+    NUM_WORKERS,
     OPTIMIZER,
     OPTIMIZER_OPTIONS,
     OPTIONS,
@@ -30,7 +29,6 @@ from finetuner.constants import (
     SCHEDULER_STEP,
     STARTED,
     STATUS,
-    TEXT_MODALITY,
     TRAIN_DATA,
 )
 from finetuner.experiment import Experiment
@@ -73,11 +71,13 @@ def test_create_run(experiment):
     data_name = f'{DA_PREFIX}.{experiment.name}.{run_name}.train'
     run = experiment.create_run(
         model='resnet50',
+        model_options={},
         train_data=data,
         run_name=run_name,
     )
     expected_config = Experiment._create_config_for_run(
         model='resnet50',
+        model_options={},
         train_data=data_name,
         experiment_name=experiment.name,
         run_name=run_name,
@@ -93,14 +93,12 @@ def test_create_run_config():
             NAME: 'resnet50',
             FREEZE: False,
             OUTPUT_DIM: None,
-            MULTI_MODAL: False,
-            OPTIONS: None,
+            OPTIONS: {},
         },
         DATA: {
             TRAIN_DATA: 'train_data',
             EVAL_DATA: 'eval_data',
-            IMAGE_MODALITY: None,
-            TEXT_MODALITY: None,
+            NUM_WORKERS: None,
         },
         HYPER_PARAMETERS: {
             LOSS: 'TripletMarginLoss',
@@ -116,9 +114,7 @@ def test_create_run_config():
             {
                 NAME: 'TrainingCheckpoint',
                 OPTIONS: {
-                    'save_dir': 'training_chckpt',
                     'last_k_epochs': 2,
-                    'verbose': False,
                 },
             }
         ],
@@ -138,7 +134,7 @@ def test_create_run_config():
         learning_rate=0.001,
         epochs=20,
         batch_size=8,
-        callbacks=[TrainingCheckpoint(last_k_epochs=2, verbose=False)],
+        callbacks=[TrainingCheckpoint(last_k_epochs=2)],
         scheduler_step='batch',
         freeze=False,
         output_dim=None,

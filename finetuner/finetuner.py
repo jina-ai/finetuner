@@ -1,5 +1,7 @@
 import os
-from typing import List, Optional
+from typing import Any, Dict, List, Optional, Union
+
+from docarray import DocumentArray
 
 import hubble
 from finetuner.client import FinetunerV1Client
@@ -120,21 +122,30 @@ class Finetuner:
     def create_run(
         self,
         model: str,
-        train_data,
+        train_data: Union[str, DocumentArray],
+        eval_data: Optional[Union[str, DocumentArray]] = None,
         run_name: Optional[str] = None,
+        description: Optional[str] = None,
         experiment_name: Optional[str] = None,
-        **kwargs,
+        model_options: Optional[Dict[str, Any]] = None,
+        loss: str = 'TripletMarginLoss',
+        miner: Optional[str] = None,
+        optimizer: str = 'Adam',
+        learning_rate: Optional[float] = None,
+        epochs: int = 5,
+        batch_size: int = 64,
+        callbacks: Optional[List[Any]] = None,
+        scheduler_step: str = 'batch',
+        freeze: bool = False,
+        output_dim: Optional[int] = None,
+        cpu: bool = True,
+        num_workers: int = 4,
     ) -> Run:
         """Create a run.
 
         If an experiment name is not specified, the run will be created in the default
         experiment.
 
-        :param model: Name of the model to be fine-tuned.
-        :param train_data: Either a `DocumentArray` for training data or a
-            name of the `DocumentArray` that is pushed on Hubble.
-        :param run_name: Optional name of the run.
-        :param experiment_name: Optional name of the experiment.
         :return: A `Run` object.
         """
         if not experiment_name:
@@ -142,7 +153,24 @@ class Finetuner:
         else:
             experiment = self.get_experiment(name=experiment_name)
         return experiment.create_run(
-            model=model, train_data=train_data, run_name=run_name, **kwargs
+            model=model,
+            train_data=train_data,
+            eval_data=eval_data,
+            run_name=run_name,
+            description=description,
+            model_options=model_options or {},
+            loss=loss,
+            miner=miner,
+            optimizer=optimizer,
+            learning_rate=learning_rate,
+            epochs=epochs,
+            batch_size=batch_size,
+            callbacks=callbacks or [],
+            scheduler_step=scheduler_step,
+            freeze=freeze,
+            output_dim=output_dim,
+            cpu=cpu,
+            num_workers=num_workers,
         )
 
     def get_run(self, run_name: str, experiment_name: Optional[str] = None) -> Run:

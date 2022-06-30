@@ -19,7 +19,7 @@ run = experiment.get_run('finetune-flickr-dataset-efficientnet-1')
 print(f'Run status: {run.status()}')
 print(f'Run logs: {run.logs()}')
 # save the model.
-run.save_model('tuned_model')
+run.save_artifact('tuned_model')
 ```
 
 If the fine-tuning finished,

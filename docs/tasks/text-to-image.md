@@ -45,9 +45,6 @@ run = finetuner.fit(
     epochs=5,
     learning_rate= 1e-5,
     loss='CLIPLoss',
-    image_modality='image',
-    text_modality='text',
-    multi_modal=True,
     cpu=False,
 )
 ```
@@ -59,9 +56,6 @@ The only required arguments are `model` and `train_data`. We provide default val
 * We start with providing `model`, `run_name`, names of training and evaluation data.
 * We also provide some hyper-parameters such as number of `epochs` and a `learning_rate`.
 * Additionally, we use {class}`~finetuner.callback.BestModelCheckpoint` to save the best model after each epoch and {class}`~finetuner.callback.EvaluationCallback` for evaluation.
-* Now let's move on to CLIP-specific arguments: We provided `image_modality`
-and `text_modality` which are needed for `CLIP` model to [distribute data across its two models properly](../2_step_by_step/2_4_create_training_data.md).
-We also need to provide a `CLIPloss` and set `multi_modal` to `True`.
 
   
 ## Monitoring
@@ -125,5 +119,5 @@ We have done the evaulation for you in the table below.
 
 After the run has finished successfully, you can download the tuned model on your local machine:
 ```python
-run.save_model('clip-model')
+run.save_artifact('clip-model')
 ```

@@ -196,5 +196,5 @@ print(f'Run logs: {run.logs()}')
 ## Saving
 Once your run has successfully completed, you can save your fine-tuned model in the following way:
 ```python
-run.save_model('finetune-quora-dataset-bert-base-cased')
+run.save_artifact('finetune-quora-dataset-bert-base-cased')
 ```
