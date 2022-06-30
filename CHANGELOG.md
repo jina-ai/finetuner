@@ -27,6 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove time column from Readme table. ([#468](https://github.com/jina-ai/finetuner/pull/468))
 
+- Change release trigger to push to `main` branch. ([#478](https://github.com/jina-ai/finetuner/pull/478))
+
 ### Fixed
 
 - Use finetuner docs links in docs instead of netlify. ([#475](https://github.com/jina-ai/finetuner/pull/475))
