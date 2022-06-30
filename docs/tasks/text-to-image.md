@@ -48,6 +48,7 @@ run = finetuner.fit(
     image_modality='image',
     text_modality='text',
     multi_modal=True,
+    cpu=False,
 )
 ```
 Let's understand what this piece of code does:
