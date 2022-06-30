@@ -153,8 +153,11 @@ It has the following steps:
 
 ### Next steps
 
-- Take a look at the [step by step](https://ft-docs-polish--jina-docs.netlify.app/2_step_by_step/) documentation for an overview of how Finetuner works.
-- Get started with our example use-cases in the [Finetuner in action](https://ft-docs-polish--jina-docs.netlify.app/3_finetuner_in_action/) section.
+- Take a look at the [walk through](https://finetuner.jina.ai/walkthrough/) documentation for an overview of how Finetuner works.
++ Get started with our example use-cases:
+  - [Text-to-Text Search via BERT](https://finetuner.jina.ai/tasks/text-to-text/)
+  - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/tasks/image-to-image/)
+  - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/tasks/text-to-image/)
 
 Intrigued? That's only scratching the surface of what Finetuner is capable of. [Read our docs to learn more](https://finetuner.jina.ai/).
 
