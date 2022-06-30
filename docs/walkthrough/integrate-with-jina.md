@@ -23,11 +23,11 @@ f = Flow().add(uses='jinahub://FinetunerExecutor', uses_with=...)
 
 (Since core is private I think this is the only place where developers will be able to see what/how to provide inside this executor, so we should explain each argument and give an example here)
 
-## Load your model
+## Using [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc)
 
 Loading a tuned model is simple! You just need to provide a few parameters under the `uses_with` argument when adding the `FinetunerExecutor` to the [Flow]((https://docs.jina.ai/fundamentals/flow/)).
 
-Here's the full argument list of the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc):
+Here's the full argument list of the `FinetunerExecutor`:
 
 ```{admonition} FinetunerExecutor parameters
 :class: tip
@@ -61,7 +61,7 @@ The only required argument is `artifact`. We provide default values for others.
 
 
 ## Example
-Let's say we want to use a tuned model that is already stored on our local machine inside a [Jina Flow](https://docs.jina.ai/fundamentals/flow/). As you can see, it's very simple! We just provided the model path and parameters for the batch size and gpu inference:
+Let's say we want to use a tuned model that is already stored on our local machine inside a [Jina Flow](https://docs.jina.ai/fundamentals/flow/).
 
 ```python
 from jina import Flow
@@ -71,3 +71,4 @@ f = Flow().add(uses='jinahub+docker://FinetunerExecutor',
                           'batch_size': 16,
                           'device': 'cuda'})
 ```
+ As you can see, it's super easy! We just provided the model path and values for the batch size and gpu inference.
