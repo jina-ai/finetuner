@@ -196,6 +196,6 @@ print(f'Run logs: {run.logs()}')
 ## Saving
 Once your run has successfully completed, you can save your fine-tuned model in the following way:
 ```python
-run.save_model('finetune-quora-dataset-bert-base-cased')
+run.save_artifact('bert-model')
 ```
 That's it! Now you have a fine-tuned model which is ready to be {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.

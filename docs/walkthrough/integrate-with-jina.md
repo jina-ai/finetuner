@@ -8,7 +8,7 @@ We've created the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) w
 
 Loading a tuned model is simple! You just need to provide a few parameters under the `uses_with` argument when adding the `FinetunerExecutor` to the [Flow]((https://docs.jina.ai/fundamentals/flow/)).
 
-````{tab} via Docker image (recommended)
+````{tab} Python
 ```python
 from jina import Flow
 	
@@ -18,16 +18,21 @@ f = Flow().add(
 )
 ```
 ````
-````{tab} via source code
-```python
-from jina import Flow
-	
-f = Flow().add(
-    uses='jinahub://FinetunerExecutor',
-    uses_with={'artifact': 'model_dir/tuned_model', 'batch_size': 16},
-)
+````{tab} YAML
+```yaml
+jtype: Flow
+with:
+  port: 51000
+  protocol: grpc
+executors:
+  uses: jinahub+docker://FinetunerExecutor
+  with:
+    artifact: 'model_dir/tuned_model'
+    batch_size: 16
 ```
 ````
+
+
 As you can see, it's super easy! We just provided the model path and the batch size.
 
 In order to see what other options you can specify when initializing the executor, please go to the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) page and click to the `Arguments` button on the top-right side.
