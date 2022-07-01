@@ -1,30 +1,31 @@
+<br><br>
+
 <p align="center">
 <img src="https://github.com/jina-ai/finetuner/blob/main/docs/_static/finetuner-logo-ani.svg?raw=true" alt="Finetuner logo: Finetuner helps you to create experiments in order to improve embeddings on search tasks. It accompanies you to deliver the last mile of performance-tuning for neural search applications." width="150px">
 </p>
 
 
 <p align="center">
-<b>Domain-specific fine-tuning for better embeddings on neural search tasks</b>
+<b>Task-oriented finetuning for better embeddings on neural search</b>
 </p>
 
 <p align=center>
-<a href="https://pypi.org/project/finetuner/"><img src="https://img.shields.io/badge/Python-3.7%2B-blue alt="Python 3.7" title="Finetuner supports Python 3.7 and above"></a>
-<a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-2.2k%2B-blueviolet?logo=slack&amp;logoColor=white"></a>
+<a href="https://pypi.org/project/finetuner/"><img alt="PyPI" src="https://img.shields.io/pypi/v/finetuner?label=Release&style=flat-square"></a>
+<a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-3.2k-blueviolet?logo=slack&amp;logoColor=white&style=flat-square"></a>
 </p>
 
 <!-- start elevator-pitch -->
 
-Fine-tuning with domain specific data can improve the performance on neural search tasks.
-However, it is non-trivial as it requires a combination of expertise of deep learning and information retrieval.
+Fine-tuning is an effective way to improve the performance on neural search tasks. However, it is non-trivial for many deep learning engineers.
 
-Finetuner makes this procedure simpler, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud.
-With Finetuner, you can easily make pre-trained models more performant and production ready.
+Finetuner makes fine-tuning easier, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud.
+With Finetuner, one can easily uplift pre-trained models to be more performant and production ready.
 
-📈**Performance boost**: Finetuner delivers SOTA performance on domain specific neural search applications.
+📈 **Performance promise**: uplift pretrained model and deliver SOTA performance on domain-specific neural search applications.
 
-🔱 **Simple yet powerful**: Easily access features such as 40+ mainstream loss functions, 10+ optimisers, layer pruning, weights freezing, dimensionality reduction, hard-negative mining, cross modality fine-tuning, distributed training. 
+🔱 **Simple yet powerful**: easy access to 40+ mainstream losses, 10+ optimisers, layer pruning, weights freezing, dimensionality reduction, hard-negative mining, cross-modal model, distributed training. 
 
-☁ **All-in-cloud**: Manage your runs, experiments and artifacts on Jina Cloud ([for free!](https://docs.google.com/forms/d/e/1FAIpQLSeoEhJM_TWMgZyEgJBBpf33JddcWQgXHNglNjVMIOvlLjk-4A/viewform)) without worrying about provisioning resources. You never have to worry about provisioning (cloud) resources! Finetuner handles all related complexity and infrastructure.
+☁ **All-in-cloud**: instant training with our free GPU ([Apply here for free!](https://docs.google.com/forms/d/e/1FAIpQLSeoEhJM_TWMgZyEgJBBpf33JddcWQgXHNglNjVMIOvlLjk-4A/viewform)); manage runs, experiments and artifacts on Jina Cloud without worrying about provisioning resources, integration complexity and infrastructure.
 
 <!-- end elevator-pitch -->
 
@@ -32,17 +33,15 @@ With Finetuner, you can easily make pre-trained models more performant and produ
 
 ## Benchmark
 
-The following table demonstrates what you can expect from Finetuner:
-
 <table>
 <thead>
   <tr>
-    <th>MODEL</th>
-    <th>TASK</th>
-    <th>METRIC</th>
-    <th>PRETRAINED</th>
-    <th>FINETUNED</th>
-    <th>DELTA</th>
+    <th>Model</th>
+    <th>Task</th>
+    <th>Metric</th>
+    <th>Pretrained</th>
+    <th>Finetuned</th>
+    <th>Delta</th>
   </tr>
 </thead>
 <tbody>
@@ -86,7 +85,7 @@ The following table demonstrates what you can expect from Finetuner:
     <td>Recall</td>
     <td>0.109</td>
     <td>0.346</td>
-    <td>:arrow_up_small: 217%</td>
+    <td>:arrow_up_small: 217.0%</td>
   </tr>
 
 </tbody>
@@ -96,25 +95,20 @@ The following table demonstrates what you can expect from Finetuner:
 
 ## Install
 
-Requires Python 3.7+.
-
 ```bash
 pip install -U finetuner
 ```
 
-Noted: Starting from 0.5.0, Finetuner becomes cloud-based.
-If you still want to use the last Finetuner release which runs locally, please install with:
+> From 0.5.0, Finetuner computing is hosted on Jina Cloud. THe last local version is `0.4.1`, one can install it via pip or check out [git tags/releases here](https://github.com/jina-ai/finetuner/releases).
 
-```bash
-pip install finetuner==0.4.1
-```
 
-We have backed up the 0.4.1 documentation in `docs/docs_41/` folder.
-Check [this page](docs/docs_41/README.md) to render Finetuner 0.4.1 documentation locally.
 
+
+  
 ## Get Started
 
-The following code block describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), which can be run as-is:
+The following code snippet describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), it can be run as-is:
+
 ```python
 import finetuner
 from finetuner.callback import EvaluationCallback
@@ -129,8 +123,7 @@ run = finetuner.fit(
 )
 ```
 
-Fine-tuning might take some time until finish.
-Once it is done, you can re-connect your run with:
+Fine-tuning might take 5 minute to finish. You can later re-connect your run with:
 
 ```python
 import finetuner
@@ -144,17 +137,18 @@ print(run.logs())
 run.save_artifact('resnet-tll')
 ```
 
-It has the following steps:
+Specifically, the code snippet describes the following steps:
 
-  * Login to Finetuner: This is necessary if you'd like to run fine-tuning jobs with Finetuner in the cloud.
-  * Start fine-tuning run: Select backbone model, training and evaluation data for your evaluation callback.
-  * Monitor: Check the status and logs of the progress on your fine-tuning run.
-  * Save model: If your fine-tuning run has successfully completed, save it for further use and integration.
+  * Login to Finetuner ([Get free access here!](https://docs.google.com/forms/d/e/1FAIpQLSeoEhJM_TWMgZyEgJBBpf33JddcWQgXHNglNjVMIOvlLjk-4A/viewform))
+  * Select backbone model, training and evaluation data for your evaluation callback.
+  * Start the cloud run.
+  * Monitor the status: check the status and logs of the run.
+  * Save model for further use and integration.
 
 ### Next steps
 
-- Take a look at the [walk through](https://finetuner.jina.ai/walkthrough/) documentation for an overview of how Finetuner works.
-+ Get started with our example use-cases:
+- Take the [walkthrough](https://finetuner.jina.ai/walkthrough/) and submit your first fine-tuning job.
+- Try on different search tasks:
   - [Text-to-Text Search via BERT](https://finetuner.jina.ai/tasks/text-to-text/)
   - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/tasks/image-to-image/)
   - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/tasks/text-to-image/)
