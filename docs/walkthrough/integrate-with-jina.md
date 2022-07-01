@@ -39,7 +39,7 @@ However, using docker images is recommended.
 
 As you can see, it's super easy! We just provided the model path and the batch size.
 
-In order to see what other options you can specify when initializing the executor, please go to the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) page and click to the `Arguments` button on the top-right side.
+In order to see what other options you can specify when initializing the executor, please go to the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) page and click on the `Arguments` button on the top-right side.
 
 ```{admonition} FinetunerExecutor parameters
 :class: tip
