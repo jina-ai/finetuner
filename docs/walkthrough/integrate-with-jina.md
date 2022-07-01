@@ -5,6 +5,7 @@ Once fine-tuning is finished, it's time to actually use the model.
 Finetuner, being part of the Jina ecosystem, provides a convenient way to use tuned models via [Jina Executors](https://docs.jina.ai/fundamentals/executor/).
 
 We've created the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) which can be added in a [Jina Flow](https://docs.jina.ai/fundamentals/flow/) and load any tuned model. 
+More specifically, the executor exposes an `/encode` endpoint that embeds [Documents](https://docarray.jina.ai/fundamentals/document/) using the fine-tuned model.
 
 Loading a tuned model is simple! You just need to provide a few parameters under the `uses_with` argument when adding the `FinetunerExecutor` to the [Flow]((https://docs.jina.ai/fundamentals/flow/)).
 
@@ -61,8 +62,13 @@ f = Flow().add(
 )
 
 with f:
-    returned_docs = f.post(on='/', inputs=DocumentArray([Document(text='hello') for _ in range(10]))
+    returned_docs = f.post(on='/encode', inputs=DocumentArray([Document(text='hello')]))
 
 for doc in returned_docs:
+    print(f'Text of the returned document: {doc.text}')
     print(f'Shape of the embedding: {doc.embedding.shape}')
+```
+```bash
+Text of the returned document: hello
+Shape of the embedding: (1, 768)
 ```
