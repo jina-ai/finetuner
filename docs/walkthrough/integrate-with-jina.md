@@ -61,7 +61,7 @@ f = Flow().add(
 )
 
 with f:
-    returned_docs = f.post(on='/', inputs=DocumentArray([Document()]))
+    returned_docs = f.post(on='/', inputs=DocumentArray([Document(text='hello') for _ in range(10]))
 
 for doc in returned_docs:
     print(f'Shape of the embedding: {doc.embedding.shape}')
