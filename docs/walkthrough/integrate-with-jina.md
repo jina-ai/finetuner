@@ -31,7 +31,11 @@ executors:
     batch_size: 16
 ```
 ````
-
+```{admonition} FinetunerExecutor via source code
+:class: tip
+You can also use the `FinetunerExecutor` via source code by specifying 'jinahub://FinetunerExecutor' under the `uses` parameter.
+However, using docker images is recommended.
+```
 
 As you can see, it's super easy! We just provided the model path and the batch size.
 
