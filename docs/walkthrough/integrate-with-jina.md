@@ -33,7 +33,7 @@ executors:
 ````
 ```{admonition} FinetunerExecutor via source code
 :class: tip
-You can also use the `FinetunerExecutor` via source code by specifying 'jinahub://FinetunerExecutor' under the `uses` parameter.
+You can also use the `FinetunerExecutor` via source code by specifying `jinahub://FinetunerExecutor` under the `uses` parameter.
 However, using docker images is recommended.
 ```
 
@@ -47,7 +47,7 @@ The only required argument is `artifact`. We provide default values for others.
 ```
 
 
-## Using the `FinetunerExecutor`
+## Using `FinetunerExecutor`
 
 Here's a simple code snippet demonstrating the `FinetunerExecutor` usage in the Flow:
 
