@@ -72,4 +72,5 @@ create-training-data
 choose-backbone
 run-job
 save-model
+integrate-with-jina
 ```
