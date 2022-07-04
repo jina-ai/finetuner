@@ -231,6 +231,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Integrate with Jina</a></li>
 </ul>
 </li>
 </ul>
@@ -477,7 +478,7 @@ name of the <cite>DocumentArray</cite> that is pushed on Hubble.</p></li>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 30, 2022</div>
+                            Last updated on Jul 04, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -502,6 +503,29 @@ name of the <cite>DocumentArray</cite> that is pushed on Hubble.</p></li>
             
             
         </aside>
+
+        <qa-bot
+            token="vizI4XaM1li8kQW2kQOiiBjtk02hzBDl0Em8lBjpzAKsjhX_z03mix_i3wKpiA=="
+            theme="infer"
+            target="_self"
+            orientation="bottom-right"
+            title="Finetuner"
+            description="Task-oriented finetuning for better embeddings on neural search"
+            show-tip>
+          <template>
+            <dl>
+             <dt>You can ask questions about our docs. Try:</dt>
+             <dd>What is Finetuner?</dd>
+             <dd>How does Finetuner Work?</dd>
+             <dd>What makes Finetuner unique?</dd>
+            </dl>
+          </template>
+          <template slot="texts">
+            <span for="tip">Hi there 👋
+         Ask our docs!</span>
+            <span for="unknownAnswerText">😵‍💫 I'm sorry but I don't know the answer.</span>
+          </template>
+        </qa-bot>
 </div>
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=e0caedb8-a833-4e85-983d-d3394a5f16d2" /><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
@@ -513,7 +537,7 @@ name of the <cite>DocumentArray</cite> that is pushed on Hubble.</p></li>
     <script src="../../_static/tabs.js"></script>
     <script src="../../_static/design-tabs.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
     <script src="../../_static/source-in-links.js"></script>
     </body>
 </html>

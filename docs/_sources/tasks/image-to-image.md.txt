@@ -131,3 +131,4 @@ After the run has finished successfully, you can download the tuned model on you
 ```python
 run.save_artifact('resnet-model')
 ```
+That's it! Now you have a fine-tuned model which is ready to be {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.

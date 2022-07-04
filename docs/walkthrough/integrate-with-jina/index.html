@@ -4,15 +4,15 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<meta property="og:title" content="How Does it Work?" />
+<meta property="og:title" content="Integrate with Jina" />
   
 <meta property="og:type" content="website" />
   
-<meta property="og:url" content="https://finetuner.jina.ai/get-started/how-it-works/" />
+<meta property="og:url" content="https://finetuner.jina.ai/walkthrough/integrate-with-jina/" />
   
 <meta property="og:site_name" content="Finetuner Documentation" />
   
-<meta property="og:description" content="Contrastive metric learning: From an algorithmic perspective, Finetuner leverages a contrastive metric learning approach to improve your model. How does it work? Step 1: Convert a model into an embedding model: Finetuner interprets the backbone model architecture, removes the default head, applie..." />
+<meta property="og:description" content="Once fine-tuning is finished, it’s time to actually use the model. Finetuner, being part of the Jina ecosystem, provides a convenient way to use tuned models via Jina Executors. We’ve created the FinetunerExecutor which can be added in a Jina Flow and load any tuned model. More specifically, the ..." />
   
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   
@@ -35,11 +35,11 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Design Principles" href="../design-principles/" /><link rel="prev" title="Welcome to Finetuner!" href="../../" />
-        <link rel="canonical" href="https://finetuner.jina.ai/get-started/how-it-works.html" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Text-to-Text Search via BERT" href="../../tasks/text-to-text/" /><link rel="prev" title="Save Model" href="../save-model/" />
+        <link rel="canonical" href="https://finetuner.jina.ai/walkthrough/integrate-with-jina.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>How Does it Work? - Finetuner documentation</title>
+        <title>Integrate with Jina - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -223,17 +223,17 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
     <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">How Does it Work?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../design-principles/">Design Principles</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../walkthrough/">Walkthrough</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/install/">Install</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/basic-concepts/">Basic Concepts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/login/">Login</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/create-training-data/">Prepare Training Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Integrate with Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/how-it-works/">How Does it Work?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/design-principles/">Design Principles</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../">Walkthrough</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../install/">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basic-concepts/">Basic Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../login/">Login</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../create-training-data/">Prepare Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../choose-backbone/">Backbone Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../run-job/">Run Job</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save-model/">Save Model</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Integrate with Jina</a></li>
 </ul>
 </li>
 </ul>
@@ -332,51 +332,72 @@
                     </label>
                 </div>
                 <article role="main">
-                    <section class="tex2jax_ignore mathjax_ignore" id="how-does-it-work">
-<h1>How Does it Work?<a class="headerlink" href="#how-does-it-work" title="Permalink to this headline">#</a></h1>
-<section id="contrastive-metric-learning">
-<h2>Contrastive metric learning<a class="headerlink" href="#contrastive-metric-learning" title="Permalink to this headline">#</a></h2>
-<p>From an algorithmic perspective,
-<strong>Finetuner</strong> leverages a contrastive metric learning approach to improve your model.
-How does it work?</p>
-<section id="step-1-convert-a-model-into-an-embedding-model">
-<h3>Step 1: Convert a model into an embedding model<a class="headerlink" href="#step-1-convert-a-model-into-an-embedding-model" title="Permalink to this headline">#</a></h3>
-<p>Finetuner interprets the backbone model architecture,
-removes the default <em>head</em>, applies <em>pooling</em> and freezes layers that do not need to be trained.
-For an image classification task (e.g. cats and dogs),
-Finetuner is going to remove the classification head (cat-dog classifier) and turn your model into an <em>embedding model</em>.</p>
-<p>This embedding model does not make predictions or outputs a probability,
-but instead outputs a feature vector to represent your data.</p>
-</section>
-<section id="step-2-triplet-construction-and-training-on-the-fly">
-<h3>Step 2: Triplet construction and training on-the-fly<a class="headerlink" href="#step-2-triplet-construction-and-training-on-the-fly" title="Permalink to this headline">#</a></h3>
-<p>Finetuner works on labeled data.
-It expects a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.13.29)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> consisting of <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.13.29)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>s where each one contains <code class="docutils literal notranslate"><span class="pre">finetuner_label</span></code> corresponding to the class of a specific training example.</p>
-<p>During the fine-tuning, Finetuner creates Triplets <code class="docutils literal notranslate"><span class="pre">(anchor,</span> <span class="pre">positive,</span> <span class="pre">negative)</span></code> on-the-fly.
-For each anchor,
-which can be any training example,
-Finetuner looks for a <code class="docutils literal notranslate"><span class="pre">Document</span></code> with the same <code class="docutils literal notranslate"><span class="pre">finetuner_label</span></code> (positive),
-and a <code class="docutils literal notranslate"><span class="pre">Document</span></code> with a different <code class="docutils literal notranslate"><span class="pre">finetuner_label</span></code> (negative).
-The objective is to pull <code class="docutils literal notranslate"><span class="pre">Document</span></code>s which belong to the same class together,
-while pushing the <code class="docutils literal notranslate"><span class="pre">Document</span></code>s which belong to a different class away from each other.</p>
-</section>
-</section>
-<section id="cloud-based-fine-tuning">
-<h2>Cloud-based fine-tuning<a class="headerlink" href="#cloud-based-fine-tuning" title="Permalink to this headline">#</a></h2>
-<p>From an engineering perspective,
-we have hidden all the complexity of machine learning algorithms and resource configuration (such as GPUs).
-All you need to do is decide on your backbone model and prepare your training data.</p>
-<p>Once you logged into the Jina Ecosystem with <a class="reference internal" href="../../api/finetuner/#finetuner.login" title="finetuner.login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">login()</span></code></a>,
-Finetuner will push your training data into our <em>Cloud Artifact Storage</em> (only visible to you).
-At the same time, we will spin-up an isolated computational resource
-with proper memory, CPU, GPU dedicated to your fine-tuning job.</p>
-<p>Once fine-tuning is done, Finetuner will again push your fine-tuned model to the <em>Cloud Artifact Storage</em>
-and make it available for you to pull it back to your machine.
-That’s it!</p>
-<p>On the other hand,
-if you have a certain level of machine learning knowledge,
-Finetuner gives you enough flexibility to adjust the training parameters.
-This will be explained in a later section.</p>
+                    <section class="tex2jax_ignore mathjax_ignore" id="integrate-with-jina">
+<span id="id1"></span><h1>Integrate with Jina<a class="headerlink" href="#integrate-with-jina" title="Permalink to this headline">#</a></h1>
+<p>Once fine-tuning is finished, it’s time to actually use the model.
+Finetuner, being part of the Jina ecosystem, provides a convenient way to use tuned models via <a class="reference external" href="https://docs.jina.ai/fundamentals/executor/">Jina Executors</a>.</p>
+<p>We’ve created the <a class="reference external" href="https://hub.jina.ai/executor/13dzxycc"><code class="docutils literal notranslate"><span class="pre">FinetunerExecutor</span></code></a> which can be added in a <a class="reference external" href="https://docs.jina.ai/fundamentals/flow/">Jina Flow</a> and load any tuned model.
+More specifically, the executor exposes an <code class="docutils literal notranslate"><span class="pre">/encode</span></code> endpoint that embeds <a class="reference external" href="https://docarray.jina.ai/fundamentals/document/">Documents</a> using the fine-tuned model.</p>
+<p>Loading a tuned model is simple! You just need to provide a few parameters under the <code class="docutils literal notranslate"><span class="pre">uses_with</span></code> argument when adding the <code class="docutils literal notranslate"><span class="pre">FinetunerExecutor</span></code> to the <span class="xref myst">Flow</span>.</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Python</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+	
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;jinahub+docker://FinetunerExecutor&#39;</span><span class="p">,</span>
+    <span class="n">uses_with</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;artifact&#39;</span><span class="p">:</span> <span class="s1">&#39;model_dir/tuned_model&#39;</span><span class="p">,</span> <span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="mi">16</span><span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">YAML</label><div class="tab-content docutils">
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">jtype</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Flow</span><span class="w"></span>
+<span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">51000</span><span class="w"></span>
+<span class="w">  </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grpc</span><span class="w"></span>
+<span class="nt">executors</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jinahub+docker://FinetunerExecutor</span><span class="w"></span>
+<span class="w">  </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">artifact</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;model_dir/tuned_model&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">FinetunerExecutor via source code</p>
+<p>You can also use the <code class="docutils literal notranslate"><span class="pre">FinetunerExecutor</span></code> via source code by specifying <code class="docutils literal notranslate"><span class="pre">jinahub://FinetunerExecutor</span></code> under the <code class="docutils literal notranslate"><span class="pre">uses</span></code> parameter.
+However, using docker images is recommended.</p>
+</div>
+<p>As you can see, it’s super easy! We just provided the model path and the batch size.</p>
+<p>In order to see what other options you can specify when initializing the executor, please go to the <a class="reference external" href="https://hub.jina.ai/executor/13dzxycc"><code class="docutils literal notranslate"><span class="pre">FinetunerExecutor</span></code></a> page and click on <code class="docutils literal notranslate"><span class="pre">Arguments</span></code> on the top-right side.</p>
+<div class="tip admonition">
+<p class="admonition-title">FinetunerExecutor parameters</p>
+<p>The only required argument is <code class="docutils literal notranslate"><span class="pre">artifact</span></code>. We provide default values for others.</p>
+</div>
+<section id="using-finetunerexecutor">
+<h2>Using <code class="docutils literal notranslate"><span class="pre">FinetunerExecutor</span></code><a class="headerlink" href="#using-finetunerexecutor" title="Permalink to this headline">#</a></h2>
+<p>Here’s a simple code snippet demonstrating the <code class="docutils literal notranslate"><span class="pre">FinetunerExecutor</span></code> usage in the Flow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;jinahub+docker://FinetunerExecutor&#39;</span><span class="p">,</span>
+    <span class="n">uses_with</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;artifact&#39;</span><span class="p">:</span> <span class="s1">&#39;model_dir/tuned_model&#39;</span><span class="p">,</span> <span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="mi">16</span><span class="p">},</span>
+<span class="p">)</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">returned_docs</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="s1">&#39;/encode&#39;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)]))</span>
+
+<span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">returned_docs</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Text of the returned document: </span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Shape of the embedding: </span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Text of the returned document: hello
+Shape of the embedding: <span class="o">(</span><span class="m">1</span>, <span class="m">768</span><span class="o">)</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -385,18 +406,18 @@ This will be explained in a later section.</p>
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../design-principles/">
+                    <a class="next-page" href="../../tasks/text-to-text/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">Design Principles</div>
+                            <div class="title">Text-to-Text Search via BERT</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../../">
+                    <a class="prev-page" href="../save-model/">
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -405,7 +426,7 @@ This will be explained in a later section.</p>
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">Home</div>
+                            <div class="title">Save Model</div>
                             
                         </div>
                     </a>
@@ -447,13 +468,8 @@ This will be explained in a later section.</p>
                 <div class="toc-tree-container">
                     <div class="toc-tree">
                         <ul>
-<li><a class="reference internal" href="#">How Does it Work?</a><ul>
-<li><a class="reference internal" href="#contrastive-metric-learning">Contrastive metric learning</a><ul>
-<li><a class="reference internal" href="#step-1-convert-a-model-into-an-embedding-model">Step 1: Convert a model into an embedding model</a></li>
-<li><a class="reference internal" href="#step-2-triplet-construction-and-training-on-the-fly">Step 2: Triplet construction and training on-the-fly</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#cloud-based-fine-tuning">Cloud-based fine-tuning</a></li>
+<li><a class="reference internal" href="#">Integrate with Jina</a><ul>
+<li><a class="reference internal" href="#using-finetunerexecutor">Using <code class="docutils literal notranslate"><span class="pre">FinetunerExecutor</span></code></a></li>
 </ul>
 </li>
 </ul>
