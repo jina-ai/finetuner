@@ -58,7 +58,7 @@ html_css_files = [
 ]
 html_js_files = [
     'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js',
-    'https://cdn.jsdelivr.net/npm/qabot@0.4',
+    'https://cdn.jsdelivr.net/npm/qabot',
     'source-in-links.js',
 ]
 htmlhelp_basename = slug
@@ -243,4 +243,10 @@ def setup(app):
                 names=('default',),
             ),
         ],
+    )
+
+    app.add_config_value(
+        name='server_address',
+        default=os.getenv('JINA_DOCSBOT_SERVER', 'https://jina-ai-finetuner.docsqa.jina.ai'),
+        rebuild='',
     )
