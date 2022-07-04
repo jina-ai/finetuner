@@ -13,7 +13,6 @@ pip install -U finetuner
 
 ````
 
-````
 
 Check your installation with:
 ```bash
