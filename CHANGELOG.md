@@ -5,7 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## [Unreleased] - 2022-MM-DD
+
+### Added
+
+### Removed
+
+### Changed
+
+- `save_model` should show progress while downloading. ([#483](https://github.com/jina-ai/finetuner/pull/483))
+
+- Give more flexibility on dependency versions. ([#483](https://github.com/jina-ai/finetuner/pull/483))
+
+### Fixed
+
+
+## [0.5.0] - 2022-06-30
 
 ### Added
 
