@@ -81,4 +81,6 @@ def download_artifact(
     artifact_id = run['artifact_id']
     path = os.path.join(directory, f'{run["name"]}.zip')
 
-    return client.hubble_client.download_artifact(id=artifact_id, path=path)
+    return client.hubble_client.download_artifact(
+        id=artifact_id, f=path, show_progress=True
+    )
