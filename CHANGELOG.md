@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `save_model` should show progress while downloading. ([#483](https://github.com/jina-ai/finetuner/pull/483))
+- `save_artifact` should show progress while downloading. ([#483](https://github.com/jina-ai/finetuner/pull/483))
 
 - Give more flexibility on dependency versions. ([#483](https://github.com/jina-ai/finetuner/pull/483))
 
