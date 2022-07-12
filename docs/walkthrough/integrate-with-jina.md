@@ -9,13 +9,18 @@ More specifically, the executor exposes an `/encode` endpoint that embeds [Docum
 
 Loading a tuned model is simple! You just need to provide a few parameters under the `uses_with` argument when adding the `FinetunerExecutor` to the [Flow]((https://docs.jina.ai/fundamentals/flow/)).
 
+## Via docker image
+
+## Via source code
+
 ````{tab} Python
 ```python
 from jina import Flow
 	
 f = Flow().add(
-    uses='jinahub+docker://FinetunerExecutor',
-    uses_with={'artifact': 'model_dir/tuned_model', 'batch_size': 16},
+    uses='jinahub://FinetunerExecutor/v0.9.1',  # note: use v0.9.1-gpu for GPU executor
+    uses_with={'artifact': '/your/model/path/artifact-name.zip'},
+    install_requirements=True,
 )
 ```
 ````
@@ -26,9 +31,9 @@ with:
   port: 51000
   protocol: grpc
 executors:
-  uses: jinahub+docker://FinetunerExecutor
+  uses: jinahub://FinetunerExecutor/v0.9.1  # note: use v0.9.1-gpu for GPU executor
   with:
-    artifact: 'model_dir/tuned_model'
+    artifact: '/your/model/path/artifact-name.zip'
     batch_size: 16
 ```
 ````
@@ -42,11 +47,6 @@ As you can see, it's super easy! We just provided the model path and the batch s
 
 In order to see what other options you can specify when initializing the executor, please go to the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) page and click on `Arguments` on the top-right side.
 
-```{admonition} FinetunerExecutor parameters
-:class: tip
-The only required argument is `artifact`. We provide default values for others.
-```
-
 
 ## Using `FinetunerExecutor`
 
@@ -57,8 +57,9 @@ from docarray import DocumentArray, Document
 from jina import Flow
 
 f = Flow().add(
-    uses='jinahub+docker://FinetunerExecutor',
-    uses_with={'artifact': 'model_dir/tuned_model', 'batch_size': 16},
+    uses='jinahub+docker://FinetunerExecutor/v0.9.1',  # note: use v0.9.1-gpu for GPU executor
+    uses_with={'artifact': '/your/model/path/artifact-name.zip', 'batch_size': 16},
+    volumes="/home/ubuntu/.cache:/root/.cache"
 )
 
 with f:
