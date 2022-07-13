@@ -274,3 +274,12 @@ def delete_experiments() -> List[Experiment]:
     :return: List of deleted experiments.
     """
     return ft.delete_experiments()
+
+
+def get_token() -> str:
+    """Get user token.
+
+    This is a helper function to get token and pull artifact from cloud storage.
+    :return: user token as string object.
+    """
+    return ft.get_token()

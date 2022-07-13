@@ -100,6 +100,12 @@ def test_create_run_and_save_model(finetuner_mocker, get_feature_data, tmp_path)
         status = run.status()[STATUS]
 
     assert status == FINISHED
+
+    artifact_id = run.artifact_id()
+    assert isinstance(artifact_id, str)
+    # the artifact id is a 24 character hex string defined in mongo db.
+    assert len(artifact_id) == 24
+
     run.save_artifact(directory=tmp_path / 'finetuned_model')
     assert os.path.exists(tmp_path / 'finetuned_model')
 
