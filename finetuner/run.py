@@ -96,6 +96,7 @@ class Run:
             directory=directory,
         )
 
+    @property
     def artifact_id(self):
         """Get artifact id from the run.
 
