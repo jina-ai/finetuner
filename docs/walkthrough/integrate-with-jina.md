@@ -9,18 +9,13 @@ More specifically, the executor exposes an `/encode` endpoint that embeds [Docum
 
 Loading a tuned model is simple! You just need to provide a few parameters under the `uses_with` argument when adding the `FinetunerExecutor` to the [Flow]((https://docs.jina.ai/fundamentals/flow/)).
 
-## Via docker image
-
-## Via source code
-
 ````{tab} Python
 ```python
 from jina import Flow
 	
 f = Flow().add(
-    uses='jinahub://FinetunerExecutor/v0.9.1',  # note: use v0.9.1-gpu for GPU executor
-    uses_with={'artifact': '/your/model/path/artifact-name.zip'},
-    install_requirements=True,
+    uses='jinahub+docker://FinetunerExecutor',
+    uses_with={'artifact': 'model_dir/tuned_model', 'batch_size': 16},
 )
 ```
 ````
@@ -31,11 +26,17 @@ with:
   port: 51000
   protocol: grpc
 executors:
-  uses: jinahub://FinetunerExecutor/v0.9.1  # note: use v0.9.1-gpu for GPU executor
+  uses: jinahub+docker://FinetunerExecutor
   with:
-    artifact: '/your/model/path/artifact-name.zip'
+    artifact: 'model_dir/tuned_model'
+    batch_size: 16
 ```
 ````
+```{admonition} FinetunerExecutor via source code
+:class: tip
+You can also use the `FinetunerExecutor` via source code by specifying `jinahub://FinetunerExecutor` under the `uses` parameter.
+However, using docker images is recommended.
+```
 
 As you can see, it's super easy! We just provided the model path and the batch size.
 
@@ -46,6 +47,7 @@ In order to see what other options you can specify when initializing the executo
 The only required argument is `artifact`. We provide default values for others.
 ```
 
+
 ## Using `FinetunerExecutor`
 
 Here's a simple code snippet demonstrating the `FinetunerExecutor` usage in the Flow:
@@ -55,15 +57,14 @@ from docarray import DocumentArray, Document
 from jina import Flow
 
 f = Flow().add(
-    uses='jinahub+docker://FinetunerExecutor/v0.9.1',  # note: use v0.9.1-gpu for GPU executor
-    uses_with={'artifact': '/your/model/path/artifact-name.zip', 'batch_size': 16},
-    volumes="/home/ubuntu/.cache:/root/.cache"
+    uses='jinahub+docker://FinetunerExecutor',
+    uses_with={'artifact': 'model_dir/tuned_model', 'batch_size': 16},
 )
 
 with f:
-    encoded_docs = f.post(on='/encode', inputs=DocumentArray([Document(text='hello')]))
+    returned_docs = f.post(on='/encode', inputs=DocumentArray([Document(text='hello')]))
 
-for doc in encoded_docs:
+for doc in returned_docs:
     print(f'Text of the returned document: {doc.text}')
     print(f'Shape of the embedding: {doc.embedding.shape}')
 ```
