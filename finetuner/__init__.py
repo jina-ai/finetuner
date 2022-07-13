@@ -274,3 +274,11 @@ def delete_experiments() -> List[Experiment]:
     :return: List of deleted experiments.
     """
     return ft.delete_experiments()
+
+
+def get_token() -> str:
+    """Get user token of jina ecosystem.
+
+    :return: user token as string object.
+    """
+    return ft.get_token()

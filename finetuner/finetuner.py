@@ -6,6 +6,7 @@ from docarray import DocumentArray
 import hubble
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
+from finetuner.exception import UserNotLoggedInError
 from finetuner.experiment import Experiment
 from finetuner.run import Run
 
@@ -236,3 +237,8 @@ class Finetuner:
             experiments = [self.get_experiment(name=experiment_name)]
         for experiment in experiments:
             experiment.delete_runs()
+
+    def get_token(self) -> str:
+        if not self._client:
+            raise UserNotLoggedInError('Please call `login` before getting token.')
+        return hubble.Auth.get_auth_token()

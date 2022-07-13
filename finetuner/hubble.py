@@ -64,22 +64,19 @@ def push_data(
 
 
 def download_artifact(
-    client, experiment_name: str, run_name: str, directory: str = ARTIFACTS_DIR
+    client, artifact_id: str, run_name: str, directory: str = ARTIFACTS_DIR
 ) -> str:
     """Download artifact from Hubble by its ID.
 
-    :param client: The Finetuner API client.
-    :param experiment_name: The name of the experiment.
-    :param run_name: The name of the run.
+    :param client: Hubble client instance.
+    :param artifact_id: The artifact id stored in the Hubble.
+    :param run_name: The name of the run as artifact name to store locally.
     :param directory: Directory where the artifact will be stored.
     :returns: A string that indicates the download path.
     """
     os.makedirs(directory, exist_ok=True)
 
-    run = client.get_run(experiment_name=experiment_name, run_name=run_name)
-
-    artifact_id = run['artifact_id']
-    path = os.path.join(directory, f'{run["name"]}.zip')
+    path = os.path.join(directory, f'{run_name}.zip')
 
     return client.hubble_client.download_artifact(
         id=artifact_id, f=path, show_progress=True
