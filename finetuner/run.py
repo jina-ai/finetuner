@@ -1,5 +1,13 @@
 from finetuner.client import FinetunerV1Client
-from finetuner.constants import ARTIFACT_ID, ARTIFACTS_DIR, FINISHED, STATUS
+from finetuner.constants import (
+    ARTIFACT_ID,
+    ARTIFACTS_DIR,
+    CREATED,
+    FAILED,
+    STARTED,
+    STATUS,
+)
+from finetuner.exception import RunFailedError, RunInProgressError
 from finetuner.hubble import download_artifact
 
 
@@ -63,15 +71,24 @@ class Run:
             experiment_name=self._experiment_name, run_name=self._name
         )
 
+    def _check_run_status(self):
+        status = self.status()[STATUS]
+        if status in [CREATED, STARTED]:
+            raise RunInProgressError(
+                'The run needs to be finished in order to save the model.'
+            )
+        if status == FAILED:
+            raise RunFailedError(
+                'The run failed, please check the `logs` for detailed information.'
+            )
+
     def save_artifact(self, directory: str = ARTIFACTS_DIR) -> str:
         """Save artifact if the run is finished.
 
         :param directory: Directory where the artifact will be stored.
         :returns: A string object that indicates the download path.
         """
-        if self.status()[STATUS] != FINISHED:
-            raise Exception('The run needs to be finished in order to save the model.')
-
+        self._check_run_status()
         return download_artifact(
             client=self._client,
             artifact_id=self._run[ARTIFACT_ID],
@@ -80,8 +97,14 @@ class Run:
         )
 
     def artifact_id(self):
-        """Get artifact id from the run."""
-        if self.status()[STATUS] != FINISHED:
-            raise Exception('The run needs to be finished in order to save the model.')
+        """Get artifact id from the run.
 
+        An artifact in finetuner contains fine-tuned model and its metadata.
+        Such as preprocessing function, collate function. This id could be useful
+        if you want to directly pull the artifact from the cloud storage, such as
+        using `FinetunerExecutor`.
+
+        :return: Artifact id as string object.
+        """
+        self._check_run_status()
         return self._run[ARTIFACT_ID]

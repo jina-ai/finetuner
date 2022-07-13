@@ -4,7 +4,6 @@ from typing import List, Optional, Union
 import requests
 
 import hubble
-from finetuner.client.exception import FinetunerServerError
 from finetuner.constants import (
     AUTHORIZATION,
     CHARSET,
@@ -15,6 +14,7 @@ from finetuner.constants import (
     TOKEN_PREFIX,
     UTF_8,
 )
+from finetuner.exception import FinetunerServerError
 
 
 class _BaseClient:
