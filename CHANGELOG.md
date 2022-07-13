@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Use `uri` to represent image content in documentation creating training data code snippet. ([#484](https://github.com/jina-ai/finetuner/pull/484))
+
 
 ## [0.5.0] - 2022-06-30
 
