@@ -75,7 +75,7 @@ class Run:
         status = self.status()[STATUS]
         if status in [CREATED, STARTED]:
             raise RunInProgressError(
-                'The run needs to be finished in order to save the model.'
+                'The run needs to be finished in order to save the artifact.'
             )
         if status == FAILED:
             raise RunFailedError(

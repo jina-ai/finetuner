@@ -277,9 +277,8 @@ def delete_experiments() -> List[Experiment]:
 
 
 def get_token() -> str:
-    """Get user token.
+    """Get user token of jina ecosystem.
 
-    This is a helper function to get token and pull artifact from cloud storage.
     :return: user token as string object.
     """
     return ft.get_token()

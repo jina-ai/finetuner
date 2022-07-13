@@ -21,5 +21,5 @@ class RunFailedError(Exception):
     ...
 
 
-class UserNotLoginError(Exception):
+class UserNotLoggedInError(Exception):
     ...
