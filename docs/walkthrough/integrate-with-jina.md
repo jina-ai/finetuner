@@ -34,19 +34,17 @@ executors:
   uses: jinahub://FinetunerExecutor/v0.9.1  # note: use v0.9.1-gpu for GPU executor
   with:
     artifact: '/your/model/path/artifact-name.zip'
-    batch_size: 16
 ```
 ````
-```{admonition} FinetunerExecutor via source code
-:class: tip
-You can also use the `FinetunerExecutor` via source code by specifying `jinahub://FinetunerExecutor` under the `uses` parameter.
-However, using docker images is recommended.
-```
 
 As you can see, it's super easy! We just provided the model path and the batch size.
 
 In order to see what other options you can specify when initializing the executor, please go to the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) page and click on `Arguments` on the top-right side.
 
+```{admonition} FinetunerExecutor parameters
+:class: tip
+The only required argument is `artifact`. We provide default values for others.
+```
 
 ## Using `FinetunerExecutor`
 
@@ -63,9 +61,9 @@ f = Flow().add(
 )
 
 with f:
-    returned_docs = f.post(on='/encode', inputs=DocumentArray([Document(text='hello')]))
+    encoded_docs = f.post(on='/encode', inputs=DocumentArray([Document(text='hello')]))
 
-for doc in returned_docs:
+for doc in encoded_docs:
     print(f'Text of the returned document: {doc.text}')
     print(f'Shape of the embedding: {doc.embedding.shape}')
 ```
