@@ -71,3 +71,12 @@ class Run:
             run_name=self._name,
             directory=directory,
         )
+
+    def artifact_id(self):
+        """Get artifact id from the run."""
+        if self.status()[STATUS] != FINISHED:
+            raise Exception('The run needs to be finished in order to save the model.')
+
+        return self._client.get_run_artifact_id(
+            experiment_name=self._experiment_name, run_name=self._name
+        )

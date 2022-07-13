@@ -236,3 +236,8 @@ class Finetuner:
             experiments = [self.get_experiment(name=experiment_name)]
         for experiment in experiments:
             experiment.delete_runs()
+
+    def get_token(self) -> str:
+        if not self._client:
+            raise ValueError('Client not initialized, please call `login` first.')
+        return hubble.Auth.get_auth_token()

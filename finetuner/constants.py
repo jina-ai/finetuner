@@ -32,7 +32,7 @@ EVAL_DATA = 'eval_data'
 ARTIFACTS_DIR = 'artifacts/'
 MODEL = 'model'
 MODEL_OPTIONS = 'model_options'
-MODEL_IDS = 'model_ids'
+ARTIFACT_ID = 'artifact_id'
 # Run status
 CREATED = 'CREATED'
 STARTED = 'STARTED'
