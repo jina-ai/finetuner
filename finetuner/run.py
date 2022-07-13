@@ -1,5 +1,5 @@
 from finetuner.client import FinetunerV1Client
-from finetuner.constants import ARTIFACTS_DIR, FINISHED, STATUS
+from finetuner.constants import ARTIFACT_ID, ARTIFACTS_DIR, FINISHED, STATUS
 from finetuner.hubble import download_artifact
 
 
@@ -29,6 +29,7 @@ class Run:
         self._config = config
         self._created_at = created_at
         self._description = description
+        self._run = self._get_run()
 
     @property
     def name(self) -> str:
@@ -37,6 +38,12 @@ class Run:
     @property
     def config(self) -> dict:
         return self._config
+
+    def _get_run(self) -> dict:
+        """Get Run object as dict."""
+        return self._client.get_run(
+            experiment_name=self._experiment_name, run_name=self._name
+        )
 
     def status(self) -> dict:
         """Run status.
@@ -67,7 +74,7 @@ class Run:
 
         return download_artifact(
             client=self._client,
-            experiment_name=self._experiment_name,
+            artifact_id=self._run[ARTIFACT_ID],
             run_name=self._name,
             directory=directory,
         )
@@ -77,6 +84,4 @@ class Run:
         if self.status()[STATUS] != FINISHED:
             raise Exception('The run needs to be finished in order to save the model.')
 
-        return self._client.get_run_artifact_id(
-            experiment_name=self._experiment_name, run_name=self._name
-        )
+        return self._run[ARTIFACT_ID]

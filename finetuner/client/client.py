@@ -3,7 +3,6 @@ from typing import List, Optional
 from finetuner.client.base import _BaseClient
 from finetuner.constants import (
     API_VERSION,
-    ARTIFACT_ID,
     CONFIG,
     CPUS,
     DELETE,
@@ -164,24 +163,6 @@ class FinetunerV1Client(_BaseClient):
             RUNS,
             run_name,
             LOGS,
-        )
-        return self._handle_request(url=url, method=GET)
-
-    def get_run_artifact_id(self, experiment_name: str, run_name: str) -> str:
-        """Get a run artifact id by its name and experiment.
-
-        :param experiment_name: The name of the experiment.
-        :param run_name: The name of the run.
-        :return: Run logs.
-        """
-        url = self._construct_url(
-            self._base_url,
-            API_VERSION,
-            EXPERIMENTS,
-            experiment_name,
-            RUNS,
-            run_name,
-            ARTIFACT_ID,
         )
         return self._handle_request(url=url, method=GET)
 
