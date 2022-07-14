@@ -41,8 +41,9 @@ f = Flow().add(
 from jina import Flow
 	
 f = Flow().add(
-    uses='jinahub+docker://FinetunerExecutor/v0.9.1',  # use v0.9.1-gpu for gpu executor.
-    uses_with={'artifact': run.artifact_id, 'token': token},
+    uses='docker://ftexecutor',
+    uses_with={'artifact': '/root/.cache/YOUR-MODEL.zip'},
+    volumes=['/your-local-path/:/root/.cache']  # mount your model path to docker.
 )
 ```
 ````
