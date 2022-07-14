@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Give more flexibility on dependency versions. ([#483](https://github.com/jina-ai/finetuner/pull/483))
 
+- Bump `jina-hubble-sdk` to 0.8.1. ([#488](https://github.com/jina-ai/finetuner/pull/488))
+
 ### Fixed
 
 - Use `uri` to represent image content in documentation creating training data code snippet. ([#484](https://github.com/jina-ai/finetuner/pull/484))
