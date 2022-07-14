@@ -17,7 +17,7 @@ More specifically, the executor exposes an `/encode` endpoint that embeds [Docum
 
 Loading a tuned model is simple! You just need to provide a few parameters under the `uses_with` argument when adding the `FinetunerExecutor` to the [Flow]((https://docs.jina.ai/fundamentals/flow/)).
 
-````{tab} Python
+````{tab} Artifact id and token
 ```python
 import finetuner
 from jina import Flow
@@ -36,6 +36,16 @@ f = Flow().add(
 )
 ```
 ````
+````{tab} Locally saved artifact
+```python
+from jina import Flow
+	
+f = Flow().add(
+    uses='jinahub+docker://FinetunerExecutor/v0.9.1',  # use v0.9.1-gpu for gpu executor.
+    uses_with={'artifact': run.artifact_id, 'token': token},
+)
+```
+````
 ````{tab} YAML
 ```yaml
 jtype: Flow
@@ -46,7 +56,7 @@ executors:
   uses: jinahub+docker://FinetunerExecutor/v0.9.1
   with:
     artifact: 'COPY-YOUR-ARTIFACT-ID-HERE'
-    token:'COPY-YOUR-TOKEN-HERE'  # or better set as env
+    token: 'COPY-YOUR-TOKEN-HERE'  # or better set as env
 ```
 ````
 
@@ -70,12 +80,6 @@ Shape of the embedding: (1, 768)
 As you can see, it's super easy! We just provided the `artifact_id` and your `token`.
 
 In order to see what other options you can specify when initializing the executor, please go to the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) page and click on `Arguments` on the top-right side.
-
-```{admonition} FinetunerExecutor via source code
-:class: tip
-You can also use the `FinetunerExecutor` via source code by specifying `jinahub://FinetunerExecutor` under the `uses` parameter.
-However, using docker images is recommended.
-```
 
 ```{admonition} FinetunerExecutor parameters
 :class: tip
