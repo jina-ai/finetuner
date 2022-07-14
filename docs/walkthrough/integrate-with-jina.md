@@ -59,7 +59,7 @@ Then you can start your flow with:
 
 ```python
 with f:
-    # in this example, we fine-tuned a BERT model and embed a Document with some random text.
+    # in this example, we fine-tuned a BERT model and embed a Document..
     returned_docs = f.post(
         on='/encode',
         inputs=DocumentArray(
