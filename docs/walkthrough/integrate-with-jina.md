@@ -31,7 +31,7 @@ run = finetuner.get_run(
 )
 	
 f = Flow().add(
-    uses='jinahub+docker://FinetunerExecutor/v0.9.1',  # use v0.9.1-gpu for gpu executor.
+    uses='jinahub+docker://FinetunerExecutor/v0.9.2',  # use v0.9.2-gpu for gpu executor.
     uses_with={'artifact': run.artifact_id, 'token': token},
 )
 ```
@@ -41,9 +41,9 @@ f = Flow().add(
 from jina import Flow
 	
 f = Flow().add(
-    uses='docker://ftexecutor',
+    uses='jinahub+docker://FinetunerExecutor/v0.9.2',  # use v0.9.2-gpu for gpu executor.
     uses_with={'artifact': '/root/.cache/YOUR-MODEL.zip'},
-    volumes=['/your-local-path/:/root/.cache']  # mount your model path to docker.
+    volumes=['/your/local/path/:/root/.cache']  # mount your model path to docker.
 )
 ```
 ````
@@ -54,7 +54,7 @@ with:
   port: 51000
   protocol: grpc
 executors:
-  uses: jinahub+docker://FinetunerExecutor/v0.9.1
+  uses: jinahub+docker://FinetunerExecutor/v0.9.2
   with:
     artifact: 'COPY-YOUR-ARTIFACT-ID-HERE'
     token: 'COPY-YOUR-TOKEN-HERE'  # or better set as env
@@ -66,7 +66,16 @@ Then you can start your flow with:
 ```python
 with f:
     # in this example, we fine-tuned a BERT model and embed a Document with some random text.
-    returned_docs = f.post(on='/encode', inputs=DocumentArray([Document(text='some text to encode')]))
+    returned_docs = f.post(
+        on='/encode',
+        inputs=DocumentArray(
+            [
+                Document(
+                    text='some text to encode'
+                )
+            ]
+        )
+    )
 
 for doc in returned_docs:
     print(f'Text of the returned document: {doc.text}')
