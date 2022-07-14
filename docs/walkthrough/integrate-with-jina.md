@@ -72,7 +72,7 @@ Text of the returned document: hello
 Shape of the embedding: (1, 768)
 ```
 
-As you can see, it's super easy! We just provided the `artifact_id` and your personal access token.
+As you can see, it's super easy! We just provided the `artifact_id` and your `token`.
 
 In order to see what other options you can specify when initializing the executor, please go to the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) page and click on `Arguments` on the top-right side.
 
