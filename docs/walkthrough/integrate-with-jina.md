@@ -1,13 +1,7 @@
 # Integration
 
-(integrate-with-docarray)=
-## Embed your DocumentArray
-
-placeholder
-
-
 (integrate-with-jina)=
-## Integrate with Jina
+## Fine-tuned model as Executor
 
 Once fine-tuning is finished, it's time to actually use the model. 
 Finetuner, being part of the Jina ecosystem, provides a convenient way to use tuned models via [Jina Executors](https://docs.jina.ai/fundamentals/executor/).
@@ -95,3 +89,43 @@ In order to see what other options you can specify when initializing the executo
 :class: tip
 The only required argument is `artifact`. We provide default values for others.
 ```
+
+(integrate-with-docarray)=
+## Embed your DocumentArray
+
+Similarly, you can embed your `DocumentArray` with fine-tuned model:
+
+````{tab} Artifact id and token
+```python
+from docarray import DocumentArray, Document
+import finetuner
+
+finetuner.login()
+
+token = finetuner.get_token()
+run = finetuner.get_run(
+    experiment_name='YOUR-EXPERIMENT',
+    run_name='YOUR-RUN'
+)
+
+da = DocumentArray([Document(text='some text to encode')])
+
+da.post(
+    'jinahub+docker://FinetunerExecutor/v0.9.2',
+    uses_with={'artifact': run.artifact_id, 'token': token},
+)
+```
+````
+````{tab} Locally saved artifact
+```python
+from docarray import DocumentArray, Document
+
+da = DocumentArray([Document(text='some text to encode')])
+
+da.post(
+    'jinahub+docker://FinetunerExecutor/v0.9.2',
+    uses_with={'artifact': '/root/.cache/YOUR-MODEL.zip'},
+    volumes=['/your/local/path/:/root/.cache']  # mount your model path to docker.
+)
+```
+````
