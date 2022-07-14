@@ -49,11 +49,6 @@ executors:
     token:'COPY-YOUR-TOKEN-HERE'  # or better set as env
 ```
 ````
-```{admonition} FinetunerExecutor via source code
-:class: tip
-You can also use the `FinetunerExecutor` via source code by specifying `jinahub://FinetunerExecutor` under the `uses` parameter.
-However, using docker images is recommended.
-```
 
 Then you can start your flow with:
 
@@ -68,13 +63,19 @@ for doc in returned_docs:
 ```
 
 ```console
-Text of the returned document: hello
+Text of the returned document: some text to encode
 Shape of the embedding: (1, 768)
 ```
 
 As you can see, it's super easy! We just provided the `artifact_id` and your `token`.
 
 In order to see what other options you can specify when initializing the executor, please go to the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) page and click on `Arguments` on the top-right side.
+
+```{admonition} FinetunerExecutor via source code
+:class: tip
+You can also use the `FinetunerExecutor` via source code by specifying `jinahub://FinetunerExecutor` under the `uses` parameter.
+However, using docker images is recommended.
+```
 
 ```{admonition} FinetunerExecutor parameters
 :class: tip

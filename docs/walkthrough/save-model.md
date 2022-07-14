@@ -1,5 +1,5 @@
 (retrieve-tuned-model)=
-# Save Model
+# Save Artifact
 
 Perfect!
 Now you have started the fine-tuning job in the cloud.
@@ -18,7 +18,8 @@ experiment = finetuner.get_experiment('finetune-flickr-dataset')
 run = experiment.get_run('finetune-flickr-dataset-efficientnet-1')
 print(f'Run status: {run.status()}')
 print(f'Run logs: {run.logs()}')
-# save the model.
+print(f'Run artifact id: {run.artifact_id}')
+# save the artifact.
 run.save_artifact('tuned_model')
 ```
 
