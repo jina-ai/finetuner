@@ -4,15 +4,13 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<meta property="og:title" content="Run Job" />
+<meta property="og:title" content="finetuner.exception module" />
   
 <meta property="og:type" content="website" />
   
-<meta property="og:url" content="https://finetuner.jina.ai/walkthrough/run-job/" />
+<meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.exception/" />
   
 <meta property="og:site_name" content="Finetuner Documentation" />
-  
-<meta property="og:description" content="Now you should have your training data and evaluation data (optional) prepared as DocumentArray s, and have selected your backbone model. Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud! To start fine-tun..." />
   
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   
@@ -35,11 +33,11 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Save Artifact" href="../save-model/" /><link rel="prev" title="Backbone Model" href="../choose-backbone/" />
-        <link rel="canonical" href="https://finetuner.jina.ai/walkthrough/run-job.html" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.experiment module" href="../finetuner.experiment/" /><link rel="prev" title="finetuner.callback module" href="../finetuner.callback/" />
+        <link rel="canonical" href="https://finetuner.jina.ai/api/finetuner.exception.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Run Job - Finetuner documentation</title>
+        <title>finetuner.exception module - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -222,18 +220,18 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
     <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/how-it-works/">How Does it Work?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/design-principles/">Design Principles</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../">Walkthrough</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../install/">Install</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../basic-concepts/">Basic Concepts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../login/">Login</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../create-training-data/">Prepare Training Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../choose-backbone/">Backbone Model</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Run Job</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../save-model/">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../integrate-with-jina/">Integration</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../walkthrough/">Walkthrough</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/install/">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/basic-concepts/">Basic Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/login/">Login</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/create-training-data/">Prepare Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Artifact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Integration</a></li>
 </ul>
 </li>
 </ul>
@@ -244,18 +242,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tasks/text-to-image/">Text-to-Image Search via CLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
-<ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/finetuner/">finetuner package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.client/">finetuner.client package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.client.client/">finetuner.client.client module</a></li>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../finetuner/">finetuner package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../finetuner.client/">finetuner.client package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../finetuner.client.client/">finetuner.client.client module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.models/">finetuner.models module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.run/">finetuner.run module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.callback/">finetuner.callback module</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">finetuner.exception module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.experiment/">finetuner.experiment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.finetuner/">finetuner.finetuner module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
 </ul>
@@ -333,75 +331,32 @@
                     </label>
                 </div>
                 <article role="main">
-                    <section class="tex2jax_ignore mathjax_ignore" id="run-job">
-<span id="start-finetuner"></span><h1>Run Job<a class="headerlink" href="#run-job" title="Permalink to this headline">#</a></h1>
-<p>Now you should have your training data and evaluation data (optional) prepared as <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.13.31)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>s,
-and have selected your backbone model.</p>
-<p>Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud!</p>
-<p>To start fine-tuning, you can call:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+                    <section id="module-finetuner.exception">
+<span id="finetuner-exception-module"></span><h1>finetuner.exception module<a class="headerlink" href="#module-finetuner.exception" title="Permalink to this headline">#</a></h1>
+<dl class="py exception">
+<dt class="sig sig-object py" id="finetuner.exception.FinetunerServerError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.exception.</span></span><span class="sig-name descname"><span class="pre">FinetunerServerError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'An</span> <span class="pre">unknown</span> <span class="pre">error</span> <span class="pre">occurred'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">details</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/exception/#FinetunerServerError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.exception.FinetunerServerError" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
 
-<span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<dl class="py exception">
+<dt class="sig sig-object py" id="finetuner.exception.RunInProgressError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.exception.</span></span><span class="sig-name descname"><span class="pre">RunInProgressError</span></span><a class="reference internal" href="../../_modules/finetuner/exception/#RunInProgressError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.exception.RunInProgressError" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
 
-<span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;efficientnet_b0&#39;</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run name: </span><span class="si">{</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run status: </span><span class="si">{</span><span class="n">run</span><span class="o">.</span><span class="n">status</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>You’ll see something this in the terminal, with a different run name:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Run name: vigilant-tereshkova
-Run status: CREATED
-</pre></div>
-</div>
-<p>During fine-tuning,
-the run status changes from:</p>
-<ol class="simple">
-<li><p>CREATED: the <a class="reference internal" href="../../api/finetuner.run/#finetuner.run.Run" title="finetuner.run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> has been created and submitted to the job queue.</p></li>
-<li><p>STARTED: the job is in progress</p></li>
-<li><p>FINISHED: the job finished successfully, model has been sent to cloud storage.</p></li>
-<li><p>FAILED: the job failed, please check the logs for more details.</p></li>
-</ol>
-<p>Beyond the simplest use case,
-Finetuner gives you the flexibility to set hyper-parameters explicitly:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+<dl class="py exception">
+<dt class="sig sig-object py" id="finetuner.exception.RunFailedError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.exception.</span></span><span class="sig-name descname"><span class="pre">RunFailedError</span></span><a class="reference internal" href="../../_modules/finetuner/exception/#RunFailedError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.exception.RunFailedError" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
 
-<span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="n">eval_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<dl class="py exception">
+<dt class="sig sig-object py" id="finetuner.exception.UserNotLoggedInError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.exception.</span></span><span class="sig-name descname"><span class="pre">UserNotLoggedInError</span></span><a class="reference internal" href="../../_modules/finetuner/exception/#UserNotLoggedInError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.exception.UserNotLoggedInError" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
 
-<span class="c1"># Create an experiment</span>
-<span class="n">finetuner</span><span class="o">.</span><span class="n">create_experiment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;finetune-flickr-dataset&#39;</span><span class="p">)</span>
-
-<span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;efficientnet_b0&#39;</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
-    <span class="n">eval_data</span><span class="o">=</span><span class="n">eval_data</span><span class="p">,</span> 
-    <span class="n">run_name</span><span class="o">=</span><span class="s1">&#39;finetune-flickr-dataset-efficientnet-1&#39;</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;this is a trial run on flickr8k dataset with efficientnet b0.&#39;</span><span class="p">,</span>
-    <span class="n">experiment_name</span><span class="o">=</span><span class="s1">&#39;finetune-flickr-dataset&#39;</span><span class="p">,</span> <span class="c1"># link to the experiment created above.</span>
-    <span class="n">model_options</span><span class="o">=</span><span class="p">{},</span> <span class="c1"># additional options to pass to the model constructor</span>
-    <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;TripletMarginLoss&#39;</span><span class="p">,</span> <span class="c1"># Use CLIPLoss for CLIP fine-tuning.</span>
-    <span class="n">miner</span><span class="o">=</span><span class="s1">&#39;TripletMarginMiner&#39;</span><span class="p">,</span>
-    <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;Adam&#39;</span><span class="p">,</span>
-    <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span>
-    <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-    <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
-    <span class="n">scheduler_step</span><span class="o">=</span><span class="s1">&#39;batch&#39;</span><span class="p">,</span>
-    <span class="n">freeze</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="c1"># If applied will freeze the embedding model, only train the MLP.</span>
-    <span class="n">output_dim</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="c1"># Attach a MLP on top of embedding model.</span>
-    <span class="n">cpu</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>Please check the <a class="reference external" href="../../api/finetuner/#finetuner.fit">developer reference</a> to get the available options for <code class="docutils literal notranslate"><span class="pre">loss</span></code>, <code class="docutils literal notranslate"><span class="pre">miner</span></code>, <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> and <code class="docutils literal notranslate"><span class="pre">scheduler_step</span></code>.</p>
-</div>
 </section>
 
                 </article>
@@ -409,18 +364,18 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:</p>
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../save-model/">
+                    <a class="next-page" href="../finetuner.experiment/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">Save Artifact</div>
+                            <div class="title">finetuner.experiment module</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../choose-backbone/">
+                    <a class="prev-page" href="../finetuner.callback/">
                         <svg>
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -429,7 +384,7 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:</p>
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">Backbone Model</div>
+                            <div class="title">finetuner.callback module</div>
                             
                         </div>
                     </a>

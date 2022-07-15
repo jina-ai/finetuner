@@ -199,8 +199,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/create-training-data/">Prepare Training Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/run-job/">Run Job</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/save-model/">Save Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/integrate-with-jina/">Integrate with Jina</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/save-model/">Save Artifact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/integrate-with-jina/">Integration</a></li>
 </ul>
 </li>
 </ul>
@@ -218,6 +218,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.callback/">finetuner.callback module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.models/">finetuner.models module</a></li>
@@ -308,6 +309,7 @@
 <span class="kn">import</span> <span class="nn">hubble</span>
 <span class="kn">from</span> <span class="nn">finetuner.client</span> <span class="kn">import</span> <span class="n">FinetunerV1Client</span>
 <span class="kn">from</span> <span class="nn">finetuner.constants</span> <span class="kn">import</span> <span class="n">CREATED_AT</span><span class="p">,</span> <span class="n">DESCRIPTION</span><span class="p">,</span> <span class="n">NAME</span><span class="p">,</span> <span class="n">STATUS</span>
+<span class="kn">from</span> <span class="nn">finetuner.exception</span> <span class="kn">import</span> <span class="n">UserNotLoggedInError</span>
 <span class="kn">from</span> <span class="nn">finetuner.experiment</span> <span class="kn">import</span> <span class="n">Experiment</span>
 <span class="kn">from</span> <span class="nn">finetuner.run</span> <span class="kn">import</span> <span class="n">Run</span>
 
@@ -537,7 +539,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">experiments</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_experiment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">experiment_name</span><span class="p">)]</span>
         <span class="k">for</span> <span class="n">experiment</span> <span class="ow">in</span> <span class="n">experiments</span><span class="p">:</span>
-            <span class="n">experiment</span><span class="o">.</span><span class="n">delete_runs</span><span class="p">()</span></div></div>
+            <span class="n">experiment</span><span class="o">.</span><span class="n">delete_runs</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Finetuner.get_token"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.get_token">[docs]</a>    <span class="k">def</span> <span class="nf">get_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UserNotLoggedInError</span><span class="p">(</span><span class="s1">&#39;Please call `login` before getting token.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">hubble</span><span class="o">.</span><span class="n">Auth</span><span class="o">.</span><span class="n">get_auth_token</span><span class="p">()</span></div></div>
 </pre></div>
                 </article>
             </div>
@@ -552,7 +559,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 04, 2022</div>
+                            Last updated on Jul 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

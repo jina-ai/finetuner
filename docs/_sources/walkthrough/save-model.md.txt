@@ -1,5 +1,5 @@
 (retrieve-tuned-model)=
-# Save Model
+# Save Artifact
 
 Perfect!
 Now you have started the fine-tuning job in the cloud.
@@ -17,8 +17,9 @@ experiment = finetuner.get_experiment('finetune-flickr-dataset')
 # connect to the run we created previously.
 run = experiment.get_run('finetune-flickr-dataset-efficientnet-1')
 print(f'Run status: {run.status()}')
+print(f'Run artifact id: {run.artifact_id}')
 print(f'Run logs: {run.logs()}')
-# save the model.
+# save the artifact.
 run.save_artifact('tuned_model')
 ```
 
@@ -28,6 +29,7 @@ you can see this in the terminal:
 ```bash
 🔐 Successfully login to Jina Ecosystem!
 Run status: FINISHED
+Run Artifact id: 62972acb5de25a53fdbfcecc
 Run logs:
 
   Training [2/2] ━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:00:00 0:01:08 • loss: 0.050

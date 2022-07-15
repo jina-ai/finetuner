@@ -232,8 +232,8 @@
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Prepare Training Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../run-job/">Run Job</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../save-model/">Save Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../integrate-with-jina/">Integrate with Jina</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../save-model/">Save Artifact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../integrate-with-jina/">Integration</a></li>
 </ul>
 </li>
 </ul>
@@ -251,6 +251,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.models/">finetuner.models module</a></li>
@@ -334,9 +335,9 @@
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="prepare-training-data">
 <span id="create-training-data"></span><h1>Prepare Training Data<a class="headerlink" href="#prepare-training-data" title="Permalink to this headline">#</a></h1>
-<p>Finetuner accepts training data and evaluation data in the form of <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.13.29)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> objects.
+<p>Finetuner accepts training data and evaluation data in the form of <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.13.31)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> objects.
 Because Finetuner follows a <a class="reference external" href="https://en.wikipedia.org/wiki/Supervised_learning">supervised-learning</a> scheme,
-you should assign a label to each <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.13.29)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> inside your <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.13.29)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> as follows:</p>
+you should assign a label to each <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.13.31)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> inside your <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.13.31)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> as follows:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">text-to-text search</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
@@ -360,11 +361,11 @@ you should assign a label to each <a class="reference external" href="https://do
 
 <span class="n">train_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span>
     <span class="n">Document</span><span class="p">(</span>
-        <span class="n">content</span><span class="o">=</span><span class="s1">&#39;https://...skirt-1.png&#39;</span><span class="p">,</span>
+        <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;https://...skirt-1.png&#39;</span><span class="p">,</span>
         <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;finetuner_label&#39;</span><span class="p">:</span> <span class="s1">&#39;skirt&#39;</span><span class="p">},</span>
     <span class="p">),</span>
     <span class="n">Document</span><span class="p">(</span>
-        <span class="n">content</span><span class="o">=</span><span class="s1">&#39;https://...t-shirt-1.png&#39;</span><span class="p">,</span>
+        <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;https://...t-shirt-1.png&#39;</span><span class="p">,</span>
         <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;finetuner_label&#39;</span><span class="p">:</span> <span class="s1">&#39;t-shirt&#39;</span><span class="p">},</span>
     <span class="p">),</span>
     <span class="o">...</span><span class="p">,</span>
@@ -381,12 +382,10 @@ you should assign a label to each <a class="reference external" href="https://do
             <span class="n">Document</span><span class="p">(</span>
                 <span class="n">content</span><span class="o">=</span><span class="s1">&#39;pencil skirt slim fit available for sell&#39;</span><span class="p">,</span>
                 <span class="n">modality</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span>
-                <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;finetuner_label&#39;</span><span class="p">:</span> <span class="s1">&#39;skirt-1&#39;</span><span class="p">}</span>
             <span class="p">),</span>
             <span class="n">Document</span><span class="p">(</span>
-                <span class="n">content</span><span class="o">=</span><span class="s1">&#39;https://...skirt-1.png&#39;</span><span class="p">,</span>
+                <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;https://...skirt-1.png&#39;</span><span class="p">,</span>
                 <span class="n">modality</span><span class="o">=</span><span class="s1">&#39;image&#39;</span><span class="p">,</span>
-                <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;finetuner_label&#39;</span><span class="p">:</span> <span class="s1">&#39;skirt-1&#39;</span><span class="p">}</span>
             <span class="p">),</span>
         <span class="p">],</span>
     <span class="p">),</span>
@@ -395,12 +394,10 @@ you should assign a label to each <a class="reference external" href="https://do
             <span class="n">Document</span><span class="p">(</span>
                 <span class="n">content</span><span class="o">=</span><span class="s1">&#39;stripped over-sized shirt for sell&#39;</span><span class="p">,</span>
                 <span class="n">modality</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span>
-                <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;finetuner_label&#39;</span><span class="p">:</span> <span class="s1">&#39;shirt-1&#39;</span><span class="p">}</span>
             <span class="p">),</span>
             <span class="n">Document</span><span class="p">(</span>
-                <span class="n">content</span><span class="o">=</span><span class="s1">&#39;https://...shirt-1.png&#39;</span><span class="p">,</span>
+                <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;https://...shirt-1.png&#39;</span><span class="p">,</span>
                 <span class="n">modality</span><span class="o">=</span><span class="s1">&#39;image&#39;</span><span class="p">,</span>
-                <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;finetuner_label&#39;</span><span class="p">:</span> <span class="s1">&#39;shirt-1&#39;</span><span class="p">}</span>
             <span class="p">),</span>
         <span class="p">],</span>
     <span class="p">),</span>
@@ -462,7 +459,7 @@ It is recommended to create another <code class="docutils literal notranslate"><
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 04, 2022</div>
+                            Last updated on Jul 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

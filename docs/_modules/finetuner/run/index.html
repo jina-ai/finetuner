@@ -199,8 +199,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/create-training-data/">Prepare Training Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/run-job/">Run Job</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/save-model/">Save Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/integrate-with-jina/">Integrate with Jina</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/save-model/">Save Artifact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/integrate-with-jina/">Integration</a></li>
 </ul>
 </li>
 </ul>
@@ -218,6 +218,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.callback/">finetuner.callback module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.models/">finetuner.models module</a></li>
@@ -301,7 +302,15 @@
                 <article role="main">
                     <h1>Source code for finetuner.run</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">finetuner.client</span> <span class="kn">import</span> <span class="n">FinetunerV1Client</span>
-<span class="kn">from</span> <span class="nn">finetuner.constants</span> <span class="kn">import</span> <span class="n">ARTIFACTS_DIR</span><span class="p">,</span> <span class="n">FINISHED</span><span class="p">,</span> <span class="n">STATUS</span>
+<span class="kn">from</span> <span class="nn">finetuner.constants</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ARTIFACT_ID</span><span class="p">,</span>
+    <span class="n">ARTIFACTS_DIR</span><span class="p">,</span>
+    <span class="n">CREATED</span><span class="p">,</span>
+    <span class="n">FAILED</span><span class="p">,</span>
+    <span class="n">STARTED</span><span class="p">,</span>
+    <span class="n">STATUS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">finetuner.exception</span> <span class="kn">import</span> <span class="n">RunFailedError</span><span class="p">,</span> <span class="n">RunInProgressError</span>
 <span class="kn">from</span> <span class="nn">finetuner.hubble</span> <span class="kn">import</span> <span class="n">download_artifact</span>
 
 
@@ -331,6 +340,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_created_at</span> <span class="o">=</span> <span class="n">created_at</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_run</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_run</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -339,6 +349,12 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span>
+
+    <span class="k">def</span> <span class="nf">_get_run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get Run object as dict.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span>
+            <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiment_name</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="Run.status"><a class="viewcode-back" href="../../../api/finetuner.run/#finetuner.run.Run.status">[docs]</a>    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Run status.</span>
@@ -358,21 +374,44 @@
             <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiment_name</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
         <span class="p">)</span></div>
 
+    <span class="k">def</span> <span class="nf">_check_run_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()[</span><span class="n">STATUS</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="ow">in</span> <span class="p">[</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">STARTED</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">RunInProgressError</span><span class="p">(</span>
+                <span class="s1">&#39;The run needs to be finished in order to save the artifact.&#39;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">FAILED</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RunFailedError</span><span class="p">(</span>
+                <span class="s1">&#39;The run failed, please check the `logs` for detailed information.&#39;</span>
+            <span class="p">)</span>
+
 <div class="viewcode-block" id="Run.save_artifact"><a class="viewcode-back" href="../../../api/finetuner.run/#finetuner.run.Run.save_artifact">[docs]</a>    <span class="k">def</span> <span class="nf">save_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ARTIFACTS_DIR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Save artifact if the run is finished.</span>
 
 <span class="sd">        :param directory: Directory where the artifact will be stored.</span>
 <span class="sd">        :returns: A string object that indicates the download path.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()[</span><span class="n">STATUS</span><span class="p">]</span> <span class="o">!=</span> <span class="n">FINISHED</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;The run needs to be finished in order to save the model.&#39;</span><span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_run_status</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">download_artifact</span><span class="p">(</span>
             <span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">,</span>
-            <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiment_name</span><span class="p">,</span>
+            <span class="n">artifact_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">[</span><span class="n">ARTIFACT_ID</span><span class="p">],</span>
             <span class="n">run_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
             <span class="n">directory</span><span class="o">=</span><span class="n">directory</span><span class="p">,</span>
-        <span class="p">)</span></div></div>
+        <span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">artifact_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get artifact id from the run.</span>
+
+<span class="sd">        An artifact in finetuner contains fine-tuned model and its metadata.</span>
+<span class="sd">        Such as preprocessing function, collate function. This id could be useful</span>
+<span class="sd">        if you want to directly pull the artifact from the cloud storage, such as</span>
+<span class="sd">        using `FinetunerExecutor`.</span>
+
+<span class="sd">        :return: Artifact id as string object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_run_status</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">[</span><span class="n">ARTIFACT_ID</span><span class="p">]</span></div>
 </pre></div>
                 </article>
             </div>
@@ -387,7 +426,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 04, 2022</div>
+                            Last updated on Jul 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

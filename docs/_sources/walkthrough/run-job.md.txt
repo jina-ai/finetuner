@@ -66,9 +66,6 @@ run = finetuner.fit(
     scheduler_step='batch',
     freeze=False, # If applied will freeze the embedding model, only train the MLP.
     output_dim=512, # Attach a MLP on top of embedding model.
-    multi_modal=False, # CLIP specific.
-    image_modality=None, # CLIP specific.
-    text_modality=None, # CLIP specific.
     cpu=False,
     num_workers=4,
 )
@@ -76,37 +73,4 @@ run = finetuner.fit(
 
 ```{Important}
 Please check the [developer reference](../../api/finetuner/#finetuner.fit) to get the available options for `loss`, `miner`, `optimizer` and `scheduler_step`.
-```
-
-```{Important}
-CLIP specific parameters
-
-`multi_modal`: Need to be set to True when you are fine-tuning CLIP since we are fine-tuning two models.
-`image_modality` and `text_modality`: Need to be set to the corresponded value of the `modality` when you are creating training data.
-
-For example:
-```python
-doc = Document(
-    chunks=[
-        Document(
-            content='this is the text chunk',
-            modality='text',
-            tags={'finetuner_label': 1}
-        ),
-        Document(
-            content='https://...picture.png',
-            modality='image',
-            tags={'finetuner_label': 1}
-        ),
-    ]
-)
-# in this case, image_modality and text_modality should be set correspondingly
-finetuner.fit(
-    ...,
-    loss='CLIPLoss',
-    image_modality='image',
-    text_modality='text',
-    multi_modal=True,
-    ...,
-)
 ```

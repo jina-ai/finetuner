@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<meta property="og:title" content="Save Model" />
+<meta property="og:title" content="Save Artifact" />
   
 <meta property="og:type" content="website" />
   
@@ -35,11 +35,11 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Integrate with Jina" href="../integrate-with-jina/" /><link rel="prev" title="Run Job" href="../run-job/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Integration" href="../integrate-with-jina/" /><link rel="prev" title="Run Job" href="../run-job/" />
         <link rel="canonical" href="https://finetuner.jina.ai/walkthrough/save-model.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Save Model - Finetuner documentation</title>
+        <title>Save Artifact - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -232,8 +232,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../create-training-data/">Prepare Training Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../run-job/">Run Job</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Save Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../integrate-with-jina/">Integrate with Jina</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Save Artifact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../integrate-with-jina/">Integration</a></li>
 </ul>
 </li>
 </ul>
@@ -251,6 +251,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.models/">finetuner.models module</a></li>
@@ -332,8 +333,8 @@
                     </label>
                 </div>
                 <article role="main">
-                    <section class="tex2jax_ignore mathjax_ignore" id="save-model">
-<span id="retrieve-tuned-model"></span><h1>Save Model<a class="headerlink" href="#save-model" title="Permalink to this headline">#</a></h1>
+                    <section class="tex2jax_ignore mathjax_ignore" id="save-artifact">
+<span id="retrieve-tuned-model"></span><h1>Save Artifact<a class="headerlink" href="#save-artifact" title="Permalink to this headline">#</a></h1>
 <p>Perfect!
 Now you have started the fine-tuning job in the cloud.
 However, fine-tuning takes time. It highly depends on the size of your training data, evaluation data and other hyper-parameters. Because of this, you might have to close the session and reconnect to it several times.</p>
@@ -347,8 +348,9 @@ However, fine-tuning takes time. It highly depends on the size of your training 
 <span class="c1"># connect to the run we created previously.</span>
 <span class="n">run</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span><span class="s1">&#39;finetune-flickr-dataset-efficientnet-1&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run status: </span><span class="si">{</span><span class="n">run</span><span class="o">.</span><span class="n">status</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run artifact id: </span><span class="si">{</span><span class="n">run</span><span class="o">.</span><span class="n">artifact_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run logs: </span><span class="si">{</span><span class="n">run</span><span class="o">.</span><span class="n">logs</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="c1"># save the model.</span>
+<span class="c1"># save the artifact.</span>
 <span class="n">run</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="s1">&#39;tuned_model&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -356,6 +358,7 @@ However, fine-tuning takes time. It highly depends on the size of your training 
 you can see this in the terminal:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🔐 Successfully login to Jina Ecosystem!
 Run status: FINISHED
+Run Artifact id: 62972acb5de25a53fdbfcecc
 Run logs:
 
   Training <span class="o">[</span><span class="m">2</span>/2<span class="o">]</span> ━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="m">50</span>/50 <span class="m">0</span>:00:00 <span class="m">0</span>:01:08 • loss: <span class="m">0</span>.050
@@ -381,7 +384,7 @@ Run logs:
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">Integrate with Jina</div>
+                            <div class="title">Integration</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
@@ -406,7 +409,7 @@ Run logs:
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 04, 2022</div>
+                            Last updated on Jul 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -199,8 +199,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/create-training-data/">Prepare Training Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Integrate with Jina</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Artifact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Integration</a></li>
 </ul>
 </li>
 </ul>
@@ -218,6 +218,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.models/">finetuner.models module</a></li>
@@ -576,6 +577,14 @@
 <span class="sd">    :return: List of deleted experiments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ft</span><span class="o">.</span><span class="n">delete_experiments</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_token"><a class="viewcode-back" href="../../api/finetuner/#finetuner.get_token">[docs]</a><span class="k">def</span> <span class="nf">get_token</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get user token of jina ecosystem.</span>
+
+<span class="sd">    :return: user token as string object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ft</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span></div>
 </pre></div>
                 </article>
             </div>
@@ -590,7 +599,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 04, 2022</div>
+                            Last updated on Jul 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="Finetuner Documentation" />
   
-<meta property="og:description" content="Subpackages: finetuner.client package- Submodules- finetuner.client.client module., Module contents.. Submodules: finetuner.callback module, finetuner.experiment module, finetuner.finetuner module, finetuner.models module, finetuner.run module. Module contents:" />
+<meta property="og:description" content="Subpackages: finetuner.client package- Submodules- finetuner.client.client module., Module contents.. Submodules: finetuner.callback module, finetuner.exception module, finetuner.experiment module, finetuner.finetuner module, finetuner.models module, finetuner.run module. Module contents:" />
   
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   
@@ -232,8 +232,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/create-training-data/">Prepare Training Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Integrate with Jina</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Artifact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Integration</a></li>
 </ul>
 </li>
 </ul>
@@ -251,6 +251,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.callback/">finetuner.callback module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.models/">finetuner.models module</a></li>
@@ -354,6 +355,7 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../finetuner.callback/">finetuner.callback module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../finetuner.models/">finetuner.models module</a></li>
@@ -682,6 +684,20 @@ the experiment is named after the current directory.</p>
 :return: List of deleted experiments.</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="finetuner.get_token">
+<span class="sig-prename descclassname"><span class="pre">finetuner.</span></span><span class="sig-name descname"><span class="pre">get_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/#get_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.get_token" title="Permalink to this definition">#</a></dt>
+<dd><p>Get user token of jina ecosystem.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>user token as string object.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -720,7 +736,7 @@ the experiment is named after the current directory.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 04, 2022</div>
+                            Last updated on Jul 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
