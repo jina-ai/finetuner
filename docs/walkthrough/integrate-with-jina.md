@@ -36,8 +36,8 @@ from jina import Flow
 	
 f = Flow().add(
     uses='jinahub+docker://FinetunerExecutor/v0.9.2',  # use v0.9.2-gpu for gpu executor.
-    uses_with={'artifact': '/root/.cache/YOUR-MODEL.zip'},
-    volumes=['/your/local/path/:/root/.cache']  # mount your model path to docker.
+    uses_with={'artifact': '/mnt/YOUR-MODEL.zip'},
+    volumes=['/your/local/path/:/mnt']  # mount your model path to docker.
 )
 ```
 ````
@@ -124,8 +124,13 @@ da = DocumentArray([Document(text='some text to encode')])
 
 da.post(
     'jinahub+docker://FinetunerExecutor/v0.9.2',
-    uses_with={'artifact': '/root/.cache/YOUR-MODEL.zip'},
-    volumes=['/your/local/path/:/root/.cache']  # mount your model path to docker.
+    uses_with={'artifact': '/mnt/YOUR-MODEL.zip'},
+    volumes=['/your/local/path/:/mnt']  # mount your model path to docker.
 )
 ```
 ````
+
+```console
+Text of the returned document: some text to encode
+Shape of the embedding: (768,)
+```
