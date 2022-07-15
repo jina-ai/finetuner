@@ -10,7 +10,7 @@ We've created the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) w
 More specifically, the executor exposes an `/encode` endpoint that embeds [Documents](https://docarray.jina.ai/fundamentals/document/) using the fine-tuned model.
 
 Loading a tuned model is simple! You just need to provide a few parameters under the `uses_with` argument when adding the `FinetunerExecutor` to the [Flow]((https://docs.jina.ai/fundamentals/flow/)).
-You will have three options:
+You have three options:
 
 ````{tab} Artifact id and token
 ```python
