@@ -120,7 +120,7 @@ run = finetuner.get_run(
 da = DocumentArray([Document(text='some text to encode')])
 
 da.post(
-    'jinahub+docker://FinetunerExecutor/v0.9.2',
+    'jinahub+docker://FinetunerExecutor/v0.9.2/encode',
     uses_with={'artifact': run.artifact_id, 'token': token},
 )
 ```
@@ -132,7 +132,7 @@ from docarray import DocumentArray, Document
 da = DocumentArray([Document(text='some text to encode')])
 
 da.post(
-    'jinahub+docker://FinetunerExecutor/v0.9.2',
+    'jinahub+docker://FinetunerExecutor/v0.9.2/encode,
     uses_with={'artifact': '/mnt/YOUR-MODEL.zip'},
     volumes=['/your/local/path/:/mnt']  # mount your model path to docker.
 )
