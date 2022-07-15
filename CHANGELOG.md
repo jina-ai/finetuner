@@ -10,6 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Removed
+
+### Changed
+
+### Fixed
+
+### Docs
+
+## [0.5.1] - 2022-07-15
+
+### Added
+
 - Add artifact id and token interface to improve usability. ([#485](https://github.com/jina-ai/finetuner/pull/485))
 
 ### Removed
