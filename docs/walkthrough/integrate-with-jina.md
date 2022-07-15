@@ -91,9 +91,9 @@ The only required argument is `artifact`. We provide default values for others.
 ```
 
 (integrate-with-docarray)=
-## Embed your DocumentArray
+## Embed DocumentArray
 
-Similarly, you can embed your `DocumentArray` with fine-tuned model:
+Similarly, you can embed the [DocumentArray](https://docarray.jina.ai/) with fine-tuned model:
 
 ````{tab} Artifact id and token
 ```python
