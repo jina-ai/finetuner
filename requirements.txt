@@ -1,4 +1,4 @@
-docarray[common]>=0.13.19
+docarray[common]>=0.13.31
 jina-hubble-sdk>=0.8.1
 requests>=2.27.1
 rich>=12.4.4

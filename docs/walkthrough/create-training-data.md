@@ -49,12 +49,10 @@ train_da = DocumentArray([
             Document(
                 content='pencil skirt slim fit available for sell',
                 modality='text',
-                tags={'finetuner_label': 'skirt-1'}
             ),
             Document(
                 uri='https://...skirt-1.png',
                 modality='image',
-                tags={'finetuner_label': 'skirt-1'}
             ),
         ],
     ),
@@ -63,12 +61,10 @@ train_da = DocumentArray([
             Document(
                 content='stripped over-sized shirt for sell',
                 modality='text',
-                tags={'finetuner_label': 'shirt-1'}
             ),
             Document(
                 uri='https://...shirt-1.png',
                 modality='image',
-                tags={'finetuner_label': 'shirt-1'}
             ),
         ],
     ),
