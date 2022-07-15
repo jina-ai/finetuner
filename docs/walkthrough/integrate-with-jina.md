@@ -55,7 +55,17 @@ executors:
 ```
 ````
 
-Then you can start your flow with:
+As you can see, it's super easy! 
+If you did not call `save_artifact`,
+you need to provide the `artifact_id` and `token`.
+`FinetunerExecutor` will automatically pull your model from the cloud storage to the container.
+
+On the other hand,
+if you have saved artifact locally,
+please mount the zipped artifact to the docker container.
+`FinetunerExecutor` will unzip the artifact and load models.
+
+You can start your flow with:
 
 ```python
 with f:
@@ -80,16 +90,6 @@ for doc in returned_docs:
 Text of the returned document: some text to encode
 Shape of the embedding: (1, 768)
 ```
-
-As you can see, it's super easy! 
-If you did not call `save_artifact`,
-you need to provide the `artifact_id` and `token`.
-`FinetunerExecutor` will automatically pull your model from the cloud storage to the container.
-
-On the other hand,
-if you have saved artifact locally,
-please mount the zipped artifact to the docker container.
-`FinetunerExecutor` will unzip the artifact and load models.
 
 In order to see what other options you can specify when initializing the executor, please go to the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) page and click on `Arguments` on the top-right side.
 
