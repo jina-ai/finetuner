@@ -89,7 +89,7 @@ for doc in returned_docs:
 
 ```console
 Text of the returned document: some text to encode
-Shape of the embedding: (1, 768)
+Shape of the embedding: (768,)
 ```
 
 In order to see what other options you can specify when initializing the executor, please go to the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) page and click on `Arguments` on the top-right side.
