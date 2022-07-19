@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional, TypeVar, Union
 
 from docarray import DocumentArray
@@ -51,10 +51,13 @@ class WandBLogger:
     `Weights & Biases <https://wandb.ai/site>`_ logger to log metrics for training and
     validation.
     To use this logger, make sure to have a WandB account created, install the WandB
-    client (which you can do using ``pip install wandb``) and setting the API key as
-    environmental variable.
+    client (which you can do using ``pip install wandb``)
+
+    :param token: weights and biases authentication key.
+    :param wandb_args: Keyword arguments that are passed to ``wandb.init`` function.
     """
-    ...
+    token: str
+    wandb_args: dict = field(default_factory=dict)
 
 
 @dataclass
