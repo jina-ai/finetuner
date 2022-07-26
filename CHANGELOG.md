@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Fix google analytics Id for docs. ([#499](https://github.com/jina-ai/finetuner/pull/499))
 
 ## [0.5.1] - 2022-07-15
 
