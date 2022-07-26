@@ -183,13 +183,13 @@ ogp_custom_meta_tags = [
     '<meta property="og:description" content="Finetuner allows one to tune the weights of any deep neural network for better embeddings on search tasks. It accompanies Jina to deliver the last mile of performance for domain-specific neural search applications.">',
     '''
     <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-48WE9V68SD"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1ESRNDCK35"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-48WE9V68SD');
+  gtag('config', 'G-1ESRNDCK35');
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
