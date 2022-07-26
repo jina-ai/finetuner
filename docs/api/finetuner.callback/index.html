@@ -23,13 +23,13 @@
 <meta property="og:description" content="Finetuner allows one to tune the weights of any deep neural network for better embeddings on search tasks. It accompanies Jina to deliver the last mile of performance for domain-specific neural search applications.">
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-48WE9V68SD"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1ESRNDCK35"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-48WE9V68SD');
+  gtag('config', 'G-1ESRNDCK35');
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
@@ -390,13 +390,30 @@ recent k checkpoints will be kept. Older checkpoints are deleted.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="finetuner.callback.WandBLogger">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.callback.</span></span><span class="sig-name descname"><span class="pre">WandBLogger</span></span><a class="reference internal" href="../../_modules/finetuner/callback/#WandBLogger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.callback.WandBLogger" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.callback.</span></span><span class="sig-name descname"><span class="pre">WandBLogger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wandb_args=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/callback/#WandBLogger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.callback.WandBLogger" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p><a class="reference external" href="https://wandb.ai/site">Weights &amp; Biases</a> logger to log metrics for training and
 validation.
 To use this logger, make sure to have a WandB account created, install the WandB
-client (which you can do using <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">wandb</span></code>) and setting the API key as
-environmental variable.</p>
+client (which you can do using <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">wandb</span></code>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – weights and biases authentication key.</p></li>
+<li><p><strong>wandb_args</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – Keyword arguments that are passed to <code class="docutils literal notranslate"><span class="pre">wandb.init</span></code> function.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finetuner.callback.WandBLogger.token">
+<span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#finetuner.callback.WandBLogger.token" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="finetuner.callback.WandBLogger.wandb_args">
+<span class="sig-name descname"><span class="pre">wandb_args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#finetuner.callback.WandBLogger.wandb_args" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -552,7 +569,7 @@ index docs, available options are <code class="docutils literal notranslate"><sp
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 15, 2022</div>
+                            Last updated on Jul 26, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
