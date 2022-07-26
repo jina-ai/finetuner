@@ -12,4 +12,4 @@ sphinx-notfound-page==0.7.1
 sphinxext-opengraph
 sphinx-sitemap==2.2.0
 sphinx_copybutton==0.4.0
-sphinx_markdown_tables==0.0.15
+sphinx_markdown_tables==0.0.16
