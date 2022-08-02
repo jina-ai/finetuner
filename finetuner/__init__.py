@@ -109,6 +109,7 @@ def fit(
     scheduler_step: str = 'batch',
     freeze: bool = False,
     output_dim: Optional[int] = None,
+    output_format: str = 'onnx',
     cpu: bool = True,
     num_workers: int = 4,
 ) -> Run:
@@ -156,6 +157,10 @@ def fit(
     :param freeze: If set to `True`, will freeze all layers except the last one.
     :param output_dim: The expected output dimension as `int`.
         If set, will attach a projection head.
+    :param output_format: The expected output format, should be either `onnx` or
+        `torch`. Note that when `model_format` set to torch, it is saved as
+        `torchscript`<https://pytorch.org/tutorials/beginner/saving_loading_models.html#export-load-model-in-torchscript-format>.
+        use `torch.jit.load('model.pt')` to load the model.
     :param cpu: Whether to use the CPU. If set to `False` a GPU will be used.
     :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
         workers used by the dataloader.
@@ -178,6 +183,7 @@ def fit(
         scheduler_step=scheduler_step,
         freeze=freeze,
         output_dim=output_dim,
+        output_format=output_format,
         cpu=cpu,
         num_workers=num_workers,
     )

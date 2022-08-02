@@ -139,6 +139,7 @@ class Finetuner:
         scheduler_step: str = 'batch',
         freeze: bool = False,
         output_dim: Optional[int] = None,
+        output_format: str = 'onnx',
         cpu: bool = True,
         num_workers: int = 4,
     ) -> Run:
@@ -170,6 +171,7 @@ class Finetuner:
             scheduler_step=scheduler_step,
             freeze=freeze,
             output_dim=output_dim,
+            output_format=output_format,
             cpu=cpu,
             num_workers=num_workers,
         )

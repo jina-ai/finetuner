@@ -29,6 +29,7 @@ from finetuner.constants import (
     OPTIMIZER_OPTIONS,
     OPTIONS,
     OUTPUT_DIM,
+    OUTPUT_FORMAT,
     RUN_NAME,
     SCHEDULER_STEP,
     TRAIN_DATA,
@@ -218,6 +219,7 @@ class Experiment:
                 NAME: model,
                 FREEZE: kwargs.get(FREEZE),
                 OUTPUT_DIM: kwargs.get(OUTPUT_DIM),
+                OUTPUT_FORMAT: kwargs.get(OUTPUT_FORMAT),
                 OPTIONS: kwargs.get(MODEL_OPTIONS) or {},
             },
             DATA: {
