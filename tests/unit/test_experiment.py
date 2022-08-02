@@ -25,6 +25,7 @@ from finetuner.constants import (
     OPTIMIZER_OPTIONS,
     OPTIONS,
     OUTPUT_DIM,
+    OUTPUT_FORMAT,
     RUN_NAME,
     SCHEDULER_STEP,
     STARTED,
@@ -93,6 +94,7 @@ def test_create_run_config():
             NAME: 'resnet50',
             FREEZE: False,
             OUTPUT_DIM: None,
+            OUTPUT_FORMAT: 'onnx',
             OPTIONS: {},
         },
         DATA: {
