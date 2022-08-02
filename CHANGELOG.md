@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Enable wandb callback. ([#494](https://github.com/jina-ai/finetuner/pull/494))
 
+- Allow user to dump model as torchscript format. ([#501](https://github.com/jina-ai/finetuner/pull/501))
+
 ### Removed
 
 ### Changed
