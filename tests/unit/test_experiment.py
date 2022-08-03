@@ -140,10 +140,7 @@ def test_create_run_config():
         scheduler_step='batch',
         freeze=False,
         output_dim=None,
-        multi_modal=False,
-        image_modality=None,
-        text_modality=None,
+        output_format='onnx',
         cpu=False,
-        wandb_api_key=None,
     )
     assert config == expected_config
