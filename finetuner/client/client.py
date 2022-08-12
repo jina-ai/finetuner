@@ -12,6 +12,7 @@ from finetuner.constants import (
     GET,
     GPUS,
     LOGS,
+    LOGSTREAM,
     NAME,
     POST,
     RUNS,
@@ -165,6 +166,30 @@ class FinetunerV1Client(_BaseClient):
             LOGS,
         )
         return self._handle_request(url=url, method=GET)
+
+    def stream_run_logs(self, experiment_name: str, run_name: str):
+        """Streaming log events to the client as ServerSentEvents.
+
+        :param experiment_name: The name of the experiment.
+        :param run_name: The name of the run.
+        :return: Run logs.
+        """
+        url = self._construct_url(
+            self._base_url,
+            API_VERSION,
+            EXPERIMENTS,
+            experiment_name,
+            RUNS,
+            run_name,
+            LOGSTREAM,
+        )
+        with self._session.request(
+            url=url,
+            method=GET,
+            stream=True,
+        ) as event_source:
+            for chunk in event_source:
+                yield chunk
 
     def create_run(
         self,

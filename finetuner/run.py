@@ -71,6 +71,11 @@ class Run:
             experiment_name=self._experiment_name, run_name=self._name
         )
 
+    def stream_logs(self):
+        return self._client.stream_run_logs(
+            experiment_name=self._experiment_name, run_name=self._name
+        )
+
     def _check_run_status(self):
         status = self.status()[STATUS]
         if status in [CREATED, STARTED]:
