@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Iterator, List, Optional
 
 from finetuner.client.base import _BaseClient
 from finetuner.constants import (
@@ -167,12 +167,12 @@ class FinetunerV1Client(_BaseClient):
         )
         return self._handle_request(url=url, method=GET)
 
-    def stream_run_logs(self, experiment_name: str, run_name: str):
+    def stream_run_logs(self, experiment_name: str, run_name: str) -> Iterator[str]:
         """Streaming log events to the client as ServerSentEvents.
 
         :param experiment_name: The name of the experiment.
         :param run_name: The name of the run.
-        :return: Run logs.
+        :yield: A log entry.
         """
         url = self._construct_url(
             self._base_url,
@@ -184,10 +184,10 @@ class FinetunerV1Client(_BaseClient):
             LOGSTREAM,
         )
         response = self._handle_request(url=url, method=GET, stream=True)
-        for line in response.iter_lines():
-            line = line.decode('utf-8', errors='ignore')
-            if line:
-                print(line)
+        for entry in response.iter_lines():
+            entry = entry.decode('utf-8', errors='ignore')
+            if entry:
+                yield entry
 
     def create_run(
         self,
