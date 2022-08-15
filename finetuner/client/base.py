@@ -53,17 +53,24 @@ class _BaseClient:
         method: str,
         params: Optional[dict] = None,
         json_data: Optional[dict] = None,
-    ) -> Union[dict, List[dict], str]:
+        stream: bool = False,
+    ) -> Union[dict, List[dict], str, requests.Response]:
         """The base request handler.
 
         :param url: The url of the request.
         :param method: The request type (GET, POST or DELETE).
         :param params: Optional parameters for the request.
         :param json_data: Optional data payloads to be sent along with the request.
+        :param stream: If the request is a streaming request set to True.
         :return: Response to the request.
         """
         response = self._session.request(
-            url=url, method=method, json=json_data, params=params, allow_redirects=False
+            url=url,
+            method=method,
+            json=json_data,
+            params=params,
+            allow_redirects=False,
+            stream=stream,
         )
         if response.status_code == 307:
             response = self._session.request(
@@ -72,6 +79,7 @@ class _BaseClient:
                 json=json_data,
                 params=params,
                 allow_redirects=False,
+                stream=stream,
             )
         if not response.ok:
             raise FinetunerServerError(
@@ -79,6 +87,9 @@ class _BaseClient:
                 code=response.status_code,
                 details=response.json()['detail'],
             )
-        if TEXT in response.headers['content-type']:
-            return response.text
-        return response.json()
+        if stream:
+            return response
+        else:
+            if TEXT in response.headers['content-type']:
+                return response.text
+            return response.json()

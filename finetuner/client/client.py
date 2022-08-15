@@ -183,13 +183,11 @@ class FinetunerV1Client(_BaseClient):
             run_name,
             LOGSTREAM,
         )
-        with self._session.request(
-            url=url,
-            method=GET,
-            stream=True,
-        ) as event_source:
-            for chunk in event_source:
-                yield chunk
+        response = self._handle_request(url=url, method=GET, stream=True)
+        for line in response.iter_lines():
+            line = line.decode('utf-8', errors='ignore')
+            if line:
+                print(line)
 
     def create_run(
         self,
