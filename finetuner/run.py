@@ -1,3 +1,5 @@
+from typing import Iterator
+
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import (
     ARTIFACT_ID,
@@ -7,7 +9,7 @@ from finetuner.constants import (
     STARTED,
     STATUS,
 )
-from finetuner.exception import RunFailedError, RunInProgressError
+from finetuner.exception import RunFailedError, RunInProgressError, RunPreparingError
 from finetuner.hubble import download_artifact
 
 
@@ -67,11 +69,22 @@ class Run:
 
         :returns: A string dump of the run logs.
         """
+        self._check_run_status_started()
         return self._client.get_run_logs(
             experiment_name=self._experiment_name, run_name=self._name
         )
 
-    def _check_run_status(self):
+    def stream_logs(self) -> Iterator[str]:
+        """Stream the run logs.
+
+        :yield: An iterators keep stream the logs from server.
+        """
+        self._check_run_status_started()
+        return self._client.stream_run_logs(
+            experiment_name=self._experiment_name, run_name=self._name
+        )
+
+    def _check_run_status_finished(self):
         status = self.status()[STATUS]
         if status in [CREATED, STARTED]:
             raise RunInProgressError(
@@ -82,13 +95,21 @@ class Run:
                 'The run failed, please check the `logs` for detailed information.'
             )
 
+    def _check_run_status_started(self):
+        status = self.status()[STATUS]
+        if status == CREATED:
+            raise RunPreparingError(
+                'The run is preparing to run, logs will be ready to pull when '
+                '`status` is `STARTED`.'
+            )
+
     def save_artifact(self, directory: str = ARTIFACTS_DIR) -> str:
         """Save artifact if the run is finished.
 
         :param directory: Directory where the artifact will be stored.
         :returns: A string object that indicates the download path.
         """
-        self._check_run_status()
+        self._check_run_status_finished()
         return download_artifact(
             client=self._client,
             artifact_id=self._run[ARTIFACT_ID],
@@ -107,5 +128,5 @@ class Run:
 
         :return: Artifact id as string object.
         """
-        self._check_run_status()
+        self._check_run_status_finished()
         return self._run[ARTIFACT_ID]

@@ -17,6 +17,10 @@ class RunInProgressError(Exception):
     ...
 
 
+class RunPreparingError(Exception):
+    ...
+
+
 class RunFailedError(Exception):
     ...
 
