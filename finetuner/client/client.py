@@ -185,9 +185,8 @@ class FinetunerV1Client(_BaseClient):
         )
         response = self._handle_request(url=url, method=GET, stream=True)
         for entry in response.iter_lines():
-            entry = entry.decode('utf-8', errors='ignore')
             if entry:
-                yield entry
+                yield entry.decode('utf-8', errors='ignore')
 
     def create_run(
         self,
