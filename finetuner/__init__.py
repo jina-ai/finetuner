@@ -6,7 +6,6 @@ from docarray import DocumentArray
 from rich.console import Console
 from rich.table import Table
 
-import hubble
 from finetuner.constants import (
     DEFAULT_FINETUNER_HOST,
     DEFAULT_HUBBLE_REGISTRY,
@@ -14,6 +13,7 @@ from finetuner.constants import (
     HUBBLE_REGISTRY,
 )
 from finetuner.run import Run
+from hubble import login_required
 
 if HOST not in os.environ:
     os.environ[HOST] = DEFAULT_FINETUNER_HOST
@@ -92,7 +92,7 @@ def describe_models() -> None:
     console.print(table)
 
 
-@hubble.login_required
+@login_required
 def fit(
     model: str,
     train_data: Union[str, DocumentArray],
