@@ -13,6 +13,7 @@ from finetuner.constants import (
     HUBBLE_REGISTRY,
 )
 from finetuner.run import Run
+from hubble import login_required
 
 if HOST not in os.environ:
     os.environ[HOST] = DEFAULT_FINETUNER_HOST
@@ -91,6 +92,7 @@ def describe_models() -> None:
     console.print(table)
 
 
+@login_required
 def fit(
     model: str,
     train_data: Union[str, DocumentArray],
