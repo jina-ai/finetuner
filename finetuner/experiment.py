@@ -21,6 +21,7 @@ from finetuner.constants import (
     LEARNING_RATE,
     LOSS,
     MINER,
+    MINER_OPTIONS,
     MODEL,
     MODEL_OPTIONS,
     NAME,
@@ -229,8 +230,9 @@ class Experiment:
             HYPER_PARAMETERS: {
                 LOSS: kwargs.get(LOSS),
                 OPTIMIZER: kwargs.get(OPTIMIZER),
-                OPTIMIZER_OPTIONS: {},
+                OPTIMIZER_OPTIONS: kwargs.get(OPTIMIZER_OPTIONS) or {},
                 MINER: kwargs.get(MINER),
+                MINER_OPTIONS: kwargs.get(MINER_OPTIONS) or {},
                 BATCH_SIZE: kwargs.get(BATCH_SIZE),
                 LEARNING_RATE: kwargs.get(LEARNING_RATE),
                 EPOCHS: kwargs.get(EPOCHS),
