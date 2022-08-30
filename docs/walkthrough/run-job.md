@@ -64,6 +64,7 @@ run = finetuner.fit(
     miner='TripletMarginMiner',
     miner_options={'margin': 0.2}, # additional options for the miner constructor
     optimizer='Adam',
+    optimizer_options={'weight_decay': 0.01}, # additional options for the optimizer
     learning_rate = 1e-4,
     epochs=10,
     batch_size=128,
@@ -94,7 +95,7 @@ For detailed documentation of the optimizers and their parameters, please take a
 ### Configuration of the Miner
 
 To filter the instances in a batch that are used to calculate the loss, you can use miners.
-Finetuner allows you to use miners provided by the [Pytorch Metric Learning](https://kevinmusgrave.github.io/pytorch-metric-learning) framework. 
+Finetuner allows you to use miners provided by the [PyTorch Metric Learning](https://kevinmusgrave.github.io/pytorch-metric-learning) framework.
 To select a specific miner, you can pass its name to the fit function, e.g., `AngularMiner`, `TripletMarginMiner`, ...
 
 Please note that the miner has to be compatible with the loss function you selected.
