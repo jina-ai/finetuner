@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update sphinx-markdown-table to v0.0.16 to get [this fix](https://github.com/ryanfox/sphinx-markdown-tables/pull/37) ([#499](https://github.com/jina-ai/finetuner/pull/499))
 
+- Place install instructions in the documentation more prominent ([#518](https://github.com/jina-ai/finetuner/pull/518))
+
 
 ## [0.5.1] - 2022-07-15
 
