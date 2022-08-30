@@ -95,14 +95,11 @@ For detailed documentation of the optimizers and their parameters, please take a
 
 To filter the instances in a batch that are used to calculate the loss, you can use miners.
 Finetuner allows you to use miners provided by the [Pytorch Metric Learning](https://kevinmusgrave.github.io/pytorch-metric-learning) framework. 
-To select a specific miner, you can pass its name to the fit function: `AngularMiner`, `BaseMiner`, `BaseSubsetBatchMiner`, `BaseTupleMiner`,
-        `BatchEasyHardMiner`, `BatchHardMiner`, `DistanceWeightedMiner`, `HDCMiner`,
-        `EmbeddingsAlreadyPackagedAsTriplets`, `MaximumLossMiner`, `PairMarginMiner`,
-        `MultiSimilarityMiner`, `TripletMarginMiner`, or `UniformHistogramMiner`.
+To select a specific miner, you can pass its name to the fit function, e.g., `AngularMiner`, `TripletMarginMiner`, ...
 
 Please note that the miner has to be compatible with the loss function you selected.
 For instance, if you choose to train a model with the `TripleMarginLoss`, you can use the `TripletMarginMiner`.
-While without a miner, all possible triples with an anchor, a positive, and a negative candidate are constructed, the miner reduces this set of triples.
+While without this miner, all possible triples with an anchor, a positive, and a negative candidate are constructed, the miner reduces this set of triples.
 Usually, only triples with hard negatives are selected where the distance between the positive and the negative example is inside a margin of `0.2`.
 If you want to pass additional parameters to configure the miner, you can specify the `miner_options` parameter of the fit function.
 For example, you can modify the size of the margin to `0.3` by setting `miner_options={'margin': 0.3}'`.
