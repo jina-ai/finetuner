@@ -93,11 +93,18 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
 
 <sub><sup><a id="example-setup">[*]</a> All metrics evaluation on k@20, trained 5 epochs using Adam optimizer with learning rate of 1e-5.</sup></sub>
 
+<!-- start install-instruction -->
+
 ## Install
+
+Make sure you have Python 3.7+ installed.
+Finetuner can be installed via pip by executing:
 
 ```bash
 pip install -U finetuner
 ```
+
+<!-- end install-instruction -->
 
 > From 0.5.0, Finetuner computing is hosted on Jina Cloud. THe last local version is `0.4.1`, one can install it via pip or check out [git tags/releases here](https://github.com/jina-ai/finetuner/releases).
 
