@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Support log streaming in finetuner client. ([#504](https://github.com/jina-ai/finetuner/pull/504))
 
+- Support optimizer and miner options [#517](https://github.com/jina-ai/finetuner/pull/517)
+
 ### Removed
 
 ### Changed
