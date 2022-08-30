@@ -103,7 +103,9 @@ def fit(
     model_options: Optional[Dict[str, Any]] = None,
     loss: str = 'TripletMarginLoss',
     miner: Optional[str] = None,
+    miner_options: Optional[Dict[str, Any]] = None,
     optimizer: str = 'Adam',
+    optimizer_options: Optional[Dict[str, Any]] = None,
     learning_rate: Optional[float] = None,
     epochs: int = 5,
     batch_size: int = 64,
@@ -145,9 +147,17 @@ def fit(
         `BatchEasyHardMiner`, `BatchHardMiner`, `DistanceWeightedMiner`, `HDCMiner`,
         `EmbeddingsAlreadyPackagedAsTriplets`, `MaximumLossMiner`, `PairMarginMiner`,
         `MultiSimilarityMiner`, `TripletMarginMiner`, `UniformHistogramMiner`.
+    :param miner_options: Additional parameters to pass to the miner construction. The
+        set of applicable parameters is specific to the miner you choose. Details on
+        the parameters can be found in the `PyTorch Metric Learning documentation
+        <https://kevinmusgrave.github.io/pytorch-metric-learning/miners/>`_
     :param optimizer: Name of the optimizer used for fine-tuning. Options: `Adadelta`,
         `Adagrad`, `Adam`, `AdamW`, `SparseAdam`, `Adamax`, `ASGD`, `LBFGS`, `NAdam`,
         `RAdam`, `RMSprop`, `Rprop`, `SGD`.
+    :param optimizer_options: Additional parameters to pass to the optimizer
+        construction. The set of applicable parameters is specific to the optimizer you
+        choose. Details on the parameters can be found in the `PyTorch documentation
+        <https://pytorch.org/docs/stable/optim.html>`_
     :param learning_rate: learning rate for the optimizer.
     :param epochs: Number of epochs for fine-tuning.
     :param batch_size: Number of items to include in a batch.
@@ -172,7 +182,9 @@ def fit(
         model_options=model_options,
         loss=loss,
         miner=miner,
+        miner_options=miner_options,
         optimizer=optimizer,
+        optimizer_options=optimizer_options,
         learning_rate=learning_rate,
         epochs=epochs,
         batch_size=batch_size,
