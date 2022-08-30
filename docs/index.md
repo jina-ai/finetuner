@@ -20,7 +20,7 @@
 :hidden:
 
 get-started/how-it-works
-get-started/install
+get-started/installation
 get-started/design-principles
 walkthrough/index
 ```
