@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -191,9 +191,9 @@
     <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/how-it-works/">How Does it Work?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/installation/">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/design-principles/">Design Principles</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../walkthrough/">Walkthrough</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/install/">Install</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/basic-concepts/">Basic Concepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/login/">Login</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/create-training-data/">Prepare Training Data</a></li>
@@ -316,6 +316,7 @@
     <span class="n">HUBBLE_REGISTRY</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">finetuner.run</span> <span class="kn">import</span> <span class="n">Run</span>
+<span class="kn">from</span> <span class="nn">hubble</span> <span class="kn">import</span> <span class="n">login_required</span>
 
 <span class="k">if</span> <span class="n">HOST</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
     <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">HOST</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_FINETUNER_HOST</span>
@@ -394,7 +395,8 @@
     <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="fit"><a class="viewcode-back" href="../../api/finetuner/#finetuner.fit">[docs]</a><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
     <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">train_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">],</span>
     <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -404,7 +406,9 @@
     <span class="n">model_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">loss</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;TripletMarginLoss&#39;</span><span class="p">,</span>
     <span class="n">miner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">miner_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">optimizer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Adam&#39;</span><span class="p">,</span>
+    <span class="n">optimizer_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">learning_rate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
@@ -446,9 +450,17 @@
 <span class="sd">        `BatchEasyHardMiner`, `BatchHardMiner`, `DistanceWeightedMiner`, `HDCMiner`,</span>
 <span class="sd">        `EmbeddingsAlreadyPackagedAsTriplets`, `MaximumLossMiner`, `PairMarginMiner`,</span>
 <span class="sd">        `MultiSimilarityMiner`, `TripletMarginMiner`, `UniformHistogramMiner`.</span>
+<span class="sd">    :param miner_options: Additional parameters to pass to the miner construction. The</span>
+<span class="sd">        set of applicable parameters is specific to the miner you choose. Details on</span>
+<span class="sd">        the parameters can be found in the `PyTorch Metric Learning documentation</span>
+<span class="sd">        &lt;https://kevinmusgrave.github.io/pytorch-metric-learning/miners/&gt;`_</span>
 <span class="sd">    :param optimizer: Name of the optimizer used for fine-tuning. Options: `Adadelta`,</span>
 <span class="sd">        `Adagrad`, `Adam`, `AdamW`, `SparseAdam`, `Adamax`, `ASGD`, `LBFGS`, `NAdam`,</span>
 <span class="sd">        `RAdam`, `RMSprop`, `Rprop`, `SGD`.</span>
+<span class="sd">    :param optimizer_options: Additional parameters to pass to the optimizer</span>
+<span class="sd">        construction. The set of applicable parameters is specific to the optimizer you</span>
+<span class="sd">        choose. Details on the parameters can be found in the `PyTorch documentation</span>
+<span class="sd">        &lt;https://pytorch.org/docs/stable/optim.html&gt;`_</span>
 <span class="sd">    :param learning_rate: learning rate for the optimizer.</span>
 <span class="sd">    :param epochs: Number of epochs for fine-tuning.</span>
 <span class="sd">    :param batch_size: Number of items to include in a batch.</span>
@@ -473,7 +485,9 @@
         <span class="n">model_options</span><span class="o">=</span><span class="n">model_options</span><span class="p">,</span>
         <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span>
         <span class="n">miner</span><span class="o">=</span><span class="n">miner</span><span class="p">,</span>
+        <span class="n">miner_options</span><span class="o">=</span><span class="n">miner_options</span><span class="p">,</span>
         <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+        <span class="n">optimizer_options</span><span class="o">=</span><span class="n">optimizer_options</span><span class="p">,</span>
         <span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span>
         <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
@@ -483,7 +497,7 @@
         <span class="n">output_dim</span><span class="o">=</span><span class="n">output_dim</span><span class="p">,</span>
         <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">,</span>
         <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
-    <span class="p">)</span></div>
+    <span class="p">)</span>
 
 
 <span class="c1"># `create_run` and `fit` do the same</span>
@@ -599,7 +613,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 26, 2022</div>
+                            Last updated on Aug 31, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

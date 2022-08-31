@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -191,9 +191,9 @@
     <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../get-started/how-it-works/">How Does it Work?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/installation/">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../get-started/design-principles/">Design Principles</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../walkthrough/">Walkthrough</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/install/">Install</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/basic-concepts/">Basic Concepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/login/">Login</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/create-training-data/">Prepare Training Data</a></li>
@@ -324,6 +324,7 @@
     <span class="n">LEARNING_RATE</span><span class="p">,</span>
     <span class="n">LOSS</span><span class="p">,</span>
     <span class="n">MINER</span><span class="p">,</span>
+    <span class="n">MINER_OPTIONS</span><span class="p">,</span>
     <span class="n">MODEL</span><span class="p">,</span>
     <span class="n">MODEL_OPTIONS</span><span class="p">,</span>
     <span class="n">NAME</span><span class="p">,</span>
@@ -532,8 +533,9 @@
             <span class="n">HYPER_PARAMETERS</span><span class="p">:</span> <span class="p">{</span>
                 <span class="n">LOSS</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">LOSS</span><span class="p">),</span>
                 <span class="n">OPTIMIZER</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">OPTIMIZER</span><span class="p">),</span>
-                <span class="n">OPTIMIZER_OPTIONS</span><span class="p">:</span> <span class="p">{},</span>
+                <span class="n">OPTIMIZER_OPTIONS</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">OPTIMIZER_OPTIONS</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{},</span>
                 <span class="n">MINER</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MINER</span><span class="p">),</span>
+                <span class="n">MINER_OPTIONS</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MINER_OPTIONS</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{},</span>
                 <span class="n">BATCH_SIZE</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">BATCH_SIZE</span><span class="p">),</span>
                 <span class="n">LEARNING_RATE</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">LEARNING_RATE</span><span class="p">),</span>
                 <span class="n">EPOCHS</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">EPOCHS</span><span class="p">),</span>
@@ -556,7 +558,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 26, 2022</div>
+                            Last updated on Aug 31, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

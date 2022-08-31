@@ -42,7 +42,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -222,9 +222,9 @@
     <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/how-it-works/">How Does it Work?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/installation/">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/design-principles/">Design Principles</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../walkthrough/">Walkthrough</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/install/">Install</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/basic-concepts/">Basic Concepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/login/">Login</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/create-training-data/">Prepare Training Data</a></li>
@@ -399,6 +399,20 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="finetuner.run.Run.stream_logs">
+<span class="sig-name descname"><span class="pre">stream_logs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/run/#Run.stream_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.run.Run.stream_logs" title="Permalink to this definition">#</a></dt>
+<dd><p>Stream the run logs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yield</dt>
+<dd class="field-odd"><p>An iterators keep stream the logs from server.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="finetuner.run.Run.save_artifact">
 <span class="sig-name descname"><span class="pre">save_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'artifacts/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/run/#Run.save_artifact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.run.Run.save_artifact" title="Permalink to this definition">#</a></dt>
 <dd><p>Save artifact if the run is finished.</p>
@@ -459,7 +473,7 @@ using <cite>FinetunerExecutor</cite>.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 26, 2022</div>
+                            Last updated on Aug 31, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

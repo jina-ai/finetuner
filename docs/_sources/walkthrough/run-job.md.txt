@@ -6,6 +6,8 @@ and have selected your backbone model.
 
 Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud!
 
+## Submit a Finetuning Job to the Cloud
+
 To start fine-tuning, you can call:
 
 ```python
@@ -22,7 +24,7 @@ print(f'Run name: {run.name}')
 print(f'Run status: {run.status()}')
 ```
 
-You'll see something this in the terminal, with a different run name:
+You'll see something like this in the terminal, with a different run name:
 
 ```bash
 Run name: vigilant-tereshkova
@@ -36,6 +38,7 @@ the run status changes from:
 3. FINISHED: the job finished successfully, model has been sent to cloud storage.
 4. FAILED: the job failed, please check the logs for more details.
 
+## Advanced Configurations
 Beyond the simplest use case,
 Finetuner gives you the flexibility to set hyper-parameters explicitly:
 
@@ -59,7 +62,9 @@ run = finetuner.fit(
     model_options={}, # additional options to pass to the model constructor
     loss='TripletMarginLoss', # Use CLIPLoss for CLIP fine-tuning.
     miner='TripletMarginMiner',
+    miner_options={'margin': 0.2}, # additional options for the miner constructor
     optimizer='Adam',
+    optimizer_options={'weight_decay': 0.01}, # additional options for the optimizer
     learning_rate = 1e-4,
     epochs=10,
     batch_size=128,
@@ -74,3 +79,30 @@ run = finetuner.fit(
 ```{Important}
 Please check the [developer reference](../../api/finetuner/#finetuner.fit) to get the available options for `loss`, `miner`, `optimizer` and `scheduler_step`.
 ```
+
+### Configuration of the Optimizer
+Fintuner allows one to choose any of the optimizers provided by PyTorch.
+By default, the `Adam` optimizer is selected.
+To select a different one, you can specify its name in the `optimizer` attribute of the fit function.
+Possible values are: `Adadelta`, `Adagrad`, `Adam`, `AdamW`, `SparseAdam`, `Adamax`, `ASGD`, `LBFGS`, `NAdam`, `RAdam`, `RMSprop`, `Rprop`, and `SGD`.
+
+Finetuner configures the learning rate of the optimizer by using the value of the `lr` option.
+If you want to pass more parameters to the optimizer, you can specify them via `optimizer_options`.
+For example, you can enable the weight decay of the Adam optimizer to penalize high weights in the model by setting `optimizer_options={'weight_decay':0.01}`.
+
+For detailed documentation of the optimizers and their parameters, please take a look at the [PyTorch documentation](https://pytorch.org/docs/stable/optim.html).
+
+### Configuration of the Miner
+
+To filter the instances in a batch that are used to calculate the loss, you can use miners.
+Finetuner allows you to use miners provided by the [PyTorch Metric Learning](https://kevinmusgrave.github.io/pytorch-metric-learning) framework.
+To select a specific miner, you can pass its name to the fit function, e.g., `AngularMiner`, `TripletMarginMiner`, ...
+
+Please note that the miner has to be compatible with the loss function you selected.
+For instance, if you choose to train a model with the `TripleMarginLoss`, you can use the `TripletMarginMiner`.
+While without this miner, all possible triples with an anchor, a positive, and a negative candidate are constructed, the miner reduces this set of triples.
+Usually, only triples with hard negatives are selected where the distance between the positive and the negative example is inside a margin of `0.2`.
+If you want to pass additional parameters to configure the miner, you can specify the `miner_options` parameter of the fit function.
+For example, you can modify the size of the margin to `0.3` by setting `miner_options={'margin': 0.3}'`.
+A detailed description of the miners and their parameters is specified in the [PyTorch Metric Learning documentation](https://kevinmusgrave.github.io/pytorch-metric-learning/miners/).
+

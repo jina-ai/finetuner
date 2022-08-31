@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="Finetuner Documentation" />
   
-<meta property="og:description" content="Now you should have your training data and evaluation data (optional) prepared as DocumentArray s, and have selected your backbone model. Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud! To start fine-tun..." />
+<meta property="og:description" content="Now you should have your training data and evaluation data (optional) prepared as DocumentArray s, and have selected your backbone model. Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud! Submit a Finetuni..." />
   
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   
@@ -44,7 +44,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -190,7 +190,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -224,9 +224,9 @@
     <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/how-it-works/">How Does it Work?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/installation/">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/design-principles/">Design Principles</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../">Walkthrough</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../install/">Install</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../basic-concepts/">Basic Concepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../login/">Login</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../create-training-data/">Prepare Training Data</a></li>
@@ -322,7 +322,7 @@
                             </svg>
                         </button>
                     </div>
-                    <label class="toc-overlay-icon toc-content-icon no-toc"
+                    <label class="toc-overlay-icon toc-content-icon"
                            for="__toc">
                         <div class="visually-hidden">Toggle table of contents sidebar</div>
                         <i class="icon">
@@ -335,9 +335,11 @@
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="run-job">
 <span id="start-finetuner"></span><h1>Run Job<a class="headerlink" href="#run-job" title="Permalink to this headline">#</a></h1>
-<p>Now you should have your training data and evaluation data (optional) prepared as <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.13.31)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>s,
+<p>Now you should have your training data and evaluation data (optional) prepared as <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.16.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>s,
 and have selected your backbone model.</p>
 <p>Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud!</p>
+<section id="submit-a-finetuning-job-to-the-cloud">
+<h2>Submit a Finetuning Job to the Cloud<a class="headerlink" href="#submit-a-finetuning-job-to-the-cloud" title="Permalink to this headline">#</a></h2>
 <p>To start fine-tuning, you can call:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -352,7 +354,7 @@ and have selected your backbone model.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run status: </span><span class="si">{</span><span class="n">run</span><span class="o">.</span><span class="n">status</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You’ll see something this in the terminal, with a different run name:</p>
+<p>You’ll see something like this in the terminal, with a different run name:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Run name: vigilant-tereshkova
 Run status: CREATED
 </pre></div>
@@ -365,6 +367,9 @@ the run status changes from:</p>
 <li><p>FINISHED: the job finished successfully, model has been sent to cloud storage.</p></li>
 <li><p>FAILED: the job failed, please check the logs for more details.</p></li>
 </ol>
+</section>
+<section id="advanced-configurations">
+<h2>Advanced Configurations<a class="headerlink" href="#advanced-configurations" title="Permalink to this headline">#</a></h2>
 <p>Beyond the simplest use case,
 Finetuner gives you the flexibility to set hyper-parameters explicitly:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
@@ -386,7 +391,9 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:</p>
     <span class="n">model_options</span><span class="o">=</span><span class="p">{},</span> <span class="c1"># additional options to pass to the model constructor</span>
     <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;TripletMarginLoss&#39;</span><span class="p">,</span> <span class="c1"># Use CLIPLoss for CLIP fine-tuning.</span>
     <span class="n">miner</span><span class="o">=</span><span class="s1">&#39;TripletMarginMiner&#39;</span><span class="p">,</span>
+    <span class="n">miner_options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;margin&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span> <span class="c1"># additional options for the miner constructor</span>
     <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;Adam&#39;</span><span class="p">,</span>
+    <span class="n">optimizer_options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;weight_decay&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">},</span> <span class="c1"># additional options for the optimizer</span>
     <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span>
     <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
@@ -402,6 +409,31 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:</p>
 <p class="admonition-title">Important</p>
 <p>Please check the <a class="reference external" href="../../api/finetuner/#finetuner.fit">developer reference</a> to get the available options for <code class="docutils literal notranslate"><span class="pre">loss</span></code>, <code class="docutils literal notranslate"><span class="pre">miner</span></code>, <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> and <code class="docutils literal notranslate"><span class="pre">scheduler_step</span></code>.</p>
 </div>
+<section id="configuration-of-the-optimizer">
+<h3>Configuration of the Optimizer<a class="headerlink" href="#configuration-of-the-optimizer" title="Permalink to this headline">#</a></h3>
+<p>Fintuner allows one to choose any of the optimizers provided by PyTorch.
+By default, the <code class="docutils literal notranslate"><span class="pre">Adam</span></code> optimizer is selected.
+To select a different one, you can specify its name in the <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> attribute of the fit function.
+Possible values are: <code class="docutils literal notranslate"><span class="pre">Adadelta</span></code>, <code class="docutils literal notranslate"><span class="pre">Adagrad</span></code>, <code class="docutils literal notranslate"><span class="pre">Adam</span></code>, <code class="docutils literal notranslate"><span class="pre">AdamW</span></code>, <code class="docutils literal notranslate"><span class="pre">SparseAdam</span></code>, <code class="docutils literal notranslate"><span class="pre">Adamax</span></code>, <code class="docutils literal notranslate"><span class="pre">ASGD</span></code>, <code class="docutils literal notranslate"><span class="pre">LBFGS</span></code>, <code class="docutils literal notranslate"><span class="pre">NAdam</span></code>, <code class="docutils literal notranslate"><span class="pre">RAdam</span></code>, <code class="docutils literal notranslate"><span class="pre">RMSprop</span></code>, <code class="docutils literal notranslate"><span class="pre">Rprop</span></code>, and <code class="docutils literal notranslate"><span class="pre">SGD</span></code>.</p>
+<p>Finetuner configures the learning rate of the optimizer by using the value of the <code class="docutils literal notranslate"><span class="pre">lr</span></code> option.
+If you want to pass more parameters to the optimizer, you can specify them via <code class="docutils literal notranslate"><span class="pre">optimizer_options</span></code>.
+For example, you can enable the weight decay of the Adam optimizer to penalize high weights in the model by setting <code class="docutils literal notranslate"><span class="pre">optimizer_options={'weight_decay':0.01}</span></code>.</p>
+<p>For detailed documentation of the optimizers and their parameters, please take a look at the <a class="reference external" href="https://pytorch.org/docs/stable/optim.html">PyTorch documentation</a>.</p>
+</section>
+<section id="configuration-of-the-miner">
+<h3>Configuration of the Miner<a class="headerlink" href="#configuration-of-the-miner" title="Permalink to this headline">#</a></h3>
+<p>To filter the instances in a batch that are used to calculate the loss, you can use miners.
+Finetuner allows you to use miners provided by the <a class="reference external" href="https://kevinmusgrave.github.io/pytorch-metric-learning">PyTorch Metric Learning</a> framework.
+To select a specific miner, you can pass its name to the fit function, e.g., <code class="docutils literal notranslate"><span class="pre">AngularMiner</span></code>, <code class="docutils literal notranslate"><span class="pre">TripletMarginMiner</span></code>, …</p>
+<p>Please note that the miner has to be compatible with the loss function you selected.
+For instance, if you choose to train a model with the <code class="docutils literal notranslate"><span class="pre">TripleMarginLoss</span></code>, you can use the <code class="docutils literal notranslate"><span class="pre">TripletMarginMiner</span></code>.
+While without this miner, all possible triples with an anchor, a positive, and a negative candidate are constructed, the miner reduces this set of triples.
+Usually, only triples with hard negatives are selected where the distance between the positive and the negative example is inside a margin of <code class="docutils literal notranslate"><span class="pre">0.2</span></code>.
+If you want to pass additional parameters to configure the miner, you can specify the <code class="docutils literal notranslate"><span class="pre">miner_options</span></code> parameter of the fit function.
+For example, you can modify the size of the margin to <code class="docutils literal notranslate"><span class="pre">0.3</span></code> by setting <code class="docutils literal notranslate"><span class="pre">miner_options={'margin':</span> <span class="pre">0.3}'</span></code>.
+A detailed description of the miners and their parameters is specified in the <a class="reference external" href="https://kevinmusgrave.github.io/pytorch-metric-learning/miners/">PyTorch Metric Learning documentation</a>.</p>
+</section>
+</section>
 </section>
 
                 </article>
@@ -439,7 +471,7 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 26, 2022</div>
+                            Last updated on Aug 31, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -459,8 +491,32 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:</p>
                 
             </footer>
         </div>
-        <aside class="toc-drawer no-toc">
+        <aside class="toc-drawer">
             
+            
+            <div class="toc-sticky toc-scroll">
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">Run Job</a><ul>
+<li><a class="reference internal" href="#submit-a-finetuning-job-to-the-cloud">Submit a Finetuning Job to the Cloud</a></li>
+<li><a class="reference internal" href="#advanced-configurations">Advanced Configurations</a><ul>
+<li><a class="reference internal" href="#configuration-of-the-optimizer">Configuration of the Optimizer</a></li>
+<li><a class="reference internal" href="#configuration-of-the-miner">Configuration of the Miner</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+            </div>
             
             
         </aside>

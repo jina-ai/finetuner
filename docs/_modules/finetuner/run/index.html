@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -191,9 +191,9 @@
     <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../get-started/how-it-works/">How Does it Work?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/installation/">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../get-started/design-principles/">Design Principles</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../walkthrough/">Walkthrough</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/install/">Install</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/basic-concepts/">Basic Concepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/login/">Login</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/create-training-data/">Prepare Training Data</a></li>
@@ -301,7 +301,9 @@
                 </div>
                 <article role="main">
                     <h1>Source code for finetuner.run</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">finetuner.client</span> <span class="kn">import</span> <span class="n">FinetunerV1Client</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span>
+
+<span class="kn">from</span> <span class="nn">finetuner.client</span> <span class="kn">import</span> <span class="n">FinetunerV1Client</span>
 <span class="kn">from</span> <span class="nn">finetuner.constants</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ARTIFACT_ID</span><span class="p">,</span>
     <span class="n">ARTIFACTS_DIR</span><span class="p">,</span>
@@ -310,7 +312,7 @@
     <span class="n">STARTED</span><span class="p">,</span>
     <span class="n">STATUS</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">finetuner.exception</span> <span class="kn">import</span> <span class="n">RunFailedError</span><span class="p">,</span> <span class="n">RunInProgressError</span>
+<span class="kn">from</span> <span class="nn">finetuner.exception</span> <span class="kn">import</span> <span class="n">RunFailedError</span><span class="p">,</span> <span class="n">RunInProgressError</span><span class="p">,</span> <span class="n">RunPreparingError</span>
 <span class="kn">from</span> <span class="nn">finetuner.hubble</span> <span class="kn">import</span> <span class="n">download_artifact</span>
 
 
@@ -370,11 +372,22 @@
 
 <span class="sd">        :returns: A string dump of the run logs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_run_status_started</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_run_logs</span><span class="p">(</span>
             <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiment_name</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
         <span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_check_run_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Run.stream_logs"><a class="viewcode-back" href="../../../api/finetuner.run/#finetuner.run.Run.stream_logs">[docs]</a>    <span class="k">def</span> <span class="nf">stream_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Stream the run logs.</span>
+
+<span class="sd">        :yield: An iterators keep stream the logs from server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_run_status_started</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">stream_run_logs</span><span class="p">(</span>
+            <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiment_name</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+        <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_check_run_status_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()[</span><span class="n">STATUS</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">status</span> <span class="ow">in</span> <span class="p">[</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">STARTED</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="n">RunInProgressError</span><span class="p">(</span>
@@ -385,13 +398,21 @@
                 <span class="s1">&#39;The run failed, please check the `logs` for detailed information.&#39;</span>
             <span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_check_run_status_started</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()[</span><span class="n">STATUS</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">CREATED</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RunPreparingError</span><span class="p">(</span>
+                <span class="s1">&#39;The run is preparing to run, logs will be ready to pull when &#39;</span>
+                <span class="s1">&#39;`status` is `STARTED`.&#39;</span>
+            <span class="p">)</span>
+
 <div class="viewcode-block" id="Run.save_artifact"><a class="viewcode-back" href="../../../api/finetuner.run/#finetuner.run.Run.save_artifact">[docs]</a>    <span class="k">def</span> <span class="nf">save_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ARTIFACTS_DIR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Save artifact if the run is finished.</span>
 
 <span class="sd">        :param directory: Directory where the artifact will be stored.</span>
 <span class="sd">        :returns: A string object that indicates the download path.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_run_status</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_run_status_finished</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">download_artifact</span><span class="p">(</span>
             <span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">,</span>
             <span class="n">artifact_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">[</span><span class="n">ARTIFACT_ID</span><span class="p">],</span>
@@ -410,7 +431,7 @@
 
 <span class="sd">        :return: Artifact id as string object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_run_status</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_run_status_finished</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">[</span><span class="n">ARTIFACT_ID</span><span class="p">]</span></div>
 </pre></div>
                 </article>
@@ -426,7 +447,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 26, 2022</div>
+                            Last updated on Aug 31, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
