@@ -69,7 +69,7 @@ def test_list_runs(experiment):
 def test_create_run(experiment):
     data = docarray.DocumentArray().empty(1)
     run_name = 'run1'
-    data_name = f'{DA_PREFIX}.{experiment.name}.{run_name}.train'
+    data_name = f'{DA_PREFIX}-{experiment.name}-{run_name}-train'
     run = experiment.create_run(
         model='resnet50',
         model_options={},
