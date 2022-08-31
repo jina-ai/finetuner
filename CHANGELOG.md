@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Removed
+
+### Changed
+
+### Fixed
+
+### Docs
+
+
+## [0.5.2] - 2022-08-31
+
+### Added
+
 - Enable wandb callback. ([#494](https://github.com/jina-ai/finetuner/pull/494))
 
 - Support log streaming in finetuner client. ([#504](https://github.com/jina-ai/finetuner/pull/504))
