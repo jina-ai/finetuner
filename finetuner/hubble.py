@@ -49,16 +49,16 @@ def push_data(
     _ids2names = dict()
     return (
         _push_docarray(
-            train_data, f'{DA_PREFIX}.{experiment_name}.{run_name}.train', _ids2names
+            train_data, f'{DA_PREFIX}-{experiment_name}-{run_name}-train', _ids2names
         ),
         _push_docarray(
-            eval_data, f'{DA_PREFIX}.{experiment_name}.{run_name}.eval', _ids2names
+            eval_data, f'{DA_PREFIX}-{experiment_name}-{run_name}-eval', _ids2names
         ),
         _push_docarray(
-            query_data, f'{DA_PREFIX}.{experiment_name}.{run_name}.query', _ids2names
+            query_data, f'{DA_PREFIX}-{experiment_name}-{run_name}-query', _ids2names
         ),
         _push_docarray(
-            index_data, f'{DA_PREFIX}.{experiment_name}.{run_name}.index', _ids2names
+            index_data, f'{DA_PREFIX}-{experiment_name}-{run_name}-index', _ids2names
         ),
     )
 
