@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Replace the artifact name from dot to dash. ([#519](https://github.com/jina-ai/finetuner/pull/519))
+
 ### Docs
 
 - Fix google analytics Id for docs. ([#499](https://github.com/jina-ai/finetuner/pull/499))

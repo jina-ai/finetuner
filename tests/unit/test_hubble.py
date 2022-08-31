@@ -17,6 +17,6 @@ def test_push_data(client_mocker, experiment_name='exp', run_name='run'):
         query_data=query_data,
         index_data=index_data,
     )
-    assert train_name == f'{DA_PREFIX}.{experiment_name}.{run_name}.train'
-    assert eval_name == query_name == f'{DA_PREFIX}.{experiment_name}.{run_name}.eval'
+    assert train_name == f'{DA_PREFIX}-{experiment_name}-{run_name}-train'
+    assert eval_name == query_name == f'{DA_PREFIX}-{experiment_name}-{run_name}-eval'
     assert not index_name
