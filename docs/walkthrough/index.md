@@ -66,7 +66,6 @@ Please check out the following steps for more information:
 
 
 ```{toctree}
-install
 basic-concepts
 login
 create-training-data

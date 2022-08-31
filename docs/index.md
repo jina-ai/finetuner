@@ -5,6 +5,10 @@
 :end-before: <!-- end elevator-pitch -->
 ```
 
+```{include} ../README.md
+:start-after: <!-- start install-instruction -->
+:end-before: <!-- end install-instruction -->
+```
 
 ```{include} ../README.md
 :start-after: <!-- start support-pitch -->
@@ -16,6 +20,7 @@
 :hidden:
 
 get-started/how-it-works
+get-started/installation
 get-started/design-principles
 walkthrough/index
 ```
