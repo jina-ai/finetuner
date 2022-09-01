@@ -2,3 +2,4 @@ docarray[common]>=0.13.31
 jina-hubble-sdk>=0.15.2
 requests>=2.27.1
 rich>=12.4.4
+finetuner-stubs>=0.9.4

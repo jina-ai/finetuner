@@ -2,8 +2,8 @@ from dataclasses import fields
 from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
+from stubs.callback import EvaluationCallback
 
-from finetuner.callback import EvaluationCallback
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import (
     BATCH_SIZE,
