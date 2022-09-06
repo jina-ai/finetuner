@@ -119,7 +119,7 @@ run = finetuner.get_run(
 
 da = DocumentArray([Document(text='some text to encode')])
 
-da.post(
+embedded_da = da.post(
     'jinahub+docker://FinetunerExecutor/v0.9.2/encode',
     uses_with={'artifact': run.artifact_id, 'token': token},
 )
@@ -131,7 +131,7 @@ from docarray import DocumentArray, Document
 
 da = DocumentArray([Document(text='some text to encode')])
 
-da.post(
+embedded_da = da.post(
     'jinahub+docker://FinetunerExecutor/v0.9.2/encode,
     uses_with={'artifact': '/mnt/YOUR-MODEL.zip'},
     volumes=['/your/local/path/:/mnt']  # mount your model path to docker.
@@ -143,3 +143,54 @@ da.post(
 Text of the returned document: some text to encode
 Shape of the embedding: (768,)
 ```
+
+## Special case: Artifacts with CLIP models 
+If your fine-tuning job was executed on a CLIP model, your artifact contains two 
+models: `clip-vision` and `clip-text`.
+The vision model allows you to embed images and the text model can encode text passages
+into the same vector space.
+To host those models, you have to provide the name of the model via an additional
+`select_model` property inside the `uses` attribute:
+
+````{tab} CLIP text model
+```python
+from docarray import DocumentArray, Document
+import finetuner
+
+finetuner.login()
+
+token = finetuner.get_token()
+run = finetuner.get_run(
+    experiment_name='YOUR-EXPERIMENT',
+    run_name='YOUR-RUN'
+)
+
+da = DocumentArray([Document(text='some text to encode')])
+
+embedded_da = da.post(
+    'jinahub+docker://FinetunerExecutor/v0.9.2/encode',
+    uses_with={'artifact': run.artifact_id, 'token': token, 'select_model': 'clip-text'}
+)
+```
+````
+````{tab} CLIP vision model
+```python
+from docarray import DocumentArray, Document
+import finetuner
+
+finetuner.login()
+
+token = finetuner.get_token()
+run = finetuner.get_run(
+    experiment_name='YOUR-EXPERIMENT',
+    run_name='YOUR-RUN'
+)
+
+da = DocumentArray([Document(text='~/Pictures/my_img.png')])
+
+embedded_da = da.post(
+    'jinahub+docker://FinetunerExecutor/v0.9.2/encode',
+    uses_with={'artifact': run.artifact_id, 'token': token, 'select_model': 'clip-vision'}
+)
+```
+````

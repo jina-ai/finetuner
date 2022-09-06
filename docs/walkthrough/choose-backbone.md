@@ -3,6 +3,7 @@
 
 Finetuner provides several widely used backbone models,
 including `resnet`, `efficientnet`, `clip` and `bert`.
+Thereby, for most of them, Finetuner provides multiple variants, e.g, the common `resnet50 ` and the more complex `resnet152` model.
 
 Finetuner will convert these backbone models to embedding models by removing
 the *head* or applying *pooling*,
@@ -34,12 +35,11 @@ To get a list of supported models:
 └──────────────────────────────────────────────────┴────────────────┴────────────┴──────────────┴────────────────────────────────────────────────┘
 
 ```
-
-+ ResNets are suitable for image-to-image search tasks with high performance requirement.
-+ EfficientNets are suitable for image-to-image search tasks with fast training and inference. The model is more light-weighted than ResNet.
++ ResNets are suitable for image-to-image search tasks with high performance requirement, where `resnet152` is bigger and requires higher computational resources than `resnet50`.
++ EfficientNets are suitable for image-to-image search tasks with fast training and inference. The model is more light-weighted than ResNet. Here, `efficientnet_b4` is the bigger and more complex model.
 + CLIP is the one for text-to-image search, where the images do not need to have any text descriptors.
 + BERT is generally suitable for text-to-text search tasks.
-+ Msmarco-distilbert-base-v3 is suitable for short text-to-text search.
++ Msmarco-distilbert-base-v3 is designed for matching web search queries to short text passages and is a suitable backbone for similar text-to-text search tasks.
 
 It should be noted that:
 

@@ -6,7 +6,7 @@ and have selected your backbone model.
 
 Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud!
 
-## Submit a Finetuning Job to the Cloud
+## Submit a Finetuning Job to the cloud
 
 To start fine-tuning, you can call:
 
@@ -38,7 +38,7 @@ the run status changes from:
 3. FINISHED: the job finished successfully, model has been sent to cloud storage.
 4. FAILED: the job failed, please check the logs for more details.
 
-## Advanced Configurations
+## Advanced configurations
 Beyond the simplest use case,
 Finetuner gives you the flexibility to set hyper-parameters explicitly:
 
@@ -66,7 +66,7 @@ run = finetuner.fit(
     optimizer='Adam',
     optimizer_options={'weight_decay': 0.01}, # additional options for the optimizer
     learning_rate = 1e-4,
-    epochs=10,
+    epochs=5,
     batch_size=128,
     scheduler_step='batch',
     freeze=False, # If applied will freeze the embedding model, only train the MLP.
@@ -76,11 +76,17 @@ run = finetuner.fit(
 )
 ```
 
+### Loss functions
+
+The loss function determines the training objective.
+The type of loss function which is most suitable for your task depends heavily on the task your training for.
+For many retrieval tasks, the `TripletMarginLoss` is a good choice.
+
 ```{Important}
 Please check the [developer reference](../../api/finetuner/#finetuner.fit) to get the available options for `loss`, `miner`, `optimizer` and `scheduler_step`.
 ```
 
-### Configuration of the Optimizer
+### Configuration of the optimizer
 Fintuner allows one to choose any of the optimizers provided by PyTorch.
 By default, the `Adam` optimizer is selected.
 To select a different one, you can specify its name in the `optimizer` attribute of the fit function.
@@ -92,7 +98,15 @@ For example, you can enable the weight decay of the Adam optimizer to penalize h
 
 For detailed documentation of the optimizers and their parameters, please take a look at the [PyTorch documentation](https://pytorch.org/docs/stable/optim.html).
 
-### Configuration of the Miner
+```{admonition} Choosing the right learning rate and number of epochs
+:class: hint
+The learning rate determines how strong the weights are adjusted after processing a batch of training data.
+In general, you should choose a low learning rate (`1e-6` to `1e-4`) for fine-tuning.
+Otherwise, it could happen, that your model overfits on the training data and forgets the knowledge learned during pre-training.
+Similarly, two or three epochs (number of passes thorough the training data) are often enough for a fine-tuning job. 
+```
+
+### Configuration of the miner
 
 To filter the instances in a batch that are used to calculate the loss, you can use miners.
 Finetuner allows you to use miners provided by the [PyTorch Metric Learning](https://kevinmusgrave.github.io/pytorch-metric-learning) framework.
