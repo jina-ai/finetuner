@@ -35,6 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Mark fit as login required. ([#494](https://github.com/jina-ai/finetuner/pull/494))
 
+- Improve documentation according to remarks we received ([524](https://github.com/jina-ai/finetuner/pull/524))
+
 ### Fixed
 
 - Replace the artifact name from dot to dash. ([#519](https://github.com/jina-ai/finetuner/pull/519))
