@@ -57,11 +57,11 @@ pre-commit:
 
 ## Install package requirements
 install:
-	pip install --no-cache-dir -r requirements.txt
+	pip install --no-cache-dir -e .\[full]\
 
 ## Install dev requirements
 install-dev:
-	pip install --no-cache-dir -r requirements-dev.txt
+	pip install --no-cache-dir -e .\[test]\
 
 ## Install docs requirements
 install-docs:
