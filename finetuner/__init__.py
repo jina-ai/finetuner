@@ -1,6 +1,6 @@
 import inspect
 import os
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Union
 
 from docarray import DocumentArray
 from rich.console import Console
@@ -22,6 +22,7 @@ if HUBBLE_REGISTRY not in os.environ:
     os.environ[HUBBLE_REGISTRY] = DEFAULT_HUBBLE_REGISTRY
 
 from stubs import callback
+from stubs.callback import *
 
 from finetuner import models
 from finetuner.experiment import Experiment
@@ -163,7 +164,7 @@ def fit(
     :param learning_rate: learning rate for the optimizer.
     :param epochs: Number of epochs for fine-tuning.
     :param batch_size: Number of items to include in a batch.
-    :param callbacks: List of callback stub objects. See the `finetuner.callback`
+    :param callbacks: List of callback stub objects.`
         subpackage for available options, or run `finetuner.list_callbacks()`.
     :param scheduler_step: At which interval should the learning rate scheduler's
         step function be called. Valid options are `batch` and `epoch`.

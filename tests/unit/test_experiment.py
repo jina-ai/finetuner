@@ -1,7 +1,7 @@
 import docarray
 import pytest
+from stubs.callback import TrainingCheckpoint
 
-from finetuner.callback import TrainingCheckpoint
 from finetuner.constants import (
     BATCH_SIZE,
     CALLBACKS,

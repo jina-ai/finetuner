@@ -118,7 +118,7 @@ The following code snippet describes how to fine-tune ResNet50 on [Totally Looks
 
 ```python
 import finetuner
-from finetuner.callback import EvaluationCallback
+from finetuner import EvaluationCallback
 
 finetuner.login()
 
