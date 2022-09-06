@@ -1,6 +1,6 @@
 import inspect
 import os
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
 from rich.console import Console
@@ -22,7 +22,6 @@ if HUBBLE_REGISTRY not in os.environ:
     os.environ[HUBBLE_REGISTRY] = DEFAULT_HUBBLE_REGISTRY
 
 from stubs import callback
-from stubs.callback import *
 
 from finetuner import models
 from finetuner.experiment import Experiment
