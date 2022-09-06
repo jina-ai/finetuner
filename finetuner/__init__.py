@@ -295,3 +295,30 @@ def get_token() -> str:
     :return: user token as string object.
     """
     return ft.get_token()
+
+
+def get_model(model: str, directory: str):
+    """Re-build the model based on the model name using tailor.
+
+    :param model: The name of the model, should be the same as the `model` in the
+     `fit` function.
+    :param directory: The artifact directory.
+    :return: The model instance with loaded weights.
+
+    ..Note::
+      please install finetuner[full] to include all the dependencies.
+    """
+    pass
+
+
+def preprocess_and_collate(data: DocumentArray, directory: str):
+    """Process and collate the `DocumentArray` to be embeded.
+
+    :param data: The `DocumentArray` instance to be embeded.
+    :param directory: The artifact directory.
+    :returns: Preprocessed and collated `DocumentArray`.
+
+    ..Note::
+      please install finetuner[full] to include all the dependencies.
+    """
+    pass
