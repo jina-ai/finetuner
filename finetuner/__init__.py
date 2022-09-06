@@ -21,9 +21,7 @@ if HOST not in os.environ:
 if HUBBLE_REGISTRY not in os.environ:
     os.environ[HUBBLE_REGISTRY] = DEFAULT_HUBBLE_REGISTRY
 
-from stubs import callback
-
-from finetuner import models
+from finetuner import callback, model
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
 
@@ -41,16 +39,15 @@ def list_callbacks() -> Dict[str, callback.CallbackStubType]:
     }
 
 
-def _list_models() -> Dict[str, models.ModelStubType]:
-    return {
-        obj.name: obj
-        for _, obj in inspect.getmembers(models)
-        if (
-            inspect.isclass(obj)
-            and issubclass(obj, models._ModelStub)
-            and obj != models._ModelStub
-        )
-    }
+def _list_models() -> Dict[str, model.ModelStubType]:
+    from stubs import model as model_stub
+
+    rv = {}
+    members = inspect.getmembers(model_stub, inspect.isclass)
+    for name, obj in members:
+        if name != 'MLPStub' and not name.startswith('_') and type(obj) != type:
+            rv[name] = obj
+    return rv
 
 
 def list_models() -> List[str]:
@@ -82,13 +79,13 @@ def list_model_options() -> Dict[str, List[Dict[str, Any]]]:
 def describe_models() -> None:
     """Describe available models in a table."""
     table = Table(title='Finetuner backbones')
-    header = models._ModelStub.header()
+    header = model.get_header()
 
     for column in header:
         table.add_column(column, justify='right', style='cyan', no_wrap=True)
 
     for _, _model_class in _list_models().items():
-        table.add_row(*_model_class.row())
+        table.add_row(*model.get_row(_model_class))
 
     console = Console()
     console.print(table)
