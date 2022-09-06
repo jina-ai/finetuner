@@ -64,11 +64,11 @@ if __name__ == '__main__':
         install_requires=[
             'docarray[common]>=0.13.31',
             'jina-hubble-sdk>=0.15.2',
-            'finetuner-stubs>=0.9.3',
+            'finetuner-stubs==0.0.1b1',
         ],
         extras_requires={
             'full': [
-                'finetuner-commons>=0.9.3',
+                'finetuner-commons==0.0.1b0',
             ],
             'test': [
                 'black==22.3.0',
