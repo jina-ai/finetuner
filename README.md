@@ -152,6 +152,20 @@ Specifically, the code snippet describes the following steps:
   * Monitor the status: check the status and logs of the run.
   * Save model for further use and integration.
 
+
+Finally, you can use the model to encode images:
+
+```python
+import finetuner
+from docarray import Document, DocumentArray
+
+model = finetuner.get_model('resnet-tll')
+
+da = DocumentArray([Document(uri='~/Pictures/your_img.png')])
+
+embedded_da = finetuner.encode(model=model, data=da)
+```
+
 ### Next steps
 
 - Take the [walkthrough](https://finetuner.jina.ai/walkthrough/) and submit your first fine-tuning job.
