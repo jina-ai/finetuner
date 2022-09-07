@@ -310,7 +310,7 @@ def get_token() -> str:
 
 
 def get_model(
-    directory: str,
+    artifact: str,
     token: Optional[str] = None,
     batch_size: int = 32,
     select_model: Optional[str] = None,
@@ -318,7 +318,7 @@ def get_model(
 ):
     """Re-build the model based on the model inference session with ONNX.
 
-    :param directory: Specify a finetuner run artifact. Can be a path to a local
+    :param artifact: Specify a finetuner run artifact. Can be a path to a local
         directory, a path to a local zip file or a Hubble artifact ID. Individual
         model artifacts (model sub-folders inside the run artifacts) can also be
         specified using this argument.
@@ -346,7 +346,7 @@ def get_model(
         )
 
     ort_engine = ONNXRuntimeInferenceEngine(
-        artifact=directory,
+        artifact=artifact,
         token=token,
         batch_size=batch_size,
         select_model=select_model,
