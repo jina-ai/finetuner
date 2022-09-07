@@ -1,5 +1,6 @@
 import inspect
 import os
+import warnings
 from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
@@ -44,9 +45,20 @@ def _list_models() -> Dict[str, model.ModelStubType]:
 
     rv = {}
     members = inspect.getmembers(model_stub, inspect.isclass)
-    for name, obj in members:
-        if name != 'MLPStub' and not name.startswith('_') and type(obj) != type:
-            rv[name] = obj
+    for name, stub in members:
+        if name != 'MLPStub' and not name.startswith('_') and type(stub) != type:
+            rv[name] = stub
+    return rv
+
+
+def _build_name_stub_map() -> Dict[str, model.ModelStubType]:
+    from stubs import model as model_stub
+
+    rv = {}
+    members = inspect.getmembers(model_stub, inspect.isclass)
+    for name, stub in members:
+        if name != 'MLPStub' and not name.startswith('_') and type(stub) != type:
+            rv[stub.name] = stub
     return rv
 
 
@@ -297,28 +309,77 @@ def get_token() -> str:
     return ft.get_token()
 
 
-def get_model(model: str, directory: str):
+def get_model(
+    directory: str,
+    token: Optional[str] = None,
+    batch_size: int = 32,
+    select_model: Optional[str] = None,
+    gpu: bool = False,
+):
     """Re-build the model based on the model name using tailor.
 
-    :param model: The name of the model, should be the same as the `model` in the
-     `fit` function.
-    :param directory: The artifact directory.
-    :return: The model instance with loaded weights.
+    :param directory: Specify a finetuner run artifact. Can be a path to a local
+        directory, a path to a local zip file or a Hubble artifact ID. Individual
+        model artifacts (model sub-folders inside the run artifacts) can also be
+        specified using this argument.
+    :param token: A Jina authentication token required for pulling artifacts from
+        Hubble. If not provided, the Hubble client will try to find one either in a
+        local cache folder or in the environment.
+    :param batch_size: Incoming documents are fed to the graph in batches, both to
+        speed-up inference and avoid memory errors. This argument controls the
+        number of documents that will be put in each batch.
+    :param select_model: Finetuner run artifacts might contain multiple models. In
+        such cases you can select which model to deploy using this argument.
+    :param gpu: if specified to True, use cuda device for inference.
+    :returns: An instance of :class:`ONNXRuntimeInferenceEngine`.
 
     ..Note::
       please install finetuner[full] to include all the dependencies.
     """
-    pass
+    from commons.data.inference import ONNXRuntimeInferenceEngine
+
+    if gpu:
+        warnings.warn(
+            message='You are using cuda device for ONNX inference, please consider'
+            'call `pip install onnxruntime-gpu` to speed up inference.',
+            category=RuntimeWarning,
+        )
+
+    ort_engine = ONNXRuntimeInferenceEngine(
+        artifact=directory,
+        token=token,
+        batch_size=batch_size,
+        select_model=select_model,
+        device='cuda' if gpu else 'cpu',
+    )
+    return ort_engine
 
 
-def preprocess_and_collate(data: DocumentArray, directory: str):
+def encode(
+    model,
+    data: DocumentArray,
+    batch_size: int = 32,
+):
     """Process and collate the `DocumentArray` to be embeded.
 
-    :param data: The `DocumentArray` instance to be embeded.
-    :param directory: The artifact directory.
-    :returns: Preprocessed and collated `DocumentArray`.
+    :param model: The model to be used to encode `DocumentArray`. In this case
+        an instance of `ONNXRuntimeInferenceEngine` produced by
+        :meth:`finetuner.get_model()`
+    :param data: The `DocumentArray` object to be encoded.
+    :param batch_size: Incoming documents are fed to the graph in batches, both to
+        speed-up inference and avoid memory errors. This argument controls the
+        number of documents that will be put in each batch.
+    :returns: `DocumentArray` filled with embeddings.
 
     ..Note::
       please install finetuner[full] to include all the dependencies.
     """
-    pass
+    for i, batch in enumerate(data.batch(batch_size)):
+        inputs = model._run_data_pipeline(batch)
+        inputs = model._flatten_inputs(inputs)
+        model._check_input_names(inputs)
+        output_shape = model._infer_output_shape(inputs)
+        inputs = model._move_to_device(inputs)
+        output = model._run_graph(inputs, output_shape)
+
+        batch.embeddings = output.cpu().numpy()

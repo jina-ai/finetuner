@@ -68,7 +68,7 @@ if __name__ == '__main__':
         ],
         extras_require={
             'full': [
-                'finetuner-commons==0.0.1b0',
+                'finetuner-commons==0.0.1b2',
             ],
             'test': [
                 'black==22.3.0',
