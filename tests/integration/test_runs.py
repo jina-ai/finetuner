@@ -111,12 +111,13 @@ def test_create_run_and_save_model(finetuner_mocker, get_feature_data, tmp_path)
     run.save_artifact(directory=tmp_path / 'finetuned_model')
     assert os.path.exists(tmp_path / 'finetuned_model')
 
-    # delete created experiments (and runs)
-    finetuner_mocker.delete_experiment(experiment_name)
-    experiments = finetuner_mocker.list_experiments()
-    assert experiment_name not in [experiment.name for experiment in experiments]
-
+    # encode and check the embeddings
     model = finetuner.get_model(artifact=str(tmp_path / 'finetuned_model'))
     encoded_da = finetuner.encode(model=model, data=test_da)
     assert encoded_da.embeddings is not None
     assert isinstance(encoded_da.embeddings, np.ndarray)
+
+    # delete created experiments (and runs)
+    finetuner_mocker.delete_experiment(experiment_name)
+    experiments = finetuner_mocker.list_experiments()
+    assert experiment_name not in [experiment.name for experiment in experiments]
