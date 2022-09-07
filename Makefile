@@ -68,7 +68,7 @@ install-docs:
 	pip install --no-cache-dir -r docs/requirements.txt
 
 ## Bootstrap dev environment
-init: pre-commit install-dev install-docs
+init: pre-commit install install-dev install-docs
 
 
 # ----------------------------------------------------------------------- Build targets
