@@ -2,10 +2,21 @@
 # Save Artifact
 
 Perfect!
-Now you have started the fine-tuning job in the cloud.
-However, fine-tuning takes time. It highly depends on the size of your training data, evaluation data and other hyper-parameters. Because of this, you might have to close the session and reconnect to it several times.
+Now, you have started the fine-tuning job in the cloud.
+When the fine-tuning job is finished, the resulting model is automatically stored under your Jina account in the cloud.
+Next, we can get its artifact id and download the model.
 
-In the following example, we show how to connect to an existing run and download a tuned model:
+```{admonition} Managing fine-tuned models
+:class: hint
+To use a fine-tuned model in a Jina service running on [JCloud](https://github.com/jina-ai/jcloud), you do not need to download it.
+Each model has a artifact id, which is sufficient to setup an encoding serivce as explained in the section {doc}`/walkthrough/integrate-with-jina`.
+Alternatively, you can also download the model using the artifact id, as explained below, e.g., to use it in a locally runnig Jina service. 
+```
+
+Please note that fine-tuning takes time. It highly depends on the size of your training data, evaluation data and other hyper-parameters.
+Because of this, you might have to close the session and reconnect to it several times.
+
+In the example below, we show how to connect to an existing run and download a tuned model:
 
 ```python
 import finetuner
