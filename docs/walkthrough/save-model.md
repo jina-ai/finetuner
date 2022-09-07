@@ -4,7 +4,7 @@
 Perfect!
 Now, you have started the fine-tuning job in the cloud.
 When the fine-tuning job is finished, the resulting model is automatically stored under your Jina account in the cloud.
-Next, we can get its hubble artifact id and download the model.
+Next, we can get its artifact id and download the model.
 
 ```{admonition} Managing fine-tuned models
 :class: hint

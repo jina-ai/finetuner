@@ -5,7 +5,7 @@ Finetuner organizes your training based on two concepts:
 {class}`~finetuner.experiment.Experiment` and {class}`~finetuner.run.Run`.
 
 An Experiment defines the machine learning task you're fine-tuning for.
-A Run refers to a single execution of the Experiment with specific configurations.
+A Run refers to a single execution of the Experiment with a specific configuration.
 An Experiment contains a list of Runs, each with different configurations. 
 For example:
 
@@ -17,12 +17,12 @@ For example:
   - Run2: Use ResNet50 with learning rate 0.01 and SGD optimizer.
   - Run3: Use ResNet50 with learning rate 0.0001 and Adam optimizer.
 
-All information and data produced during using fine-tuner is linked to those two concepts.
+All information and data produced during using Finetuner is linked to those two concepts.
 Each Experiment and each Run has a name.
-The name of the Experiment should be unique and the names of the Run are also required
+The name of the Experiment should be unique and the name of the Run is also required
 to be unique for each Experiment.
 Thus, if you want to retrieve the logs of a run or download the fine-tuned model later
-on you can do this with the according experiment and run names as explained in section
+on, you can do this with the respective experiment and run names, as explained in section
 {doc}`/walkthrough/save-model`.
 
 When you start the fine-tuning job, you can declare the `experiment_name` and `run_name` like this:

@@ -150,7 +150,7 @@ models: `clip-vision` and `clip-text`.
 The vision model allows you to embed images and the text model can encode text passages
 into the same vector space.
 To host those models, you have to provide the name of the model via an additional
-`select_model` property inside the `uses` attribute:
+`select_model` parameter inside the `uses` attribute:
 
 ````{tab} CLIP text model
 ```python

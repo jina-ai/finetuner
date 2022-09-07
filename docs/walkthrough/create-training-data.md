@@ -5,7 +5,7 @@ Finetuner accepts training data and evaluation data in the form of {class}`~doca
 Because Finetuner follows a [supervised-learning](https://en.wikipedia.org/wiki/Supervised_learning) scheme,
 you should assign a label to each {class}`~docarray.document.Document` inside your {class}`~docarray.array.document.DocumentArray`.
 For most of the models, this is done by adding a `fintuner_label` tag to each document.
-Only for cross-modality (text-to-image) fine-tuning with CLIP this is not necessary as explained at the bottom of this section.
+Only for cross-modality (text-to-image) fine-tuning with CLIP, this is not necessary as explained at the bottom of this section.
 
 In the code blocks below, you can see examples which demonstrate how the training datasets should look like: 
 
@@ -83,11 +83,11 @@ you only need to create a `Document` with `content` and `tags` with the `finetun
 For cross-modality (text-to-image) fine-tuning with CLIP,
 you should create a root `Document` which wraps two {class}`~docarray.array.chunk`s with the `image` and `text` modality.
 The image and text form a pair.
-During the training, CLIP learns to place documents which are part of a pair close to
-each other and documents which are not part of a pair far from each other.
-Accordingly, no further labels need to be provided.
+During the training, CLIP learns to place documents that are part of a pair close to
+each other and documents that are not part of a pair far from each other.
+As a result, no further labels need to be provided.
 
-Evaluation data should be created the same way as the training data in the examples above.
+Evaluation data should be created in the same way as the training data in the examples above.
 
 ```{admonition} CLIP model explained
 :class: hint
