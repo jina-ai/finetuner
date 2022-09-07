@@ -1,7 +1,9 @@
 import os
 
+import numpy as np
 from tests.helper import create_random_name
 
+import finetuner
 from finetuner.constants import FAILED, FINISHED, STATUS
 
 
@@ -80,7 +82,7 @@ def test_runs(finetuner_mocker, get_feature_data):
 def test_create_run_and_save_model(finetuner_mocker, get_feature_data, tmp_path):
     import time
 
-    train_da, _ = get_feature_data
+    train_da, test_da = get_feature_data
     experiment_name = create_random_name()
     finetuner_mocker.create_experiment(name=experiment_name)
     run = finetuner_mocker.create_run(
@@ -113,3 +115,8 @@ def test_create_run_and_save_model(finetuner_mocker, get_feature_data, tmp_path)
     finetuner_mocker.delete_experiment(experiment_name)
     experiments = finetuner_mocker.list_experiments()
     assert experiment_name not in [experiment.name for experiment in experiments]
+
+    model = finetuner.get_model(directory=str(tmp_path / 'finetuned_model'))
+    encoded_da = finetuner.encode(model=model, data=test_da)
+    assert encoded_da.embeddings is not None
+    assert isinstance(encoded_da.embeddings, np.ndarray)

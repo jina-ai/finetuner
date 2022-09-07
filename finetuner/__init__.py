@@ -316,7 +316,7 @@ def get_model(
     select_model: Optional[str] = None,
     gpu: bool = False,
 ):
-    """Re-build the model based on the model name using tailor.
+    """Re-build the model based on the model inference session with ONNX.
 
     :param directory: Specify a finetuner run artifact. Can be a path to a local
         directory, a path to a local zip file or a Hubble artifact ID. Individual
@@ -360,7 +360,7 @@ def encode(
     data: DocumentArray,
     batch_size: int = 32,
 ):
-    """Process and collate the `DocumentArray` to be embeded.
+    """Process, collate and encode the `DocumentArray` with embeddings.
 
     :param model: The model to be used to encode `DocumentArray`. In this case
         an instance of `ONNXRuntimeInferenceEngine` produced by
