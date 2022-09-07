@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Description of get_model and encode function ([#526](https://github.com/jina-ai/finetuner/pull/526))
+
 - Enable wandb callback. ([#494](https://github.com/jina-ai/finetuner/pull/494))
 
 - Support log streaming in finetuner client. ([#504](https://github.com/jina-ai/finetuner/pull/504))
