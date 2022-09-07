@@ -116,7 +116,7 @@ def test_create_run_and_save_model(finetuner_mocker, get_feature_data, tmp_path)
     experiments = finetuner_mocker.list_experiments()
     assert experiment_name not in [experiment.name for experiment in experiments]
 
-    model = finetuner.get_model(directory=str(tmp_path / 'finetuned_model'))
+    model = finetuner.get_model(artifact=str(tmp_path / 'finetuned_model'))
     encoded_da = finetuner.encode(model=model, data=test_da)
     assert encoded_da.embeddings is not None
     assert isinstance(encoded_da.embeddings, np.ndarray)
