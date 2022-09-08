@@ -23,7 +23,3 @@ class RunPreparingError(Exception):
 
 class RunFailedError(Exception):
     ...
-
-
-class UserNotLoggedInError(Exception):
-    ...

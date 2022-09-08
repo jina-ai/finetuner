@@ -6,9 +6,9 @@ from docarray import DocumentArray
 import hubble
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
-from finetuner.exception import UserNotLoggedInError
 from finetuner.experiment import Experiment
 from finetuner.run import Run
+from hubble import login_required
 from hubble.excepts import AuthenticationRequiredError
 
 
@@ -52,6 +52,7 @@ class Finetuner:
                 return experiment
         return self.create_experiment(name=experiment_name)
 
+    @login_required
     def create_experiment(self, name: Optional[str] = None) -> Experiment:
         """Create an experiment.
 
@@ -61,10 +62,6 @@ class Finetuner:
         """
         if not name:
             name = self._get_cwd()
-        if not self._client:
-            raise UserNotLoggedInError(
-                'You need to be logged in before creating an experiment.'
-            )
         experiment_info = self._client.create_experiment(name=name)
         return Experiment(
             client=self._client,
@@ -74,16 +71,13 @@ class Finetuner:
             description=experiment_info[DESCRIPTION],
         )
 
+    @login_required
     def get_experiment(self, name: str) -> Experiment:
         """Get an experiment by its name.
 
         :param name: Name of the experiment.
         :return: An `Experiment` object.
         """
-        if not self._client:
-            raise UserNotLoggedInError(
-                'You need to be logged in before getting an experiment.'
-            )
         experiment_info = self._client.get_experiment(name=name)
         return Experiment(
             client=self._client,
@@ -93,12 +87,9 @@ class Finetuner:
             description=experiment_info[DESCRIPTION],
         )
 
+    @login_required
     def list_experiments(self) -> List[Experiment]:
         """List every experiment."""
-        if not self._client:
-            raise UserNotLoggedInError(
-                'You need to be logged in before listing experiments.'
-            )
         experiment_infos = self._client.list_experiments()
 
         return [
@@ -112,15 +103,12 @@ class Finetuner:
             for experiment_info in experiment_infos
         ]
 
+    @login_required
     def delete_experiment(self, name: str) -> Experiment:
         """Delete an experiment by its name.
         :param name: Name of the experiment.
         :return: Deleted experiment.
         """
-        if not self._client:
-            raise UserNotLoggedInError(
-                'You need to be logged in before deleting an experiment.'
-            )
         experiment_info = self._client.delete_experiment(name=name)
         return Experiment(
             client=self._client,
@@ -130,14 +118,11 @@ class Finetuner:
             description=experiment_info[DESCRIPTION],
         )
 
+    @login_required
     def delete_experiments(self) -> List[Experiment]:
         """Delete every experiment.
         :return: List of deleted experiments.
         """
-        if not self._client:
-            raise UserNotLoggedInError(
-                'You need to be logged in before deleting an experiment.'
-            )
         experiment_infos = self._client.delete_experiments()
         return [
             Experiment(
@@ -150,6 +135,7 @@ class Finetuner:
             for experiment_info in experiment_infos
         ]
 
+    @login_required
     def create_run(
         self,
         model: str,
@@ -208,6 +194,7 @@ class Finetuner:
             num_workers=num_workers,
         )
 
+    @login_required
     def get_run(self, run_name: str, experiment_name: Optional[str] = None) -> Run:
         """Get run by its name and (optional) experiment.
 
@@ -218,14 +205,13 @@ class Finetuner:
         :param experiment_name: Optional name of the experiment.
         :return: A `Run` object.
         """
-        if not self._client:
-            raise UserNotLoggedInError('You need to be logged in before getting a run.')
         if not experiment_name:
             experiment = self._default_experiment
         else:
             experiment = self.get_experiment(name=experiment_name)
         return experiment.get_run(name=run_name)
 
+    @login_required
     def list_runs(self, experiment_name: Optional[str] = None) -> List[Run]:
         """List every run.
 
@@ -235,8 +221,6 @@ class Finetuner:
         :param experiment_name: Optional name of the experiment.
         :return: A list of `Run` objects.
         """
-        if not self._client:
-            raise UserNotLoggedInError('You need to be logged in before listing runs.')
         if not experiment_name:
             experiments = self.list_experiments()
         else:
@@ -246,6 +230,7 @@ class Finetuner:
             runs.extend(experiment.list_runs())
         return runs
 
+    @login_required
     def delete_run(self, run_name: str, experiment_name: Optional[str] = None):
         """Delete a run.
 
@@ -261,6 +246,7 @@ class Finetuner:
             experiment = self.get_experiment(name=experiment_name)
         experiment.delete_run(name=run_name)
 
+    @login_required
     def delete_runs(self, experiment_name: Optional[str] = None):
         """Delete every run.
 
@@ -276,7 +262,6 @@ class Finetuner:
         for experiment in experiments:
             experiment.delete_runs()
 
+    @login_required
     def get_token(self) -> str:
-        if not self._client:
-            raise UserNotLoggedInError('Please call `login` before getting token.')
         return hubble.Auth.get_auth_token()
