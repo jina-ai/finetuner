@@ -113,9 +113,9 @@ def test_create_run_and_save_model(finetuner_mocker, get_feature_data, tmp_path)
 
     # encode and check the embeddings
     model = finetuner.get_model(artifact=artifact)
-    encoded_da = finetuner.encode(model=model, data=test_da)
-    assert encoded_da.embeddings is not None
-    assert isinstance(encoded_da.embeddings, np.ndarray)
+    finetuner.encode(model=model, data=test_da)
+    assert test_da.embeddings is not None
+    assert isinstance(test_da.embeddings, np.ndarray)
 
     # delete created experiments (and runs)
     finetuner_mocker.delete_experiment(experiment_name)

@@ -330,7 +330,8 @@ def get_model(
         speed-up inference and avoid memory errors. This argument controls the
         number of documents that will be put in each batch.
     :param select_model: Finetuner run artifacts might contain multiple models. In
-        such cases you can select which model to deploy using this argument.
+        such cases you can select which model to deploy using this argument. For CLIP
+        fine-tuning, you can choose either `clip-vision` or `clip-text`.
     :param gpu: if specified to True, use cuda device for inference.
     :returns: An instance of :class:`ONNXRuntimeInferenceEngine`.
 
