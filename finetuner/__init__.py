@@ -51,8 +51,6 @@ def _list_models() -> Dict[str, model.ModelStubType]:
 
 
 def _build_name_stub_map() -> Dict[str, model.ModelStubType]:
-    from stubs import model as model_stub
-
     rv = {}
     members = inspect.getmembers(model_stub, inspect.isclass)
     for name, stub in members:
