@@ -38,6 +38,7 @@ class Finetuner:
         """Returns current working directory."""
         return os.getcwd().split('/')[-1]
 
+    @login_required
     def _init_state(self):
         """Initialize client and default experiment."""
         self._client = FinetunerV1Client()
