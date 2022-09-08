@@ -9,7 +9,7 @@ def get_header() -> Tuple[str, ...]:
 def get_row(model_stub) -> Tuple[str, ...]:
     """Get table row."""
     return (
-        model_stub.name,
+        model_stub.descriptor,
         model_stub.task,
         str(model_stub.output_shape[1]),
         model_stub.architecture,
