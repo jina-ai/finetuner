@@ -103,7 +103,7 @@ class Run:
                 logging.info(msg)
             else:
                 break
-        return self._client.stream_run_logs(
+        self._client.stream_run_logs(
             experiment_name=self._experiment_name, run_name=self._name
         )
 
