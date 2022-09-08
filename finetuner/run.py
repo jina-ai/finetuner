@@ -1,5 +1,8 @@
+import logging
 import time
 from typing import Iterator
+
+from rich.logging import RichHandler
 
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import (
@@ -12,6 +15,14 @@ from finetuner.constants import (
 )
 from finetuner.exception import RunFailedError, RunInProgressError, RunPreparingError
 from finetuner.hubble import download_artifact
+
+logging.basicConfig(
+    level='DEBUG',
+    format='%(message)s',
+    datefmt='[%X]',
+    handlers=[RichHandler()],
+)
+logger = logging.getLogger(__name__)
 
 
 class Run:
@@ -89,7 +100,7 @@ class Run:
                     f'Preparing to run, logs will be ready to pull when '
                     f'`status` is `STARTED`. Current status is {status}'
                 )
-                yield msg
+                logging.info(msg)
             else:
                 break
         return self._client.stream_run_logs(
