@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional, Union
 from docarray import DocumentArray
 from rich.console import Console
 from rich.table import Table
+from stubs import model as model_stub
 
 from finetuner.constants import (
     DEFAULT_FINETUNER_HOST,
@@ -41,8 +42,6 @@ def list_callbacks() -> Dict[str, callback.CallbackStubType]:
 
 
 def _list_models() -> Dict[str, model.ModelStubType]:
-    from stubs import model as model_stub
-
     rv = {}
     members = inspect.getmembers(model_stub, inspect.isclass)
     for name, stub in members:
@@ -172,7 +171,7 @@ def fit(
     :param learning_rate: learning rate for the optimizer.
     :param epochs: Number of epochs for fine-tuning.
     :param batch_size: Number of items to include in a batch.
-    :param callbacks: List of callback stub objects.`
+    :param callbacks: List of callback stub objects.
         subpackage for available options, or run `finetuner.list_callbacks()`.
     :param scheduler_step: At which interval should the learning rate scheduler's
         step function be called. Valid options are `batch` and `epoch`.
@@ -333,6 +332,9 @@ def get_model(
         such cases you can select which model to deploy using this argument. For CLIP
         fine-tuning, you can choose either `clip-vision` or `clip-text`.
     :param gpu: if specified to True, use cuda device for inference.
+    :param logging_level: The executor logging level. See
+        https://docs.python.org/3/library/logging.html#logging-levels for available
+        options.
     :returns: An instance of :class:`ONNXRuntimeInferenceEngine`.
 
     ..Note::

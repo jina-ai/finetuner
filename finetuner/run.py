@@ -78,6 +78,7 @@ class Run:
     def stream_logs(self, interval: int = 5) -> Iterator[str]:
         """Stream the run logs.
 
+        :param interval: The time interval to sync the status of finetuner `Run`.
         :yield: An iterators keep stream the logs from server.
         """
         while True:
