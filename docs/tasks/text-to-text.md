@@ -196,6 +196,24 @@ print(f'Run logs: {run.logs()}')
 ## Saving
 Once your run has successfully completed, you can save your fine-tuned model in the following way:
 ```python
-run.save_artifact('bert-model')
+artifact = run.save_artifact('bert-model')
 ```
 That's it! Now you have a fine-tuned model which is ready to be {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.
+
+
+## Inference
+
+Now you saved the `artifact` into your host machine,
+let's start to use fine-tuned model to encode a new `Document`.
+
+```python
+import finetuner
+from docarray import Document, DocumentArray
+# Load model from artifact
+model = finetuner.get_model(artifact=artifact)
+# Prepare some text to encode
+test_da = DocumentArray([Document(text='some text to encode')])
+# Encoding will happen in-place in your `DocumentArray`
+finetuner.encode(model=model, data=test_da)
+print(test_da.embeddings)
+```
