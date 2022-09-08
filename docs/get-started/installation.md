@@ -9,8 +9,14 @@ Make sure you have `Python 3.7+` installed on Linux/Mac/Windows:
 pip install -U finetuner
 ```
 
+If you want to encode `docarray.DocumentArray` objects with the {meth}`~finetuner.encode` function, you need to install finetuner[full].
+In this case, some extra dependencies are installed which are necessary to do the inference, e.g., torch, torchvision, and open clip:
 
-Check your installation with:
+```bash
+pip install finetuner[full]
+```
+
+To check your installation run:
 ```bash
 pip show finetuner
 ```

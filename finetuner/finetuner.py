@@ -9,7 +9,6 @@ from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
 from finetuner.experiment import Experiment
 from finetuner.run import Run
 from hubble import login_required
-from hubble.excepts import AuthenticationRequiredError
 
 
 class Finetuner:
@@ -18,11 +17,6 @@ class Finetuner:
     def __init__(self):
         self._client = None
         self._default_experiment = None
-        try:
-            self._init_state()
-        except AuthenticationRequiredError:
-            # user needs to login first to use finetuner
-            pass
 
     def login(self):
         """Login to Hubble account, initialize a client object
@@ -33,11 +27,18 @@ class Finetuner:
         hubble.login()
         self._init_state()
 
+    def connect(self):
+        """Connects finetuner to Hubble without logging in again.
+        Use this function, if you are already logged in.
+        """
+        self._init_state()
+
     @staticmethod
     def _get_cwd() -> str:
         """Returns current working directory."""
         return os.getcwd().split('/')[-1]
 
+    @login_required
     def _init_state(self):
         """Initialize client and default experiment."""
         self._client = FinetunerV1Client()
