@@ -152,8 +152,7 @@ import finetuner
 finetuner.login()
 
 run = finetuner.get_run('resnet50-tll-run')
-for entry in run.stream_logs():
-    print(entry)
+run.stream_logs()
 
 run.save_artifact('resnet-tll')
 ```
