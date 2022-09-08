@@ -198,13 +198,11 @@ Once your run has successfully completed, you can save your fine-tuned model in 
 ```python
 artifact = run.save_artifact('bert-model')
 ```
-That's it! Now you have a fine-tuned model which is ready to be {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.
-
 
 ## Inference
 
 Now you saved the `artifact` into your host machine,
-let's start to use fine-tuned model to encode a new `Document`.
+let's use fine-tuned model to encode a new `Document`.
 
 ```python
 import finetuner
@@ -217,3 +215,5 @@ test_da = DocumentArray([Document(text='some text to encode')])
 finetuner.encode(model=model, data=test_da)
 print(test_da.embeddings)
 ```
+
+That's it! If you want to integrate fine-tuned model into your Jina Flow, please check out {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.
