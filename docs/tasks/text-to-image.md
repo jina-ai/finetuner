@@ -141,8 +141,10 @@ print(test_da.embeddings)
 
 ```{admonition} what is select_model?
 :class: hint
-When fine-tuning CLIP, we are fine-tuning the CLIP Vision and CLIP text models jointly.
-The parameter `select_model` tells finetune which model to use for inference, either `clip-text` or `clip-vision`.
+When fine-tuning CLIP, we are fine-tuning the CLIPVisionEncoder and CLIPTextEncoder in parallel.
+The artifact contains two models: `clip-vision` and `clip-text`.
+The parameter `select_model` tells finetune which model to use for inference, in the above example,
+we use `clip-text` to encode a Document with text.
 ```
 
 Check out [clip-as-service](https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models) to know how to plug-in fine-tuned model there.
