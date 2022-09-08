@@ -119,6 +119,34 @@ We have done the evaulation for you in the table below.
 
 After the run has finished successfully, you can download the tuned model on your local machine:
 ```python
-run.save_artifact('clip-model')
+artifact = run.save_artifact('clip-model')
 ```
-That's it! Now you have a fine-tuned model which is ready to be {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.
+
+## Inference
+
+Now you saved the `artifact` into your host machine,
+let's use the fine-tuned model to encode a new `Document`:
+
+```python
+import finetuner
+from docarray import Document, DocumentArray
+# Load model from artifact
+model = finetuner.get_model(artifact=artifact, select_model='clip-text')
+# Prepare some text to encode
+test_da = DocumentArray([Document(text='some text to encode')])
+# Encoding will happen in-place in your `DocumentArray`
+finetuner.encode(model=model, data=test_da)
+print(test_da.embeddings)
+```
+
+```{admonition} what is select_model?
+:class: hint
+When fine-tuning CLIP, we are fine-tuning the CLIPVisionEncoder and CLIPTextEncoder in parallel.
+The artifact contains two models: `clip-vision` and `clip-text`.
+The parameter `select_model` tells finetuner which model to use for inference, in the above example,
+we use `clip-text` to encode a Document with text content.
+```
+
+Check out [clip-as-service](https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models) to learn how to plug-in a finetuned CLIP model to our CLIP specific service.
+
+That's it! If you want to integrate the fine-tuned model into your Jina Flow, please check out {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.

@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Add inference session in examples. ([#529](https://github.com/jina-ai/finetuner/pull/529))
+
 
 ## [0.5.2] - 2022-08-31
 

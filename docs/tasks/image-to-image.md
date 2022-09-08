@@ -129,6 +129,24 @@ What you can do for now is to call {meth}`~finetuner.run.Run.logs()` in the end 
 
 After the run has finished successfully, you can download the tuned model on your local machine:
 ```python
-run.save_artifact('resnet-model')
+artifact = run.save_artifact('resnet-model')
 ```
-That's it! Now you have a fine-tuned model which is ready to be {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.
+
+## Inference
+
+Now you saved the `artifact` into your host machine,
+let's use the fine-tuned model to encode a new `Document`:
+
+```python
+import finetuner
+from docarray import Document, DocumentArray
+# Load model from artifact
+model = finetuner.get_model(artifact=artifact)
+# Prepare some text to encode, change the placeholder image uri to an image on your machine
+test_da = DocumentArray([Document(uri='my-image.png')])
+# Encoding will happen in-place in your `DocumentArray`
+finetuner.encode(model=model, data=test_da)
+print(test_da.embeddings)
+```
+
+That's it! If you want to integrate the fine-tuned model into your Jina Flow, please check out {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.
