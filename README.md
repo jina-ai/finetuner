@@ -11,7 +11,9 @@
 
 <p align=center>
 <a href="https://pypi.org/project/finetuner/"><img alt="PyPI" src="https://img.shields.io/pypi/v/finetuner?label=Release&style=flat-square"></a>
-<a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-3.2k-blueviolet?logo=slack&amp;logoColor=white&style=flat-square"></a>
+<a href="https://codecov.io/gh/jina-ai/finetuner"><img alt="Codecov branch" src="https://img.shields.io/codecov/c/github/jina-ai/finetuner/main?logo=Codecov&logoColor=white&style=flat-square"></a>
+<a href="https://pypistats.org/packages/finetuner"><img alt="PyPI - Downloads from official pypistats" src="https://img.shields.io/pypi/dm/finetuner?style=flat-square"></a>
+<a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-3.6k-blueviolet?logo=slack&amp;logoColor=white&style=flat-square"></a>
 </p>
 
 <!-- start elevator-pitch -->
@@ -126,7 +128,12 @@ run = finetuner.fit(
     model='resnet50',
     run_name='resnet50-tll-run',
     train_data='tll-train-da',
-    callbacks=[EvaluationCallback(query_data='tll-eval-da')],
+    callbacks=[
+        EvaluationCallback(
+            query_data='tll-test-query-da',
+            index_data='tll-test-index-da',
+        )
+    ],
 )
 ```
 
