@@ -317,7 +317,7 @@ def get_model(
     """Re-build the model based on the model inference session with ONNX.
 
     :param artifact: Specify a finetuner run artifact. Can be a path to a local
-        directory, a path to a local zip file or a Hubble artifact ID. Individual
+        directory, a path to a local zip file, or a Hubble artifact ID. Individual
         model artifacts (model sub-folders inside the run artifacts) can also be
         specified using this argument.
     :param token: A Jina authentication token required for pulling artifacts from
@@ -363,7 +363,7 @@ def encode(
     data: DocumentArray,
     batch_size: int = 32,
 ):
-    """Process, collate and encode the `DocumentArray` with embeddings.
+    """Preprocess, collate and encode the `DocumentArray` with embeddings.
 
     :param model: The model to be used to encode `DocumentArray`. In this case
         an instance of `ONNXRuntimeInferenceEngine` produced by
@@ -377,7 +377,7 @@ def encode(
     ..Note::
       please install finetuner[full] to include all the dependencies.
     """
-    for i, batch in enumerate(data.batch(batch_size)):
+    for _, batch in enumerate(data.batch(batch_size)):
         inputs = model._run_data_pipeline(batch)
         inputs = model._flatten_inputs(inputs)
         model._check_input_names(inputs)
