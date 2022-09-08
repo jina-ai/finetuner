@@ -6,9 +6,10 @@ from docarray import DocumentArray
 import hubble
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
-from finetuner.exception import UserNotLoggedInError
 from finetuner.experiment import Experiment
 from finetuner.run import Run
+from hubble import login_required
+from hubble.excepts import AuthenticationRequiredError
 
 
 class Finetuner:
@@ -17,6 +18,11 @@ class Finetuner:
     def __init__(self):
         self._client = None
         self._default_experiment = None
+        try:
+            self._init_state()
+        except AuthenticationRequiredError:
+            # user needs to login first to use finetuner
+            pass
 
     def login(self):
         """Login to Hubble account, initialize a client object
@@ -25,13 +31,17 @@ class Finetuner:
         Note: Calling `login` is necessary for using finetuner.
         """
         hubble.login()
-        self._client = FinetunerV1Client()
-        self._default_experiment = self._get_default_experiment()
+        self._init_state()
 
     @staticmethod
     def _get_cwd() -> str:
         """Returns current working directory."""
         return os.getcwd().split('/')[-1]
+
+    def _init_state(self):
+        """Initialize client and default experiment."""
+        self._client = FinetunerV1Client()
+        self._default_experiment = self._get_default_experiment()
 
     def _get_default_experiment(self) -> Experiment:
         """Create or retrieve (if it already exists) a default experiment
@@ -42,6 +52,7 @@ class Finetuner:
                 return experiment
         return self.create_experiment(name=experiment_name)
 
+    @login_required
     def create_experiment(self, name: Optional[str] = None) -> Experiment:
         """Create an experiment.
 
@@ -60,6 +71,7 @@ class Finetuner:
             description=experiment_info[DESCRIPTION],
         )
 
+    @login_required
     def get_experiment(self, name: str) -> Experiment:
         """Get an experiment by its name.
 
@@ -75,6 +87,7 @@ class Finetuner:
             description=experiment_info[DESCRIPTION],
         )
 
+    @login_required
     def list_experiments(self) -> List[Experiment]:
         """List every experiment."""
         experiment_infos = self._client.list_experiments()
@@ -90,6 +103,7 @@ class Finetuner:
             for experiment_info in experiment_infos
         ]
 
+    @login_required
     def delete_experiment(self, name: str) -> Experiment:
         """Delete an experiment by its name.
         :param name: Name of the experiment.
@@ -104,6 +118,7 @@ class Finetuner:
             description=experiment_info[DESCRIPTION],
         )
 
+    @login_required
     def delete_experiments(self) -> List[Experiment]:
         """Delete every experiment.
         :return: List of deleted experiments.
@@ -120,6 +135,7 @@ class Finetuner:
             for experiment_info in experiment_infos
         ]
 
+    @login_required
     def create_run(
         self,
         model: str,
@@ -178,6 +194,7 @@ class Finetuner:
             num_workers=num_workers,
         )
 
+    @login_required
     def get_run(self, run_name: str, experiment_name: Optional[str] = None) -> Run:
         """Get run by its name and (optional) experiment.
 
@@ -194,6 +211,7 @@ class Finetuner:
             experiment = self.get_experiment(name=experiment_name)
         return experiment.get_run(name=run_name)
 
+    @login_required
     def list_runs(self, experiment_name: Optional[str] = None) -> List[Run]:
         """List every run.
 
@@ -212,6 +230,7 @@ class Finetuner:
             runs.extend(experiment.list_runs())
         return runs
 
+    @login_required
     def delete_run(self, run_name: str, experiment_name: Optional[str] = None):
         """Delete a run.
 
@@ -227,6 +246,7 @@ class Finetuner:
             experiment = self.get_experiment(name=experiment_name)
         experiment.delete_run(name=run_name)
 
+    @login_required
     def delete_runs(self, experiment_name: Optional[str] = None):
         """Delete every run.
 
@@ -242,7 +262,6 @@ class Finetuner:
         for experiment in experiments:
             experiment.delete_runs()
 
+    @login_required
     def get_token(self) -> str:
-        if not self._client:
-            raise UserNotLoggedInError('Please call `login` before getting token.')
         return hubble.Auth.get_auth_token()
