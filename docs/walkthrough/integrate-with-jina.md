@@ -25,9 +25,9 @@ model = finetuner.get_model(run.artifact_id, token=token)
 
 da = DocumentArray([Document(text='some text to encode')])
 
-embedded_da = finetuner.encode(model=model, data=da)
+finetuner.encode(model=model, data=da)
 
-for doc in embedded_da:
+for doc in da:
     print(f'Text of the returned document: {doc.text}')
     print(f'Shape of the embedding: {doc.embedding.shape}')
 ```
@@ -41,9 +41,9 @@ model = finetuner.get_model('/path/to/YOUR-MODEL.zip')
 
 da = DocumentArray([Document(text='some text to encode')])
 
-embedded_da = finetuner.encode(model=model, data=da)
+finetuner.encode(model=model, data=da)
 
-for doc in embedded_da:
+for doc in da:
     print(f'Text of the returned document: {doc.text}')
     print(f'Shape of the embedding: {doc.embedding.shape}')
 ```
@@ -178,7 +178,7 @@ model = finetuner.get_model(run.artifact_id, token=token, select_model='clip-tex
 
 da = DocumentArray([Document(text='some text to encode')])
 
-embedded_da = finetuner.encode(model=model, data=da)
+finetuner.encode(model=model, data=da)
 ```
 ````
 ````{tab} CLIP vision model
@@ -198,7 +198,7 @@ model = finetuner.get_model(run.artifact_id, token=token, select_model='clip-vis
 
 da = DocumentArray([Document(text='~/Pictures/my_img.png')])
 
-embedded_da = finetuner.encode(model=model, data=da)
+finetuner.encode(model=model, data=da)
 ```
 ````
 

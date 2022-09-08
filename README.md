@@ -106,6 +106,13 @@ Finetuner can be installed via pip by executing:
 pip install -U finetuner
 ```
 
+If you want to encode `docarray.DocumentArray` objects with the `finetuner.encode` function, you need to install finetuner[full].
+In this case, some extra dependencies are installed which are necessary to do the inference, e.g., torch, torchvision, and open clip:
+
+```bash
+pip install finetuner[full]
+```
+
 <!-- end install-instruction -->
 
 > From 0.5.0, Finetuner computing is hosted on Jina Cloud. THe last local version is `0.4.1`, one can install it via pip or check out [git tags/releases here](https://github.com/jina-ai/finetuner/releases).
@@ -170,7 +177,9 @@ model = finetuner.get_model('resnet-tll')
 
 da = DocumentArray([Document(uri='~/Pictures/your_img.png')])
 
-embedded_da = finetuner.encode(model=model, data=da)
+finetuner.encode(model=model, data=da)
+
+da.summary()
 ```
 
 ### Next steps
