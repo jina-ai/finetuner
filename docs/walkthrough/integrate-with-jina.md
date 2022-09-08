@@ -6,7 +6,7 @@ You can use the fine-tuned models directly to encode [DocumentArray](https://doc
 (integrate-with-docarray)=
 ## Embed DocumentArray
 
-To embed a [DocumentArray](https://docarray.jina.ai/) with a fine-tuned model, you can get the model of your Run via the `get_model` function and embed it via `finetuner.encode`:
+To embed a [DocumentArray](https://docarray.jina.ai/) with a fine-tuned model, you can get the model of your Run via the `get_model` function and embed it via the `encode` function:
 
 ````{tab} Artifact id and token
 ```python
