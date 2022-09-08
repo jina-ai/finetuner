@@ -9,7 +9,6 @@ from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
 from finetuner.experiment import Experiment
 from finetuner.run import Run
 from hubble import login_required
-from hubble.excepts import AuthenticationRequiredError
 
 
 class Finetuner:
@@ -29,7 +28,7 @@ class Finetuner:
         self._init_state()
 
     def connect(self):
-        """ Connects finetuner to Hubble without logging in again.
+        """Connects finetuner to Hubble without logging in again.
         Use this function, if you are already logged in.
         """
         self._init_state()
