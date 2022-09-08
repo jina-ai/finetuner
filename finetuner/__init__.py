@@ -1,10 +1,12 @@
 import inspect
 import os
+import warnings
 from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
 from rich.console import Console
 from rich.table import Table
+from stubs import model as model_stub
 
 from finetuner.constants import (
     DEFAULT_FINETUNER_HOST,
@@ -21,7 +23,7 @@ if HOST not in os.environ:
 if HUBBLE_REGISTRY not in os.environ:
     os.environ[HUBBLE_REGISTRY] = DEFAULT_HUBBLE_REGISTRY
 
-from finetuner import callback, models
+from finetuner import callback, model
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
 
@@ -39,16 +41,22 @@ def list_callbacks() -> Dict[str, callback.CallbackStubType]:
     }
 
 
-def _list_models() -> Dict[str, models.ModelStubType]:
-    return {
-        obj.name: obj
-        for _, obj in inspect.getmembers(models)
-        if (
-            inspect.isclass(obj)
-            and issubclass(obj, models._ModelStub)
-            and obj != models._ModelStub
-        )
-    }
+def _list_models() -> Dict[str, model.ModelStubType]:
+    rv = {}
+    members = inspect.getmembers(model_stub, inspect.isclass)
+    for name, stub in members:
+        if name != 'MLPStub' and not name.startswith('_') and type(stub) != type:
+            rv[name] = stub
+    return rv
+
+
+def _build_name_stub_map() -> Dict[str, model.ModelStubType]:
+    rv = {}
+    members = inspect.getmembers(model_stub, inspect.isclass)
+    for name, stub in members:
+        if name != 'MLPStub' and not name.startswith('_') and type(stub) != type:
+            rv[stub.name] = stub
+    return rv
 
 
 def list_models() -> List[str]:
@@ -80,13 +88,13 @@ def list_model_options() -> Dict[str, List[Dict[str, Any]]]:
 def describe_models() -> None:
     """Describe available models in a table."""
     table = Table(title='Finetuner backbones')
-    header = models._ModelStub.header()
+    header = model.get_header()
 
     for column in header:
         table.add_column(column, justify='right', style='cyan', no_wrap=True)
 
     for _, _model_class in _list_models().items():
-        table.add_row(*_model_class.row())
+        table.add_row(*model.get_row(_model_class))
 
     console = Console()
     console.print(table)
@@ -161,7 +169,7 @@ def fit(
     :param learning_rate: learning rate for the optimizer.
     :param epochs: Number of epochs for fine-tuning.
     :param batch_size: Number of items to include in a batch.
-    :param callbacks: List of callback stub objects. See the `finetuner.callback`
+    :param callbacks: List of callback stub objects.
         subpackage for available options, or run `finetuner.list_callbacks()`.
     :param scheduler_step: At which interval should the learning rate scheduler's
         step function be called. Valid options are `batch` and `epoch`.
@@ -296,3 +304,85 @@ def get_token() -> str:
     :return: user token as string object.
     """
     return ft.get_token()
+
+
+def get_model(
+    artifact: str,
+    token: Optional[str] = None,
+    batch_size: int = 32,
+    select_model: Optional[str] = None,
+    gpu: bool = False,
+    logging_level: str = 'WARNING',
+):
+    """Re-build the model based on the model inference session with ONNX.
+
+    :param artifact: Specify a finetuner run artifact. Can be a path to a local
+        directory, a path to a local zip file, or a Hubble artifact ID. Individual
+        model artifacts (model sub-folders inside the run artifacts) can also be
+        specified using this argument.
+    :param token: A Jina authentication token required for pulling artifacts from
+        Hubble. If not provided, the Hubble client will try to find one either in a
+        local cache folder or in the environment.
+    :param batch_size: Incoming documents are fed to the graph in batches, both to
+        speed-up inference and avoid memory errors. This argument controls the
+        number of documents that will be put in each batch.
+    :param select_model: Finetuner run artifacts might contain multiple models. In
+        such cases you can select which model to deploy using this argument. For CLIP
+        fine-tuning, you can choose either `clip-vision` or `clip-text`.
+    :param gpu: if specified to True, use cuda device for inference.
+    :param logging_level: The executor logging level. See
+        https://docs.python.org/3/library/logging.html#logging-levels for available
+        options.
+    :returns: An instance of :class:`ONNXRuntimeInferenceEngine`.
+
+    ..Note::
+      please install finetuner[full] to include all the dependencies.
+    """
+    from commons.data.inference import ONNXRuntimeInferenceEngine
+
+    if gpu:
+        warnings.warn(
+            message='You are using cuda device for ONNX inference, please consider'
+            'call `pip install onnxruntime-gpu` to speed up inference.',
+            category=RuntimeWarning,
+        )
+
+    ort_engine = ONNXRuntimeInferenceEngine(
+        artifact=artifact,
+        token=token,
+        batch_size=batch_size,
+        select_model=select_model,
+        device='cuda' if gpu else 'cpu',
+        logging_level=logging_level,
+    )
+    return ort_engine
+
+
+def encode(
+    model,
+    data: DocumentArray,
+    batch_size: int = 32,
+):
+    """Preprocess, collate and encode the `DocumentArray` with embeddings.
+
+    :param model: The model to be used to encode `DocumentArray`. In this case
+        an instance of `ONNXRuntimeInferenceEngine` produced by
+        :meth:`finetuner.get_model()`
+    :param data: The `DocumentArray` object to be encoded.
+    :param batch_size: Incoming documents are fed to the graph in batches, both to
+        speed-up inference and avoid memory errors. This argument controls the
+        number of documents that will be put in each batch.
+    :returns: `DocumentArray` filled with embeddings.
+
+    ..Note::
+      please install finetuner[full] to include all the dependencies.
+    """
+    for batch in data.batch(batch_size):
+        inputs = model._run_data_pipeline(batch)
+        inputs = model._flatten_inputs(inputs)
+        model._check_input_names(inputs)
+        output_shape = model._infer_output_shape(inputs)
+        inputs = model._move_to_device(inputs)
+        output = model._run_graph(inputs, output_shape)
+
+        batch.embeddings = output.cpu().numpy()

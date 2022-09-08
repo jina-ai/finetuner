@@ -1,3 +1,4 @@
+import time
 from typing import Iterator
 
 from finetuner.client import FinetunerV1Client
@@ -74,12 +75,23 @@ class Run:
             experiment_name=self._experiment_name, run_name=self._name
         )
 
-    def stream_logs(self) -> Iterator[str]:
+    def stream_logs(self, interval: int = 5) -> Iterator[str]:
         """Stream the run logs.
 
+        :param interval: The time interval to sync the status of finetuner `Run`.
         :yield: An iterators keep stream the logs from server.
         """
-        self._check_run_status_started()
+        while True:
+            time.sleep(interval)
+            status = self.status()[STATUS]
+            if status == CREATED:
+                msg = (
+                    f'Preparing to run, logs will be ready to pull when '
+                    f'`status` is `STARTED`. Current status is {status}'
+                )
+                yield msg
+            else:
+                break
         return self._client.stream_run_logs(
             experiment_name=self._experiment_name, run_name=self._name
         )
@@ -99,7 +111,7 @@ class Run:
         status = self.status()[STATUS]
         if status == CREATED:
             raise RunPreparingError(
-                'The run is preparing to run, logs will be ready to pull when '
+                'Preparing to run, logs will be ready to pull when '
                 '`status` is `STARTED`.'
             )
 

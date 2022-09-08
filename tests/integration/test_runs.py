@@ -1,7 +1,9 @@
 import os
 
+import numpy as np
 from tests.helper import create_random_name
 
+import finetuner
 from finetuner.constants import FAILED, FINISHED, STATUS
 
 
@@ -80,7 +82,7 @@ def test_runs(finetuner_mocker, get_feature_data):
 def test_create_run_and_save_model(finetuner_mocker, get_feature_data, tmp_path):
     import time
 
-    train_da, _ = get_feature_data
+    train_da, test_da = get_feature_data
     experiment_name = create_random_name()
     finetuner_mocker.create_experiment(name=experiment_name)
     run = finetuner_mocker.create_run(
@@ -106,8 +108,14 @@ def test_create_run_and_save_model(finetuner_mocker, get_feature_data, tmp_path)
     # the artifact id is a 24 character hex string defined in mongo db.
     assert len(artifact_id) == 24
 
-    run.save_artifact(directory=tmp_path / 'finetuned_model')
+    artifact = run.save_artifact(directory=tmp_path / 'finetuned_model')
     assert os.path.exists(tmp_path / 'finetuned_model')
+
+    # encode and check the embeddings
+    model = finetuner.get_model(artifact=artifact)
+    finetuner.encode(model=model, data=test_da)
+    assert test_da.embeddings is not None
+    assert isinstance(test_da.embeddings, np.ndarray)
 
     # delete created experiments (and runs)
     finetuner_mocker.delete_experiment(experiment_name)

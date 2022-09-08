@@ -38,14 +38,6 @@ _license = 'Apache 2.0'
 _package_exclude = ['*.tests', '*.tests.*', 'tests.*', 'tests']
 
 
-# package requirements
-try:
-    with open('requirements.txt', 'r') as f:
-        _main_deps = f.readlines()
-except FileNotFoundError:
-    _main_deps = []
-
-
 # package long description
 try:
     with open('README.md', encoding='utf8') as fp:
@@ -69,7 +61,24 @@ if __name__ == '__main__':
         long_description_content_type='text/markdown',
         zip_safe=False,
         setup_requires=_setup_requires,
-        install_requires=_main_deps,
+        install_requires=[
+            'docarray[common]>=0.13.31',
+            'finetuner-stubs==0.0.1b2',
+            'jina-hubble-sdk>=0.15.2',
+        ],
+        extras_require={
+            'full': [
+                'finetuner-commons==0.0.1b7',
+            ],
+            'test': [
+                'black==22.3.0',
+                'flake8==4.0.1',
+                'isort==5.10.1',
+                'pytest==7.0.0',
+                'pytest-cov==3.0.0',
+                'pytest-mock==3.7.0',
+            ],
+        },
         python_requires=_python_requires,
         classifiers=_classifiers,
         project_urls=_project_urls,
