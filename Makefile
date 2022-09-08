@@ -57,18 +57,18 @@ pre-commit:
 
 ## Install package requirements
 install:
-	pip install --no-cache-dir -r requirements.txt
+	pip install --no-cache-dir -e ".[full]"
 
 ## Install dev requirements
 install-dev:
-	pip install --no-cache-dir -r requirements-dev.txt
+	pip install --no-cache-dir -e ".[test]"
 
 ## Install docs requirements
 install-docs:
 	pip install --no-cache-dir -r docs/requirements.txt
 
 ## Bootstrap dev environment
-init: pre-commit install-dev install-docs
+init: pre-commit install install-dev install-docs
 
 
 # ----------------------------------------------------------------------- Build targets
