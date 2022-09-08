@@ -135,7 +135,7 @@ artifact = run.save_artifact('resnet-model')
 ## Inference
 
 Now you saved the `artifact` into your host machine,
-let's use fine-tuned model to encode a new `Document`.
+let's use the fine-tuned model to encode a new `Document`:
 
 ```python
 import finetuner
@@ -149,4 +149,4 @@ finetuner.encode(model=model, data=test_da)
 print(test_da.embeddings)
 ```
 
-That's it! If you want to integrate fine-tuned model into your Jina Flow, please check out {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.
+That's it! If you want to integrate the fine-tuned model into your Jina Flow, please check out {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.
