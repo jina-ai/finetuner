@@ -92,9 +92,9 @@ class Run:
                 yield msg
             else:
                 break
-            return self._client.stream_run_logs(
-                experiment_name=self._experiment_name, run_name=self._name
-            )
+        return self._client.stream_run_logs(
+            experiment_name=self._experiment_name, run_name=self._name
+        )
 
     def _check_run_status_finished(self):
         status = self.status()[STATUS]
