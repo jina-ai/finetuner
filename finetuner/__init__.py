@@ -315,6 +315,7 @@ def get_model(
     batch_size: int = 32,
     select_model: Optional[str] = None,
     gpu: bool = False,
+    logging_level: str = 'WARNING',
 ):
     """Re-build the model based on the model inference session with ONNX.
 
@@ -351,6 +352,7 @@ def get_model(
         batch_size=batch_size,
         select_model=select_model,
         device='cuda' if gpu else 'cpu',
+        logging_level=logging_level,
     )
     return ort_engine
 

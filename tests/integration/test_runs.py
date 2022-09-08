@@ -108,11 +108,11 @@ def test_create_run_and_save_model(finetuner_mocker, get_feature_data, tmp_path)
     # the artifact id is a 24 character hex string defined in mongo db.
     assert len(artifact_id) == 24
 
-    run.save_artifact(directory=tmp_path / 'finetuned_model')
+    artifact = run.save_artifact(directory=tmp_path / 'finetuned_model')
     assert os.path.exists(tmp_path / 'finetuned_model')
 
     # encode and check the embeddings
-    model = finetuner.get_model(artifact=str(tmp_path / 'finetuned_model'))
+    model = finetuner.get_model(artifact=artifact)
     encoded_da = finetuner.encode(model=model, data=test_da)
     assert encoded_da.embeddings is not None
     assert isinstance(encoded_da.embeddings, np.ndarray)
