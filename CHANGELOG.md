@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improve usability of `stream_logs`. ([#522](https://github.com/jina-ai/finetuner/pull/522))
 
+- Improve `describe_models` with open-clip models. ([#528](https://github.com/jina-ai/finetuner/pull/528))
+
 ### Fixed
 
 ### Docs

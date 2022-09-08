@@ -89,12 +89,15 @@ def describe_models() -> None:
     """Describe available models in a table."""
     table = Table(title='Finetuner backbones')
     header = model.get_header()
+    model_descriptors = set()
 
     for column in header:
-        table.add_column(column, justify='right', style='cyan', no_wrap=True)
+        table.add_column(column, justify='right', style='cyan', no_wrap=False)
 
     for _, _model_class in _list_models().items():
-        table.add_row(*model.get_row(_model_class))
+        if _model_class.descriptor not in model_descriptors:
+            table.add_row(*model.get_row(_model_class))
+            model_descriptors.add(_model_class.descriptor)
 
     console = Console()
     console.print(table)
