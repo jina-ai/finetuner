@@ -9,6 +9,7 @@ from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
 from finetuner.exception import UserNotLoggedInError
 from finetuner.experiment import Experiment
 from finetuner.run import Run
+from hubble.excepts import AuthenticationRequiredError
 
 
 class Finetuner:
@@ -17,6 +18,11 @@ class Finetuner:
     def __init__(self):
         self._client = None
         self._default_experiment = None
+        try:
+            self._init_state()
+        except AuthenticationRequiredError:
+            # user needs to login first to use finetuner
+            pass
 
     def login(self):
         """Login to Hubble account, initialize a client object
@@ -25,13 +31,17 @@ class Finetuner:
         Note: Calling `login` is necessary for using finetuner.
         """
         hubble.login()
-        self._client = FinetunerV1Client()
-        self._default_experiment = self._get_default_experiment()
+        self._init_state()
 
     @staticmethod
     def _get_cwd() -> str:
         """Returns current working directory."""
         return os.getcwd().split('/')[-1]
+
+    def _init_state(self):
+        """Initialize client and default experiment."""
+        self._client = FinetunerV1Client()
+        self._default_experiment = self._get_default_experiment()
 
     def _get_default_experiment(self) -> Experiment:
         """Create or retrieve (if it already exists) a default experiment
@@ -51,6 +61,10 @@ class Finetuner:
         """
         if not name:
             name = self._get_cwd()
+        if not self._client:
+            raise UserNotLoggedInError(
+                'You need to be logged in before creating an experiment.'
+            )
         experiment_info = self._client.create_experiment(name=name)
         return Experiment(
             client=self._client,
@@ -66,6 +80,10 @@ class Finetuner:
         :param name: Name of the experiment.
         :return: An `Experiment` object.
         """
+        if not self._client:
+            raise UserNotLoggedInError(
+                'You need to be logged in before getting an experiment.'
+            )
         experiment_info = self._client.get_experiment(name=name)
         return Experiment(
             client=self._client,
@@ -77,6 +95,10 @@ class Finetuner:
 
     def list_experiments(self) -> List[Experiment]:
         """List every experiment."""
+        if not self._client:
+            raise UserNotLoggedInError(
+                'You need to be logged in before listing experiments.'
+            )
         experiment_infos = self._client.list_experiments()
 
         return [
@@ -95,6 +117,10 @@ class Finetuner:
         :param name: Name of the experiment.
         :return: Deleted experiment.
         """
+        if not self._client:
+            raise UserNotLoggedInError(
+                'You need to be logged in before deleting an experiment.'
+            )
         experiment_info = self._client.delete_experiment(name=name)
         return Experiment(
             client=self._client,
@@ -108,6 +134,10 @@ class Finetuner:
         """Delete every experiment.
         :return: List of deleted experiments.
         """
+        if not self._client:
+            raise UserNotLoggedInError(
+                'You need to be logged in before deleting an experiment.'
+            )
         experiment_infos = self._client.delete_experiments()
         return [
             Experiment(
@@ -188,6 +218,8 @@ class Finetuner:
         :param experiment_name: Optional name of the experiment.
         :return: A `Run` object.
         """
+        if not self._client:
+            raise UserNotLoggedInError('You need to be logged in before getting a run.')
         if not experiment_name:
             experiment = self._default_experiment
         else:
@@ -203,6 +235,8 @@ class Finetuner:
         :param experiment_name: Optional name of the experiment.
         :return: A list of `Run` objects.
         """
+        if not self._client:
+            raise UserNotLoggedInError('You need to be logged in before listing runs.')
         if not experiment_name:
             experiments = self.list_experiments()
         else:
