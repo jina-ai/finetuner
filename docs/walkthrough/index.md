@@ -33,8 +33,7 @@ run = finetuner.fit(
 )
 
 print(run.name)
-for log_entry in run.stream_logs():
-    print(log_entry)
+run.stream_logs()
 
 # When ready
 run.save_artifact(directory='experiment')

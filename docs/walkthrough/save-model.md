@@ -29,9 +29,8 @@ experiment = finetuner.get_experiment('finetune-flickr-dataset')
 run = experiment.get_run('finetune-flickr-dataset-efficientnet-1')
 print(f'Run status: {run.status()}')
 print(f'Run artifact id: {run.artifact_id}')
-# Once run status is `STARTED`, you can stream logs with:
-for log_entry in run.stream_logs():
-    print(log_entry)
+# you can stream logs with
+run.stream_logs()
 # save the artifact.
 run.save_artifact('tuned_model')
 ```
