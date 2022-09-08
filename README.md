@@ -144,7 +144,7 @@ run = finetuner.fit(
 )
 ```
 
-Fine-tuning might take 5 minute to finish. You can later re-connect your run with:
+Fine-tuning might take 5 minute to finish. You can stream the logs with:
 
 ```python
 import finetuner
@@ -152,8 +152,8 @@ import finetuner
 finetuner.login()
 
 run = finetuner.get_run('resnet50-tll-run')
-print(run.status())
-print(run.logs())
+for entry in run.stream_logs():
+    print(entry)
 
 run.save_artifact('resnet-tll')
 ```
@@ -173,10 +173,9 @@ Finally, you can use the model to encode images:
 import finetuner
 from docarray import Document, DocumentArray
 
-model = finetuner.get_model('resnet-tll')
-
 da = DocumentArray([Document(uri='~/Pictures/your_img.png')])
 
+model = finetuner.get_model('resnet-tll')
 finetuner.encode(model=model, data=da)
 
 da.summary()
