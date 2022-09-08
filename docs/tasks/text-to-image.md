@@ -119,7 +119,7 @@ We have done the evaulation for you in the table below.
 
 After the run has finished successfully, you can download the tuned model on your local machine:
 ```python
-run.save_artifact('clip-model')
+artifact = run.save_artifact('clip-model')
 ```
 
 ## Inference

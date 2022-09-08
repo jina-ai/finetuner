@@ -129,7 +129,7 @@ What you can do for now is to call {meth}`~finetuner.run.Run.logs()` in the end 
 
 After the run has finished successfully, you can download the tuned model on your local machine:
 ```python
-run.save_artifact('resnet-model')
+artifact = run.save_artifact('resnet-model')
 ```
 
 ## Inference
