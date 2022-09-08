@@ -377,7 +377,7 @@ def encode(
     ..Note::
       please install finetuner[full] to include all the dependencies.
     """
-    for _, batch in enumerate(data.batch(batch_size)):
+    for batch in data.batch(batch_size):
         inputs = model._run_data_pipeline(batch)
         inputs = model._flatten_inputs(inputs)
         model._check_input_names(inputs)
