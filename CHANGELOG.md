@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Removed
+
+### Changed
+
+### Fixed
+
+### Docs
+
+
+## [0.6.0] - 2022-09-09
+
+### Added
+
 - Add `get_model` and `encode` method to encode docarray. ([#522](https://github.com/jina-ai/finetuner/pull/522))
 
 - Add connect function to package ([#532](https://github.com/jina-ai/finetuner/pull/532))
