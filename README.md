@@ -152,8 +152,9 @@ import finetuner
 finetuner.login()
 
 run = finetuner.get_run('resnet50-tll-run')
-print(run.status())
-print(run.logs())
+
+for msg in run.stream_logs():
+    print(msg)
 
 run.save_artifact('resnet-tll')
 ```
@@ -173,10 +174,9 @@ Finally, you can use the model to encode images:
 import finetuner
 from docarray import Document, DocumentArray
 
-model = finetuner.get_model('resnet-tll')
-
 da = DocumentArray([Document(uri='~/Pictures/your_img.png')])
 
+model = finetuner.get_model('resnet-tll')
 finetuner.encode(model=model, data=da)
 
 da.summary()

@@ -34,6 +34,10 @@ def login():
     ft.login()
 
 
+def connect():
+    ft.connect()
+
+
 def list_callbacks() -> Dict[str, callback.CallbackStubType]:
     """List available callbacks."""
     return {
