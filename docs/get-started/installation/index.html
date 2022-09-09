@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="Finetuner Documentation" />
   
-<meta property="og:description" content="PyPI is the latest version. Make sure you have Python 3.7+ installed on Linux/Mac/Windows: Check your installation with:" />
+<meta property="og:description" content="PyPI is the latest version. Make sure you have Python 3.7+ installed on Linux/Mac/Windows: If you want to encode docarray.DocumentArray objects with the encode() function, you need to install finetuner[full]. In this case, some extra dependencies are installed which are necessary to do the infere..." />
   
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   
@@ -233,7 +233,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Encode Documents</a></li>
 </ul>
 </li>
 </ul>
@@ -254,7 +254,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
@@ -340,7 +340,12 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -U finetuner
 </pre></div>
 </div>
-<p>Check your installation with:</p>
+<p>If you want to encode <code class="docutils literal notranslate"><span class="pre">docarray.DocumentArray</span></code> objects with the <a class="reference internal" href="../../api/finetuner/#finetuner.encode" title="finetuner.encode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">encode()</span></code></a> function, you need to install finetuner[full].
+In this case, some extra dependencies are installed which are necessary to do the inference, e.g., torch, torchvision, and open clip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install finetuner<span class="o">[</span>full<span class="o">]</span>
+</pre></div>
+</div>
+<p>To check your installation run:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip show finetuner
 </pre></div>
 </div>
@@ -381,7 +386,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 31, 2022</div>
+                            Last updated on Sep 09, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

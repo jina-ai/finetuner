@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="Finetuner Documentation" />
   
-<meta property="og:description" content="Finetuner accepts training data and evaluation data in the form of DocumentArray objects. Because Finetuner follows a supervised-learning scheme, you should assign a label to each Document inside your DocumentArray as follows: text-to-text search image-to-image search text-to-image search on CLIP..." />
+<meta property="og:description" content="Finetuner accepts training data and evaluation data in the form of DocumentArray objects. Because Finetuner follows a supervised-learning scheme, you should assign a label to each Document inside your DocumentArray. For most of the models, this is done by adding a fintuner_label tag to each docum..." />
   
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   
@@ -233,7 +233,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../save-model/">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../integrate-with-jina/">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../integrate-with-jina/">Encode Documents</a></li>
 </ul>
 </li>
 </ul>
@@ -254,7 +254,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
@@ -335,9 +335,12 @@
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="prepare-training-data">
 <span id="create-training-data"></span><h1>Prepare Training Data<a class="headerlink" href="#prepare-training-data" title="Permalink to this headline">#</a></h1>
-<p>Finetuner accepts training data and evaluation data in the form of <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.16.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> objects.
+<p>Finetuner accepts training data and evaluation data in the form of <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.16.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> objects.
 Because Finetuner follows a <a class="reference external" href="https://en.wikipedia.org/wiki/Supervised_learning">supervised-learning</a> scheme,
-you should assign a label to each <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.16.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> inside your <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.16.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> as follows:</p>
+you should assign a label to each <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.16.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> inside your <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.16.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>.
+For most of the models, this is done by adding a <code class="docutils literal notranslate"><span class="pre">fintuner_label</span></code> tag to each document.
+Only for cross-modality (text-to-image) fine-tuning with CLIP, this is not necessary as explained at the bottom of this section.</p>
+<p>In the code blocks below, you can see examples which demonstrate how the training datasets should look like:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">text-to-text search</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
@@ -412,7 +415,10 @@ you only need to create a <code class="docutils literal notranslate"><span class
 <p>For cross-modality (text-to-image) fine-tuning with CLIP,
 you should create a root <code class="docutils literal notranslate"><span class="pre">Document</span></code> which wraps two <code class="xref py py-class docutils literal notranslate"><span class="pre">chunk</span></code>s with the <code class="docutils literal notranslate"><span class="pre">image</span></code> and <code class="docutils literal notranslate"><span class="pre">text</span></code> modality.
 The image and text form a pair.
-Evaluation data should be created the same way as above.</p>
+During the training, CLIP learns to place documents that are part of a pair close to
+each other and documents that are not part of a pair far from each other.
+As a result, no further labels need to be provided.</p>
+<p>Evaluation data should be created in the same way as the training data in the examples above.</p>
 <div class="hint admonition">
 <p class="admonition-title">CLIP model explained</p>
 <p>OpenAI CLIP model wraps two models: a vision transformer and a text transformer.
@@ -420,7 +426,7 @@ During fine-tuning, we’re optimizing two models in parallel.</p>
 <p>At the model saving time, you will discover, we are saving two models to your local directory.</p>
 </div>
 <p>If you need to evaluate metrics on separate evaluation data,
-It is recommended to create another <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> as above only for evaluation purposes.</p>
+it is recommended to create another <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> as above only for evaluation purposes.</p>
 <p>Carry on, you’re almost there!</p>
 </section>
 
@@ -459,7 +465,7 @@ It is recommended to create another <code class="docutils literal notranslate"><
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 31, 2022</div>
+                            Last updated on Sep 09, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

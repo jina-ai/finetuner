@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="Finetuner Documentation" />
   
-<meta property="og:description" content="Perfect! Now you have started the fine-tuning job in the cloud. However, fine-tuning takes time. It highly depends on the size of your training data, evaluation data and other hyper-parameters. Because of this, you might have to close the session and reconnect to it several times. In the followin..." />
+<meta property="og:description" content="Perfect! Now, you have started the fine-tuning job in the cloud. When the fine-tuning job is finished, the resulting model is automatically stored under your Jina account in the cloud. Next, we can get its artifact id and download the model. Please note that fine-tuning takes time. It highly depe..." />
   
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   
@@ -35,7 +35,7 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Integration" href="../integrate-with-jina/" /><link rel="prev" title="Run Job" href="../run-job/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Encode Documents" href="../integrate-with-jina/" /><link rel="prev" title="Run Job" href="../run-job/" />
         <link rel="canonical" href="https://finetuner.jina.ai/walkthrough/save-model.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
@@ -233,7 +233,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../run-job/">Run Job</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../integrate-with-jina/">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../integrate-with-jina/">Encode Documents</a></li>
 </ul>
 </li>
 </ul>
@@ -254,7 +254,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
@@ -336,9 +336,18 @@
                     <section class="tex2jax_ignore mathjax_ignore" id="save-artifact">
 <span id="retrieve-tuned-model"></span><h1>Save Artifact<a class="headerlink" href="#save-artifact" title="Permalink to this headline">#</a></h1>
 <p>Perfect!
-Now you have started the fine-tuning job in the cloud.
-However, fine-tuning takes time. It highly depends on the size of your training data, evaluation data and other hyper-parameters. Because of this, you might have to close the session and reconnect to it several times.</p>
-<p>In the following example, we show how to connect to an existing run and download a tuned model:</p>
+Now, you have started the fine-tuning job in the cloud.
+When the fine-tuning job is finished, the resulting model is automatically stored under your Jina account in the cloud.
+Next, we can get its artifact id and download the model.</p>
+<div class="hint admonition">
+<p class="admonition-title">Managing fine-tuned models</p>
+<p>To use a fine-tuned model in a Jina service running on <a class="reference external" href="https://github.com/jina-ai/jcloud">JCloud</a>, you do not need to download it.
+Each model has a artifact id, which is sufficient to setup an encoding serivce as explained in the section <a class="reference internal" href="../integrate-with-jina/"><span class="doc">Encode Documents</span></a>.
+Alternatively, you can also download the model using the artifact id, as explained below, e.g., to use it in a locally runnig Jina service.</p>
+</div>
+<p>Please note that fine-tuning takes time. It highly depends on the size of your training data, evaluation data and other hyper-parameters.
+Because of this, you might have to close the session and reconnect to it several times.</p>
+<p>In the example below, we show how to connect to an existing run and download a tuned model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
@@ -386,7 +395,7 @@ Run logs:
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">Integration</div>
+                            <div class="title">Encode Documents</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
@@ -411,7 +420,7 @@ Run logs:
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 31, 2022</div>
+                            Last updated on Sep 09, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -233,7 +233,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Encode Documents</a></li>
 </ul>
 </li>
 </ul>
@@ -254,7 +254,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
@@ -381,7 +381,7 @@ we already prepared the data, and we’ll provide the names of training and eval
 <ul class="simple">
 <li><p>We start with providing <code class="docutils literal notranslate"><span class="pre">model</span></code>, <code class="docutils literal notranslate"><span class="pre">run_name</span></code>, names of training and evaluation data.</p></li>
 <li><p>We also provide some hyper-parameters such as number of <code class="docutils literal notranslate"><span class="pre">epochs</span></code> and a <code class="docutils literal notranslate"><span class="pre">learning_rate</span></code>.</p></li>
-<li><p>Additionally, we use <a class="reference internal" href="../../api/finetuner.callback/#finetuner.callback.BestModelCheckpoint" title="finetuner.callback.BestModelCheckpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BestModelCheckpoint</span></code></a> to save the best model after each epoch and <a class="reference internal" href="../../api/finetuner.callback/#finetuner.callback.EvaluationCallback" title="finetuner.callback.EvaluationCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationCallback</span></code></a> for evaluation.</p></li>
+<li><p>Additionally, we use <code class="xref py py-class docutils literal notranslate"><span class="pre">BestModelCheckpoint</span></code> to save the best model after each epoch and <code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> for evaluation.</p></li>
 </ul>
 </section>
 <section id="monitoring">
@@ -403,7 +403,7 @@ we already prepared the data, and we’ll provide the names of training and eval
 </section>
 <section id="evaluating">
 <h2>Evaluating<a class="headerlink" href="#evaluating" title="Permalink to this headline">#</a></h2>
-<p>Currently, we don’t have a user-friendly way to get evaluation metrics from the <a class="reference internal" href="../../api/finetuner.callback/#finetuner.callback.EvaluationCallback" title="finetuner.callback.EvaluationCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationCallback</span></code></a> we initialized previously.
+<p>Currently, we don’t have a user-friendly way to get evaluation metrics from the <code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> we initialized previously.
 What you can do for now is to call <a class="reference internal" href="../../api/finetuner.run/#finetuner.run.Run.logs" title="finetuner.run.Run.logs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">logs()</span></code></a> in the end of the run and see evaluation results:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>           INFO     Done ✨                                                                              __main__.py:219
            INFO     Saving fine-tuned models ...                                                         __main__.py:222
@@ -480,10 +480,34 @@ Then use the textual Documents to search image Documents.</p>
 <section id="saving">
 <h2>Saving<a class="headerlink" href="#saving" title="Permalink to this headline">#</a></h2>
 <p>After the run has finished successfully, you can download the tuned model on your local machine:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">run</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="s1">&#39;clip-model&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">artifact</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="s1">&#39;clip-model&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>That’s it! Now you have a fine-tuned model which is ready to be <a class="reference internal" href="../../walkthrough/integrate-with-jina/#integrate-with-jina"><span class="std std-ref">integrated with the Jina ecosystem</span></a>.</p>
+</section>
+<section id="inference">
+<h2>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">#</a></h2>
+<p>Now you saved the <code class="docutils literal notranslate"><span class="pre">artifact</span></code> into your host machine,
+let’s use the fine-tuned model to encode a new <code class="docutils literal notranslate"><span class="pre">Document</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
+<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+<span class="c1"># Load model from artifact</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">artifact</span><span class="o">=</span><span class="n">artifact</span><span class="p">,</span> <span class="n">select_model</span><span class="o">=</span><span class="s1">&#39;clip-text&#39;</span><span class="p">)</span>
+<span class="c1"># Prepare some text to encode</span>
+<span class="n">test_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;some text to encode&#39;</span><span class="p">)])</span>
+<span class="c1"># Encoding will happen in-place in your `DocumentArray`</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">test_da</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">test_da</span><span class="o">.</span><span class="n">embeddings</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="hint admonition">
+<p class="admonition-title">what is select_model?</p>
+<p>When fine-tuning CLIP, we are fine-tuning the CLIPVisionEncoder and CLIPTextEncoder in parallel.
+The artifact contains two models: <code class="docutils literal notranslate"><span class="pre">clip-vision</span></code> and <code class="docutils literal notranslate"><span class="pre">clip-text</span></code>.
+The parameter <code class="docutils literal notranslate"><span class="pre">select_model</span></code> tells finetuner which model to use for inference, in the above example,
+we use <code class="docutils literal notranslate"><span class="pre">clip-text</span></code> to encode a Document with text content.</p>
+</div>
+<p>Check out <a class="reference external" href="https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models">clip-as-service</a> to learn how to plug-in a finetuned CLIP model to our CLIP specific service.</p>
+<p>That’s it! If you want to integrate the fine-tuned model into your Jina Flow, please check out <a class="reference internal" href="../../walkthrough/integrate-with-jina/#integrate-with-jina"><span class="std std-ref">integrated with the Jina ecosystem</span></a>.</p>
 </section>
 </section>
 
@@ -522,7 +546,7 @@ Then use the textual Documents to search image Documents.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 31, 2022</div>
+                            Last updated on Sep 09, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -562,6 +586,7 @@ Then use the textual Documents to search image Documents.</p>
 <li><a class="reference internal" href="#monitoring">Monitoring</a></li>
 <li><a class="reference internal" href="#evaluating">Evaluating</a></li>
 <li><a class="reference internal" href="#saving">Saving</a></li>
+<li><a class="reference internal" href="#inference">Inference</a></li>
 </ul>
 </li>
 </ul>

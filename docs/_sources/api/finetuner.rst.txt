@@ -19,7 +19,7 @@ Submodules
    finetuner.exception
    finetuner.experiment
    finetuner.finetuner
-   finetuner.models
+   finetuner.model
    finetuner.run
 
 Module contents

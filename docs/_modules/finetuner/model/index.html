@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" />
-        <link rel="canonical" href="https://finetuner.jina.ai/_modules/finetuner/models.html" />
+        <link rel="canonical" href="https://finetuner.jina.ai/_modules/finetuner/model.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>finetuner.models - Finetuner documentation</title>
+        <title>finetuner.model - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -200,7 +200,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/save-model/">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/integrate-with-jina/">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/integrate-with-jina/">Encode Documents</a></li>
 </ul>
 </li>
 </ul>
@@ -221,7 +221,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
@@ -300,165 +300,24 @@
                     </label>
                 </div>
                 <article role="main">
-                    <h1>Source code for finetuner.models</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span>
-
-<span class="n">ModelStubType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;ModelStubType&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;_ModelStub&#39;</span><span class="p">)</span>
+                    <h1>Source code for finetuner.model</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">stubs.model</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa F401</span>
 
 
-<span class="k">class</span> <span class="nc">_ModelStub</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">task</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
-    <span class="n">architecture</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">options</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">kwargs</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">header</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get table header.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;task&#39;</span><span class="p">,</span> <span class="s1">&#39;output_dim&#39;</span><span class="p">,</span> <span class="s1">&#39;architecture&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">row</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get table row.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">task</span><span class="p">,</span>
-            <span class="nb">str</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">output_dim</span><span class="p">),</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">architecture</span><span class="p">,</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
-        <span class="p">)</span>
+<div class="viewcode-block" id="get_header"><a class="viewcode-back" href="../../../api/finetuner.model/#finetuner.model.get_header">[docs]</a><span class="k">def</span> <span class="nf">get_header</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Get table header.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;task&#39;</span><span class="p">,</span> <span class="s1">&#39;output_dim&#39;</span><span class="p">,</span> <span class="s1">&#39;architecture&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span></div>
 
 
-<div class="viewcode-block" id="MLP"><a class="viewcode-back" href="../../../api/finetuner.models/#finetuner.models.MLP">[docs]</a><span class="k">class</span> <span class="nc">MLP</span><span class="p">(</span><span class="n">_ModelStub</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;MLP model stub.</span>
-
-<span class="sd">    :param input_size: Size of the input representations.</span>
-<span class="sd">    :param hidden_sizes: A list of sizes of the hidden layers. The last hidden size is</span>
-<span class="sd">        the output size.</span>
-<span class="sd">    :param bias: Whether to add bias to each layer.</span>
-<span class="sd">    :param activation: A string to configure activation function, `relu`, `tanh` or</span>
-<span class="sd">        `sigmoid`. Set to `None` for no activation.</span>
-<span class="sd">    :param l2: Apply L2 normalization at the output layer.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mlp&#39;</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Simple MLP encoder trained from scratch&#39;</span>
-    <span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;any&#39;</span>
-    <span class="n">output_dim</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
-    <span class="n">architecture</span> <span class="o">=</span> <span class="s1">&#39;MLP&#39;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">hidden_sizes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-        <span class="n">bias</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">activation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">l2</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">MLP</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">input_size</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span>
-            <span class="n">hidden_sizes</span><span class="o">=</span><span class="n">hidden_sizes</span><span class="p">,</span>
-            <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span>
-            <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">,</span>
-            <span class="n">l2</span><span class="o">=</span><span class="n">l2</span><span class="p">,</span>
-        <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="ResNet50"><a class="viewcode-back" href="../../../api/finetuner.models/#finetuner.models.ResNet50">[docs]</a><span class="k">class</span> <span class="nc">ResNet50</span><span class="p">(</span><span class="n">_ModelStub</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;ResNet50 model stub.&quot;&quot;&quot;</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;resnet50&#39;</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Pretrained on ImageNet&#39;</span>
-    <span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;image-to-image&#39;</span>
-    <span class="n">output_dim</span> <span class="o">=</span> <span class="s1">&#39;2048&#39;</span>
-    <span class="n">architecture</span> <span class="o">=</span> <span class="s1">&#39;CNN&#39;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ResNet50</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="ResNet152"><a class="viewcode-back" href="../../../api/finetuner.models/#finetuner.models.ResNet152">[docs]</a><span class="k">class</span> <span class="nc">ResNet152</span><span class="p">(</span><span class="n">_ModelStub</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;ResNet152 model stub.&quot;&quot;&quot;</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;resnet152&#39;</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Pretrained on ImageNet&#39;</span>
-    <span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;image-to-image&#39;</span>
-    <span class="n">output_dim</span> <span class="o">=</span> <span class="s1">&#39;2048&#39;</span>
-    <span class="n">architecture</span> <span class="o">=</span> <span class="s1">&#39;CNN&#39;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ResNet152</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="EfficientNetB0"><a class="viewcode-back" href="../../../api/finetuner.models/#finetuner.models.EfficientNetB0">[docs]</a><span class="k">class</span> <span class="nc">EfficientNetB0</span><span class="p">(</span><span class="n">_ModelStub</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;EfficientNetB0 model stub.&quot;&quot;&quot;</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;efficientnet_b0&#39;</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Pretrained on ImageNet&#39;</span>
-    <span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;image-to-image&#39;</span>
-    <span class="n">output_dim</span> <span class="o">=</span> <span class="s1">&#39;1280&#39;</span>
-    <span class="n">architecture</span> <span class="o">=</span> <span class="s1">&#39;CNN&#39;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">EfficientNetB0</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="EfficientNetB4"><a class="viewcode-back" href="../../../api/finetuner.models/#finetuner.models.EfficientNetB4">[docs]</a><span class="k">class</span> <span class="nc">EfficientNetB4</span><span class="p">(</span><span class="n">_ModelStub</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;EfficientNetB4 model stub.&quot;&quot;&quot;</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;efficientnet_b4&#39;</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Pretrained on ImageNet&#39;</span>
-    <span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;image-to-image&#39;</span>
-    <span class="n">output_dim</span> <span class="o">=</span> <span class="s1">&#39;1280&#39;</span>
-    <span class="n">architecture</span> <span class="o">=</span> <span class="s1">&#39;CNN&#39;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">EfficientNetB4</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="OpenAICLIP"><a class="viewcode-back" href="../../../api/finetuner.models/#finetuner.models.OpenAICLIP">[docs]</a><span class="k">class</span> <span class="nc">OpenAICLIP</span><span class="p">(</span><span class="n">_ModelStub</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;OpenAICLIP model stub.&quot;&quot;&quot;</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;openai/clip-vit-base-patch32&#39;</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Pretrained on text image pairs by OpenAI&#39;</span>
-    <span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;text-to-image&#39;</span>
-    <span class="n">output_dim</span> <span class="o">=</span> <span class="s1">&#39;768&#39;</span>
-    <span class="n">architecture</span> <span class="o">=</span> <span class="s1">&#39;transformer&#39;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">OpenAICLIP</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="BERT"><a class="viewcode-back" href="../../../api/finetuner.models/#finetuner.models.BERT">[docs]</a><span class="k">class</span> <span class="nc">BERT</span><span class="p">(</span><span class="n">_ModelStub</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;BERT model stub.&quot;&quot;&quot;</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;bert-base-cased&#39;</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Pretrained on BookCorpus and English Wikipedia&#39;</span>
-    <span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;text-to-text&#39;</span>
-    <span class="n">output_dim</span> <span class="o">=</span> <span class="s1">&#39;768&#39;</span>
-    <span class="n">architecture</span> <span class="o">=</span> <span class="s1">&#39;transformer&#39;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">BERT</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="SentenceTransformer"><a class="viewcode-back" href="../../../api/finetuner.models/#finetuner.models.SentenceTransformer">[docs]</a><span class="k">class</span> <span class="nc">SentenceTransformer</span><span class="p">(</span><span class="n">_ModelStub</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;SentenceTransformer model stub.&quot;&quot;&quot;</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;sentence-transformers/msmarco-distilbert-base-v3&#39;</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Pretrained BERT, fine-tuned on MS Marco&#39;</span>
-    <span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;text-to-text&#39;</span>
-    <span class="n">output_dim</span> <span class="o">=</span> <span class="s1">&#39;768&#39;</span>
-    <span class="n">architecture</span> <span class="o">=</span> <span class="s1">&#39;transformer&#39;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SentenceTransformer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+<div class="viewcode-block" id="get_row"><a class="viewcode-back" href="../../../api/finetuner.model/#finetuner.model.get_row">[docs]</a><span class="k">def</span> <span class="nf">get_row</span><span class="p">(</span><span class="n">model_stub</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Get table row.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">model_stub</span><span class="o">.</span><span class="n">descriptor</span><span class="p">,</span>
+        <span class="n">model_stub</span><span class="o">.</span><span class="n">task</span><span class="p">,</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">model_stub</span><span class="o">.</span><span class="n">output_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="n">model_stub</span><span class="o">.</span><span class="n">architecture</span><span class="p">,</span>
+        <span class="n">model_stub</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+    <span class="p">)</span></div>
 </pre></div>
                 </article>
             </div>
@@ -473,7 +332,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 31, 2022</div>
+                            Last updated on Sep 09, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

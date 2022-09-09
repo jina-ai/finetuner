@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="Finetuner Documentation" />
   
-<meta property="og:description" content="Finetuner organizes your training based on two concepts: Experiment and Run. An Experiment defines the machine learning task you’re fine-tuning for. A Run is a piece of code that performs the Experiment with specific configurations. An Experiment contains a list of Runs, each with different confi..." />
+<meta property="og:description" content="Finetuner organizes your training based on two concepts: Experiment and Run. An Experiment defines the machine learning task you’re fine-tuning for. A Run refers to a single execution of the Experiment with a specific configuration. An Experiment contains a list of Runs, each with different confi..." />
   
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   
@@ -233,7 +233,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../save-model/">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../integrate-with-jina/">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../integrate-with-jina/">Encode Documents</a></li>
 </ul>
 </li>
 </ul>
@@ -254,7 +254,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
@@ -335,11 +335,11 @@
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="basic-concepts">
 <span id="experiment-and-runs"></span><h1>Basic Concepts<a class="headerlink" href="#basic-concepts" title="Permalink to this headline">#</a></h1>
-<p>Finetuner organizes your training based on two concepts: <a class="reference internal" href="../../api/finetuner.experiment/#finetuner.experiment.Experiment" title="finetuner.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a> and <a class="reference internal" href="../../api/finetuner.run/#finetuner.run.Run" title="finetuner.run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a>.</p>
+<p>Finetuner organizes your training based on two concepts:
+<a class="reference internal" href="../../api/finetuner.experiment/#finetuner.experiment.Experiment" title="finetuner.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a> and <a class="reference internal" href="../../api/finetuner.run/#finetuner.run.Run" title="finetuner.run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a>.</p>
 <p>An Experiment defines the machine learning task you’re fine-tuning for.
-A Run is a piece of code that performs the Experiment with specific configurations.
-An Experiment contains a list of Runs,
-each with different configurations.
+A Run refers to a single execution of the Experiment with a specific configuration.
+An Experiment contains a list of Runs, each with different configurations.
 For example:</p>
 <ul class="simple">
 <li><p>Experiment: Fine-tune a transformer on the QuoraQA dataset.</p>
@@ -356,6 +356,13 @@ For example:</p>
 </ul>
 </li>
 </ul>
+<p>All information and data produced during using Finetuner is linked to those two concepts.
+Each Experiment and each Run has a name.
+The name of the Experiment should be unique and the name of the Run is also required
+to be unique for each Experiment.
+Thus, if you want to retrieve the logs of a run or download the fine-tuned model later
+on, you can do this with the respective experiment and run names, as explained in section
+<a class="reference internal" href="../save-model/"><span class="doc">Save Artifact</span></a>.</p>
 <p>When you start the fine-tuning job, you can declare the <code class="docutils literal notranslate"><span class="pre">experiment_name</span></code> and <code class="docutils literal notranslate"><span class="pre">run_name</span></code> like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
@@ -369,7 +376,7 @@ For example:</p>
 <p>Please note that these two arguments are optional.
 If not supplied,
 Finetuner will use the current working directory as a default <code class="docutils literal notranslate"><span class="pre">experiment_name</span></code>,
-and generate a random <code class="docutils literal notranslate"><span class="pre">run_name</span></code> for you.</p>
+and generate a random <code class="docutils literal notranslate"><span class="pre">run_name</span></code> for you, e.g., “infallible-colden”.</p>
 </section>
 
                 </article>
@@ -407,7 +414,7 @@ and generate a random <code class="docutils literal notranslate"><span class="pr
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 31, 2022</div>
+                            Last updated on Sep 09, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

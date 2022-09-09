@@ -233,7 +233,7 @@
 <li class="toctree-l2"><a class="reference internal" href="walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="walkthrough/run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="walkthrough/save-model/">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="walkthrough/integrate-with-jina/">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="walkthrough/integrate-with-jina/">Encode Documents</a></li>
 </ul>
 </li>
 </ul>
@@ -254,7 +254,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
@@ -348,6 +348,11 @@ Finetuner can be installed via pip by executing:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -U finetuner
 </pre></div>
 </div>
+<p>If you want to encode <code class="docutils literal notranslate"><span class="pre">docarray.DocumentArray</span></code> objects with the <code class="docutils literal notranslate"><span class="pre">finetuner.encode</span></code> function, you need to install finetuner[full].
+In this case, some extra dependencies are installed which are necessary to do the inference, e.g., torch, torchvision, and open clip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install finetuner<span class="o">[</span>full<span class="o">]</span>
+</pre></div>
+</div>
 </section>
 <section id="support">
 <h2>Support<a class="headerlink" href="#support" title="Permalink to this headline">#</a></h2>
@@ -376,7 +381,7 @@ and <a class="reference external" href="https://youtube.com/c/jina-ai">live stre
 <div class="toctree-wrapper compound">
 </div>
 <hr class="docutils" />
-<p><a class="reference internal" href="genindex/"><span class="std std-ref">Index</span></a> <a class="reference internal" href="py-modindex/"><span class="std std-ref">Module Index</span></a></p>
+<p><a class="reference internal" href="genindex/"><span class="std std-ref">Index</span></a> | <a class="reference internal" href="py-modindex/"><span class="std std-ref">Module Index</span></a></p>
 </section>
 </section>
 
@@ -403,7 +408,7 @@ and <a class="reference external" href="https://youtube.com/c/jina-ai">live stre
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 31, 2022</div>
+                            Last updated on Sep 09, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

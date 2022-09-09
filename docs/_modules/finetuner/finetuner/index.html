@@ -200,7 +200,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/save-model/">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/integrate-with-jina/">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../walkthrough/integrate-with-jina/">Encode Documents</a></li>
 </ul>
 </li>
 </ul>
@@ -221,7 +221,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
@@ -309,9 +309,9 @@
 <span class="kn">import</span> <span class="nn">hubble</span>
 <span class="kn">from</span> <span class="nn">finetuner.client</span> <span class="kn">import</span> <span class="n">FinetunerV1Client</span>
 <span class="kn">from</span> <span class="nn">finetuner.constants</span> <span class="kn">import</span> <span class="n">CREATED_AT</span><span class="p">,</span> <span class="n">DESCRIPTION</span><span class="p">,</span> <span class="n">NAME</span><span class="p">,</span> <span class="n">STATUS</span>
-<span class="kn">from</span> <span class="nn">finetuner.exception</span> <span class="kn">import</span> <span class="n">UserNotLoggedInError</span>
 <span class="kn">from</span> <span class="nn">finetuner.experiment</span> <span class="kn">import</span> <span class="n">Experiment</span>
 <span class="kn">from</span> <span class="nn">finetuner.run</span> <span class="kn">import</span> <span class="n">Run</span>
+<span class="kn">from</span> <span class="nn">hubble</span> <span class="kn">import</span> <span class="n">login_required</span>
 
 
 <div class="viewcode-block" id="Finetuner"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner">[docs]</a><span class="k">class</span> <span class="nc">Finetuner</span><span class="p">:</span>
@@ -328,13 +328,24 @@
 <span class="sd">        Note: Calling `login` is necessary for using finetuner.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">hubble</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">FinetunerV1Client</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_default_experiment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_default_experiment</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_state</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Finetuner.connect"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Connects finetuner to Hubble without logging in again.</span>
+<span class="sd">        Use this function, if you are already logged in.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_state</span><span class="p">()</span></div>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_cwd</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns current working directory.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@login_required</span>
+    <span class="k">def</span> <span class="nf">_init_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize client and default experiment.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">FinetunerV1Client</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_experiment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_default_experiment</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_default_experiment</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Experiment</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Create or retrieve (if it already exists) a default experiment</span>
@@ -345,7 +356,8 @@
                 <span class="k">return</span> <span class="n">experiment</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_experiment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">experiment_name</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Finetuner.create_experiment"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.create_experiment">[docs]</a>    <span class="k">def</span> <span class="nf">create_experiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Experiment</span><span class="p">:</span>
+    <span class="nd">@login_required</span>
+    <span class="k">def</span> <span class="nf">create_experiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Experiment</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Create an experiment.</span>
 
 <span class="sd">        :param name: Optional name of the experiment. If `None`,</span>
@@ -361,9 +373,10 @@
             <span class="n">status</span><span class="o">=</span><span class="n">experiment_info</span><span class="p">[</span><span class="n">STATUS</span><span class="p">],</span>
             <span class="n">created_at</span><span class="o">=</span><span class="n">experiment_info</span><span class="p">[</span><span class="n">CREATED_AT</span><span class="p">],</span>
             <span class="n">description</span><span class="o">=</span><span class="n">experiment_info</span><span class="p">[</span><span class="n">DESCRIPTION</span><span class="p">],</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
 
-<div class="viewcode-block" id="Finetuner.get_experiment"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.get_experiment">[docs]</a>    <span class="k">def</span> <span class="nf">get_experiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Experiment</span><span class="p">:</span>
+    <span class="nd">@login_required</span>
+    <span class="k">def</span> <span class="nf">get_experiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Experiment</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get an experiment by its name.</span>
 
 <span class="sd">        :param name: Name of the experiment.</span>
@@ -376,9 +389,10 @@
             <span class="n">status</span><span class="o">=</span><span class="n">experiment_info</span><span class="p">[</span><span class="n">STATUS</span><span class="p">],</span>
             <span class="n">created_at</span><span class="o">=</span><span class="n">experiment_info</span><span class="p">[</span><span class="n">CREATED_AT</span><span class="p">],</span>
             <span class="n">description</span><span class="o">=</span><span class="n">experiment_info</span><span class="p">[</span><span class="n">DESCRIPTION</span><span class="p">],</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
 
-<div class="viewcode-block" id="Finetuner.list_experiments"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.list_experiments">[docs]</a>    <span class="k">def</span> <span class="nf">list_experiments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Experiment</span><span class="p">]:</span>
+    <span class="nd">@login_required</span>
+    <span class="k">def</span> <span class="nf">list_experiments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Experiment</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;List every experiment.&quot;&quot;&quot;</span>
         <span class="n">experiment_infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">list_experiments</span><span class="p">()</span>
 
@@ -391,9 +405,10 @@
                 <span class="n">description</span><span class="o">=</span><span class="n">experiment_info</span><span class="p">[</span><span class="n">DESCRIPTION</span><span class="p">],</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">experiment_info</span> <span class="ow">in</span> <span class="n">experiment_infos</span>
-        <span class="p">]</span></div>
+        <span class="p">]</span>
 
-<div class="viewcode-block" id="Finetuner.delete_experiment"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.delete_experiment">[docs]</a>    <span class="k">def</span> <span class="nf">delete_experiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Experiment</span><span class="p">:</span>
+    <span class="nd">@login_required</span>
+    <span class="k">def</span> <span class="nf">delete_experiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Experiment</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Delete an experiment by its name.</span>
 <span class="sd">        :param name: Name of the experiment.</span>
 <span class="sd">        :return: Deleted experiment.</span>
@@ -405,9 +420,10 @@
             <span class="n">status</span><span class="o">=</span><span class="n">experiment_info</span><span class="p">[</span><span class="n">STATUS</span><span class="p">],</span>
             <span class="n">created_at</span><span class="o">=</span><span class="n">experiment_info</span><span class="p">[</span><span class="n">CREATED_AT</span><span class="p">],</span>
             <span class="n">description</span><span class="o">=</span><span class="n">experiment_info</span><span class="p">[</span><span class="n">DESCRIPTION</span><span class="p">],</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
 
-<div class="viewcode-block" id="Finetuner.delete_experiments"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.delete_experiments">[docs]</a>    <span class="k">def</span> <span class="nf">delete_experiments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Experiment</span><span class="p">]:</span>
+    <span class="nd">@login_required</span>
+    <span class="k">def</span> <span class="nf">delete_experiments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Experiment</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Delete every experiment.</span>
 <span class="sd">        :return: List of deleted experiments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -421,9 +437,10 @@
                 <span class="n">description</span><span class="o">=</span><span class="n">experiment_info</span><span class="p">[</span><span class="n">DESCRIPTION</span><span class="p">],</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">experiment_info</span> <span class="ow">in</span> <span class="n">experiment_infos</span>
-        <span class="p">]</span></div>
+        <span class="p">]</span>
 
-<div class="viewcode-block" id="Finetuner.create_run"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.create_run">[docs]</a>    <span class="k">def</span> <span class="nf">create_run</span><span class="p">(</span>
+    <span class="nd">@login_required</span>
+    <span class="k">def</span> <span class="nf">create_run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">train_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">],</span>
@@ -479,9 +496,10 @@
             <span class="n">output_dim</span><span class="o">=</span><span class="n">output_dim</span><span class="p">,</span>
             <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">,</span>
             <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
 
-<div class="viewcode-block" id="Finetuner.get_run"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.get_run">[docs]</a>    <span class="k">def</span> <span class="nf">get_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Run</span><span class="p">:</span>
+    <span class="nd">@login_required</span>
+    <span class="k">def</span> <span class="nf">get_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Run</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get run by its name and (optional) experiment.</span>
 
 <span class="sd">        If an experiment name is not specified, we&#39;ll look for the run in the default</span>
@@ -495,9 +513,10 @@
             <span class="n">experiment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_experiment</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">experiment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_experiment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">experiment_name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">experiment</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">run_name</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">experiment</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">run_name</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Finetuner.list_runs"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.list_runs">[docs]</a>    <span class="k">def</span> <span class="nf">list_runs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Run</span><span class="p">]:</span>
+    <span class="nd">@login_required</span>
+    <span class="k">def</span> <span class="nf">list_runs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Run</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;List every run.</span>
 
 <span class="sd">        If an experiment name is not specified, we&#39;ll list every run across all</span>
@@ -513,9 +532,10 @@
         <span class="n">runs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">experiment</span> <span class="ow">in</span> <span class="n">experiments</span><span class="p">:</span>
             <span class="n">runs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">list_runs</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">runs</span></div>
+        <span class="k">return</span> <span class="n">runs</span>
 
-<div class="viewcode-block" id="Finetuner.delete_run"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.delete_run">[docs]</a>    <span class="k">def</span> <span class="nf">delete_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="nd">@login_required</span>
+    <span class="k">def</span> <span class="nf">delete_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete a run.</span>
 
 <span class="sd">        If an experiment name is not specified, we&#39;ll look for the run in the default</span>
@@ -528,9 +548,10 @@
             <span class="n">experiment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_experiment</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">experiment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_experiment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">experiment_name</span><span class="p">)</span>
-        <span class="n">experiment</span><span class="o">.</span><span class="n">delete_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">run_name</span><span class="p">)</span></div>
+        <span class="n">experiment</span><span class="o">.</span><span class="n">delete_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">run_name</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Finetuner.delete_runs"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.delete_runs">[docs]</a>    <span class="k">def</span> <span class="nf">delete_runs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="nd">@login_required</span>
+    <span class="k">def</span> <span class="nf">delete_runs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete every run.</span>
 
 <span class="sd">        If an experiment name is not specified, we&#39;ll delete every run across all</span>
@@ -543,12 +564,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">experiments</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_experiment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">experiment_name</span><span class="p">)]</span>
         <span class="k">for</span> <span class="n">experiment</span> <span class="ow">in</span> <span class="n">experiments</span><span class="p">:</span>
-            <span class="n">experiment</span><span class="o">.</span><span class="n">delete_runs</span><span class="p">()</span></div>
+            <span class="n">experiment</span><span class="o">.</span><span class="n">delete_runs</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Finetuner.get_token"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.get_token">[docs]</a>    <span class="k">def</span> <span class="nf">get_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">UserNotLoggedInError</span><span class="p">(</span><span class="s1">&#39;Please call `login` before getting token.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">hubble</span><span class="o">.</span><span class="n">Auth</span><span class="o">.</span><span class="n">get_auth_token</span><span class="p">()</span></div></div>
+    <span class="nd">@login_required</span>
+    <span class="k">def</span> <span class="nf">get_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">hubble</span><span class="o">.</span><span class="n">Auth</span><span class="o">.</span><span class="n">get_auth_token</span><span class="p">()</span></div>
 </pre></div>
                 </article>
             </div>
@@ -563,7 +583,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 31, 2022</div>
+                            Last updated on Sep 09, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

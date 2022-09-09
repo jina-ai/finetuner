@@ -35,7 +35,7 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Image-to-Image Search via ResNet50" href="../image-to-image/" /><link rel="prev" title="Integration" href="../../walkthrough/integrate-with-jina/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Image-to-Image Search via ResNet50" href="../image-to-image/" /><link rel="prev" title="Encode Documents" href="../../walkthrough/integrate-with-jina/" />
         <link rel="canonical" href="https://finetuner.jina.ai/tasks/text-to-text.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
@@ -233,7 +233,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Encode Documents</a></li>
 </ul>
 </li>
 </ul>
@@ -254,7 +254,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
@@ -503,10 +503,26 @@ This will make it easy for us to retrieve the experiment and run in the future. 
 <section id="saving">
 <h2>Saving<a class="headerlink" href="#saving" title="Permalink to this headline">#</a></h2>
 <p>Once your run has successfully completed, you can save your fine-tuned model in the following way:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">run</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="s1">&#39;bert-model&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">artifact</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="s1">&#39;bert-model&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>That’s it! Now you have a fine-tuned model which is ready to be <a class="reference internal" href="../../walkthrough/integrate-with-jina/#integrate-with-jina"><span class="std std-ref">integrated with the Jina ecosystem</span></a>.</p>
+</section>
+<section id="inference">
+<h2>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">#</a></h2>
+<p>Now you saved the <code class="docutils literal notranslate"><span class="pre">artifact</span></code> into your host machine,
+let’s use the fine-tuned model to encode a new <code class="docutils literal notranslate"><span class="pre">Document</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
+<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+<span class="c1"># Load model from artifact</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">artifact</span><span class="o">=</span><span class="n">artifact</span><span class="p">)</span>
+<span class="c1"># Prepare some text to encode</span>
+<span class="n">test_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;some text to encode&#39;</span><span class="p">)])</span>
+<span class="c1"># Encoding will happen in-place in your `DocumentArray`</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">test_da</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">test_da</span><span class="o">.</span><span class="n">embeddings</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>That’s it! If you want to integrate the fine-tuned model into your Jina Flow, please check out <a class="reference internal" href="../../walkthrough/integrate-with-jina/#integrate-with-jina"><span class="std std-ref">integrated with the Jina ecosystem</span></a>.</p>
 </section>
 </section>
 
@@ -535,7 +551,7 @@ This will make it easy for us to retrieve the experiment and run in the future. 
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">Integration</div>
+                            <div class="title">Encode Documents</div>
                             
                         </div>
                     </a>
@@ -545,7 +561,7 @@ This will make it easy for us to retrieve the experiment and run in the future. 
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 31, 2022</div>
+                            Last updated on Sep 09, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -585,6 +601,7 @@ This will make it easy for us to retrieve the experiment and run in the future. 
 <li><a class="reference internal" href="#monitoring">Monitoring</a></li>
 <li><a class="reference internal" href="#evaluating">Evaluating</a></li>
 <li><a class="reference internal" href="#saving">Saving</a></li>
+<li><a class="reference internal" href="#inference">Inference</a></li>
 </ul>
 </li>
 </ul>

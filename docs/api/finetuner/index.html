@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="Finetuner Documentation" />
   
-<meta property="og:description" content="Subpackages: finetuner.client package- Submodules- finetuner.client.client module., Module contents.. Submodules: finetuner.callback module, finetuner.exception module, finetuner.experiment module, finetuner.finetuner module, finetuner.models module, finetuner.run module. Module contents:" />
+<meta property="og:description" content="Subpackages: finetuner.client package- Submodules- finetuner.client.client module., Module contents.. Submodules: finetuner.callback module, finetuner.exception module, finetuner.experiment module, finetuner.finetuner module, finetuner.model module, finetuner.run module. Module contents:" />
   
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   
@@ -233,7 +233,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Encode Documents</a></li>
 </ul>
 </li>
 </ul>
@@ -254,7 +254,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
@@ -358,7 +358,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../finetuner.run/">finetuner.run module</a></li>
 </ul>
 </div>
@@ -368,6 +368,11 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="finetuner.login">
 <span class="sig-prename descclassname"><span class="pre">finetuner.</span></span><span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/#login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.login" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="finetuner.connect">
+<span class="sig-prename descclassname"><span class="pre">finetuner.</span></span><span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/#connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.connect" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -462,7 +467,7 @@ choose. Details on the parameters can be found in the <a class="reference extern
 <li><p><strong>learning_rate</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – learning rate for the optimizer.</p></li>
 <li><p><strong>epochs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of epochs for fine-tuning.</p></li>
 <li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of items to include in a batch.</p></li>
-<li><p><strong>callbacks</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[~CallbackStubType]]) – List of callback stub objects. See the <cite>finetuner.callback</cite>
+<li><p><strong>callbacks</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[~CallbackStubType]]) – List of callback stub objects.
 subpackage for available options, or run <cite>finetuner.list_callbacks()</cite>.</p></li>
 <li><p><strong>scheduler_step</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – At which interval should the learning rate scheduler’s
 step function be called. Valid options are <cite>batch</cite> and <cite>epoch</cite>.</p></li>
@@ -530,7 +535,7 @@ choose. Details on the parameters can be found in the <a class="reference extern
 <li><p><strong>learning_rate</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – learning rate for the optimizer.</p></li>
 <li><p><strong>epochs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of epochs for fine-tuning.</p></li>
 <li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of items to include in a batch.</p></li>
-<li><p><strong>callbacks</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[~CallbackStubType]]) – List of callback stub objects. See the <cite>finetuner.callback</cite>
+<li><p><strong>callbacks</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[~CallbackStubType]]) – List of callback stub objects.
 subpackage for available options, or run <cite>finetuner.list_callbacks()</cite>.</p></li>
 <li><p><strong>scheduler_step</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – At which interval should the learning rate scheduler’s
 step function be called. Valid options are <cite>batch</cite> and <cite>epoch</cite>.</p></li>
@@ -712,6 +717,68 @@ the experiment is named after the current directory.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="finetuner.get_model">
+<span class="sig-prename descclassname"><span class="pre">finetuner.</span></span><span class="sig-name descname"><span class="pre">get_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gpu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'WARNING'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/#get_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.get_model" title="Permalink to this definition">#</a></dt>
+<dd><p>Re-build the model based on the model inference session with ONNX.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>artifact</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Specify a finetuner run artifact. Can be a path to a local
+directory, a path to a local zip file, or a Hubble artifact ID. Individual
+model artifacts (model sub-folders inside the run artifacts) can also be
+specified using this argument.</p></li>
+<li><p><strong>token</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – A Jina authentication token required for pulling artifacts from
+Hubble. If not provided, the Hubble client will try to find one either in a
+local cache folder or in the environment.</p></li>
+<li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Incoming documents are fed to the graph in batches, both to
+speed-up inference and avoid memory errors. This argument controls the
+number of documents that will be put in each batch.</p></li>
+<li><p><strong>select_model</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Finetuner run artifacts might contain multiple models. In
+such cases you can select which model to deploy using this argument. For CLIP
+fine-tuning, you can choose either <cite>clip-vision</cite> or <cite>clip-text</cite>.</p></li>
+<li><p><strong>gpu</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if specified to True, use cuda device for inference.</p></li>
+<li><p><strong>logging_level</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The executor logging level. See
+<a class="reference external" href="https://docs.python.org/3/library/logging.html#logging-levels">https://docs.python.org/3/library/logging.html#logging-levels</a> for available
+options.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">ONNXRuntimeInferenceEngine</span></code>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>..Note::</dt><dd><p>please install finetuner[full] to include all the dependencies.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="finetuner.encode">
+<span class="sig-prename descclassname"><span class="pre">finetuner.</span></span><span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/#encode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.encode" title="Permalink to this definition">#</a></dt>
+<dd><p>Preprocess, collate and encode the <cite>DocumentArray</cite> with embeddings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – The model to be used to encode <cite>DocumentArray</cite>. In this case
+an instance of <cite>ONNXRuntimeInferenceEngine</cite> produced by
+<a class="reference internal" href="#finetuner.get_model" title="finetuner.get_model"><code class="xref py py-meth docutils literal notranslate"><span class="pre">finetuner.get_model()</span></code></a></p></li>
+<li><p><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code>) – The <cite>DocumentArray</cite> object to be encoded.</p></li>
+<li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Incoming documents are fed to the graph in batches, both to
+speed-up inference and avoid memory errors. This argument controls the
+number of documents that will be put in each batch.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>DocumentArray</cite> filled with embeddings.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>..Note::</dt><dd><p>please install finetuner[full] to include all the dependencies.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -750,7 +817,7 @@ the experiment is named after the current directory.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 31, 2022</div>
+                            Last updated on Sep 09, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -200,7 +200,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Encode Documents</a></li>
 </ul>
 </li>
 </ul>
@@ -221,7 +221,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
@@ -303,11 +303,13 @@
                     <h1>Source code for finetuner</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 <span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
 <span class="kn">from</span> <span class="nn">rich.table</span> <span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">from</span> <span class="nn">stubs</span> <span class="kn">import</span> <span class="n">model</span> <span class="k">as</span> <span class="n">model_stub</span>
 
 <span class="kn">from</span> <span class="nn">finetuner.constants</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">DEFAULT_FINETUNER_HOST</span><span class="p">,</span>
@@ -324,7 +326,7 @@
 <span class="k">if</span> <span class="n">HUBBLE_REGISTRY</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
     <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">HUBBLE_REGISTRY</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_HUBBLE_REGISTRY</span>
 
-<span class="kn">from</span> <span class="nn">finetuner</span> <span class="kn">import</span> <span class="n">callback</span><span class="p">,</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">finetuner</span> <span class="kn">import</span> <span class="n">callback</span><span class="p">,</span> <span class="n">model</span>
 <span class="kn">from</span> <span class="nn">finetuner.experiment</span> <span class="kn">import</span> <span class="n">Experiment</span>
 <span class="kn">from</span> <span class="nn">finetuner.finetuner</span> <span class="kn">import</span> <span class="n">Finetuner</span>
 
@@ -335,6 +337,10 @@
     <span class="n">ft</span><span class="o">.</span><span class="n">login</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="connect"><a class="viewcode-back" href="../../api/finetuner/#finetuner.connect">[docs]</a><span class="k">def</span> <span class="nf">connect</span><span class="p">():</span>
+    <span class="n">ft</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="list_callbacks"><a class="viewcode-back" href="../../api/finetuner/#finetuner.list_callbacks">[docs]</a><span class="k">def</span> <span class="nf">list_callbacks</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="o">.</span><span class="n">CallbackStubType</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;List available callbacks.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">{</span>
@@ -342,16 +348,22 @@
     <span class="p">}</span></div>
 
 
-<span class="k">def</span> <span class="nf">_list_models</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">ModelStubType</span><span class="p">]:</span>
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">obj</span>
-        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">_ModelStub</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">obj</span> <span class="o">!=</span> <span class="n">models</span><span class="o">.</span><span class="n">_ModelStub</span>
-        <span class="p">)</span>
-    <span class="p">}</span>
+<span class="k">def</span> <span class="nf">_list_models</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">ModelStubType</span><span class="p">]:</span>
+    <span class="n">rv</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">members</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">model_stub</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">stub</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;MLPStub&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">stub</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">:</span>
+            <span class="n">rv</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">stub</span>
+    <span class="k">return</span> <span class="n">rv</span>
+
+
+<span class="k">def</span> <span class="nf">_build_name_stub_map</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">ModelStubType</span><span class="p">]:</span>
+    <span class="n">rv</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">members</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">model_stub</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">stub</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;MLPStub&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">stub</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">:</span>
+            <span class="n">rv</span><span class="p">[</span><span class="n">stub</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">stub</span>
+    <span class="k">return</span> <span class="n">rv</span>
 
 
 <div class="viewcode-block" id="list_models"><a class="viewcode-back" href="../../api/finetuner/#finetuner.list_models">[docs]</a><span class="k">def</span> <span class="nf">list_models</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -383,13 +395,16 @@
 <div class="viewcode-block" id="describe_models"><a class="viewcode-back" href="../../api/finetuner/#finetuner.describe_models">[docs]</a><span class="k">def</span> <span class="nf">describe_models</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Describe available models in a table.&quot;&quot;&quot;</span>
     <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Finetuner backbones&#39;</span><span class="p">)</span>
-    <span class="n">header</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">_ModelStub</span><span class="o">.</span><span class="n">header</span><span class="p">()</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_header</span><span class="p">()</span>
+    <span class="n">model_descriptors</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_model_class</span> <span class="ow">in</span> <span class="n">_list_models</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="o">*</span><span class="n">_model_class</span><span class="o">.</span><span class="n">row</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">_model_class</span><span class="o">.</span><span class="n">descriptor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">model_descriptors</span><span class="p">:</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="o">*</span><span class="n">model</span><span class="o">.</span><span class="n">get_row</span><span class="p">(</span><span class="n">_model_class</span><span class="p">))</span>
+            <span class="n">model_descriptors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">_model_class</span><span class="o">.</span><span class="n">descriptor</span><span class="p">)</span>
 
     <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
     <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></div>
@@ -464,7 +479,7 @@
 <span class="sd">    :param learning_rate: learning rate for the optimizer.</span>
 <span class="sd">    :param epochs: Number of epochs for fine-tuning.</span>
 <span class="sd">    :param batch_size: Number of items to include in a batch.</span>
-<span class="sd">    :param callbacks: List of callback stub objects. See the `finetuner.callback`</span>
+<span class="sd">    :param callbacks: List of callback stub objects.</span>
 <span class="sd">        subpackage for available options, or run `finetuner.list_callbacks()`.</span>
 <span class="sd">    :param scheduler_step: At which interval should the learning rate scheduler&#39;s</span>
 <span class="sd">        step function be called. Valid options are `batch` and `epoch`.</span>
@@ -599,6 +614,88 @@
 <span class="sd">    :return: user token as string object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ft</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_model"><a class="viewcode-back" href="../../api/finetuner/#finetuner.get_model">[docs]</a><span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span>
+    <span class="n">artifact</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+    <span class="n">select_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">gpu</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">logging_level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;WARNING&#39;</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Re-build the model based on the model inference session with ONNX.</span>
+
+<span class="sd">    :param artifact: Specify a finetuner run artifact. Can be a path to a local</span>
+<span class="sd">        directory, a path to a local zip file, or a Hubble artifact ID. Individual</span>
+<span class="sd">        model artifacts (model sub-folders inside the run artifacts) can also be</span>
+<span class="sd">        specified using this argument.</span>
+<span class="sd">    :param token: A Jina authentication token required for pulling artifacts from</span>
+<span class="sd">        Hubble. If not provided, the Hubble client will try to find one either in a</span>
+<span class="sd">        local cache folder or in the environment.</span>
+<span class="sd">    :param batch_size: Incoming documents are fed to the graph in batches, both to</span>
+<span class="sd">        speed-up inference and avoid memory errors. This argument controls the</span>
+<span class="sd">        number of documents that will be put in each batch.</span>
+<span class="sd">    :param select_model: Finetuner run artifacts might contain multiple models. In</span>
+<span class="sd">        such cases you can select which model to deploy using this argument. For CLIP</span>
+<span class="sd">        fine-tuning, you can choose either `clip-vision` or `clip-text`.</span>
+<span class="sd">    :param gpu: if specified to True, use cuda device for inference.</span>
+<span class="sd">    :param logging_level: The executor logging level. See</span>
+<span class="sd">        https://docs.python.org/3/library/logging.html#logging-levels for available</span>
+<span class="sd">        options.</span>
+<span class="sd">    :returns: An instance of :class:`ONNXRuntimeInferenceEngine`.</span>
+
+<span class="sd">    ..Note::</span>
+<span class="sd">      please install finetuner[full] to include all the dependencies.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">commons.data.inference</span> <span class="kn">import</span> <span class="n">ONNXRuntimeInferenceEngine</span>
+
+    <span class="k">if</span> <span class="n">gpu</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="n">message</span><span class="o">=</span><span class="s1">&#39;You are using cuda device for ONNX inference, please consider&#39;</span>
+            <span class="s1">&#39;call `pip install onnxruntime-gpu` to speed up inference.&#39;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">ort_engine</span> <span class="o">=</span> <span class="n">ONNXRuntimeInferenceEngine</span><span class="p">(</span>
+        <span class="n">artifact</span><span class="o">=</span><span class="n">artifact</span><span class="p">,</span>
+        <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">select_model</span><span class="o">=</span><span class="n">select_model</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">gpu</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
+        <span class="n">logging_level</span><span class="o">=</span><span class="n">logging_level</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">ort_engine</span></div>
+
+
+<div class="viewcode-block" id="encode"><a class="viewcode-back" href="../../api/finetuner/#finetuner.encode">[docs]</a><span class="k">def</span> <span class="nf">encode</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">DocumentArray</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Preprocess, collate and encode the `DocumentArray` with embeddings.</span>
+
+<span class="sd">    :param model: The model to be used to encode `DocumentArray`. In this case</span>
+<span class="sd">        an instance of `ONNXRuntimeInferenceEngine` produced by</span>
+<span class="sd">        :meth:`finetuner.get_model()`</span>
+<span class="sd">    :param data: The `DocumentArray` object to be encoded.</span>
+<span class="sd">    :param batch_size: Incoming documents are fed to the graph in batches, both to</span>
+<span class="sd">        speed-up inference and avoid memory errors. This argument controls the</span>
+<span class="sd">        number of documents that will be put in each batch.</span>
+<span class="sd">    :returns: `DocumentArray` filled with embeddings.</span>
+
+<span class="sd">    ..Note::</span>
+<span class="sd">      please install finetuner[full] to include all the dependencies.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_run_data_pipeline</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_flatten_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">_check_input_names</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">output_shape</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_infer_output_shape</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_move_to_device</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_run_graph</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">output_shape</span><span class="p">)</span>
+
+        <span class="n">batch</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span></div>
 </pre></div>
                 </article>
             </div>
@@ -613,7 +710,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 31, 2022</div>
+                            Last updated on Sep 09, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

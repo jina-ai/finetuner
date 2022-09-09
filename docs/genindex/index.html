@@ -199,7 +199,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../walkthrough/run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../walkthrough/save-model/">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../walkthrough/integrate-with-jina/">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../walkthrough/integrate-with-jina/">Encode Documents</a></li>
 </ul>
 </li>
 </ul>
@@ -220,7 +220,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
@@ -302,51 +302,13 @@
                     
 <section class="genindex-section">
   <h1 id="index">Index</h1>
-  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#W"><strong>W</strong></a></div>
+  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a></div>
 </section>
 <section id="A" class="genindex-section">
   <h2>A</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.models/#finetuner.models.BERT.architecture">architecture (finetuner.models.BERT attribute)</a>
-
-        <ul>
-          <li><a href="../api/finetuner.models/#finetuner.models.EfficientNetB0.architecture">(finetuner.models.EfficientNetB0 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.EfficientNetB4.architecture">(finetuner.models.EfficientNetB4 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.MLP.architecture">(finetuner.models.MLP attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.OpenAICLIP.architecture">(finetuner.models.OpenAICLIP attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.ResNet152.architecture">(finetuner.models.ResNet152 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.ResNet50.architecture">(finetuner.models.ResNet50 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.SentenceTransformer.architecture">(finetuner.models.SentenceTransformer attribute)</a>
-</li>
-        </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.run/#finetuner.run.Run.artifact_id">artifact_id (finetuner.run.Run property)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="B" class="genindex-section">
-  <h2>B</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.EarlyStopping.baseline">baseline (finetuner.callback.EarlyStopping attribute)</a>
-</li>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.EvaluationCallback.batch_size">batch_size (finetuner.callback.EvaluationCallback attribute)</a>
-</li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.models/#finetuner.models.BERT">BERT (class in finetuner.models)</a>
-</li>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.BestModelCheckpoint">BestModelCheckpoint (class in finetuner.callback)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -358,6 +320,12 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.run/#finetuner.run.Run.config">config (finetuner.run.Run property)</a>
 </li>
+        <li><a href="../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.connect">connect() (finetuner.finetuner.Finetuner method)</a>
+
+        <ul>
+          <li><a href="../api/finetuner/#finetuner.connect">(in module finetuner)</a>
+</li>
+        </ul></li>
         <li><a href="../api/finetuner.client.client/#finetuner.client.client.FinetunerV1Client.create_experiment">create_experiment() (finetuner.client.client.FinetunerV1Client method)</a>
 
         <ul>
@@ -412,6 +380,8 @@
           <li><a href="../api/finetuner/#finetuner.delete_run">(in module finetuner)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.client.client/#finetuner.client.client.FinetunerV1Client.delete_runs">delete_runs() (finetuner.client.client.FinetunerV1Client method)</a>
 
         <ul>
@@ -422,29 +392,7 @@
           <li><a href="../api/finetuner/#finetuner.delete_runs">(in module finetuner)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner/#finetuner.describe_models">describe_models() (in module finetuner)</a>
-</li>
-        <li><a href="../api/finetuner.models/#finetuner.models.BERT.description">description (finetuner.models.BERT attribute)</a>
-
-        <ul>
-          <li><a href="../api/finetuner.models/#finetuner.models.EfficientNetB0.description">(finetuner.models.EfficientNetB0 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.EfficientNetB4.description">(finetuner.models.EfficientNetB4 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.MLP.description">(finetuner.models.MLP attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.OpenAICLIP.description">(finetuner.models.OpenAICLIP attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.ResNet152.description">(finetuner.models.ResNet152 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.ResNet50.description">(finetuner.models.ResNet50 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.SentenceTransformer.description">(finetuner.models.SentenceTransformer attribute)</a>
-</li>
-        </ul></li>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.EvaluationCallback.distance">distance (finetuner.callback.EvaluationCallback attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -454,18 +402,10 @@
   <h2>E</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.EarlyStopping">EarlyStopping (class in finetuner.callback)</a>
-</li>
-        <li><a href="../api/finetuner.models/#finetuner.models.EfficientNetB0">EfficientNetB0 (class in finetuner.models)</a>
-</li>
-        <li><a href="../api/finetuner.models/#finetuner.models.EfficientNetB4">EfficientNetB4 (class in finetuner.models)</a>
+        <li><a href="../api/finetuner/#finetuner.encode">encode() (in module finetuner)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.EvaluationCallback">EvaluationCallback (class in finetuner.callback)</a>
-</li>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.EvaluationCallback.exclude_self">exclude_self (finetuner.callback.EvaluationCallback attribute)</a>
-</li>
         <li><a href="../api/finetuner.experiment/#finetuner.experiment.Experiment">Experiment (class in finetuner.experiment)</a>
 </li>
     </ul></td>
@@ -530,10 +470,10 @@
 </li>
         </ul></li>
         <li>
-    finetuner.models
+    finetuner.model
 
         <ul>
-          <li><a href="../api/finetuner.models/#module-finetuner.models">module</a>
+          <li><a href="../api/finetuner.model/#module-finetuner.model">module</a>
 </li>
         </ul></li>
         <li>
@@ -565,6 +505,12 @@
           <li><a href="../api/finetuner/#finetuner.get_experiment">(in module finetuner)</a>
 </li>
         </ul></li>
+        <li><a href="../api/finetuner.model/#finetuner.model.get_header">get_header() (in module finetuner.model)</a>
+</li>
+        <li><a href="../api/finetuner/#finetuner.get_model">get_model() (in module finetuner)</a>
+</li>
+        <li><a href="../api/finetuner.model/#finetuner.model.get_row">get_row() (in module finetuner.model)</a>
+</li>
         <li><a href="../api/finetuner.client.client/#finetuner.client.client.FinetunerV1Client.get_run">get_run() (finetuner.client.client.FinetunerV1Client method)</a>
 
         <ul>
@@ -591,24 +537,10 @@
   </tr></table>
 </section>
 
-<section id="I" class="genindex-section">
-  <h2>I</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.EvaluationCallback.index_data">index_data (finetuner.callback.EvaluationCallback attribute)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
 <section id="L" class="genindex-section">
   <h2>L</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.TrainingCheckpoint.last_k_epochs">last_k_epochs (finetuner.callback.TrainingCheckpoint attribute)</a>
-</li>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.EvaluationCallback.limit">limit (finetuner.callback.EvaluationCallback attribute)</a>
-</li>
         <li><a href="../api/finetuner/#finetuner.list_callbacks">list_callbacks() (in module finetuner)</a>
 </li>
         <li><a href="../api/finetuner.client.client/#finetuner.client.client.FinetunerV1Client.list_experiments">list_experiments() (finetuner.client.client.FinetunerV1Client method)</a>
@@ -621,10 +553,10 @@
         </ul></li>
         <li><a href="../api/finetuner/#finetuner.list_model_options">list_model_options() (in module finetuner)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner/#finetuner.list_models">list_models() (in module finetuner)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.client.client/#finetuner.client.client.FinetunerV1Client.list_runs">list_runs() (finetuner.client.client.FinetunerV1Client method)</a>
 
         <ul>
@@ -651,16 +583,6 @@
   <h2>M</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.EarlyStopping.min_delta">min_delta (finetuner.callback.EarlyStopping attribute)</a>
-</li>
-        <li><a href="../api/finetuner.models/#finetuner.models.MLP">MLP (class in finetuner.models)</a>
-</li>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.BestModelCheckpoint.mode">mode (finetuner.callback.BestModelCheckpoint attribute)</a>
-
-        <ul>
-          <li><a href="../api/finetuner.callback/#finetuner.callback.EarlyStopping.mode">(finetuner.callback.EarlyStopping attribute)</a>
-</li>
-        </ul></li>
         <li>
     module
 
@@ -679,17 +601,9 @@
 </li>
           <li><a href="../api/finetuner.finetuner/#module-finetuner.finetuner">finetuner.finetuner</a>
 </li>
-          <li><a href="../api/finetuner.models/#module-finetuner.models">finetuner.models</a>
+          <li><a href="../api/finetuner.model/#module-finetuner.model">finetuner.model</a>
 </li>
           <li><a href="../api/finetuner.run/#module-finetuner.run">finetuner.run</a>
-</li>
-        </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.BestModelCheckpoint.monitor">monitor (finetuner.callback.BestModelCheckpoint attribute)</a>
-
-        <ul>
-          <li><a href="../api/finetuner.callback/#finetuner.callback.EarlyStopping.monitor">(finetuner.callback.EarlyStopping attribute)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -703,93 +617,9 @@
         <li><a href="../api/finetuner.experiment/#finetuner.experiment.Experiment.name">name (finetuner.experiment.Experiment property)</a>
 
         <ul>
-          <li><a href="../api/finetuner.models/#finetuner.models.BERT.name">(finetuner.models.BERT attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.EfficientNetB0.name">(finetuner.models.EfficientNetB0 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.EfficientNetB4.name">(finetuner.models.EfficientNetB4 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.MLP.name">(finetuner.models.MLP attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.OpenAICLIP.name">(finetuner.models.OpenAICLIP attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.ResNet152.name">(finetuner.models.ResNet152 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.ResNet50.name">(finetuner.models.ResNet50 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.SentenceTransformer.name">(finetuner.models.SentenceTransformer attribute)</a>
-</li>
           <li><a href="../api/finetuner.run/#finetuner.run.Run.name">(finetuner.run.Run property)</a>
 </li>
         </ul></li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="O" class="genindex-section">
-  <h2>O</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.models/#finetuner.models.OpenAICLIP">OpenAICLIP (class in finetuner.models)</a>
-</li>
-        <li><a href="../api/finetuner.models/#finetuner.models.BERT.options">options (finetuner.models.BERT attribute)</a>
-
-        <ul>
-          <li><a href="../api/finetuner.models/#finetuner.models.EfficientNetB0.options">(finetuner.models.EfficientNetB0 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.EfficientNetB4.options">(finetuner.models.EfficientNetB4 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.MLP.options">(finetuner.models.MLP attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.OpenAICLIP.options">(finetuner.models.OpenAICLIP attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.ResNet152.options">(finetuner.models.ResNet152 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.ResNet50.options">(finetuner.models.ResNet50 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.SentenceTransformer.options">(finetuner.models.SentenceTransformer attribute)</a>
-</li>
-        </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.models/#finetuner.models.BERT.output_dim">output_dim (finetuner.models.BERT attribute)</a>
-
-        <ul>
-          <li><a href="../api/finetuner.models/#finetuner.models.EfficientNetB0.output_dim">(finetuner.models.EfficientNetB0 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.EfficientNetB4.output_dim">(finetuner.models.EfficientNetB4 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.MLP.output_dim">(finetuner.models.MLP attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.OpenAICLIP.output_dim">(finetuner.models.OpenAICLIP attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.ResNet152.output_dim">(finetuner.models.ResNet152 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.ResNet50.output_dim">(finetuner.models.ResNet50 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.SentenceTransformer.output_dim">(finetuner.models.SentenceTransformer attribute)</a>
-</li>
-        </ul></li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="P" class="genindex-section">
-  <h2>P</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.EarlyStopping.patience">patience (finetuner.callback.EarlyStopping attribute)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="Q" class="genindex-section">
-  <h2>Q</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.EvaluationCallback.query_data">query_data (finetuner.callback.EvaluationCallback attribute)</a>
-</li>
     </ul></td>
   </tr></table>
 </section>
@@ -798,16 +628,12 @@
   <h2>R</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.models/#finetuner.models.ResNet152">ResNet152 (class in finetuner.models)</a>
-</li>
-        <li><a href="../api/finetuner.models/#finetuner.models.ResNet50">ResNet50 (class in finetuner.models)</a>
-</li>
         <li><a href="../api/finetuner.run/#finetuner.run.Run">Run (class in finetuner.run)</a>
+</li>
+        <li><a href="../api/finetuner.exception/#finetuner.exception.RunFailedError">RunFailedError</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.exception/#finetuner.exception.RunFailedError">RunFailedError</a>
-</li>
         <li><a href="../api/finetuner.exception/#finetuner.exception.RunInProgressError">RunInProgressError</a>
 </li>
         <li><a href="../api/finetuner.exception/#finetuner.exception.RunPreparingError">RunPreparingError</a>
@@ -822,8 +648,6 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.run/#finetuner.run.Run.save_artifact">save_artifact() (finetuner.run.Run method)</a>
 </li>
-        <li><a href="../api/finetuner.models/#finetuner.models.SentenceTransformer">SentenceTransformer (class in finetuner.models)</a>
-</li>
         <li><a href="../api/finetuner.experiment/#finetuner.experiment.Experiment.status">status (finetuner.experiment.Experiment property)</a>
 </li>
     </ul></td>
@@ -833,62 +657,6 @@
         <li><a href="../api/finetuner.run/#finetuner.run.Run.stream_logs">stream_logs() (finetuner.run.Run method)</a>
 </li>
         <li><a href="../api/finetuner.client.client/#finetuner.client.client.FinetunerV1Client.stream_run_logs">stream_run_logs() (finetuner.client.client.FinetunerV1Client method)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="T" class="genindex-section">
-  <h2>T</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.models/#finetuner.models.BERT.task">task (finetuner.models.BERT attribute)</a>
-
-        <ul>
-          <li><a href="../api/finetuner.models/#finetuner.models.EfficientNetB0.task">(finetuner.models.EfficientNetB0 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.EfficientNetB4.task">(finetuner.models.EfficientNetB4 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.MLP.task">(finetuner.models.MLP attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.OpenAICLIP.task">(finetuner.models.OpenAICLIP attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.ResNet152.task">(finetuner.models.ResNet152 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.ResNet50.task">(finetuner.models.ResNet50 attribute)</a>
-</li>
-          <li><a href="../api/finetuner.models/#finetuner.models.SentenceTransformer.task">(finetuner.models.SentenceTransformer attribute)</a>
-</li>
-        </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.WandBLogger.token">token (finetuner.callback.WandBLogger attribute)</a>
-</li>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.TrainingCheckpoint">TrainingCheckpoint (class in finetuner.callback)</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="U" class="genindex-section">
-  <h2>U</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.exception/#finetuner.exception.UserNotLoggedInError">UserNotLoggedInError</a>
-</li>
-    </ul></td>
-  </tr></table>
-</section>
-
-<section id="W" class="genindex-section">
-  <h2>W</h2>
-  <table style="width: 100%" class="indextable genindextable"><tr>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.WandBLogger.wandb_args">wandb_args (finetuner.callback.WandBLogger attribute)</a>
-</li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.callback/#finetuner.callback.WandBLogger">WandBLogger (class in finetuner.callback)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -908,7 +676,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 31, 2022</div>
+                            Last updated on Sep 09, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

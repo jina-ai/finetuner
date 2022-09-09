@@ -33,7 +33,7 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.models module" href="../finetuner.models/" /><link rel="prev" title="finetuner.experiment module" href="../finetuner.experiment/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.model module" href="../finetuner.model/" /><link rel="prev" title="finetuner.experiment module" href="../finetuner.experiment/" />
         <link rel="canonical" href="https://finetuner.jina.ai/api/finetuner.finetuner.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
@@ -231,7 +231,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Encode Documents</a></li>
 </ul>
 </li>
 </ul>
@@ -252,7 +252,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../finetuner.models/">finetuner.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
@@ -347,8 +347,15 @@ and create a default experiment.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="finetuner.finetuner.Finetuner.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/finetuner/#Finetuner.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.finetuner.Finetuner.connect" title="Permalink to this definition">#</a></dt>
+<dd><p>Connects finetuner to Hubble without logging in again.
+Use this function, if you are already logged in.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="finetuner.finetuner.Finetuner.create_experiment">
-<span class="sig-name descname"><span class="pre">create_experiment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/finetuner/#Finetuner.create_experiment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.finetuner.Finetuner.create_experiment" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">create_experiment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finetuner.finetuner.Finetuner.create_experiment" title="Permalink to this definition">#</a></dt>
 <dd><p>Create an experiment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -366,7 +373,7 @@ the experiment is named after the current directory.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.finetuner.Finetuner.get_experiment">
-<span class="sig-name descname"><span class="pre">get_experiment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/finetuner/#Finetuner.get_experiment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.finetuner.Finetuner.get_experiment" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_experiment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finetuner.finetuner.Finetuner.get_experiment" title="Permalink to this definition">#</a></dt>
 <dd><p>Get an experiment by its name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -383,7 +390,7 @@ the experiment is named after the current directory.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.finetuner.Finetuner.list_experiments">
-<span class="sig-name descname"><span class="pre">list_experiments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/finetuner/#Finetuner.list_experiments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.finetuner.Finetuner.list_experiments" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">list_experiments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#finetuner.finetuner.Finetuner.list_experiments" title="Permalink to this definition">#</a></dt>
 <dd><p>List every experiment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -394,7 +401,7 @@ the experiment is named after the current directory.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.finetuner.Finetuner.delete_experiment">
-<span class="sig-name descname"><span class="pre">delete_experiment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/finetuner/#Finetuner.delete_experiment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.finetuner.Finetuner.delete_experiment" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">delete_experiment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finetuner.finetuner.Finetuner.delete_experiment" title="Permalink to this definition">#</a></dt>
 <dd><p>Delete an experiment by its name.
 :type name: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>
 :param name: Name of the experiment.
@@ -404,7 +411,7 @@ the experiment is named after the current directory.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.finetuner.Finetuner.delete_experiments">
-<span class="sig-name descname"><span class="pre">delete_experiments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/finetuner/#Finetuner.delete_experiments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.finetuner.Finetuner.delete_experiments" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">delete_experiments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#finetuner.finetuner.Finetuner.delete_experiments" title="Permalink to this definition">#</a></dt>
 <dd><p>Delete every experiment.
 :rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="../finetuner.experiment/#finetuner.experiment.Experiment" title="finetuner.experiment.Experiment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code></a>]
 :return: List of deleted experiments.</p>
@@ -412,7 +419,7 @@ the experiment is named after the current directory.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.finetuner.Finetuner.create_run">
-<span class="sig-name descname"><span class="pre">create_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'TripletMarginLoss'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">miner</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">miner_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Adam'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callbacks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'batch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freeze</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/finetuner/#Finetuner.create_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.finetuner.Finetuner.create_run" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">create_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'TripletMarginLoss'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">miner</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">miner_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Adam'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callbacks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'batch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freeze</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finetuner.finetuner.Finetuner.create_run" title="Permalink to this definition">#</a></dt>
 <dd><p>Create a run.</p>
 <p>If an experiment name is not specified, the run will be created in the default
 experiment.</p>
@@ -428,7 +435,7 @@ experiment.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.finetuner.Finetuner.get_run">
-<span class="sig-name descname"><span class="pre">get_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/finetuner/#Finetuner.get_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.finetuner.Finetuner.get_run" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finetuner.finetuner.Finetuner.get_run" title="Permalink to this definition">#</a></dt>
 <dd><p>Get run by its name and (optional) experiment.</p>
 <p>If an experiment name is not specified, we’ll look for the run in the default
 experiment.</p>
@@ -450,7 +457,7 @@ experiment.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.finetuner.Finetuner.list_runs">
-<span class="sig-name descname"><span class="pre">list_runs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/finetuner/#Finetuner.list_runs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.finetuner.Finetuner.list_runs" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">list_runs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finetuner.finetuner.Finetuner.list_runs" title="Permalink to this definition">#</a></dt>
 <dd><p>List every run.</p>
 <p>If an experiment name is not specified, we’ll list every run across all
 experiments.</p>
@@ -469,7 +476,7 @@ experiments.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.finetuner.Finetuner.delete_run">
-<span class="sig-name descname"><span class="pre">delete_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/finetuner/#Finetuner.delete_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.finetuner.Finetuner.delete_run" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">delete_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finetuner.finetuner.Finetuner.delete_run" title="Permalink to this definition">#</a></dt>
 <dd><p>Delete a run.</p>
 <p>If an experiment name is not specified, we’ll look for the run in the default
 experiment.</p>
@@ -485,7 +492,7 @@ experiment.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.finetuner.Finetuner.delete_runs">
-<span class="sig-name descname"><span class="pre">delete_runs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/finetuner/#Finetuner.delete_runs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.finetuner.Finetuner.delete_runs" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">delete_runs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#finetuner.finetuner.Finetuner.delete_runs" title="Permalink to this definition">#</a></dt>
 <dd><p>Delete every run.</p>
 <p>If an experiment name is not specified, we’ll delete every run across all
 experiments.</p>
@@ -498,7 +505,7 @@ experiments.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.finetuner.Finetuner.get_token">
-<span class="sig-name descname"><span class="pre">get_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/finetuner/#Finetuner.get_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.finetuner.Finetuner.get_token" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#finetuner.finetuner.Finetuner.get_token" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
@@ -515,12 +522,12 @@ experiments.</p>
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../finetuner.models/">
+                    <a class="next-page" href="../finetuner.model/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">finetuner.models module</div>
+                            <div class="title">finetuner.model module</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
@@ -545,7 +552,7 @@ experiments.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 31, 2022</div>
+                            Last updated on Sep 09, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
