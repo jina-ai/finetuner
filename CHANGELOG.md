@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `get_model` and `encode` method to encode docarray. ([#522](https://github.com/jina-ai/finetuner/pull/522))
 
+- Add connect function to package ([#532](https://github.com/jina-ai/finetuner/pull/532))
+
 ### Removed
 
 ### Changed
@@ -21,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve usability of `stream_logs`. ([#522](https://github.com/jina-ai/finetuner/pull/522))
 
 - Improve `describe_models` with open-clip models. ([#528](https://github.com/jina-ai/finetuner/pull/528))
+
+- Use stream logging in the README example ([#532](https://github.com/jina-ai/finetuner/pull/532))
 
 ### Fixed
 
