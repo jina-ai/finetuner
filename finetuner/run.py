@@ -89,7 +89,7 @@ class Run:
                     f'Preparing to run, logs will be ready to pull when '
                     f'`status` is `STARTED`. Current status is {status}'
                 )
-                yield msg
+                print(msg)
             else:
                 break
         return self._client.stream_run_logs(
