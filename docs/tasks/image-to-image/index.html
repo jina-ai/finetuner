@@ -456,12 +456,12 @@ What you can do for now is to call <a class="reference internal" href="../../api
 <h2>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">#</a></h2>
 <p>Now you saved the <code class="docutils literal notranslate"><span class="pre">artifact</span></code> into your host machine,
 let’s use the fine-tuned model to encode a new <code class="docutils literal notranslate"><span class="pre">Document</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+
+<span class="c1"># Prepare an image to encode, change the placeholder image uri to an image on your machine</span>
+<span class="n">test_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;my-image.png&#39;</span><span class="p">)])</span>
 <span class="c1"># Load model from artifact</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">artifact</span><span class="o">=</span><span class="n">artifact</span><span class="p">)</span>
-<span class="c1"># Prepare some text to encode, change the placeholder image uri to an image on your machine</span>
-<span class="n">test_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;my-image.png&#39;</span><span class="p">)])</span>
 <span class="c1"># Encoding will happen in-place in your `DocumentArray`</span>
 <span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">test_da</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">test_da</span><span class="o">.</span><span class="n">embeddings</span><span class="p">)</span>
@@ -506,7 +506,7 @@ let’s use the fine-tuned model to encode a new <code class="docutils literal n
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 09, 2022</div>
+                            Last updated on Sep 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
