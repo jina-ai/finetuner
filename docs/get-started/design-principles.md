@@ -18,9 +18,9 @@ you can compare the similarity/distance of the query Documents against all index
 
 Finetuner helps you boost your search system performance on different uses cases:
 
-+ text-to-text search (or dense vector search)
-+ image-to-image search (or content-based image search)
-+ text-to-image search (based on [OpenAI CLIP](https://openai.com/blog/clip/))
++ text-to-text search (or dense vector search).
++ image-to-image search (or content-based image search).
++ text-to-image search (based on [OpenAI CLIP](https://openai.com/blog/clip/)) and [OpenCLIP](https://github.com/mlfoundations/open_clip).
 + more is on the way!
 
 Search performance depends on a lot of factors.
