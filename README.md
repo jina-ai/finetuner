@@ -106,11 +106,11 @@ Finetuner can be installed via pip by executing:
 pip install -U finetuner
 ```
 
-If you want to encode `docarray.DocumentArray` objects with the `finetuner.encode` function, you need to install finetuner[full].
+If you want to encode `docarray.DocumentArray` objects with the `finetuner.encode` function, you need to install `"finetuner[full]"`.
 In this case, some extra dependencies are installed which are necessary to do the inference, e.g., torch, torchvision, and open clip:
 
 ```bash
-pip install finetuner[full]
+pip install "finetuner[full]"
 ```
 
 <!-- end install-instruction -->

@@ -87,7 +87,7 @@ class Run:
             if status == CREATED:
                 msg = (
                     f'Preparing to run, logs will be ready to pull when '
-                    f'`status` is `STARTED`. Current status is {status}'
+                    f'`status` is `STARTED`. Current status is `{status}`'
                 )
                 print(msg)
             else:
