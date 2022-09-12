@@ -128,15 +128,25 @@ Now you saved the `artifact` into your host machine,
 let's use the fine-tuned model to encode a new `Document`:
 
 ```python
-import finetuner
 from docarray import Document, DocumentArray
+
+# Prepare some documents to encode
+text_da = DocumentArray([Document(text='some text to encode')])
+image_da = DocumentArray([Document(uri='my-image.png')])
 # Load model from artifact
-model = finetuner.get_model(artifact=artifact, select_model='clip-text')
-# Prepare some text to encode
-test_da = DocumentArray([Document(text='some text to encode')])
+clip_text_encoder = finetuner.get_model(artifact=artifact, select_model='clip-text')
+clip_image_encoder = finetuner.get_model(artifact=artifact, select_model='clip-vision')
 # Encoding will happen in-place in your `DocumentArray`
-finetuner.encode(model=model, data=test_da)
-print(test_da.embeddings)
+finetuner.encode(model=clip_text_encoder, data=text_da)
+finetuner.encode(model=clip_image_encoder, data=image_da)
+
+print(text_da.embeddings.shape)
+print(image_da.embeddings.shape)
+```
+
+```bash
+(1, 512)
+(1, 512)
 ```
 
 ```{admonition} what is select_model?
