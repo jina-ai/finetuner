@@ -218,7 +218,7 @@ run = finetuner.get_run(
 )
 
 f = Flow().add(
-    uses='jinahub+docker://FinetunerExecutor/v0.10.1',  # use v0.9.2-gpu for gpu executor.
+    uses='jinahub+docker://FinetunerExecutor/v0.10.1',  # use v0.10.1-gpu for gpu executor.
     uses_with={
         'artifact': run.artifact_id, 'token': token, 'select_model': 'clip-vision'
     },
