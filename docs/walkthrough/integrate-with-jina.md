@@ -79,7 +79,7 @@ run = finetuner.get_run(
 )
 	
 f = Flow().add(
-    uses='jinahub+docker://FinetunerExecutor/v0.9.2',  # use v0.9.2-gpu for gpu executor.
+    uses='jinahub+docker://FinetunerExecutor/v0.10.1',  # use v0.10.1-gpu for gpu executor.
     uses_with={'artifact': run.artifact_id, 'token': token},
 )
 ```
@@ -89,7 +89,7 @@ f = Flow().add(
 from jina import Flow
 	
 f = Flow().add(
-    uses='jinahub+docker://FinetunerExecutor/v0.9.2',  # use v0.9.2-gpu for gpu executor.
+    uses='jinahub+docker://FinetunerExecutor/v0.10.1',  # use v0.10.1-gpu for gpu executor.
     uses_with={'artifact': '/mnt/YOUR-MODEL.zip'},
     volumes=['/your/local/path/:/mnt']  # mount your model path to docker.
 )
@@ -102,7 +102,7 @@ with:
   port: 51000
   protocol: grpc
 executors:
-  uses: jinahub+docker://FinetunerExecutor/v0.9.2
+  uses: jinahub+docker://FinetunerExecutor/v0.10.1
   with:
     artifact: 'COPY-YOUR-ARTIFACT-ID-HERE'
     token: 'COPY-YOUR-TOKEN-HERE'  # or better set as env
@@ -218,7 +218,7 @@ run = finetuner.get_run(
 )
 
 f = Flow().add(
-    uses='jinahub+docker://FinetunerExecutor/v0.9.2',  # use v0.9.2-gpu for gpu executor.
+    uses='jinahub+docker://FinetunerExecutor/v0.10.1',  # use v0.9.2-gpu for gpu executor.
     uses_with={
         'artifact': run.artifact_id, 'token': token, 'select_model': 'clip-vision'
     },
