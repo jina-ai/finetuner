@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improve example and install documentation ([#534](https://github.com/jina-ai/finetuner/pull/534))
 
+- Update finetuner executor version in docs. ([#543](https://github.com/jina-ai/finetuner/pull/543))
+
 
 ## [0.6.0] - 2022-09-09
 
