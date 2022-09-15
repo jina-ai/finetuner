@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bump hubble client version ([#546](https://github.com/jina-ai/finetuner/pull/546))
+
 ### Fixed
 
 ### Docs
