@@ -1,6 +1,8 @@
 import time
 from typing import Iterator
 
+from rich.console import Console
+
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import (
     ARTIFACT_ID,
@@ -81,17 +83,18 @@ class Run:
         :param interval: The time interval to sync the status of finetuner `Run`.
         :yield: An iterators keep stream the logs from server.
         """
-        while True:
-            time.sleep(interval)
-            status = self.status()[STATUS]
-            if status == CREATED:
-                msg = (
-                    f'Preparing to run, logs will be ready to pull when '
-                    f'`status` is `STARTED`. Current status is `{status}`'
-                )
-                print(msg)
-            else:
-                break
+        console = Console(width=200)
+        status = self.status()[STATUS]
+        msg_template = (
+            'Preparing to run, logs will be ready to pull when '
+            '`status` is `STARTED`. Current status is `%s`'
+        )
+        with console.status(msg_template % status, spinner="dots") as rich_status:
+            while status == CREATED:
+                time.sleep(interval)
+                status = self.status()[STATUS]
+                rich_status.update(msg_template % status)
+
         return self._client.stream_run_logs(
             experiment_name=self._experiment_name, run_name=self._name
         )

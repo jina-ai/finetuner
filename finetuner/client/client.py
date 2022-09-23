@@ -187,9 +187,14 @@ class FinetunerV1Client(_BaseClient):
         for entry in response.iter_lines():
             if entry:
                 decoded_message: str = entry.decode('utf-8', errors='ignore')
-                if decoded_message.startswith('data: '):
-                    decoded_message = decoded_message[6:]
-                yield decoded_message
+                sep_pos = decoded_message.find(': ')
+                if sep_pos != -1:
+                    msg_type, msg = (
+                        decoded_message[:sep_pos],
+                        decoded_message[sep_pos + 2 :],
+                    )
+                    if msg_type in ('data', 'event'):
+                        yield msg
 
     def create_run(
         self,
