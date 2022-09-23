@@ -186,7 +186,10 @@ class FinetunerV1Client(_BaseClient):
         response = self._handle_request(url=url, method=GET, stream=True)
         for entry in response.iter_lines():
             if entry:
-                yield entry.decode('utf-8', errors='ignore')
+                decoded_message: str = entry.decode('utf-8', errors='ignore')
+                if decoded_message.startswith('data: '):
+                    decoded_message = decoded_message[6:]
+                yield decoded_message
 
     def create_run(
         self,
