@@ -12,15 +12,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Improve display of stream log messages. ([#549](https://github.com/jina-ai/finetuner/pull/549))
+
 ### Changed
 
-- Bump hubble client version ([#546](https://github.com/jina-ai/finetuner/pull/546))
+- Bump hubble client version. ([#546](https://github.com/jina-ai/finetuner/pull/546))
 
 ### Fixed
 
 ### Docs
 
-- Improve example and install documentation ([#534](https://github.com/jina-ai/finetuner/pull/534))
+- Improve example and install documentation. ([#534](https://github.com/jina-ai/finetuner/pull/534))
 
 - Update finetuner executor version in docs. ([#543](https://github.com/jina-ai/finetuner/pull/543))
 
