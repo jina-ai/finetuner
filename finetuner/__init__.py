@@ -4,6 +4,8 @@ import warnings
 from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
+from rich.console import Console
+from rich.table import Table
 from stubs import model as model_stub
 
 from finetuner.constants import (
@@ -22,10 +24,8 @@ if HUBBLE_REGISTRY not in os.environ:
     os.environ[HUBBLE_REGISTRY] = DEFAULT_HUBBLE_REGISTRY
 
 from finetuner import callback, model
-from finetuner.console import print_model_table
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
-from finetuner.model import list_model_classes
 
 ft = Finetuner()
 
@@ -45,6 +45,15 @@ def list_callbacks() -> Dict[str, callback.CallbackStubType]:
     }
 
 
+def _list_models() -> Dict[str, model.ModelStubType]:
+    rv = {}
+    members = inspect.getmembers(model_stub, inspect.isclass)
+    for name, stub in members:
+        if name != 'MLPStub' and not name.startswith('_') and type(stub) != type:
+            rv[name] = stub
+    return rv
+
+
 def _build_name_stub_map() -> Dict[str, model.ModelStubType]:
     rv = {}
     members = inspect.getmembers(model_stub, inspect.isclass)
@@ -56,7 +65,7 @@ def _build_name_stub_map() -> Dict[str, model.ModelStubType]:
 
 def list_models() -> List[str]:
     """List available models for training."""
-    return [name for name in list_model_classes()]
+    return [name for name in _list_models()]
 
 
 def list_model_options() -> Dict[str, List[Dict[str, Any]]]:
@@ -76,13 +85,26 @@ def list_model_options() -> Dict[str, List[Dict[str, Any]]]:
             ).parameters.values()
             if parameter.name != 'self'
         ]
-        for name, _model_class in list_model_classes().items()
+        for name, _model_class in _list_models().items()
     }
 
 
 def describe_models() -> None:
     """Describe available models in a table."""
-    print_model_table(model)
+    table = Table(title='Finetuner backbones')
+    header = model.get_header()
+    model_descriptors = set()
+
+    for column in header:
+        table.add_column(column, justify='right', style='cyan', no_wrap=False)
+
+    for _, _model_class in _list_models().items():
+        if _model_class.descriptor not in model_descriptors:
+            table.add_row(*model.get_row(_model_class))
+            model_descriptors.add(_model_class.descriptor)
+
+    console = Console()
+    console.print(table)
 
 
 @login_required
