@@ -1,5 +1,4 @@
 import inspect
-import logging
 import os
 import warnings
 from typing import Any, Dict, List, Optional, Union
@@ -325,9 +324,6 @@ def get_model(
       please install finetuner[full] to include all the dependencies.
     """
     from commons.data.inference import ONNXRuntimeInferenceEngine
-
-    for key in logging.root.manager.loggerDict:
-        logging.getLogger(key).setLevel('CRITICAL')
 
     if gpu:
         warnings.warn(
