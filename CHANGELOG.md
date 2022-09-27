@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `finetuner_version` equal to the stubs version in the create run request. ([#](https://github.com/jina-ai/finetuner/pull/))
+
 ### Removed
 
 ### Changed
