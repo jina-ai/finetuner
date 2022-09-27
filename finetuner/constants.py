@@ -11,6 +11,7 @@ DEFAULT_FINETUNER_HOST = 'https://api.finetuner.fit'
 DEFAULT_HUBBLE_REGISTRY = 'https://api.hubble.jina.ai'
 
 CONFIG = 'config'
+FINETUNER_VERSION = 'finetuner_version'
 DEVICE = 'device'
 CPU = 'cpu'
 CPUS = 'cpus'

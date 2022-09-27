@@ -1,5 +1,7 @@
 from typing import Iterator, List, Optional
 
+import pkg_resources
+
 from finetuner.client.base import _BaseClient
 from finetuner.constants import (
     API_VERSION,
@@ -9,6 +11,7 @@ from finetuner.constants import (
     DESCRIPTION,
     DEVICE,
     EXPERIMENTS,
+    FINETUNER_VERSION,
     GET,
     GPUS,
     LOGS,
@@ -18,6 +21,8 @@ from finetuner.constants import (
     RUNS,
     STATUS,
 )
+
+_finetuner_core_version = pkg_resources.get_distribution('finetuner-stubs').version
 
 
 class FinetunerV1Client(_BaseClient):
@@ -217,6 +222,7 @@ class FinetunerV1Client(_BaseClient):
             json_data={
                 NAME: run_name,
                 CONFIG: run_config,
+                FINETUNER_VERSION: _finetuner_core_version,
                 DEVICE: device,
                 CPUS: cpus,
                 GPUS: gpus,

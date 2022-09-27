@@ -4,6 +4,7 @@ from typing import List, Optional, Union
 import requests
 
 import hubble
+from finetuner.client.session import _HeaderPreservingSession
 from finetuner.constants import (
     AUTHORIZATION,
     CHARSET,
@@ -37,8 +38,8 @@ class _BaseClient:
         return hubble_user_id
 
     @staticmethod
-    def _get_client_session() -> requests.Session:
-        session = requests.Session()
+    def _get_client_session() -> _HeaderPreservingSession:
+        session = _HeaderPreservingSession(trusted_domains=[])
         api_token = TOKEN_PREFIX + str(hubble.Auth.get_auth_token())
         session.headers.update({CHARSET: UTF_8, AUTHORIZATION: api_token})
         return session
@@ -69,18 +70,9 @@ class _BaseClient:
             method=method,
             json=json_data,
             params=params,
-            allow_redirects=False,
+            allow_redirects=True,
             stream=stream,
         )
-        if response.status_code == 307:
-            response = self._session.request(
-                url=response.headers['Location'],
-                method=method,
-                json=json_data,
-                params=params,
-                allow_redirects=False,
-                stream=stream,
-            )
         if not response.ok:
             raise FinetunerServerError(
                 message=response.reason,

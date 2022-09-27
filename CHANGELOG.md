@@ -10,17 +10,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `finetuner_version` equal to the stubs version in the create run request. ([#552](https://github.com/jina-ai/finetuner/pull/552))
+
 ### Removed
 
 ### Changed
 
-- Bump hubble client version ([#546](https://github.com/jina-ai/finetuner/pull/546))
+- Bump hubble client version. ([#546](https://github.com/jina-ai/finetuner/pull/546))
 
 ### Fixed
 
+- Preserve request headers in redirects to the same domain. ([#552](https://github.com/jina-ai/finetuner/pull/552))
+
 ### Docs
 
-- Improve example and install documentation ([#534](https://github.com/jina-ai/finetuner/pull/534))
+- Improve example and install documentation. ([#534](https://github.com/jina-ai/finetuner/pull/534))
 
 - Update finetuner executor version in docs. ([#543](https://github.com/jina-ai/finetuner/pull/543))
 
@@ -31,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `get_model` and `encode` method to encode docarray. ([#522](https://github.com/jina-ai/finetuner/pull/522))
 
-- Add connect function to package ([#532](https://github.com/jina-ai/finetuner/pull/532))
+- Add connect function to package. ([#532](https://github.com/jina-ai/finetuner/pull/532))
 
 ### Removed
 
@@ -43,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improve `describe_models` with open-clip models. ([#528](https://github.com/jina-ai/finetuner/pull/528))
 
-- Use stream logging in the README example ([#532](https://github.com/jina-ai/finetuner/pull/532))
+- Use stream logging in the README example. ([#532](https://github.com/jina-ai/finetuner/pull/532))
 
 ### Fixed
 
@@ -58,13 +62,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Description of get_model and encode function ([#526](https://github.com/jina-ai/finetuner/pull/526))
+- Description of get_model and encode function. ([#526](https://github.com/jina-ai/finetuner/pull/526))
 
 - Enable wandb callback. ([#494](https://github.com/jina-ai/finetuner/pull/494))
 
 - Support log streaming in finetuner client. ([#504](https://github.com/jina-ai/finetuner/pull/504))
 
-- Support optimizer and miner options [#517](https://github.com/jina-ai/finetuner/pull/517)
+- Support optimizer and miner options. [#517](https://github.com/jina-ai/finetuner/pull/517)
 
 ### Removed
 
