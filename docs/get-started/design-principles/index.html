@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Walkthrough" href="../../walkthrough/" /><link rel="prev" title="Installation" href="../installation/" />
         <link rel="canonical" href="https://finetuner.jina.ai/get-started/design-principles.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.15"/>
         <title>Design Principles - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -248,6 +248,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/finetuner/">finetuner package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.client/">finetuner.client package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.client.client/">finetuner.client.client module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.client.session/">finetuner.client.session module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
@@ -343,7 +344,7 @@ so what makes Finetuner unique?</p>
 sentiment analysis or object detection task.
 Finetuner cares about the quality of the embeddings for neural search,
 and this is what the fine-tuned model will produce.</p>
-<p>Given a query <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.16.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> represented by <code class="docutils literal notranslate"><span class="pre">embeddings</span></code>,
+<p>Given a query <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.17.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> represented by <code class="docutils literal notranslate"><span class="pre">embeddings</span></code>,
 you can compare the similarity/distance of the query Documents against all indexed (embedded) Documents in your storage backend.</p>
 </section>
 <section id="dedicated-to-optimizing-your-search-task">
@@ -371,7 +372,7 @@ such as mean recipal rank (mRR) or normalized discounted cumulative gain (nDCG).
 while all these parameters are optional.</p>
 <p>If you do not have a machine learning background,
 don’t worry about it.
-As was stated before, you only need to provide the training data organized as a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.16.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>.
+As was stated before, you only need to provide the training data organized as a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.17.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>.
 In case you do not know which backbone to choose,
 use <a class="reference internal" href="../../api/finetuner/#finetuner.describe_models" title="finetuner.describe_models"><code class="xref py py-meth docutils literal notranslate"><span class="pre">describe_models()</span></code></a> to let Finetuner suggest a backbone model for you.</p>
 </section>
@@ -412,7 +413,7 @@ use <a class="reference internal" href="../../api/finetuner/#finetuner.describe_
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 12, 2022</div>
+                            Last updated on Sep 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
