@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `finetuner_version` equal to the stubs version in the create run request. ([#](https://github.com/jina-ai/finetuner/pull/))
+- Add `finetuner_version` equal to the stubs version in the create run request. ([#552](https://github.com/jina-ai/finetuner/pull/552))
 
 ### Removed
 
@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Preserve request headers in redirects to the same domain. ([#](https://github.com/jina-ai/finetuner/pull/))
+- Preserve request headers in redirects to the same domain. ([#552](https://github.com/jina-ai/finetuner/pull/552))
 
 ### Docs
 
