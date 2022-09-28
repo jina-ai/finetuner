@@ -160,6 +160,7 @@ class Finetuner:
         output_dim: Optional[int] = None,
         cpu: bool = True,
         num_workers: int = 4,
+        is_onnx: bool = False,
     ) -> Run:
         """Create a run.
 
@@ -193,6 +194,7 @@ class Finetuner:
             output_dim=output_dim,
             cpu=cpu,
             num_workers=num_workers,
+            is_onnx=is_onnx,
         )
 
     @login_required

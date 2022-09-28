@@ -26,6 +26,7 @@ from finetuner.constants import (
     MODEL_OPTIONS,
     NAME,
     NUM_WORKERS,
+    ONNX,
     OPTIMIZER,
     OPTIMIZER_OPTIONS,
     OPTIONS,
@@ -220,6 +221,7 @@ class Experiment:
                 FREEZE: kwargs.get(FREEZE),
                 OUTPUT_DIM: kwargs.get(OUTPUT_DIM),
                 OPTIONS: kwargs.get(MODEL_OPTIONS) or {},
+                ONNX: kwargs.get(ONNX) or False,
             },
             DATA: {
                 TRAIN_DATA: train_data,
