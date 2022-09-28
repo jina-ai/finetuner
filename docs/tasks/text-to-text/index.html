@@ -423,7 +423,7 @@ Perhaps in the future, we might want to create another run where we experiment w
 <span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
 
 <span class="c1"># Start fine-tuning as a run within an experiment</span>
-<span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">model</span><span class="o">=</span><span class="s1">&#39;bert-base-cased&#39;</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="s1">&#39;quora_train.da&#39;</span><span class="p">,</span>
     <span class="n">run_name</span><span class="o">=</span><span class="s1">&#39;finetune-quora-dataset-bert-base-cased&#39;</span><span class="p">,</span>
@@ -542,12 +542,12 @@ let’s use the fine-tuned model to encode a new <code class="docutils literal n
                             </div>
                             <div class="title">Image-to-Image Search via ResNet50</div>
                         </div>
-                        <svg>
+                        <svg class="furo-related-icon">
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
                     <a class="prev-page" href="../../walkthrough/integrate-with-jina/">
-                        <svg>
+                        <svg class="furo-related-icon">
                             <use href="#svg-arrow-right"></use>
                         </svg>
                         <div class="page-info">
@@ -565,7 +565,7 @@ let’s use the fine-tuned model to encode a new <code class="docutils literal n
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 27, 2022</div>
+                            Last updated on Sep 28, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
