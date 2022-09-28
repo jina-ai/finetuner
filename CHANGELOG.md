@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Freeze hubble client to `0.17.0` . ([#556](https://github.com/jina-ai/finetuner/pull/556))
+
 ### Docs
 
 - Fix template html css. ([#556](https://github.com/jina-ai/finetuner/pull/556))
