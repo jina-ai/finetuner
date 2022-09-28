@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Fix template html css. ([#556](https://github.com/jina-ai/finetuner/pull/556))
+
 
 ## [0.6.1] - 2022-09-27
 
