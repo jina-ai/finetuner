@@ -388,8 +388,8 @@ def encode(
     """Preprocess, collate and encode the `DocumentArray` with embeddings.
 
     :param model: The model to be used to encode `DocumentArray`. In this case
-        an instance of `ONNXRuntimeInferenceEngine` produced by
-        :meth:`finetuner.get_model()`
+        an instance of `ONNXRuntimeInferenceEngine` or `TorchInferenceEngine`
+        produced by :meth:`finetuner.get_model()`
     :param data: The `DocumentArray` object to be encoded.
     :param batch_size: Incoming documents are fed to the graph in batches, both to
         speed-up inference and avoid memory errors. This argument controls the
@@ -397,7 +397,7 @@ def encode(
     :returns: `DocumentArray` filled with embeddings.
 
     ..Note::
-      please install finetuner[full] to include all the dependencies.
+      please install "finetuner[full]" to include all the dependencies.
     """
     from commons.data.inference import ONNXRuntimeInferenceEngine
 
@@ -408,12 +408,12 @@ def encode(
             model._check_input_names(inputs)
             output_shape = model._infer_output_shape(inputs)
             inputs = model._move_to_device(inputs)
-            output = model.run_inference(inputs, output_shape)
+            output = model.run(inputs, output_shape)
             batch.embeddings = output.cpu().numpy()
         else:
-            inputs = model._inference_engine._run_data_pipeline(batch)
-            inputs = model._inference_engine._flatten_inputs(inputs)
-            model._inference_engine._check_input_names(inputs)
-            inputs = model._inference_engine._move_to_device(inputs)
-            output = model._inference_engine.run_inference(inputs)
+            inputs = model._run_data_pipeline(batch)
+            inputs = model._flatten_inputs(inputs)
+            model._check_input_names(inputs)
+            inputs = model._move_to_device(inputs)
+            output = model.run(inputs)
             batch.embeddings = output.detach().cpu().numpy()
