@@ -53,7 +53,7 @@ jobs:
           git fetch origin
           export NUM_RELEASES=2 # only 2 last tags to save build time 
           bash makedoc.sh development
-          netlify deploy --dir=_build/dirhtml --alias="ft-${{ env.BRANCH_NAME }}" --message="Deploying docs to ${{ env.BRANCH_NAME }} branch"
+#          netlify deploy --dir=_build/dirhtml --alias="ft-${{ env.BRANCH_NAME }}" --message="Deploying docs to ${{ env.BRANCH_NAME }} branch"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN1 }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

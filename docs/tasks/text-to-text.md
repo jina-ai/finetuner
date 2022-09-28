@@ -106,7 +106,7 @@ from finetuner.callback import EvaluationCallback
 finetuner.login()
 
 # Start fine-tuning as a run within an experiment
-finetuner.fit(
+run = finetuner.fit(
     model='bert-base-cased',
     train_data='quora_train.da',
     run_name='finetune-quora-dataset-bert-base-cased',
