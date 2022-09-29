@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+import pytest
 from tests.helper import create_random_name
 
 import finetuner
@@ -79,7 +80,10 @@ def test_runs(finetuner_mocker, get_feature_data):
     assert experiment_name not in [experiment.name for experiment in experiments]
 
 
-def test_create_run_and_save_model(finetuner_mocker, get_feature_data, tmp_path):
+@pytest.mark.parameterize('use_onnx', [True, False])
+def test_create_run_and_save_model(
+    finetuner_mocker, get_feature_data, tmp_path, use_onnx
+):
     import time
 
     train_da, test_da = get_feature_data
@@ -95,7 +99,7 @@ def test_create_run_and_save_model(finetuner_mocker, get_feature_data, tmp_path)
         batch_size=10,
         epochs=2,
         experiment_name=experiment_name,
-        to_onnx=True,
+        to_onnx=use_onnx,
     )
     status = run.status()[STATUS]
     while status not in [FAILED, FINISHED]:
@@ -113,7 +117,7 @@ def test_create_run_and_save_model(finetuner_mocker, get_feature_data, tmp_path)
     assert os.path.exists(tmp_path / 'finetuned_model')
 
     # encode and check the embeddings
-    model = finetuner.get_model(artifact=artifact, is_onnx=True)
+    model = finetuner.get_model(artifact=artifact, is_onnx=use_onnx)
     finetuner.encode(model=model, data=test_da)
     assert test_da.embeddings is not None
     assert isinstance(test_da.embeddings, np.ndarray)
