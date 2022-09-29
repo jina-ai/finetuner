@@ -54,6 +54,12 @@ Text of the returned document: some text to encode
 Shape of the embedding: (768,)
 ```
 
+```{admonition} Inference with ONNX
+:class: tip
+In case you set `to_onnx=True` when calling `finetuner.fit` function,
+please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)`
+```
+
 (integrate-with-jina)=
 ## Fine-tuned model as Executor
 

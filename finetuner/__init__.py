@@ -108,6 +108,7 @@ def fit(
     output_dim: Optional[int] = None,
     cpu: bool = True,
     num_workers: int = 4,
+    to_onnx: bool = False,
 ) -> Run:
     """Start a finetuner run!
 
@@ -164,6 +165,8 @@ def fit(
     :param cpu: Whether to use the CPU. If set to `False` a GPU will be used.
     :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
         workers used by the dataloader.
+    :param to_onnx: If the model is an onnx model or not. If you call the `fit` function
+        with `to_onnx=True`, please set this parameter as `True`.
     """
     return ft.create_run(
         model=model,
@@ -187,6 +190,7 @@ def fit(
         output_dim=output_dim,
         cpu=cpu,
         num_workers=num_workers,
+        to_onnx=to_onnx,
     )
 
 
@@ -298,6 +302,7 @@ def get_model(
     select_model: Optional[str] = None,
     gpu: bool = False,
     logging_level: str = 'WARNING',
+    is_onnx: bool = False,
 ):
     """Re-build the model based on the model inference session with ONNX.
 
@@ -318,12 +323,16 @@ def get_model(
     :param logging_level: The executor logging level. See
         https://docs.python.org/3/library/logging.html#logging-levels for available
         options.
+    :param is_onnx: The model output format, either `onnx` or `pt`.
     :returns: An instance of :class:`ONNXRuntimeInferenceEngine`.
 
     ..Note::
       please install finetuner[full] to include all the dependencies.
     """
-    from commons.data.inference import ONNXRuntimeInferenceEngine
+    from commons.models.inference import (
+        ONNXRuntimeInferenceEngine,
+        TorchInferenceEngine,
+    )
 
     if gpu:
         warnings.warn(
@@ -331,16 +340,25 @@ def get_model(
             'call `pip install onnxruntime-gpu` to speed up inference.',
             category=RuntimeWarning,
         )
-
-    ort_engine = ONNXRuntimeInferenceEngine(
-        artifact=artifact,
-        token=token,
-        batch_size=batch_size,
-        select_model=select_model,
-        device='cuda' if gpu else 'cpu',
-        logging_level=logging_level,
-    )
-    return ort_engine
+    if is_onnx:
+        inference_engine = ONNXRuntimeInferenceEngine(
+            artifact=artifact,
+            token=token,
+            batch_size=batch_size,
+            select_model=select_model,
+            device='cuda' if gpu else 'cpu',
+            logging_level=logging_level,
+        )
+    else:
+        inference_engine = TorchInferenceEngine(
+            artifact=artifact,
+            token=token,
+            batch_size=batch_size,
+            select_model=select_model,
+            device='cuda' if gpu else 'cpu',
+            logging_level=logging_level,
+        )
+    return inference_engine
 
 
 def encode(
@@ -351,8 +369,8 @@ def encode(
     """Preprocess, collate and encode the `DocumentArray` with embeddings.
 
     :param model: The model to be used to encode `DocumentArray`. In this case
-        an instance of `ONNXRuntimeInferenceEngine` produced by
-        :meth:`finetuner.get_model()`
+        an instance of `ONNXRuntimeInferenceEngine` or `TorchInferenceEngine`
+        produced by :meth:`finetuner.get_model()`
     :param data: The `DocumentArray` object to be encoded.
     :param batch_size: Incoming documents are fed to the graph in batches, both to
         speed-up inference and avoid memory errors. This argument controls the
@@ -360,14 +378,23 @@ def encode(
     :returns: `DocumentArray` filled with embeddings.
 
     ..Note::
-      please install finetuner[full] to include all the dependencies.
+      please install "finetuner[full]" to include all the dependencies.
     """
-    for batch in data.batch(batch_size):
-        inputs = model._run_data_pipeline(batch)
-        inputs = model._flatten_inputs(inputs)
-        model._check_input_names(inputs)
-        output_shape = model._infer_output_shape(inputs)
-        inputs = model._move_to_device(inputs)
-        output = model._run_graph(inputs, output_shape)
+    from commons.models.inference import ONNXRuntimeInferenceEngine
 
-        batch.embeddings = output.cpu().numpy()
+    for batch in data.batch(batch_size):
+        if isinstance(model, ONNXRuntimeInferenceEngine):
+            inputs = model._run_data_pipeline(batch)
+            inputs = model._flatten_inputs(inputs)
+            model._check_input_names(inputs)
+            output_shape = model._infer_output_shape(inputs)
+            inputs = model._move_to_device(inputs)
+            output = model.run(inputs, output_shape)
+            batch.embeddings = output.cpu().numpy()
+        else:
+            inputs = model._run_data_pipeline(batch)
+            inputs = model._flatten_inputs(inputs)
+            model._check_input_names(inputs)
+            inputs = model._move_to_device(inputs)
+            output = model.run(inputs)
+            batch.embeddings = output.detach().cpu().numpy()

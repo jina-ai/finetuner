@@ -22,6 +22,7 @@ from finetuner.constants import (
     MODEL,
     NAME,
     NUM_WORKERS,
+    ONNX,
     OPTIMIZER,
     OPTIMIZER_OPTIONS,
     OPTIONS,
@@ -95,6 +96,7 @@ def test_create_run_config():
             FREEZE: False,
             OUTPUT_DIM: None,
             OPTIONS: {},
+            ONNX: False,
         },
         DATA: {
             TRAIN_DATA: 'train_data',

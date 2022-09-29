@@ -73,6 +73,7 @@ run = finetuner.fit(
     output_dim=512, # Attach a MLP on top of embedding model.
     cpu=False,
     num_workers=4,
+    to_onnx=False,  # If set, please pass `is_onnx` when making inference.
 )
 ```
 

@@ -157,6 +157,12 @@ The parameter `select_model` tells finetuner which model to use for inference, i
 we use `clip-text` to encode a Document with text content.
 ```
 
+```{admonition} Inference with ONNX
+:class: tip
+In case you set `to_onnx=True` when calling `finetuner.fit` function,
+please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)`
+```
+
 Check out [clip-as-service](https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models) to learn how to plug-in a finetuned CLIP model to our CLIP specific service.
 
 That's it! If you want to integrate the fine-tuned model into your Jina Flow, please check out {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.
