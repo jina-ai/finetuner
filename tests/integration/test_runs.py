@@ -95,6 +95,7 @@ def test_create_run_and_save_model(finetuner_mocker, get_feature_data, tmp_path)
         batch_size=10,
         epochs=2,
         experiment_name=experiment_name,
+        to_onnx=True,
     )
     status = run.status()[STATUS]
     while status not in [FAILED, FINISHED]:
@@ -112,7 +113,7 @@ def test_create_run_and_save_model(finetuner_mocker, get_feature_data, tmp_path)
     assert os.path.exists(tmp_path / 'finetuned_model')
 
     # encode and check the embeddings
-    model = finetuner.get_model(artifact=artifact)
+    model = finetuner.get_model(artifact=artifact, is_onnx=True)
     finetuner.encode(model=model, data=test_da)
     assert test_da.embeddings is not None
     assert isinstance(test_da.embeddings, np.ndarray)
