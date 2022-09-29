@@ -351,7 +351,10 @@ def get_model(
     ..Note::
       please install finetuner[full] to include all the dependencies.
     """
-    from commons.data.inference import ONNXRuntimeInferenceEngine, TorchInferenceEngine
+    from commons.models.inference import (
+        ONNXRuntimeInferenceEngine,
+        TorchInferenceEngine,
+    )
 
     if gpu:
         warnings.warn(
@@ -399,7 +402,7 @@ def encode(
     ..Note::
       please install "finetuner[full]" to include all the dependencies.
     """
-    from commons.data.inference import ONNXRuntimeInferenceEngine
+    from commons.models.inference import ONNXRuntimeInferenceEngine
 
     for batch in data.batch(batch_size):
         if isinstance(model, ONNXRuntimeInferenceEngine):
