@@ -149,4 +149,10 @@ finetuner.encode(model=model, data=test_da)
 print(test_da.embeddings)
 ```
 
+```{admonition} Inference with ONNX
+:class: tip
+In case you set `to_onnx=True` when calling `finetuner.fit` function,
+please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)`
+```
+
 That's it! If you want to integrate the fine-tuned model into your Jina Flow, please check out {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.
