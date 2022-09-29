@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Removed
+
+### Changed
+
+### Fixed
+
+### Docs
+
+
+## [0.6.2] - 2022-09-29
+
+### Added
+
 - Support inference with torch models. ([#560](https://github.com/jina-ai/finetuner/pull/560))
 
 ### Removed
