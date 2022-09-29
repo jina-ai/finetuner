@@ -80,7 +80,7 @@ def test_runs(finetuner_mocker, get_feature_data):
     assert experiment_name not in [experiment.name for experiment in experiments]
 
 
-@pytest.mark.parameterize('use_onnx', [True, False])
+@pytest.mark.parametrize('use_onnx', [True, False])
 def test_create_run_and_save_model(
     finetuner_mocker, get_feature_data, tmp_path, use_onnx
 ):
