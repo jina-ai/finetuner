@@ -219,6 +219,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.callback/">finetuner.callback module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.console/">finetuner.console module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
@@ -302,7 +303,10 @@
                 </div>
                 <article role="main">
                     <h1>Source code for finetuner.model</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">stubs.model</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa F401</span>
+<span></span><span class="kn">import</span> <span class="nn">inspect</span>
+
+<span class="kn">from</span> <span class="nn">stubs</span> <span class="kn">import</span> <span class="n">model</span>
+<span class="kn">from</span> <span class="nn">stubs.model</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># noqa F401</span>
 
 
 <div class="viewcode-block" id="get_header"><a class="viewcode-back" href="../../../api/finetuner.model/#finetuner.model.get_header">[docs]</a><span class="k">def</span> <span class="nf">get_header</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
@@ -319,6 +323,15 @@
         <span class="n">model_stub</span><span class="o">.</span><span class="n">architecture</span><span class="p">,</span>
         <span class="n">model_stub</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
     <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="list_model_classes"><a class="viewcode-back" href="../../../api/finetuner.model/#finetuner.model.list_model_classes">[docs]</a><span class="k">def</span> <span class="nf">list_model_classes</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ModelStubType</span><span class="p">]:</span>
+    <span class="n">rv</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">members</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">stub</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;MLPStub&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">stub</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">:</span>
+            <span class="n">rv</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">stub</span>
+    <span class="k">return</span> <span class="n">rv</span></div>
 </pre></div>
                 </article>
             </div>
@@ -333,7 +346,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 28, 2022</div>
+                            Last updated on Sep 29, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -252,6 +252,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
@@ -516,6 +517,11 @@ The artifact contains two models: <code class="docutils literal notranslate"><sp
 The parameter <code class="docutils literal notranslate"><span class="pre">select_model</span></code> tells finetuner which model to use for inference, in the above example,
 we use <code class="docutils literal notranslate"><span class="pre">clip-text</span></code> to encode a Document with text content.</p>
 </div>
+<div class="tip admonition">
+<p class="admonition-title">Inference with ONNX</p>
+<p>In case you set <code class="docutils literal notranslate"><span class="pre">to_onnx=True</span></code> when calling <code class="docutils literal notranslate"><span class="pre">finetuner.fit</span></code> function,
+please use <code class="docutils literal notranslate"><span class="pre">model</span> <span class="pre">=</span> <span class="pre">finetuner.get_model('/path/to/YOUR-MODEL.zip',</span> <span class="pre">is_onnx=True)</span></code></p>
+</div>
 <p>Check out <a class="reference external" href="https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models">clip-as-service</a> to learn how to plug-in a finetuned CLIP model to our CLIP specific service.</p>
 <p>That’s it! If you want to integrate the fine-tuned model into your Jina Flow, please check out <a class="reference internal" href="../../walkthrough/integrate-with-jina/#integrate-with-jina"><span class="std std-ref">integrated with the Jina ecosystem</span></a>.</p>
 </section>
@@ -556,7 +562,7 @@ we use <code class="docutils literal notranslate"><span class="pre">clip-text</s
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 28, 2022</div>
+                            Last updated on Sep 29, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

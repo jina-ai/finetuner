@@ -4,11 +4,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<meta property="og:title" content="finetuner.model module" />
+<meta property="og:title" content="finetuner.console module" />
   
 <meta property="og:type" content="website" />
   
-<meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.model/" />
+<meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.console/" />
   
 <meta property="og:site_name" content="Finetuner Documentation" />
   
@@ -33,11 +33,11 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.run module" href="../finetuner.run/" /><link rel="prev" title="finetuner.finetuner module" href="../finetuner.finetuner/" />
-        <link rel="canonical" href="https://finetuner.jina.ai/api/finetuner.model.html" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.exception module" href="../finetuner.exception/" /><link rel="prev" title="finetuner.callback module" href="../finetuner.callback/" />
+        <link rel="canonical" href="https://finetuner.jina.ai/api/finetuner.console.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.15"/>
-        <title>finetuner.model module - Finetuner documentation</title>
+        <title>finetuner.console module - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -250,11 +250,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.callback/">finetuner.callback module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../finetuner.console/">finetuner.console module</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">finetuner.console module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">finetuner.model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.model/">finetuner.model module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.run/">finetuner.run module</a></li>
 </ul>
 </li>
@@ -333,36 +333,15 @@
                     </label>
                 </div>
                 <article role="main">
-                    <section id="module-finetuner.model">
-<span id="finetuner-model-module"></span><h1>finetuner.model module<a class="headerlink" href="#module-finetuner.model" title="Permalink to this headline">#</a></h1>
+                    <section id="module-finetuner.console">
+<span id="finetuner-console-module"></span><h1>finetuner.console module<a class="headerlink" href="#module-finetuner.console" title="Permalink to this headline">#</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="finetuner.model.get_header">
-<span class="sig-prename descclassname"><span class="pre">finetuner.model.</span></span><span class="sig-name descname"><span class="pre">get_header</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/model/#get_header"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.model.get_header" title="Permalink to this definition">#</a></dt>
-<dd><p>Get table header.</p>
+<dt class="sig sig-object py" id="finetuner.console.print_model_table">
+<span class="sig-prename descclassname"><span class="pre">finetuner.console.</span></span><span class="sig-name descname"><span class="pre">print_model_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/console/#print_model_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.console.print_model_table" title="Permalink to this definition">#</a></dt>
+<dd><p>Prints a table of model descriptions.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, …]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="finetuner.model.get_row">
-<span class="sig-prename descclassname"><span class="pre">finetuner.model.</span></span><span class="sig-name descname"><span class="pre">get_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_stub</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/model/#get_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.model.get_row" title="Permalink to this definition">#</a></dt>
-<dd><p>Get table row.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, …]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="finetuner.model.list_model_classes">
-<span class="sig-prename descclassname"><span class="pre">finetuner.model.</span></span><span class="sig-name descname"><span class="pre">list_model_classes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/model/#list_model_classes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.model.list_model_classes" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, ~ModelStubType]</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model</strong> – Module with model definitions</p>
 </dd>
 </dl>
 </dd></dl>
@@ -374,18 +353,18 @@
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../finetuner.run/">
+                    <a class="next-page" href="../finetuner.exception/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">finetuner.run module</div>
+                            <div class="title">finetuner.exception module</div>
                         </div>
                         <svg class="furo-related-icon">
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../finetuner.finetuner/">
+                    <a class="prev-page" href="../finetuner.callback/">
                         <svg class="furo-related-icon">
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -394,7 +373,7 @@
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">finetuner.finetuner module</div>
+                            <div class="title">finetuner.callback module</div>
                             
                         </div>
                     </a>

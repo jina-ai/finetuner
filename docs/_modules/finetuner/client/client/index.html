@@ -219,6 +219,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.callback/">finetuner.callback module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.console/">finetuner.console module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.exception/">finetuner.exception module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
@@ -495,7 +496,15 @@
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_request</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">GET</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">iter_lines</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">entry</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="n">entry</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span></div>
+                <span class="n">decoded_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+                <span class="n">sep_pos</span> <span class="o">=</span> <span class="n">decoded_message</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">sep_pos</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">msg_type</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">decoded_message</span><span class="p">[:</span><span class="n">sep_pos</span><span class="p">],</span>
+                        <span class="n">decoded_message</span><span class="p">[</span><span class="n">sep_pos</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">:],</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">msg_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;event&#39;</span><span class="p">):</span>
+                        <span class="k">yield</span> <span class="n">msg</span></div>
 
 <div class="viewcode-block" id="FinetunerV1Client.create_run"><a class="viewcode-back" href="../../../../api/finetuner.client.client/#finetuner.client.client.FinetunerV1Client.create_run">[docs]</a>    <span class="k">def</span> <span class="nf">create_run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -546,7 +555,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 28, 2022</div>
+                            Last updated on Sep 29, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

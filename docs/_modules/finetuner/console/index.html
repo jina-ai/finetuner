@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" />
-        <link rel="canonical" href="https://finetuner.jina.ai/_modules/finetuner/run.html" />
+        <link rel="canonical" href="https://finetuner.jina.ai/_modules/finetuner/console.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.15"/>
-        <title>finetuner.run - Finetuner documentation</title>
+        <title>finetuner.console - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -302,152 +302,34 @@
                     </label>
                 </div>
                 <article role="main">
-                    <h1>Source code for finetuner.run</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span>
+                    <h1>Source code for finetuner.console</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
+<span class="kn">from</span> <span class="nn">rich.table</span> <span class="kn">import</span> <span class="n">Table</span>
 
-<span class="kn">from</span> <span class="nn">finetuner.client</span> <span class="kn">import</span> <span class="n">FinetunerV1Client</span>
-<span class="kn">from</span> <span class="nn">finetuner.console</span> <span class="kn">import</span> <span class="n">console</span>
-<span class="kn">from</span> <span class="nn">finetuner.constants</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ARTIFACT_ID</span><span class="p">,</span>
-    <span class="n">ARTIFACTS_DIR</span><span class="p">,</span>
-    <span class="n">CREATED</span><span class="p">,</span>
-    <span class="n">FAILED</span><span class="p">,</span>
-    <span class="n">STARTED</span><span class="p">,</span>
-    <span class="n">STATUS</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">finetuner.exception</span> <span class="kn">import</span> <span class="n">RunFailedError</span><span class="p">,</span> <span class="n">RunInProgressError</span><span class="p">,</span> <span class="n">RunPreparingError</span>
-<span class="kn">from</span> <span class="nn">finetuner.hubble</span> <span class="kn">import</span> <span class="n">download_artifact</span>
+<span class="kn">from</span> <span class="nn">finetuner.model</span> <span class="kn">import</span> <span class="n">list_model_classes</span>
+
+<span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="Run"><a class="viewcode-back" href="../../../api/finetuner.run/#finetuner.run.Run">[docs]</a><span class="k">class</span> <span class="nc">Run</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Class for a run.</span>
+<div class="viewcode-block" id="print_model_table"><a class="viewcode-back" href="../../../api/finetuner.console/#finetuner.console.print_model_table">[docs]</a><span class="k">def</span> <span class="nf">print_model_table</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Prints a table of model descriptions.</span>
 
-<span class="sd">    :param client: Client object for sending api requests.</span>
-<span class="sd">    :param name: Name of the run.</span>
-<span class="sd">    :param experiment_name: Name of the experiment.</span>
-<span class="sd">    :param config: Configuration for the run.</span>
-<span class="sd">    :param created_at: Creation time of the run.</span>
-<span class="sd">    :param description: Optional description of the run.</span>
+<span class="sd">    :param model: Module with model definitions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">client</span><span class="p">:</span> <span class="n">FinetunerV1Client</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">experiment_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
-        <span class="n">created_at</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">client</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_experiment_name</span> <span class="o">=</span> <span class="n">experiment_name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_created_at</span> <span class="o">=</span> <span class="n">created_at</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">description</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_run</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_run</span><span class="p">()</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Finetuner backbones&#39;</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_header</span><span class="p">()</span>
+    <span class="n">model_descriptors</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+    <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_model_class</span> <span class="ow">in</span> <span class="n">list_model_classes</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">_model_class</span><span class="o">.</span><span class="n">descriptor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">model_descriptors</span><span class="p">:</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="o">*</span><span class="n">model</span><span class="o">.</span><span class="n">get_row</span><span class="p">(</span><span class="n">_model_class</span><span class="p">))</span>
+            <span class="n">model_descriptors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">_model_class</span><span class="o">.</span><span class="n">descriptor</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get Run object as dict.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span>
-            <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiment_name</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
-        <span class="p">)</span>
-
-<div class="viewcode-block" id="Run.status"><a class="viewcode-back" href="../../../api/finetuner.run/#finetuner.run.Run.status">[docs]</a>    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Run status.</span>
-
-<span class="sd">        :returns: A string representing the run status.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_run_status</span><span class="p">(</span>
-            <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiment_name</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
-        <span class="p">)</span></div>
-
-<div class="viewcode-block" id="Run.logs"><a class="viewcode-back" href="../../../api/finetuner.run/#finetuner.run.Run.logs">[docs]</a>    <span class="k">def</span> <span class="nf">logs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Check the run logs.</span>
-
-<span class="sd">        :returns: A string dump of the run logs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_run_status_started</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_run_logs</span><span class="p">(</span>
-            <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiment_name</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
-        <span class="p">)</span></div>
-
-<div class="viewcode-block" id="Run.stream_logs"><a class="viewcode-back" href="../../../api/finetuner.run/#finetuner.run.Run.stream_logs">[docs]</a>    <span class="k">def</span> <span class="nf">stream_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Stream the run logs.</span>
-
-<span class="sd">        :param interval: The time interval to sync the status of finetuner `Run`.</span>
-<span class="sd">        :yield: An iterators keep stream the logs from server.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()[</span><span class="n">STATUS</span><span class="p">]</span>
-        <span class="n">msg_template</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s1">&#39;Preparing to run, logs will be ready to pull when &#39;</span>
-            <span class="s1">&#39;`status` is `STARTED`. Current status is `</span><span class="si">%s</span><span class="s1">`&#39;</span>
-        <span class="p">)</span>
-        <span class="k">with</span> <span class="n">console</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="n">msg_template</span> <span class="o">%</span> <span class="n">status</span><span class="p">,</span> <span class="n">spinner</span><span class="o">=</span><span class="s2">&quot;dots&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">rich_status</span><span class="p">:</span>
-            <span class="k">while</span> <span class="n">status</span> <span class="o">==</span> <span class="n">CREATED</span><span class="p">:</span>
-                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
-                <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()[</span><span class="n">STATUS</span><span class="p">]</span>
-                <span class="n">rich_status</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg_template</span> <span class="o">%</span> <span class="n">status</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">stream_run_logs</span><span class="p">(</span>
-            <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiment_name</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
-        <span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_check_run_status_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()[</span><span class="n">STATUS</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">status</span> <span class="ow">in</span> <span class="p">[</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">STARTED</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="n">RunInProgressError</span><span class="p">(</span>
-                <span class="s1">&#39;The run needs to be finished in order to save the artifact.&#39;</span>
-            <span class="p">)</span>
-        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">FAILED</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">RunFailedError</span><span class="p">(</span>
-                <span class="s1">&#39;The run failed, please check the `logs` for detailed information.&#39;</span>
-            <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_check_run_status_started</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()[</span><span class="n">STATUS</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">CREATED</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">RunPreparingError</span><span class="p">(</span>
-                <span class="s1">&#39;Preparing to run, logs will be ready to pull when &#39;</span>
-                <span class="s1">&#39;`status` is `STARTED`.&#39;</span>
-            <span class="p">)</span>
-
-<div class="viewcode-block" id="Run.save_artifact"><a class="viewcode-back" href="../../../api/finetuner.run/#finetuner.run.Run.save_artifact">[docs]</a>    <span class="k">def</span> <span class="nf">save_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ARTIFACTS_DIR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Save artifact if the run is finished.</span>
-
-<span class="sd">        :param directory: Directory where the artifact will be stored.</span>
-<span class="sd">        :returns: A string object that indicates the download path.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_run_status_finished</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">download_artifact</span><span class="p">(</span>
-            <span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">,</span>
-            <span class="n">artifact_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">[</span><span class="n">ARTIFACT_ID</span><span class="p">],</span>
-            <span class="n">run_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
-            <span class="n">directory</span><span class="o">=</span><span class="n">directory</span><span class="p">,</span>
-        <span class="p">)</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">artifact_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get artifact id from the run.</span>
-
-<span class="sd">        An artifact in finetuner contains fine-tuned model and its metadata.</span>
-<span class="sd">        Such as preprocessing function, collate function. This id could be useful</span>
-<span class="sd">        if you want to directly pull the artifact from the cloud storage, such as</span>
-<span class="sd">        using `FinetunerExecutor`.</span>
-
-<span class="sd">        :return: Artifact id as string object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_run_status_finished</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">[</span><span class="n">ARTIFACT_ID</span><span class="p">]</span></div>
+    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></div>
 </pre></div>
                 </article>
             </div>
