@@ -130,7 +130,7 @@ def fit(
     output_dim: Optional[int] = None,
     cpu: bool = True,
     num_workers: int = 4,
-    is_onnx: bool = False,
+    to_onnx: bool = False,
 ) -> Run:
     """Start a finetuner run!
 
@@ -187,7 +187,7 @@ def fit(
     :param cpu: Whether to use the CPU. If set to `False` a GPU will be used.
     :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
         workers used by the dataloader.
-    :param is_onnx: If the model is an onnx model or not. If you call the `fit` function
+    :param to_onnx: If the model is an onnx model or not. If you call the `fit` function
         with `to_onnx=True`, please set this parameter as `True`.
     """
     return ft.create_run(
@@ -212,7 +212,7 @@ def fit(
         output_dim=output_dim,
         cpu=cpu,
         num_workers=num_workers,
-        is_onnx=is_onnx,
+        to_onnx=to_onnx,
     )
 
 
