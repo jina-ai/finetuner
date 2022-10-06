@@ -73,7 +73,6 @@ if __name__ == '__main__':
             'test': [
                 'black==22.3.0',
                 'flake8==4.0.1',
-                'importlib-metadata==4.13.0',
                 'isort==5.10.1',
                 'pytest==7.0.0',
                 'pytest-cov==3.0.0',
