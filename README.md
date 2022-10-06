@@ -79,21 +79,21 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <td rowspan="2">CLIP</td>
     <td rowspan="2"><a href="https://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html">Deep Fashion</a> text-to-image search</td>
     <td>mRR</td>
-    <td>0.289</td>
-    <td>0.488</td>
-    <td>:arrow_up_small: 69.9%</td>
+    <td>0.575</td>
+    <td>0.676</td>
+    <td>:arrow_up_small: 17.4%</td>
   </tr>
   <tr>
     <td>Recall</td>
-    <td>0.109</td>
-    <td>0.346</td>
-    <td>:arrow_up_small: 217.0%</td>
+    <td>0.473</td>
+    <td>0.564</td>
+    <td>:arrow_up_small: 19.2%</td>
   </tr>
 
 </tbody>
 </table>
 
-<sub><sup><a id="example-setup">[*]</a> All metrics evaluation on k@20, trained 5 epochs using Adam optimizer with learning rate of 1e-5.</sup></sub>
+<sub><sup>All metrics are evaluated on k@20 after training for 5 epochs using Adam optimizer with learning rates of 1e-7 for CLIP and 1e-5 for the other models.</sup></sub>
 
 <!-- start install-instruction -->
 

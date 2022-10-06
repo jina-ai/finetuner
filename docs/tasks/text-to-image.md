@@ -40,10 +40,10 @@ import finetuner
 run = finetuner.fit(
     model='openai/clip-vit-base-patch32',
     run_name='clip-fashion',
-    train_data='clip-fashion-train-data',
-    eval_data='clip-fashion-eval-data',
+    train_data='fashion-eval-train-clip',
+    eval_data='fashion-eval-data-clip',
     epochs=5,
-    learning_rate= 1e-5,
+    learning_rate= 1e-7,
     loss='CLIPLoss',
     cpu=False,
 )
@@ -104,16 +104,16 @@ We have done the evaulation for you in the table below.
 ```
 
 |                   | Before Finetuning | After Finetuning |
-|:------------------|----------:|---------:|
-| average_precision | 0.253423  | 0.415924 |
-| dcg_at_k          | 0.902417  | 2.14489  |
-| f1_score_at_k     | 0.0831918 | 0.241773 |
-| hit_at_k          | 0.611976  | 0.856287 |
-| ndcg_at_k         | 0.350172  | 0.539948 |
-| precision_at_k    | 0.0994012 | 0.256587 |
-| r_precision       | 0.231756  | 0.35847  |
-| recall_at_k       | 0.108982  | 0.346108 |
-| reciprocal_rank   | 0.288791  | 0.487505 |
+|:------------------|---------:|---------:|
+| average_precision | 0.47219  | 0.532773 |
+| dcg_at_k          | 2.25565  | 2.70725  |
+| f1_score_at_k     | 0.296816 | 0.353499 |
+| hit_at_k          | 0.94028  | 0.942821 |
+| ndcg_at_k         | 0.613387 | 0.673644 |
+| precision_at_k    | 0.240407 | 0.285324 |
+| r_precision       | 0.364697 | 0.409577 |
+| recall_at_k       | 0.472681 | 0.564168 |
+| reciprocal_rank   | 0.575481 | 0.67571  |
 
 ## Saving
 
