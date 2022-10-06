@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Change CLIP finetuning example in the documentation ([#569](https://github.com/jina-ai/finetuner/pull/569))
+
 ### Fixed
 
 - Bump flake8 to `5.0.4`. ([#568](https://github.com/jina-ai/finetuner/pull/568))
