@@ -43,14 +43,14 @@ The evaluation callback is used to calculate performance metrics for the model b
 ```
 
 The evaluation callback is triggered at the end of each epoch, in which the model is evaluated using the `query_data` and `index_data` datasets that were provided when the callback was created.
-It is worth noting that the evaluation callback and the eval_data parameter of the fit method do not do the same thing. The eval data parameter takes a `DocumentArray` (or the name of one that has been pushed on Hubble) and uses its contents to evaluate the loss of the model whereas the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall. These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.
+It is worth noting that the evaluation callback and the `eval_data` parameter of the fit method do not do the same thing. The eval data parameter takes a `DocumentArray` (or the name of one that has been pushed on Hubble) and uses its contents to evaluate the loss of the model whereas the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall. These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.
 
 ## BestModelCheckpoint
 
 This callback evaluates the performance of the model at the end of each epoch, and keeps a record of the best perfoming model across all epochs. Once fitting is finished the best performing model is saved instead of the most recent model. The definition of best is based on two parameters:
 
-- `monitor`: The metric that is used to compare models to each other. By default this value is 'val_loss', the loss function calculated using the evaluation data, however the loss calculated on the training data can be used instead with 'train_loss'; any metric that is recorded by the evaluation callback can also be used.
-- `mode`: Whether the monitored metric should be maximised ('max') or minimised ('min'). By default the mode is set to auto, meaning that it will automatically chose the correct mode depending on the chosen metric: 'min' if the metric is loss and 'max' if the metric is one recorded by the evaluation callback.
+- `monitor`: The metric that is used to compare models to each other. By default this value is `val_loss`, the loss function calculated using the evaluation data, however the loss calculated on the training data can be used instead with `train_loss`; any metric that is recorded by the evaluation callback can also be used.
+- `mode`: Whether the monitored metric should be maximised (`max`) or minimised (`min`). By default the mode is set to `auto`, meaning that it will automatically choose the correct mode depending on the chosen metric: 'min' if the metric is loss and 'max' if the metric is one recorded by the evaluation callback.
 
 The console output below shows how the evaluation loss of the model is monitored between each epoch, and how the best performing model is tracked. Since the final model has a higher loss than the previously recorded best model, the best model will be saved instead of the latest one.
 
@@ -76,11 +76,9 @@ The console output below shows how the evaluation loss of the model is monitored
                     __main__.py:231
 ```
 
-This callback is triggered at the end of both training and evaluation batches, to record the losses of the two data sets, and is triggered a third time at the end of each epoch to evaluate the performance of the current model using the monitored metric and then record this model if it performs better than the best model so far.
-
 ## EarlyStopping
 
-Similarly to the best model checkpoint callback, the early stopping callback measures a given metric at the end of every epoch and saves the best performing model at the end of the fitting process. Unlike the best model checkpoint callback, the early stopping callback will end the fitting process early if the metric does not improve enough between successive runs. Since the best model is only used to assess the rate of improvement, only the monitored metric is needed and so the model itself is not saved.
+Similarly to the best model checkpoint callback, the early stopping callback measures a given metric at the end of every epoch. Unlike the best model checkpoint callback, the early stopping callback does not save the best model; only the monitored metric is recorded between runs in order to assess the rate of improvement.
 
 Below is some example output for a run with the early stopping callback followed by the output for the same run without the early stopping callback, and then the python code used to create the run. The output for the run with early stopping finished after just ten epochs whereas the other run finished all twenty epochs, resulting in nearly twice the runtime. That said, the resulting loss value of the early stopping run is only 0.284, compared to the full run's 0.272, less than five percent higher. The early stopping callback can be used in this way to reduce the amount of training time while still showing improvement.
 
@@ -121,8 +119,8 @@ run = finetuner.fit(
 )
 ```
 
-The early stopping callback triggers at the same times as the best model checkpoint callback: at the end of training and evaluation batches to record the loss, and at the end of each epoch to evaluate the model and compare it to the best so far. Whether it stops training at the end of an epoch depends on several parameters:
+The early stopping callback triggers at the end of training and evaluation batches to record the loss, and at the end of each epoch to evaluate the model and compare it to the best so far. Whether it stops training at the end of an epoch depends on several parameters:
 
 - `minimum_delta`: The minimum amount of improvement that a model can have over the previous best model to be considered worthwhile, zero by default, meaning that the training will not stop early unless the performance starts to decrease
-- `patience`: The number of censecutive rounds without worthwhile improvement before the training is stopped, two by default.
+- `patience`: The number of consecutive rounds without improvement before the training is stopped, two by default.
 - `baseline`: an optional parameter that is used to compare the model's score against instead of the best previous model when checking for improvement. This baseline does not get changed over the course of a run.
