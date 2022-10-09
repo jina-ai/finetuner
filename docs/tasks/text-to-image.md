@@ -187,8 +187,8 @@ run = finetuner.fit(
 
 The value you set to `wise_ft` should be greater equal than 0 and less equal than 1:
 
-+ if `wise_ft` is a float between 0 and 1, we merge weights between pre-trained and fine-tuned model.
-+ if `wise_ft` is 0, the fine-tuned model will be identical to pre-trained model.
++ if `wise_ft` is a float between 0 and 1, we merge the weights between the pre-trained model and the fine-tuned model.
++ if `wise_ft` is 0, the fine-tuned model is identical to the pre-trained model.
 + if `wise_ft` is 1, the pre-trained weights will not be utilized.
 
 
