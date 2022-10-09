@@ -163,6 +163,35 @@ In case you set `to_onnx=True` when calling `finetuner.fit` function,
 please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)`
 ```
 
+## Advanced: Apply Wise-ft 
+
+Wise-ft, proposed by Mitchell et al. in [Robust fine-tuning of zero-shot models](https://arxiv.org/abs/2109.01903),
+has been proven to be an effective way for fine-tuning models with strong zero-shot capability,
+such as CLIP.
+As was introduced in the paper:
+
+> Large pre-trained models such as CLIP or ALIGN offer consistent accuracy across a range of data distributions when performing zero-shot inference (i.e., without fine-tuning on a specific dataset). Although existing fine-tuning methods substantially improve accuracy on a given target distribution, they often reduce robustness to distribution shifts. We address this tension by introducing a simple and effective method for improving robustness while fine-tuning: ensembling the weights of the zero-shot and fine-tuned models (WiSE-FT).
+
+Finetuner allows you to apply wise-ft on your run,
+all you need to do is to pass a coefficient to the `model_options`, such as:
+
+```diff
+run = finetuner.fit(
+    model='ViT-B-32#openai',
+    ...,
+    loss = 'CLIPLoss',
+-   model_options={},
++   model_options={'wise_ft': 0.4},
+)
+```
+
+The value you set to `wise_ft` should be greater equal than 0 and less equal than 1:
+
++ if `wise_ft` is a float between 0 and 1, we merge weights between pre-trained and fine-tuned model.
++ if `wise_ft` is 0, the fine-tuned model will be identical to pre-trained model.
++ if `wise_ft` is 1, the pre-trained weights will not be utilized.
+
+
 Check out [clip-as-service](https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models) to learn how to plug-in a finetuned CLIP model to our CLIP specific service.
 
 That's it! If you want to integrate the fine-tuned model into your Jina Flow, please check out {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.
