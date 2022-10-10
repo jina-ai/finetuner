@@ -163,6 +163,7 @@ In case you set `to_onnx=True` when calling `finetuner.fit` function,
 please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)`
 ```
 
+(wise-ft)=
 ## Advanced: WiSE-FT 
 
 WiSE-FT, proposed by Mitchell et al. in [Robust fine-tuning of zero-shot models](https://arxiv.org/abs/2109.01903),
@@ -176,12 +177,15 @@ Finetuner allows you to apply WiSE-FT easily,
 all you need to do is to pass a coefficient to the `model_options`, such as:
 
 ```diff
+import finetuner.callbakcs import WiSEFTCallback
+
 run = finetuner.fit(
-    model='ViT-B-32#openai',
-    ...,
-    loss = 'CLIPLoss',
--   callbacks=[],
-+   callbacks=[WiseFtCallback(alpha=0.4)],
+     model='ViT-B-32#openai',
+     ...,
+     loss='CLIPLoss',
+-    callbacks=[],
++    callbacks=[WiSEFTCallback(alpha=0.5)],
+     ...
 )
 ```
 

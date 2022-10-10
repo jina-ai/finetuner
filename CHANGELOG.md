@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Support advanced CLIP fine-tuning with WiSE-FT ([#571](https://github.com/jina-ai/finetuner/pull/571))
 
+- Add documentation for callbacks ([#567](https://github.com/jina-ai/finetuner/pull/567))
+
 ### Removed
 
 ### Changed
