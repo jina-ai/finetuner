@@ -174,18 +174,18 @@ As was introduced in the paper:
 > Large pre-trained models such as CLIP or ALIGN offer consistent accuracy across a range of data distributions when performing zero-shot inference (i.e., without fine-tuning on a specific dataset). Although existing fine-tuning methods substantially improve accuracy on a given target distribution, they often reduce robustness to distribution shifts. We address this tension by introducing a simple and effective method for improving robustness while fine-tuning: ensembling the weights of the zero-shot and fine-tuned models (WiSE-FT).
 
 Finetuner allows you to apply WiSE-FT easily,
-all you need to do is to pass a coefficient to the `model_options`, such as:
+all you need to do is use `WiSEFTCallback`.
+Finetuner will trigger the callback when fine-tuning job finished and merge the weights between the pre-trained model and the fine-tuned model:
 
 ```diff
 import finetuner.callbakcs import WiSEFTCallback
 
 run = finetuner.fit(
-     model='ViT-B-32#openai',
-     ...,
-     loss='CLIPLoss',
--    callbacks=[],
-+    callbacks=[WiSEFTCallback(alpha=0.5)],
-     ...
+    model='ViT-B-32#openai',
+    ...,
+    loss='CLIPLoss',
+-   callbacks=[],
++   callbacks=[WiSEFTCallback(alpha=0.5)],
 )
 ```
 

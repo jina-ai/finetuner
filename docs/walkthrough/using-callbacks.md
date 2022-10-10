@@ -134,4 +134,9 @@ WiSE-FT, proposed by Mitchell et al. in [Robust fine-tuning of zero-shot models]
 has been proven to be an effective way for fine-tuning models with a strong zero-shot capability,
 such as CLIP.
 
-Please refer to {ref}`Apply WiSE-FT <wise-ft>`
+Please refer to {ref}`Apply WiSE-FT <wise-ft>` in the CLIP fine-tuning example.
+
+```{warning}
+It is recommended to use WiSTFTCallback when fine-tuning CLIP.
+We can not ensure it works for other category of models, such as ResNet or Bert.
+```
