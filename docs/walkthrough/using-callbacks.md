@@ -99,6 +99,8 @@ Below is some example output for a run with the early stopping callback followed
 ```
 
 ```python
+from finetuner.callback import EarlyStopping, EvaluationCallback
+
 run = finetuner.fit(
     model='openai/clip-vit-base-patch32',
     run_name='clip-fashion-early',
