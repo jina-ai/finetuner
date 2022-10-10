@@ -43,7 +43,7 @@ The evaluation callback is used to calculate performance metrics for the model b
 ```
 
 The evaluation callback is triggered at the end of each epoch, in which the model is evaluated using the `query_data` and `index_data` datasets that were provided when the callback was created.
-It is worth noting that the evaluation callback and the `eval_data` parameter of the fit method do not do the same thing. The eval data parameter takes a `DocumentArray` (or the name of one that has been pushed on Hubble) and uses its contents to evaluate the loss of the model whereas the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall. These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.
+It is worth noting that the evaluation callback and the `eval_data` parameter of the fit method do not do the same thing. The eval data parameter takes a `DocumentArray` (or the name of one that has been pushed on the cloud) and uses its contents to evaluate the loss of the model whereas the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall. These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.
 
 ## BestModelCheckpoint
 
