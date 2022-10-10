@@ -180,8 +180,8 @@ run = finetuner.fit(
     model='ViT-B-32#openai',
     ...,
     loss = 'CLIPLoss',
--   model_options={},
-+   model_options={'wise_ft': 0.4},
+-   callbacks=[],
++   callbacks=[WiseFtCallback(alpha=0.4)],
 )
 ```
 
