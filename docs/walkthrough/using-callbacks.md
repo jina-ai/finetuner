@@ -126,3 +126,17 @@ The early stopping callback triggers at the end of training and evaluation batch
 - `minimum_delta`: The minimum amount of improvement that a model can have over the previous best model to be considered worthwhile, zero by default, meaning that the training will not stop early unless the performance starts to decrease
 - `patience`: The number of consecutive rounds without improvement before the training is stopped, two by default.
 - `baseline`: an optional parameter that is used to compare the model's score against instead of the best previous model when checking for improvement. This baseline does not get changed over the course of a run.
+
+
+## WiSEFTCallback
+
+WiSE-FT, proposed by Mitchell et al. in [Robust fine-tuning of zero-shot models](https://arxiv.org/abs/2109.01903),
+has been proven to be an effective way for fine-tuning models with a strong zero-shot capability,
+such as CLIP.
+
+Please refer to {ref}`Apply WiSE-FT <wise-ft>` in the CLIP fine-tuning example.
+
+```{warning}
+It is recommended to use WiSEFTCallback when fine-tuning CLIP.
+We can not ensure it works for other category of models, such as ResNet or Bert.
+```
