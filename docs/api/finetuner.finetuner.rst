@@ -1,7 +1,7 @@
-finetuner.exception module
+finetuner.finetuner module
 ==========================
 
-.. automodule:: finetuner.exception
+.. automodule:: finetuner.finetuner
    :members:
    :undoc-members:
    :show-inheritance:

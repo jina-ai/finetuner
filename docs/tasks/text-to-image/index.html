@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner package" href="../../api/finetuner/" /><link rel="prev" title="Image-to-Image Search via ResNet50" href="../image-to-image/" />
         <link rel="canonical" href="https://finetuner.jina.ai/tasks/text-to-image.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.15"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
         <title>Text-to-Image Search via CLIP - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -233,6 +233,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Artifact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/using-callbacks/">Using Callbacks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Encode Documents</a></li>
 </ul>
 </li>
@@ -366,10 +367,10 @@ we already prepared the data, and we’ll provide the names of training and eval
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">model</span><span class="o">=</span><span class="s1">&#39;openai/clip-vit-base-patch32&#39;</span><span class="p">,</span>
     <span class="n">run_name</span><span class="o">=</span><span class="s1">&#39;clip-fashion&#39;</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="s1">&#39;clip-fashion-train-data&#39;</span><span class="p">,</span>
-    <span class="n">eval_data</span><span class="o">=</span><span class="s1">&#39;clip-fashion-eval-data&#39;</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="s1">&#39;fashion-eval-train-clip&#39;</span><span class="p">,</span>
+    <span class="n">eval_data</span><span class="o">=</span><span class="s1">&#39;fashion-eval-data-clip&#39;</span><span class="p">,</span>
     <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">learning_rate</span><span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
     <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;CLIPLoss&#39;</span><span class="p">,</span>
     <span class="n">cpu</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
@@ -433,48 +434,48 @@ Then use the textual Documents to search image Documents.</p>
 <tbody>
 <tr>
 <td style="text-align: left;">average_precision</td>
-<td style="text-align: right;">0.253423</td>
-<td style="text-align: right;">0.415924</td>
+<td style="text-align: right;">0.47219</td>
+<td style="text-align: right;">0.532773</td>
 </tr>
 <tr>
 <td style="text-align: left;">dcg_at_k</td>
-<td style="text-align: right;">0.902417</td>
-<td style="text-align: right;">2.14489</td>
+<td style="text-align: right;">2.25565</td>
+<td style="text-align: right;">2.70725</td>
 </tr>
 <tr>
 <td style="text-align: left;">f1_score_at_k</td>
-<td style="text-align: right;">0.0831918</td>
-<td style="text-align: right;">0.241773</td>
+<td style="text-align: right;">0.296816</td>
+<td style="text-align: right;">0.353499</td>
 </tr>
 <tr>
 <td style="text-align: left;">hit_at_k</td>
-<td style="text-align: right;">0.611976</td>
-<td style="text-align: right;">0.856287</td>
+<td style="text-align: right;">0.94028</td>
+<td style="text-align: right;">0.942821</td>
 </tr>
 <tr>
 <td style="text-align: left;">ndcg_at_k</td>
-<td style="text-align: right;">0.350172</td>
-<td style="text-align: right;">0.539948</td>
+<td style="text-align: right;">0.613387</td>
+<td style="text-align: right;">0.673644</td>
 </tr>
 <tr>
 <td style="text-align: left;">precision_at_k</td>
-<td style="text-align: right;">0.0994012</td>
-<td style="text-align: right;">0.256587</td>
+<td style="text-align: right;">0.240407</td>
+<td style="text-align: right;">0.285324</td>
 </tr>
 <tr>
 <td style="text-align: left;">r_precision</td>
-<td style="text-align: right;">0.231756</td>
-<td style="text-align: right;">0.35847</td>
+<td style="text-align: right;">0.364697</td>
+<td style="text-align: right;">0.409577</td>
 </tr>
 <tr>
 <td style="text-align: left;">recall_at_k</td>
-<td style="text-align: right;">0.108982</td>
-<td style="text-align: right;">0.346108</td>
+<td style="text-align: right;">0.472681</td>
+<td style="text-align: right;">0.564168</td>
 </tr>
 <tr>
 <td style="text-align: left;">reciprocal_rank</td>
-<td style="text-align: right;">0.288791</td>
-<td style="text-align: right;">0.487505</td>
+<td style="text-align: right;">0.575481</td>
+<td style="text-align: right;">0.67571</td>
 </tr>
 </tbody>
 </table>
@@ -522,8 +523,38 @@ we use <code class="docutils literal notranslate"><span class="pre">clip-text</s
 <p>In case you set <code class="docutils literal notranslate"><span class="pre">to_onnx=True</span></code> when calling <code class="docutils literal notranslate"><span class="pre">finetuner.fit</span></code> function,
 please use <code class="docutils literal notranslate"><span class="pre">model</span> <span class="pre">=</span> <span class="pre">finetuner.get_model('/path/to/YOUR-MODEL.zip',</span> <span class="pre">is_onnx=True)</span></code></p>
 </div>
-<p>Check out <a class="reference external" href="https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models">clip-as-service</a> to learn how to plug-in a finetuned CLIP model to our CLIP specific service.</p>
-<p>That’s it! If you want to integrate the fine-tuned model into your Jina Flow, please check out <a class="reference internal" href="../../walkthrough/integrate-with-jina/#integrate-with-jina"><span class="std std-ref">integrated with the Jina ecosystem</span></a>.</p>
+</section>
+<section id="advanced-wise-ft">
+<span id="wise-ft"></span><h2>Advanced: WiSE-FT<a class="headerlink" href="#advanced-wise-ft" title="Permalink to this headline">#</a></h2>
+<p>WiSE-FT, proposed by Mitchell et al. in <a class="reference external" href="https://arxiv.org/abs/2109.01903">Robust fine-tuning of zero-shot models</a>,
+has been proven to be an effective way for fine-tuning models with a strong zero-shot capability,
+such as CLIP.
+As was introduced in the paper:</p>
+<blockquote>
+<div><p>Large pre-trained models such as CLIP or ALIGN offer consistent accuracy across a range of data distributions when performing zero-shot inference (i.e., without fine-tuning on a specific dataset). Although existing fine-tuning methods substantially improve accuracy on a given target distribution, they often reduce robustness to distribution shifts. We address this tension by introducing a simple and effective method for improving robustness while fine-tuning: ensembling the weights of the zero-shot and fine-tuned models (WiSE-FT).</p>
+</div></blockquote>
+<p>Finetuner allows you to apply WiSE-FT easily,
+all you need to do is use the <code class="docutils literal notranslate"><span class="pre">WiSEFTCallback</span></code>.
+Finetuner will trigger the callback when fine-tuning job finished and merge the weights between the pre-trained model and the fine-tuned model:</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">from finetuner.callbakcs import WiSEFTCallback</span>
+
+<span class="w">run = finetuner.fit(</span>
+<span class="w"> </span>   model=&#39;ViT-B-32#openai&#39;,<span class="w"></span>
+<span class="w"> </span>   ...,<span class="w"></span>
+<span class="w"> </span>   loss=&#39;CLIPLoss&#39;,<span class="w"></span>
+<span class="gd">-   callbacks=[],</span><span class="w"></span>
+<span class="gi">+   callbacks=[WiSEFTCallback(alpha=0.5)],</span><span class="w"></span>
+<span class="w">)</span>
+</pre></div>
+</div>
+<p>The value you set to <code class="docutils literal notranslate"><span class="pre">alpha</span></code> should be greater equal than 0 and less equal than 1:</p>
+<ul class="simple">
+<li><p>if <code class="docutils literal notranslate"><span class="pre">alpha</span></code> is a float between 0 and 1, we merge the weights between the pre-trained model and the fine-tuned model.</p></li>
+<li><p>if <code class="docutils literal notranslate"><span class="pre">alpha</span></code> is 0, the fine-tuned model is identical to the pre-trained model.</p></li>
+<li><p>if <code class="docutils literal notranslate"><span class="pre">alpha</span></code> is 1, the pre-trained weights will not be utilized.</p></li>
+</ul>
+<p>That’s it! If you want to integrate the fine-tuned model into your Jina Flow, please check out <a class="reference internal" href="../../walkthrough/integrate-with-jina/#integrate-with-jina"><span class="std std-ref">integrated with the Jina ecosystem</span></a>.
+Check out <a class="reference external" href="https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models">clip-as-service</a> to learn how to plug-in a fine-tuned CLIP model to our CLIP specific service.</p>
 </section>
 </section>
 
@@ -562,7 +593,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 29, 2022</div>
+                            Last updated on Oct 13, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -603,6 +634,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
 <li><a class="reference internal" href="#evaluating">Evaluating</a></li>
 <li><a class="reference internal" href="#saving">Saving</a></li>
 <li><a class="reference internal" href="#inference">Inference</a></li>
+<li><a class="reference internal" href="#advanced-wise-ft">Advanced: WiSE-FT</a></li>
 </ul>
 </li>
 </ul>

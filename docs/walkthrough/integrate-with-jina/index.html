@@ -35,13 +35,13 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Text-to-Text Search via BERT" href="../../tasks/text-to-text/" /><link rel="prev" title="Save Artifact" href="../save-model/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Text-to-Text Search via BERT" href="../../tasks/text-to-text/" /><link rel="prev" title="Using Callbacks" href="../using-callbacks/" />
         <link rel="canonical" href="https://finetuner.jina.ai/walkthrough/integrate-with-jina.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.15"/>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
         <title>Encode Documents - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -233,6 +233,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../save-model/">Save Artifact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../using-callbacks/">Using Callbacks</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Encode Documents</a></li>
 </ul>
 </li>
@@ -415,7 +416,7 @@ You have three options:</p>
 <span class="p">)</span>
 	
 <span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-    <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;jinahub+docker://FinetunerExecutor/v0.10.2&#39;</span><span class="p">,</span>  <span class="c1"># use v0.10.2-gpu for gpu executor.</span>
+    <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;jinahub+docker://FinetunerExecutor/v0.10.4&#39;</span><span class="p">,</span>  <span class="c1"># use v0.10.4-gpu for gpu executor.</span>
     <span class="n">uses_with</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;artifact&#39;</span><span class="p">:</span> <span class="n">run</span><span class="o">.</span><span class="n">artifact_id</span><span class="p">,</span> <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="n">token</span><span class="p">},</span>
 <span class="p">)</span>
 </pre></div>
@@ -425,7 +426,7 @@ You have three options:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
 	
 <span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-    <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;jinahub+docker://FinetunerExecutor/v0.10.2&#39;</span><span class="p">,</span>  <span class="c1"># use v0.10.2-gpu for gpu executor.</span>
+    <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;jinahub+docker://FinetunerExecutor/v0.10.4&#39;</span><span class="p">,</span>  <span class="c1"># use v0.10.4-gpu for gpu executor.</span>
     <span class="n">uses_with</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;artifact&#39;</span><span class="p">:</span> <span class="s1">&#39;/mnt/YOUR-MODEL.zip&#39;</span><span class="p">},</span>
     <span class="n">volumes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;/your/local/path/:/mnt&#39;</span><span class="p">]</span>  <span class="c1"># mount your model path to docker.</span>
 <span class="p">)</span>
@@ -438,7 +439,7 @@ You have three options:</p>
 <span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">51000</span><span class="w"></span>
 <span class="w">  </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grpc</span><span class="w"></span>
 <span class="nt">executors</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jinahub+docker://FinetunerExecutor/v0.10.2</span><span class="w"></span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jinahub+docker://FinetunerExecutor/v0.10.4</span><span class="w"></span>
 <span class="w">  </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">artifact</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;COPY-YOUR-ARTIFACT-ID-HERE&#39;</span><span class="w"></span>
 <span class="w">    </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;COPY-YOUR-TOKEN-HERE&#39;</span><span class="w">  </span><span class="c1"># or better set as env</span><span class="w"></span>
@@ -547,7 +548,7 @@ To use those models, you have to provide the name of the model via an additional
 <span class="p">)</span>
 
 <span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-    <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;jinahub+docker://FinetunerExecutor/v0.10.2&#39;</span><span class="p">,</span>  <span class="c1"># use v0.10.2-gpu for gpu executor.</span>
+    <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;jinahub+docker://FinetunerExecutor/v0.10.4&#39;</span><span class="p">,</span>  <span class="c1"># use v0.10.4-gpu for gpu executor.</span>
     <span class="n">uses_with</span><span class="o">=</span><span class="p">{</span>
         <span class="s1">&#39;artifact&#39;</span><span class="p">:</span> <span class="n">run</span><span class="o">.</span><span class="n">artifact_id</span><span class="p">,</span> <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span> <span class="s1">&#39;select_model&#39;</span><span class="p">:</span> <span class="s1">&#39;clip-vision&#39;</span>
     <span class="p">},</span>
@@ -574,7 +575,7 @@ To use those models, you have to provide the name of the model via an additional
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../save-model/">
+                    <a class="prev-page" href="../using-callbacks/">
                         <svg class="furo-related-icon">
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -583,7 +584,7 @@ To use those models, you have to provide the name of the model via an additional
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">Save Artifact</div>
+                            <div class="title">Using Callbacks</div>
                             
                         </div>
                     </a>
@@ -593,7 +594,7 @@ To use those models, you have to provide the name of the model via an additional
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 29, 2022</div>
+                            Last updated on Oct 13, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
