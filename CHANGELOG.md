@@ -10,21 +10,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Support advanced CLIP fine-tuning with WiSE-FT ([#571](https://github.com/jina-ai/finetuner/pull/571))
+### Removed
 
-- Add documentation for callbacks ([#567](https://github.com/jina-ai/finetuner/pull/567))
+### Changed
+
+### Fixed
+
+### Docs
+
+
+## [0.6.3] - 2022-10-13
+
+### Added
+
+- Support advanced CLIP fine-tuning with WiSE-FT ([#571](https://github.com/jina-ai/finetuner/pull/571))
 
 ### Removed
 
 ### Changed
 
-- Change CLIP finetuning example in the documentation ([#569](https://github.com/jina-ai/finetuner/pull/569))
+- Change CLIP fine-tuning example in the documentation ([#569](https://github.com/jina-ai/finetuner/pull/569))
 
 ### Fixed
 
 - Bump flake8 to `5.0.4`. ([#568](https://github.com/jina-ai/finetuner/pull/568))
 
 ### Docs
+
+- Add documentation for callbacks ([#567](https://github.com/jina-ai/finetuner/pull/567))
 
 
 ## [0.6.2] - 2022-09-29
