@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Change CLIP fine-tuning example in the documentation ([#569](https://github.com/jina-ai/finetuner/pull/569))
 
-- Use latest hubble with `notebook_login` support ([#576](https://github.com/jina-ai/finetuner/pull/576))
+- Use latest Hubble with `notebook_login` support ([#576](https://github.com/jina-ai/finetuner/pull/576))
 
 ### Fixed
 

@@ -129,7 +129,7 @@ The following code snippet describes how to fine-tune ResNet50 on [Totally Looks
 import finetuner
 from finetuner.callback import EvaluationCallback
 
-finetuner.login()  # use finetuner.notebook_login() in jupyter notebook/google colab
+finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook/Google Colab
 
 run = finetuner.fit(
     model='resnet50',

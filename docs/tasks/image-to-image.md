@@ -40,7 +40,7 @@ For this example, we're gonna go with `resnet50`.
 ## Fine-tuning
 From now on, all the action happens in the cloud! 
 
-First you need to {ref}`login to Jina ecosystem <login-to-jina-ecosystem>`:
+First, {ref}`log in to the Jina ecosystem <login-to-jina-ecosystem>`:
 ```python
 import finetuner
 finetuner.login()  # use finetuner.notebook_login() in jupyter notebook/google colab
