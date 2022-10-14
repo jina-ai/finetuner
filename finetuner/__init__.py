@@ -34,8 +34,8 @@ def login():
     ft.login()
 
 
-def notebook_login():
-    ft.notebook_login()
+def notebook_login(force: bool = False):
+    ft.notebook_login(force=force)
 
 
 def connect():
