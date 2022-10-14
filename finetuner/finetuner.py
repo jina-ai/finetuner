@@ -33,7 +33,7 @@ class Finetuner:
 
         :param force: If set to true, overwrite token and re-login.
 
-        Note: This works for notebook, colab..
+        Note: This works for Jupyter notebook, Google Colab..
         """
         hubble.notebook_login(force=force)
         self._init_state()
