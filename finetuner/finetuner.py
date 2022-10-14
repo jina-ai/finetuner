@@ -31,7 +31,7 @@ class Finetuner:
         """Log in to Hubble account, initialize a client object
         and create a default experiment.
 
-        :param force: If set to true, will overwrite token and re-login.
+        :param force: If set to true, overwrite token and re-login.
 
         Note: This works for notebook, colab..
         """
