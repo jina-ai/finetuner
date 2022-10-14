@@ -43,7 +43,7 @@ From now on, all the action happens in the cloud!
 First you need to {ref}`login to Jina ecosystem <login-to-jina-ecosystem>`:
 ```python
 import finetuner
-finetuner.login()
+finetuner.login()  # use finetuner.notebook_login() in jupyter notebook/google colab
 ```
 
 Now, you can easily start a fine-tuning job with {meth}`~finetuner.fit`:
@@ -95,7 +95,7 @@ Since some runs might take up to several hours, it's important to know how to re
 
 ```python
 import finetuner
-finetuner.login()
+finetuner.login()  # use finetuner.notebook_login() in jupyter notebook/google colab
 
 run = finetuner.get_run('resnet-tll')
 ```

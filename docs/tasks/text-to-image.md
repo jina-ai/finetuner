@@ -29,7 +29,7 @@ From now on, all the action happens in the cloud!
 First you need to {ref}`login to Jina ecosystem <login-to-jina-ecosystem>`:
 ```python
 import finetuner
-finetuner.login()
+finetuner.login()  # use finetuner.notebook_login() in jupyter notebook/google colab
 ```
 
 Now that everything's ready, let's create a fine-tuning run!
@@ -73,7 +73,7 @@ Since some runs might take up to several hours/days, it's important to know how 
 
 ```python
 import finetuner
-finetuner.login()
+finetuner.login()  # use finetuner.notebook_login in jupyter notebook/google colab
 run = finetuner.get_run('clip-fashion')
 ```
 
