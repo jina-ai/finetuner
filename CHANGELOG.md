@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Use latest Hubble with `notebook_login` support ([#576](https://github.com/jina-ai/finetuner/pull/576))
+
 ### Removed
 
 ### Changed
@@ -17,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Docs
+
+- Fix training data name in totally looks like example ([#576](https://github.com/jina-ai/finetuner/pull/576))
 
 
 ## [0.6.3] - 2022-10-13
@@ -30,8 +34,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Change CLIP fine-tuning example in the documentation ([#569](https://github.com/jina-ai/finetuner/pull/569))
-
-- Use latest Hubble with `notebook_login` support ([#576](https://github.com/jina-ai/finetuner/pull/576))
 
 ### Fixed
 
