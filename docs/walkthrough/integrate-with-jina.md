@@ -76,7 +76,7 @@ You have three options:
 import finetuner
 from jina import Flow
 
-finetuner.login()  # use finetuner.notebook_login in jupyter notebook/google colab()
+finetuner.login()  # use finetuner.notebook_login() in jupyter notebook/google colab()
 
 token = finetuner.get_token()
 run = finetuner.get_run(
