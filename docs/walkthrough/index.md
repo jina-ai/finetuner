@@ -43,7 +43,7 @@ run.save_artifact(directory='experiment')
 You should see this in your terminal:
 
 ```bash
-🔐 Successfully login to Jina ecosystem!
+🔐 Successfully logged in to Jina AI as [USER NAME]!
 Run name: vigilant-tereshkova
 Run logs:
 

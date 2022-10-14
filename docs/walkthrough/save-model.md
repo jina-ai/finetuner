@@ -40,7 +40,7 @@ If the fine-tuning finished,
 you can see this in the terminal:
 
 ```bash
-🔐 Successfully login to Jina Ecosystem!
+🔐 Successfully logged in to Jina AI as [USER NAME]!
 Run status: FINISHED
 Run Artifact id: 62972acb5de25a53fdbfcecc
 Run logs:

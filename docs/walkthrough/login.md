@@ -15,7 +15,7 @@ A browser window should pop up with different login options.
 After {meth}`~finetuner.login()` or `~finetuner.notebook_login()` you will see this in your terminal:
 
 ```bash
-🔐 Successfully login to Jina ecosystem!
+🔐 Successfully logged in to Jina AI as [USER NAME]!
 ```
 
 ```{admonition} Why do I need to login?
