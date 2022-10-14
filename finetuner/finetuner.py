@@ -28,7 +28,7 @@ class Finetuner:
         self._init_state()
 
     def notebook_login(self, force: bool = False):
-        """Login to Hubble account, initialize a client object
+        """Log in to Hubble account, initialize a client object
         and create a default experiment.
 
         :param force: If set to true, will overwrite token and re-login.
