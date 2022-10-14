@@ -149,7 +149,7 @@ Fine-tuning might take 5 minute to finish. You can later re-connect your run wit
 ```python
 import finetuner
 
-finetuner.login()  # use finetuner.notebook_login() in jupyter notebook/google colab
+finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google colab
 
 run = finetuner.get_run('resnet50-tll-run')
 

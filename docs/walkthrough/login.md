@@ -8,7 +8,7 @@ It is as simple as:
 ```python
 import finetuner
 
-finetuner.login()  # use finetuner.notebook_login() in jupyter notebook/google colab
+finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google colab
 ```
 
 A browser window should pop up with different login options.

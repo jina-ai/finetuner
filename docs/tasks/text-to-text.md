@@ -103,7 +103,7 @@ import finetuner
 from finetuner.callback import EvaluationCallback
 
 # Make sure to login to Jina Cloud
-finetuner.login()  # use finetuner.notebook_login() in jupyter notebook/google colab
+finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google colab
 
 # Start fine-tuning as a run within an experiment
 run = finetuner.fit(
@@ -156,7 +156,7 @@ Since some runs might take up to several hours, you can reconnect to your run ve
 ```python
 import finetuner
 
-finetuner.login()  # use finetuner.notebook_login() in jupyter notebook/google colab
+finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google colab
 run = finetuner.get_run('finetune-quora-dataset-bert-base-cased')
 print(f'Run status: {run.status()}')
 ```
@@ -168,7 +168,7 @@ Our `EvaluationCallback` during fine-tuning ensures that after each epoch, an ev
 ```python
 import finetuner
 
-finetuner.login()  # use finetuner.notebook_login() in jupyter notebook/google colab
+finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google colab
 run = finetuner.get_run('finetune-quora-dataset-bert-base-cased')
 print(f'Run logs: {run.logs()}')
 ```
