@@ -29,7 +29,7 @@ From now on, all the action happens in the cloud!
 First you need to {ref}`login to Jina ecosystem <login-to-jina-ecosystem>`:
 ```python
 import finetuner
-finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google colab
+finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
 ```
 
 Now that everything's ready, let's create a fine-tuning run!
