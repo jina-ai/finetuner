@@ -171,8 +171,8 @@ class Experiment:
         if device == 'cpu' and not kwargs.get(CPU):
             device = 'gpu'
             warnings.warn(
-                message='`cpu` will be deprecated from 0.7.0, please use'
-                '`device="cpu" or `device="cuda" instead.`',
+                message='Parameter `cpu=True` will be deprecated from Finetuner 0.7.0,'
+                'please use `device="cpu" or `device="cuda" instead.`',
                 category=DeprecationWarning,
             )
         if device == 'cuda':
