@@ -36,7 +36,6 @@ class Finetuner:
         Note: This works for Jupyter notebook, Google Colab..
         """
         hubble.notebook_login(force=force, post_success=self._init_state)
-        # self._init_state()
 
     def connect(self):
         """Connects finetuner to Hubble without logging in again.
