@@ -71,7 +71,7 @@ run = finetuner.fit(
     scheduler_step='batch',
     freeze=False, # If applied will freeze the embedding model, only train the MLP.
     output_dim=512, # Attach a MLP on top of embedding model.
-    cpu=False,
+    device='cuda',
     num_workers=4,
     to_onnx=False,  # If set, please pass `is_onnx` when making inference.
 )
