@@ -167,7 +167,7 @@ class Experiment:
             **kwargs,
         )
 
-        device = kwargs.get(DEVICE, 'cpu')
+        device = kwargs.get(DEVICE, 'cuda')
         if device == 'cpu' and not kwargs.get(CPU, True):
             device = 'gpu'
             warnings.warn(
