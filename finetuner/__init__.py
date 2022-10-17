@@ -30,8 +30,8 @@ from finetuner.model import list_model_classes
 ft = Finetuner()
 
 
-def login():
-    ft.login()
+def login(force: bool = False):
+    ft.login(force=force)
 
 
 def notebook_login(force: bool = False):
