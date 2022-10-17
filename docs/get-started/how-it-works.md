@@ -36,7 +36,7 @@ From an engineering perspective,
 we have hidden all the complexity of machine learning algorithms and resource configuration (such as GPUs).
 All you need to do is decide on your backbone model and prepare your training data.
 
-Once you logged into the Jina Ecosystem with {meth}`~finetuner.login()`, 
+Once you have logged in to the Jina Ecosystem with {meth}`~finetuner.login()` or `~finetuner.notebook_login()`, 
 Finetuner will push your training data into our *Cloud Artifact Storage* (only visible to you).
 At the same time, we will spin-up an isolated computational resource
 with proper memory, CPU, GPU dedicated to your fine-tuning job.

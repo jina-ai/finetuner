@@ -22,7 +22,7 @@ import finetuner
 from docarray import DocumentArray
 
 # Login to Jina ecosystem
-finetuner.login()
+finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
 
 # Prepare training data
 train_data = DocumentArray(...)
@@ -43,7 +43,7 @@ run.save_artifact(directory='experiment')
 You should see this in your terminal:
 
 ```bash
-🔐 Successfully login to Jina ecosystem!
+🔐 Successfully logged in to Jina AI as [USER NAME]!
 Run name: vigilant-tereshkova
 Run logs:
 

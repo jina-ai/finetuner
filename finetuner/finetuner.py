@@ -18,14 +18,26 @@ class Finetuner:
         self._client = None
         self._default_experiment = None
 
-    def login(self):
+    def login(self, force: bool = False):
         """Login to Hubble account, initialize a client object
         and create a default experiment.
 
+        :param force: If set to true, overwrite token and re-login.
+
         Note: Calling `login` is necessary for using finetuner.
         """
-        hubble.login()
+        hubble.login(force=force)
         self._init_state()
+
+    def notebook_login(self, force: bool = False):
+        """Log in to Hubble account, initialize a client object
+        and create a default experiment.
+
+        :param force: If set to true, overwrite token and re-login.
+
+        Note: This works for Jupyter notebook, Google Colab..
+        """
+        hubble.notebook_login(force=force, post_success=self._init_state)
 
     def connect(self):
         """Connects finetuner to Hubble without logging in again.

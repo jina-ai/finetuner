@@ -19,7 +19,7 @@ After fine-tuning, the embeddings of positive pairs are expected to be pulled cl
 
 ## Data
 Our journey starts locally. We have to {ref}`prepare the data and push it to the cloud <create-training-data>` and Finetuner will be able to get the dataset by its name. For this example,
-we already prepared the data, and we'll provide the names of training and evaluation data (`resnet-ttl-train-data` and `resnet-ttl-eval-data`) directly to Finetuner.
+we already prepared the data, and we'll provide the names of training data (`tll-train-da`) directly to Finetuner.
 
 ```{admonition} 
 :class: tip
@@ -40,10 +40,10 @@ For this example, we're gonna go with `resnet50`.
 ## Fine-tuning
 From now on, all the action happens in the cloud! 
 
-First you need to {ref}`login to Jina ecosystem <login-to-jina-ecosystem>`:
+First, {ref}`log in to the Jina ecosystem <login-to-jina-ecosystem>`:
 ```python
 import finetuner
-finetuner.login()
+finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
 ```
 
 Now, you can easily start a fine-tuning job with {meth}`~finetuner.fit`:
@@ -95,7 +95,7 @@ Since some runs might take up to several hours, it's important to know how to re
 
 ```python
 import finetuner
-finetuner.login()
+finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
 
 run = finetuner.get_run('resnet-tll')
 ```
