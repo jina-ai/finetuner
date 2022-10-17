@@ -56,7 +56,7 @@ print(run.status())
 "Since some runs might take up to several hours/days, you can reconnect to your run very easily to monitor its status and logs."
 ```python
 import finetuner
-finetuner.login()
+finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
 run = finetuner.get_run('my_run')
 ```
 

@@ -21,7 +21,7 @@ In the example below, we show how to connect to an existing run and download a t
 ```python
 import finetuner
 
-finetuner.login()
+finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
 
 # connect to the experiment we created previously.
 experiment = finetuner.get_experiment('finetune-flickr-dataset')
@@ -40,7 +40,7 @@ If the fine-tuning finished,
 you can see this in the terminal:
 
 ```bash
-🔐 Successfully login to Jina Ecosystem!
+🔐 Successfully logged in to Jina AI as [USER NAME]!
 Run status: FINISHED
 Run Artifact id: 62972acb5de25a53fdbfcecc
 Run logs:
