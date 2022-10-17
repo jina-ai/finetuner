@@ -11,7 +11,7 @@ For each product the dataset contains a title and images of multiple variants of
 
 ## Data
 Our journey starts locally. We have to {ref}`prepare the data and push it to the cloud <create-training-data>` and Finetuner will be able to get the dataset by its name. For this example,
-we already prepared the data, and we'll provide the names of training and evaluation data (`fashion-eval-train-clip` and `fashion-eval-data-clip`) directly to Finetuner.
+we already prepared the data, and we'll provide the names of training and evaluation data (`fashion-train-data-clip` and `fashion-eval-data-clip`) directly to Finetuner.
 
 ```{admonition} 
 :class: tip
@@ -40,7 +40,7 @@ import finetuner
 run = finetuner.fit(
     model='openai/clip-vit-base-patch32',
     run_name='clip-fashion',
-    train_data='fashion-eval-train-clip',
+    train_data='fashion-train-data-clip',
     eval_data='fashion-eval-data-clip',
     epochs=5,
     learning_rate= 1e-7,
