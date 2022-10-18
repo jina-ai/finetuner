@@ -76,10 +76,12 @@ init: pre-commit install install-dev install-docs
 ## Build wheel
 build:
 	python setup.py bdist_wheel
+	rm -rf .eggs/ build/ *egg-info
 
 ## Build source dist
 build-sdist:
 	python setup.py sdist
+	rm -rf .eggs/ build/ *egg-info
 
 
 # ---------------------------------------------------------------- Test related targets

@@ -10,32 +10,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Use latest Hubble with `notebook_login` support ([#576](https://github.com/jina-ai/finetuner/pull/576))
+- Use latest Hubble with `notebook_login` support. ([#576](https://github.com/jina-ai/finetuner/pull/576))
 
 ### Removed
 
 ### Changed
 
-- Use `device` parameter to replace `cpu` to align with docarray  ([#577](https://github.com/jina-ai/finetuner/pull/577))
+- Convert package to namespace package. ([#581](https://github.com/jina-ai/finetuner/pull/581))
+
+- Use `device` parameter to replace `cpu` to align with docarray. ([#577](https://github.com/jina-ai/finetuner/pull/577))
 
 ### Fixed
 
 ### Docs
 
-- Fix training data name in totally looks like example ([#576](https://github.com/jina-ai/finetuner/pull/576))
+- Fix training data name in totally looks like example. ([#576](https://github.com/jina-ai/finetuner/pull/576))
 
 
 ## [0.6.3] - 2022-10-13
 
 ### Added
 
-- Support advanced CLIP fine-tuning with WiSE-FT ([#571](https://github.com/jina-ai/finetuner/pull/571))
+- Support advanced CLIP fine-tuning with WiSE-FT. ([#571](https://github.com/jina-ai/finetuner/pull/571))
 
 ### Removed
 
 ### Changed
 
-- Change CLIP fine-tuning example in the documentation ([#569](https://github.com/jina-ai/finetuner/pull/569))
+- Change CLIP fine-tuning example in the documentation. ([#569](https://github.com/jina-ai/finetuner/pull/569))
 
 ### Fixed
 
@@ -43,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
-- Add documentation for callbacks ([#567](https://github.com/jina-ai/finetuner/pull/567))
+- Add documentation for callbacks. ([#567](https://github.com/jina-ai/finetuner/pull/567))
 
 
 ## [0.6.2] - 2022-09-29
@@ -58,7 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Freeze hubble client to `0.17.0` . ([#556](https://github.com/jina-ai/finetuner/pull/556))
+- Freeze hubble client to `0.17.0`. ([#556](https://github.com/jina-ai/finetuner/pull/556))
 
 ### Docs
 
@@ -234,8 +236,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update README.md with latest developments. ([#448](https://github.com/jina-ai/finetuner/pull/448))
 
-
 ### Fixed
+
 
 ## 0.2.1 - 2022-06-13
 
