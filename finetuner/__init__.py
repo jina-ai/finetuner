@@ -168,6 +168,7 @@ def fit(
     :param output_dim: The expected output dimension as `int`.
         If set, will attach a projection head.
     :param cpu: Whether to use the CPU. If set to `False` a GPU will be used.
+        Will be deprecated from 0.7.0.
     :param device: Whether to use the CPU, if set to `cuda`, a Nvidia GPU will be used.
         otherwise use `cpu` to run a cpu job.
     :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
@@ -350,7 +351,7 @@ def get_model(
     if device == 'cuda' and is_onnx:
         warnings.warn(
             message='You are using cuda device for ONNX inference, please consider'
-            'call `pip install onnxruntime-gpu` to speed up inference.',
+            'calling `pip install onnxruntime-gpu` to speed up inference.',
             category=RuntimeWarning,
         )
     if is_onnx:
