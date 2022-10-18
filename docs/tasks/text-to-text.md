@@ -210,7 +210,7 @@ from docarray import Document, DocumentArray
 # Prepare some text to encode
 test_da = DocumentArray([Document(text='some text to encode')])
 # Load model from artifact
-model = finetuner.get_model(artifact=artifact)
+model = finetuner.get_model(artifact=artifact, device='cuda')
 # Encoding will happen in-place in your `DocumentArray`
 finetuner.encode(model=model, data=test_da)
 print(test_da.embeddings.shape)

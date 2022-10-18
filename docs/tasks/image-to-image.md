@@ -143,7 +143,7 @@ from docarray import Document, DocumentArray
 # Prepare an image to encode, change the placeholder image uri to an image on your machine
 test_da = DocumentArray([Document(uri='my-image.png')])
 # Load model from artifact
-model = finetuner.get_model(artifact=artifact)
+model = finetuner.get_model(artifact=artifact, device='cuda')
 # Encoding will happen in-place in your `DocumentArray`
 finetuner.encode(model=model, data=test_da)
 print(test_da.embeddings)

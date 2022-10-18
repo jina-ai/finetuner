@@ -134,8 +134,8 @@ from docarray import Document, DocumentArray
 text_da = DocumentArray([Document(text='some text to encode')])
 image_da = DocumentArray([Document(uri='my-image.png')])
 # Load model from artifact
-clip_text_encoder = finetuner.get_model(artifact=artifact, select_model='clip-text')
-clip_image_encoder = finetuner.get_model(artifact=artifact, select_model='clip-vision')
+clip_text_encoder = finetuner.get_model(artifact=artifact, device='cuda', select_model='clip-text')
+clip_image_encoder = finetuner.get_model(artifact=artifact, device='cuda', select_model='clip-vision')
 # Encoding will happen in-place in your `DocumentArray`
 finetuner.encode(model=clip_text_encoder, data=text_da)
 finetuner.encode(model=clip_image_encoder, data=image_da)

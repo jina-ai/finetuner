@@ -21,7 +21,11 @@ run = finetuner.get_run(
     run_name='YOUR-RUN'
 )
 
-model = finetuner.get_model(run.artifact_id, token=token)
+model = finetuner.get_model(
+    run.artifact_id,
+    token=token,
+    device='cuda', # model will be placed on cpu by default.
+)
 
 da = DocumentArray([Document(text='some text to encode')])
 
@@ -180,7 +184,12 @@ run = finetuner.get_run(
     run_name='YOUR-RUN'
 )
 
-model = finetuner.get_model(run.artifact_id, token=token, select_model='clip-text')
+model = finetuner.get_model(
+    run.artifact_id,
+    token=token,
+    device='cuda',
+    select_model='clip-text'
+)
 
 da = DocumentArray([Document(text='some text to encode')])
 
@@ -200,7 +209,12 @@ run = finetuner.get_run(
     run_name='YOUR-RUN'
 )
 
-model = finetuner.get_model(run.artifact_id, token=token, select_model='clip-vision')
+model = finetuner.get_model(
+    run.artifact_id,
+    token=token,
+    device='cuda',
+    select_model='clip-vision'
+)
 
 da = DocumentArray([Document(text='~/Pictures/my_img.png')])
 
