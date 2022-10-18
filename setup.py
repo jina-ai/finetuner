@@ -15,7 +15,6 @@ if __name__ == '__main__':
     setup(
         name=_name,
         packages=find_packages(exclude=['*.tests', '*.tests.*', 'tests.*', 'tests']),
-        namespace_packages=[_name],
         include_package_data=True,
         description='Task-oriented finetuning for better embeddings on neural search.',
         author='Jina AI',
