@@ -27,6 +27,8 @@ from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
 from finetuner.model import list_model_classes
 
+__import__('pkg_resources').declare_namespace(__name__)
+
 ft = Finetuner()
 
 
