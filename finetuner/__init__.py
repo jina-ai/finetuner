@@ -169,10 +169,15 @@ def fit(
         If set, will attach a projection head.
     :param cpu: Whether to use the CPU. If set to `False` a GPU will be used.
     :param device: Whether to use the CPU, if set to `cuda`, a Nvidia GPU will be used.
+        otherwise use `cpu` to run a cpu job.
     :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
         workers used by the dataloader.
     :param to_onnx: If the model is an onnx model or not. If you call the `fit` function
         with `to_onnx=True`, please set this parameter as `True`.
+
+    .. note::
+       Unless necessary, please stick with `device="cuda"`, `cpu` training could be
+       extremely slow and inefficient.
     """
     return ft.create_run(
         model=model,
@@ -327,6 +332,7 @@ def get_model(
         such cases you can select which model to deploy using this argument. For CLIP
         fine-tuning, you can choose either `clip-vision` or `clip-text`.
     :param device: Whether to use the CPU, if set to `cuda`, a Nvidia GPU will be used.
+        otherwise use `cpu` to run a cpu job.
     :param logging_level: The executor logging level. See
         https://docs.python.org/3/library/logging.html#logging-levels for available
         options.

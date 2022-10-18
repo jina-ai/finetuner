@@ -147,7 +147,6 @@ def test_create_run_config():
         multi_modal=False,
         image_modality=None,
         text_modality=None,
-        cpu=False,
         wandb_api_key=None,
     )
     assert config == expected_config
