@@ -115,7 +115,7 @@ run = finetuner.fit(
     learning_rate = 1e-5,
     epochs=3,
     batch_size=128,
-    cpu=False,
+    device='cuda',
     callbacks=[
         EvaluationCallback(
             query_data='quora_query_dev.da',

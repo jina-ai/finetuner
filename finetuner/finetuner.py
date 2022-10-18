@@ -171,6 +171,7 @@ class Finetuner:
         freeze: bool = False,
         output_dim: Optional[int] = None,
         cpu: bool = True,
+        device: str = 'cuda',
         num_workers: int = 4,
         to_onnx: bool = False,
     ) -> Run:
@@ -205,6 +206,7 @@ class Finetuner:
             freeze=freeze,
             output_dim=output_dim,
             cpu=cpu,
+            device=device,
             num_workers=num_workers,
             to_onnx=to_onnx,
         )
