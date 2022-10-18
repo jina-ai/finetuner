@@ -108,7 +108,7 @@ run = finetuner.fit(
     epochs=10,
     learning_rate= 1e-5,
     loss='CLIPLoss',
-    cpu=False,
+    device='cuda',
     callbacks= [
         callback.EarlyStopping(
             monitor = "train_loss",

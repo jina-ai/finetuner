@@ -111,6 +111,7 @@ def fit(
     freeze: bool = False,
     output_dim: Optional[int] = None,
     cpu: bool = True,
+    device: str = 'cuda',
     num_workers: int = 4,
     to_onnx: bool = False,
 ) -> Run:
@@ -167,10 +168,17 @@ def fit(
     :param output_dim: The expected output dimension as `int`.
         If set, will attach a projection head.
     :param cpu: Whether to use the CPU. If set to `False` a GPU will be used.
+        Will be deprecated from 0.7.0.
+    :param device: Whether to use the CPU, if set to `cuda`, a Nvidia GPU will be used.
+        otherwise use `cpu` to run a cpu job.
     :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
         workers used by the dataloader.
     :param to_onnx: If the model is an onnx model or not. If you call the `fit` function
         with `to_onnx=True`, please set this parameter as `True`.
+
+    .. note::
+       Unless necessary, please stick with `device="cuda"`, `cpu` training could be
+       extremely slow and inefficient.
     """
     return ft.create_run(
         model=model,
@@ -193,6 +201,7 @@ def fit(
         freeze=freeze,
         output_dim=output_dim,
         cpu=cpu,
+        device=device,
         num_workers=num_workers,
         to_onnx=to_onnx,
     )
@@ -304,7 +313,7 @@ def get_model(
     token: Optional[str] = None,
     batch_size: int = 32,
     select_model: Optional[str] = None,
-    gpu: bool = False,
+    device: str = 'cpu',
     logging_level: str = 'WARNING',
     is_onnx: bool = False,
 ):
@@ -323,7 +332,8 @@ def get_model(
     :param select_model: Finetuner run artifacts might contain multiple models. In
         such cases you can select which model to deploy using this argument. For CLIP
         fine-tuning, you can choose either `clip-vision` or `clip-text`.
-    :param gpu: if specified to True, use cuda device for inference.
+    :param device: Whether to use the CPU, if set to `cuda`, a Nvidia GPU will be used.
+        otherwise use `cpu` to run a cpu job.
     :param logging_level: The executor logging level. See
         https://docs.python.org/3/library/logging.html#logging-levels for available
         options.
@@ -338,10 +348,10 @@ def get_model(
         TorchInferenceEngine,
     )
 
-    if gpu:
+    if device == 'cuda' and is_onnx:
         warnings.warn(
             message='You are using cuda device for ONNX inference, please consider'
-            'call `pip install onnxruntime-gpu` to speed up inference.',
+            'calling `pip install onnxruntime-gpu` to speed up inference.',
             category=RuntimeWarning,
         )
     if is_onnx:
@@ -350,7 +360,7 @@ def get_model(
             token=token,
             batch_size=batch_size,
             select_model=select_model,
-            device='cuda' if gpu else 'cpu',
+            device=device,
             logging_level=logging_level,
         )
     else:
@@ -359,7 +369,7 @@ def get_model(
             token=token,
             batch_size=batch_size,
             select_model=select_model,
-            device='cuda' if gpu else 'cpu',
+            device=device,
             logging_level=logging_level,
         )
     return inference_engine
