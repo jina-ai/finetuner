@@ -1,7 +1,7 @@
 import inspect
-from typing import Dict, Tuple
 
 from stubs import model
+from stubs.model import *  # noqa F401
 
 
 def get_header() -> Tuple[str, ...]:
@@ -20,7 +20,7 @@ def get_row(model_stub) -> Tuple[str, ...]:
     )
 
 
-def list_model_classes() -> Dict[str, model.ModelStubType]:
+def list_model_classes() -> Dict[str, ModelStubType]:
     rv = {}
     members = inspect.getmembers(model, inspect.isclass)
     for name, stub in members:
