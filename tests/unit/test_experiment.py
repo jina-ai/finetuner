@@ -101,7 +101,7 @@ def test_create_run_config():
         DATA: {
             TRAIN_DATA: 'train_data',
             EVAL_DATA: 'eval_data',
-            NUM_WORKERS: None,
+            NUM_WORKERS: 8,
         },
         HYPER_PARAMETERS: {
             LOSS: 'TripletMarginLoss',

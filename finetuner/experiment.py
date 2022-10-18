@@ -211,28 +211,41 @@ class Experiment:
         ]
         model = config.ModelConfig(
             name=model,
-            freeze=kwargs.get(FREEZE),
             output_dim=kwargs.get(OUTPUT_DIM),
-            options=kwargs.get(MODEL_OPTIONS) or {},
-            to_onnx=kwargs.get(ONNX) or False,
         )
+        if kwargs.get(FREEZE):
+            model.freeze = kwargs.get(FREEZE)
+        if kwargs.get(MODEL_OPTIONS):
+            model.options = kwargs.get(MODEL_OPTIONS)
+        if kwargs.get(ONNX):
+            model.to_onnx = kwargs.get(ONNX)
+
         data = config.DataConfig(
             train_data=train_data,
             eval_data=kwargs.get(EVAL_DATA),
-            num_workers=kwargs.get(NUM_WORKERS),
         )
+        if kwargs.get(NUM_WORKERS):
+            data.num_workers = kwargs.get(NUM_WORKERS)
 
         hyper_parameters = config.HyperParametersConfig(
-            loss=kwargs.get(LOSS),
-            optimizer=kwargs.get(OPTIMIZER),
-            optimizer_options=kwargs.get(OPTIMIZER_OPTIONS) or {},
             miner=kwargs.get(MINER),
-            miner_options=kwargs.get(MINER_OPTIONS) or {},
-            batch_size=kwargs.get(BATCH_SIZE),
             learning_rate=kwargs.get(LEARNING_RATE),
-            epochs=kwargs.get(EPOCHS),
-            scheduler_step=kwargs.get(SCHEDULER_STEP),
         )
+        if kwargs.get(LOSS):
+            hyper_parameters.loss = kwargs.get(LOSS)
+        if kwargs.get(OPTIMIZER):
+            hyper_parameters.optimizer = kwargs.get(OPTIMIZER)
+        if kwargs.get(OPTIMIZER_OPTIONS):
+            hyper_parameters.optimizer_options = kwargs.get(OPTIMIZER_OPTIONS)
+        if kwargs.get(MINER_OPTIONS):
+            hyper_parameters.miner_options = kwargs.get(MINER_OPTIONS)
+        if kwargs.get(BATCH_SIZE):
+            hyper_parameters.batch_size = kwargs.get(BATCH_SIZE)
+        if kwargs.get(EPOCHS):
+            epochs = kwargs.get(EPOCHS)
+            hyper_parameters.epochs = epochs
+        if kwargs.get(SCHEDULER_STEP):
+            hyper_parameters.scheduler_step = kwargs.get(SCHEDULER_STEP)
 
         run_config = config.RunConfig(
             model=model,
