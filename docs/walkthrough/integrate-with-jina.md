@@ -63,7 +63,7 @@ please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)
 (integrate-with-jina)=
 ## Fine-tuned model as Executor
 
-Finetuner, being part of the Jina ecosystem, provides a convenient way to use tuned models via [Jina Executors](https://docs.jina.ai/fundamentals/executor/).
+Finetuner, being part of the Jina AI Cloud, provides a convenient way to use tuned models via [Jina Executors](https://docs.jina.ai/fundamentals/executor/).
 
 We've created the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) which can be added in a [Jina Flow](https://docs.jina.ai/fundamentals/flow/) and load any tuned model. 
 More specifically, the executor exposes an `/encode` endpoint that embeds [Documents](https://docarray.jina.ai/fundamentals/document/) using the fine-tuned model.
@@ -118,7 +118,7 @@ executors:
 As you can see, it's super easy! 
 If you did not call `save_artifact`,
 you need to provide the `artifact_id` and `token`.
-`FinetunerExecutor` will automatically pull your model from the cloud storage to the container.
+`FinetunerExecutor` will automatically pull your model from the Jina AI Cloud to the container.
 
 On the other hand,
 if you have saved artifact locally,

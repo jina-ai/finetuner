@@ -27,7 +27,7 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
 
 🔱 **Simple yet powerful**: easy access to 40+ mainstream losses, 10+ optimisers, layer pruning, weights freezing, dimensionality reduction, hard-negative mining, cross-modal model, distributed training. 
 
-☁ **All-in-cloud**: instant training with our free GPU ([Apply here for free!](https://docs.google.com/forms/d/e/1FAIpQLSeoEhJM_TWMgZyEgJBBpf33JddcWQgXHNglNjVMIOvlLjk-4A/viewform)); manage runs, experiments and artifacts on Jina Cloud without worrying about provisioning resources, integration complexity and infrastructure.
+☁ **All-in-cloud**: instant training with our free GPU; manage runs, experiments and artifacts on Jina Cloud without worrying about provisioning resources, integration complexity and infrastructure.
 
 <!-- end elevator-pitch -->
 
@@ -161,7 +161,7 @@ run.save_artifact('resnet-tll')
 
 Specifically, the code snippet describes the following steps:
 
-  * Login to Finetuner ([Get free access here!](https://docs.google.com/forms/d/e/1FAIpQLSeoEhJM_TWMgZyEgJBBpf33JddcWQgXHNglNjVMIOvlLjk-4A/viewform))
+  * Login to Jina AI Cloud.
   * Select backbone model, training and evaluation data for your evaluation callback.
   * Start the cloud run.
   * Monitor the status: check the status and logs of the run.

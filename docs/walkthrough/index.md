@@ -21,7 +21,7 @@ to address this by providing a simple interface, which can be as easy as:
 import finetuner
 from docarray import DocumentArray
 
-# Login to Jina ecosystem
+# Login to Jina AI Cloud
 finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
 
 # Prepare training data

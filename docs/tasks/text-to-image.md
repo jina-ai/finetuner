@@ -10,12 +10,12 @@ For each product the dataset contains a title and images of multiple variants of
 
 
 ## Data
-Our journey starts locally. We have to {ref}`prepare the data and push it to the cloud <create-training-data>` and Finetuner will be able to get the dataset by its name. For this example,
+Our journey starts locally. We have to {ref}`prepare the data and push it to the Jina AI Cloud <create-training-data>` and Finetuner will be able to get the dataset by its name. For this example,
 we already prepared the data, and we'll provide the names of training and evaluation data (`fashion-train-data-clip` and `fashion-eval-data-clip`) directly to Finetuner.
 
 ```{admonition} 
 :class: tip
-We don't require you to push data to the cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
+We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
 ```
 
 
@@ -24,9 +24,9 @@ Currently, we only support `openai/clip-vit-base-patch32` for text to image retr
 
 
 ## Fine-tuning
-From now on, all the action happens in the cloud! 
+From now on, all the action happens in the Jina AI Cloud! 
 
-First you need to {ref}`login to Jina ecosystem <login-to-jina-ecosystem>`:
+First you need to {ref}`login to Jina AI Cloud <login-to-jina-ecosystem>`:
 ```python
 import finetuner
 finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab

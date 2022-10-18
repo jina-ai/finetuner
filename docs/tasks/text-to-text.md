@@ -39,7 +39,7 @@ Supplementary information about the Quora Question Pairs dataset can be found on
 
 ## Data
 
-We will use the [Quora Question Pairs](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) dataset to show-case Finetuner for text to text search. We have already pre-processed this dataset and made it available for you to pull from hubble. Do this as follows:
+We will use the [Quora Question Pairs](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) dataset to show-case Finetuner for text to text search. We have already pre-processed this dataset and made it available for you to pull from Jina AI Cloud. Do this as follows:
 
 ```python
 from docarray import DocumentArray
