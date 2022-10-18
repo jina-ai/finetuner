@@ -57,7 +57,7 @@ run = finetuner.fit(
     batch_size=128,
     epochs=5,
     learning_rate=1e-5,
-    cpu=False,
+    device='cuda',
     callbacks=[
         EvaluationCallback(
             query_data='tll-test-query-da',

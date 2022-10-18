@@ -45,7 +45,7 @@ run = finetuner.fit(
     epochs=5,
     learning_rate= 1e-7,
     loss='CLIPLoss',
-    cpu=False,
+    device='cuda',
 )
 ```
 Let's understand what this piece of code does:
