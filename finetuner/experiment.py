@@ -168,18 +168,16 @@ class Experiment:
         )
 
         device = kwargs.get(DEVICE, 'cuda')
-        if device == 'cuda' and kwargs.get(CPU, True):
-            device = 'gpu'
-            warnings.warn(
-                message='Parameter `cpu=True` will be deprecated from Finetuner 0.7.0,'
-                'please use `device="cpu" or `device="cuda" instead.`',
-                category=DeprecationWarning,
-            )
         if device == 'cuda':
-            device = 'gpu'  # Map cuda to gpu to align with api
+            device = 'gpu'
+            if kwargs.get(CPU, True):
+                warnings.warn(
+                    message='Parameter `cpu` will be deprecated from Finetuner 0.7.0,'
+                    'please use `device="cpu" or `device="cuda" instead.`',
+                    category=DeprecationWarning,
+                )
 
         num_workers = kwargs.get(NUM_WORKERS, 4)
-
         run_info = self._client.create_run(
             run_name=run_name,
             experiment_name=self._name,

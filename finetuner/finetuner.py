@@ -170,7 +170,7 @@ class Finetuner:
         scheduler_step: str = 'batch',
         freeze: bool = False,
         output_dim: Optional[int] = None,
-        cpu: bool = False,
+        cpu: bool = True,
         device: str = 'cuda',
         num_workers: int = 4,
         to_onnx: bool = False,
