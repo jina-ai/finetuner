@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update the open clip model names in the table of the backbones ([#580](https://github.com/jina-ai/finetuner/pull/580)) 
+
 ### Fixed
 
 ### Docs
