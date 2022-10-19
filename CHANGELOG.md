@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix training data name in totally looks like example. ([#576](https://github.com/jina-ai/finetuner/pull/576))
 
+- Embed three tasks as three Google Colab notebooks in documentation. ([#583](https://github.com/jina-ai/finetuner/pull/583))
+
 
 ## [0.6.3] - 2022-10-13
 
