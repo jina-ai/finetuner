@@ -13,3 +13,5 @@ sphinxext-opengraph
 sphinx-sitemap==2.2.0
 sphinx_copybutton==0.4.0
 sphinx_markdown_tables==0.0.16
+nbsphinx==0.8.9
+jupytext==1.14.1

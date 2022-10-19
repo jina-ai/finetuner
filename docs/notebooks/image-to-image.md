@@ -1,58 +1,95 @@
-(image-to-image)=
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .md
+      format_name: markdown
+      format_version: '1.3'
+      jupytext_version: 1.14.1
+  kernelspec:
+    display_name: Python 3
+    name: python3
+---
+
+<!-- #region id="p8jc8EyfruKw" -->
 # Image-to-Image Search via ResNet50
+
+<a href="https://colab.research.google.com/drive/1QuUTy3iVR-kTPljkwplKYaJ-NTCgPEc_?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
+
+Searching visually similar images with image queries is a very popular use-case, so of course Finetuner enables you to accomplish this easily.
 
 This guide will demonstrate how to fine-tune a ResNet model for image to image retrieval.
 
+*Note, please consider switch to GPU/TPU Runtime for faster inference.*
+
+## Install
+<!-- #endregion -->
+
+```python id="VdKH0S0FrwS3"
+# change this after release!
+!pip install 'git+https://github.com/jina-ai/finetuner.git#egg=finetuner[full]'
+```
+
+<!-- #region id="7EliQdGCsdL0" -->
 ## Task
+
 More specifically, we will fine-tune ResNet50 on [Totally Looks Like Dataset](https://sites.google.com/view/totally-looks-like-dataset).
 The dataset consists of 6016 pairs of images (12032 in total).
 
-
-```{admonition} About TTL
-:class: tip
-Totally-Looks-Like is a dataset and benchmark challenging machine-learned representations to reproduce human perception of image similarity. As shown below, each image patch in the left has a corresponding similar image patch in the right. 
-```
-
 The dataset consists of pairs of images, these are the positive pairs. Negative pairs are constructed by taking two different images, i.e. images that are not in the same pair initially. Following this approach, we construct triplets and use the `TripletLoss`.
+
 After fine-tuning, the embeddings of positive pairs are expected to be pulled closer, while the embeddings for negative pairs are expected to be pushed away.
+<!-- #endregion -->
 
-
+<!-- #region id="M1sii3xdtD2y" -->
 ## Data
-Our journey starts locally. We have to {ref}`prepare the data and push it to the cloud <create-training-data>` and Finetuner will be able to get the dataset by its name. For this example,
+
+Our journey starts locally. We have to prepare the data and push it to the cloud and Finetuner will be able to get the dataset by its name. For this example,
 we already prepared the data, and we'll provide the names of training data (`tll-train-da`) directly to Finetuner.
 
-```{admonition} 
-:class: tip
+```{important} 
 We don't require you to push data to the cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
 ```
 
 ```{important}
 When working with Document where images are stored locally, please call `doc.load_uri_to_image_tensor(width=224, height=224)` or another image shape to reduce network transmission and speed up training.
 ```
+<!-- #endregion -->
 
+```python id="L0NfPGbTkNsc"
+import finetuner
+from docarray import DocumentArray, Document
 
+finetuner.notebook_login(force=True)
+```
+
+```python id="ONpXDwFBsqQS"
+train_data = DocumentArray.pull('tll-train-da', show_progress=True)
+query_data = DocumentArray.pull('tll-test-query-da', show_progress=True)
+index_data = DocumentArray.pull('tll-test-index-da', show_progress=True)
+
+train_data.summary()
+```
+
+<!-- #region id="mUoY1jq0klwk" -->
 ## Backbone model
-Now let's see which backbone models we can use. You can see available models either in {ref}`choose backbone <choose-backbone>` section or by calling {meth}`~finetuner.describe_models()`.
+Now let's see which backbone models we can use. You can see available models either in by calling `finetuner.describe_models()`.
 
 
 For this example, we're gonna go with `resnet50`.
+<!-- #endregion -->
 
+<!-- #region id="xA7IIhIOk0h0" -->
 ## Fine-tuning
-From now on, all the action happens in the cloud! 
 
-First, {ref}`log in to the Jina ecosystem <login-to-jina-ecosystem>`:
-```python
-import finetuner
-finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
-```
+Now that we have the training and evaluation datasets loaded as `DocumentArray`s and selected our model, we can start our fine-tuning run.
+<!-- #endregion -->
 
-Now, you can easily start a fine-tuning job with {meth}`~finetuner.fit`:
-```python
+```python id="qGrHfz-2kVC7"
 from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
     model='resnet50',
-    run_name='resnet-tll',
     train_data='tll-train-da',
     batch_size=128,
     epochs=5,
@@ -66,11 +103,10 @@ run = finetuner.fit(
     ],
 )
 ```
+
+<!-- #region id="9gvoWipMlG5P" -->
 Let's understand what this piece of code does:
-```{admonition} finetuner.fit parameters
-:class: tip
-The only required arguments are `model` and `train_data`. We provide default values for others. Here is the [full list of the parameters](../../api/finetuner/#finetuner.fit). 
-```
+
 * As you can see, we have to provide the `model` which we picked before.
 * We also set `run_name` and `description`, which are optional,
 but recommended in order to retrieve your run easily and have some context about it.
@@ -78,33 +114,37 @@ but recommended in order to retrieve your run easily and have some context about
 * We set `TripletMarginLoss`.
 * Additionally, we use {class}`~finetuner.callback.EvaluationCallback` for evaluation.
 * Lastly, we set number of `epochs` and provide a `learning_rate`.
+<!-- #endregion -->
 
-
+<!-- #region id="7ftSOH_olcak" -->
 ## Monitoring
 
 Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()`, the logs - `run.logs()` or `run.stream_logs()`. 
-```python
-print(run.status())
+<!-- #endregion -->
+
+```python id="2k3hTskflI7e"
+# note, the fine-tuning might takes 30~ minutes
+for entry in run.stream_logs():
+    print(entry)
 ```
 
-```bash
-{'status': 'CREATED', 'details': 'Run submitted and awaits execution'}
-```
-
+<!-- #region id="N8O-Ms_El-lV" -->
 Since some runs might take up to several hours, it's important to know how to reconnect to Finetuner and retrieve your runs.
 
 ```python
 import finetuner
-finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
+finetuner.notebook_login()
 
-run = finetuner.get_run('resnet-tll')
+run = finetuner.get_run(run.name)
 ```
 
-You can continue monitoring the runs by checking the status - {meth}`~finetuner.run.Run.status()` or the logs - {meth}`~finetuner.run.Run.logs()`. 
+You can continue monitoring the runs by checking the status - `finetuner.run.Run.status()` or the logs - `finetuner.run.Run.logs()`. 
+<!-- #endregion -->
 
+<!-- #region id="BMpQxydypeZ3" -->
 ## Evaluating
-Currently, we don't have a user-friendly way to get evaluation metrics from the {class}`~finetuner.callback.EvaluationCallback` we initialized previously.
-What you can do for now is to call {meth}`~finetuner.run.Run.logs()` in the end of the run and see evaluation results:
+Currently, we don't have a user-friendly way to get evaluation metrics from the `~finetuner.callback.EvaluationCallback` we initialized previously.
+What you can do for now is to call `~finetuner.run.Run.logs()` in the end of the run and see evaluation results:
 
 ```bash
   Training [5/5] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:00 0:03:15 • loss: 0.003
@@ -124,35 +164,46 @@ What you can do for now is to call {meth}`~finetuner.run.Run.logs()` in the end 
 [16:39:41] INFO     Pushed model artifact ID: '62b33cb0037ad91ca7f20530'                                 __main__.py:231
            INFO     Finished 🚀                                                                          __main__.py:233                           __main__.py:248
 ```
+<!-- #endregion -->
 
+<!-- #region id="0l4e4GrspilM" -->
 ## Saving
 
 After the run has finished successfully, you can download the tuned model on your local machine:
-```python
+
+<!-- #endregion -->
+
+```python id="KzfxhqeCmCa8"
 artifact = run.save_artifact('resnet-model')
 ```
 
+<!-- #region id="gkNHTyBkprQ0" -->
 ## Inference
 
 Now you saved the `artifact` into your host machine,
 let's use the fine-tuned model to encode a new `Document`:
 
-```python
-from docarray import Document, DocumentArray
-
-# Prepare an image to encode, change the placeholder image uri to an image on your machine
-test_da = DocumentArray([Document(uri='my-image.png')])
-# Load model from artifact
-model = finetuner.get_model(artifact=artifact)
-# Encoding will happen in-place in your `DocumentArray`
-finetuner.encode(model=model, data=test_da)
-print(test_da.embeddings)
-```
-
 ```{admonition} Inference with ONNX
-:class: tip
 In case you set `to_onnx=True` when calling `finetuner.fit` function,
 please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)`
 ```
+<!-- #endregion -->
 
-That's it! If you want to integrate the fine-tuned model into your Jina Flow, please check out {ref}`integrated with the Jina ecosystem <integrate-with-jina>`.
+```python id="bOi5qcNLplaI"
+query = DocumentArray([query_data[0]])
+
+model = finetuner.get_model(artifact=artifact, device='cuda')
+
+finetuner.encode(model=model, data=query)
+finetuner.encode(model=model, data=index_data)
+
+assert query.embeddings.shape == (1, 2048)
+```
+
+<!-- #region id="1cC46TQ9pw-H" -->
+And finally you can use the embeded `query` to find top-k visually related images within `index_data` as follows:
+<!-- #endregion -->
+
+```python id="tBYG9OKrpZ36"
+query.match(index_data, limit=10, metric='cosine')
+```
