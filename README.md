@@ -55,7 +55,7 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <td>0.835</td>
     <td>0.967</td>
     <td>:arrow_up_small: 15.8%</td>
-    <td rowspan="2">![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/)</td>
+    <td rowspan="2"><p align=center><a href="https://pypi.org/project/finetuner/"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
   </tr>
   <tr>
     <td>Recall</td>
@@ -70,7 +70,7 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <td>0.102</td>
     <td>0.166</td>
     <td>:arrow_up_small: 62.7%</td>
-    <td rowspan="2">![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/)</td>
+    <td rowspan="2"><p align=center><a href="https://pypi.org/project/finetuner/"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
   </tr>
   <tr>
     <td>Recall</td>
@@ -85,7 +85,7 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <td>0.575</td>
     <td>0.676</td>
     <td>:arrow_up_small: 17.4%</td>
-    <td rowspan="2">![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/)</td>
+    <td rowspan="2"><p align=center><a href="https://pypi.org/project/finetuner/"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
   </tr>
   <tr>
     <td>Recall</td>
