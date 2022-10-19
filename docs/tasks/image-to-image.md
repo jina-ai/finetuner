@@ -18,7 +18,7 @@ After fine-tuning, the embeddings of positive pairs are expected to be pulled cl
 
 
 ## Data
-Our journey starts locally. We have to {ref}`prepare the data and push it to the Jina AI Cloud <create-training-data>` and Finetuner will be able to get the dataset by its name. For this example,
+Our journey starts locally. We have to {ref}`prepare the data and push them to the Jina AI Cloud <create-training-data>` and Finetuner will be able to get the dataset by its name. For this example,
 we already prepared the data, and we'll provide the names of training data (`tll-train-da`) directly to Finetuner.
 
 ```{admonition} 

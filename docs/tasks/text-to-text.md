@@ -102,7 +102,7 @@ Now that we have the training and evaluation datasets loaded as `DocumentArray`s
 import finetuner
 from finetuner.callback import EvaluationCallback
 
-# Make sure to login to Jina Cloud
+# Make sure to login to Jina AI Cloud
 finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
 
 # Start fine-tuning as a run within an experiment

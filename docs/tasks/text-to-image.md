@@ -10,7 +10,7 @@ For each product the dataset contains a title and images of multiple variants of
 
 
 ## Data
-Our journey starts locally. We have to {ref}`prepare the data and push it to the Jina AI Cloud <create-training-data>` and Finetuner will be able to get the dataset by its name. For this example,
+Our journey starts locally. We have to {ref}`prepare the data and push them to the Jina AI Cloud <create-training-data>` and Finetuner will be able to get the dataset by its name. For this example,
 we already prepared the data, and we'll provide the names of training and evaluation data (`fashion-train-data-clip` and `fashion-eval-data-clip`) directly to Finetuner.
 
 ```{admonition} 
