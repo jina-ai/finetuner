@@ -21,7 +21,11 @@ run = finetuner.get_run(
     run_name='YOUR-RUN'
 )
 
-model = finetuner.get_model(run.artifact_id, token=token)
+model = finetuner.get_model(
+    run.artifact_id,
+    token=token,
+    device='cuda', # model will be placed on cpu by default.
+)
 
 da = DocumentArray([Document(text='some text to encode')])
 
@@ -63,7 +67,7 @@ please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)
 (integrate-with-jina)=
 ## Fine-tuned model as Executor
 
-Finetuner, being part of the Jina ecosystem, provides a convenient way to use tuned models via [Jina Executors](https://docs.jina.ai/fundamentals/executor/).
+Finetuner, being part of the Jina AI Cloud, provides a convenient way to use tuned models via [Jina Executors](https://docs.jina.ai/fundamentals/executor/).
 
 We've created the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) which can be added in a [Jina Flow](https://docs.jina.ai/fundamentals/flow/) and load any tuned model. 
 More specifically, the executor exposes an `/encode` endpoint that embeds [Documents](https://docarray.jina.ai/fundamentals/document/) using the fine-tuned model.
@@ -118,7 +122,7 @@ executors:
 As you can see, it's super easy! 
 If you did not call `save_artifact`,
 you need to provide the `artifact_id` and `token`.
-`FinetunerExecutor` will automatically pull your model from the cloud storage to the container.
+`FinetunerExecutor` will automatically pull your model from the Jina AI Cloud to the container.
 
 On the other hand,
 if you have saved artifact locally,
@@ -180,7 +184,12 @@ run = finetuner.get_run(
     run_name='YOUR-RUN'
 )
 
-model = finetuner.get_model(run.artifact_id, token=token, select_model='clip-text')
+model = finetuner.get_model(
+    run.artifact_id,
+    token=token,
+    device='cuda',
+    select_model='clip-text'
+)
 
 da = DocumentArray([Document(text='some text to encode')])
 
@@ -200,7 +209,12 @@ run = finetuner.get_run(
     run_name='YOUR-RUN'
 )
 
-model = finetuner.get_model(run.artifact_id, token=token, select_model='clip-vision')
+model = finetuner.get_model(
+    run.artifact_id,
+    token=token,
+    device='cuda',
+    select_model='clip-vision'
+)
 
 da = DocumentArray([Document(text='~/Pictures/my_img.png')])
 

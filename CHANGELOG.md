@@ -16,7 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Use `device` parameter to replace `cpu` to align with docarray  ([#577](https://github.com/jina-ai/finetuner/pull/577))
+- Convert package to namespace package. ([#581](https://github.com/jina-ai/finetuner/pull/581))
+
+- Use `device` parameter to replace `cpu` to align with docarray. ([#577](https://github.com/jina-ai/finetuner/pull/577))
 
 - Update the open clip model names in the table of the backbones. ([#580](https://github.com/jina-ai/finetuner/pull/580))
 
@@ -25,6 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Docs
 
 - Fix training data name in totally looks like example. ([#576](https://github.com/jina-ai/finetuner/pull/576))
+
+- Unify documentation related to cloud storage as Jina AI Cloud. ([#582](https://github.com/jina-ai/finetuner/pull/582))
 
 
 ## [0.6.3] - 2022-10-13
@@ -236,8 +240,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update README.md with latest developments. ([#448](https://github.com/jina-ai/finetuner/pull/448))
 
-
 ### Fixed
+
 
 ## 0.2.1 - 2022-06-13
 

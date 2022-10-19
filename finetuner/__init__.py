@@ -49,7 +49,7 @@ def list_callbacks() -> Dict[str, callback.CallbackStubType]:
     }
 
 
-def _build_name_stub_map() -> Dict[str, model.ModelStubType]:
+def _build_name_stub_map() -> Dict[str, model_stub.ModelStubType]:
     rv = {}
     members = inspect.getmembers(model_stub, inspect.isclass)
     for name, stub in members:
@@ -412,3 +412,7 @@ def encode(
             inputs = model._move_to_device(inputs)
             output = model.run(inputs)
             batch.embeddings = output.detach().cpu().numpy()
+
+
+# This needs to be at the end of the file
+__import__('pkg_resources').declare_namespace(__name__)
