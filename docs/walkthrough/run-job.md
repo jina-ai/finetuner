@@ -35,7 +35,7 @@ During fine-tuning,
 the run status changes from:
 1. CREATED: the {class}`~finetuner.run.Run` has been created and submitted to the job queue.
 2. STARTED: the job is in progress
-3. FINISHED: the job finished successfully, model has been sent to cloud storage.
+3. FINISHED: the job finished successfully, model has been sent to Jina AI Cloud.
 4. FAILED: the job failed, please check the logs for more details.
 
 ## Advanced configurations

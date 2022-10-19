@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix training data name in totally looks like example. ([#576](https://github.com/jina-ai/finetuner/pull/576))
 
+- Unify documentation related to cloud storage as Jina AI Cloud. ([#582](https://github.com/jina-ai/finetuner/pull/582))
+
 
 ## [0.6.3] - 2022-10-13
 
