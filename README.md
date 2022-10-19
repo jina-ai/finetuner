@@ -44,6 +44,7 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <th>Pretrained</th>
     <th>Finetuned</th>
     <th>Delta</th>
+    <th>Run it!</th>
   </tr>
 </thead>
 <tbody>
@@ -54,12 +55,14 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <td>0.835</td>
     <td>0.967</td>
     <td>:arrow_up_small: 15.8%</td>
+    <td>[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/]</td>
   </tr>
   <tr>
     <td>Recall</td>
     <td>0.915</td>
     <td>0.963</td>
     <td>:arrow_up_small: 5.3%</td>
+    <td>[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/]</td>
   </tr>
   <tr>
     <td rowspan="2">ResNet</td>
@@ -68,6 +71,7 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <td>0.102</td>
     <td>0.166</td>
     <td>:arrow_up_small: 62.7%</td>
+    <td>[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/]</td>
   </tr>
   <tr>
     <td>Recall</td>
