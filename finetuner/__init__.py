@@ -4,8 +4,8 @@ import warnings
 from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
-from stubs import model as model_stub
 
+from finetuner.commons.runner.stubs import model as model_stub
 from finetuner.constants import (
     DEFAULT_FINETUNER_HOST,
     DEFAULT_HUBBLE_REGISTRY,
@@ -339,11 +339,11 @@ def build_model(
     :return: an instance of :class:'TorchInferenceEngine' or
         :class:`ONNXINferenceEngine`.
     """
-    from commons.models.inference import (
+    from finetuner.commons.models.inference import (
         ONNXRuntimeInferenceEngine,
         TorchInferenceEngine,
     )
-    from commons.runner.model import RunnerModel
+    from finetuner.commons.runner.model import RunnerModel
 
     stub = model_stub.get_stub(
         name, select_model=select_model, model_options=model_options
@@ -401,7 +401,7 @@ def get_model(
     ..Note::
       please install finetuner[full] to include all the dependencies.
     """
-    from commons.models.inference import (
+    from finetuner.commons.models.inference import (
         ONNXRuntimeInferenceEngine,
         TorchInferenceEngine,
     )
@@ -452,7 +452,7 @@ def encode(
     ..Note::
       please install "finetuner[full]" to include all the dependencies.
     """
-    from commons.models.inference import ONNXRuntimeInferenceEngine
+    from finetuner.commons.models.inference import ONNXRuntimeInferenceEngine
 
     for batch in data.batch(batch_size):
         if isinstance(model, ONNXRuntimeInferenceEngine):
