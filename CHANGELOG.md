@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `build_model` function to create zero-shot models ([#584](https://github.com/jina-ai/finetuner/pull/584))
+
 - Use latest Hubble with `notebook_login` support. ([#576](https://github.com/jina-ai/finetuner/pull/576))
 
 ### Removed
