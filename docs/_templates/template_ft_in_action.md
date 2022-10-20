@@ -13,7 +13,7 @@ Also provide a brief description of what the task entails, what the dataset look
 
 
 ## Preparing data
-Outline where the data can be found, artifact names in hubble or if relevant, how a user might load their own custom data. 
+Outline where the data can be found, artifact names in Jina AI Cloud or if relevant, how a user might load their own custom data. 
 Add a link to supplementary dataset info, for example as a `See Also` {admonition}.
 If you are outlining how to preprocess a dataset from scratch, use {dropdown} to hide long code snippets.
 

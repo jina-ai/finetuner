@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Use `device` parameter to replace `cpu` to align with docarray. ([#577](https://github.com/jina-ai/finetuner/pull/577))
 
+- Update the open clip model names in the table of the backbones. ([#580](https://github.com/jina-ai/finetuner/pull/580))
+
 ### Fixed
 
 ### Docs
@@ -27,6 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix training data name in totally looks like example. ([#576](https://github.com/jina-ai/finetuner/pull/576))
 
 - Embed three tasks as three Google Colab notebooks in documentation. ([#583](https://github.com/jina-ai/finetuner/pull/583))
+
+- Unify documentation related to cloud storage as Jina AI Cloud. ([#582](https://github.com/jina-ai/finetuner/pull/582))
 
 
 ## [0.6.3] - 2022-10-13
@@ -141,21 +145,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Mark fit as login required. ([#494](https://github.com/jina-ai/finetuner/pull/494))
 
-- Improve documentation according to remarks we received ([524](https://github.com/jina-ai/finetuner/pull/524))
+- Improve documentation according to remarks we received. ([524](https://github.com/jina-ai/finetuner/pull/524))
 
 ### Fixed
 
 - Replace the artifact name from dot to dash. ([#519](https://github.com/jina-ai/finetuner/pull/519))
 
-- Create client automatically if user is already logged in ([#527](https://github.com/jina-ai/finetuner/pull/527))
+- Create client automatically if user is already logged in. ([#527](https://github.com/jina-ai/finetuner/pull/527))
 
 ### Docs
 
 - Fix google analytics Id for docs. ([#499](https://github.com/jina-ai/finetuner/pull/499))
 
-- Update sphinx-markdown-table to v0.0.16 to get [this fix](https://github.com/ryanfox/sphinx-markdown-tables/pull/37) ([#499](https://github.com/jina-ai/finetuner/pull/499))
+- Update sphinx-markdown-table to v0.0.16 to get. [this fix](https://github.com/ryanfox/sphinx-markdown-tables/pull/37) ([#499](https://github.com/jina-ai/finetuner/pull/499))
 
-- Place install instructions in the documentation more prominent ([#518](https://github.com/jina-ai/finetuner/pull/518))
+- Place install instructions in the documentation more prominent. ([#518](https://github.com/jina-ai/finetuner/pull/518))
 
 
 ## [0.5.1] - 2022-07-15
