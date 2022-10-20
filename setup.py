@@ -63,12 +63,12 @@ if __name__ == '__main__':
         setup_requires=_setup_requires,
         install_requires=[
             'docarray[common]>=0.13.31',
-            'finetuner-stubs==0.10.4',
+            'finetuner-stubs==0.10.5.dev1',
             'jina-hubble-sdk==0.21.0',
         ],
         extras_require={
             'full': [
-                'finetuner-commons==0.10.4',
+                'finetuner-commons==0.10.5.dev1',
             ],
             'test': [
                 'black==22.3.0',
