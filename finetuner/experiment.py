@@ -1,3 +1,4 @@
+import warnings
 from dataclasses import fields
 from typing import Any, Dict, List, Optional, Union
 
@@ -13,6 +14,7 @@ from finetuner.constants import (
     CPU,
     CREATED_AT,
     DESCRIPTION,
+    DEVICE,
     EPOCHS,
     EVAL_DATA,
     FREEZE,
@@ -159,14 +161,22 @@ class Experiment:
             **kwargs,
         )
 
-        cpu = kwargs.get(CPU, True)
-        num_workers = kwargs.get(NUM_WORKERS, 4)
+        device = kwargs.get(DEVICE, 'cuda')
+        if device == 'cuda':
+            device = 'gpu'
+            if kwargs.get(CPU, True):
+                warnings.warn(
+                    message='Parameter `cpu` will be deprecated from Finetuner 0.7.0,'
+                    'please use `device="cpu" or `device="cuda" instead.`',
+                    category=DeprecationWarning,
+                )
 
+        num_workers = kwargs.get(NUM_WORKERS, 4)
         run_info = self._client.create_run(
             run_name=run_name,
             experiment_name=self._name,
             run_config=config,
-            device='cpu' if cpu else 'gpu',
+            device=device,
             cpus=num_workers,
             gpus=1,
         )

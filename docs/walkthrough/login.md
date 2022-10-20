@@ -20,8 +20,8 @@ After {meth}`~finetuner.login()` or `~finetuner.notebook_login()` you will see t
 
 ```{admonition} Why do I need to login?
 :class: hint
-Login is required since Finetuner needs to push your {class}`~docarray.array.document.DocumentArray` into the cloud as training data.
+Login is required since Finetuner needs to push your {class}`~docarray.array.document.DocumentArray` into the Jina AI Cloud as training data.
 Once you have successfully logged in, your training data will be linked to your personal user profile and will only be visible to you.
 
-Once fine-tuning is completed, the fine-tuned model will be visible only to you in the cloud.
+Once fine-tuning is completed, the fine-tuned model will be visible only to you in the Jina AI Cloud.
 ```
