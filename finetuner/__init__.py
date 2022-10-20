@@ -321,7 +321,8 @@ def build_model(
     Builds a pre-trained model from a given descriptor.
 
     :param name: Refers to a pre-trained model, see
-        https://finetuner.jina.ai/walkthrough/choose-backbone/ for a list of all
+        https://finetuner.jina.ai/walkthrough/choose-backbone/  or use the
+        :meth:`finetuner.describe_models()` functionfor a list of all
         supported models.
     :param model_options: A dictionary of model specific options.
     :param batch_size: Incoming documents are fed to the graph in batches, both to

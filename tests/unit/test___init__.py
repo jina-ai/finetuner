@@ -1,8 +1,11 @@
 import pytest
-from commons.excepts import NoSuchModel, SelectModelRequired
-from commons.models.inference import ONNXRuntimeInferenceEngine, TorchInferenceEngine
 
 import finetuner
+from finetuner.commons.excepts import NoSuchModel, SelectModelRequired
+from finetuner.commons.models.inference import (
+    ONNXRuntimeInferenceEngine,
+    TorchInferenceEngine,
+)
 
 
 @pytest.mark.parametrize(
@@ -29,12 +32,7 @@ def test_build_model_and_embed(descriptor, select_model, is_onnx, expect_error):
         model = finetuner.build_model(
             name=descriptor, select_model=select_model, is_onnx=is_onnx
         )
-    # encode and check the embeddings
-    model = finetuner.build_model(
-        name='bert-base-cased',
-        select_model=select_model,
-        is_onnx=is_onnx,
-    )
+
     if is_onnx:
         assert isinstance(model, ONNXRuntimeInferenceEngine)
     else:
