@@ -10,32 +10,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Use latest Hubble with `notebook_login` support ([#576](https://github.com/jina-ai/finetuner/pull/576))
+- Use latest Hubble with `notebook_login` support. ([#576](https://github.com/jina-ai/finetuner/pull/576))
 
 ### Removed
 
 ### Changed
 
-- Run configs are made using config classes ([#579](https://github.com/jina-ai/finetuner/pull/579))
+- Use config classes to create run configs. ([#579](https://github.com/jina-ai/finetuner/pull/579))
+
+- Convert package to namespace package. ([#581](https://github.com/jina-ai/finetuner/pull/581))
+
+- Use `device` parameter to replace `cpu` to align with docarray. ([#577](https://github.com/jina-ai/finetuner/pull/577))
+
+- Update the open clip model names in the table of the backbones. ([#580](https://github.com/jina-ai/finetuner/pull/580))
+
 
 ### Fixed
 
 ### Docs
 
-- Fix training data name in totally looks like example ([#576](https://github.com/jina-ai/finetuner/pull/576))
+- Fix training data name in totally looks like example. ([#576](https://github.com/jina-ai/finetuner/pull/576))
+
+- Unify documentation related to cloud storage as Jina AI Cloud. ([#582](https://github.com/jina-ai/finetuner/pull/582))
 
 
 ## [0.6.3] - 2022-10-13
 
 ### Added
 
-- Support advanced CLIP fine-tuning with WiSE-FT ([#571](https://github.com/jina-ai/finetuner/pull/571))
+- Support advanced CLIP fine-tuning with WiSE-FT. ([#571](https://github.com/jina-ai/finetuner/pull/571))
 
 ### Removed
 
 ### Changed
 
-- Change CLIP fine-tuning example in the documentation ([#569](https://github.com/jina-ai/finetuner/pull/569))
+- Change CLIP fine-tuning example in the documentation. ([#569](https://github.com/jina-ai/finetuner/pull/569))
 
 ### Fixed
 
@@ -43,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
-- Add documentation for callbacks ([#567](https://github.com/jina-ai/finetuner/pull/567))
+- Add documentation for callbacks. ([#567](https://github.com/jina-ai/finetuner/pull/567))
 
 
 ## [0.6.2] - 2022-09-29
@@ -58,7 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Freeze hubble client to `0.17.0` . ([#556](https://github.com/jina-ai/finetuner/pull/556))
+- Freeze hubble client to `0.17.0`. ([#556](https://github.com/jina-ai/finetuner/pull/556))
 
 ### Docs
 
@@ -137,21 +146,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Mark fit as login required. ([#494](https://github.com/jina-ai/finetuner/pull/494))
 
-- Improve documentation according to remarks we received ([524](https://github.com/jina-ai/finetuner/pull/524))
+- Improve documentation according to remarks we received. ([524](https://github.com/jina-ai/finetuner/pull/524))
 
 ### Fixed
 
 - Replace the artifact name from dot to dash. ([#519](https://github.com/jina-ai/finetuner/pull/519))
 
-- Create client automatically if user is already logged in ([#527](https://github.com/jina-ai/finetuner/pull/527))
+- Create client automatically if user is already logged in. ([#527](https://github.com/jina-ai/finetuner/pull/527))
 
 ### Docs
 
 - Fix google analytics Id for docs. ([#499](https://github.com/jina-ai/finetuner/pull/499))
 
-- Update sphinx-markdown-table to v0.0.16 to get [this fix](https://github.com/ryanfox/sphinx-markdown-tables/pull/37) ([#499](https://github.com/jina-ai/finetuner/pull/499))
+- Update sphinx-markdown-table to v0.0.16 to get. [this fix](https://github.com/ryanfox/sphinx-markdown-tables/pull/37) ([#499](https://github.com/jina-ai/finetuner/pull/499))
 
-- Place install instructions in the documentation more prominent ([#518](https://github.com/jina-ai/finetuner/pull/518))
+- Place install instructions in the documentation more prominent. ([#518](https://github.com/jina-ai/finetuner/pull/518))
 
 
 ## [0.5.1] - 2022-07-15
@@ -234,8 +243,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update README.md with latest developments. ([#448](https://github.com/jina-ai/finetuner/pull/448))
 
-
 ### Fixed
+
 
 ## 0.2.1 - 2022-06-13
 

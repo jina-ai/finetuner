@@ -18,12 +18,12 @@ After fine-tuning, the embeddings of positive pairs are expected to be pulled cl
 
 
 ## Data
-Our journey starts locally. We have to {ref}`prepare the data and push it to the cloud <create-training-data>` and Finetuner will be able to get the dataset by its name. For this example,
+Our journey starts locally. We have to {ref}`prepare the data and push them to the Jina AI Cloud <create-training-data>` and Finetuner will be able to get the dataset by its name. For this example,
 we already prepared the data, and we'll provide the names of training data (`tll-train-da`) directly to Finetuner.
 
 ```{admonition} 
 :class: tip
-We don't require you to push data to the cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
+We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
 ```
 
 ```{important}
@@ -38,9 +38,9 @@ Now let's see which backbone models we can use. You can see available models eit
 For this example, we're gonna go with `resnet50`.
 
 ## Fine-tuning
-From now on, all the action happens in the cloud! 
+From now on, all the action happens in the Jina AI Cloud! 
 
-First, {ref}`log in to the Jina ecosystem <login-to-jina-ecosystem>`:
+First, {ref}`log in to the Jina AI Cloud <login-to-jina-ecosystem>`:
 ```python
 import finetuner
 finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
@@ -57,7 +57,7 @@ run = finetuner.fit(
     batch_size=128,
     epochs=5,
     learning_rate=1e-5,
-    cpu=False,
+    device='cuda',
     callbacks=[
         EvaluationCallback(
             query_data='tll-test-query-da',
@@ -143,7 +143,7 @@ from docarray import Document, DocumentArray
 # Prepare an image to encode, change the placeholder image uri to an image on your machine
 test_da = DocumentArray([Document(uri='my-image.png')])
 # Load model from artifact
-model = finetuner.get_model(artifact=artifact)
+model = finetuner.get_model(artifact=artifact, device='cuda')
 # Encoding will happen in-place in your `DocumentArray`
 finetuner.encode(model=model, data=test_da)
 print(test_da.embeddings)

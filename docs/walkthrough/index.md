@@ -21,7 +21,7 @@ to address this by providing a simple interface, which can be as easy as:
 import finetuner
 from docarray import DocumentArray
 
-# Login to Jina ecosystem
+# Login to Jina AI Cloud
 finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
 
 # Prepare training data
@@ -58,7 +58,7 @@ Run logs:
            INFO     [__main__] Finished 🚀                       __main__.py:240
 ```
 
-Submitted fine-tuning jobs run efficiently on the Jina Cloud on either CPU or GPU enabled hardware.
+Submitted fine-tuning jobs run efficiently on the Jina AI Cloud on either CPU or GPU enabled hardware.
 
 Finetuner fully owns the complexity of setting up and maintaining the model training infrastructure plus the complexity of delivering SOTA training methods to production use cases.
 

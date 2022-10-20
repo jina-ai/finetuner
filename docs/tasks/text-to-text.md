@@ -39,7 +39,7 @@ Supplementary information about the Quora Question Pairs dataset can be found on
 
 ## Data
 
-We will use the [Quora Question Pairs](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) dataset to show-case Finetuner for text to text search. We have already pre-processed this dataset and made it available for you to pull from hubble. Do this as follows:
+We will use the [Quora Question Pairs](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) dataset to show-case Finetuner for text to text search. We have already pre-processed this dataset and made it available for you to pull from Jina AI Cloud. Do this as follows:
 
 ```python
 from docarray import DocumentArray
@@ -102,7 +102,7 @@ Now that we have the training and evaluation datasets loaded as `DocumentArray`s
 import finetuner
 from finetuner.callback import EvaluationCallback
 
-# Make sure to login to Jina Cloud
+# Make sure to login to Jina AI Cloud
 finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
 
 # Start fine-tuning as a run within an experiment
@@ -115,7 +115,7 @@ run = finetuner.fit(
     learning_rate = 1e-5,
     epochs=3,
     batch_size=128,
-    cpu=False,
+    device='cuda',
     callbacks=[
         EvaluationCallback(
             query_data='quora_query_dev.da',
@@ -210,7 +210,7 @@ from docarray import Document, DocumentArray
 # Prepare some text to encode
 test_da = DocumentArray([Document(text='some text to encode')])
 # Load model from artifact
-model = finetuner.get_model(artifact=artifact)
+model = finetuner.get_model(artifact=artifact, device='cuda')
 # Encoding will happen in-place in your `DocumentArray`
 finetuner.encode(model=model, data=test_da)
 print(test_da.embeddings.shape)
