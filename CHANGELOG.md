@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Run configs are made using config classes ([#579](https://github.com/jina-ai/finetuner/pull/579))
+
 ### Fixed
 
 ### Docs
