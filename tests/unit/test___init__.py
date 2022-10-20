@@ -1,6 +1,6 @@
-import numpy as np
 import pytest
 from commons.excepts import NoSuchModel, SelectModelRequired
+from commons.models.inference import ONNXRuntimeInferenceEngine, TorchInferenceEngine
 
 import finetuner
 
@@ -16,10 +16,7 @@ import finetuner
         ('openai/clip-vit-base-patch16', None, False, SelectModelRequired),
     ],
 )
-def test_build_model_and_embed(
-    get_feature_data, descriptor, select_model, is_onnx, expect_error
-):
-    _, test_da = get_feature_data
+def test_build_model_and_embed(descriptor, select_model, is_onnx, expect_error):
 
     if expect_error:
         with pytest.raises(expect_error):
@@ -38,6 +35,7 @@ def test_build_model_and_embed(
         select_model=select_model,
         is_onnx=is_onnx,
     )
-    finetuner.encode(model=model, data=test_da)
-    assert test_da.embeddings is not None
-    assert isinstance(test_da.embeddings, np.ndarray)
+    if is_onnx:
+        assert isinstance(model, ONNXRuntimeInferenceEngine)
+    else:
+        assert isinstance(model, TorchInferenceEngine)
