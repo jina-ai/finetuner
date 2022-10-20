@@ -310,29 +310,31 @@ def get_token() -> str:
 
 def build_model(
     name: str,
-    is_onnx: bool = False,
     batch_size: int = 32,
     select_model: Optional[str] = None,
     device: str = 'cpu',
     logging_level: str = 'DEBUG',
+    is_onnx: bool = False,
     model_options: Dict[str, Any] = {},
 ):
     """
     Builds a pre-trained model from a given descriptor.
 
-    :param name: Refers to a pre-trained model
-    :param is_onnx: If the model is an onnx model or not. If you call the
-        :meth:`fit` function with `to_onnx=True`, please set this parameter as `True`.
+    :param name: Refers to a pre-trained model, see
+        https://finetuner.jina.ai/walkthrough/choose-backbone/ for a list of all
+        supported models
     :param batch_size: Incoming documents are fed to the graph in batches, both to
         speed-up inference and avoid memory errors. This argument controls the
         number of documents that will be put in each batch.
-    :param select_model: There may be multiple backbone models with the same name.
-        In such cases you can select which model to deploy using this argument.
+    :param select_model: Finetuner run artifacts might contain multiple models. In
+        such cases you can select which model to deploy using this argument. For CLIP
+        fine-tuning, you can choose either `clip-vision` or `clip-text`.
     :param device: Whether to use the CPU, if set to `cuda`, a Nvidia GPU will be used.
         otherwise use `cpu` to run a cpu job.
     :param logging_level: The executor logging level. See
         https://docs.python.org/3/library/logging.html#logging-levels for available
         options.
+    :param is_onnx: The model output format, either `onnx` or `pt`.
     :param model_options: A dictionary of model specific options
     :return: A built pretrained model
     """
