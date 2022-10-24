@@ -396,7 +396,7 @@ def encode(
     """
     from commons.models.inference import ONNXRuntimeInferenceEngine
 
-    for batch in data.batch(batch_size):
+    for batch in data.batch(batch_size, show_progress=True):
         if isinstance(model, ONNXRuntimeInferenceEngine):
             inputs = model._run_data_pipeline(batch)
             inputs = model._flatten_inputs(inputs)
