@@ -313,7 +313,7 @@ def build_model(
     model_options: Dict[str, Any] = {},
     batch_size: int = 32,
     select_model: Optional[str] = None,
-    device: str = 'cpu',
+    device: Optional[str] = None,
     logging_level: str = 'DEBUG',
     is_onnx: bool = False,
 ):
@@ -340,11 +340,16 @@ def build_model(
     :return: an instance of :class:'TorchInferenceEngine' or
         :class:`ONNXINferenceEngine`.
     """
+    import torch
+
     from finetuner.commons.models.inference import (
         ONNXRuntimeInferenceEngine,
         TorchInferenceEngine,
     )
     from finetuner.commons.runner.model import RunnerModel
+
+    if not device:
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     stub = model_stub.get_stub(
         name, select_model=select_model, model_options=model_options
