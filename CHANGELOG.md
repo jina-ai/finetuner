@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update the open clip model names in the table of the backbones. ([#580](https://github.com/jina-ai/finetuner/pull/580))
 
+- Show progress while encode batches of documents. ([#586](https://github.com/jina-ai/finetuner/pull/586))
+
+- Change `device` as an optional parameter when calling `get_model`. ([#586](https://github.com/jina-ai/finetuner/pull/586))
+
 ### Fixed
 
 ### Docs

@@ -313,7 +313,7 @@ def get_model(
     token: Optional[str] = None,
     batch_size: int = 32,
     select_model: Optional[str] = None,
-    device: str = 'cpu',
+    device: Optional[str] = None,
     logging_level: str = 'WARNING',
     is_onnx: bool = False,
 ):
@@ -343,10 +343,14 @@ def get_model(
     ..Note::
       please install finetuner[full] to include all the dependencies.
     """
+    import torch
     from commons.models.inference import (
         ONNXRuntimeInferenceEngine,
         TorchInferenceEngine,
     )
+
+    if not device:
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     if device == 'cuda' and is_onnx:
         warnings.warn(
@@ -396,7 +400,7 @@ def encode(
     """
     from commons.models.inference import ONNXRuntimeInferenceEngine
 
-    for batch in data.batch(batch_size):
+    for batch in data.batch(batch_size, show_progress=True):
         if isinstance(model, ONNXRuntimeInferenceEngine):
             inputs = model._run_data_pipeline(batch)
             inputs = model._flatten_inputs(inputs)
