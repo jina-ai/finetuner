@@ -69,7 +69,7 @@ please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)
 
 Finetuner, being part of the Jina AI Cloud, provides a convenient way to use tuned models via [Jina Executors](https://docs.jina.ai/fundamentals/executor/).
 
-We've created the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) which can be added in a [Jina Flow](https://docs.jina.ai/fundamentals/flow/) and load any tuned model. 
+We've created the [`FinetunerExecutor`](https://cloud.jina.ai/executor/13dzxycc) which can be added in a [Jina Flow](https://docs.jina.ai/fundamentals/flow/) and load any tuned model. 
 More specifically, the executor exposes an `/encode` endpoint that embeds [Documents](https://docarray.jina.ai/fundamentals/document/) using the fine-tuned model.
 
 Loading a tuned model is simple! You just need to provide a few parameters under the `uses_with` argument when adding the `FinetunerExecutor` to the [Flow]((https://docs.jina.ai/fundamentals/flow/)).
@@ -155,7 +155,7 @@ Text of the returned document: some text to encode
 Shape of the embedding: (768,)
 ```
 
-In order to see what other options you can specify when initializing the executor, please go to the [`FinetunerExecutor`](https://hub.jina.ai/executor/13dzxycc) page and click on `Arguments` on the top-right side.
+In order to see what other options you can specify when initializing the executor, please go to the [`FinetunerExecutor`](https://cloud.jina.ai/executor/13dzxycc) page and click on `Arguments` on the top-right side.
 
 ```{admonition} FinetunerExecutor parameters
 :class: tip
