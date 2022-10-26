@@ -37,6 +37,7 @@ def test_runs(finetuner_mocker, get_feature_data):
         learning_rate=1e-3,
         batch_size=10,
         epochs=2,
+        device='cpu',
     )
 
     # get the first run
@@ -56,6 +57,7 @@ def test_runs(finetuner_mocker, get_feature_data):
         learning_rate=1e-3,
         batch_size=10,
         epochs=1,
+        device='cpu',
     )
 
     # list all runs
@@ -100,6 +102,7 @@ def test_create_run_and_save_model(
         epochs=2,
         experiment_name=experiment_name,
         to_onnx=use_onnx,
+        device='cpu',
     )
     status = run.status()[STATUS]
     while status not in [FAILED, FINISHED]:

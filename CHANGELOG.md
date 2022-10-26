@@ -16,8 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Convert package to namespace package. ([#581](https://github.com/jina-ai/finetuner/pull/581))
-
 - Use `device` parameter to replace `cpu` to align with docarray. ([#577](https://github.com/jina-ai/finetuner/pull/577))
 
 - Update the open clip model names in the table of the backbones. ([#580](https://github.com/jina-ai/finetuner/pull/580))
