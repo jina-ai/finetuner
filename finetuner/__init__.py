@@ -6,7 +6,6 @@ from typing import Any, Dict, List, Optional, Union
 from _finetuner.runner.stubs import model as model_stub
 from docarray import DocumentArray
 
-from finetuner.commons.runner.stubs import model as model_stub
 from finetuner.constants import (
     DEFAULT_FINETUNER_HOST,
     DEFAULT_HUBBLE_REGISTRY,
@@ -342,12 +341,11 @@ def build_model(
         :class:`ONNXINferenceEngine`.
     """
     import torch
-
-    from finetuner.commons.models.inference import (
+    from _finetuner.models.inference import (
         ONNXRuntimeInferenceEngine,
         TorchInferenceEngine,
     )
-    from finetuner.commons.runner.model import RunnerModel
+    from _finetuner.runner.model import RunnerModel
 
     if not device:
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -408,7 +406,7 @@ def get_model(
     ..Note::
       please install finetuner[full] to include all the dependencies.
     """
-    
+
     import torch
     from _finetuner.models.inference import (
         ONNXRuntimeInferenceEngine,

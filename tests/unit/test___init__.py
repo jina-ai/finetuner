@@ -1,11 +1,8 @@
 import pytest
+from _finetuner.excepts import SelectModelRequired
+from _finetuner.models.inference import ONNXRuntimeInferenceEngine, TorchInferenceEngine
 
 import finetuner
-from finetuner.commons.excepts import NoSuchModel, SelectModelRequired
-from finetuner.commons.models.inference import (
-    ONNXRuntimeInferenceEngine,
-    TorchInferenceEngine,
-)
 
 
 @pytest.mark.parametrize(
@@ -15,8 +12,8 @@ from finetuner.commons.models.inference import (
         ('bert-base-cased', None, True, None),
         ('openai/clip-vit-base-patch16', 'clip-text', False, None),
         ('openai/clip-vit-base-patch16', 'clip-vision', False, None),
-        ('not a real model', None, False, NoSuchModel),
         ('openai/clip-vit-base-patch16', None, False, SelectModelRequired),
+        ('MADE UP MODEL', None, False, ValueError),
     ],
 )
 def test_build_model_and_embed(descriptor, select_model, is_onnx, expect_error):
@@ -33,7 +30,7 @@ def test_build_model_and_embed(descriptor, select_model, is_onnx, expect_error):
             name=descriptor, select_model=select_model, is_onnx=is_onnx
         )
 
-    if is_onnx:
-        assert isinstance(model, ONNXRuntimeInferenceEngine)
-    else:
-        assert isinstance(model, TorchInferenceEngine)
+        if is_onnx:
+            assert isinstance(model, ONNXRuntimeInferenceEngine)
+        else:
+            assert isinstance(model, TorchInferenceEngine)
