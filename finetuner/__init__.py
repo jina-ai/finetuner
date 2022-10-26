@@ -310,11 +310,10 @@ def get_token() -> str:
 
 def build_model(
     name: str,
-    model_options: Dict[str, Any] = {},
+    model_options: Optional[Dict[str, Any]] = None,
     batch_size: int = 32,
     select_model: Optional[str] = None,
     device: Optional[str] = None,
-    logging_level: str = 'DEBUG',
     is_onnx: bool = False,
 ):
     """
@@ -333,9 +332,6 @@ def build_model(
         fine-tuning, you can choose either `clip-vision` or `clip-text`.
     :param device: Whether to use the CPU, if set to `cuda`, a Nvidia GPU will be used.
         otherwise use `cpu` to run a cpu job.
-    :param logging_level: The executor logging level. See
-        https://docs.python.org/3/library/logging.html#logging-levels for available
-        options.
     :param is_onnx: The model output format, either `onnx` or `pt`.
     :return: an instance of :class:'TorchInferenceEngine' or
         :class:`ONNXINferenceEngine`.
@@ -351,23 +347,21 @@ def build_model(
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     stub = model_stub.get_stub(
-        name, select_model=select_model, model_options=model_options
+        name, select_model=select_model, model_options=model_options or {}
     )
 
-    runner = RunnerModel(stub=stub)
+    model = RunnerModel(stub=stub)
     if not is_onnx:
         return TorchInferenceEngine(
-            artifact=runner,
+            artifact=model,
             batch_size=batch_size,
             device=device,
-            logging_level=logging_level,
         )
     else:
         return ONNXRuntimeInferenceEngine(
-            artifact=runner,
+            artifact=model,
             batch_size=batch_size,
             device=device,
-            logging_level=logging_level,
         )
 
 
