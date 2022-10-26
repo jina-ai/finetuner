@@ -1,7 +1,7 @@
 import inspect
 import os
 import warnings
-from typing import Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from _finetuner.runner.stubs import model as model_stub
 from docarray import DocumentArray
@@ -26,6 +26,9 @@ from finetuner.console import print_model_table
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
 from finetuner.model import list_model_classes
+
+if TYPE_CHECKING:
+    from _finetuner.models.inference import InferenceEngine
 
 ft = Finetuner()
 
@@ -315,7 +318,7 @@ def build_model(
     select_model: Optional[str] = None,
     device: Optional[str] = None,
     is_onnx: bool = False,
-):
+) -> 'InferenceEngine':
     """
     Builds a pre-trained model from a given descriptor.
 
@@ -373,7 +376,7 @@ def get_model(
     device: Optional[str] = None,
     logging_level: str = 'WARNING',
     is_onnx: bool = False,
-):
+) -> 'InferenceEngine':
     """Re-build the model based on the model inference session with ONNX.
 
     :param artifact: Specify a finetuner run artifact. Can be a path to a local

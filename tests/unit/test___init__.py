@@ -1,6 +1,8 @@
+import numpy as np
 import pytest
 from _finetuner.excepts import SelectModelRequired
 from _finetuner.models.inference import ONNXRuntimeInferenceEngine, TorchInferenceEngine
+from docarray import Document, DocumentArray
 
 import finetuner
 
@@ -16,7 +18,7 @@ import finetuner
         ('MADE UP MODEL', None, False, ValueError),
     ],
 )
-def test_build_model_and_embed(descriptor, select_model, is_onnx, expect_error):
+def test_build_model(descriptor, select_model, is_onnx, expect_error):
 
     if expect_error:
         with pytest.raises(expect_error):
@@ -34,3 +36,14 @@ def test_build_model_and_embed(descriptor, select_model, is_onnx, expect_error):
             assert isinstance(model, ONNXRuntimeInferenceEngine)
         else:
             assert isinstance(model, TorchInferenceEngine)
+
+
+@pytest.mark.parametrize('is_onnx', [True, False])
+def test_build_model_embedding(is_onnx):
+
+    model = finetuner.build_model(name="bert-base-cased", is_onnx=is_onnx)
+
+    da = DocumentArray(Document(text="TEST TEXT"))
+    finetuner.encode(model=model, data=da)
+    assert da.embeddings is not None
+    assert isinstance(da.embeddings, np.ndarray)
