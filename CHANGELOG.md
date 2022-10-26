@@ -16,9 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Use config classes to create run configs. ([#579](https://github.com/jina-ai/finetuner/pull/579))
-
-- Convert package to namespace package. ([#581](https://github.com/jina-ai/finetuner/pull/581))
+- Use the run config model from `finetuner-stubs` to create the run config. ([#579](https://github.com/jina-ai/finetuner/pull/579))
 
 - Use `device` parameter to replace `cpu` to align with docarray. ([#577](https://github.com/jina-ai/finetuner/pull/577))
 
@@ -27,7 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Show progress while encode batches of documents. ([#586](https://github.com/jina-ai/finetuner/pull/586))
 
 - Change `device` as an optional parameter when calling `get_model`. ([#586](https://github.com/jina-ai/finetuner/pull/586))
-
 
 ### Fixed
 
