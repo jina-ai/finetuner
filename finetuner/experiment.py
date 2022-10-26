@@ -2,8 +2,8 @@ import warnings
 from dataclasses import fields
 from typing import Any, Dict, List, Optional, Union
 
+from _finetuner.runner.stubs import config
 from docarray import DocumentArray
-from stubs import config
 
 from finetuner.callback import EvaluationCallback
 from finetuner.client import FinetunerV1Client
