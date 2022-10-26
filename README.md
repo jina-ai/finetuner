@@ -99,7 +99,7 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
 
 ## Install
 
-Make sure you have Python 3.8+ installed.
+Make sure you have Python 3.7+ installed.
 Finetuner can be installed via pip by executing:
 
 ```bash

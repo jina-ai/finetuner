@@ -27,13 +27,13 @@ if __name__ == '__main__':
         zip_safe=False,
         setup_requires=['setuptools>=18.0', 'wheel'],
         install_requires=[
-            'docarray[common]==0.17.0',
-            'finetuner-stubs==0.10.5.dev4',
+            'docarray[common]>=0.18.0',
+            'finetuner-stubs==0.10.5.dev5',
             'jina-hubble-sdk==0.22.4',
         ],
         extras_require={
             'full': [
-                'finetuner-commons==0.10.5.dev4',
+                'finetuner-commons==0.10.5.dev5',
             ],
             'test': [
                 'black==22.3.0',
@@ -44,12 +44,13 @@ if __name__ == '__main__':
                 'pytest-mock==3.7.0',
             ],
         },
-        python_requires='>=3.8.0',
+        python_requires='>=3.7.0',
         classifiers=[
             'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Developers',
             'Intended Audience :: Education',
             'Intended Audience :: Science/Research',
+            'Programming Language :: Python :: 3.7',
             'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9',
             'License :: OSI Approved :: Apache Software License',

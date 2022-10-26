@@ -14,8 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- Remove support for Python3.7. ([#589](https://github.com/jina-ai/finetuner/pull/589))
-
 ### Changed
 
 - Use `device` parameter to replace `cpu` to align with docarray. ([#577](https://github.com/jina-ai/finetuner/pull/577))
