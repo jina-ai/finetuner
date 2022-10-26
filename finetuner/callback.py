@@ -1,1 +1,1 @@
-from stubs.callback import *  # noqa F401
+from _finetuner.runner.stubs.callback import *  # noqa F401

@@ -1,7 +1,5 @@
-import inspect
-
-from stubs import model
-from stubs.model import *  # noqa F401
+from _finetuner.runner.stubs import model
+from _finetuner.runner.stubs.model import *  # noqa F401
 
 
 def get_header() -> Tuple[str, ...]:

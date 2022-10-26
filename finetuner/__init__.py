@@ -3,8 +3,8 @@ import os
 import warnings
 from typing import Any, Dict, List, Optional, Union
 
+from _finetuner.runner.stubs import model as model_stub
 from docarray import DocumentArray
-from stubs import model as model_stub
 
 from finetuner.constants import (
     DEFAULT_FINETUNER_HOST,
@@ -344,7 +344,7 @@ def get_model(
       please install finetuner[full] to include all the dependencies.
     """
     import torch
-    from commons.models.inference import (
+    from _finetuner.models.inference import (
         ONNXRuntimeInferenceEngine,
         TorchInferenceEngine,
     )
@@ -398,7 +398,7 @@ def encode(
     ..Note::
       please install "finetuner[full]" to include all the dependencies.
     """
-    from commons.models.inference import ONNXRuntimeInferenceEngine
+    from _finetuner.models.inference import ONNXRuntimeInferenceEngine
 
     for batch in data.batch(batch_size, show_progress=True):
         if isinstance(model, ONNXRuntimeInferenceEngine):
@@ -416,7 +416,3 @@ def encode(
             inputs = model._move_to_device(inputs)
             output = model.run(inputs)
             batch.embeddings = output.detach().cpu().numpy()
-
-
-# This needs to be at the end of the file
-__import__('pkg_resources').declare_namespace(__name__)

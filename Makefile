@@ -34,12 +34,9 @@ help:
 
 ## Delete temp operational stuff like artifacts, test outputs etc
 clean:
-	rm -rf .mypy_cache/
-	rm -rf .pytest_cache/
-	rm -f .coverage
-	rm -f .coverage.*
-	rm -rf docs/_build/
-	rm -rf htmlcov/
+	rm -rf .mypy_cache/ .pytest_cache/
+	rm -f .coverage .coverage.*
+	rm -rf *.egg-info/ build/ docs/_build/ htmlcov/
 
 
 # --------------------------------------------------------- Environment related targets
@@ -58,10 +55,12 @@ pre-commit:
 ## Install package requirements
 install:
 	pip install --no-cache-dir -e ".[full]"
+	rm -rf *.egg-info/ build/
 
 ## Install dev requirements
 install-dev:
 	pip install --no-cache-dir -e ".[test]"
+	rm -rf *.egg-info/ build/
 
 ## Install docs requirements
 install-docs:
