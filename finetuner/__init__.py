@@ -3,6 +3,7 @@ import os
 import warnings
 from typing import Any, Dict, List, Optional, Union
 
+from _finetuner.runner.stubs import model as model_stub
 from docarray import DocumentArray
 
 from finetuner.commons.runner.stubs import model as model_stub
@@ -377,7 +378,7 @@ def get_model(
     token: Optional[str] = None,
     batch_size: int = 32,
     select_model: Optional[str] = None,
-    device: str = 'cpu',
+    device: Optional[str] = None,
     logging_level: str = 'WARNING',
     is_onnx: bool = False,
 ):
@@ -407,10 +408,15 @@ def get_model(
     ..Note::
       please install finetuner[full] to include all the dependencies.
     """
-    from finetuner.commons.models.inference import (
+    
+    import torch
+    from _finetuner.models.inference import (
         ONNXRuntimeInferenceEngine,
         TorchInferenceEngine,
     )
+
+    if not device:
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     if device == 'cuda' and is_onnx:
         warnings.warn(
@@ -458,9 +464,10 @@ def encode(
     ..Note::
       please install "finetuner[full]" to include all the dependencies.
     """
-    from finetuner.commons.models.inference import ONNXRuntimeInferenceEngine
 
-    for batch in data.batch(batch_size):
+    from _finetuner.models.inference import ONNXRuntimeInferenceEngine
+
+    for batch in data.batch(batch_size, show_progress=True):
         if isinstance(model, ONNXRuntimeInferenceEngine):
             inputs = model._run_data_pipeline(batch)
             inputs = model._flatten_inputs(inputs)
@@ -476,7 +483,3 @@ def encode(
             inputs = model._move_to_device(inputs)
             output = model.run(inputs)
             batch.embeddings = output.detach().cpu().numpy()
-
-
-# This needs to be at the end of the file
-__import__('pkg_resources').declare_namespace(__name__)

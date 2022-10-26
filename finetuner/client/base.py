@@ -15,7 +15,7 @@ from finetuner.constants import (
     TOKEN_PREFIX,
     UTF_8,
 )
-from finetuner.exception import FinetunerServerError
+from finetuner.excepts import FinetunerServerError
 
 
 class _BaseClient:
