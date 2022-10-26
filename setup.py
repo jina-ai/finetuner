@@ -28,12 +28,12 @@ if __name__ == '__main__':
         setup_requires=['setuptools>=18.0', 'wheel'],
         install_requires=[
             'docarray[common]==0.17.0',
-            'finetuner-stubs==0.10.5.dev3',
+            'finetuner-stubs==0.10.5.dev4',
             'jina-hubble-sdk==0.22.4',
         ],
         extras_require={
             'full': [
-                'finetuner-commons==0.10.5.dev3',
+                'finetuner-commons==0.10.5.dev4',
             ],
             'test': [
                 'black==22.3.0',
