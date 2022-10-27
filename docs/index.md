@@ -31,9 +31,9 @@ walkthrough/index
 :caption: Finetuning Tasks
 :hidden:
 
-tasks/text-to-text
-tasks/image-to-image
-tasks/text-to-image
+notebooks/text_to_text
+notebooks/image_to_image
+notebooks/text_to_image
 ```
 
 ```{toctree}

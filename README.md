@@ -44,6 +44,7 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <th>Pretrained</th>
     <th>Finetuned</th>
     <th>Delta</th>
+    <th>Run it!</th>
   </tr>
 </thead>
 <tbody>
@@ -54,6 +55,7 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <td>0.835</td>
     <td>0.967</td>
     <td>:arrow_up_small: 15.8%</td>
+    <td rowspan="2"><p align=center><a href="https://colab.research.google.com/drive/1Ui3Gw3ZL785I7AuzlHv3I0-jTvFFxJ4_?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
   </tr>
   <tr>
     <td>Recall</td>
@@ -68,6 +70,7 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <td>0.102</td>
     <td>0.166</td>
     <td>:arrow_up_small: 62.7%</td>
+    <td rowspan="2"><p align=center><a href="https://colab.research.google.com/drive/1QuUTy3iVR-kTPljkwplKYaJ-NTCgPEc_?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
   </tr>
   <tr>
     <td>Recall</td>
@@ -82,6 +85,7 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <td>0.575</td>
     <td>0.676</td>
     <td>:arrow_up_small: 17.4%</td>
+    <td rowspan="2"><p align=center><a href="https://colab.research.google.com/drive/1yKnmy2Qotrh3OhgwWRsMWPFwOSAecBxg?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
   </tr>
   <tr>
     <td>Recall</td>
@@ -185,10 +189,10 @@ da.summary()
 ### Next steps
 
 - Take the [walkthrough](https://finetuner.jina.ai/walkthrough/) and submit your first fine-tuning job.
-- Try on different search tasks:
-  - [Text-to-Text Search via BERT](https://finetuner.jina.ai/tasks/text-to-text/)
-  - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/tasks/image-to-image/)
-  - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/tasks/text-to-image/)
+- Try out different search tasks:
+  - [Text-to-Text Search via BERT](https://finetuner.jina.ai/notebooks/text_to_text/)
+  - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/notebooks/image_to_image/)
+  - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/notebooks/text_to_image/)
 
 Intrigued? That's only scratching the surface of what Finetuner is capable of. [Read our docs to learn more](https://finetuner.jina.ai/).
 

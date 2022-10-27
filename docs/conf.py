@@ -91,6 +91,7 @@ extensions = [
     'myst_parser',
     'sphinx_design',
     'sphinx_inline_tabs',
+    'nbsphinx',
 ]
 
 # intersphinx references
@@ -167,6 +168,9 @@ linkcheck_ignore = [
 linkcheck_timeout = 20
 linkcheck_retries = 2
 linkcheck_anchors = False
+
+nbsphinx_allow_errors = True
+nbsphinx_execute = 'never'
 
 ogp_site_url = 'https://finetuner.jina.ai/'
 ogp_image = 'https://finetuner.jina.ai/_static/banner.png'
@@ -247,6 +251,8 @@ def setup(app):
 
     app.add_config_value(
         name='server_address',
-        default=os.getenv('JINA_DOCSBOT_SERVER', 'https://jina-ai-finetuner.docsqa.jina.ai'),
+        default=os.getenv(
+            'JINA_DOCSBOT_SERVER', 'https://jina-ai-finetuner.docsqa.jina.ai'
+        ),
         rebuild='',
     )
