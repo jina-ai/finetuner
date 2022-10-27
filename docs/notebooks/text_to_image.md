@@ -16,13 +16,13 @@ jupyter:
 
 <a href="https://colab.research.google.com/drive/1yKnmy2Qotrh3OhgwWRsMWPFwOSAecBxg?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
-Traditionally, searching images from text (text-image-retrieval) rely heavily on human annotations, this is commonly referred as *Text/Tag based Image Retrieval (TBIR)*.
+Traditionally, searching images from text (text-image-retrieval) relies heavily on human annotations, this is commonly referred to as *Text/Tag based Image Retrieval (TBIR)*.
 
-The [OpenAI CLIP](https://github.com/openai/CLIP) model maps the dense vector extracted from text and image into the same semantic space and produced a strong zero-shot model to mearesure the similarity between text and images.
+The [OpenAI CLIP](https://github.com/openai/CLIP) model maps the dense vectors extracted from text and image into the same semantic space and produces a strong zero-shot model to measure the similarity between text and images.
 
 This guide will showcase fine-tuning a `CLIP` model for text to image retrieval.
 
-*Note, please consider switch to GPU/TPU Runtime for faster inference.*
+*Note, please consider switching to GPU/TPU Runtime for faster inference.*
 
 ## Install
 <!-- #endregion -->
@@ -94,13 +94,13 @@ Let's understand what this piece of code does:
 
 * We start with providing `model`, names of training and evaluation data.
 * We also provide some hyper-parameters such as number of `epochs` and a `learning_rate`.
-* We use `CLIPLoss` to optimize CLIP model.
+* We use `CLIPLoss` to optimize the CLIP model.
 <!-- #endregion -->
 
 <!-- #region id="qKv3VcMKyG8d" -->
 ## Monitoring
 
-Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()`, the logs - `run.logs()` or `run.stream_logs()`. 
+Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()` and - the logs - `run.logs()` or - `run.stream_logs()`. 
 <!-- #endregion -->
 
 ```python id="JX45y-2fxs4L"
@@ -130,7 +130,7 @@ Currently, we don't have a user-friendly way to get evaluation metrics from the 
            INFO     Done ✨                                                                              __main__.py:219
            INFO     Saving fine-tuned models ...                                                         __main__.py:222
            INFO     Saving model 'model' in /usr/src/app/tuned-models/model ...                          __main__.py:233
-           INFO     Pushing saved model to Hubble ...                                                    __main__.py:240
+           INFO     Pushing saved model to Jina AI Cloud ...                                                    __main__.py:240
 [10:38:14] INFO     Pushed model artifact ID: '62a1af491597c219f6a330fe'                                 __main__.py:246
            INFO     Finished 🚀                                                                          __main__.py:248
 ```
@@ -220,7 +220,7 @@ As was introduced in the paper:
 
 Finetuner allows you to apply WiSE-FT easily,
 all you need to do is use the `WiSEFTCallback`.
-Finetuner will trigger the callback when fine-tuning job finished and merge the weights between the pre-trained model and the fine-tuned model:
+Finetuner will trigger the callback when the fine-tuning job is finished and merge the weights between the pre-trained model and the fine-tuned model:
 
 ```diff
 from finetuner.callback import WiSEFTCallback

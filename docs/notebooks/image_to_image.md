@@ -16,11 +16,11 @@ jupyter:
 
 <a href="https://colab.research.google.com/drive/1QuUTy3iVR-kTPljkwplKYaJ-NTCgPEc_?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
-Searching visually similar images with image queries is a very popular use-case. However, using pre-trained models don’t deliver the best results – the models are trained on general data that lacks the particularities of your specific task. Here's where Finetuner comes! It enables you to accomplish this easily.
+Searching visually similar images with image queries is a very popular use-case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here's where Finetuner comes in! It enables you to accomplish this easily.
 
 This guide will demonstrate how to fine-tune a ResNet model for image to image retrieval.
 
-*Note, please consider switch to GPU/TPU Runtime for faster inference.*
+*Note, please consider switching to GPU/TPU Runtime for faster inference.*
 
 ## Install
 <!-- #endregion -->
@@ -72,7 +72,7 @@ train_data.summary()
 
 <!-- #region id="mUoY1jq0klwk" -->
 ## Backbone model
-Now let's see which backbone models we can use. You can see available models either in by calling `finetuner.describe_models()`.
+Now let's see which backbone models we can use. You can see available models by calling `finetuner.describe_models()`.
 
 
 For this example, we're gonna go with `resnet50`.
@@ -112,13 +112,13 @@ but recommended in order to retrieve your run easily and have some context about
 * Furthermore, we had to provide names of the `train_data`.
 * We set `TripletMarginLoss`.
 * Additionally, we use {class}`~finetuner.callback.EvaluationCallback` for evaluation.
-* Lastly, we set number of `epochs` and provide a `learning_rate`.
+* Lastly, we set the number of `epochs` and provide a `learning_rate`.
 <!-- #endregion -->
 
 <!-- #region id="7ftSOH_olcak" -->
 ## Monitoring
 
-Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()`, the logs - `run.logs()` or `run.stream_logs()`. 
+Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()` - and the logs - `run.logs()` or `run.stream_logs()`. 
 <!-- #endregion -->
 
 ```python id="2k3hTskflI7e"
@@ -159,7 +159,7 @@ What you can do for now is to call `~finetuner.run.Run.logs()` in the end of the
            INFO     Done ✨                                                                              __main__.py:204
            INFO     Saving fine-tuned models ...                                                         __main__.py:207
            INFO     Saving model 'model' in /usr/src/app/tuned-models/model ...                          __main__.py:218
-           INFO     Pushing saved model to Hubble ...                                                    __main__.py:225
+           INFO     Pushing saved model to Jina AI Cloud ...                                                    __main__.py:225
 [16:39:41] INFO     Pushed model artifact ID: '62b33cb0037ad91ca7f20530'                                 __main__.py:231
            INFO     Finished 🚀                                                                          __main__.py:233                           __main__.py:248
 ```

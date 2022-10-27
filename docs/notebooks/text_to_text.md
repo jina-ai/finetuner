@@ -16,11 +16,11 @@ jupyter:
 
 <a href="https://colab.research.google.com/drive/1Ui3Gw3ZL785I7AuzlHv3I0-jTvFFxJ4_?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
-Searching large amounts of text documents with text queries is a very popular use-case, so of course Finetuner enables you to accomplish this easily.
+Searching large amounts of text documents with text queries is a very popular use-case and Finetuner enables you to accomplish this easily.
 
 This guide will lead you through an example use-case to show you how Finetuner can be used for text to text retrieval (Dense Retrieval).
 
-*Note, please consider switch to GPU/TPU Runtime for faster inference.*
+*Note, please consider switching to GPU/TPU Runtime for faster inference.*
 
 ## Install
 <!-- #endregion -->
@@ -57,7 +57,7 @@ We can fine-tune BERT so that questions that are duplicates of each other are re
 <!-- #region id="SfR6g0E_8fOz" -->
 ## Data
 
-We will use the [Quora Question Pairs](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) dataset to show-case Finetuner for text to text search. We have already pre-processed this dataset and made it available for you to pull from hubble. Do this as follows:
+We will use the [Quora Question Pairs](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) dataset to show-case Finetuner for text to text search. We have already pre-processed this dataset and made it available for you to pull from Jina AI Cloud. Do this as follows:
 <!-- #endregion -->
 
 ```python id="pwS11Nsg7jPM"
@@ -76,10 +76,10 @@ train_data.summary()
 ```
 
 <!-- #region id="r_IlEIp59g9v" -->
-So we have 104598 training `Document`s. Each `Document` consists of a text field that contains the question, as well as a `finetuner_label` which indicates the label to which the question belongs. If multiple questions have the same label, they are duplicates of one another. If they have different `finetuner_label`s, they are not duplicates of each other.
+So we have 104598 training `Document`s. Each `Document` consists of a text field that contains the question, as well as a `finetuner_label` which indicates the label to which the question belongs. If multiple questions have the same label, they are duplicates of one another. If they have different `finetuner_label`s, they have no duplicates of each other.
 
-As for the evaluation dataset, we load `query_data` and `index_data` separately. The `query_data` has the same structure as the `train_data`, consisting of labelled documents. The `index_data` is the data against which the queries will be matched, and contains many documents, some of which may be irrelevant to the queries (ie. they have no duplicated in the `query_data`).
-If you look at the summaries for the `query_data` and `index_data`, you will find that they have the following number of instances:
+As for the evaluation dataset, we load `query_data` and `index_data` separately. The `query_data` have the same structure as the `train_data`, consisting of labeled documents. The `index_data` are the data against which the queries will be matched, and contain many documents, some of which may be irrelevant to the queries (i.e. they have no duplicated in the `query_data`).
+If you look at the summaries for the `query_data` and `index_data`, you will find that they have the following number of samples:
 
 ```
 Length of queries DocumentArray: 5000
@@ -139,7 +139,7 @@ Lastly, we provide an `EvaluationCallback` with our `query_data` and `index_data
 <!-- #region id="h0DGNRo8-lZD" -->
 ## Monitoring
 
-Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()`, the logs - `run.logs()` or `run.stream_logs()`. 
+Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()`, -and the logs `run.logs()` or `run.stream_logs()`. 
 
 *note, the job will take around 15 minutes to finish.*
 <!-- #endregion -->
@@ -150,7 +150,7 @@ for entry in run.stream_logs():
 ```
 
 <!-- #region id="7AuB0IWC_CSt" -->
-Dependends on the size of the training data, some runs might take up to several hours, you can reconnect to your run very easily to monitor its status.
+Dependending on the size of the training data, some runs might take up to several hours. You can later reconnect to your run very easily to monitor its status.
 
 ```python
 import finetuner
@@ -180,7 +180,7 @@ Our `EvaluationCallback` during fine-tuning ensures that after each epoch, an ev
            INFO     Done ✨                                                                              __main__.py:204
            INFO     Saving fine-tuned models ...                                                         __main__.py:207
            INFO     Saving model 'model' in /usr/src/app/tuned-models/model ...                          __main__.py:218
-[15:36:41] INFO     Pushing saved model to Hubble ...                                                    __main__.py:225
+[15:36:41] INFO     Pushing saved model to Jina AI Cloud ...                                                    __main__.py:225
 [15:37:32] INFO     Pushed model artifact ID: '62b9cb73a411d7e08d18bd16'                                 __main__.py:231
            INFO     Finished 🚀                                                                          __main__.py:233                                                  __main__.py:225
 ```

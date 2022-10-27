@@ -54,7 +54,7 @@ is **an empty line above and below the entry**.
 
 ## Update notebooks
 
-We have three Google Colab embed inside the documentation:
+We have three Google Colab embedded inside the documentation:
 
 - [text-to-text with bert](https://colab.research.google.com/drive/1Ui3Gw3ZL785I7AuzlHv3I0-jTvFFxJ4_?usp=sharing)
 - [image-to-image with resnet](https://colab.research.google.com/drive/1QuUTy3iVR-kTPljkwplKYaJ-NTCgPEc_?usp=sharing)
@@ -64,9 +64,9 @@ To update code in colab:
 
 1. Update code in the Google Colab.
 2. Download into `docs/notebooks/` folder.
-3. cd into `docs` folder, run `make notebooks` and run `make dirhtml` to see output locally.
+3. cd into `docs` folder, run `make notebook` and run `make dirhtml` to see output locally.
 
-Only members of the team has the permission to modify the notebook.
+Only members of the team have the permissions to modify the notebook.
 
 ## Releases
 

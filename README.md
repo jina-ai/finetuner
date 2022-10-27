@@ -189,7 +189,7 @@ da.summary()
 ### Next steps
 
 - Take the [walkthrough](https://finetuner.jina.ai/walkthrough/) and submit your first fine-tuning job.
-- Try on different search tasks:
+- Try out different search tasks:
   - [Text-to-Text Search via BERT](https://finetuner.jina.ai/notebooks/text_to_text/)
   - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/notebooks/image_to_image/)
   - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/notebooks/text_to_image/)

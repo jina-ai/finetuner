@@ -41,7 +41,7 @@ jobs:
           pip install -U furo
           export NUM_RELEASES=5
           bash makedoc.sh local-only
-          make notebooks
+          make notebook
           cd ./build/dirhtml/
           cp -r ./ ../../../gen-html
           cd -  # back to ./docs

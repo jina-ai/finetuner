@@ -19,5 +19,5 @@ help:
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-notebooks:
+notebook:
 	jupytext --to markdown notebooks/*.ipynb
