@@ -11,7 +11,7 @@ from finetuner.constants import (
     STARTED,
     STATUS,
 )
-from finetuner.exception import RunFailedError, RunInProgressError, RunPreparingError
+from finetuner.excepts import RunFailedError, RunInProgressError, RunPreparingError
 from finetuner.hubble import download_artifact
 
 

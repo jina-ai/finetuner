@@ -1,10 +1,10 @@
 import inspect
 import os
 import warnings
-from typing import Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
+from _finetuner.runner.stubs import model as model_stub
 from docarray import DocumentArray
-from stubs import model as model_stub
 
 from finetuner.constants import (
     DEFAULT_FINETUNER_HOST,
@@ -26,6 +26,9 @@ from finetuner.console import print_model_table
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
 from finetuner.model import list_model_classes
+
+if TYPE_CHECKING:
+    from _finetuner.models.inference import InferenceEngine
 
 ft = Finetuner()
 
@@ -308,15 +311,72 @@ def get_token() -> str:
     return ft.get_token()
 
 
+def build_model(
+    name: str,
+    model_options: Optional[Dict[str, Any]] = None,
+    batch_size: int = 32,
+    select_model: Optional[str] = None,
+    device: Optional[str] = None,
+    is_onnx: bool = False,
+) -> 'InferenceEngine':
+    """
+    Builds a pre-trained model from a given descriptor.
+
+    :param name: Refers to a pre-trained model, see
+        https://finetuner.jina.ai/walkthrough/choose-backbone/  or use the
+        :meth:`finetuner.describe_models()` function for a list of all
+        supported models.
+    :param model_options: A dictionary of model specific options.
+    :param batch_size: Incoming documents are fed to the graph in batches, both to
+        speed-up inference and avoid memory errors. This argument controls the
+        number of documents that will be put in each batch.
+    :param select_model: Finetuner run artifacts might contain multiple models. In
+        such cases you can select which model to deploy using this argument. For CLIP
+        fine-tuning, you can choose either `clip-vision` or `clip-text`.
+    :param device: Whether to use the CPU, if set to `cuda`, a Nvidia GPU will be used.
+        otherwise use `cpu` to run a cpu job.
+    :param is_onnx: The model output format, either `onnx` or `pt`.
+    :return: an instance of :class:'TorchInferenceEngine' or
+        :class:`ONNXINferenceEngine`.
+    """
+    import torch
+    from _finetuner.models.inference import (
+        ONNXRuntimeInferenceEngine,
+        TorchInferenceEngine,
+    )
+    from _finetuner.runner.model import RunnerModel
+
+    if not device:
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+    stub = model_stub.get_stub(
+        name, select_model=select_model, model_options=model_options or {}
+    )
+
+    model = RunnerModel(stub=stub)
+    if not is_onnx:
+        return TorchInferenceEngine(
+            artifact=model,
+            batch_size=batch_size,
+            device=device,
+        )
+    else:
+        return ONNXRuntimeInferenceEngine(
+            artifact=model,
+            batch_size=batch_size,
+            device=device,
+        )
+
+
 def get_model(
     artifact: str,
     token: Optional[str] = None,
     batch_size: int = 32,
     select_model: Optional[str] = None,
-    device: str = 'cpu',
+    device: Optional[str] = None,
     logging_level: str = 'WARNING',
     is_onnx: bool = False,
-):
+) -> 'InferenceEngine':
     """Re-build the model based on the model inference session with ONNX.
 
     :param artifact: Specify a finetuner run artifact. Can be a path to a local
@@ -343,10 +403,15 @@ def get_model(
     ..Note::
       please install finetuner[full] to include all the dependencies.
     """
-    from commons.models.inference import (
+
+    import torch
+    from _finetuner.models.inference import (
         ONNXRuntimeInferenceEngine,
         TorchInferenceEngine,
     )
+
+    if not device:
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     if device == 'cuda' and is_onnx:
         warnings.warn(
@@ -394,9 +459,10 @@ def encode(
     ..Note::
       please install "finetuner[full]" to include all the dependencies.
     """
-    from commons.models.inference import ONNXRuntimeInferenceEngine
 
-    for batch in data.batch(batch_size):
+    from _finetuner.models.inference import ONNXRuntimeInferenceEngine
+
+    for batch in data.batch(batch_size, show_progress=True):
         if isinstance(model, ONNXRuntimeInferenceEngine):
             inputs = model._run_data_pipeline(batch)
             inputs = model._flatten_inputs(inputs)
@@ -412,7 +478,3 @@ def encode(
             inputs = model._move_to_device(inputs)
             output = model.run(inputs)
             batch.embeddings = output.detach().cpu().numpy()
-
-
-# This needs to be at the end of the file
-__import__('pkg_resources').declare_namespace(__name__)
