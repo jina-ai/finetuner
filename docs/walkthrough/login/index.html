@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="Finetuner Documentation" />
   
-<meta property="og:description" content="Since Finetuner leverages cloud resources for fine-tuning, you are required to login() and obtain a token from Jina before starting a fine-tuning job. It is as simple as: A browser window should pop up with different login options. After login() you will see this in your terminal:" />
+<meta property="og:description" content="Since Finetuner leverages cloud resources for fine-tuning, you are required to login()(or~finetuner.notebook_login()) and obtain a token from Jina before starting a fine-tuning job. It is as simple as: A browser window should pop up with different login options. After login() or~finetuner.noteboo..." />
   
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   
@@ -240,9 +240,9 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/text-to-text/">Text-to-Text Search via BERT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/image-to-image/">Image-to-Image Search via ResNet50</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/text-to-image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -254,7 +254,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.model/">finetuner.model module</a></li>
@@ -270,7 +270,7 @@
                 <img class="sidebar-ecosys-logo only-light-line" src="../../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/search-dark.svg">
                 Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/hub-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/hub-dark.svg">
             Jina Hub</a></li>
@@ -339,23 +339,23 @@
                     <section class="tex2jax_ignore mathjax_ignore" id="login">
 <span id="login-to-jina-ecosystem"></span><h1>Login<a class="headerlink" href="#login" title="Permalink to this headline">#</a></h1>
 <p>Since Finetuner leverages cloud resources for fine-tuning,
-you are required to <a class="reference internal" href="../../api/finetuner/#finetuner.login" title="finetuner.login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">login()</span></code></a> and obtain a token from Jina before starting a fine-tuning job.
+you are required to <a class="reference internal" href="../../api/finetuner/#finetuner.login" title="finetuner.login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">login()</span></code></a> (or <code class="docutils literal notranslate"><span class="pre">~finetuner.notebook_login()</span></code>) and obtain a token from Jina before starting a fine-tuning job.
 It is as simple as:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>  <span class="c1"># use finetuner.notebook_login() in Jupyter notebook or Google Colab</span>
 </pre></div>
 </div>
 <p>A browser window should pop up with different login options.
-After <a class="reference internal" href="../../api/finetuner/#finetuner.login" title="finetuner.login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">login()</span></code></a> you will see this in your terminal:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🔐 Successfully login to Jina ecosystem!
+After <a class="reference internal" href="../../api/finetuner/#finetuner.login" title="finetuner.login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">login()</span></code></a> or <code class="docutils literal notranslate"><span class="pre">~finetuner.notebook_login()</span></code> you will see this in your terminal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🔐 Successfully logged <span class="k">in</span> to Jina AI as <span class="o">[</span>USER NAME<span class="o">]</span>!
 </pre></div>
 </div>
 <div class="hint admonition">
 <p class="admonition-title">Why do I need to login?</p>
-<p>Login is required since Finetuner needs to push your <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.17.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> into the cloud as training data.
+<p>Login is required since Finetuner needs to push your <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> into the Jina AI Cloud as training data.
 Once you have successfully logged in, your training data will be linked to your personal user profile and will only be visible to you.</p>
-<p>Once fine-tuning is completed, the fine-tuned model will be visible only to you in the cloud.</p>
+<p>Once fine-tuning is completed, the fine-tuned model will be visible only to you in the Jina AI Cloud.</p>
 </div>
 </section>
 
@@ -394,7 +394,7 @@ Once you have successfully logged in, your training data will be linked to your 
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 13, 2022</div>
+                            Last updated on Oct 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -452,6 +452,7 @@ Once you have successfully logged in, your training data will be linked to your 
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/tabs.js"></script>
     <script src="../../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
     <script src="../../_static/source-in-links.js"></script>

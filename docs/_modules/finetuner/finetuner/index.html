@@ -207,9 +207,9 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tasks/text-to-text/">Text-to-Text Search via BERT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tasks/image-to-image/">Image-to-Image Search via ResNet50</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tasks/text-to-image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -221,7 +221,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.console/">finetuner.console module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.exception/">finetuner.exception module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.model/">finetuner.model module</a></li>
@@ -237,7 +237,7 @@
                 <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/search-dark.svg">
                 Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
             <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/hub-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/hub-dark.svg">
             Jina Hub</a></li>
@@ -324,14 +324,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_experiment</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Finetuner.login"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.login">[docs]</a>    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Finetuner.login"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.login">[docs]</a>    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Login to Hubble account, initialize a client object</span>
 <span class="sd">        and create a default experiment.</span>
 
+<span class="sd">        :param force: If set to true, overwrite token and re-login.</span>
+
 <span class="sd">        Note: Calling `login` is necessary for using finetuner.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">hubble</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
+        <span class="n">hubble</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_state</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Finetuner.notebook_login"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.notebook_login">[docs]</a>    <span class="k">def</span> <span class="nf">notebook_login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Log in to Hubble account, initialize a client object</span>
+<span class="sd">        and create a default experiment.</span>
+
+<span class="sd">        :param force: If set to true, overwrite token and re-login.</span>
+
+<span class="sd">        Note: This works for Jupyter notebook, Google Colab..</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">hubble</span><span class="o">.</span><span class="n">notebook_login</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">post_success</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_state</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Finetuner.connect"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Connects finetuner to Hubble without logging in again.</span>
@@ -465,6 +477,7 @@
         <span class="n">freeze</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">output_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">cpu</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span><span class="p">,</span>
         <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
         <span class="n">to_onnx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Run</span><span class="p">:</span>
@@ -499,6 +512,7 @@
             <span class="n">freeze</span><span class="o">=</span><span class="n">freeze</span><span class="p">,</span>
             <span class="n">output_dim</span><span class="o">=</span><span class="n">output_dim</span><span class="p">,</span>
             <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
             <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
             <span class="n">to_onnx</span><span class="o">=</span><span class="n">to_onnx</span><span class="p">,</span>
         <span class="p">)</span>
@@ -588,7 +602,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 13, 2022</div>
+                            Last updated on Oct 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -646,6 +660,7 @@
     <script src="../../../_static/copybutton.js"></script>
     <script src="../../../_static/tabs.js"></script>
     <script src="../../../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
     <script src="../../../_static/source-in-links.js"></script>

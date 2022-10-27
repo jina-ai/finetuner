@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="Finetuner Documentation" />
   
-<meta property="og:description" content="Perfect! Now, you have started the fine-tuning job in the cloud. When the fine-tuning job is finished, the resulting model is automatically stored under your Jina account in the cloud. Next, we can get its artifact id and download the model. Please note that fine-tuning takes time. It highly depe..." />
+<meta property="og:description" content="Perfect! Now, you have started the fine-tuning job in the Jina AI Cloud. When the fine-tuning job is finished, the resulting model is automatically stored under your Jina account in the Jina AI Cloud. Next, we can get its artifact id and download the model. Please note that fine-tuning takes time..." />
   
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   
@@ -240,9 +240,9 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/text-to-text/">Text-to-Text Search via BERT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/image-to-image/">Image-to-Image Search via ResNet50</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/text-to-image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -254,7 +254,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.model/">finetuner.model module</a></li>
@@ -270,7 +270,7 @@
                 <img class="sidebar-ecosys-logo only-light-line" src="../../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/search-dark.svg">
                 Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/hub-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/hub-dark.svg">
             Jina Hub</a></li>
@@ -339,8 +339,8 @@
                     <section class="tex2jax_ignore mathjax_ignore" id="save-artifact">
 <span id="retrieve-tuned-model"></span><h1>Save Artifact<a class="headerlink" href="#save-artifact" title="Permalink to this headline">#</a></h1>
 <p>Perfect!
-Now, you have started the fine-tuning job in the cloud.
-When the fine-tuning job is finished, the resulting model is automatically stored under your Jina account in the cloud.
+Now, you have started the fine-tuning job in the Jina AI Cloud.
+When the fine-tuning job is finished, the resulting model is automatically stored under your Jina account in the Jina AI Cloud.
 Next, we can get its artifact id and download the model.</p>
 <div class="hint admonition">
 <p class="admonition-title">Managing fine-tuned models</p>
@@ -353,7 +353,7 @@ Because of this, you might have to close the session and reconnect to it several
 <p>In the example below, we show how to connect to an existing run and download a tuned model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>  <span class="c1"># use finetuner.notebook_login() in Jupyter notebook or Google Colab</span>
 
 <span class="c1"># connect to the experiment we created previously.</span>
 <span class="n">experiment</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_experiment</span><span class="p">(</span><span class="s1">&#39;finetune-flickr-dataset&#39;</span><span class="p">)</span>
@@ -370,7 +370,7 @@ Because of this, you might have to close the session and reconnect to it several
 </div>
 <p>If the fine-tuning finished,
 you can see this in the terminal:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🔐 Successfully login to Jina Ecosystem!
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🔐 Successfully logged <span class="k">in</span> to Jina AI as <span class="o">[</span>USER NAME<span class="o">]</span>!
 Run status: FINISHED
 Run Artifact id: 62972acb5de25a53fdbfcecc
 Run logs:
@@ -423,7 +423,7 @@ Run logs:
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 13, 2022</div>
+                            Last updated on Oct 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -481,6 +481,7 @@ Run logs:
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/tabs.js"></script>
     <script src="../../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
     <script src="../../_static/source-in-links.js"></script>

@@ -240,9 +240,9 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/text-to-text/">Text-to-Text Search via BERT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/image-to-image/">Image-to-Image Search via ResNet50</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/text-to-image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -254,7 +254,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.model/">finetuner.model module</a></li>
@@ -270,7 +270,7 @@
                 <img class="sidebar-ecosys-logo only-light-line" src="../../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/search-dark.svg">
                 Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/hub-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/hub-dark.svg">
             Jina Hub</a></li>
@@ -338,7 +338,7 @@
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="run-job">
 <span id="start-finetuner"></span><h1>Run Job<a class="headerlink" href="#run-job" title="Permalink to this headline">#</a></h1>
-<p>Now you should have your training data and evaluation data (optional) prepared as <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.17.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>s,
+<p>Now you should have your training data and evaluation data (optional) prepared as <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>s,
 and have selected your backbone model.</p>
 <p>Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud!</p>
 <section id="submit-a-finetuning-job-to-the-cloud">
@@ -367,7 +367,7 @@ the run status changes from:</p>
 <ol class="simple">
 <li><p>CREATED: the <a class="reference internal" href="../../api/finetuner.run/#finetuner.run.Run" title="finetuner.run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> has been created and submitted to the job queue.</p></li>
 <li><p>STARTED: the job is in progress</p></li>
-<li><p>FINISHED: the job finished successfully, model has been sent to cloud storage.</p></li>
+<li><p>FINISHED: the job finished successfully, model has been sent to Jina AI Cloud.</p></li>
 <li><p>FAILED: the job failed, please check the logs for more details.</p></li>
 </ol>
 </section>
@@ -403,7 +403,7 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:</p>
     <span class="n">scheduler_step</span><span class="o">=</span><span class="s1">&#39;batch&#39;</span><span class="p">,</span>
     <span class="n">freeze</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="c1"># If applied will freeze the embedding model, only train the MLP.</span>
     <span class="n">output_dim</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="c1"># Attach a MLP on top of embedding model.</span>
-    <span class="n">cpu</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span>
     <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">to_onnx</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># If set, please pass `is_onnx` when making inference.</span>
 <span class="p">)</span>
@@ -488,7 +488,7 @@ A detailed description of the miners and their parameters is specified in the <a
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 13, 2022</div>
+                            Last updated on Oct 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -571,6 +571,7 @@ A detailed description of the miners and their parameters is specified in the <a
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/tabs.js"></script>
     <script src="../../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
     <script src="../../_static/source-in-links.js"></script>

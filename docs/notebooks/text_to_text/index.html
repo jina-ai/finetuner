@@ -8,11 +8,11 @@
   
 <meta property="og:type" content="website" />
   
-<meta property="og:url" content="https://finetuner.jina.ai/tasks/text-to-text/" />
+<meta property="og:url" content="https://finetuner.jina.ai/notebooks/text_to_text/" />
   
 <meta property="og:site_name" content="Finetuner Documentation" />
   
-<meta property="og:description" content="Searching large amounts of text documents with text queries is a very popular use-case, so of course Finetuner enables you to accomplish this easily. This guide will lead you through an example use-case to show you how Finetuner can be used for text to text retrieval. Task: In Finetuner, two BERT..." />
+<meta property="og:description" content="Searching large amounts of text documents with text queries is a very popular use-case and Finetuner enables you to accomplish this easily. This guide will lead you through an example use-case to show you how Finetuner can be used for text to text retrieval (Dense Retrieval). Note, please conside..." />
   
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
   
@@ -35,8 +35,8 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Image-to-Image Search via ResNet50" href="../image-to-image/" /><link rel="prev" title="Encode Documents" href="../../walkthrough/integrate-with-jina/" />
-        <link rel="canonical" href="https://finetuner.jina.ai/tasks/text-to-text.html" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Image-to-Image Search via ResNet50" href="../image_to_image/" /><link rel="prev" title="Encode Documents" href="../../walkthrough/integrate-with-jina/" />
+        <link rel="canonical" href="https://finetuner.jina.ai/notebooks/text_to_text.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
         <title>Text-to-Text Search via BERT - Finetuner documentation</title>
@@ -241,8 +241,8 @@
 <p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Text-to-Text Search via BERT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../image-to-image/">Image-to-Image Search via ResNet50</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../text-to-image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image_to_image/">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text_to_image/">Text-to-Image Search via CLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -254,7 +254,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.model/">finetuner.model module</a></li>
@@ -270,7 +270,7 @@
                 <img class="sidebar-ecosys-logo only-light-line" src="../../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/search-dark.svg">
                 Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/hub-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/hub-dark.svg">
             Jina Hub</a></li>
@@ -336,15 +336,25 @@
                     </label>
                 </div>
                 <article role="main">
-                    <section class="tex2jax_ignore mathjax_ignore" id="text-to-text-search-via-bert">
-<span id="text-to-text"></span><h1>Text-to-Text Search via BERT<a class="headerlink" href="#text-to-text-search-via-bert" title="Permalink to this headline">#</a></h1>
-<p>Searching large amounts of text documents with text queries is a very popular use-case, so of course Finetuner enables you to accomplish this easily.</p>
-<p>This guide will lead you through an example use-case to show you how Finetuner can be used for text to text retrieval.</p>
+                    <!-- #region id="Huf1E2zq7JWb" -->
+<section class="tex2jax_ignore mathjax_ignore" id="text-to-text-search-via-bert">
+<h1>Text-to-Text Search via BERT<a class="headerlink" href="#text-to-text-search-via-bert" title="Permalink to this headline">#</a></h1>
+<p><a href="https://colab.research.google.com/drive/1Ui3Gw3ZL785I7AuzlHv3I0-jTvFFxJ4_?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p>
+<p>Searching large amounts of text documents with text queries is a very popular use-case and Finetuner enables you to accomplish this easily.</p>
+<p>This guide will lead you through an example use-case to show you how Finetuner can be used for text to text retrieval (Dense Retrieval).</p>
+<p><em>Note, please consider switching to GPU/TPU Runtime for faster inference.</em></p>
+<section id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">#</a></h2>
+<!-- #endregion -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>!pip install &#39;finetuner[full]==0.6.4&#39;
+</pre></div>
+</div>
+<!-- #region id="FPDhvWkw7kas" -->
+</section>
 <section id="task">
 <h2>Task<a class="headerlink" href="#task" title="Permalink to this headline">#</a></h2>
 <p>In Finetuner, two BERT models are supported as backbones, namely <code class="docutils literal notranslate"><span class="pre">bert-base-cased</span></code> and <code class="docutils literal notranslate"><span class="pre">sentence-transformers/msmarco-distilbert-base-v3</span></code>, both of which are models hosted on Hugging Face.</p>
-<p>In this example, we will fine-tune <code class="docutils literal notranslate"><span class="pre">bert-base-cased</span></code> on the <a class="reference external" href="https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset">Quora Question Pairs</a> dataset, where the search task involves finding duplicate questions in the dataset.
-An example query for this search task might look as follows:</p>
+<p>In this example, we will fine-tune <code class="docutils literal notranslate"><span class="pre">bert-base-cased</span></code> on the <a class="reference external" href="https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset">Quora Question Pairs</a> dataset, where the search task involves finding duplicate questions in the dataset. An example query for this search task might look as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>How can I be a good geologist?
 
 </pre></div>
@@ -357,84 +367,61 @@ What do geologists do?
 
 </pre></div>
 </div>
-<p>We will use BERT as an embedding model that embeds texts in a high dimensional space.
-We can fine-tune BERT so that questions that are duplicates of each other are represented in close proximity and questions that are not duplicates will have representations that are further apart in the embedding space. In this way, we can rank the embeddings in our search space by their proximity to the query question and return the highest ranking duplicates.</p>
-<div class="seealso admonition">
-<p class="admonition-title">See Also: Model and dataset info</p>
-<p>If you’d like more information about the BERT model we are fine-tuning please visit <a class="reference external" href="https://huggingface.co/bert-base-cased">Hugging Face</a>.
-Supplementary information about the Quora Question Pairs dataset can be found on the <a class="reference external" href="https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset">Sentence-Transformers</a> website.</p>
-</div>
+<p>We can fine-tune BERT so that questions that are duplicates of each other are represented in close proximity and questions that are not duplicates will have representations that are further apart in the embedding space. In this way, we can rank the embeddings in our search space by their proximity to the query question and return the highest ranking duplicates.</p>
+<!-- #endregion -->
+<!-- #region id="SfR6g0E_8fOz" -->
 </section>
 <section id="data">
 <h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">#</a></h2>
-<p>We will use the <a class="reference external" href="https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset">Quora Question Pairs</a> dataset to show-case Finetuner for text to text search. We have already pre-processed this dataset and made it available for you to pull from hubble. Do this as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+<p>We will use the <a class="reference external" href="https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset">Quora Question Pairs</a> dataset to show-case Finetuner for text to text search. We have already pre-processed this dataset and made it available for you to pull from Jina AI Cloud. Do this as follows:</p>
+<!-- #endregion -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
+<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
-<span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;quora_train.da&#39;</span><span class="p">)</span>
-<span class="n">query_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;quora_query_dev.da&#39;</span><span class="p">)</span>
-<span class="n">index_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;quora_index_dev.da&#39;</span><span class="p">)</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">notebook_login</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;quora_train.da&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">query_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;quora_query_dev.da&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">index_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;quora_index_dev.da&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">train_data</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Your <code class="docutils literal notranslate"><span class="pre">train_data</span></code> <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> summary should look like this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>╭──────────────── Documents Summary ────────────────╮
-│                                                   │
-│   Length                 <span class="m">104598</span>                   │
-│   Homogenous Documents   True                     │
-│   Common Attributes      <span class="o">(</span><span class="s1">&#39;id&#39;</span>, <span class="s1">&#39;text&#39;</span>, <span class="s1">&#39;tags&#39;</span><span class="o">)</span>   │
-│   Multimodal dataclass   False                    │
-│                                                   │
-╰───────────────────────────────────────────────────╯
-╭───────────────────── Attributes Summary ─────────────────────╮
-│                                                              │
-│   Attribute   Data <span class="nb">type</span>   <span class="c1">#Unique values   Has empty value   │</span>
-│  ──────────────────────────────────────────────────────────  │
-│   id          <span class="o">(</span><span class="s1">&#39;str&#39;</span>,<span class="o">)</span>    <span class="m">104598</span>           False             │
-│   tags        <span class="o">(</span><span class="s1">&#39;dict&#39;</span>,<span class="o">)</span>   <span class="m">104598</span>           False             │
-│   text        <span class="o">(</span><span class="s1">&#39;str&#39;</span>,<span class="o">)</span>    <span class="m">104559</span>           False             │
-│                                                              │
-╰──────────────────────────────────────────────────────────────╯
-</pre></div>
-</div>
-<p>So we have 104598 training <code class="docutils literal notranslate"><span class="pre">Document</span></code>s. Each <code class="docutils literal notranslate"><span class="pre">Document</span></code> consists of a text field that contains the question, as well as a <code class="docutils literal notranslate"><span class="pre">finetuner_label</span></code> which indicates the label to which the question belongs. If multiple questions have the same label, they are duplicates of one another. If they have different <code class="docutils literal notranslate"><span class="pre">finetuner_label</span></code>s, they are not duplicates of each other.</p>
-<p>As for the evaluation dataset, we load <code class="docutils literal notranslate"><span class="pre">query_data</span></code> and <code class="docutils literal notranslate"><span class="pre">index_data</span></code> separately. The <code class="docutils literal notranslate"><span class="pre">query_data</span></code> has the same structure as the <code class="docutils literal notranslate"><span class="pre">train_data</span></code>, consisting of labelled documents. The <code class="docutils literal notranslate"><span class="pre">index_data</span></code> is the data against which the queries will be matched, and contains many documents, some of which may be irrelevant to the queries (ie. they have no duplicated in the <code class="docutils literal notranslate"><span class="pre">query_data</span></code>).
-If you look at the summaries for the <code class="docutils literal notranslate"><span class="pre">query_data</span></code> and <code class="docutils literal notranslate"><span class="pre">index_data</span></code>, you will find that they have the following number of instances:</p>
+<!-- #region id="r_IlEIp59g9v" -->
+<p>So we have 104598 training <code class="docutils literal notranslate"><span class="pre">Document</span></code>s. Each <code class="docutils literal notranslate"><span class="pre">Document</span></code> consists of a text field that contains the question, as well as a <code class="docutils literal notranslate"><span class="pre">finetuner_label</span></code> which indicates the label to which the question belongs. If multiple questions have the same label, they are duplicates of one another. If they have different <code class="docutils literal notranslate"><span class="pre">finetuner_label</span></code>s, they have no duplicates of each other.</p>
+<p>As for the evaluation dataset, we load <code class="docutils literal notranslate"><span class="pre">query_data</span></code> and <code class="docutils literal notranslate"><span class="pre">index_data</span></code> separately. The <code class="docutils literal notranslate"><span class="pre">query_data</span></code> have the same structure as the <code class="docutils literal notranslate"><span class="pre">train_data</span></code>, consisting of labeled documents. The <code class="docutils literal notranslate"><span class="pre">index_data</span></code> are the data against which the queries will be matched, and contain many documents, some of which may be irrelevant to the queries (i.e. they have no duplicated in the <code class="docutils literal notranslate"><span class="pre">query_data</span></code>).
+If you look at the summaries for the <code class="docutils literal notranslate"><span class="pre">query_data</span></code> and <code class="docutils literal notranslate"><span class="pre">index_data</span></code>, you will find that they have the following number of samples:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Length</span> <span class="n">of</span> <span class="n">queries</span> <span class="n">DocumentArray</span><span class="p">:</span> <span class="mi">5000</span>
 <span class="n">Length</span> <span class="n">of</span> <span class="n">index</span> <span class="n">DocumentArray</span><span class="p">:</span> <span class="mi">15746</span>
 </pre></div>
 </div>
+<!-- #endregion -->
+<!-- #region id="aXYrABkN9vYO" -->
 </section>
 <section id="backbone-model">
 <h2>Backbone model<a class="headerlink" href="#backbone-model" title="Permalink to this headline">#</a></h2>
 <p>To keep things simple, we have decided to fine-tune the BERT model <code class="docutils literal notranslate"><span class="pre">bert-base-cased</span></code>. We could also have chosen <code class="docutils literal notranslate"><span class="pre">sentence-transformers/msmarco-distilbert-base-v3</span></code> as our base model, which has already been fine-tuned on the MSMarco dataset.
 However, for the purpose of this experiment, we want to explore how much improvement in performance we can gain from fine-tuning <code class="docutils literal notranslate"><span class="pre">bert-base-cased</span></code> on the Quora Question Pairs dataset using Finetuner.
 Perhaps in the future, we might want to create another run where we experiment with fine-tuning other BERT models.</p>
-<div class="tip admonition">
-<p class="admonition-title">Backbones</p>
-<p>Finetuner also supports fine-tuning other models, see the <a class="reference internal" href="../../walkthrough/choose-backbone/#choose-backbone"><span class="std std-ref">choose backbone</span></a> section.</p>
-</div>
+<!-- #endregion -->
+<!-- #region id="IAlQArUB99oG" -->
 </section>
 <section id="fine-tuning">
 <h2>Fine-tuning<a class="headerlink" href="#fine-tuning" title="Permalink to this headline">#</a></h2>
 <p>Now that we have the training and evaluation datasets loaded as <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>s and selected our model, we can start our fine-tuning run.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-<span class="kn">from</span> <span class="nn">finetuner.callback</span> <span class="kn">import</span> <span class="n">EvaluationCallback</span>
+<!-- #endregion -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.callback</span> <span class="kn">import</span> <span class="n">EvaluationCallback</span>
 
-<span class="c1"># Make sure to login to Jina Cloud</span>
-<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
-
-<span class="c1"># Start fine-tuning as a run within an experiment</span>
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">model</span><span class="o">=</span><span class="s1">&#39;bert-base-cased&#39;</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="s1">&#39;quora_train.da&#39;</span><span class="p">,</span>
-    <span class="n">run_name</span><span class="o">=</span><span class="s1">&#39;finetune-quora-dataset-bert-base-cased&#39;</span><span class="p">,</span>
     <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;TripletMarginLoss&#39;</span><span class="p">,</span>
     <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;Adam&#39;</span><span class="p">,</span>
     <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
     <span class="n">epochs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
-    <span class="n">cpu</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span>
     <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span>
         <span class="n">EvaluationCallback</span><span class="p">(</span>
             <span class="n">query_data</span><span class="o">=</span><span class="s1">&#39;quora_query_dev.da&#39;</span><span class="p">,</span>
@@ -445,27 +432,27 @@ Perhaps in the future, we might want to create another run where we experiment w
 <span class="p">)</span>
 </pre></div>
 </div>
+<!-- #region id="j_MxAW9E-ddZ" -->
 <p>Our fine-tuning call has a lot of arguments. Let’s discuss what the most important ones are responsible for.</p>
 <p>Most importantly, we select our model with <code class="docutils literal notranslate"><span class="pre">model='bert-base-cased'</span></code> and pass our training data with <code class="docutils literal notranslate"><span class="pre">train_data=train_data</span></code>. These two arguments are required.
 We set our <code class="docutils literal notranslate"><span class="pre">experiment_name</span></code> to <code class="docutils literal notranslate"><span class="pre">'finetune-quora-dataset'</span></code> and our <code class="docutils literal notranslate"><span class="pre">run_name</span></code> to <code class="docutils literal notranslate"><span class="pre">'finetune-quora-dataset-bert-base-cased'</span></code>.
 This will make it easy for us to retrieve the experiment and run in the future. We also provide a short description of our run, just for some extra context.</p>
-<p>For this run, we select Finetuner’s <code class="docutils literal notranslate"><span class="pre">'TripletMarginLoss'</span></code> and <code class="docutils literal notranslate"><span class="pre">'TripletMarginMiner'</span></code>, as they are most relevant for our use-case. The <code class="docutils literal notranslate"><span class="pre">'TripletMarginLoss'</span></code> measures the similarity between three tensors, namely the anchor, a positive sample and a negative sample. This makes sense for our task, since we want duplicate questions to have representations closer together, while non-duplicates should have more dissimilar representations. Likewise, the <code class="docutils literal notranslate"><span class="pre">'TripletMarginMiner'</span></code> outputs a tuple of size 3, with an anchor, a positive sample and a negative sample.</p>
-<div class="seealso admonition">
-<p class="admonition-title">See Also: TripletMarginLoss and TripletMarginMiner</p>
-<p>More information about <code class="docutils literal notranslate"><span class="pre">TripletMarginLoss</span></code> and <code class="docutils literal notranslate"><span class="pre">TripletMarginMiner</span></code> can be found in the <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.TripletMarginLoss.html">PyTorch</a> and <a class="reference external" href="https://kevinmusgrave.github.io/pytorch-metric-learning/miners/#tripletmarginminer">metric learning</a> documentation respectively.</p>
-</div>
+<p>For this run, we select Finetuner’s <code class="docutils literal notranslate"><span class="pre">TripletMarginLoss</span></code> and <code class="docutils literal notranslate"><span class="pre">TripletMarginMiner</span></code>, as they are most relevant for our use-case. The <code class="docutils literal notranslate"><span class="pre">TripletMarginLoss</span></code> measures the similarity between three tensors, namely the anchor, a positive sample and a negative sample. This makes sense for our task, since we want duplicate questions to have representations closer together, while non-duplicates should have more dissimilar representations. Likewise, the <code class="docutils literal notranslate"><span class="pre">TripletMarginMiner</span></code> outputs a tuple of size 3, with an anchor, a positive sample and a negative sample.</p>
 <p>Lastly, we provide an <code class="docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> with our <code class="docutils literal notranslate"><span class="pre">query_data</span></code> and <code class="docutils literal notranslate"><span class="pre">index_data</span></code>. This evaluation is done at the end of each epoch and its results will be visible to us in the logs, which we will monitor in the next section. Since we have not specified which metrics should be applied, default metrics will be computed. The <code class="docutils literal notranslate"><span class="pre">Evaluation</span></code> section of this guide will show you the default metrics.</p>
+<!-- #endregion -->
+<!-- #region id="h0DGNRo8-lZD" -->
 </section>
 <section id="monitoring">
 <h2>Monitoring<a class="headerlink" href="#monitoring" title="Permalink to this headline">#</a></h2>
-<p>Now that we’ve created a run, let’s see its status. You can monitor the run by checking the status - <code class="docutils literal notranslate"><span class="pre">run.status()</span></code> or the logs - <code class="docutils literal notranslate"><span class="pre">run.logs()</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">status</span><span class="p">())</span>
+<p>Now that we’ve created a run, let’s see its status. You can monitor the run by checking the status - <code class="docutils literal notranslate"><span class="pre">run.status()</span></code>, -and the logs <code class="docutils literal notranslate"><span class="pre">run.logs()</span></code> or <code class="docutils literal notranslate"><span class="pre">run.stream_logs()</span></code>.</p>
+<p><em>note, the job will take around 15 minutes to finish.</em></p>
+<!-- #endregion -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">run</span><span class="o">.</span><span class="n">stream_logs</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s1">&#39;status&#39;</span>: <span class="s1">&#39;CREATED&#39;</span>, <span class="s1">&#39;details&#39;</span>: <span class="s1">&#39;Run submitted and awaits execution&#39;</span><span class="o">}</span>
-</pre></div>
-</div>
-<p>Since some runs might take up to several hours, you can reconnect to your run very easily to monitor its status.</p>
+<!-- #region id="7AuB0IWC_CSt" -->
+<p>Dependending on the size of the training data, some runs might take up to several hours. You can later reconnect to your run very easily to monitor its status.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
@@ -473,17 +460,12 @@ This will make it easy for us to retrieve the experiment and run in the future. 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run status: </span><span class="si">{</span><span class="n">run</span><span class="o">.</span><span class="n">status</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<!-- #endregion -->
+<!-- #region id="agqrb0TX_Y4b" -->
 </section>
 <section id="evaluating">
 <h2>Evaluating<a class="headerlink" href="#evaluating" title="Permalink to this headline">#</a></h2>
-<p>Our <code class="docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> during fine-tuning ensures that after each epoch, an evaluation of our model is run. We can access the evaluation results in the logs as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-
-<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
-<span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span><span class="s1">&#39;finetune-quora-dataset-bert-base-cased&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run logs: </span><span class="si">{</span><span class="n">run</span><span class="o">.</span><span class="n">logs</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
+<p>Our <code class="docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> during fine-tuning ensures that after each epoch, an evaluation of our model is run. We can access the evaluation results in the logs as follows <code class="docutils literal notranslate"><span class="pre">print(run.logs())</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>  Training <span class="o">[</span><span class="m">3</span>/3<span class="o">]</span> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="m">818</span>/818 <span class="m">0</span>:00:00 <span class="m">0</span>:03:05 • loss: <span class="m">0</span>.000
 <span class="o">[</span><span class="m">15</span>:36:40<span class="o">]</span> DEBUG    Metric: <span class="s1">&#39;model_average_precision&#39;</span> Value: <span class="m">0</span>.95728                                     __main__.py:202
            DEBUG    Metric: <span class="s1">&#39;model_dcg_at_k&#39;</span> Value: <span class="m">1</span>.33912                                              __main__.py:202
@@ -497,43 +479,51 @@ This will make it easy for us to retrieve the experiment and run in the future. 
            INFO     Done ✨                                                                              __main__.py:204
            INFO     Saving fine-tuned models ...                                                         __main__.py:207
            INFO     Saving model <span class="s1">&#39;model&#39;</span> <span class="k">in</span> /usr/src/app/tuned-models/model ...                          __main__.py:218
-<span class="o">[</span><span class="m">15</span>:36:41<span class="o">]</span> INFO     Pushing saved model to Hubble ...                                                    __main__.py:225
+<span class="o">[</span><span class="m">15</span>:36:41<span class="o">]</span> INFO     Pushing saved model to Jina AI Cloud ...                                                    __main__.py:225
 <span class="o">[</span><span class="m">15</span>:37:32<span class="o">]</span> INFO     Pushed model artifact ID: <span class="s1">&#39;62b9cb73a411d7e08d18bd16&#39;</span>                                 __main__.py:231
            INFO     Finished 🚀                                                                          __main__.py:233                                                  __main__.py:225
 </pre></div>
 </div>
+<!-- #endregion -->
+<!-- #region id="KTfBfB8A_1fO" -->
 </section>
 <section id="saving">
 <h2>Saving<a class="headerlink" href="#saving" title="Permalink to this headline">#</a></h2>
 <p>Once your run has successfully completed, you can save your fine-tuned model in the following way:</p>
+<!-- #endregion -->
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">artifact</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="s1">&#39;bert-model&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<!-- #region id="YYgPIR_kAI6z" -->
 </section>
 <section id="inference">
 <h2>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">#</a></h2>
 <p>Now you saved the <code class="docutils literal notranslate"><span class="pre">artifact</span></code> into your host machine,
 let’s use the fine-tuned model to encode a new <code class="docutils literal notranslate"><span class="pre">Document</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
-
-<span class="c1"># Prepare some text to encode</span>
-<span class="n">test_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;some text to encode&#39;</span><span class="p">)])</span>
-<span class="c1"># Load model from artifact</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">artifact</span><span class="o">=</span><span class="n">artifact</span><span class="p">)</span>
-<span class="c1"># Encoding will happen in-place in your `DocumentArray`</span>
-<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">test_da</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">test_da</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span><span class="m">1</span>, <span class="m">768</span><span class="o">)</span>
-</pre></div>
-</div>
-<div class="tip admonition">
+<div class="admonition-inference-with-onnx admonition">
 <p class="admonition-title">Inference with ONNX</p>
 <p>In case you set <code class="docutils literal notranslate"><span class="pre">to_onnx=True</span></code> when calling <code class="docutils literal notranslate"><span class="pre">finetuner.fit</span></code> function,
-please use <code class="docutils literal notranslate"><span class="pre">model</span> <span class="pre">=</span> <span class="pre">finetuner.get_model('/path/to/YOUR-MODEL.zip',</span> <span class="pre">is_onnx=True)</span></code></p>
+please use <code class="docutils literal notranslate"><span class="pre">model</span> <span class="pre">=</span> <span class="pre">finetuner.get_model(artifact,</span> <span class="pre">is_onnx=True)</span></code></p>
 </div>
-<p>That’s it! If you want to integrate the fine-tuned model into your Jina Flow, please check out <a class="reference internal" href="../../walkthrough/integrate-with-jina/#integrate-with-jina"><span class="std std-ref">integrated with the Jina ecosystem</span></a>.</p>
+<!-- #endregion -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">artifact</span><span class="o">=</span><span class="n">artifact</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+
+<span class="n">query</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;How can I be an engineer?&#39;</span><span class="p">)])</span>
+
+<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">index_data</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">query</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">768</span><span class="p">)</span>
+</pre></div>
+</div>
+<!-- #region id="a_vUDidVIkh7" -->
+<p>And finally you can use the embeded <code class="docutils literal notranslate"><span class="pre">query</span></code> to find top-k semantically related text within <code class="docutils literal notranslate"><span class="pre">index_data</span></code> as follows:</p>
+<!-- #endregion -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">query</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<!-- #region id="czK5pSUEAcdS" -->
+<p>That’s it!</p>
+<!-- #endregion -->
 </section>
 </section>
 
@@ -542,7 +532,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../image-to-image/">
+                    <a class="next-page" href="../image_to_image/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
@@ -572,7 +562,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 13, 2022</div>
+                            Last updated on Oct 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -605,6 +595,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">Text-to-Text Search via BERT</a><ul>
+<li><a class="reference internal" href="#install">Install</a></li>
 <li><a class="reference internal" href="#task">Task</a></li>
 <li><a class="reference internal" href="#data">Data</a></li>
 <li><a class="reference internal" href="#backbone-model">Backbone model</a></li>
@@ -656,6 +647,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/tabs.js"></script>
     <script src="../../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
     <script src="../../_static/source-in-links.js"></script>

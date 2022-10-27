@@ -240,9 +240,9 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/text-to-text/">Text-to-Text Search via BERT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/image-to-image/">Image-to-Image Search via ResNet50</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/text-to-image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -254,7 +254,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.model/">finetuner.model module</a></li>
@@ -270,7 +270,7 @@
                 <img class="sidebar-ecosys-logo only-light-line" src="../../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/search-dark.svg">
                 Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/hub-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/hub-dark.svg">
             Jina Hub</a></li>
@@ -353,54 +353,48 @@ search tasks.</p>
 </pre></div>
 </div>
 <p>To get a list of supported models:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>                                                         Finetuner backbones                                                         
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃                                     name ┃           task ┃ output_dim ┃ architecture ┃                               description ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│                          bert-base-cased │   text-to-text │        <span class="m">768</span> │  transformer │  BERT model pre-trained on BookCorpus and │
-│                                          │                │            │              │                         English Wikipedia │
-│             openai/clip-vit-base-patch16 │  text-to-image │        <span class="m">512</span> │  transformer │        CLIP base model with patch size <span class="m">16</span> │
-│             openai/clip-vit-base-patch32 │  text-to-image │        <span class="m">512</span> │  transformer │                           CLIP base model │
-│        openai/clip-vit-large-patch14-336 │  text-to-image │        <span class="m">768</span> │  transformer │       CLIP large model <span class="k">for</span> 336x336 images │
-│            openai/clip-vit-large-patch14 │  text-to-image │       <span class="m">1024</span> │  transformer │       CLIP large model with patch size <span class="m">14</span> │
-│                          efficientnet_b0 │ image-to-image │       <span class="m">1280</span> │          cnn │   EfficientNet B0 pre-trained on ImageNet │
-│                          efficientnet_b4 │ image-to-image │       <span class="m">1792</span> │          cnn │   EfficientNet B4 pre-trained on ImageNet │
-│                             RN101#openai │  text-to-image │        <span class="m">512</span> │  transformer │            Open CLIP <span class="s2">&quot;RN101#openai&quot;</span> model │
-│                   RN101-quickgelu#openai │  text-to-image │        <span class="m">512</span> │  transformer │  Open CLIP <span class="s2">&quot;RN101-quickgelu#openai&quot;</span> model │
-│                  RN101-quickgelu#yfcc15m │  text-to-image │        <span class="m">512</span> │  transformer │ Open CLIP <span class="s2">&quot;RN101-quickgelu#yfcc15m&quot;</span> model │
-│                            RN101#yfcc15m │  text-to-image │        <span class="m">512</span> │  transformer │           Open CLIP <span class="s2">&quot;RN101#yfcc15m&quot;</span> model │
-│                               RN50#cc12m │  text-to-image │       <span class="m">1024</span> │  transformer │              Open CLIP <span class="s2">&quot;RN50#cc12m&quot;</span> model │
-│                              RN50#openai │  text-to-image │       <span class="m">1024</span> │  transformer │             Open CLIP <span class="s2">&quot;RN50#openai&quot;</span> model │
-│                     RN50-quickgelu#cc12m │  text-to-image │       <span class="m">1024</span> │  transformer │    Open CLIP <span class="s2">&quot;RN50-quickgelu#cc12m&quot;</span> model │
-│                    RN50-quickgelu#openai │  text-to-image │       <span class="m">1024</span> │  transformer │   Open CLIP <span class="s2">&quot;RN50-quickgelu#openai&quot;</span> model │
-│                   RN50-quickgelu#yfcc15m │  text-to-image │       <span class="m">1024</span> │  transformer │  Open CLIP <span class="s2">&quot;RN50-quickgelu#yfcc15m&quot;</span> model │
-│                           RN50x16#openai │  text-to-image │        <span class="m">768</span> │  transformer │          Open CLIP <span class="s2">&quot;RN50x16#openai&quot;</span> model │
-│                            RN50x4#openai │  text-to-image │        <span class="m">640</span> │  transformer │           Open CLIP <span class="s2">&quot;RN50x4#openai&quot;</span> model │
-│                           RN50x64#openai │  text-to-image │       <span class="m">1024</span> │  transformer │          Open CLIP <span class="s2">&quot;RN50x64#openai&quot;</span> model │
-│                             RN50#yfcc15m │  text-to-image │       <span class="m">1024</span> │  transformer │            Open CLIP <span class="s2">&quot;RN50#yfcc15m&quot;</span> model │
-│                   ViT-B-16#laion400m_e31 │  text-to-image │        <span class="m">512</span> │  transformer │  Open CLIP <span class="s2">&quot;ViT-B-16#laion400m_e31&quot;</span> model │
-│                   ViT-B-16#laion400m_e32 │  text-to-image │        <span class="m">512</span> │  transformer │  Open CLIP <span class="s2">&quot;ViT-B-16#laion400m_e32&quot;</span> model │
-│                          ViT-B-16#openai │  text-to-image │        <span class="m">512</span> │  transformer │         Open CLIP <span class="s2">&quot;ViT-B-16#openai&quot;</span> model │
-│          ViT-B-16-plus-240#laion400m_e31 │  text-to-image │        <span class="m">640</span> │  transformer │                                 Open CLIP │
-│                                          │                │            │              │   <span class="s2">&quot;ViT-B-16-plus-240#laion400m_e31&quot;</span> model │
-│          ViT-B-16-plus-240#laion400m_e32 │  text-to-image │        <span class="m">640</span> │  transformer │                                 Open CLIP │
-│                                          │                │            │              │   <span class="s2">&quot;ViT-B-16-plus-240#laion400m_e32&quot;</span> model │
-│                     ViT-B-32#laion2b_e16 │  text-to-image │        <span class="m">512</span> │  transformer │    Open CLIP <span class="s2">&quot;ViT-B-32#laion2b_e16&quot;</span> model │
-│                   ViT-B-32#laion400m_e31 │  text-to-image │        <span class="m">512</span> │  transformer │  Open CLIP <span class="s2">&quot;ViT-B-32#laion400m_e31&quot;</span> model │
-│                   ViT-B-32#laion400m_e32 │  text-to-image │        <span class="m">512</span> │  transformer │  Open CLIP <span class="s2">&quot;ViT-B-32#laion400m_e32&quot;</span> model │
-│                          ViT-B-32#openai │  text-to-image │        <span class="m">512</span> │  transformer │         Open CLIP <span class="s2">&quot;ViT-B-32#openai&quot;</span> model │
-│         ViT-B-32-quickgelu#laion400m_e31 │  text-to-image │        <span class="m">512</span> │  transformer │                                 Open CLIP │
-│                                          │                │            │              │  <span class="s2">&quot;ViT-B-32-quickgelu#laion400m_e31&quot;</span> model │
-│         ViT-B-32-quickgelu#laion400m_e32 │  text-to-image │        <span class="m">512</span> │  transformer │                                 Open CLIP │
-│                                          │                │            │              │  <span class="s2">&quot;ViT-B-32-quickgelu#laion400m_e32&quot;</span> model │
-│                ViT-B-32-quickgelu#openai │  text-to-image │        <span class="m">512</span> │  transformer │     Open CLIP <span class="s2">&quot;ViT-B-32-quickgelu#openai&quot;</span> │
-│                                          │                │            │              │                                     model │
-│                      ViT-L-14-336#openai │  text-to-image │        <span class="m">768</span> │  transformer │     Open CLIP <span class="s2">&quot;ViT-L-14-336#openai&quot;</span> model │
-│                          ViT-L-14#openai │  text-to-image │        <span class="m">768</span> │  transformer │         Open CLIP <span class="s2">&quot;ViT-L-14#openai&quot;</span> model │
-│                                resnet152 │ image-to-image │       <span class="m">2048</span> │          cnn │         ResNet152 pre-trained on ImageNet │
-│                                 resnet50 │ image-to-image │       <span class="m">2048</span> │          cnn │          ResNet50 pre-trained on ImageNet │
-│ sentence-transformers/msmarco-distilber… │   text-to-text │        <span class="m">768</span> │  transformer │   Pretrained BERT, fine-tuned on MS Marco │
-└──────────────────────────────────────────┴────────────────┴────────────┴──────────────┴───────────────────────────────────────────┘
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>                                                                Finetuner backbones                                                                      
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                             name ┃           task ┃ output_dim ┃ architecture ┃                                                description ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│                                  bert-base-cased │   text-to-text │        <span class="m">768</span> │  transformer │ BERT model pre-trained on BookCorpus and English Wikipedia │
+│                     openai/clip-vit-base-patch16 │  text-to-image │        <span class="m">512</span> │  transformer │                         CLIP base model with patch size <span class="m">16</span> │
+│                     openai/clip-vit-base-patch32 │  text-to-image │        <span class="m">512</span> │  transformer │                                            CLIP base model │
+│                openai/clip-vit-large-patch14-336 │  text-to-image │        <span class="m">768</span> │  transformer │                        CLIP large model <span class="k">for</span> 336x336 images │
+│                    openai/clip-vit-large-patch14 │  text-to-image │       <span class="m">1024</span> │  transformer │                        CLIP large model with patch size <span class="m">14</span> │
+│                                  efficientnet_b0 │ image-to-image │       <span class="m">1280</span> │          cnn │                    EfficientNet B0 pre-trained on ImageNet │
+│                                  efficientnet_b4 │ image-to-image │       <span class="m">1792</span> │          cnn │                    EfficientNet B4 pre-trained on ImageNet │
+│                                    RN101::openai │  text-to-image │        <span class="m">512</span> │  transformer │                            Open CLIP <span class="s2">&quot;RN101::openai&quot;</span> model │
+│                          RN101-quickgelu::openai │  text-to-image │        <span class="m">512</span> │  transformer │                  Open CLIP <span class="s2">&quot;RN101-quickgelu::openai&quot;</span> model │
+│                         RN101-quickgelu::yfcc15m │  text-to-image │        <span class="m">512</span> │  transformer │                 Open CLIP <span class="s2">&quot;RN101-quickgelu::yfcc15m&quot;</span> model │
+│                                   RN101::yfcc15m │  text-to-image │        <span class="m">512</span> │  transformer │                           Open CLIP <span class="s2">&quot;RN101::yfcc15m&quot;</span> model │
+│                                      RN50::cc12m │  text-to-image │       <span class="m">1024</span> │  transformer │                              Open CLIP <span class="s2">&quot;RN50::cc12m&quot;</span> model │
+│                                     RN50::openai │  text-to-image │       <span class="m">1024</span> │  transformer │                             Open CLIP <span class="s2">&quot;RN50::openai&quot;</span> model │
+│                            RN50-quickgelu::cc12m │  text-to-image │       <span class="m">1024</span> │  transformer │                    Open CLIP <span class="s2">&quot;RN50-quickgelu::cc12m&quot;</span> model │
+│                           RN50-quickgelu::openai │  text-to-image │       <span class="m">1024</span> │  transformer │                   Open CLIP <span class="s2">&quot;RN50-quickgelu::openai&quot;</span> model │
+│                          RN50-quickgelu::yfcc15m │  text-to-image │       <span class="m">1024</span> │  transformer │                  Open CLIP <span class="s2">&quot;RN50-quickgelu::yfcc15m&quot;</span> model │
+│                                  RN50x16::openai │  text-to-image │        <span class="m">768</span> │  transformer │                          Open CLIP <span class="s2">&quot;RN50x16::openai&quot;</span> model │
+│                                   RN50x4::openai │  text-to-image │        <span class="m">640</span> │  transformer │                           Open CLIP <span class="s2">&quot;RN50x4::openai&quot;</span> model │
+│                                  RN50x64::openai │  text-to-image │       <span class="m">1024</span> │  transformer │                          Open CLIP <span class="s2">&quot;RN50x64::openai&quot;</span> model │
+│                                    RN50::yfcc15m │  text-to-image │       <span class="m">1024</span> │  transformer │                            Open CLIP <span class="s2">&quot;RN50::yfcc15m&quot;</span> model │
+│                          ViT-B-16::laion400m_e31 │  text-to-image │        <span class="m">512</span> │  transformer │                  Open CLIP <span class="s2">&quot;ViT-B-16::laion400m_e31&quot;</span> model │
+│                          ViT-B-16::laion400m_e32 │  text-to-image │        <span class="m">512</span> │  transformer │                  Open CLIP <span class="s2">&quot;ViT-B-16::laion400m_e32&quot;</span> model │
+│                                 ViT-B-16::openai │  text-to-image │        <span class="m">512</span> │  transformer │                         Open CLIP <span class="s2">&quot;ViT-B-16::openai&quot;</span> model │
+│                 ViT-B-16-plus-240::laion400m_e31 │  text-to-image │        <span class="m">640</span> │  transformer │         Open CLIP <span class="s2">&quot;ViT-B-16-plus-240::laion400m_e31&quot;</span> model │
+│                 ViT-B-16-plus-240::laion400m_e32 │  text-to-image │        <span class="m">640</span> │  transformer │         Open CLIP <span class="s2">&quot;ViT-B-16-plus-240::laion400m_e32&quot;</span> model │
+│                            ViT-B-32::laion2b_e16 │  text-to-image │        <span class="m">512</span> │  transformer │                    Open CLIP <span class="s2">&quot;ViT-B-32::laion2b_e16&quot;</span> model │
+│                          ViT-B-32::laion400m_e31 │  text-to-image │        <span class="m">512</span> │  transformer │                  Open CLIP <span class="s2">&quot;ViT-B-32::laion400m_e31&quot;</span> model │
+│                          ViT-B-32::laion400m_e32 │  text-to-image │        <span class="m">512</span> │  transformer │                  Open CLIP <span class="s2">&quot;ViT-B-32::laion400m_e32&quot;</span> model │
+│                                 ViT-B-32::openai │  text-to-image │        <span class="m">512</span> │  transformer │                         Open CLIP <span class="s2">&quot;ViT-B-32::openai&quot;</span> model │
+│                ViT-B-32-quickgelu::laion400m_e31 │  text-to-image │        <span class="m">512</span> │  transformer │        Open CLIP <span class="s2">&quot;ViT-B-32-quickgelu::laion400m_e31&quot;</span> model │
+│                ViT-B-32-quickgelu::laion400m_e32 │  text-to-image │        <span class="m">512</span> │  transformer │        Open CLIP <span class="s2">&quot;ViT-B-32-quickgelu::laion400m_e32&quot;</span> model │
+│                       ViT-B-32-quickgelu::openai │  text-to-image │        <span class="m">512</span> │  transformer │               Open CLIP <span class="s2">&quot;ViT-B-32-quickgelu::openai&quot;</span> model │
+│                             ViT-L-14-336::openai │  text-to-image │        <span class="m">768</span> │  transformer │                     Open CLIP <span class="s2">&quot;ViT-L-14-336::openai&quot;</span> model │
+│                                 ViT-L-14::openai │  text-to-image │        <span class="m">768</span> │  transformer │                         Open CLIP <span class="s2">&quot;ViT-L-14::openai&quot;</span> model │
+│                                        resnet152 │ image-to-image │       <span class="m">2048</span> │          cnn │                          ResNet152 pre-trained on ImageNet │
+│                                         resnet50 │ image-to-image │       <span class="m">2048</span> │          cnn │                           ResNet50 pre-trained on ImageNet │
+│ sentence-transformers/msmarco-distilbert-base-v3 │   text-to-text │        <span class="m">768</span> │  transformer │                    Pretrained BERT, fine-tuned on MS Marco │
+└──────────────────────────────────────────────────┴────────────────┴────────────┴──────────────┴───────────────────────────────────────────────────────────
 </pre></div>
 </div>
 <ul class="simple">
@@ -453,7 +447,7 @@ search tasks.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 13, 2022</div>
+                            Last updated on Oct 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -511,6 +505,7 @@ search tasks.</p>
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/tabs.js"></script>
     <script src="../../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
     <script src="../../_static/source-in-links.js"></script>

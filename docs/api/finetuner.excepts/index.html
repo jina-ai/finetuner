@@ -4,11 +4,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<meta property="og:title" content="finetuner.exception module" />
+<meta property="og:title" content="finetuner.excepts module" />
   
 <meta property="og:type" content="website" />
   
-<meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.exception/" />
+<meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.excepts/" />
   
 <meta property="og:site_name" content="Finetuner Documentation" />
   
@@ -34,10 +34,10 @@
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.experiment module" href="../finetuner.experiment/" /><link rel="prev" title="finetuner.console module" href="../finetuner.console/" />
-        <link rel="canonical" href="https://finetuner.jina.ai/api/finetuner.exception.html" />
+        <link rel="canonical" href="https://finetuner.jina.ai/api/finetuner.excepts.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
-        <title>finetuner.exception module - Finetuner documentation</title>
+        <title>finetuner.excepts module - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -238,9 +238,9 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/text-to-text/">Text-to-Text Search via BERT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/image-to-image/">Image-to-Image Search via ResNet50</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/text-to-image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul class="current">
@@ -252,7 +252,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.console/">finetuner.console module</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">finetuner.exception module</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.model/">finetuner.model module</a></li>
@@ -268,7 +268,7 @@
                 <img class="sidebar-ecosys-logo only-light-line" src="../../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/search-dark.svg">
                 Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/hub-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/hub-dark.svg">
             Jina Hub</a></li>
@@ -334,29 +334,29 @@
                     </label>
                 </div>
                 <article role="main">
-                    <section id="module-finetuner.exception">
-<span id="finetuner-exception-module"></span><h1>finetuner.exception module<a class="headerlink" href="#module-finetuner.exception" title="Permalink to this headline">#</a></h1>
+                    <section id="module-finetuner.excepts">
+<span id="finetuner-excepts-module"></span><h1>finetuner.excepts module<a class="headerlink" href="#module-finetuner.excepts" title="Permalink to this headline">#</a></h1>
 <dl class="py exception">
-<dt class="sig sig-object py" id="finetuner.exception.FinetunerServerError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.exception.</span></span><span class="sig-name descname"><span class="pre">FinetunerServerError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'An</span> <span class="pre">unknown</span> <span class="pre">error</span> <span class="pre">occurred'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">details</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/exception/#FinetunerServerError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.exception.FinetunerServerError" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="finetuner.excepts.FinetunerServerError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.excepts.</span></span><span class="sig-name descname"><span class="pre">FinetunerServerError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'An</span> <span class="pre">unknown</span> <span class="pre">error</span> <span class="pre">occurred'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">details</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/excepts/#FinetunerServerError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.excepts.FinetunerServerError" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py" id="finetuner.exception.RunInProgressError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.exception.</span></span><span class="sig-name descname"><span class="pre">RunInProgressError</span></span><a class="reference internal" href="../../_modules/finetuner/exception/#RunInProgressError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.exception.RunInProgressError" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="finetuner.excepts.RunInProgressError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.excepts.</span></span><span class="sig-name descname"><span class="pre">RunInProgressError</span></span><a class="reference internal" href="../../_modules/finetuner/excepts/#RunInProgressError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.excepts.RunInProgressError" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py" id="finetuner.exception.RunPreparingError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.exception.</span></span><span class="sig-name descname"><span class="pre">RunPreparingError</span></span><a class="reference internal" href="../../_modules/finetuner/exception/#RunPreparingError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.exception.RunPreparingError" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="finetuner.excepts.RunPreparingError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.excepts.</span></span><span class="sig-name descname"><span class="pre">RunPreparingError</span></span><a class="reference internal" href="../../_modules/finetuner/excepts/#RunPreparingError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.excepts.RunPreparingError" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py" id="finetuner.exception.RunFailedError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.exception.</span></span><span class="sig-name descname"><span class="pre">RunFailedError</span></span><a class="reference internal" href="../../_modules/finetuner/exception/#RunFailedError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.exception.RunFailedError" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="finetuner.excepts.RunFailedError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.excepts.</span></span><span class="sig-name descname"><span class="pre">RunFailedError</span></span><a class="reference internal" href="../../_modules/finetuner/excepts/#RunFailedError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.excepts.RunFailedError" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 </dd></dl>
 
@@ -397,7 +397,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 13, 2022</div>
+                            Last updated on Oct 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -455,6 +455,7 @@
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/tabs.js"></script>
     <script src="../../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
     <script src="../../_static/source-in-links.js"></script>

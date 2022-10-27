@@ -35,7 +35,7 @@ During fine-tuning,
 the run status changes from:
 1. CREATED: the {class}`~finetuner.run.Run` has been created and submitted to the job queue.
 2. STARTED: the job is in progress
-3. FINISHED: the job finished successfully, model has been sent to cloud storage.
+3. FINISHED: the job finished successfully, model has been sent to Jina AI Cloud.
 4. FAILED: the job failed, please check the logs for more details.
 
 ## Advanced configurations
@@ -71,7 +71,7 @@ run = finetuner.fit(
     scheduler_step='batch',
     freeze=False, # If applied will freeze the embedding model, only train the MLP.
     output_dim=512, # Attach a MLP on top of embedding model.
-    cpu=False,
+    device='cuda',
     num_workers=4,
     to_onnx=False,  # If set, please pass `is_onnx` when making inference.
 )

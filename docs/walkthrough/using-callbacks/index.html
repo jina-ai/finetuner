@@ -240,9 +240,9 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/text-to-text/">Text-to-Text Search via BERT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/image-to-image/">Image-to-Image Search via ResNet50</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tasks/text-to-image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -254,7 +254,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.exception/">finetuner.exception module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.model/">finetuner.model module</a></li>
@@ -270,7 +270,7 @@
                 <img class="sidebar-ecosys-logo only-light-line" src="../../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/search-dark.svg">
                 Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/hub-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/hub-dark.svg">
             Jina Hub</a></li>
@@ -376,7 +376,7 @@ A run can be assigned multiple callbacks using the optional <code class="docutil
 </pre></div>
 </div>
 <p>The evaluation callback is triggered at the end of each epoch, in which the model is evaluated using the <code class="docutils literal notranslate"><span class="pre">query_data</span></code> and <code class="docutils literal notranslate"><span class="pre">index_data</span></code> datasets that were provided when the callback was created.
-It is worth noting that the evaluation callback and the <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameter of the fit method do not do the same thing. The eval data parameter takes a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> (or the name of one that has been pushed on the cloud) and uses its contents to evaluate the loss of the model whereas the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall. These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.</p>
+It is worth noting that the evaluation callback and the <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameter of the fit method do not do the same thing. The eval data parameter takes a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> (or the name of one that has been pushed on the Jina AI Cloud) and uses its contents to evaluate the loss of the model whereas the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall. These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.</p>
 </section>
 <section id="bestmodelcheckpoint">
 <h2>BestModelCheckpoint<a class="headerlink" href="#bestmodelcheckpoint" title="Permalink to this headline">#</a></h2>
@@ -435,7 +435,7 @@ It is worth noting that the evaluation callback and the <code class="docutils li
     <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">learning_rate</span><span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
     <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;CLIPLoss&#39;</span><span class="p">,</span>
-    <span class="n">cpu</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span>
     <span class="n">callbacks</span><span class="o">=</span> <span class="p">[</span>
         <span class="n">callback</span><span class="o">.</span><span class="n">EarlyStopping</span><span class="p">(</span>
             <span class="n">monitor</span> <span class="o">=</span> <span class="s2">&quot;train_loss&quot;</span><span class="p">,</span>
@@ -460,7 +460,7 @@ It is worth noting that the evaluation callback and the <code class="docutils li
 <p>WiSE-FT, proposed by Mitchell et al. in <a class="reference external" href="https://arxiv.org/abs/2109.01903">Robust fine-tuning of zero-shot models</a>,
 has been proven to be an effective way for fine-tuning models with a strong zero-shot capability,
 such as CLIP.</p>
-<p>Please refer to <a class="reference internal" href="../../tasks/text-to-image/#wise-ft"><span class="std std-ref">Apply WiSE-FT</span></a> in the CLIP fine-tuning example.</p>
+<p>Please refer to <span class="xref std std-ref">Apply WiSE-FT</span> in the CLIP fine-tuning example.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>It is recommended to use WiSEFTCallback when fine-tuning CLIP.
@@ -504,7 +504,7 @@ We can not ensure it works for other category of models, such as ResNet or Bert.
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 13, 2022</div>
+                            Last updated on Oct 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -584,6 +584,7 @@ We can not ensure it works for other category of models, such as ResNet or Bert.
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/tabs.js"></script>
     <script src="../../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
     <script src="../../_static/source-in-links.js"></script>

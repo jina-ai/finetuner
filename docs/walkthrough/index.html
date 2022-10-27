@@ -240,9 +240,9 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tasks/text-to-text/">Text-to-Text Search via BERT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tasks/image-to-image/">Image-to-Image Search via ResNet50</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tasks/text-to-image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -254,7 +254,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.console/">finetuner.console module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/finetuner.exception/">finetuner.exception module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.model/">finetuner.model module</a></li>
@@ -270,7 +270,7 @@
                 <img class="sidebar-ecosys-logo only-light-line" src="../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../_static/search-dark.svg">
                 Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
             <img class="sidebar-ecosys-logo only-light-line" src="../_static/hub-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../_static/hub-dark.svg">
             Jina Hub</a></li>
@@ -352,8 +352,8 @@ to address this by providing a simple interface, which can be as easy as:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
-<span class="c1"># Login to Jina ecosystem</span>
-<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
+<span class="c1"># Login to Jina AI Cloud</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>  <span class="c1"># use finetuner.notebook_login() in Jupyter notebook or Google Colab</span>
 
 <span class="c1"># Prepare training data</span>
 <span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
@@ -372,7 +372,7 @@ to address this by providing a simple interface, which can be as easy as:</p>
 </pre></div>
 </div>
 <p>You should see this in your terminal:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🔐 Successfully login to Jina ecosystem!
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🔐 Successfully logged <span class="k">in</span> to Jina AI as <span class="o">[</span>USER NAME<span class="o">]</span>!
 Run name: vigilant-tereshkova
 Run logs:
 
@@ -387,7 +387,7 @@ Run logs:
            INFO     <span class="o">[</span>__main__<span class="o">]</span> Finished 🚀                       __main__.py:240
 </pre></div>
 </div>
-<p>Submitted fine-tuning jobs run efficiently on the Jina Cloud on either CPU or GPU enabled hardware.</p>
+<p>Submitted fine-tuning jobs run efficiently on the Jina AI Cloud on either CPU or GPU enabled hardware.</p>
 <p>Finetuner fully owns the complexity of setting up and maintaining the model training infrastructure plus the complexity of delivering SOTA training methods to production use cases.</p>
 <p>Please check out the following steps for more information:</p>
 <div class="toctree-wrapper compound">
@@ -459,7 +459,7 @@ Run logs:
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 13, 2022</div>
+                            Last updated on Oct 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -517,6 +517,7 @@ Run logs:
     <script src="../_static/copybutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script src="../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
     <script src="../_static/source-in-links.js"></script>

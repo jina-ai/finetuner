@@ -206,9 +206,9 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tasks/text-to-text/">Text-to-Text Search via BERT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tasks/image-to-image/">Image-to-Image Search via ResNet50</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tasks/text-to-image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -220,7 +220,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.console/">finetuner.console module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/finetuner.exception/">finetuner.exception module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/finetuner.model/">finetuner.model module</a></li>
@@ -236,7 +236,7 @@
                 <img class="sidebar-ecosys-logo only-light-line" src="../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../_static/search-dark.svg">
                 Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
             <img class="sidebar-ecosys-logo only-light-line" src="../_static/hub-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../_static/hub-dark.svg">
             Jina Hub</a></li>
@@ -305,13 +305,23 @@
                     
 <section class="genindex-section">
   <h1 id="index">Index</h1>
-  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a></div>
+  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a></div>
 </section>
 <section id="A" class="genindex-section">
   <h2>A</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.run/#finetuner.run.Run.artifact_id">artifact_id (finetuner.run.Run property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="../api/finetuner/#finetuner.build_model">build_model() (in module finetuner)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -466,10 +476,10 @@
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li>
-    finetuner.exception
+    finetuner.excepts
 
         <ul>
-          <li><a href="../api/finetuner.exception/#module-finetuner.exception">module</a>
+          <li><a href="../api/finetuner.excepts/#module-finetuner.excepts">module</a>
 </li>
         </ul></li>
         <li>
@@ -500,7 +510,7 @@
           <li><a href="../api/finetuner.run/#module-finetuner.run">module</a>
 </li>
         </ul></li>
-        <li><a href="../api/finetuner.exception/#finetuner.exception.FinetunerServerError">FinetunerServerError</a>
+        <li><a href="../api/finetuner.excepts/#finetuner.excepts.FinetunerServerError">FinetunerServerError</a>
 </li>
         <li><a href="../api/finetuner.client.client/#finetuner.client.client.FinetunerV1Client">FinetunerV1Client (class in finetuner.client.client)</a>
 </li>
@@ -618,7 +628,7 @@
 </li>
           <li><a href="../api/finetuner.console/#module-finetuner.console">finetuner.console</a>
 </li>
-          <li><a href="../api/finetuner.exception/#module-finetuner.exception">finetuner.exception</a>
+          <li><a href="../api/finetuner.excepts/#module-finetuner.excepts">finetuner.excepts</a>
 </li>
           <li><a href="../api/finetuner.experiment/#module-finetuner.experiment">finetuner.experiment</a>
 </li>
@@ -644,6 +654,14 @@
 </li>
         </ul></li>
     </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.notebook_login">notebook_login() (finetuner.finetuner.Finetuner method)</a>
+
+        <ul>
+          <li><a href="../api/finetuner/#finetuner.notebook_login">(in module finetuner)</a>
+</li>
+        </ul></li>
+    </ul></td>
   </tr></table>
 </section>
 
@@ -663,13 +681,13 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/finetuner.run/#finetuner.run.Run">Run (class in finetuner.run)</a>
 </li>
-        <li><a href="../api/finetuner.exception/#finetuner.exception.RunFailedError">RunFailedError</a>
+        <li><a href="../api/finetuner.excepts/#finetuner.excepts.RunFailedError">RunFailedError</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/finetuner.exception/#finetuner.exception.RunInProgressError">RunInProgressError</a>
+        <li><a href="../api/finetuner.excepts/#finetuner.excepts.RunInProgressError">RunInProgressError</a>
 </li>
-        <li><a href="../api/finetuner.exception/#finetuner.exception.RunPreparingError">RunPreparingError</a>
+        <li><a href="../api/finetuner.excepts/#finetuner.excepts.RunPreparingError">RunPreparingError</a>
 </li>
     </ul></td>
   </tr></table>
@@ -709,7 +727,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 13, 2022</div>
+                            Last updated on Oct 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -767,6 +785,7 @@
     <script src="../_static/copybutton.js"></script>
     <script src="../_static/tabs.js"></script>
     <script src="../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
     <script src="../_static/source-in-links.js"></script>

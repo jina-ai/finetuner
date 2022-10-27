@@ -207,9 +207,9 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../tasks/text-to-text/">Text-to-Text Search via BERT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tasks/image-to-image/">Image-to-Image Search via ResNet50</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../tasks/text-to-image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -221,7 +221,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.console/">finetuner.console module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.exception/">finetuner.exception module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.model/">finetuner.model module</a></li>
@@ -237,7 +237,7 @@
                 <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/search-dark.svg">
                 Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
             <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/hub-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/hub-dark.svg">
             Jina Hub</a></li>
@@ -304,9 +304,11 @@
                 </div>
                 <article role="main">
                     <h1>Source code for finetuner.experiment</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">fields</span>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">fields</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">from</span> <span class="nn">_finetuner.runner.stubs</span> <span class="kn">import</span> <span class="n">config</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="kn">from</span> <span class="nn">finetuner.callback</span> <span class="kn">import</span> <span class="n">EvaluationCallback</span>
@@ -317,29 +319,23 @@
     <span class="n">CONFIG</span><span class="p">,</span>
     <span class="n">CPU</span><span class="p">,</span>
     <span class="n">CREATED_AT</span><span class="p">,</span>
-    <span class="n">DATA</span><span class="p">,</span>
     <span class="n">DESCRIPTION</span><span class="p">,</span>
+    <span class="n">DEVICE</span><span class="p">,</span>
     <span class="n">EPOCHS</span><span class="p">,</span>
     <span class="n">EVAL_DATA</span><span class="p">,</span>
-    <span class="n">EXPERIMENT_NAME</span><span class="p">,</span>
     <span class="n">FREEZE</span><span class="p">,</span>
-    <span class="n">HYPER_PARAMETERS</span><span class="p">,</span>
     <span class="n">LEARNING_RATE</span><span class="p">,</span>
     <span class="n">LOSS</span><span class="p">,</span>
     <span class="n">MINER</span><span class="p">,</span>
     <span class="n">MINER_OPTIONS</span><span class="p">,</span>
-    <span class="n">MODEL</span><span class="p">,</span>
     <span class="n">MODEL_OPTIONS</span><span class="p">,</span>
     <span class="n">NAME</span><span class="p">,</span>
     <span class="n">NUM_WORKERS</span><span class="p">,</span>
     <span class="n">ONNX</span><span class="p">,</span>
     <span class="n">OPTIMIZER</span><span class="p">,</span>
     <span class="n">OPTIMIZER_OPTIONS</span><span class="p">,</span>
-    <span class="n">OPTIONS</span><span class="p">,</span>
     <span class="n">OUTPUT_DIM</span><span class="p">,</span>
-    <span class="n">RUN_NAME</span><span class="p">,</span>
     <span class="n">SCHEDULER_STEP</span><span class="p">,</span>
-    <span class="n">TRAIN_DATA</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">finetuner.hubble</span> <span class="kn">import</span> <span class="n">push_data</span>
 <span class="kn">from</span> <span class="nn">finetuner.names</span> <span class="kn">import</span> <span class="n">get_random_name</span>
@@ -471,14 +467,22 @@
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="n">cpu</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CPU</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="n">num_workers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NUM_WORKERS</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">,</span> <span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cuda&#39;</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="s1">&#39;gpu&#39;</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CPU</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Parameter `cpu` will be deprecated from Finetuner 0.7.0,&#39;</span>
+                    <span class="s1">&#39;please use `device=&quot;cpu&quot; or `device=&quot;cuda&quot; instead.`&#39;</span><span class="p">,</span>
+                    <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
+                <span class="p">)</span>
 
+        <span class="n">num_workers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NUM_WORKERS</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
         <span class="n">run_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">create_run</span><span class="p">(</span>
             <span class="n">run_name</span><span class="o">=</span><span class="n">run_name</span><span class="p">,</span>
             <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
             <span class="n">run_config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
-            <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span> <span class="k">if</span> <span class="n">cpu</span> <span class="k">else</span> <span class="s1">&#39;gpu&#39;</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
             <span class="n">cpus</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
             <span class="n">gpus</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
         <span class="p">)</span>
@@ -512,43 +516,63 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">callbacks</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">CALLBACKS</span><span class="p">]</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CALLBACKS</span><span class="p">)</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="n">callbacks</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">{</span>
-                <span class="n">NAME</span><span class="p">:</span> <span class="n">callback</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-                <span class="n">OPTIONS</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">CallbackConfig</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">callback</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="n">options</span><span class="o">=</span><span class="p">{</span>
                     <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
                 <span class="p">},</span>
-            <span class="p">}</span>
+            <span class="p">)</span>
             <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="n">callbacks</span>
         <span class="p">]</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="n">MODEL</span><span class="p">:</span> <span class="p">{</span>
-                <span class="n">NAME</span><span class="p">:</span> <span class="n">model</span><span class="p">,</span>
-                <span class="n">FREEZE</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">FREEZE</span><span class="p">),</span>
-                <span class="n">OUTPUT_DIM</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">OUTPUT_DIM</span><span class="p">),</span>
-                <span class="n">OPTIONS</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MODEL_OPTIONS</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{},</span>
-                <span class="n">ONNX</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ONNX</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="p">},</span>
-            <span class="n">DATA</span><span class="p">:</span> <span class="p">{</span>
-                <span class="n">TRAIN_DATA</span><span class="p">:</span> <span class="n">train_data</span><span class="p">,</span>
-                <span class="n">EVAL_DATA</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">EVAL_DATA</span><span class="p">),</span>
-                <span class="n">NUM_WORKERS</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NUM_WORKERS</span><span class="p">),</span>
-            <span class="p">},</span>
-            <span class="n">CALLBACKS</span><span class="p">:</span> <span class="n">callbacks</span><span class="p">,</span>
-            <span class="n">HYPER_PARAMETERS</span><span class="p">:</span> <span class="p">{</span>
-                <span class="n">LOSS</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">LOSS</span><span class="p">),</span>
-                <span class="n">OPTIMIZER</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">OPTIMIZER</span><span class="p">),</span>
-                <span class="n">OPTIMIZER_OPTIONS</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">OPTIMIZER_OPTIONS</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{},</span>
-                <span class="n">MINER</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MINER</span><span class="p">),</span>
-                <span class="n">MINER_OPTIONS</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MINER_OPTIONS</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{},</span>
-                <span class="n">BATCH_SIZE</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">BATCH_SIZE</span><span class="p">),</span>
-                <span class="n">LEARNING_RATE</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">LEARNING_RATE</span><span class="p">),</span>
-                <span class="n">EPOCHS</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">EPOCHS</span><span class="p">),</span>
-                <span class="n">SCHEDULER_STEP</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">SCHEDULER_STEP</span><span class="p">),</span>
-            <span class="p">},</span>
-            <span class="n">EXPERIMENT_NAME</span><span class="p">:</span> <span class="n">experiment_name</span><span class="p">,</span>
-            <span class="n">RUN_NAME</span><span class="p">:</span> <span class="n">run_name</span><span class="p">,</span>
-        <span class="p">}</span></div>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">ModelConfig</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">output_dim</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">OUTPUT_DIM</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">FREEZE</span><span class="p">):</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">freeze</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">FREEZE</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MODEL_OPTIONS</span><span class="p">):</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MODEL_OPTIONS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ONNX</span><span class="p">):</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">to_onnx</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ONNX</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">DataConfig</span><span class="p">(</span>
+            <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
+            <span class="n">eval_data</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">EVAL_DATA</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NUM_WORKERS</span><span class="p">):</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">NUM_WORKERS</span><span class="p">)</span>
+
+        <span class="n">hyper_parameters</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">HyperParametersConfig</span><span class="p">(</span>
+            <span class="n">miner</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MINER</span><span class="p">),</span>
+            <span class="n">learning_rate</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">LEARNING_RATE</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">LOSS</span><span class="p">):</span>
+            <span class="n">hyper_parameters</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">LOSS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">OPTIMIZER</span><span class="p">):</span>
+            <span class="n">hyper_parameters</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">OPTIMIZER</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">OPTIMIZER_OPTIONS</span><span class="p">):</span>
+            <span class="n">hyper_parameters</span><span class="o">.</span><span class="n">optimizer_options</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">OPTIMIZER_OPTIONS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MINER_OPTIONS</span><span class="p">):</span>
+            <span class="n">hyper_parameters</span><span class="o">.</span><span class="n">miner_options</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MINER_OPTIONS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">BATCH_SIZE</span><span class="p">):</span>
+            <span class="n">hyper_parameters</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">BATCH_SIZE</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">EPOCHS</span><span class="p">):</span>
+            <span class="n">epochs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">EPOCHS</span><span class="p">)</span>
+            <span class="n">hyper_parameters</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">SCHEDULER_STEP</span><span class="p">):</span>
+            <span class="n">hyper_parameters</span><span class="o">.</span><span class="n">scheduler_step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">SCHEDULER_STEP</span><span class="p">)</span>
+
+        <span class="n">run_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">RunConfig</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span>
+            <span class="n">hyper_parameters</span><span class="o">=</span><span class="n">hyper_parameters</span><span class="p">,</span>
+            <span class="n">experiment_name</span><span class="o">=</span><span class="n">experiment_name</span><span class="p">,</span>
+            <span class="n">run_name</span><span class="o">=</span><span class="n">run_name</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">run_config</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span></div>
 </pre></div>
                 </article>
             </div>
@@ -563,7 +587,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 13, 2022</div>
+                            Last updated on Oct 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -621,6 +645,7 @@
     <script src="../../../_static/copybutton.js"></script>
     <script src="../../../_static/tabs.js"></script>
     <script src="../../../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
     <script src="../../../_static/source-in-links.js"></script>
