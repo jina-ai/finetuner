@@ -16,7 +16,7 @@ jupyter:
 
 <a href="https://colab.research.google.com/drive/1QuUTy3iVR-kTPljkwplKYaJ-NTCgPEc_?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
-Searching visually similar images with image queries is a very popular use-case, so of course Finetuner enables you to accomplish this easily.
+Searching visually similar images with image queries is a very popular use-case. However, using pre-trained models don’t deliver the best results – the models are trained on general data that lacks the particularities of your specific task. Here's where Finetuner comes! It enables you to accomplish this easily.
 
 This guide will demonstrate how to fine-tune a ResNet model for image to image retrieval.
 
@@ -26,8 +26,7 @@ This guide will demonstrate how to fine-tune a ResNet model for image to image r
 <!-- #endregion -->
 
 ```python id="VdKH0S0FrwS3"
-# change this after release!
-!pip install 'git+https://github.com/jina-ai/finetuner.git#egg=finetuner[full]'
+!pip install 'finetuner[full]==0.6.4'
 ```
 
 <!-- #region id="7EliQdGCsdL0" -->
@@ -36,7 +35,7 @@ This guide will demonstrate how to fine-tune a ResNet model for image to image r
 More specifically, we will fine-tune ResNet50 on [Totally Looks Like Dataset](https://sites.google.com/view/totally-looks-like-dataset).
 The dataset consists of 6016 pairs of images (12032 in total).
 
-The dataset consists of pairs of images, these are the positive pairs. Negative pairs are constructed by taking two different images, i.e. images that are not in the same pair initially. Following this approach, we construct triplets and use the `TripletLoss`.
+The dataset consists of pairs of images, these are the positive pairs. Negative pairs are constructed by taking two different images, i.e. images that are not in the same pair initially. Following this approach, we construct triplets and use the `TripletLoss`. You can find more in the [how Finetuner works](https://finetuner.jina.ai/get-started/how-it-works/#contrastive-metric-learning) section.
 
 After fine-tuning, the embeddings of positive pairs are expected to be pulled closer, while the embeddings for negative pairs are expected to be pushed away.
 <!-- #endregion -->
@@ -44,11 +43,11 @@ After fine-tuning, the embeddings of positive pairs are expected to be pulled cl
 <!-- #region id="M1sii3xdtD2y" -->
 ## Data
 
-Our journey starts locally. We have to prepare the data and push it to the cloud and Finetuner will be able to get the dataset by its name. For this example,
+Our journey starts locally. We have to prepare the data and push it to the Jina AI Cloud and Finetuner will be able to get the dataset by its name. For this example,
 we already prepared the data, and we'll provide the names of training data (`tll-train-da`) directly to Finetuner.
 
 ```{important} 
-We don't require you to push data to the cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
+We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
 ```
 
 ```{important}
@@ -185,7 +184,7 @@ let's use the fine-tuned model to encode a new `Document`:
 
 ```{admonition} Inference with ONNX
 In case you set `to_onnx=True` when calling `finetuner.fit` function,
-please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)`
+please use `model = finetuner.get_model(artifact, is_onnx=True)`
 ```
 <!-- #endregion -->
 

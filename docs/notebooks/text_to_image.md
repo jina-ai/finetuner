@@ -28,8 +28,7 @@ This guide will showcase fine-tuning a `CLIP` model for text to image retrieval.
 <!-- #endregion -->
 
 ```python id="vglobi-vvqCd"
-# change this after release!
-!pip install 'git+https://github.com/jina-ai/finetuner.git#egg=finetuner[full]'
+!pip install 'finetuner[full]==0.6.4'
 ```
 
 <!-- #region id="GXddluSIwCGW" -->
@@ -41,11 +40,11 @@ For each product the dataset contains a title and images of multiple variants of
 
 <!-- #region id="EVBez7dHwIye" -->
 ## Data
-Our journey starts locally. We have to [prepare the data and push it to the cloud](https://finetuner.jina.ai/walkthrough/create-training-data/) and Finetuner will be able to get the dataset by its name. For this example,
+Our journey starts locally. We have to [prepare the data and push it to the Jina AI Cloud](https://finetuner.jina.ai/walkthrough/create-training-data/) and Finetuner will be able to get the dataset by its name. For this example,
 we already prepared the data, and we'll provide the names of training and evaluation data (`fashion-train-data-clip` and `fashion-eval-data-clip`) directly to Finetuner.
 
 ```{admonition} 
-We don't require you to push data to the cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
+We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
 ```
 <!-- #endregion -->
 
@@ -205,7 +204,7 @@ we use `clip-text` to encode a Document with text content.
 
 ```{admonition} Inference with ONNX
 In case you set `to_onnx=True` when calling `finetuner.fit` function,
-please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)`
+please use `model = finetuner.get_model(artifact, is_onnx=True)`
 ```
 <!-- #endregion -->
 
