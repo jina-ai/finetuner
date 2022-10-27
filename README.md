@@ -43,7 +43,7 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <th>Metric</th>
     <th>Pretrained</th>
     <th>Finetuned</th>
-    <th>Delta :arrow_up_small:</th>
+    <th>Delta</th>
     <th>Run it!</th>
   </tr>
 </thead>
@@ -54,14 +54,14 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <td>mRR</td>
     <td>0.835</td>
     <td>0.967</td>
-    <td>15.8%</td>
+    <td><span style="color:green">15.8%</span></td>
     <td rowspan="2"><p align=center><a href="https://colab.research.google.com/drive/1Ui3Gw3ZL785I7AuzlHv3I0-jTvFFxJ4_?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
   </tr>
   <tr>
     <td>Recall</td>
     <td>0.915</td>
     <td>0.963</td>
-    <td>5.3%</td>
+    <td><span style="color:green">5.3%</span></td>
   </tr>
   <tr>
     <td rowspan="2">ResNet</td>
@@ -69,14 +69,14 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <td>mAP</td>
     <td>0.102</td>
     <td>0.166</td>
-    <td>62.7%</td>
+    <td><span style="color:green">62.7%</span></td>
     <td rowspan="2"><p align=center><a href="https://colab.research.google.com/drive/1QuUTy3iVR-kTPljkwplKYaJ-NTCgPEc_?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
   </tr>
   <tr>
     <td>Recall</td>
     <td>0.235</td>
     <td>0.372</td>
-    <td>58.3%</td>
+    <td><span style="color:green">58.3%</span></td>
   </tr>
   <tr>
     <td rowspan="2">CLIP</td>
@@ -84,14 +84,14 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <td>mRR</td>
     <td>0.575</td>
     <td>0.676</td>
-    <td>17.4%</td>
+    <td><span style="color:green">17.4%</span></td>
     <td rowspan="2"><p align=center><a href="https://colab.research.google.com/drive/1yKnmy2Qotrh3OhgwWRsMWPFwOSAecBxg?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
   </tr>
   <tr>
     <td>Recall</td>
     <td>0.473</td>
     <td>0.564</td>
-    <td>19.2%</td>
+    <td><span style="color:green">19.2%</span></td>
   </tr>
 
 </tbody>
