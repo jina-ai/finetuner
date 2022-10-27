@@ -2,6 +2,7 @@ import warnings
 from dataclasses import fields
 from typing import Any, Dict, List, Optional, Union
 
+from _finetuner.runner.stubs import config
 from docarray import DocumentArray
 
 from finetuner.callback import EvaluationCallback
@@ -12,30 +13,23 @@ from finetuner.constants import (
     CONFIG,
     CPU,
     CREATED_AT,
-    DATA,
     DESCRIPTION,
     DEVICE,
     EPOCHS,
     EVAL_DATA,
-    EXPERIMENT_NAME,
     FREEZE,
-    HYPER_PARAMETERS,
     LEARNING_RATE,
     LOSS,
     MINER,
     MINER_OPTIONS,
-    MODEL,
     MODEL_OPTIONS,
     NAME,
     NUM_WORKERS,
     ONNX,
     OPTIMIZER,
     OPTIMIZER_OPTIONS,
-    OPTIONS,
     OUTPUT_DIM,
-    RUN_NAME,
     SCHEDULER_STEP,
-    TRAIN_DATA,
 )
 from finetuner.hubble import push_data
 from finetuner.names import get_random_name
@@ -216,40 +210,60 @@ class Experiment:
         """
         callbacks = kwargs[CALLBACKS] if kwargs.get(CALLBACKS) else []
         callbacks = [
-            {
-                NAME: callback.__class__.__name__,
-                OPTIONS: {
+            config.CallbackConfig(
+                name=callback.__class__.__name__,
+                options={
                     field.name: getattr(callback, field.name)
                     for field in fields(callback)
                 },
-            }
+            )
             for callback in callbacks
         ]
-        return {
-            MODEL: {
-                NAME: model,
-                FREEZE: kwargs.get(FREEZE),
-                OUTPUT_DIM: kwargs.get(OUTPUT_DIM),
-                OPTIONS: kwargs.get(MODEL_OPTIONS) or {},
-                ONNX: kwargs.get(ONNX) or False,
-            },
-            DATA: {
-                TRAIN_DATA: train_data,
-                EVAL_DATA: kwargs.get(EVAL_DATA),
-                NUM_WORKERS: kwargs.get(NUM_WORKERS),
-            },
-            CALLBACKS: callbacks,
-            HYPER_PARAMETERS: {
-                LOSS: kwargs.get(LOSS),
-                OPTIMIZER: kwargs.get(OPTIMIZER),
-                OPTIMIZER_OPTIONS: kwargs.get(OPTIMIZER_OPTIONS) or {},
-                MINER: kwargs.get(MINER),
-                MINER_OPTIONS: kwargs.get(MINER_OPTIONS) or {},
-                BATCH_SIZE: kwargs.get(BATCH_SIZE),
-                LEARNING_RATE: kwargs.get(LEARNING_RATE),
-                EPOCHS: kwargs.get(EPOCHS),
-                SCHEDULER_STEP: kwargs.get(SCHEDULER_STEP),
-            },
-            EXPERIMENT_NAME: experiment_name,
-            RUN_NAME: run_name,
-        }
+        model = config.ModelConfig(
+            name=model,
+            output_dim=kwargs.get(OUTPUT_DIM),
+        )
+        if kwargs.get(FREEZE):
+            model.freeze = kwargs.get(FREEZE)
+        if kwargs.get(MODEL_OPTIONS):
+            model.options = kwargs.get(MODEL_OPTIONS)
+        if kwargs.get(ONNX):
+            model.to_onnx = kwargs.get(ONNX)
+
+        data = config.DataConfig(
+            train_data=train_data,
+            eval_data=kwargs.get(EVAL_DATA),
+        )
+        if kwargs.get(NUM_WORKERS):
+            data.num_workers = kwargs.get(NUM_WORKERS)
+
+        hyper_parameters = config.HyperParametersConfig(
+            miner=kwargs.get(MINER),
+            learning_rate=kwargs.get(LEARNING_RATE),
+        )
+        if kwargs.get(LOSS):
+            hyper_parameters.loss = kwargs.get(LOSS)
+        if kwargs.get(OPTIMIZER):
+            hyper_parameters.optimizer = kwargs.get(OPTIMIZER)
+        if kwargs.get(OPTIMIZER_OPTIONS):
+            hyper_parameters.optimizer_options = kwargs.get(OPTIMIZER_OPTIONS)
+        if kwargs.get(MINER_OPTIONS):
+            hyper_parameters.miner_options = kwargs.get(MINER_OPTIONS)
+        if kwargs.get(BATCH_SIZE):
+            hyper_parameters.batch_size = kwargs.get(BATCH_SIZE)
+        if kwargs.get(EPOCHS):
+            epochs = kwargs.get(EPOCHS)
+            hyper_parameters.epochs = epochs
+        if kwargs.get(SCHEDULER_STEP):
+            hyper_parameters.scheduler_step = kwargs.get(SCHEDULER_STEP)
+
+        run_config = config.RunConfig(
+            model=model,
+            data=data,
+            callbacks=callbacks,
+            hyper_parameters=hyper_parameters,
+            experiment_name=experiment_name,
+            run_name=run_name,
+        )
+
+        return run_config.dict()
