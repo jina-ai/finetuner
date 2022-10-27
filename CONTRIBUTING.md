@@ -52,6 +52,21 @@ short description of what you have done in the PR, as well as the PR's number, e
 To avoid merge conflicts when multiple people are simultaneously working on new features, make sure there
 is **an empty line above and below the entry**.
 
+## Update notebooks
+
+We have three Google Colab embed inside the documentation:
+
+- [text-to-text with bert](https://colab.research.google.com/drive/1Ui3Gw3ZL785I7AuzlHv3I0-jTvFFxJ4_?usp=sharing)
+- [image-to-image with resnet](https://colab.research.google.com/drive/1QuUTy3iVR-kTPljkwplKYaJ-NTCgPEc_?usp=sharing)
+- [text-to-iamge with clip](https://colab.research.google.com/drive/1yKnmy2Qotrh3OhgwWRsMWPFwOSAecBxg?usp=sharing)
+
+To update code in colab:
+
+1. Update code in the Google Colab.
+2. Download into `docs/notebooks/` folder.
+3. cd into `docs` folder, run `make notebooks` and run `make dirhtml` to see output locally.
+
+Only members of the team has the permission to modify the notebook.
 
 ## Releases
 
