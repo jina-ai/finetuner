@@ -190,9 +190,9 @@ da.summary()
 
 - Take the [walkthrough](https://finetuner.jina.ai/walkthrough/) and submit your first fine-tuning job.
 - Try on different search tasks:
-  - [Text-to-Text Search via BERT](https://finetuner.jina.ai/tasks/text-to-text/)
-  - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/tasks/image-to-image/)
-  - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/tasks/text-to-image/)
+  - [Text-to-Text Search via BERT](https://finetuner.jina.ai/notebooks/text_to_text/)
+  - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/notebooks/image_to_image/)
+  - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/notebooks/text_to_image/)
 
 Intrigued? That's only scratching the surface of what Finetuner is capable of. [Read our docs to learn more](https://finetuner.jina.ai/).
 
