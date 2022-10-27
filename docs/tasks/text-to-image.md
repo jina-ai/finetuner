@@ -178,7 +178,7 @@ all you need to do is use the `WiSEFTCallback`.
 Finetuner will trigger the callback when fine-tuning job finished and merge the weights between the pre-trained model and the fine-tuned model:
 
 ```diff
-from finetuner.callbakcs import WiSEFTCallback
+from finetuner.callback import WiSEFTCallback
 
 run = finetuner.fit(
     model='ViT-B-32#openai',

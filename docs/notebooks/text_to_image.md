@@ -223,7 +223,7 @@ all you need to do is use the `WiSEFTCallback`.
 Finetuner will trigger the callback when fine-tuning job finished and merge the weights between the pre-trained model and the fine-tuned model:
 
 ```diff
-from finetuner.callbakcs import WiSEFTCallback
+from finetuner.callback import WiSEFTCallback
 
 run = finetuner.fit(
     model='ViT-B-32#openai',
@@ -243,3 +243,7 @@ The value you set to `alpha` should be greater equal than 0 and less equal than 
 
 That's it! Check out [clip-as-service](https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models) to learn how to plug-in a fine-tuned CLIP model to our CLIP specific service.
 <!-- #endregion -->
+
+```python id="DYmj0nozyVCL"
+
+```
