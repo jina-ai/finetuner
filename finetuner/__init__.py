@@ -1,8 +1,10 @@
+import csv
 import inspect
 import os
 import warnings
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, TextIO, Union
 
+from _finetuner.data.utils import from_csv
 from _finetuner.runner.stubs import model as model_stub
 from docarray import DocumentArray
 
@@ -95,8 +97,14 @@ def describe_models() -> None:
 @login_required
 def fit(
     model: str,
-    train_data: Union[str, DocumentArray],
-    eval_data: Optional[Union[str, DocumentArray]] = None,
+    train_data: Union[str, DocumentArray, TextIO],
+    eval_data: Optional[Union[str, DocumentArray, TextIO]] = None,
+    is_csv: bool = True,
+    size: Optional[int] = None,
+    sampling_rate: Optional[float] = None,
+    dialect: Union[str, 'csv.Dialect'] = 'auto',
+    encoding: str = 'utf-8',
+    is_labeled: bool = False,
     run_name: Optional[str] = None,
     description: Optional[str] = None,
     experiment_name: Optional[str] = None,
@@ -126,6 +134,19 @@ def fit(
         name of the `DocumentArray` that is pushed on Hubble.
     :param eval_data: Either a `DocumentArray` for evaluation data or a
         name of the `DocumentArray` that is pushed on Hubble.
+    :param is_csv: Indicates wether files paths to training and evaluation data should
+        be treated as csv files or :class:`DocumentArray`s
+    :param size: In the case that the training or evaluation data are supplied as csv
+        files, the number of rows to sample at once.
+    :param sampling_rate: The sampling rate of the training and evaluation data in the
+        case that they are supplied as csv files, between [0, 1].
+    :param dialect: A description of the expected format of the csv, can either be an
+        object of the :class:`csv.Dialect` class, or one of the strings returned by the
+        :meth:`csv.list_dialects()' function.
+    :param encoding: The encoding of the csv
+    :param is_labeled: Wether the second column of the csv represents a label that
+        should be assigned to the item in the first column (True), or if it is another
+        item that should be semantically close to the first.
     :param run_name: Name of the run.
     :param description: Run description.
     :param experiment_name: Name of the experiment.
@@ -183,6 +204,30 @@ def fit(
        Unless necessary, please stick with `device="cuda"`, `cpu` training could be
        extremely slow and inefficient.
     """
+
+    if isinstance(train_data, (TextIO)) or (isinstance(train_data, str)) and is_csv:
+        train_data = DocumentArray(
+            from_csv(
+                file=train_data,
+                size=size,
+                sampling_rate=sampling_rate,
+                dialect=dialect,
+                encoding=encoding,
+                is_labeled=is_labeled,
+            )
+        )
+    if isinstance(eval_data, (TextIO)) or (isinstance(eval_data, str) and is_csv):
+        eval_data = DocumentArray(
+            from_csv(
+                file=train_data,
+                size=size,
+                sampling_rate=sampling_rate,
+                dialect=dialect,
+                encoding=encoding,
+                is_labeled=is_labeled,
+            )
+        )
+
     return ft.create_run(
         model=model,
         train_data=train_data,
