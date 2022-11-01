@@ -148,11 +148,10 @@ class Experiment:
             if isinstance(callback, EvaluationCallback):
                 eval_callback = callback
 
-        model_stub = get_stub(model, select_model='clip-text')
-
         if isinstance(train_data, (TextIO)) or (
             isinstance(train_data, str) and isfile(train_data)
         ):
+            model_stub = get_stub(model, select_model='clip-text')
             train_data = DocumentArray(
                 from_csv(
                     file=train_data,
@@ -167,6 +166,8 @@ class Experiment:
         if isinstance(eval_data, (TextIO)) or (
             isinstance(eval_data, str) and isfile(eval_data)
         ):
+            if not model_stub:
+                model_stub = get_stub(model, select_model='clip-text')
             eval_data = DocumentArray(
                 from_csv(
                     file=eval_data,
