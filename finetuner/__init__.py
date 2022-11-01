@@ -4,7 +4,6 @@ import os
 import warnings
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, TextIO, Union
 
-from _finetuner.data.utils import from_csv
 from _finetuner.runner.stubs import model as model_stub
 from docarray import DocumentArray
 
@@ -15,6 +14,7 @@ from finetuner.constants import (
     HUBBLE_REGISTRY,
 )
 from finetuner.run import Run
+from finetuner.utils import from_csv
 from hubble import login_required
 
 if HOST not in os.environ:
