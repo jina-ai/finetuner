@@ -3,12 +3,15 @@ from contextlib import nullcontext
 from typing import Generator, Optional, TextIO, Union
 
 from docarray import Document
+from docarray.document.generators import _subsample
+from docarray.document.mixins.helper import _is_uri
 
 from finetuner.constants import __DEFAULT_TAG_KEY__
 
 
 def from_csv(
     file: Union[str, TextIO],
+    task: str = 'text-to-text',
     size: Optional[int] = None,
     sampling_rate: Optional[float] = None,
     dialect: Union[str, 'csv.Dialect'] = 'auto',
@@ -33,8 +36,14 @@ def from_csv(
         imput csv.
 
     """
-    from docarray.document.generators import _subsample
-    from docarray.document.mixins.helper import _is_uri
+
+    if task == 'any':
+        raise ValueError('MLP model does not support values read in from csv files.')
+    else:
+        t1, t2 = (
+            task.split('-to-') if len(task.split('-to-')) == 2 else ('text', 'text')
+        )
+        checked = False
 
     if hasattr(file, 'read'):
         file_ctx = nullcontext(file)
@@ -52,20 +61,41 @@ def from_csv(
 
         lines = csv.reader(fp, dialect=dialect)
         artificial_label = 0
-
         for col1, col2 in _subsample(lines, size, sampling_rate):
-            if _is_uri(col1):
-                d1 = Document(uri=col1)
-            else:
-                d1 = Document(text=col1)
 
+            if not checked:  # determining which column contains images
+                if t1 == 'text' and t2 == 'image':
+                    if _is_uri(col1) and not _is_uri(col2):
+                        t1 = 'image'
+                        t2 = 'text'
+                    elif not _is_uri(col2):
+                        raise ValueError(
+                            (
+                                'uri required in at least one colum ',
+                                'for model with task: ',
+                                task,
+                                '.',
+                            )
+                        )
+                print(t1, t2)
+                checked = True
+            if t1 == 'image':
+                if _is_uri(col1):
+                    d1 = Document(uri=col1, modality='image')
+                else:
+                    raise ValueError(f'Expected uri in column 1, got {col1}')
+            else:
+                d1 = Document(text=col1, modality='text')
             if is_labeled:
                 label = col2
                 d2 = None
-            elif _is_uri(col2):
-                d2 = Document(uri=col2)
+            elif t2 == 'image':
+                if _is_uri(col2):
+                    d2 = Document(uri=col2, modality='image')
+                else:
+                    raise ValueError(f'Expected uri in column 2, got {col2}')
             else:
-                d2 = Document(text=col2)
+                d2 = Document(text=col2, modality='text')
 
             if d2 is None:
                 d1.tags[__DEFAULT_TAG_KEY__] = label

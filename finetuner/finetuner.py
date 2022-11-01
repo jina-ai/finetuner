@@ -174,6 +174,7 @@ class Finetuner:
         device: str = 'cuda',
         num_workers: int = 4,
         to_onnx: bool = False,
+        csv_options: Optional[Dict[str, Any]] = None,
     ) -> Run:
         """Create a run.
 
@@ -209,6 +210,7 @@ class Finetuner:
             device=device,
             num_workers=num_workers,
             to_onnx=to_onnx,
+            csv_options=csv_options,
         )
 
     @login_required

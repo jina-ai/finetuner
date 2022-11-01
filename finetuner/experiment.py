@@ -1,8 +1,10 @@
 import warnings
 from dataclasses import fields
-from typing import Any, Dict, List, Optional, Union
+from os.path import isfile
+from typing import Any, Dict, List, Optional, TextIO, Union
 
 from _finetuner.runner.stubs import config
+from _finetuner.runner.stubs.model import get_stub
 from docarray import DocumentArray
 
 from finetuner.callback import EvaluationCallback
@@ -34,6 +36,7 @@ from finetuner.constants import (
 from finetuner.hubble import push_data
 from finetuner.names import get_random_name
 from finetuner.run import Run
+from finetuner.utils import from_csv
 
 
 class Experiment:
@@ -119,14 +122,20 @@ class Experiment:
         model: str,
         train_data: Union[DocumentArray, str],
         run_name: Optional[str] = None,
+        eval_data: Optional[Union[DocumentArray, str]] = None,
+        csv_options: Optional[Dict[str, Any]] = None,
         **kwargs,
     ) -> Run:
         """Create a run inside the experiment.
 
         :param model: Name of the model to be fine-tuned.
-        :param train_data: Either a `DocumentArray` for training data or a
-            name of the `DocumentArray` that is pushed on Hubble.
+        :param train_data: Either a `DocumentArray` for training data, a name
+            of the `DocumentArray` that is pushed on Hubble or a path to a csv file.
         :param run_name: Optional name of the run.
+        :param eval_data: Either a `DocumentArray` for evaluation data, a name
+            of the `DocumentArray` that is pushed on Hubble or a path to a csv file.
+        :param csv_options: A dictionary containing options used for reading in
+            training and evaluation data from a csv file, if they are provided as such.
         :param kwargs: Optional keyword arguments for the run config.
         :return: A `Run` object.
         """
@@ -138,6 +147,37 @@ class Experiment:
         for callback in callbacks:
             if isinstance(callback, EvaluationCallback):
                 eval_callback = callback
+
+        model_stub = get_stub(model, select_model='clip-text')
+
+        if isinstance(train_data, (TextIO)) or (
+            isinstance(train_data, str) and isfile(train_data)
+        ):
+            train_data = DocumentArray(
+                from_csv(
+                    file=train_data,
+                    task=model_stub.task,
+                    size=csv_options['size'],
+                    sampling_rate=csv_options['sampling_rate'],
+                    dialect=csv_options['dialect'],
+                    encoding=csv_options['encoding'],
+                    is_labeled=csv_options['is_labeled'],
+                )
+            )
+        if isinstance(eval_data, (TextIO)) or (
+            isinstance(eval_data, str) and isfile(eval_data)
+        ):
+            eval_data = DocumentArray(
+                from_csv(
+                    file=eval_data,
+                    task=model_stub.task,
+                    size=csv_options['size'],
+                    sampling_rate=csv_options['sampling_rate'],
+                    dialect=csv_options['dialect'],
+                    encoding=csv_options['encoding'],
+                    is_labeled=csv_options['is_labeled'],
+                )
+            )
 
         train_data, eval_data, query_data, index_data = push_data(
             experiment_name=self._name,

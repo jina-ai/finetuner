@@ -1,4 +1,3 @@
-import csv
 import inspect
 import os
 import warnings
@@ -14,7 +13,6 @@ from finetuner.constants import (
     HUBBLE_REGISTRY,
 )
 from finetuner.run import Run
-from finetuner.utils import from_csv
 from hubble import login_required
 
 if HOST not in os.environ:
@@ -99,12 +97,6 @@ def fit(
     model: str,
     train_data: Union[str, DocumentArray, TextIO],
     eval_data: Optional[Union[str, DocumentArray, TextIO]] = None,
-    is_csv: bool = True,
-    size: Optional[int] = None,
-    sampling_rate: Optional[float] = None,
-    dialect: Union[str, 'csv.Dialect'] = 'auto',
-    encoding: str = 'utf-8',
-    is_labeled: bool = False,
     run_name: Optional[str] = None,
     description: Optional[str] = None,
     experiment_name: Optional[str] = None,
@@ -125,28 +117,16 @@ def fit(
     device: str = 'cuda',
     num_workers: int = 4,
     to_onnx: bool = False,
+    csv_options: Optional[Dict[str, Any]] = None,
 ) -> Run:
     """Start a finetuner run!
 
     :param model: The name of model to be fine-tuned. Run `finetuner.list_models()` or
         `finetuner.describe_models()` to see the available model names.
-    :param train_data: Either a `DocumentArray` for training data or a
-        name of the `DocumentArray` that is pushed on Hubble.
-    :param eval_data: Either a `DocumentArray` for evaluation data or a
-        name of the `DocumentArray` that is pushed on Hubble.
-    :param is_csv: Indicates wether files paths to training and evaluation data should
-        be treated as csv files or :class:`DocumentArray`s
-    :param size: In the case that the training or evaluation data are supplied as csv
-        files, the number of rows to sample at once.
-    :param sampling_rate: The sampling rate of the training and evaluation data in the
-        case that they are supplied as csv files, between [0, 1].
-    :param dialect: A description of the expected format of the csv, can either be an
-        object of the :class:`csv.Dialect` class, or one of the strings returned by the
-        :meth:`csv.list_dialects()' function.
-    :param encoding: The encoding of the csv
-    :param is_labeled: Wether the second column of the csv represents a label that
-        should be assigned to the item in the first column (True), or if it is another
-        item that should be semantically close to the first.
+    :param train_data: Either a `DocumentArray` for training data, a
+        name of the `DocumentArray` that is pushed on Hubble or a path to a csv file.
+    :param eval_data: Either a `DocumentArray` for evaluation data, a
+        name of the `DocumentArray` that is pushed on Hubble or a path to a csv file.
     :param run_name: Name of the run.
     :param description: Run description.
     :param experiment_name: Name of the experiment.
@@ -203,30 +183,10 @@ def fit(
     .. note::
        Unless necessary, please stick with `device="cuda"`, `cpu` training could be
        extremely slow and inefficient.
-    """
 
-    if isinstance(train_data, (TextIO)) or (isinstance(train_data, str)) and is_csv:
-        train_data = DocumentArray(
-            from_csv(
-                file=train_data,
-                size=size,
-                sampling_rate=sampling_rate,
-                dialect=dialect,
-                encoding=encoding,
-                is_labeled=is_labeled,
-            )
-        )
-    if isinstance(eval_data, (TextIO)) or (isinstance(eval_data, str) and is_csv):
-        eval_data = DocumentArray(
-            from_csv(
-                file=train_data,
-                size=size,
-                sampling_rate=sampling_rate,
-                dialect=dialect,
-                encoding=encoding,
-                is_labeled=is_labeled,
-            )
-        )
+    :param csv_options: A dictionary containing options used for reading in training
+        and evaluation data from a csv file, if they are provided as such.
+    """
 
     return ft.create_run(
         model=model,
@@ -252,6 +212,7 @@ def fit(
         device=device,
         num_workers=num_workers,
         to_onnx=to_onnx,
+        csv_options=csv_options,
     )
 
 
