@@ -40,6 +40,6 @@ while all these parameters are optional.
 
 If you do not have a machine learning background,
 don't worry about it.
-As was stated before, you only need to provide the training data organized as a {class}`~docarray.array.document.DocumentArray`.
+As was stated before, you only need to provide the training data organized as a {class}`~docarray.array.document.DocumentArray` or as a csv file.
 In case you do not know which backbone to choose,
 use {meth}`~finetuner.describe_models()` to let Finetuner suggest a backbone model for you.
