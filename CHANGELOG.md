@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add support for csv files to the `fit` function
+- Add support for CSV files to the `fit` function. [#592](https://github.com/jina-ai/finetuner/pull/592)
 
 ### Removed
 

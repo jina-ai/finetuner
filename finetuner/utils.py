@@ -12,36 +12,36 @@ from finetuner.constants import __DEFAULT_TAG_KEY__
 def from_csv(
     file: Union[str, TextIO],
     task: str = 'text-to-text',
-    size: Optional[int] = None,
+    size: int = 1,
     sampling_rate: Optional[float] = None,
     dialect: Union[str, 'csv.Dialect'] = 'auto',
     encoding: str = 'utf-8',
     is_labeled: bool = False,
 ) -> Generator['Document', None, None]:
     """
-    Takes a csv file and returns a generator of documents, with each document containing
-    the information form one line of the csv
+    Takes a CSV file and returns a generator of documents, with each document containing
+    the information from one line of the CSV.
 
-    :param file: Either a filepath to or a stream of a csv file.
+    :param file: Either a filepath to or a stream of a CSV file.
     :param task: Specifies the modalities of the model that the returned data is to
         be used for. This data is retrieved using the model name, and does not need
         to be added to the csv_options argument when calling :meth:`finetuner.fit`
     :param size: The number of rows to sample at once, 1 if left as None.
     :param sampling_rate: The sampling rate between [0, 1].
-    :param dialect: A description of the expected format of the csv, can either be an
+    :param dialect: A description of the expected format of the CSV, can either be an
         object of the :class:`csv.Dialect` class, or one of the strings returned by the
         :meth:`csv.list_dialects()' function.
-    :param encoding: The encoding of the csv
-    :param is_labeled: Wether the second column of the csv represents a label that
+    :param encoding: The encoding of the CSV file.
+    :param is_labeled: Whether the second column of the CSV represents a label that
         should be assigned to the item in the first column (True), or if it is another
-        item that should be semantically close to the first.
+        item that should be semantically close to the first (False). 
     :return: A generator of :class:`Document`s. Each document represents one line of the
-        imput csv.
+        input CSV.
 
     """
 
     if task == 'any':
-        raise ValueError('MLP model does not support values read in from csv files.')
+        raise ValueError('MLP model does not support values read in from CSV files.')
     else:
         t1, t2 = (
             task.split('-to-') if len(task.split('-to-')) == 2 else ('text', 'text')

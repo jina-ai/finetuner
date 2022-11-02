@@ -1,7 +1,7 @@
 (start-finetuner)=
 # Run Job
 
-Now you should have your training data and evaluation data (optional) prepared as a csv file or {class}`~docarray.array.document.DocumentArray`s,
+Now you should have your training data and evaluation data (optional) prepared as CSV files or {class}`~docarray.array.document.DocumentArray`s,
 and have selected your backbone model.
 
 Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud!
@@ -74,7 +74,7 @@ run = finetuner.fit(
     device='cuda',
     num_workers=4,
     to_onnx=False,  # If set, please pass `is_onnx` when making inference.
-    csv_options={}, # additional options for reading data fom a csv file
+    csv_options={},  # Additional options for reading data from a CSV file
 )
 ```
 

@@ -95,8 +95,8 @@ def describe_models() -> None:
 @login_required
 def fit(
     model: str,
-    train_data: Union[str, DocumentArray, TextIO],
-    eval_data: Optional[Union[str, DocumentArray, TextIO]] = None,
+    train_data: Union[str, TextIO, DocumentArray],
+    eval_data: Optional[Union[str, TextIO, DocumentArray]] = None,
     run_name: Optional[str] = None,
     description: Optional[str] = None,
     experiment_name: Optional[str] = None,
@@ -124,9 +124,9 @@ def fit(
     :param model: The name of model to be fine-tuned. Run `finetuner.list_models()` or
         `finetuner.describe_models()` to see the available model names.
     :param train_data: Either a `DocumentArray` for training data, a
-        name of the `DocumentArray` that is pushed on Hubble or a path to a csv file.
+        name of the `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
     :param eval_data: Either a `DocumentArray` for evaluation data, a
-        name of the `DocumentArray` that is pushed on Hubble or a path to a csv file.
+        name of the `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
     :param run_name: Name of the run.
     :param description: Run description.
     :param experiment_name: Name of the experiment.
@@ -185,7 +185,7 @@ def fit(
        extremely slow and inefficient.
 
     :param csv_options: A dictionary containing options used for reading in training
-        and evaluation data from a csv file, if they are provided as such.
+        and evaluation data from a CSV file, if they are provided as such.
     """
 
     return ft.create_run(

@@ -65,7 +65,7 @@ def test_from_csv_image_to_image(dialect):
         ),
     ],
 )
-def test_from_csv_labelled(dialect, contents, type):
+def test_from_csv_labeled(dialect, contents, type):
     dialect = csv.get_dialect(dialect)
 
     content_stream = dialect.lineterminator.join(
