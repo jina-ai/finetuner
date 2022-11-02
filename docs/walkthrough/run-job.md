@@ -1,7 +1,7 @@
 (start-finetuner)=
 # Run Job
 
-Now you should have your training data and evaluation data (optional) prepared as {class}`~docarray.array.document.DocumentArray`s,
+Now you should have your training data and evaluation data (optional) prepared as a csv file or {class}`~docarray.array.document.DocumentArray`s,
 and have selected your backbone model.
 
 Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud!
@@ -14,7 +14,7 @@ To start fine-tuning, you can call:
 import finetuner
 from docarray import DocumentArray
 
-train_data = DocumentArray(...)
+train_data = 'path/to/some/data.csv'
 
 run = finetuner.fit(
     model='efficientnet_b0',
@@ -46,8 +46,8 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:
 import finetuner
 from docarray import DocumentArray
 
-train_data = DocumentArray(...)
-eval_data = DocumentArray(...)
+train_data = 'path/to/some/train_data.csv'
+eval_data = 'path/to/some/eval_data.csv'
 
 # Create an experiment
 finetuner.create_experiment(name='finetune-flickr-dataset')
@@ -74,6 +74,7 @@ run = finetuner.fit(
     device='cuda',
     num_workers=4,
     to_onnx=False,  # If set, please pass `is_onnx` when making inference.
+    csv_options={}, # additional options for reading data fom a csv file
 )
 ```
 

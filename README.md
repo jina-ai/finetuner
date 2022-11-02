@@ -148,7 +148,7 @@ run = finetuner.fit(
 )
 ```
 
-Fine-tuning might take 5 minute to finish. You can later re-connect your run with:
+Fine-tuning might take 5 minutes to finish. You can later re-connect your run with:
 
 ```python
 import finetuner

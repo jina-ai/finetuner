@@ -19,7 +19,7 @@ but instead outputs a feature vector to represent your data.
 ### Step 2: Triplet construction and training on-the-fly
 
 Finetuner works on labeled data.
-It expects a {class}`~docarray.array.document.DocumentArray` consisting of {class}`~docarray.document.Document`s where each one contains `finetuner_label` corresponding to the class of a specific training example.
+It expects a either a csv file or a {class}`~docarray.array.document.DocumentArray` consisting of {class}`~docarray.document.Document`s where each one contains `finetuner_label` corresponding to the class of a specific training example. After recieving a csv file, its contents are parsed and a {class}`~docarray.array.document.DocumentArray` is constructed.
 
 During the fine-tuning, Finetuner creates Triplets `(anchor, positive, negative)` on-the-fly.
 For each anchor,

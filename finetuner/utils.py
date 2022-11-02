@@ -23,6 +23,9 @@ def from_csv(
     the information form one line of the csv
 
     :param file: Either a filepath to or a stream of a csv file.
+    :param task: Specifies the modalities of the model that the returned data is to
+        be used for. This data is retrieved using the model name, and does not need
+        to be added to the csv_options argument when calling :meth:`finetuner.fit`
     :param size: The number of rows to sample at once, 1 if left as None.
     :param sampling_rate: The sampling rate between [0, 1].
     :param dialect: A description of the expected format of the csv, can either be an

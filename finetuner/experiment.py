@@ -152,33 +152,43 @@ class Experiment:
             isinstance(train_data, str) and isfile(train_data)
         ):
             model_stub = get_stub(model, select_model='clip-text')
-            train_data = DocumentArray(
-                from_csv(
-                    file=train_data,
-                    task=model_stub.task,
-                    size=csv_options['size'],
-                    sampling_rate=csv_options['sampling_rate'],
-                    dialect=csv_options['dialect'],
-                    encoding=csv_options['encoding'],
-                    is_labeled=csv_options['is_labeled'],
+            if csv_options:
+                train_data = DocumentArray(
+                    from_csv(
+                        file=train_data,
+                        task=model_stub.task,
+                        size=csv_options.get('size', None),
+                        sampling_rate=csv_options.get('sampling_rate', None),
+                        dialect=csv_options.get('dialect', 'auto'),
+                        encoding=csv_options.get('encoding', 'utf-8'),
+                        is_labeled=csv_options.get('is_labeled', False),
+                    )
                 )
-            )
+            else:
+                train_data = DocumentArray(
+                    from_csv(file=train_data, task=model_stub.task)
+                )
         if isinstance(eval_data, (TextIO)) or (
             isinstance(eval_data, str) and isfile(eval_data)
         ):
             if not model_stub:
                 model_stub = get_stub(model, select_model='clip-text')
-            eval_data = DocumentArray(
-                from_csv(
-                    file=eval_data,
-                    task=model_stub.task,
-                    size=csv_options['size'],
-                    sampling_rate=csv_options['sampling_rate'],
-                    dialect=csv_options['dialect'],
-                    encoding=csv_options['encoding'],
-                    is_labeled=csv_options['is_labeled'],
-                )
-            )
+                if csv_options:
+                    eval_data = DocumentArray(
+                        from_csv(
+                            file=eval_data,
+                            task=model_stub.task,
+                            size=csv_options.get('size', None),
+                            sampling_rate=csv_options.get('sampling_rate', None),
+                            dialect=csv_options.get('dialect', 'auto'),
+                            encoding=csv_options.get('encoding', 'utf-8'),
+                            is_labeled=csv_options.get('is_labeled', False),
+                        )
+                    )
+                else:
+                    eval_data = DocumentArray(
+                        from_csv(file=eval_data, task=model_stub.task)
+                    )
 
         train_data, eval_data, query_data, index_data = push_data(
             experiment_name=self._name,
