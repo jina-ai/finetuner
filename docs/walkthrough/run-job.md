@@ -45,6 +45,7 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:
 ```python
 import finetuner
 from docarray import DocumentArray
+finetuner.utils import CSV_options
 
 train_data = 'path/to/some/train_data.csv'
 eval_data = 'path/to/some/eval_data.csv'
@@ -74,7 +75,7 @@ run = finetuner.fit(
     device='cuda',
     num_workers=4,
     to_onnx=False,  # If set, please pass `is_onnx` when making inference.
-    csv_options={},  # Additional options for reading data from a CSV file
+    csv_options=CSV_options(),  # Additional options for reading data from a CSV file
 )
 ```
 

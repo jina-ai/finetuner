@@ -4,17 +4,18 @@
 Finetuner accepts training data and evaluation data in the form of CSV files 
 or {class}`~docarray.array.document.DocumentArray` objects.
 Because Finetuner follows a [supervised-learning](https://en.wikipedia.org/wiki/Supervised_learning) scheme, each element requires a label that identifies which other elements it should be similar to. 
-If you need to evaluate metrics on separate evaluation data, it is recommended to create a dataset only for evaluation purposes.
+If you need to evaluate metrics on separate evaluation data, it is recommended to create a dataset only for evaluation purposes. This can be done in the same way a a training dataset is created, as described below.
 
 Data can be prepared in two different formats, either as a CSV file, or as a {class}`~docarray.array.document.DocumentArray`. In the sections below, you can see examples which demonstrate how the training datasets should look like for each format.
 
 ## Preparing CSV Files
 
-To record data in a CSV file, the contents of each element are stored plainly, with each row either representing one labeled item, multiple items that should be semantically similar, or two items of different modalities in the case that a CLIP model is being used.
-Currently, `excel`, `excel-tab` and `unix` CSV dialects are supported. To specify which dialect to use, provide a dictionary with `['dialect']=chosen_dialect` as the `csv_options` argument to the {meth}`~finetuner.fit` function. The list of all options for reading CSV files can be found in the description of the {meth}`~finetuner.utils.from_csv` function.
+To record data in a CSV file, the contents of each element are stored plainly, with each row either representing one labeled item, a pair of items that should be semantically similar, or two items of different modalities in the case that a CLIP model is being used.
+Currently, `excel`, `excel-tab` and `unix` CSV dialects are supported. To specify which dialect to use, provide a {class}`~finetuner.utils.CSV_options` object with `dialect=chosen_dialect` as the `csv_options` argument to the {meth}`~finetuner.fit` function. The list of all options for reading CSV files can be found in the description of the {class}`~finetuner.utils.CSV_options` class.
 
-````{tab} Multiple elements per row
-If you want two elements to be semantically close together, they can be placed on the same row as a pair:
+
+````{tab} two elements per row
+If you want two elements to be semantically close together, they can be placed on the same row as a pair, doing so will assign each pair a distinct label:
 
 ```markdown
 This is an English sentence         Das ist ein englischer Satz
@@ -30,7 +31,7 @@ orange.jpg  https://example.com/orange-styling.jpg
 ````
 
 ````{tab} Labeled data
-In cases where you want multiple elements grouped together, you can provide a label in the second column. This way, all elements in the first column that have the same label will be considered similar when training. To indicate that the second column of your csv file represents a label instead of a second element, make sure to set `is_labeled = True` in the `csv_options` argument of the {meth}`~finetuner.fit` function. Your data can then be structured like so:
+In cases where you want multiple elements grouped together, you can provide a label in the second column. This way, all elements in the first column that have the same label will be considered similar when training. To indicate that the second column of your csv file represents a label instead of a second element, set `is_labeled = True` in the `csv_options` argument of the {meth}`~finetuner.fit` function. Your data can then be structured like so:
 
 ```markdown
 Hello!                  greeting-english
@@ -42,7 +43,7 @@ Please, forgive me!     apologize-english
 ```
 ````
 
-````{tab} text-to-image search on CLIP
+````{tab} text-to-image search using CLIP
 To prepare data for text-to-image search, each row must contain one uri to an image, and one piece of text. The order that these two are placed does not matter, so long as the ordering is kept consistent for all rows.
 
 ```markdown
@@ -142,13 +143,3 @@ The image and text form a pair.
 During the training, CLIP learns to place documents that are part of a pair close to
 each other and documents that are not part of a pair far from each other.
 As a result, no further labels need to be provided.
-
-Evaluation data should be created in the same way as the training data in the examples above.
-
-```{admonition} CLIP model explained
-:class: hint
-OpenAI CLIP model wraps two models: a vision transformer and a text transformer.
-During fine-tuning, we're optimizing two models in parallel.
-
-At the model saving time, you will discover, we are saving two models to your local directory. 
-```

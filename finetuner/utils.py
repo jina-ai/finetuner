@@ -1,22 +1,75 @@
 import csv
+import os
 from contextlib import nullcontext
-from typing import Generator, Optional, TextIO, Union
+from dataclasses import dataclass
+from typing import Generator, Optional, TextIO, Tuple, Union
 
-from docarray import Document
+from _finetuner.runner.stubs.model import get_stub
+from docarray import Document, DocumentArray
 from docarray.document.generators import _subsample
 from docarray.document.mixins.helper import _is_uri
+from genericpath import isfile
 
-from finetuner.constants import __DEFAULT_TAG_KEY__
+from finetuner.constants import DEFAULT_TAG_KEY
 
 
-def from_csv(
+@dataclass
+class CSV_options:
+    """Class containing options for reading CSV files
+
+    :param size: The number of rows that will be sampled.
+    :param sampling_rate: The sampling rate between [0, 1] indicating how many lines of
+        the CSV are skipped. a sampling rate of 1 means that none are skipped, 0.5
+        means that half are skipped, and 0 means that all lines are skipped.
+    :param dialect: A description of the expected format of the CSV, can either be an
+        object of the :class:`csv.Dialect` class, or one of the strings returned by the
+        :meth:`csv.list_dialects()' function.
+    :param encoding: The encoding of the CSV file.
+    :param is_labeled: Whether the second column of the CSV represents a label that
+        should be assigned to the item in the first column (True), or if it is another
+        item that should be semantically close to the first (False).
+    :param convert_to_blob: Whether uris to local files should be converted to blobs
+    """
+
+    size: Optional[int] = None
+    sampling_rate: Optional[float] = None
+    dialect: Union[str, 'csv.Dialect'] = 'auto'
+    encoding: str = 'utf-8'
+    is_labeled: bool = False
+    convert_to_blob: bool = True
+
+
+def build_dataset(
+    data: Union[str, TextIO, DocumentArray],
+    model: str,
+    csv_options: Optional[CSV_options],
+) -> Union[Generator['Document', None, None], DocumentArray]:
+
+    if isinstance(data, (TextIO)) or (isinstance(data, str) and isfile(data)):
+        if not csv_options:
+            csv_options = CSV_options()
+
+        model_stub = get_stub(model, select_model='clip-text')
+        if csv_options:
+            data = DocumentArray(
+                load_finetune_data_from_csv(
+                    file=data,
+                    task=model_stub.task,
+                    options=csv_options,
+                )
+            )
+        else:
+            data = DocumentArray(
+                load_finetune_data_from_csv(file=data, task=model_stub.task)
+            )
+
+    return data
+
+
+def load_finetune_data_from_csv(
     file: Union[str, TextIO],
     task: str = 'text-to-text',
-    size: int = 1,
-    sampling_rate: Optional[float] = None,
-    dialect: Union[str, 'csv.Dialect'] = 'auto',
-    encoding: str = 'utf-8',
-    is_labeled: bool = False,
+    options: CSV_options = CSV_options(),
 ) -> Generator['Document', None, None]:
     """
     Takes a CSV file and returns a generator of documents, with each document containing
@@ -26,90 +79,110 @@ def from_csv(
     :param task: Specifies the modalities of the model that the returned data is to
         be used for. This data is retrieved using the model name, and does not need
         to be added to the csv_options argument when calling :meth:`finetuner.fit`
-    :param size: The number of rows to sample at once, 1 if left as None.
-    :param sampling_rate: The sampling rate between [0, 1].
-    :param dialect: A description of the expected format of the CSV, can either be an
-        object of the :class:`csv.Dialect` class, or one of the strings returned by the
-        :meth:`csv.list_dialects()' function.
-    :param encoding: The encoding of the CSV file.
-    :param is_labeled: Whether the second column of the CSV represents a label that
-        should be assigned to the item in the first column (True), or if it is another
-        item that should be semantically close to the first (False). 
-    :return: A generator of :class:`Document`s. Each document represents one line of the
-        input CSV.
+    :param options: A :class:`CSV_options` object.
+    :return: A generator of :class:`Document`s. Each document represents one element
+        in the CSV
 
     """
-
-    if task == 'any':
-        raise ValueError('MLP model does not support values read in from CSV files.')
-    else:
-        t1, t2 = (
-            task.split('-to-') if len(task.split('-to-')) == 2 else ('text', 'text')
-        )
-        checked = False
 
     if hasattr(file, 'read'):
         file_ctx = nullcontext(file)
     else:
-        file_ctx = open(file, 'r', encoding=encoding)
+        file_ctx = open(file, 'r', encoding=options.encoding)
 
     with file_ctx as fp:
         # when set to auto, then sniff
         try:
-            if isinstance(dialect, str) and dialect == 'auto':
-                dialect = csv.Sniffer().sniff(fp.read(1024))
+            if isinstance(options.dialect, str) and options.dialect == 'auto':
+                options.dialect = csv.Sniffer().sniff(fp.read(1024))
                 fp.seek(0)
         except Exception:
-            dialect = 'excel'  #: can not sniff delimiter, use default dialect
+            options.dialect = 'excel'  #: can not sniff delimiter, use default dialect
 
-        lines = csv.reader(fp, dialect=dialect)
+        lines = csv.reader(fp, dialect=options.dialect)
+
         artificial_label = 0
-        for col1, col2 in _subsample(lines, size, sampling_rate):
+        t1, t2 = None, None
 
-            if not checked:  # determining which column contains images
-                if t1 == 'text' and t2 == 'image':
-                    if _is_uri(col1) and not _is_uri(col2):
-                        t1 = 'image'
-                        t2 = 'text'
-                    elif not _is_uri(col2):
-                        raise ValueError(
-                            (
-                                'uri required in at least one colum ',
-                                'for model with task: ',
-                                task,
-                                '.',
-                            )
-                        )
-                print(t1, t2)
-                checked = True
+        for col1, col2 in _subsample(lines, options.size, options.sampling_rate):
+            if not t1:  # determining which column contains images
+                t1, t2 = check_columns(task, col1, col2)
+
             if t1 == 'image':
                 if _is_uri(col1):
-                    d1 = Document(uri=col1, modality='image')
+                    d1 = Document(uri=col1)
+                    if options.convert_to_blob and os.path.isfile(col1):
+                        d1.load_uri_to_blob()
                 else:
                     raise ValueError(f'Expected uri in column 1, got {col1}')
             else:
-                d1 = Document(text=col1, modality='text')
-            if is_labeled:
+                d1 = Document(content=col1)
+
+            if options.is_labeled:
                 label = col2
                 d2 = None
             elif t2 == 'image':
                 if _is_uri(col2):
-                    d2 = Document(uri=col2, modality='image')
+                    d2 = Document(uri=col2)
+                    if options.convert_to_blob and os.path.isfile(col2):
+                        d2.load_uri_to_blob()
                 else:
                     raise ValueError(f'Expected uri in column 2, got {col2}')
             else:
-                d2 = Document(text=col2, modality='text')
+                d2 = Document(content=col2)
 
             if d2 is None:
-                d1.tags[__DEFAULT_TAG_KEY__] = label
+                d1.tags[DEFAULT_TAG_KEY] = label
                 yield d1
             elif (d1.text and d2.text) or (d1.uri and d2.uri):
                 # same modality
-                d1.tags[__DEFAULT_TAG_KEY__] = artificial_label
-                d2.tags[__DEFAULT_TAG_KEY__] = artificial_label
+                d1.tags[DEFAULT_TAG_KEY] = artificial_label
+                d2.tags[DEFAULT_TAG_KEY] = artificial_label
                 artificial_label += 1
                 yield d1
                 yield d2
             else:
                 # different modalities, for CLIP
+                d1.modality = t1
+                d2.modality = t2
                 yield Document(chunks=[d1, d2])
+
+
+def check_columns(
+    task: str,
+    col1: str,
+    col2: str,
+) -> Tuple[str, str]:
+    """Determines the expected modalities of each column using the task argument,
+        Then checks the given row of the CSV to confirm that it contains valid data
+
+    :param task: The task of the model being used.
+    :param col1: A single value from the first column of the CSV.
+    :param col2: A single value from the second column of the CSV.
+    :return: The expected modality of each column
+    """
+
+    if task == 'any':
+        raise ValueError('MLP model does not support values read in from CSV files.')
+
+    if len(task.split('-to-')) == 2:
+        t1, t2 = task.split('-to-')
+    else:
+        raise ValueError(f'Model has invalid task: {task}')
+
+    if t1 == 'text' and t2 == 'image':
+        if _is_uri(col1) and not _is_uri(col2):
+            t1 = 'image'
+            t2 = 'text'
+        elif not _is_uri(col2):
+            raise ValueError(
+                (
+                    'uri required in at least one colum ',
+                    'for model with task: ',
+                    t1,
+                    '-to-',
+                    t2,
+                    '.',
+                )
+            )
+    return t1, t2

@@ -1,10 +1,8 @@
 import warnings
 from dataclasses import fields
-from os.path import isfile
 from typing import Any, Dict, List, Optional, TextIO, Union
 
 from _finetuner.runner.stubs import config
-from _finetuner.runner.stubs.model import get_stub
 from docarray import DocumentArray
 
 from finetuner.callback import EvaluationCallback
@@ -36,7 +34,7 @@ from finetuner.constants import (
 from finetuner.hubble import push_data
 from finetuner.names import get_random_name
 from finetuner.run import Run
-from finetuner.utils import from_csv
+from finetuner.utils import build_dataset
 
 
 class Experiment:
@@ -120,25 +118,13 @@ class Experiment:
     def create_run(
         self,
         model: str,
-        train_data: Union[DocumentArray, str],
+        train_data: Union[str, TextIO, DocumentArray],
         run_name: Optional[str] = None,
-        eval_data: Optional[Union[DocumentArray, str]] = None,
+        eval_data: Optional[Union[str, TextIO, DocumentArray]] = None,
         csv_options: Optional[Dict[str, Any]] = None,
         **kwargs,
     ) -> Run:
-        """Create a run inside the experiment.
-
-        :param model: Name of the model to be fine-tuned.
-        :param train_data: Either a `DocumentArray` for training data, a name
-            of the `DocumentArray` that is pushed on Hubble or a path to a csv file.
-        :param run_name: Optional name of the run.
-        :param eval_data: Either a `DocumentArray` for evaluation data, a name
-            of the `DocumentArray` that is pushed on Hubble or a path to a csv file.
-        :param csv_options: A dictionary containing options used for reading in
-            training and evaluation data from a csv file, if they are provided as such.
-        :param kwargs: Optional keyword arguments for the run config.
-        :return: A `Run` object.
-        """
+        """Create a run inside the experiment."""
         if not run_name:
             run_name = get_random_name()
 
@@ -148,47 +134,9 @@ class Experiment:
             if isinstance(callback, EvaluationCallback):
                 eval_callback = callback
 
-        if isinstance(train_data, (TextIO)) or (
-            isinstance(train_data, str) and isfile(train_data)
-        ):
-            model_stub = get_stub(model, select_model='clip-text')
-            if csv_options:
-                train_data = DocumentArray(
-                    from_csv(
-                        file=train_data,
-                        task=model_stub.task,
-                        size=csv_options.get('size', None),
-                        sampling_rate=csv_options.get('sampling_rate', None),
-                        dialect=csv_options.get('dialect', 'auto'),
-                        encoding=csv_options.get('encoding', 'utf-8'),
-                        is_labeled=csv_options.get('is_labeled', False),
-                    )
-                )
-            else:
-                train_data = DocumentArray(
-                    from_csv(file=train_data, task=model_stub.task)
-                )
-        if isinstance(eval_data, (TextIO)) or (
-            isinstance(eval_data, str) and isfile(eval_data)
-        ):
-            if not model_stub:
-                model_stub = get_stub(model, select_model='clip-text')
-                if csv_options:
-                    eval_data = DocumentArray(
-                        from_csv(
-                            file=eval_data,
-                            task=model_stub.task,
-                            size=csv_options.get('size', None),
-                            sampling_rate=csv_options.get('sampling_rate', None),
-                            dialect=csv_options.get('dialect', 'auto'),
-                            encoding=csv_options.get('encoding', 'utf-8'),
-                            is_labeled=csv_options.get('is_labeled', False),
-                        )
-                    )
-                else:
-                    eval_data = DocumentArray(
-                        from_csv(file=eval_data, task=model_stub.task)
-                    )
+        train_data = build_dataset(train_data, csv_options)
+
+        eval_data = build_dataset(eval_data, csv_options)
 
         train_data, eval_data, query_data, index_data = push_data(
             experiment_name=self._name,

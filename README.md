@@ -148,6 +148,7 @@ run = finetuner.fit(
 )
 ```
 
+Here, the training data used is gathered from the Jina Ai Cloud, however data can also be passed as a CSV file or DocumentArray, as described [here](https://finetuner.jina.ai/walkthrough/create-training-data/).  
 Fine-tuning might take 5 minutes to finish. You can later re-connect your run with:
 
 ```python

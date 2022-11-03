@@ -35,7 +35,7 @@ ARTIFACTS_DIR = 'artifacts/'
 MODEL = 'model'
 MODEL_OPTIONS = 'model_options'
 ARTIFACT_ID = 'artifact_id'
-__DEFAULT_TAG_KEY__ = 'finetuner_label'
+DEFAULT_TAG_KEY = 'finetuner_label'
 # Run status
 CREATED = 'CREATED'
 STARTED = 'STARTED'
