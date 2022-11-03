@@ -11,7 +11,7 @@ Data can be prepared in two different formats, either as a CSV file, or as a {cl
 ## Preparing CSV Files
 
 To record data in a CSV file, the contents of each element are stored plainly, with each row either representing one labeled item, a pair of items that should be semantically similar, or two items of different modalities in the case that a CLIP model is being used.
-Currently, `excel`, `excel-tab` and `unix` CSV dialects are supported. To specify which dialect to use, provide a {class}`~finetuner.utils.CSVOptions` object with `dialect=chosen_dialect` as the `csv_options` argument to the {meth}`~finetuner.fit` function. The list of all options for reading CSV files can be found in the description of the {class}`~finetuner.utils.CSVOptions` class.
+Currently, `excel`, `excel-tab` and `unix` CSV dialects are supported. To specify which dialect to use, provide a {class}`~finetuner.data.CSVOptions` object with `dialect=chosen_dialect` as the `csv_options` argument to the {meth}`~finetuner.fit` function. The list of all options for reading CSV files can be found in the description of the {class}`~finetuner.data.CSVOptions` class.
 
 
 ````{tab} two elements per row

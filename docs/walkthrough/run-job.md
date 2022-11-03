@@ -45,7 +45,7 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:
 ```python
 import finetuner
 from docarray import DocumentArray
-from finetuner.utils import CSVOptions
+from finetuner.data import CSVOptions
 
 train_data = 'path/to/some/train_data.csv'
 eval_data = 'path/to/some/eval_data.csv'

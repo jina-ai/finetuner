@@ -43,25 +43,17 @@ def build_dataset(
     data: Union[str, TextIO, DocumentArray],
     model: str,
     csv_options: Optional[CSVOptions] = None,
-) -> Union[Generator['Document', None, None], DocumentArray]:
+) -> Union[str, DocumentArray]:
 
     if isinstance(data, (TextIO)) or (isinstance(data, str) and isfile(data)):
-        if not csv_options:
-            csv_options = CSVOptions()
-
         model_stub = get_stub(model, select_model='clip-text')
-        if csv_options:
-            data = DocumentArray(
-                load_finetune_data_from_csv(
-                    file=data,
-                    task=model_stub.task,
-                    options=csv_options,
-                )
+        data = DocumentArray(
+            load_finetune_data_from_csv(
+                file=data,
+                task=model_stub.task,
+                options=csv_options or CSVOptions(),
             )
-        else:
-            data = DocumentArray(
-                load_finetune_data_from_csv(file=data, task=model_stub.task)
-            )
+        )
 
     return data
 
