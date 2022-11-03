@@ -156,7 +156,7 @@ def check_columns(
                 (
                     'Uri required in at least one colum '
                     'for model with task: '
-                    f'{t1}-to-{t2}'
+                    'text-to-image'
                     '.'
                 )
             )

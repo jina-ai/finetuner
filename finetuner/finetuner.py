@@ -6,9 +6,9 @@ from docarray import DocumentArray
 import hubble
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
+from finetuner.data import CSVOptions
 from finetuner.experiment import Experiment
 from finetuner.run import Run
-from finetuner.utils import CSVOptions
 from hubble import login_required
 
 

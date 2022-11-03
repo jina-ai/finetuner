@@ -12,8 +12,8 @@ from finetuner.constants import (
     HOST,
     HUBBLE_REGISTRY,
 )
+from finetuner.data import CSVOptions
 from finetuner.run import Run
-from finetuner.utils import CSVOptions
 from hubble import login_required
 
 if HOST not in os.environ:

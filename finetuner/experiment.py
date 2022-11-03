@@ -31,10 +31,10 @@ from finetuner.constants import (
     OUTPUT_DIM,
     SCHEDULER_STEP,
 )
+from finetuner.data import build_dataset
 from finetuner.hubble import push_data
 from finetuner.names import get_random_name
 from finetuner.run import Run
-from finetuner.utils import build_dataset
 
 
 class Experiment:

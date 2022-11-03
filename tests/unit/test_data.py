@@ -3,15 +3,51 @@ import os
 from io import StringIO
 
 import pytest
+from docarray import Document, DocumentArray
 
 from finetuner.constants import DEFAULT_TAG_KEY
-from finetuner.utils import CSVOptions, load_finetune_data_from_csv
+from finetuner.data import (
+    CSVOptions,
+    build_dataset,
+    check_columns,
+    create_document,
+    load_finetune_data_from_csv,
+)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 def lena_img_file():
     return os.path.join(current_dir, 'resources/lena.png')
+
+
+def dummy_csv_file():
+    return os.path.join(current_dir, 'resources/dummy_csv.csv')
+
+
+@pytest.mark.parametrize(
+    'data, is_file', [(dummy_csv_file(), True), ('notarealfile', False)]
+)
+def test_build_dataset_str(data, is_file):
+
+    options = CSVOptions(dialect='excel')
+
+    new_da = build_dataset(data=data, model='bert-base-cased', csv_options=options)
+
+    if is_file:
+        assert isinstance(new_da, DocumentArray)
+    else:
+        assert isinstance(new_da, str)
+
+
+def test_build_dataset_DocumentArray():
+
+    da = DocumentArray(Document())
+    new_da = build_dataset(
+        data=da,
+        model='does not matter',
+    )
+    assert da == new_da
 
 
 @pytest.mark.parametrize('dialect', csv.list_dialects())
@@ -139,3 +175,84 @@ def test_load_finetune_data_from_csv_multimodal(dialect, contents, expect_error)
                 assert doc.chunks[0].modality == 'text'
                 assert doc.chunks[1].uri == expected[1]
                 assert doc.chunks[1].modality == 'image'
+
+
+@pytest.mark.parametrize(
+    'task, col1, col2, exp1, exp2, expect_error',
+    [
+        ('text-to-text', 'apple', 'orange', 'text', 'text', None),
+        ('text-to-image', 'apple', lena_img_file(), 'text', 'image', None),
+        ('text-to-image', lena_img_file(), 'apple', 'image', 'text', None),
+        (
+            'any',
+            'apple',
+            'orange',
+            'doesnt',
+            'matter',
+            'MLP model does not support values read in from CSV files.',
+        ),
+        (
+            'invalid task!',
+            'apple',
+            'orange',
+            'doesnt',
+            'matter',
+            'Model has invalid task: invalid task!',
+        ),
+        (
+            'text-to-image',
+            'apple',
+            'orange',
+            'doesnt',
+            'matter',
+            (
+                'Uri required in at least one colum '
+                'for model with task: '
+                'text-to-image'
+                '.'
+            ),
+        ),
+    ],
+)
+def test_check_columns(task, col1, col2, exp1, exp2, expect_error):
+    if expect_error:
+        with pytest.raises(ValueError) as error:
+            check_columns(
+                task=task,
+                col1=col1,
+                col2=col2,
+            )
+        assert str(error.value) == expect_error
+    else:
+        t1, t2 = check_columns(task=task, col1=col1, col2=col2)
+        assert t1 == exp1
+        assert t2 == exp2
+
+
+@pytest.mark.parametrize(
+    'modality, column, convert_to_blob, expect_error',
+    [
+        ('text', 'apple', None, None),
+        ('image', lena_img_file(), False, None),
+        ('image', lena_img_file(), False, None),
+        ('image', 'not a real image', False, ValueError),
+    ],
+)
+def test_create_document(modality, column, convert_to_blob, expect_error):
+    if expect_error:
+        with pytest.raises(ValueError):
+            create_document(
+                modality=modality, column=column, convert_to_blob=convert_to_blob
+            )
+    else:
+        doc = create_document(
+            modality=modality, column=column, convert_to_blob=convert_to_blob
+        )
+
+        assert isinstance(doc, Document)
+        if modality == 'image':
+            assert doc.uri == column
+            if convert_to_blob:
+                assert doc.blob
+        else:
+            assert doc.text == column
