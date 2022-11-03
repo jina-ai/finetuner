@@ -33,8 +33,17 @@ if TYPE_CHECKING:
 ft = Finetuner()
 
 
-def login(force: bool = False):
-    ft.login(force=force)
+def login(force: bool = False, interactive: Optional[bool] = None):
+    ft.login(force=force, interactive=interactive)
+
+
+def notebook_login(force: bool = False):
+    warnings.warn(
+        message='Function `notebook_login` will be deprecated from Finetuner 0.7.0,'
+        'please use `login(interactive=True)` instead.',
+        category=DeprecationWarning,
+    )
+    ft.login(force=force, interactive=True)
 
 
 def connect():
