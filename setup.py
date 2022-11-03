@@ -29,7 +29,7 @@ if __name__ == '__main__':
         install_requires=[
             'docarray[common]>=0.18.0',
             'finetuner-stubs==0.11.0',
-            'jina-hubble-sdk==0.22.4',
+            'jina-hubble-sdk==0.23.0',
         ],
         extras_require={
             'full': [
