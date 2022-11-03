@@ -42,7 +42,7 @@ class CSVOptions:
 def build_dataset(
     data: Union[str, TextIO, DocumentArray],
     model: str,
-    csv_options: Optional[CSVOptions],
+    csv_options: Optional[CSVOptions] = None,
 ) -> Union[Generator['Document', None, None], DocumentArray]:
 
     if isinstance(data, (TextIO)) or (isinstance(data, str) and isfile(data)):
@@ -162,12 +162,10 @@ def check_columns(
         elif not _is_uri(col2):
             raise ValueError(
                 (
-                    'uri required in at least one colum ',
-                    'for model with task: ',
-                    t1,
-                    '-to-',
-                    t2,
-                    '.',
+                    'Uri required in at least one colum '
+                    'for model with task: '
+                    f'{t1}-to-{t2}'
+                    '.'
                 )
             )
     return t1, t2
