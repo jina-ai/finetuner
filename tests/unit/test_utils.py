@@ -5,7 +5,7 @@ from io import StringIO
 import pytest
 
 from finetuner.constants import DEFAULT_TAG_KEY
-from finetuner.utils import CSV_options, load_finetune_data_from_csv
+from finetuner.utils import CSVOptions, load_finetune_data_from_csv
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -22,7 +22,7 @@ def test_load_finetune_data_from_csv_text_to_text(dialect):
         [dialect.delimiter.join(x) for x in contents]
     )
 
-    options = CSV_options(dialect=dialect)
+    options = CSVOptions(dialect=dialect)
 
     docs = load_finetune_data_from_csv(
         file=StringIO(content_stream),
@@ -46,7 +46,7 @@ def test_load_finetune_data_from_csv_image_to_image(dialect):
         [dialect.delimiter.join(x) for x in contents]
     )
 
-    options = CSV_options(dialect=dialect)
+    options = CSVOptions(dialect=dialect)
 
     docs = load_finetune_data_from_csv(
         file=StringIO(content_stream),
@@ -76,7 +76,7 @@ def test_load_finetune_data_from_csv_labeled(dialect, contents, type):
         [dialect.delimiter.join(x) for x in contents]
     )
 
-    options = CSV_options(dialect=dialect, is_labeled=True)
+    options = CSVOptions(dialect=dialect, is_labeled=True)
 
     docs = load_finetune_data_from_csv(
         file=StringIO(content_stream),
@@ -109,7 +109,7 @@ def test_load_finetune_data_from_csv_multimodal(dialect, contents, expect_error)
         [dialect.delimiter.join(x) for x in contents]
     )
 
-    options = CSV_options(dialect=dialect)
+    options = CSVOptions(dialect=dialect)
 
     if expect_error:
         with pytest.raises(expect_error):

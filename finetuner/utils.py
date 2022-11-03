@@ -14,7 +14,7 @@ from finetuner.constants import DEFAULT_TAG_KEY
 
 
 @dataclass
-class CSV_options:
+class CSVOptions:
     """Class containing options for reading CSV files
 
     :param size: The number of rows that will be sampled.
@@ -42,12 +42,12 @@ class CSV_options:
 def build_dataset(
     data: Union[str, TextIO, DocumentArray],
     model: str,
-    csv_options: Optional[CSV_options],
+    csv_options: Optional[CSVOptions],
 ) -> Union[Generator['Document', None, None], DocumentArray]:
 
     if isinstance(data, (TextIO)) or (isinstance(data, str) and isfile(data)):
         if not csv_options:
-            csv_options = CSV_options()
+            csv_options = CSVOptions()
 
         model_stub = get_stub(model, select_model='clip-text')
         if csv_options:
@@ -69,7 +69,7 @@ def build_dataset(
 def load_finetune_data_from_csv(
     file: Union[str, TextIO],
     task: str = 'text-to-text',
-    options: CSV_options = CSV_options(),
+    options: CSVOptions = CSVOptions(),
 ) -> Generator['Document', None, None]:
     """
     Takes a CSV file and returns a generator of documents, with each document containing
@@ -79,7 +79,7 @@ def load_finetune_data_from_csv(
     :param task: Specifies the modalities of the model that the returned data is to
         be used for. This data is retrieved using the model name, and does not need
         to be added to the csv_options argument when calling :meth:`finetuner.fit`
-    :param options: A :class:`CSV_options` object.
+    :param options: A :class:`CSVOptions` object.
     :return: A generator of :class:`Document`s. Each document represents one element
         in the CSV
 

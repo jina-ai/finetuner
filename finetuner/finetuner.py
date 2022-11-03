@@ -8,7 +8,7 @@ from finetuner.client import FinetunerV1Client
 from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
 from finetuner.experiment import Experiment
 from finetuner.run import Run
-from finetuner.utils import CSV_options
+from finetuner.utils import CSVOptions
 from hubble import login_required
 
 
@@ -175,7 +175,7 @@ class Finetuner:
         device: str = 'cuda',
         num_workers: int = 4,
         to_onnx: bool = False,
-        csv_options: Optional[CSV_options] = None,
+        csv_options: Optional[CSVOptions] = None,
     ) -> Run:
         """Create a run.
 

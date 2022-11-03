@@ -13,7 +13,7 @@ from finetuner.constants import (
     HUBBLE_REGISTRY,
 )
 from finetuner.run import Run
-from finetuner.utils import CSV_options
+from finetuner.utils import CSVOptions
 from hubble import login_required
 
 if HOST not in os.environ:
@@ -118,7 +118,7 @@ def fit(
     device: str = 'cuda',
     num_workers: int = 4,
     to_onnx: bool = False,
-    csv_options: Optional[CSV_options] = None,
+    csv_options: Optional[CSVOptions] = None,
 ) -> Run:
     """Start a finetuner run!
 
@@ -180,7 +180,7 @@ def fit(
         workers used by the dataloader.
     :param to_onnx: If the model is an onnx model or not. If you call the `fit` function
         with `to_onnx=True`, please set this parameter as `True`.
-    :param csv_options: A :class:`CSV_options` object containing options used for
+    :param csv_options: A :class:`CSVOptions` object containing options used for
         reading in training and evaluation data from a CSV file, if they are
         provided as such.
 
