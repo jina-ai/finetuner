@@ -108,28 +108,13 @@ def load_finetune_data_from_csv(
             if not t1:  # determining which column contains images
                 t1, t2 = check_columns(task, col1, col2)
 
-            if t1 == 'image':
-                if _is_uri(col1):
-                    d1 = Document(uri=col1)
-                    if options.convert_to_blob and os.path.isfile(col1):
-                        d1.load_uri_to_blob()
-                else:
-                    raise ValueError(f'Expected uri in column 1, got {col1}')
-            else:
-                d1 = Document(content=col1)
+            d1 = create_document(t1, col1, options.convert_to_blob)
 
             if options.is_labeled:
                 label = col2
                 d2 = None
-            elif t2 == 'image':
-                if _is_uri(col2):
-                    d2 = Document(uri=col2)
-                    if options.convert_to_blob and os.path.isfile(col2):
-                        d2.load_uri_to_blob()
-                else:
-                    raise ValueError(f'Expected uri in column 2, got {col2}')
             else:
-                d2 = Document(content=col2)
+                d2 = create_document(t2, col2, options.convert_to_blob)
 
             if d2 is None:
                 d1.tags[DEFAULT_TAG_KEY] = label
@@ -186,3 +171,28 @@ def check_columns(
                 )
             )
     return t1, t2
+
+
+def create_document(
+    modality: str,
+    column: str,
+    convert_to_blob: bool,
+) -> Document:
+    """Checks the expected modality of the value in the given column
+        and creates a :class:`Document` with that value
+
+    :param modality: The expected modality of the value in the given column
+    :param column: A single value of a column
+    :convert_to_blob: Whether uris to local files should be converted to blobs
+    """
+    if modality == 'image':
+        if _is_uri(column):
+            doc = Document(uri=column)
+            if convert_to_blob and os.path.isfile(column):
+                doc.load_uri_to_blob()
+        else:
+            raise ValueError(f'Expected uri in column 1, got {column}')
+    else:
+        doc = Document(content=column)
+
+    return doc
