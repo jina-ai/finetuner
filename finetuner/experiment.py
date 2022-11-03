@@ -134,9 +134,9 @@ class Experiment:
             if isinstance(callback, EvaluationCallback):
                 eval_callback = callback
 
-        train_data = build_dataset(train_data, csv_options)
+        train_data = build_dataset(train_data, model, csv_options)
 
-        eval_data = build_dataset(eval_data, csv_options)
+        eval_data = build_dataset(eval_data, model, csv_options)
 
         train_data, eval_data, query_data, index_data = push_data(
             experiment_name=self._name,
