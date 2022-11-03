@@ -61,7 +61,7 @@ def build_dataset(
 def load_finetune_data_from_csv(
     file: Union[str, TextIO],
     task: str = 'text-to-text',
-    options: CSVOptions = CSVOptions(),
+    options: Optional[CSVOptions] = None,
 ) -> Generator['Document', None, None]:
     """
     Takes a CSV file and returns a generator of documents, with each document containing
@@ -76,6 +76,8 @@ def load_finetune_data_from_csv(
         in the CSV
 
     """
+
+    options = options or CSVOptions()
 
     if hasattr(file, 'read'):
         file_ctx = nullcontext(file)

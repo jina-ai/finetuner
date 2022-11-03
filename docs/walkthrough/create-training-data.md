@@ -10,7 +10,7 @@ Data can be prepared in two different formats, either as a CSV file, or as a {cl
 
 ## Preparing CSV Files
 
-To record data in a CSV file, the contents of each element are stored plainly, with each row either representing one labeled item, a pair of items that should be semantically similar, or two items of different modalities in the case that a CLIP model is being used.
+To record data in a CSV file, the contents of each element are stored plainly, with each row either representing one labeled item, a pair of items that should be semantically similar, or two items of different modalities in the case that a CLIP model is being used. The provided CSV files are then parsed and a {class}`~docarray.array.document.DocumentArray` is constructed containing the elements within the CSV file. Any references to local images within the CSV file are then loaded into memory.
 Currently, `excel`, `excel-tab` and `unix` CSV dialects are supported. To specify which dialect to use, provide a {class}`~finetuner.data.CSVOptions` object with `dialect=chosen_dialect` as the `csv_options` argument to the {meth}`~finetuner.fit` function. The list of all options for reading CSV files can be found in the description of the {class}`~finetuner.data.CSVOptions` class.
 
 
@@ -60,6 +60,9 @@ At the model saving time, you will discover, we are saving two models to your lo
 ```
 
 ````
+
+
+
 ## Preparing a DocumentArray
 When providing training data in a DocumentArray, each element is represented as a {class}`~docarray.document.Document`. You should assign a label to each {class}`~docarray.document.Document` inside your {class}`~docarray.array.document.DocumentArray`.
 For most of the models, this is done by adding a `fintuner_label` tag to each document.

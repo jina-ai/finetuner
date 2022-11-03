@@ -22,7 +22,7 @@ def lena_img_file():
 
 
 def dummy_csv_file():
-    return os.path.join(current_dir, 'resources/dummy_csv.csv')
+    return os.path.join(current_dir, 'resources/dummy.csv')
 
 
 @pytest.mark.parametrize(
@@ -65,8 +65,8 @@ def test_load_finetune_data_from_csv_text_to_text(dialect):
         task='text-to-text',
         options=options,
     )
-    flatContents = [x for pair in contents for x in pair]
-    for doc, expected in zip(docs, flatContents):
+    flat_contents = [x for pair in contents for x in pair]
+    for doc, expected in zip(docs, flat_contents):
         assert doc.content == expected
 
 
