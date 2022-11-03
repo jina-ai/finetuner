@@ -22,7 +22,7 @@ import finetuner
 from docarray import DocumentArray
 
 # Login to Jina AI Cloud
-finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
+finetuner.login()
 
 # Prepare training data
 train_data = DocumentArray(...)

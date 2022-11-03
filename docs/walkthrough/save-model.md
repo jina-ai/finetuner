@@ -21,7 +21,7 @@ In the example below, we show how to connect to an existing run and download a t
 ```python
 import finetuner
 
-finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
+finetuner.login()
 
 # connect to the experiment we created previously.
 experiment = finetuner.get_experiment('finetune-flickr-dataset')
