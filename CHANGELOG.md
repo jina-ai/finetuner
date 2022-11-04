@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add support for CSV files to the `fit` function. [#592](https://github.com/jina-ai/finetuner/pull/592)
 
+- Add support for lists to the `encode` function. [#598](https://github.com/jina-ai/finetuner/pull/598)
+
+
 ### Removed
 
 ### Changed

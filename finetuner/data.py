@@ -84,13 +84,15 @@ def build_encoding_dataset(
     :return: A :class:`DocumentArray`, either one provided as the data argument or
         one created from the given list.
     """
-    if not isinstance(DocumentArray, data):
+    if not isinstance(data, DocumentArray):
 
-        if model._select_model:
-            task = model._select_model.split('-')[1]
-        else:
+        try:
             task = get_stub(model._model_name, select_model=model._select_model).task
+            if task == 'any':
+                raise ValueError('MLP model does not support values from a list.')
             task = task.split('-to-')[0]
+        except Exception:
+            task = model._model_name.split('-')[1]
 
         data = DocumentArray(
             [Document(text=d) if task == 'text' else Document(uri=d) for d in data]

@@ -2,7 +2,7 @@
 
 Once fine-tuning is finished, it's time to actually use the model.
 You can use the fine-tuned models directly to encode [DocumentArray](https://docarray.jina.ai/) objects or setting up an encoding service.
-It is worth noting that, while training data can be provided as a csv, data for encoding cannot.
+When encoding, data can also be provided as a regular list.
 
 (integrate-with-docarray)=
 ## Embed DocumentArray
@@ -58,6 +58,25 @@ for doc in da:
 Text of the returned document: some text to encode
 Shape of the embedding: (768,)
 ```
+
+### Encoding a List
+Data that is stored in a regular list can be embedded in the same way you would a [DocumentArray](https://docarray.jina.ai/). Since the modality of your input data can be inferred from the model being used, there is not need to provide any additional information besides the content you want to encode:
+
+```python
+from docarray import DocumentArray, Document
+import finetuner
+
+model = finetuner.get_model('/path/to/YOUR-MODEL.zip')
+
+lst = ['some text to encode']
+
+da = finetuner.encode(model=model, data=lst)
+
+for doc in da:
+    print(f'Text of the returned document: {doc.text}')
+    print(f'Shape of the embedding: {doc.embedding.shape}')
+```
+
 
 ```{admonition} Inference with ONNX
 :class: tip

@@ -41,9 +41,21 @@ def test_build_model(descriptor, select_model, is_onnx, expect_error):
 @pytest.mark.parametrize('is_onnx', [True, False])
 def test_build_model_embedding(is_onnx):
 
-    model = finetuner.build_model(name="bert-base-cased", is_onnx=is_onnx)
+    model = finetuner.build_model(name='bert-base-cased', is_onnx=is_onnx)
 
-    da = DocumentArray(Document(text="TEST TEXT"))
+    da = DocumentArray(Document(text='TEST TEXT'))
     finetuner.encode(model=model, data=da)
     assert da.embeddings is not None
     assert isinstance(da.embeddings, np.ndarray)
+
+
+def test_embedding_with_list():
+    model = finetuner.build_model(name='bert-base-cased')
+
+    da = DocumentArray(Document(text='TEST TEXT'))
+    lst = ['TEST TEXT']
+    da_embeddings = finetuner.encode(model=model, data=da)
+    lst_embeddings = finetuner.encode(model=model, data=lst)
+
+    for expected, actual in zip(da_embeddings.embeddings, lst_embeddings.embeddings):
+        assert np.array_equal(expected, actual)

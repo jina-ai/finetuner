@@ -8,6 +8,7 @@ from docarray import Document, DocumentArray
 from finetuner.constants import DEFAULT_TAG_KEY
 from finetuner.data import (
     CSVOptions,
+    build_encoding_dataset,
     build_finetuning_dataset,
     check_columns,
     create_document,
@@ -50,6 +51,16 @@ def test_build_finetuning_dataset_DocumentArray():
         model='does not matter',
     )
     assert da == new_da
+
+
+def test_build_encoding_dataset_da():
+    da = DocumentArray(
+        [
+            Document(text='text1'),
+            Document(text='text2'),
+        ]
+    )
+    assert da == build_encoding_dataset(None, da)
 
 
 @pytest.mark.parametrize('dialect', csv.list_dialects())
