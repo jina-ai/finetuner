@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fix links to functions in the documentation. ([#596](https://github.com/jina-ai/finetuner/pull/596))
+
 ### Docs
 
 

@@ -177,7 +177,7 @@ let's use the fine-tuned model to encode a new `Document`:
 
 ```python id="v95QsuEyzE-B"
 text_da = DocumentArray([Document(text='some text to encode')])
-image_da = DocumentArray([Document(uri='my-image.png')])
+image_da = DocumentArray([Document(uri='https://www.collinsdictionary.com/images/full/apple_158989157.jpg')])
 
 clip_text_encoder = finetuner.get_model(artifact=artifact, select_model='clip-text')
 clip_image_encoder = finetuner.get_model(artifact=artifact, select_model='clip-vision')

@@ -37,7 +37,7 @@ ft = Finetuner()
 def login(force: bool = False) -> None:
     """
     Login to Jina AI to use cloud-based fine-tuning. Thereby, a authentication token is
-    generated which can be read with the {func}:`~finetuner.get_token` function.
+    generated which can be read with the :func:`~finetuner.get_token` function.
 
     :param force: If set to true, an existing token will be overwritten. Otherwise,
         you will not login again, if a valid token already exists.

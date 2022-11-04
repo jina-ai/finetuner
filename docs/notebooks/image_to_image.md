@@ -111,7 +111,7 @@ Let's understand what this piece of code does:
 but recommended in order to retrieve your run easily and have some context about it.
 * Furthermore, we had to provide names of the `train_data`.
 * We set `TripletMarginLoss`.
-* Additionally, we use {class}`~finetuner.callback.EvaluationCallback` for evaluation.
+* Additionally, we use `finetuner.callback.EvaluationCallback` for evaluation.
 * Lastly, we set the number of `epochs` and provide a `learning_rate`.
 <!-- #endregion -->
 
@@ -142,8 +142,8 @@ You can continue monitoring the runs by checking the status - `finetuner.run.Run
 
 <!-- #region id="BMpQxydypeZ3" -->
 ## Evaluating
-Currently, we don't have a user-friendly way to get evaluation metrics from the `~finetuner.callback.EvaluationCallback` we initialized previously.
-What you can do for now is to call `~finetuner.run.Run.logs()` in the end of the run and see evaluation results:
+Currently, we don't have a user-friendly way to get evaluation metrics from the `finetuner.callback.EvaluationCallback` we initialized previously.
+What you can do for now is to call `run.logs()` in the end of the run and see evaluation results:
 
 ```bash
   Training [5/5] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:00 0:03:15 • loss: 0.003
