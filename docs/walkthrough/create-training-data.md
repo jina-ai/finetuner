@@ -25,17 +25,17 @@ I'm sorry to have…      apologize-english
 Please, forgive me!     apologize-english
 ```
 
-When using image-to-image retrieval models, images can be represented as a path to a file:
+When using image-to-image retrieval models, images can be represented as a URI or a path to a file:
 
 ```markdown
-green_apple.jpg                         picture of apple
-red_apple.jpg                           picture of apple
+/Users/images/apples/green_apple.jpg    picture of apple
+/Users/images/apples/red_apple.jpg      picture of apple
 https://example.com/apple-styling.jpg   picture of apple
-orange.jpg                              picture of orange
+/Users/images/oranges/orange.jpg        picture of orange
 https://example.com/orange-styling.jpg  picture of orange
 ```
 
-If paths to local images are provided, they can be loaded into memory by setting `convert_to_blob = True` in the {class}`~finetuner.data.CSVOptions` object.
+If paths to local images are provided, they can be loaded into memory by setting `convert_to_blob = True` in the {class}`~finetuner.data.CSVOptions` object. It is worth noting that this setting does not cause Internet URLs to be loaded into memory.
 
 ````
 
@@ -59,7 +59,7 @@ At the model saving time, you will discover, we are saving two models to your lo
 
 
 ````{tab} two elements per row
-If you want two elements to be semantically close together, they can be placed on the same row as a pair, doing so will assign each pair a distinct label:
+If you want two elements to be semantically close together, they can be placed on the same row as a pair, Each pair will automatically be assigned a distinct label:
 
 ```markdown
 This is an English sentence         Das ist ein englischer Satz
@@ -68,7 +68,7 @@ This is another English sentence    Dies ist ein weiterer englischer Satz
 ```
 
 ```{warning}
-When reading in files constructed in this way, a unique label is generated for each pair. This means that each class in the dataset will only contain a single pair of elements, resulting in some sampling methods that require more than two elements per class not working.
+When reading in files constructed in this way, a unique label is generated for each pair. Some sampling methods that require more than two elements per class will not work because each class in the dataset will only contain a single pair of elements.
 
 
 ```
@@ -78,7 +78,7 @@ When reading in files constructed in this way, a unique label is generated for e
 
 ## Preparing a DocumentArray
 When providing training data in a DocumentArray, each element is represented as a {class}`~docarray.document.Document`. You should assign a label to each {class}`~docarray.document.Document` inside your {class}`~docarray.array.document.DocumentArray`.
-For most of the models, this is done by adding a `fintuner_label` tag to each document. {class}`~docarray.document.Document`s containing uris that point to local images can load these images into memory using the {meth}`docarray.document.Document.load_uri_to_blob` function of that {class}`~docarray.document.Document`.
+For most of the models, this is done by adding a `finetuner_label` tag to each document. {class}`~docarray.document.Document`s containing uris that point to local images can load these images into memory using the {meth}`docarray.document.Document.load_uri_to_blob` function of that {class}`~docarray.document.Document`.
 Only for cross-modality (text-to-image) fine-tuning with CLIP, is this not necessary as explained at the bottom of this section.
 
 
