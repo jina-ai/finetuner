@@ -78,7 +78,7 @@ When reading in files constructed in this way, a unique label is generated for e
 
 ## Preparing a DocumentArray
 When providing training data in a DocumentArray, each element is represented as a {class}`~docarray.document.Document`. You should assign a label to each {class}`~docarray.document.Document` inside your {class}`~docarray.array.document.DocumentArray`.
-For most of the models, this is done by adding a `fintuner_label` tag to each document. {class}`~docarray.document.Document`s containing uris that point to local images can load these images into memory using the {meth}`docarray.document.Document.load_uri_to_blob` function of that {class}`~docarray.document.Document`.
+For most of the models, this is done by adding a `finetuner_label` tag to each document. {class}`~docarray.document.Document`s containing uris that point to local images can load these images into memory using the {meth}`docarray.document.Document.load_uri_to_blob` function of that {class}`~docarray.document.Document`.
 Only for cross-modality (text-to-image) fine-tuning with CLIP, is this not necessary as explained at the bottom of this section.
 
 
