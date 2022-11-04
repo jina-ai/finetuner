@@ -70,13 +70,20 @@ def build_encoding_dataset(
     from the elements of the list
     """
     if not isinstance(data, DocumentArray):
-        try:
-            task = get_stub(model._model_name, select_model=model._select_model).task
-            if task == 'any':
-                raise ValueError('MLP model does not support values from a list.')
-            task = task.split('-to-')[0]
-        except Exception:
-            task = model._model_name.split('-')[1]
+
+        modalities = model._metadata['preprocess_types']
+        if model._select_model:
+            task = modalities[model._select_model]
+        else:
+            task = list(modalities)[0]
+
+        # try:
+        #     task = get_stub(model._model_name, select_model=model._select_model).task
+        #     if task == 'any':
+        #         raise ValueError('MLP model does not support values from a list.')
+        #     task = task.split('-to-')[0]
+        # except Exception:
+        #     task = model._model_name.split('-')[1]
 
         data = DocumentArray(
             [Document(text=d) if task == 'text' else Document(uri=d) for d in data]

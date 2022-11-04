@@ -450,7 +450,7 @@ def get_model(
 
 def encode(
     model: 'InferenceEngine',
-    data: DocumentArray,
+    data: Union[DocumentArray, List[str]],
     batch_size: int = 32,
 ) -> DocumentArray:
     """Preprocess, collate and encode the `DocumentArray` with embeddings.
