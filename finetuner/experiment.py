@@ -1,6 +1,6 @@
 import warnings
 from dataclasses import fields
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, TextIO, Union
 
 from _finetuner.runner.stubs import config
 from docarray import DocumentArray
@@ -31,6 +31,7 @@ from finetuner.constants import (
     OUTPUT_DIM,
     SCHEDULER_STEP,
 )
+from finetuner.data import build_dataset
 from finetuner.hubble import push_data
 from finetuner.names import get_random_name
 from finetuner.run import Run
@@ -117,19 +118,13 @@ class Experiment:
     def create_run(
         self,
         model: str,
-        train_data: Union[DocumentArray, str],
+        train_data: Union[str, TextIO, DocumentArray],
         run_name: Optional[str] = None,
+        eval_data: Optional[Union[str, TextIO, DocumentArray]] = None,
+        csv_options: Optional[Dict[str, Any]] = None,
         **kwargs,
     ) -> Run:
-        """Create a run inside the experiment.
-
-        :param model: Name of the model to be fine-tuned.
-        :param train_data: Either a `DocumentArray` for training data or a
-            name of the `DocumentArray` that is pushed on Hubble.
-        :param run_name: Optional name of the run.
-        :param kwargs: Optional keyword arguments for the run config.
-        :return: A `Run` object.
-        """
+        """Create a run inside the experiment."""
         if not run_name:
             run_name = get_random_name()
 
@@ -138,6 +133,10 @@ class Experiment:
         for callback in callbacks:
             if isinstance(callback, EvaluationCallback):
                 eval_callback = callback
+
+        train_data = build_dataset(train_data, model, csv_options)
+
+        eval_data = build_dataset(eval_data, model, csv_options)
 
         train_data, eval_data, query_data, index_data = push_data(
             experiment_name=self._name,

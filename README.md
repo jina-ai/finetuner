@@ -148,7 +148,8 @@ run = finetuner.fit(
 )
 ```
 
-Fine-tuning might take 5 minute to finish. You can later re-connect your run with:
+Here, the training data used is gathered from the Jina AI Cloud, however data can also be passed as a CSV file or DocumentArray, as described [here](https://finetuner.jina.ai/walkthrough/create-training-data/).  
+Fine-tuning might take 5 minutes to finish. You can later re-connect your run with:
 
 ```python
 import finetuner
@@ -185,6 +186,29 @@ finetuner.encode(model=model, data=da)
 
 da.summary()
 ```
+
+## Training on your own data
+
+If you want to train a model using your own dataset instead of one on the Jina AI Cloud, you can provide labeled data in a CSV file in the following way:
+
+```plaintext
+This is an apple    apple_label
+This is a pear      pear_label
+...
+```
+
+You can then provide the path to your CSV file as your training data:
+
+```python
+run = finetuner.fit(
+    model='bert-base-cased',
+    run_name='bert-my-own-run',
+    train_data='path/to/some/data.csv',
+)
+```
+More information on providing your own training data is found in the [Prepare Training Data](https://finetuner.jina.ai/walkthrough/create-training-data/) section of the [walkthrough](https://finetuner.jina.ai/walkthrough/).
+
+
 
 ### Next steps
 

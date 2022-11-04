@@ -2,6 +2,7 @@
 
 Once fine-tuning is finished, it's time to actually use the model.
 You can use the fine-tuned models directly to encode [DocumentArray](https://docarray.jina.ai/) objects or setting up an encoding service.
+It is worth noting that, while training data can be provided as a csv, data for encoding cannot.
 
 (integrate-with-docarray)=
 ## Embed DocumentArray

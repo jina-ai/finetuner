@@ -1,7 +1,7 @@
 import inspect
 import os
 import warnings
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, TextIO, Union
 
 from _finetuner.runner.stubs import model as model_stub
 from docarray import DocumentArray
@@ -12,6 +12,7 @@ from finetuner.constants import (
     HOST,
     HUBBLE_REGISTRY,
 )
+from finetuner.data import CSVOptions
 from finetuner.run import Run
 from hubble import login_required
 
@@ -95,8 +96,8 @@ def describe_models() -> None:
 @login_required
 def fit(
     model: str,
-    train_data: Union[str, DocumentArray],
-    eval_data: Optional[Union[str, DocumentArray]] = None,
+    train_data: Union[str, TextIO, DocumentArray],
+    eval_data: Optional[Union[str, TextIO, DocumentArray]] = None,
     run_name: Optional[str] = None,
     description: Optional[str] = None,
     experiment_name: Optional[str] = None,
@@ -117,15 +118,16 @@ def fit(
     device: str = 'cuda',
     num_workers: int = 4,
     to_onnx: bool = False,
+    csv_options: Optional[CSVOptions] = None,
 ) -> Run:
     """Start a finetuner run!
 
     :param model: The name of model to be fine-tuned. Run `finetuner.list_models()` or
         `finetuner.describe_models()` to see the available model names.
-    :param train_data: Either a `DocumentArray` for training data or a
-        name of the `DocumentArray` that is pushed on Hubble.
-    :param eval_data: Either a `DocumentArray` for evaluation data or a
-        name of the `DocumentArray` that is pushed on Hubble.
+    :param train_data: Either a `DocumentArray` for training data, a name of the
+        `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
+    :param eval_data: Either a `DocumentArray` for evaluation data, a name of the
+        `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
     :param run_name: Name of the run.
     :param description: Run description.
     :param experiment_name: Name of the experiment.
@@ -178,11 +180,15 @@ def fit(
         workers used by the dataloader.
     :param to_onnx: If the model is an onnx model or not. If you call the `fit` function
         with `to_onnx=True`, please set this parameter as `True`.
+    :param csv_options: A :class:`CSVOptions` object containing options used for
+        reading in training and evaluation data from a CSV file, if they are
+        provided as such.
 
     .. note::
        Unless necessary, please stick with `device="cuda"`, `cpu` training could be
        extremely slow and inefficient.
     """
+
     return ft.create_run(
         model=model,
         train_data=train_data,
@@ -207,6 +213,7 @@ def fit(
         device=device,
         num_workers=num_workers,
         to_onnx=to_onnx,
+        csv_options=csv_options,
     )
 
 

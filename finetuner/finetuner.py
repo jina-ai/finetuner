@@ -6,6 +6,7 @@ from docarray import DocumentArray
 import hubble
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
+from finetuner.data import CSVOptions
 from finetuner.experiment import Experiment
 from finetuner.run import Run
 from hubble import login_required
@@ -174,6 +175,7 @@ class Finetuner:
         device: str = 'cuda',
         num_workers: int = 4,
         to_onnx: bool = False,
+        csv_options: Optional[CSVOptions] = None,
     ) -> Run:
         """Create a run.
 
@@ -209,6 +211,7 @@ class Finetuner:
             device=device,
             num_workers=num_workers,
             to_onnx=to_onnx,
+            csv_options=csv_options,
         )
 
     @login_required
