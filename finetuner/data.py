@@ -48,17 +48,7 @@ def build_finetuning_dataset(
     csv_options: Optional[CSVOptions] = None,
 ) -> Union[str, DocumentArray]:
     """If data has been provided as a CSV file, the given CSV file is parsed
-        and a :class:`DocumentArray` is created.
-
-    :param data: The input data provided by the user, either a path to a CSV file,
-        a stream of a CSV file in memory, a :class:`DocumentArray` in memory or
-        the name of a :class:`DocumentArray` that has been stored on the Jina AI Cloud.
-    :param model: The name of the model being finetuned
-    :param csv_options: a :class:`CSVOptions` object.
-    :return: A :class:`DocumentArray`, either one provided as the data argument or
-        one loaded from a CSV file, or the name of a :class:`DocumentArray` that
-        has been stored on the Jina AI Cloud.
-
+    and a :class:`DocumentArray` is created.
     """
     if isinstance(data, (TextIO)) or (isinstance(data, str) and isfile(data)):
         model_stub = get_stub(model, select_model='clip-text')
@@ -74,18 +64,12 @@ def build_finetuning_dataset(
 
 
 def build_encoding_dataset(
-    model: 'InferenceEngine', data: Union[List[str], DocumentArray]
+    model: Union['InferenceEngine', str], data: Union[List[str], DocumentArray]
 ) -> DocumentArray:
     """If data has been provided as a list, a :class:`DocumentArray` is created
-        from the elements of the list
-
-    :param model: The InferenceEngine for the model being used for encoding
-    :param data: Either a list of raw data or a :class:`DocumentArray`
-    :return: A :class:`DocumentArray`, either one provided as the data argument or
-        one created from the given list.
+    from the elements of the list
     """
     if not isinstance(data, DocumentArray):
-
         try:
             task = get_stub(model._model_name, select_model=model._select_model).task
             if task == 'any':

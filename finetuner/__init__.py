@@ -452,7 +452,7 @@ def encode(
     model: 'InferenceEngine',
     data: DocumentArray,
     batch_size: int = 32,
-):
+) -> DocumentArray:
     """Preprocess, collate and encode the `DocumentArray` with embeddings.
 
     :param model: The model to be used to encode `DocumentArray`. In this case
