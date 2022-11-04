@@ -2,7 +2,7 @@
 # Login
 
 Since Finetuner leverages cloud resources for fine-tuning,
-you are required to {meth}`~finetuner.login()` (or `~finetuner.notebook_login()`) and obtain a token from Jina before starting a fine-tuning job.
+you are required to {meth}`~finetuner.login()` (or {func}`~finetuner.notebook_login()`) and obtain a token from Jina before starting a fine-tuning job.
 It is as simple as:
 
 ```python
@@ -12,10 +12,17 @@ finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Googl
 ```
 
 A browser window should pop up with different login options.
-After {meth}`~finetuner.login()` or `~finetuner.notebook_login()` you will see this in your terminal:
+After {meth}`~finetuner.login()` or {func}`~finetuner.notebook_login()` you will see this in your terminal:
 
 ```bash
 🔐 Successfully logged in to Jina AI as [USER NAME]!
+```
+
+ Now, an authentication token is generated which can be read with the {func}`~finetuner.get_token` function.
+If you have been logged in before, the existing token will not be overwritten, however, if you want this to be happen, you can set the `force` attribute in the login function to true.
+
+```
+finetuner.login(force=True)
 ```
 
 ```{admonition} Why do I need to login?

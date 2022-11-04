@@ -34,16 +34,19 @@ if TYPE_CHECKING:
 ft = Finetuner()
 
 
-def login(force: bool = False):
+def login(force: bool = False) -> None:
+    """
+    Login to Jina AI to use cloud-based fine-tuning. Thereby, an authentication token is
+    generated which can be read with the :func:`~finetuner.get_token` function.
+
+    :param force: If set to true, an existing token will be overwritten. Otherwise,
+        you will not login again, if a valid token already exists.
+    """
     ft.login(force=force)
 
 
 def notebook_login(force: bool = False):
     ft.notebook_login(force=force)
-
-
-def connect():
-    ft.connect()
 
 
 def list_callbacks() -> Dict[str, callback.CallbackStubType]:

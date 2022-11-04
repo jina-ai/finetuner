@@ -7,7 +7,7 @@ It is worth noting that, while training data can be provided as a csv, data for 
 (integrate-with-docarray)=
 ## Embed DocumentArray
 
-To embed a [DocumentArray](https://docarray.jina.ai/) with a fine-tuned model, you can get the model of your Run via the `get_model` function and embed it via the `encode` function:
+To embed a [DocumentArray](https://docarray.jina.ai/) with a fine-tuned model, you can get the model of your Run via the {func}`~finetuner.get_model` function and embed it via the {func}`finetuner.encode` function:
 
 ````{tab} Artifact id and token
 ```python
@@ -121,7 +121,7 @@ executors:
 ````
 
 As you can see, it's super easy! 
-If you did not call `save_artifact`,
+If you did not call {func}`~finetuner.run.Run.save_artifact`,
 you need to provide the `artifact_id` and `token`.
 `FinetunerExecutor` will automatically pull your model from the Jina AI Cloud to the container.
 
@@ -169,7 +169,7 @@ models: `clip-vision` and `clip-text`.
 The vision model allows you to embed images and the text model can encode text passages
 into the same vector space.
 To use those models, you have to provide the name of the model via an additional
-`select_model` parameter to the `get_model` function.
+`select_model` parameter to the {func}`~finetuner.get_model` function.
 
 
 ````{tab} CLIP text model

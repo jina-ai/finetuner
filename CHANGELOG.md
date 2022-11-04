@@ -10,13 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add support for CSV files to the `fit` function. [#592](https://github.com/jina-ai/finetuner/pull/592)
+- Add support for CSV files to the `fit` function. ([#592](https://github.com/jina-ai/finetuner/pull/592))
 
 ### Removed
 
+- Remove `connect` function. ([#596](https://github.com/jina-ai/finetuner/pull/596))
+
 ### Changed
 
+- Enhance documentation of login functionalities. ([#596](https://github.com/jina-ai/finetuner/pull/596))
+
 ### Fixed
+
+- Fix links to functions in the documentation. ([#596](https://github.com/jina-ai/finetuner/pull/596))
 
 ### Docs
 

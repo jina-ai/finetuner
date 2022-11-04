@@ -67,7 +67,7 @@ from docarray import DocumentArray, Document
 finetuner.notebook_login()
 ```
 
-```python id="8PIO5T--p4tR"
+```python colab={"background_save": true} id="8PIO5T--p4tR"
 train_data = DocumentArray.pull('quora_train.da', show_progress=True)
 query_data = DocumentArray.pull('quora_query_dev.da', show_progress=True)
 index_data = DocumentArray.pull('quora_index_dev.da', show_progress=True)
@@ -222,7 +222,7 @@ And finally you can use the embeded `query` to find top-k semantically related t
 <!-- #endregion -->
 
 ```python id="-_bM-TXRE2h7"
-query.match(train_data, limit=10, metric='cosine')
+query.match(index_data, limit=10, metric='cosine')
 ```
 
 <!-- #region id="czK5pSUEAcdS" -->
