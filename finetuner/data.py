@@ -2,7 +2,7 @@ import csv
 import os
 from contextlib import nullcontext
 from dataclasses import dataclass
-from typing import Generator, Optional, TextIO, Tuple, Union
+from typing import TYPE_CHECKING, Generator, List, Optional, TextIO, Tuple, Union
 
 from _finetuner.runner.stubs.model import get_stub
 from docarray import Document, DocumentArray
@@ -11,6 +11,9 @@ from docarray.document.mixins.helper import _is_uri
 from genericpath import isfile
 
 from finetuner.constants import DEFAULT_TAG_KEY
+
+if TYPE_CHECKING:
+    from _finetuner.models.inference import InferenceEngine
 
 
 @dataclass
@@ -39,12 +42,24 @@ class CSVOptions:
     convert_to_blob: bool = True
 
 
-def build_dataset(
+def build_finetuning_dataset(
     data: Union[str, TextIO, DocumentArray],
     model: str,
     csv_options: Optional[CSVOptions] = None,
 ) -> Union[str, DocumentArray]:
+    """If data has been provided as a CSV file, the given CSV file is parsed
+        and a :class:`DocumentArray` is created.
 
+    :param data: The input data provided by the user, either a path to a CSV file,
+        a stream of a CSV file in memory, a :class:`DocumentArray` in memory or
+        the name of a :class:`DocumentArray` that has been stored on the Jina AI Cloud.
+    :param model: The name of the model being finetuned
+    :param csv_options: a :class:`CSVOptions` object.
+    :return: A :class:`DocumentArray`, either one provided as the data argument or
+        one loaded from a CSV file, or the name of a :class:`DocumentArray` that
+        has been stored on the Jina AI Cloud.
+
+    """
     if isinstance(data, (TextIO)) or (isinstance(data, str) and isfile(data)):
         model_stub = get_stub(model, select_model='clip-text')
         data = DocumentArray(
@@ -53,6 +68,31 @@ def build_dataset(
                 task=model_stub.task,
                 options=csv_options or CSVOptions(),
             )
+        )
+
+    return data
+
+
+def build_encoding_dataset(
+    model: 'InferenceEngine', data: Union[List[str], DocumentArray]
+) -> DocumentArray:
+    """If data has been provided as a list, a :class:`DocumentArray` is"""
+    if not isinstance(DocumentArray, data):
+
+        if model._select_model:
+            task = model._select_model.split('-')[1]
+        else:
+            task = get_stub(model._model_name, select_model=model._select_model).task
+            task = task.split('-to-')[0]
+
+        data = DocumentArray(
+            [
+                load_encoding_data(
+                    data=d,
+                    task=task,
+                )
+                for d in data
+            ]
         )
 
     return data
@@ -125,6 +165,17 @@ def load_finetune_data_from_csv(
                 d1.modality = t1
                 d2.modality = t2
                 yield Document(chunks=[d1, d2])
+
+
+def load_encoding_data(
+    data: str,
+    task: str = 'text',
+) -> Document:
+
+    if task == 'text':
+        return Document(text=data)
+    else:
+        return Document(uri=data)
 
 
 def check_columns(

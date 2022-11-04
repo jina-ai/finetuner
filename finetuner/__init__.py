@@ -448,7 +448,7 @@ def get_model(
 
 
 def encode(
-    model,
+    model: 'InferenceEngine',
     data: DocumentArray,
     batch_size: int = 32,
 ):
