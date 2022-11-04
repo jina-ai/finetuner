@@ -76,7 +76,14 @@ def build_finetuning_dataset(
 def build_encoding_dataset(
     model: 'InferenceEngine', data: Union[List[str], DocumentArray]
 ) -> DocumentArray:
-    """If data has been provided as a list, a :class:`DocumentArray` is"""
+    """If data has been provided as a list, a :class:`DocumentArray` is created
+        from the elements of the list
+
+    :param model: The InferenceEngine for the model being used for encoding
+    :param data: Either a list of raw data or a :class:`DocumentArray`
+    :return: A :class:`DocumentArray`, either one provided as the data argument or
+        one created from the given list.
+    """
     if not isinstance(DocumentArray, data):
 
         if model._select_model:
@@ -86,13 +93,7 @@ def build_encoding_dataset(
             task = task.split('-to-')[0]
 
         data = DocumentArray(
-            [
-                load_encoding_data(
-                    data=d,
-                    task=task,
-                )
-                for d in data
-            ]
+            [Document(text=d) if task == 'text' else Document(uri=d) for d in data]
         )
 
     return data
@@ -165,17 +166,6 @@ def load_finetune_data_from_csv(
                 d1.modality = t1
                 d2.modality = t2
                 yield Document(chunks=[d1, d2])
-
-
-def load_encoding_data(
-    data: str,
-    task: str = 'text',
-) -> Document:
-
-    if task == 'text':
-        return Document(text=data)
-    else:
-        return Document(uri=data)
 
 
 def check_columns(

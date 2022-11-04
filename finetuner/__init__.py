@@ -24,6 +24,7 @@ if HUBBLE_REGISTRY not in os.environ:
 
 from finetuner import callback, model
 from finetuner.console import print_model_table
+from finetuner.data import build_encoding_dataset
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
 from finetuner.model import list_model_classes
@@ -468,6 +469,8 @@ def encode(
     """
 
     from _finetuner.models.inference import ONNXRuntimeInferenceEngine
+
+    data = build_encoding_dataset(model=model, data=data)
 
     for batch in data.batch(batch_size, show_progress=True):
         if isinstance(model, ONNXRuntimeInferenceEngine):
