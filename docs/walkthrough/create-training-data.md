@@ -10,25 +10,8 @@ Data can be prepared in two different formats, either as a CSV file, or as a {cl
 
 ## Preparing CSV Files
 
-To record data in a CSV file, the contents of each element are stored plainly, with each row either representing one labeled item, a pair of items that should be semantically similar, or two items of different modalities in the case that a CLIP model is being used. The provided CSV files are then parsed and a {class}`~docarray.array.document.DocumentArray` is constructed containing the elements within the CSV file. Any references to local images within the CSV file are then loaded into memory.
+To record data in a CSV file, the contents of each element are stored plainly, with each row either representing one labeled item, a pair of items that should be semantically similar, or two items of different modalities in the case that a CLIP model is being used. The provided CSV files are then parsed and a {class}`~docarray.array.document.DocumentArray` is constructed containing the elements within the CSV file.
 Currently, `excel`, `excel-tab` and `unix` CSV dialects are supported. To specify which dialect to use, provide a {class}`~finetuner.data.CSVOptions` object with `dialect=chosen_dialect` as the `csv_options` argument to the {meth}`~finetuner.fit` function. The list of all options for reading CSV files can be found in the description of the {class}`~finetuner.data.CSVOptions` class.
-
-
-````{tab} two elements per row
-If you want two elements to be semantically close together, they can be placed on the same row as a pair, doing so will assign each pair a distinct label:
-
-```markdown
-This is an English sentence         Das ist ein englischer Satz
-This is another English sentence    Dies ist ein weiterer englischer Satz
-...
-```
-This format can be used to construct training data for text-to-text and image-to-image retrieval models:
-
-```markdown
-apple.jpg   https://example.com/apple-styling.jpg
-orange.jpg  https://example.com/orange-styling.jpg
-```
-````
 
 ````{tab} Labeled data
 In cases where you want multiple elements grouped together, you can provide a label in the second column. This way, all elements in the first column that have the same label will be considered similar when training. To indicate that the second column of your CSV file represents a label instead of a second element, set `is_labeled = True` in the `csv_options` argument of the {meth}`~finetuner.fit` function. Your data can then be structured like so:
@@ -41,6 +24,19 @@ I'm (…) sorry!          apologize-english
 I'm sorry to have…      apologize-english
 Please, forgive me!     apologize-english
 ```
+
+When using image-to-image retrieval models, images can be represented as a path to a file:
+
+```markdown
+green_apple.jpg                         picture of apple
+red_apple.jpg                           picture of apple
+https://example.com/apple-styling.jpg   picture of apple
+orange.jpg                              picture of orange
+https://example.com/orange-styling.jpg  picture of orange
+```
+
+If paths to local images are provided, they can be loaded into memory by setting `convert_to_blob = True` in the {class}`~finetuner.data.CSVOptions` object.
+
 ````
 
 ````{tab} text-to-image search using CLIP
@@ -62,10 +58,27 @@ At the model saving time, you will discover, we are saving two models to your lo
 ````
 
 
+````{tab} two elements per row
+If you want two elements to be semantically close together, they can be placed on the same row as a pair, doing so will assign each pair a distinct label:
+
+```markdown
+This is an English sentence         Das ist ein englischer Satz
+This is another English sentence    Dies ist ein weiterer englischer Satz
+...
+```
+
+```{warning}
+When reading in files constructed in this way, a unique label is generated for each pair. This means that each class in the dataset will only contain a single pair of elements, resulting in some sampling methods that require more than two elements per class not working.
+
+
+```
+
+````
+
 
 ## Preparing a DocumentArray
 When providing training data in a DocumentArray, each element is represented as a {class}`~docarray.document.Document`. You should assign a label to each {class}`~docarray.document.Document` inside your {class}`~docarray.array.document.DocumentArray`.
-For most of the models, this is done by adding a `fintuner_label` tag to each document.
+For most of the models, this is done by adding a `fintuner_label` tag to each document. {class}`~docarray.document.Document`s containing uris that point to local images can load these images into memory using the {meth}`docarray.document.Document.load_uri_to_blob` function of that {class}`~docarray.document.Document`.
 Only for cross-modality (text-to-image) fine-tuning with CLIP, is this not necessary as explained at the bottom of this section.
 
 
