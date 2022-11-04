@@ -488,3 +488,5 @@ def encode(
             inputs = model._move_to_device(inputs)
             output = model.run(inputs)
             batch.embeddings = output.detach().cpu().numpy()
+
+    return data
