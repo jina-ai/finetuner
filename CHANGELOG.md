@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Change datasets and hyperparameters for ResNet experiment. ([#599](https://github.com/jina-ai/finetuner/pull/599))
+
 
 ## [0.6.4] - 2022-10-27
 
