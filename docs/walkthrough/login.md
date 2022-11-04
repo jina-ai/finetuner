@@ -18,6 +18,13 @@ After {meth}`~finetuner.login()` or `~finetuner.notebook_login()` you will see t
 🔐 Successfully logged in to Jina AI as [USER NAME]!
 ```
 
+ Now, an authentication token is generated which can be read with the {func}:`~finetuner.get_token` function.
+If you have been logged in before, the existing token will not be overwritten, however, if you want this to be happen, you can set the `force` attribute in the login function to true.
+
+```
+finetuner.login(force=True)
+```
+
 ```{admonition} Why do I need to login?
 :class: hint
 Login is required since Finetuner needs to push your {class}`~docarray.array.document.DocumentArray` into the Jina AI Cloud as training data.
