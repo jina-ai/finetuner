@@ -140,6 +140,56 @@ Please refer to {ref}`Apply WiSE-FT <wise-ft>` in the CLIP fine-tuning example.
 ```{warning}
 It is recommended to use WiSEFTCallback when fine-tuning CLIP.
 We can not ensure it works for other types of models, such as ResNet or BERT.
-
-
 ```
+
+## WandBLogger
+
+Finetuner allows you to utilize Weights & Biases for experiment tracking and visualization.
+The `WandBLogger` uses Weights & Biases [Anonymous Mode](https://docs.wandb.ai/ref/app/features/anon)
+to track a Finetuner Run. The benefits of anonymous mode is: you do not need to share your
+Weights & Biases api_key with us since no login is required.
+
+```{admonition} Use WandBLogger together with EvaluationCallback
+:class: hint
+Use WandBLogger will track the training loss, evaluation loss (if `eval_data` is not None).
+If you use EvaluationCallback together with WandBLogger, search metrics will be tracked as well.
+Such as `mrr`, `precision`, `recall` etc.
+```
+
+```python
+from finetuner.callback import WandBLogger, EvaluationCallback
+
+run = finetuner.fit(
+    model = 'resnet50',
+    run_name = 'resnet-tll-early-6',
+    train_data = 'tll-train-da',
+    epochs = 5,
+    learning_rate = 1e-6,
+    callbacks=[
+        EvaluationCallback(
+            query_data='tll-test-query-da',
+            index_data='tll-test-index-da'
+        ),
+        WandBLogger(),
+    ]
+)
+
+# stream the logs, or use run.logs() to get logs
+for entry in run.stream_logs():
+    print(entry)
+```
+
+You can find the Weights & Biases entry in the logs, copy the link of *View run at*:
+
+```bash
+wandb: Currently logged in as: anony-mouse-279369. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.13.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.12.19
+wandb: Run data is saved locally in [YOUR-PATH]
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run cool-wildflower-2
+wandb:  View project at https://wandb.ai/anony-mouse-279369/[YOUR-PROJECT-URL]
+wandb:  View run at https://wandb.ai/anony-mouse-279369/[YOUR-RUN-URL]
+```
+
