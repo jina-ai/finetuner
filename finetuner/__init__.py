@@ -471,8 +471,11 @@ def encode(
 
     from _finetuner.models.inference import ONNXRuntimeInferenceEngine
 
-    return_da = isinstance(data, DocumentArray)
-    data = build_encoding_dataset(model=model, data=data)
+    if isinstance(data, DocumentArray):
+        return_da = True
+    else:
+        data = build_encoding_dataset(model=model, data=data)
+        return_da = False
 
     for batch in data.batch(batch_size, show_progress=True):
         if isinstance(model, ONNXRuntimeInferenceEngine):

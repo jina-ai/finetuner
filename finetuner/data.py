@@ -63,25 +63,21 @@ def build_finetuning_dataset(
     return data
 
 
-def build_encoding_dataset(
-    model: Union['InferenceEngine', str], data: Union[List[str], DocumentArray]
-) -> DocumentArray:
+def build_encoding_dataset(model: 'InferenceEngine', data: List[str]) -> DocumentArray:
     """If data has been provided as a list, a :class:`DocumentArray` is created
     from the elements of the list
     """
-    if not isinstance(data, DocumentArray):
+    modalities = model._metadata['preprocess_types']
+    if model._select_model:
+        task = modalities[model._select_model]
+    elif list(modalities)[0] == ['features']:
+        raise ValueError('MLP model does not support values from a list.')
+    else:
+        task = list(modalities)[0]
 
-        modalities = model._metadata['preprocess_types']
-        if model._select_model:
-            task = modalities[model._select_model]
-        elif list(modalities)[0] == ['features']:
-            raise ValueError('MLP model does not support values from a list.')
-        else:
-            task = list(modalities)[0]
-
-        data = DocumentArray(
-            [Document(text=d) if task == 'text' else Document(uri=d) for d in data]
-        )
+    data = DocumentArray(
+        [Document(text=d) if task == 'text' else Document(uri=d) for d in data]
+    )
 
     return data
 

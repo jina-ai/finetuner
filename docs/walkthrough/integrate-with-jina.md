@@ -68,11 +68,11 @@ import finetuner
 
 model = finetuner.get_model('/path/to/YOUR-MODEL.zip')
 
-lst = ['some text to encode']
+texts = ['some text to encode']
 
 embeddings = finetuner.encode(model=model, data=lst)
 
-for text, embedding in zip(lst, embeddings):
+for text, embedding in zip(texts, embeddings):
     print(f'Text of the returned document: {text}')
     print(f'Shape of the embedding: {embedding.shape}')
 ```
