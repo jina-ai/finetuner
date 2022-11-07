@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Add documentation for `WandBLogger`. [#600](https://github.com/jina-ai/finetuner/pull/600)
+
 
 ## [0.6.4] - 2022-10-27
 
