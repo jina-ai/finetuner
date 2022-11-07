@@ -151,7 +151,8 @@ Weights & Biases api_key with us since no login is required.
 
 ```{admonition} Use WandBLogger together with EvaluationCallback
 :class: hint
-Use WandBLogger will track the training loss, evaluation loss (if `eval_data` is not None).
+The WandBLogger will track the training loss, plus the evaluation loss if `eval_data` is not None.
+
 If you use EvaluationCallback together with WandBLogger, search metrics will be tracked as well.
 Such as `mrr`, `precision`, `recall` etc.
 ```
