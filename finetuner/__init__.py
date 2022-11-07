@@ -30,6 +30,7 @@ from finetuner.finetuner import Finetuner
 from finetuner.model import list_model_classes
 
 if TYPE_CHECKING:
+    import numpy as np
     from _finetuner.models.inference import InferenceEngine
 
 ft = Finetuner()
@@ -452,7 +453,7 @@ def encode(
     model: 'InferenceEngine',
     data: Union[DocumentArray, List[str]],
     batch_size: int = 32,
-) -> DocumentArray:
+) -> Union[DocumentArray, 'np.ndarray']:
     """Preprocess, collate and encode the `DocumentArray` with embeddings.
 
     :param model: The model to be used to encode `DocumentArray`. In this case
@@ -470,6 +471,7 @@ def encode(
 
     from _finetuner.models.inference import ONNXRuntimeInferenceEngine
 
+    return_da = isinstance(data, DocumentArray)
     data = build_encoding_dataset(model=model, data=data)
 
     for batch in data.batch(batch_size, show_progress=True):
@@ -489,4 +491,4 @@ def encode(
             output = model.run(inputs)
             batch.embeddings = output.detach().cpu().numpy()
 
-    return data
+    return data if return_da else data.embeddings

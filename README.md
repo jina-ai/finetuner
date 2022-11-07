@@ -187,18 +187,16 @@ finetuner.encode(model=model, data=da)
 da.summary()
 ```
 
-When encoding, you can provide data either as a DocumentArray or a list. Since the modality of your input data can be inferred from the model being used, there is not need to provide any additional information besides the content you want to encode:
+When encoding, you can provide data either as a DocumentArray or a list. Since the modality of your input data can be inferred from the model being used, there is no need to provide any additional information besides the content you want to encode. When providing data as a list, the `finetuner.encode` method will return a `np.ndarray` of embeddings, instead of a `docarray.DocumentArray`:
 
 ```python
 import finetuner
 from docarray import Document, DocumentArray
 
-da = ['~/Pictures/your_img.png']
+images = ['~/Pictures/your_img.png']
 
 model = finetuner.get_model('resnet-tll')
-da = finetuner.encode(model=model, data=da)
-
-da.summary()
+embeddings = finetuner.encode(model=model, data=images)
 ```
 
 ## Training on your own data

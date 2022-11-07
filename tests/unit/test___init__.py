@@ -57,5 +57,5 @@ def test_embedding_with_list():
     da_embeddings = finetuner.encode(model=model, data=da)
     lst_embeddings = finetuner.encode(model=model, data=lst)
 
-    for expected, actual in zip(da_embeddings.embeddings, lst_embeddings.embeddings):
+    for expected, actual in zip(da_embeddings.embeddings, lst_embeddings):
         assert np.array_equal(expected, actual)
