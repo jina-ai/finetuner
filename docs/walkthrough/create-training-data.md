@@ -84,15 +84,8 @@ This is another English sentence    Dies ist ein weiterer englischer Satz
 ```
 
 ```{warning}
-When reading in files constructed in this way, a unique label is generated for each pair. Some sampling methods that require more than two elements per class will not work because each class in the dataset will only contain a single pair of elements.
-
-
-```
-
-```{warning}
-Please remove/replace comma in your data fields if you are using a comma `,` as a delimiter.
-
-
+When reading in files constructed in this way, a unique label is generated for each pair.
+Some sampling methods that require more than two elements per class will not work because each class in the dataset will only contain a single pair of elements.
 ```
 
 ````
@@ -102,6 +95,10 @@ It is worth noting that we support the following dialects:
 + `excel` use `,` as delimiter and `\r\n` as lineterminator.
 + `excel-tab` use `\t` as delimiter and `\r\n` as lineterminator.
 + `unix` use `,` as delimiter and `\n` as lineterminator.
+
+```{warning}
+Please remove/replace comma in your data fields if you are using a comma `,` as a delimiter.
+```
 
 
 ## Preparing a DocumentArray
