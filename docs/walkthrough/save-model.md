@@ -23,16 +23,36 @@ import finetuner
 
 finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
 
-# connect to the experiment we created previously.
-experiment = finetuner.get_experiment('finetune-flickr-dataset')
 # connect to the run we created previously.
-run = experiment.get_run('finetune-flickr-dataset-efficientnet-1')
+run = finetuner.get_run(
+    run_name='finetune-flickr-dataset-efficientnet-1',
+    experiment_name='finetune-flickr-dataset',
+)
 print(f'Run status: {run.status()}')
 print(f'Run artifact id: {run.artifact_id}')
-# Once run status is `STARTED`, you can stream logs with:
-for log_entry in run.stream_logs():
-    print(log_entry)
-# save the artifact.
+```
+
+You can monitor your run status in two ways:
+
+1. Log streaming: Pull logs from Jina AI Cloud lively, suitable for small fine-tuning tasks.
+2. Query logs: Pull up-to-date logs from Jina AI Cloud, suitable for long-running tasks.
+
+````{tab} Log streaming
+```python
+for entry in run.stream_logs():
+    print(entry)
+```
+````
+````{tab} Log queryhing
+```python
+print(run.status())
+print(run.logs())
+```
+````
+
+Once run status is `FINISHED`, you can save the artifact with:
+
+```python
 run.save_artifact('tuned_model')
 ```
 
