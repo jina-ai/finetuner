@@ -37,13 +37,13 @@ You can monitor your run status in two ways:
 1. Log streaming: Pull logs from Jina AI Cloud lively, suitable for small fine-tuning tasks.
 2. Query logs: Pull up-to-date logs from Jina AI Cloud, suitable for long-running tasks.
 
-````{tab} Log streaming
+````{tab} Stream logs
 ```python
 for entry in run.stream_logs():
     print(entry)
 ```
 ````
-````{tab} Log queryhing
+````{tab} Query logs
 ```python
 print(run.status())
 print(run.logs())

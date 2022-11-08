@@ -89,7 +89,19 @@ When reading in files constructed in this way, a unique label is generated for e
 
 ```
 
+```{warning}
+Please remove/replace comma in your data fields since csv use comma `,` as delimiter.
+
+
+```
+
 ````
+
+It is worth noting that:
+
++ Excel use `,` as delimiter and `\r\n` as lineterminator.
++ Excel-tab use `\t` as delimiter and `\r\n` as lineterminator.
++ Unix use `,` as delimiter and `\n` as lineterminator.
 
 
 ## Preparing a DocumentArray
