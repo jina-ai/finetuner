@@ -35,7 +35,23 @@ https://example.com/apple-styling.jpg   picture of apple
 https://example.com/orange-styling.jpg  picture of orange
 ```
 
-If paths to local images are provided, they can be loaded into memory by setting `convert_to_blob = True` in the {class}`~finetuner.data.CSVOptions` object. It is worth noting that this setting does not cause Internet URLs to be loaded into memory.
+```diff
+import finetuner
+from finetuner import CSVOptions
+
+run = finetuner.fit(
+    ...,
+    train_data='your-data.csv',
+-   csv_options=CSVOptions(),
++   csv_options=CSVOptions(is_labeled=True)
+)
+```
+
+```{important} 
+If paths to local images are provided,
+they can be loaded into memory by setting `convert_to_blob = True` in the {class}`~finetuner.data.CSVOptions` object.
+It is worth noting that this setting does not cause Internet URLs to be loaded into memory.
+```
 
 ````
 
