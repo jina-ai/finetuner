@@ -90,7 +90,7 @@ When reading in files constructed in this way, a unique label is generated for e
 ```
 
 ```{warning}
-Please remove/replace comma in your data fields since csv use comma `,` as delimiter.
+Please remove/replace comma in your data fields if you are using a comma `,` as a delimiter.
 
 
 ```
