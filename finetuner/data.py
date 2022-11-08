@@ -98,8 +98,7 @@ def load_finetune_data_from_csv(
         artificial_label = 0
         t1, t2 = None, None
 
-        for line in _subsample(lines, options.size, options.sampling_rate):
-            col1, col2 = line
+        for col1, col2 in _subsample(lines, options.size, options.sampling_rate):
             if not t1:  # determining which column contains images
                 t1, t2 = check_columns(task, col1, col2)
 
