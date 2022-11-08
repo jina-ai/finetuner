@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Improve documentation on csv reading and run monitoring section. [#601](https://github.com/jina-ai/finetuner/pull/601)
+
 
 ## [0.6.4] - 2022-10-27
 
