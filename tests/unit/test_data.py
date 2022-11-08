@@ -8,7 +8,7 @@ from docarray import Document, DocumentArray
 from finetuner.constants import DEFAULT_TAG_KEY
 from finetuner.data import (
     CSVOptions,
-    build_dataset,
+    build_finetuning_dataset,
     check_columns,
     create_document,
     load_finetune_data_from_csv,
@@ -28,11 +28,13 @@ def dummy_csv_file():
 @pytest.mark.parametrize(
     'data, is_file', [(dummy_csv_file(), True), ('notarealfile', False)]
 )
-def test_build_dataset_str(data, is_file):
+def test_build_finetuning_dataset_str(data, is_file):
 
     options = CSVOptions(dialect='excel')
 
-    new_da = build_dataset(data=data, model='bert-base-cased', csv_options=options)
+    new_da = build_finetuning_dataset(
+        data=data, model='bert-base-cased', csv_options=options
+    )
 
     if is_file:
         assert isinstance(new_da, DocumentArray)
@@ -40,10 +42,10 @@ def test_build_dataset_str(data, is_file):
         assert isinstance(new_da, str)
 
 
-def test_build_dataset_DocumentArray():
+def test_build_finetuning_dataset_DocumentArray():
 
     da = DocumentArray(Document())
-    new_da = build_dataset(
+    new_da = build_finetuning_dataset(
         data=da,
         model='does not matter',
     )
