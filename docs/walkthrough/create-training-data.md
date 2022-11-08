@@ -97,11 +97,11 @@ Please remove/replace comma in your data fields if you are using a comma `,` as 
 
 ````
 
-It is worth noting that:
+It is worth noting that we support the following dialects:
 
-+ Excel use `,` as delimiter and `\r\n` as lineterminator.
-+ Excel-tab use `\t` as delimiter and `\r\n` as lineterminator.
-+ Unix use `,` as delimiter and `\n` as lineterminator.
++ `excel` use `,` as delimiter and `\r\n` as lineterminator.
++ `excel-tab` use `\t` as delimiter and `\r\n` as lineterminator.
++ `unix` use `,` as delimiter and `\n` as lineterminator.
 
 
 ## Preparing a DocumentArray
