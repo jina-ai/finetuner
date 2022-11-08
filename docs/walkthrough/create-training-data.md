@@ -50,7 +50,7 @@ run = finetuner.fit(
 ```{important} 
 If paths to local images are provided,
 they can be loaded into memory by setting `convert_to_blob = True` in the {class}`~finetuner.data.CSVOptions` object.
-It is worth noting that this setting does not cause Internet URLs to be loaded into memory.
+It is important to note that this setting does not cause Internet URLs to be loaded into memory.
 ```
 
 ````
@@ -90,7 +90,7 @@ Some sampling methods that require more than two elements per class will not wor
 
 ````
 
-It is worth noting that we support the following dialects:
+We support the following dialects of CSV:
 
 + `excel` use `,` as delimiter and `\r\n` as lineterminator.
 + `excel-tab` use `\t` as delimiter and `\r\n` as lineterminator.
