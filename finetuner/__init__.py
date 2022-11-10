@@ -189,7 +189,7 @@ def fit(
     :param csv_options: A :class:`CSVOptions` object containing options used for
         reading in training and evaluation data from a CSV file, if they are
         provided as such.
-    :param public: A boolean value indicates if the artifact is a public. It should be
+    :param public: A boolean value indicates if the artifact is public. It should be
         set to `True` if you would like to share your fine-tuned model with others.
 
     .. note::
