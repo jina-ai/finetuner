@@ -21,7 +21,7 @@ from finetuner.constants import (
 
 
 def _create_base_mocker(mocker):
-    def hubble_login_mocker(force: bool = False):
+    def hubble_login_mocker(force: bool = False, *args, **kwargs):
         print('Successfully logged in to Hubble!')
 
     def get_auth_token():
