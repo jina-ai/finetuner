@@ -36,19 +36,25 @@ if TYPE_CHECKING:
 ft = Finetuner()
 
 
-def login(force: bool = False) -> None:
+def login(force: bool = False, interactive: Optional[bool] = None):
     """
     Login to Jina AI to use cloud-based fine-tuning. Thereby, an authentication token is
     generated which can be read with the :func:`~finetuner.get_token` function.
 
     :param force: If set to true, an existing token will be overwritten. Otherwise,
         you will not login again, if a valid token already exists.
+    :param interactive: Interactive mode should be set in Jupyter environments.
     """
-    ft.login(force=force)
+    ft.login(force=force, interactive=interactive)
 
 
 def notebook_login(force: bool = False):
-    ft.notebook_login(force=force)
+    warnings.warn(
+        message='Function `notebook_login` will be deprecated from Finetuner 0.7.0,'
+        'please use `login(interactive=True)` instead.',
+        category=DeprecationWarning,
+    )
+    ft.login(force=force, interactive=True)
 
 
 def list_callbacks() -> Dict[str, callback.CallbackStubType]:

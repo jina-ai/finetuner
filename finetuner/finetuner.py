@@ -19,26 +19,19 @@ class Finetuner:
         self._client = None
         self._default_experiment = None
 
-    def login(self, force: bool = False):
+    def login(self, force: bool = False, interactive: Optional[bool] = None):
         """Login to Hubble account, initialize a client object
         and create a default experiment.
 
         :param force: If set to true, overwrite token and re-login.
+        :param interactive: If set to true, will use `notebook_login` as interactive
+            mode.
 
         Note: Calling `login` is necessary for using finetuner.
         """
-        hubble.login(force=force)
-        self._init_state()
-
-    def notebook_login(self, force: bool = False):
-        """Log in to Hubble account, initialize a client object
-        and create a default experiment.
-
-        :param force: If set to true, overwrite token and re-login.
-
-        Note: This works for Jupyter notebook, Google Colab..
-        """
-        hubble.notebook_login(force=force, post_success=self._init_state)
+        hubble.login(
+            force=force, post_success=self._init_state, interactive=interactive
+        )
 
     @staticmethod
     def _get_cwd() -> str:
