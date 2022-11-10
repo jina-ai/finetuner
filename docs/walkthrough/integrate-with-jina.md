@@ -70,7 +70,7 @@ model = finetuner.get_model('/path/to/YOUR-MODEL.zip')
 
 texts = ['some text to encode']
 
-embeddings = finetuner.encode(model=model, data=lst)
+embeddings = finetuner.encode(model=model, data=texts)
 
 for text, embedding in zip(texts, embeddings):
     print(f'Text of the returned document: {text}')
