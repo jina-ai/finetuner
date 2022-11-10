@@ -56,6 +56,14 @@ Once run status is `FINISHED`, you can save the artifact with:
 run.save_artifact('tuned_model')
 ```
 
+```{admonition} Share artifact with others
+:class: hint
+Finetuner allows you to set your artifact as a public artifact.
+At training time, you need to set `public=True` when calling the `fit` function.
+
+If `public=True`, anyone has the same artifact id can download your artifact with the above function.
+```
+
 If the fine-tuning finished,
 you can see this in the terminal:
 
