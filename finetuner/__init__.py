@@ -1,7 +1,7 @@
 import inspect
 import os
 import warnings
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, TextIO, Union
 
 from _finetuner.runner.stubs import model as model_stub
 from docarray import DocumentArray
@@ -12,6 +12,7 @@ from finetuner.constants import (
     HOST,
     HUBBLE_REGISTRY,
 )
+from finetuner.data import CSVOptions
 from finetuner.run import Run
 from hubble import login_required
 
@@ -23,17 +24,27 @@ if HUBBLE_REGISTRY not in os.environ:
 
 from finetuner import callback, model
 from finetuner.console import print_model_table
+from finetuner.data import build_encoding_dataset
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
 from finetuner.model import list_model_classes
 
 if TYPE_CHECKING:
+    import numpy as np
     from _finetuner.models.inference import InferenceEngine
 
 ft = Finetuner()
 
 
 def login(force: bool = False, interactive: Optional[bool] = None):
+    """
+    Login to Jina AI to use cloud-based fine-tuning. Thereby, an authentication token is
+    generated which can be read with the :func:`~finetuner.get_token` function.
+
+    :param force: If set to true, an existing token will be overwritten. Otherwise,
+        you will not login again, if a valid token already exists.
+    :param interactive: Interactive mode should be set in Jupyter environments.
+    """
     ft.login(force=force, interactive=interactive)
 
 
@@ -44,10 +55,6 @@ def notebook_login(force: bool = False):
         category=DeprecationWarning,
     )
     ft.login(force=force, interactive=True)
-
-
-def connect():
-    ft.connect()
 
 
 def list_callbacks() -> Dict[str, callback.CallbackStubType]:
@@ -100,8 +107,8 @@ def describe_models() -> None:
 @login_required
 def fit(
     model: str,
-    train_data: Union[str, DocumentArray],
-    eval_data: Optional[Union[str, DocumentArray]] = None,
+    train_data: Union[str, TextIO, DocumentArray],
+    eval_data: Optional[Union[str, TextIO, DocumentArray]] = None,
     run_name: Optional[str] = None,
     description: Optional[str] = None,
     experiment_name: Optional[str] = None,
@@ -122,15 +129,17 @@ def fit(
     device: str = 'cuda',
     num_workers: int = 4,
     to_onnx: bool = False,
+    csv_options: Optional[CSVOptions] = None,
+    public: bool = False,
 ) -> Run:
     """Start a finetuner run!
 
     :param model: The name of model to be fine-tuned. Run `finetuner.list_models()` or
         `finetuner.describe_models()` to see the available model names.
-    :param train_data: Either a `DocumentArray` for training data or a
-        name of the `DocumentArray` that is pushed on Hubble.
-    :param eval_data: Either a `DocumentArray` for evaluation data or a
-        name of the `DocumentArray` that is pushed on Hubble.
+    :param train_data: Either a `DocumentArray` for training data, a name of the
+        `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
+    :param eval_data: Either a `DocumentArray` for evaluation data, a name of the
+        `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
     :param run_name: Name of the run.
     :param description: Run description.
     :param experiment_name: Name of the experiment.
@@ -183,11 +192,17 @@ def fit(
         workers used by the dataloader.
     :param to_onnx: If the model is an onnx model or not. If you call the `fit` function
         with `to_onnx=True`, please set this parameter as `True`.
+    :param csv_options: A :class:`CSVOptions` object containing options used for
+        reading in training and evaluation data from a CSV file, if they are
+        provided as such.
+    :param public: A boolean value indicates if the artifact is public. It should be
+        set to `True` if you would like to share your fine-tuned model with others.
 
     .. note::
        Unless necessary, please stick with `device="cuda"`, `cpu` training could be
        extremely slow and inefficient.
     """
+
     return ft.create_run(
         model=model,
         train_data=train_data,
@@ -212,6 +227,8 @@ def fit(
         device=device,
         num_workers=num_workers,
         to_onnx=to_onnx,
+        csv_options=csv_options,
+        public=public,
     )
 
 
@@ -446,10 +463,10 @@ def get_model(
 
 
 def encode(
-    model,
-    data: DocumentArray,
+    model: 'InferenceEngine',
+    data: Union[DocumentArray, List[str]],
     batch_size: int = 32,
-):
+) -> Union[DocumentArray, 'np.ndarray']:
     """Preprocess, collate and encode the `DocumentArray` with embeddings.
 
     :param model: The model to be used to encode `DocumentArray`. In this case
@@ -467,6 +484,12 @@ def encode(
 
     from _finetuner.models.inference import ONNXRuntimeInferenceEngine
 
+    if isinstance(data, DocumentArray):
+        return_da = True
+    else:
+        data = build_encoding_dataset(model=model, data=data)
+        return_da = False
+
     for batch in data.batch(batch_size, show_progress=True):
         if isinstance(model, ONNXRuntimeInferenceEngine):
             inputs = model._run_data_pipeline(batch)
@@ -483,3 +506,5 @@ def encode(
             inputs = model._move_to_device(inputs)
             output = model.run(inputs)
             batch.embeddings = output.detach().cpu().numpy()
+
+    return data if return_da else data.embeddings

@@ -67,16 +67,16 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
     <td rowspan="2">ResNet</td>
     <td rowspan="2">Visual similarity search on <a href="https://sites.google.com/view/totally-looks-like-dataset">TLL</a></td>
     <td>mAP</td>
-    <td>0.102</td>
-    <td>0.166</td>
-    <td><span style="color:green">62.7%</span></td>
+    <td>0.110</td>
+    <td>0.196</td>
+    <td><span style="color:green">78.2%</span></td>
     <td rowspan="2"><p align=center><a href="https://colab.research.google.com/drive/1QuUTy3iVR-kTPljkwplKYaJ-NTCgPEc_?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
   </tr>
   <tr>
     <td>Recall</td>
-    <td>0.235</td>
-    <td>0.372</td>
-    <td><span style="color:green">58.3%</span></td>
+    <td>0.249</td>
+    <td>0.460</td>
+    <td><span style="color:green">84.7%</span></td>
   </tr>
   <tr>
     <td rowspan="2">CLIP</td>
@@ -97,7 +97,7 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
 </tbody>
 </table>
 
-<sub><sup>All metrics are evaluated on k@20 after training for 5 epochs using Adam optimizer with learning rates of 1e-7 for CLIP and 1e-5 for the other models.</sup></sub>
+<sub><sup>All metrics are evaluated on k@20 after training for 5 epochs using Adam optimizer with learning rates of 1e-4 for ResNet, 1e-7 for CLIP and 1e-5 for the BERT models.</sup></sub>
 
 <!-- start install-instruction -->
 
@@ -138,17 +138,18 @@ finetuner.login()
 run = finetuner.fit(
     model='resnet50',
     run_name='resnet50-tll-run',
-    train_data='tll-train-da',
+    train_data='tll-train-data',
     callbacks=[
         EvaluationCallback(
-            query_data='tll-test-query-da',
-            index_data='tll-test-index-da',
+            query_data='tll-test-query-data',
+            index_data='tll-test-index-data',
         )
     ],
 )
 ```
 
-Fine-tuning might take 5 minute to finish. You can later re-connect your run with:
+Here, the training data used is gathered from the Jina AI Cloud, however data can also be passed as a CSV file or DocumentArray, as described [here](https://finetuner.jina.ai/walkthrough/create-training-data/).  
+Fine-tuning might take 5 minutes to finish. You can later re-connect your run with:
 
 ```python
 import finetuner
@@ -185,6 +186,41 @@ finetuner.encode(model=model, data=da)
 
 da.summary()
 ```
+
+When encoding, you can provide data either as a DocumentArray or a list. Since the modality of your input data can be inferred from the model being used, there is no need to provide any additional information besides the content you want to encode. When providing data as a list, the `finetuner.encode` method will return a `np.ndarray` of embeddings, instead of a `docarray.DocumentArray`:
+
+```python
+import finetuner
+from docarray import Document, DocumentArray
+
+images = ['~/Pictures/your_img.png']
+
+model = finetuner.get_model('resnet-tll')
+embeddings = finetuner.encode(model=model, data=images)
+```
+
+## Training on your own data
+
+If you want to train a model using your own dataset instead of one on the Jina AI Cloud, you can provide labeled data in a CSV file in the following way:
+
+```plaintext
+This is an apple    apple_label
+This is a pear      pear_label
+...
+```
+
+You can then provide the path to your CSV file as your training data:
+
+```python
+run = finetuner.fit(
+    model='bert-base-cased',
+    run_name='bert-my-own-run',
+    train_data='path/to/some/data.csv',
+)
+```
+More information on providing your own training data is found in the [Prepare Training Data](https://finetuner.jina.ai/walkthrough/create-training-data/) section of the [walkthrough](https://finetuner.jina.ai/walkthrough/).
+
+
 
 ### Next steps
 

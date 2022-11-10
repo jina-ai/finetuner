@@ -1,6 +1,6 @@
 import warnings
 from dataclasses import fields
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, TextIO, Union
 
 from _finetuner.runner.stubs import config
 from docarray import DocumentArray
@@ -29,8 +29,10 @@ from finetuner.constants import (
     OPTIMIZER,
     OPTIMIZER_OPTIONS,
     OUTPUT_DIM,
+    PUBLIC,
     SCHEDULER_STEP,
 )
+from finetuner.data import build_finetuning_dataset
 from finetuner.hubble import push_data
 from finetuner.names import get_random_name
 from finetuner.run import Run
@@ -117,19 +119,13 @@ class Experiment:
     def create_run(
         self,
         model: str,
-        train_data: Union[DocumentArray, str],
+        train_data: Union[str, TextIO, DocumentArray],
         run_name: Optional[str] = None,
+        eval_data: Optional[Union[str, TextIO, DocumentArray]] = None,
+        csv_options: Optional[Dict[str, Any]] = None,
         **kwargs,
     ) -> Run:
-        """Create a run inside the experiment.
-
-        :param model: Name of the model to be fine-tuned.
-        :param train_data: Either a `DocumentArray` for training data or a
-            name of the `DocumentArray` that is pushed on Hubble.
-        :param run_name: Optional name of the run.
-        :param kwargs: Optional keyword arguments for the run config.
-        :return: A `Run` object.
-        """
+        """Create a run inside the experiment."""
         if not run_name:
             run_name = get_random_name()
 
@@ -139,11 +135,19 @@ class Experiment:
             if isinstance(callback, EvaluationCallback):
                 eval_callback = callback
 
+        train_data = build_finetuning_dataset(train_data, model, csv_options)
+
+        eval_data = (
+            build_finetuning_dataset(eval_data, model, csv_options)
+            if eval_data
+            else None
+        )
+
         train_data, eval_data, query_data, index_data = push_data(
             experiment_name=self._name,
             run_name=run_name,
             train_data=train_data,
-            eval_data=kwargs.get(EVAL_DATA),
+            eval_data=eval_data,
             query_data=eval_callback.query_data if eval_callback else None,
             index_data=eval_callback.index_data if eval_callback else None,
         )
@@ -219,6 +223,7 @@ class Experiment:
             )
             for callback in callbacks
         ]
+        public = kwargs[PUBLIC] if kwargs.get(PUBLIC) else False
         model = config.ModelConfig(
             name=model,
             output_dim=kwargs.get(OUTPUT_DIM),
@@ -262,6 +267,7 @@ class Experiment:
             data=data,
             callbacks=callbacks,
             hyper_parameters=hyper_parameters,
+            public=public,
             experiment_name=experiment_name,
             run_name=run_name,
         )

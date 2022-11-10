@@ -6,6 +6,7 @@ from docarray import DocumentArray
 import hubble
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
+from finetuner.data import CSVOptions
 from finetuner.experiment import Experiment
 from finetuner.run import Run
 from hubble import login_required
@@ -31,12 +32,6 @@ class Finetuner:
         hubble.login(
             force=force, post_success=self._init_state, interactive=interactive
         )
-
-    def connect(self):
-        """Connects finetuner to Hubble without logging in again.
-        Use this function, if you are already logged in.
-        """
-        self._init_state()
 
     @staticmethod
     def _get_cwd() -> str:
@@ -167,6 +162,8 @@ class Finetuner:
         device: str = 'cuda',
         num_workers: int = 4,
         to_onnx: bool = False,
+        csv_options: Optional[CSVOptions] = None,
+        public: bool = False,
     ) -> Run:
         """Create a run.
 
@@ -202,6 +199,8 @@ class Finetuner:
             device=device,
             num_workers=num_workers,
             to_onnx=to_onnx,
+            csv_options=csv_options,
+            public=public,
         )
 
     @login_required

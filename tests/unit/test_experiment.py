@@ -27,6 +27,7 @@ from finetuner.constants import (
     OPTIMIZER_OPTIONS,
     OPTIONS,
     OUTPUT_DIM,
+    PUBLIC,
     RUN_NAME,
     SCHEDULER_STEP,
     STARTED,
@@ -123,6 +124,7 @@ def test_create_run_config():
             }
         ],
         EXPERIMENT_NAME: 'exp name',
+        PUBLIC: False,
         RUN_NAME: 'run name',
     }
     config = Experiment._create_config_for_run(
@@ -145,10 +147,7 @@ def test_create_run_config():
         freeze=False,
         output_dim=None,
         multi_modal=False,
-        image_modality=None,
-        text_modality=None,
         cpu=False,
         device='cuda',
-        wandb_api_key=None,
     )
     assert config == expected_config

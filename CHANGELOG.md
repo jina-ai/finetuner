@@ -10,13 +10,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add support for CSV files to the `fit` function. ([#592](https://github.com/jina-ai/finetuner/pull/592))
+
+- Add support for lists to the `encode` function. [#598](https://github.com/jina-ai/finetuner/pull/598)
+
+- Allow user to publish public artifact. [#602](https://github.com/jina-ai/finetuner/pull/602)
+
 ### Removed
+
+- Remove `connect` function. ([#596](https://github.com/jina-ai/finetuner/pull/596))
 
 ### Changed
 
+- Enhance documentation of login functionalities. ([#596](https://github.com/jina-ai/finetuner/pull/596))
+
 ### Fixed
 
+- Correctly use `eval_data` in the `create_run` function ([#603](https://github.com/jina-ai/finetuner/pull/603))
+
+- Fix links to functions in the documentation. ([#596](https://github.com/jina-ai/finetuner/pull/596))
+
 ### Docs
+
+- Improve documentation on csv reading and run monitoring section. [#601](https://github.com/jina-ai/finetuner/pull/601)
+
+- Add documentation for `WandBLogger`. [#600](https://github.com/jina-ai/finetuner/pull/600)
+
+- Change datasets and hyperparameters for ResNet experiment. ([#599](https://github.com/jina-ai/finetuner/pull/599))
 
 
 ## [0.6.4] - 2022-10-27
