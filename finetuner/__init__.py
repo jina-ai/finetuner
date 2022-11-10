@@ -124,6 +124,7 @@ def fit(
     num_workers: int = 4,
     to_onnx: bool = False,
     csv_options: Optional[CSVOptions] = None,
+    public: bool = False,
 ) -> Run:
     """Start a finetuner run!
 
@@ -188,6 +189,8 @@ def fit(
     :param csv_options: A :class:`CSVOptions` object containing options used for
         reading in training and evaluation data from a CSV file, if they are
         provided as such.
+    :param public: A boolean value indicates if the artifact is public. It should be
+        set to `True` if you would like to share your fine-tuned model with others.
 
     .. note::
        Unless necessary, please stick with `device="cuda"`, `cpu` training could be
@@ -219,6 +222,7 @@ def fit(
         num_workers=num_workers,
         to_onnx=to_onnx,
         csv_options=csv_options,
+        public=public,
     )
 
 
