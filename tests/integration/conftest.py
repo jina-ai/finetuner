@@ -49,7 +49,7 @@ def get_feature_data():
 
 @pytest.fixture()
 def finetuner_mocker(mocker):
-    def hubble_login_mocker(force: bool = False, post_success=None, *args, **kwargs):
+    def hubble_login_mocker(force: bool = False, post_success=None, **kwargs):
         print('Successfully logged in to Hubble!')
         if post_success:
             post_success()
