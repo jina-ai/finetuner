@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Correctly use `eval_data` in the `create_run` function ([#603](https://github.com/jina-ai/finetuner/pull/603))
+
 - Fix links to functions in the documentation. ([#596](https://github.com/jina-ai/finetuner/pull/596))
 
 ### Docs

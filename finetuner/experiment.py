@@ -136,13 +136,17 @@ class Experiment:
 
         train_data = build_finetuning_dataset(train_data, model, csv_options)
 
-        eval_data = build_finetuning_dataset(eval_data, model, csv_options)
+        eval_data = (
+            build_finetuning_dataset(eval_data, model, csv_options)
+            if eval_data
+            else None
+        )
 
         train_data, eval_data, query_data, index_data = push_data(
             experiment_name=self._name,
             run_name=run_name,
             train_data=train_data,
-            eval_data=kwargs.get(EVAL_DATA),
+            eval_data=eval_data,
             query_data=eval_callback.query_data if eval_callback else None,
             index_data=eval_callback.index_data if eval_callback else None,
         )
