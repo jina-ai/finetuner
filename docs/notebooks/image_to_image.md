@@ -44,7 +44,7 @@ After fine-tuning, the embeddings of positive pairs are expected to be pulled cl
 ## Data
 
 Our journey starts locally. We have to prepare the data and push it to the Jina AI Cloud and Finetuner will be able to get the dataset by its name. For this example,
-we already prepared the data, and we'll provide the names of training data (`tll-train-da`) directly to Finetuner.
+we already prepared the data, and we'll provide the names of training data (`tll-train-data`) directly to Finetuner.
 
 ```{important} 
 We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
@@ -63,9 +63,9 @@ finetuner.notebook_login(force=True)
 ```
 
 ```python id="ONpXDwFBsqQS"
-train_data = DocumentArray.pull('tll-train-da', show_progress=True)
-query_data = DocumentArray.pull('tll-test-query-da', show_progress=True)
-index_data = DocumentArray.pull('tll-test-index-da', show_progress=True)
+train_data = DocumentArray.pull('tll-train-data', show_progress=True)
+query_data = DocumentArray.pull('tll-test-query-data', show_progress=True)
+index_data = DocumentArray.pull('tll-test-index-data', show_progress=True)
 
 train_data.summary()
 ```
@@ -89,15 +89,15 @@ from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
     model='resnet50',
-    train_data='tll-train-da',
+    train_data='tll-train-data',
     batch_size=128,
     epochs=5,
-    learning_rate=1e-5,
+    learning_rate=1e-4,
     device='cuda',
     callbacks=[
         EvaluationCallback(
-            query_data='tll-test-query-da',
-            index_data='tll-test-index-da',
+            query_data='tll-test-query-data',
+            index_data='tll-test-index-data',
         )
     ],
 )
@@ -147,15 +147,15 @@ What you can do for now is to call `run.logs()` in the end of the run and see ev
 
 ```bash
   Training [5/5] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:00 0:03:15 • loss: 0.003
-[16:39:13] DEBUG    Metric: 'model_average_precision' Value: 0.16603                                     __main__.py:202
-           DEBUG    Metric: 'model_dcg_at_k' Value: 0.23632                                              __main__.py:202
-           DEBUG    Metric: 'model_f1_score_at_k' Value: 0.03544                                         __main__.py:202
-           DEBUG    Metric: 'model_hit_at_k' Value: 0.37209                                              __main__.py:202
-           DEBUG    Metric: 'model_ndcg_at_k' Value: 0.23632                                             __main__.py:202
-           DEBUG    Metric: 'model_precision_at_k' Value: 0.01860                                        __main__.py:202
-           DEBUG    Metric: 'model_r_precision' Value: 0.16603                                           __main__.py:202
-           DEBUG    Metric: 'model_recall_at_k' Value: 0.37209                                           __main__.py:202
-           DEBUG    Metric: 'model_reciprocal_rank' Value: 0.16603                                       __main__.py:202
+[16:39:13] DEBUG    Metric: 'model_average_precision' Value: 0.19598                                     __main__.py:202
+           DEBUG    Metric: 'model_dcg_at_k' Value: 0.28571                                              __main__.py:202
+           DEBUG    Metric: 'model_f1_score_at_k' Value: 0.04382                                         __main__.py:202
+           DEBUG    Metric: 'model_hit_at_k' Value: 0.46013                                              __main__.py:202
+           DEBUG    Metric: 'model_ndcg_at_k' Value: 0.28571                                             __main__.py:202
+           DEBUG    Metric: 'model_precision_at_k' Value: 0.02301                                        __main__.py:202
+           DEBUG    Metric: 'model_r_precision' Value: 0.19598                                           __main__.py:202
+           DEBUG    Metric: 'model_recall_at_k' Value: 0.46013                                           __main__.py:202
+           DEBUG    Metric: 'model_reciprocal_rank' Value: 0.19598                                       __main__.py:202
            INFO     Done ✨                                                                              __main__.py:204
            INFO     Saving fine-tuned models ...                                                         __main__.py:207
            INFO     Saving model 'model' in /usr/src/app/tuned-models/model ...                          __main__.py:218

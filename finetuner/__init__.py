@@ -24,11 +24,13 @@ if HUBBLE_REGISTRY not in os.environ:
 
 from finetuner import callback, model
 from finetuner.console import print_model_table
+from finetuner.data import build_encoding_dataset
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
 from finetuner.model import list_model_classes
 
 if TYPE_CHECKING:
+    import numpy as np
     from _finetuner.models.inference import InferenceEngine
 
 ft = Finetuner()
@@ -451,10 +453,10 @@ def get_model(
 
 
 def encode(
-    model,
-    data: DocumentArray,
+    model: 'InferenceEngine',
+    data: Union[DocumentArray, List[str]],
     batch_size: int = 32,
-):
+) -> Union[DocumentArray, 'np.ndarray']:
     """Preprocess, collate and encode the `DocumentArray` with embeddings.
 
     :param model: The model to be used to encode `DocumentArray`. In this case
@@ -472,6 +474,12 @@ def encode(
 
     from _finetuner.models.inference import ONNXRuntimeInferenceEngine
 
+    if isinstance(data, DocumentArray):
+        return_da = True
+    else:
+        data = build_encoding_dataset(model=model, data=data)
+        return_da = False
+
     for batch in data.batch(batch_size, show_progress=True):
         if isinstance(model, ONNXRuntimeInferenceEngine):
             inputs = model._run_data_pipeline(batch)
@@ -488,3 +496,5 @@ def encode(
             inputs = model._move_to_device(inputs)
             output = model.run(inputs)
             batch.embeddings = output.detach().cpu().numpy()
+
+    return data if return_da else data.embeddings

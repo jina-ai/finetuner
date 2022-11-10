@@ -31,7 +31,7 @@ from finetuner.constants import (
     OUTPUT_DIM,
     SCHEDULER_STEP,
 )
-from finetuner.data import build_dataset
+from finetuner.data import build_finetuning_dataset
 from finetuner.hubble import push_data
 from finetuner.names import get_random_name
 from finetuner.run import Run
@@ -134,9 +134,13 @@ class Experiment:
             if isinstance(callback, EvaluationCallback):
                 eval_callback = callback
 
-        train_data = build_dataset(train_data, model, csv_options)
+        train_data = build_finetuning_dataset(train_data, model, csv_options)
 
-        eval_data = build_dataset(eval_data, model, csv_options) if eval_data else None
+        eval_data = (
+            build_finetuning_dataset(eval_data, model, csv_options)
+            if eval_data
+            else None
+        )
 
         train_data, eval_data, query_data, index_data = push_data(
             experiment_name=self._name,

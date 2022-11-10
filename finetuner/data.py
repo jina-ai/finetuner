@@ -2,7 +2,7 @@ import csv
 import os
 from contextlib import nullcontext
 from dataclasses import dataclass
-from typing import Generator, Optional, TextIO, Tuple, Union
+from typing import TYPE_CHECKING, Generator, List, Optional, TextIO, Tuple, Union
 
 from _finetuner.runner.stubs.model import get_stub
 from docarray import Document, DocumentArray
@@ -11,6 +11,9 @@ from docarray.document.mixins.helper import _is_uri
 from genericpath import isfile
 
 from finetuner.constants import DEFAULT_TAG_KEY
+
+if TYPE_CHECKING:
+    from _finetuner.models.inference import InferenceEngine
 
 
 @dataclass
@@ -39,12 +42,14 @@ class CSVOptions:
     convert_to_blob: bool = True
 
 
-def build_dataset(
+def build_finetuning_dataset(
     data: Union[str, TextIO, DocumentArray],
     model: str,
     csv_options: Optional[CSVOptions] = None,
 ) -> Union[str, DocumentArray]:
-
+    """If data has been provided as a CSV file, the given CSV file is parsed
+    and a :class:`DocumentArray` is created.
+    """
     if isinstance(data, (TextIO)) or (isinstance(data, str) and isfile(data)):
         model_stub = get_stub(model, select_model='clip-text')
         data = DocumentArray(
@@ -54,6 +59,25 @@ def build_dataset(
                 options=csv_options or CSVOptions(),
             )
         )
+
+    return data
+
+
+def build_encoding_dataset(model: 'InferenceEngine', data: List[str]) -> DocumentArray:
+    """If data has been provided as a list, a :class:`DocumentArray` is created
+    from the elements of the list
+    """
+    modalities = model._metadata['preprocess_types']
+    if model._select_model:
+        task = modalities[model._select_model]
+    elif list(modalities)[0] == ['features']:
+        raise ValueError('MLP model does not support values from a list.')
+    else:
+        task = list(modalities)[0]
+
+    data = DocumentArray(
+        [Document(text=d) if task == 'text' else Document(uri=d) for d in data]
+    )
 
     return data
 
