@@ -65,7 +65,7 @@ If `public=True`, anyone has the same artifact id can download your artifact wit
 ```
 
 If the fine-tuning finished,
-you can see this in the terminal:
+you can see the following message in the terminal:
 
 ```bash
 🔐 Successfully logged in to Jina AI as [USER NAME]!
