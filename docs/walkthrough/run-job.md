@@ -59,13 +59,13 @@ run = finetuner.fit(
     eval_data=eval_data, 
     run_name='finetune-flickr-dataset-efficientnet-1',
     description='this is a trial run on flickr8k dataset with efficientnet b0.',
-    experiment_name='finetune-flickr-dataset', # link to the experiment created above.
-    model_options={}, # additional options to pass to the model constructor
+    experiment_name='finetune-flickr-dataset', # Link to the experiment created above.
+    model_options={}, # Additional options to pass to the model constructor.
     loss='TripletMarginLoss', # Use CLIPLoss for CLIP fine-tuning.
     miner='TripletMarginMiner',
-    miner_options={'margin': 0.2}, # additional options for the miner constructor
+    miner_options={'margin': 0.2}, # Additional options for the miner constructor.
     optimizer='Adam',
-    optimizer_options={'weight_decay': 0.01}, # additional options for the optimizer
+    optimizer_options={'weight_decay': 0.01}, # Additional options for the optimizer.
     learning_rate = 1e-4,
     epochs=5,
     batch_size=128,
@@ -75,7 +75,8 @@ run = finetuner.fit(
     device='cuda',
     num_workers=4,
     to_onnx=False,  # If set, please pass `is_onnx` when making inference.
-    csv_options=CSVOptions(),  # Additional options for reading data from a CSV file
+    csv_options=CSVOptions(),  # Additional options for reading data from a CSV file.
+    public=False,  # If set, anyone has the artifact id can download your fine-tuned model.
 )
 ```
 

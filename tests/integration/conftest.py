@@ -49,8 +49,10 @@ def get_feature_data():
 
 @pytest.fixture()
 def finetuner_mocker(mocker):
-    def hubble_login_mocker(force: bool = False):
+    def hubble_login_mocker(force: bool = False, post_success=None, **kwargs):
         print('Successfully logged in to Hubble!')
+        if post_success:
+            post_success()
 
     def get_auth_token():
         if not os.environ.get('JINA_AUTH_TOKEN'):

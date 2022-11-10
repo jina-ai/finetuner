@@ -162,7 +162,6 @@ from finetuner.callback import WandBLogger, EvaluationCallback
 
 run = finetuner.fit(
     model='resnet50',
-
     run_name = 'resnet-tll-early-6',
     train_data = 'tll-train-da',
     epochs = 5,

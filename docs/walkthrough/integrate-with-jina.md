@@ -14,7 +14,7 @@ To embed a [DocumentArray](https://docarray.jina.ai/) with a fine-tuned model, y
 from docarray import DocumentArray, Document
 import finetuner
 
-finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
+finetuner.login()
 
 token = finetuner.get_token()
 run = finetuner.get_run(
@@ -100,7 +100,7 @@ You have three options:
 import finetuner
 from jina import Flow
 
-finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
+finetuner.login()
 
 token = finetuner.get_token()
 run = finetuner.get_run(
@@ -196,7 +196,7 @@ To use those models, you have to provide the name of the model via an additional
 from docarray import DocumentArray, Document
 import finetuner
 
-finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
+finetuner.login()
 
 token = finetuner.get_token()
 run = finetuner.get_run(
@@ -221,7 +221,7 @@ finetuner.encode(model=model, data=da)
 from docarray import DocumentArray, Document
 import finetuner
 
-finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
+finetuner.login()
 
 token = finetuner.get_token()
 run = finetuner.get_run(
@@ -249,7 +249,7 @@ If you want to host the CLIP models, you also have to provide the name of the mo
 import finetuner
 from jina import Flow
 
-finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
+finetuner.login()
 
 token = finetuner.get_token()
 run = finetuner.get_run(

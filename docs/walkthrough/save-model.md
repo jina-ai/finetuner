@@ -21,7 +21,7 @@ In the example below, we show how to connect to an existing run and download a t
 ```python
 import finetuner
 
-finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
+finetuner.login()
 
 # connect to the run we created previously.
 run = finetuner.get_run(
@@ -56,8 +56,16 @@ Once run status is `FINISHED`, you can save the artifact with:
 run.save_artifact('tuned_model')
 ```
 
+```{admonition} Share artifact with others
+:class: hint
+Finetuner allows you to set your artifact as a public artifact.
+At training time, you need to set `public=True` when calling the `fit` function.
+
+If `public=True`, anyone has the same artifact id can download your artifact with the above function.
+```
+
 If the fine-tuning finished,
-you can see this in the terminal:
+you can see the following message in the terminal:
 
 ```bash
 🔐 Successfully logged in to Jina AI as [USER NAME]!

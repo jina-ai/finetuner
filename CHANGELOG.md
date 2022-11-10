@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add support for lists to the `encode` function. [#598](https://github.com/jina-ai/finetuner/pull/598)
 
+- Allow user to publish public artifact. [#602](https://github.com/jina-ai/finetuner/pull/602)
+
 ### Removed
 
 - Remove `connect` function. ([#596](https://github.com/jina-ai/finetuner/pull/596))
@@ -33,6 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Enhance documentation of login functionalities. ([#596](https://github.com/jina-ai/finetuner/pull/596))
+
+- Deprecate `notebook_login` function with `login(interactive=True)`. ([#594](https://github.com/jina-ai/finetuner/pull/594))
 
 ### Fixed
 

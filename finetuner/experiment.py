@@ -29,6 +29,7 @@ from finetuner.constants import (
     OPTIMIZER,
     OPTIMIZER_OPTIONS,
     OUTPUT_DIM,
+    PUBLIC,
     SCHEDULER_STEP,
 )
 from finetuner.data import build_finetuning_dataset
@@ -222,6 +223,7 @@ class Experiment:
             )
             for callback in callbacks
         ]
+        public = kwargs[PUBLIC] if kwargs.get(PUBLIC) else False
         model = config.ModelConfig(
             name=model,
             output_dim=kwargs.get(OUTPUT_DIM),
@@ -265,6 +267,7 @@ class Experiment:
             data=data,
             callbacks=callbacks,
             hyper_parameters=hyper_parameters,
+            public=public,
             experiment_name=experiment_name,
             run_name=run_name,
         )
