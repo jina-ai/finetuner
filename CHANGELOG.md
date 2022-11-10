@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Enhance documentation of login functionalities. ([#596](https://github.com/jina-ai/finetuner/pull/596))
 
+- Deprecated `notebook_login` function with `login(interactive=True)`. ([#594](https://github.com/jina-ai/finetuner/pull/594))
+
 ### Fixed
 
 - Correctly use `eval_data` in the `create_run` function ([#603](https://github.com/jina-ai/finetuner/pull/603))
