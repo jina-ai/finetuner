@@ -127,7 +127,7 @@ pip install "finetuner[full]"
   
 ## Get Started
 
-The following code snippet describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), it can be run as-is:
+The following code snippet describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), it can be run as-is (If there is already a run called `resnet50-tll-run`, choose a different name):
 
 ```python
 import finetuner
