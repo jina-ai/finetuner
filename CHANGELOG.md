@@ -38,8 +38,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Deprecate `notebook_login` function with `login(interactive=True)`. ([#594](https://github.com/jina-ai/finetuner/pull/594))
 
-- Use `login` instead of `notebook_login` in examples. ([#605](https://github.com/jina-ai/finetuner/pull/605))
-
 ### Fixed
 
 - Correctly use `eval_data` in the `create_run` function ([#603](https://github.com/jina-ai/finetuner/pull/603))
@@ -53,6 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add documentation for `WandBLogger`. [#600](https://github.com/jina-ai/finetuner/pull/600)
 
 - Change datasets and hyperparameters for ResNet experiment. ([#599](https://github.com/jina-ai/finetuner/pull/599))
+
+- Use `login` instead of `notebook_login` in examples. ([#605](https://github.com/jina-ai/finetuner/pull/605))
 
 
 ## [0.6.4] - 2022-10-27
