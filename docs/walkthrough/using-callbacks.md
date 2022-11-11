@@ -42,7 +42,8 @@ The evaluation callback is used to calculate performance metrics for the model b
            INFO     Pushing artifact to Hubble ...                                                       __main__.py:231
 ```
 
-The evaluation callback is triggered at the end of each epoch, in which the model is evaluated using the `query_data` and `index_data` datasets that were provided when the callback was created. These datasets can be provided in the same way the `train_data` and `eval_data` parameters of the {meth}`~finetuner.fit` method; either as a path to a csv file, a {class}`~docarray.array.document.DocumentArray` or the name of a {class}`~docarray.array.document.DocumentArray` that has been pushed on the Jina AI Cloud. See {doc}`/walkthrough/create-training-data` for more information about how to prepare your data.
+The evaluation callback is triggered at the end of each epoch, in which the model is evaluated using the `query_data` and `index_data` datasets that were provided when the callback was created. These datasets can be provided in the same way the `train_data` and `eval_data` parameters of the {meth}`~finetuner.fit` method; either as a path to a CSV file, a {class}`~docarray.array.document.DocumentArray` or the name of a {class}`~docarray.array.document.DocumentArray` that has been pushed on the Jina AI Cloud. See {doc}`/walkthrough/create-training-data` for more information about how to prepare your data.
+
 It is worth noting that the evaluation callback and the `eval_data` parameter of the fit method do not do the same thing. The `eval_data` parameter is used to evaluate the loss of the model. On the other hand, the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall. These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.
 
 
