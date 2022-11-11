@@ -52,6 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Change datasets and hyperparameters for ResNet experiment. ([#599](https://github.com/jina-ai/finetuner/pull/599))
 
+- Use `login` instead of `notebook_login` in examples. ([#605](https://github.com/jina-ai/finetuner/pull/605))
+
 
 ## [0.6.4] - 2022-10-27
 

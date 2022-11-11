@@ -28,7 +28,7 @@ This guide will showcase fine-tuning a `CLIP` model for text to image retrieval.
 <!-- #endregion -->
 
 ```python id="vglobi-vvqCd"
-!pip install 'finetuner[full]==0.6.4'
+!pip install 'finetuner[full]'
 ```
 
 <!-- #region id="GXddluSIwCGW" -->
@@ -52,7 +52,7 @@ We don't require you to push data to the Jina AI Cloud by yourself. Instead of a
 import finetuner
 from docarray import DocumentArray, Document
 
-finetuner.notebook_login(force=True)
+finetuner.login(force=True)
 ```
 
 ```python id="cpIj7viExFti"
@@ -115,7 +115,7 @@ Since some runs might take up to several hours/days, it's important to know how 
 ```python
 import finetuner
 
-finetuner.notebook_login()
+finetuner.login()
 run = finetuner.get_run(run.name)
 ```
 
