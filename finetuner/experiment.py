@@ -144,11 +144,11 @@ class Experiment:
         )
 
         if eval_callback:
-            eval_callback.query_data - build_finetuning_dataset(
-                eval_callback.query_data, csv_options
+            eval_callback.query_data = build_finetuning_dataset(
+                eval_callback.query_data, model, csv_options
             )
-            eval_callback.index_data - build_finetuning_dataset(
-                eval_callback.index_data, csv_options
+            eval_callback.index_data = build_finetuning_dataset(
+                eval_callback.index_data, model, csv_options
             )
 
         train_data, eval_data, query_data, index_data = push_data(
