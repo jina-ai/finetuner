@@ -26,7 +26,7 @@ This guide will lead you through an example use-case to show you how Finetuner c
 <!-- #endregion -->
 
 ```python id="CSuWo72R7Sno"
-!pip install 'finetuner[full]==0.6.4'
+!pip install 'finetuner[full]'
 ```
 
 <!-- #region id="FPDhvWkw7kas" -->
@@ -64,10 +64,10 @@ We will use the [Quora Question Pairs](https://www.sbert.net/examples/training/q
 import finetuner
 from docarray import DocumentArray, Document
 
-finetuner.notebook_login()
+finetuner.login()
 ```
 
-```python colab={"background_save": true} id="8PIO5T--p4tR"
+```python id="8PIO5T--p4tR"
 train_data = DocumentArray.pull('quora_train.da', show_progress=True)
 query_data = DocumentArray.pull('quora_query_dev.da', show_progress=True)
 index_data = DocumentArray.pull('quora_index_dev.da', show_progress=True)
