@@ -221,6 +221,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.console/">finetuner.console module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
@@ -312,6 +313,7 @@
 <span class="kn">import</span> <span class="nn">hubble</span>
 <span class="kn">from</span> <span class="nn">finetuner.client</span> <span class="kn">import</span> <span class="n">FinetunerV1Client</span>
 <span class="kn">from</span> <span class="nn">finetuner.constants</span> <span class="kn">import</span> <span class="n">CREATED_AT</span><span class="p">,</span> <span class="n">DESCRIPTION</span><span class="p">,</span> <span class="n">NAME</span><span class="p">,</span> <span class="n">STATUS</span>
+<span class="kn">from</span> <span class="nn">finetuner.data</span> <span class="kn">import</span> <span class="n">CSVOptions</span>
 <span class="kn">from</span> <span class="nn">finetuner.experiment</span> <span class="kn">import</span> <span class="n">Experiment</span>
 <span class="kn">from</span> <span class="nn">finetuner.run</span> <span class="kn">import</span> <span class="n">Run</span>
 <span class="kn">from</span> <span class="nn">hubble</span> <span class="kn">import</span> <span class="n">login_required</span>
@@ -324,32 +326,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_experiment</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Finetuner.login"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.login">[docs]</a>    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Finetuner.login"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.login">[docs]</a>    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">interactive</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Login to Hubble account, initialize a client object</span>
 <span class="sd">        and create a default experiment.</span>
 
 <span class="sd">        :param force: If set to true, overwrite token and re-login.</span>
+<span class="sd">        :param interactive: If set to true, will use `notebook_login` as interactive</span>
+<span class="sd">            mode.</span>
 
 <span class="sd">        Note: Calling `login` is necessary for using finetuner.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">hubble</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_init_state</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="Finetuner.notebook_login"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.notebook_login">[docs]</a>    <span class="k">def</span> <span class="nf">notebook_login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Log in to Hubble account, initialize a client object</span>
-<span class="sd">        and create a default experiment.</span>
-
-<span class="sd">        :param force: If set to true, overwrite token and re-login.</span>
-
-<span class="sd">        Note: This works for Jupyter notebook, Google Colab..</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">hubble</span><span class="o">.</span><span class="n">notebook_login</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">post_success</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_state</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Finetuner.connect"><a class="viewcode-back" href="../../../api/finetuner.finetuner/#finetuner.finetuner.Finetuner.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Connects finetuner to Hubble without logging in again.</span>
-<span class="sd">        Use this function, if you are already logged in.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_init_state</span><span class="p">()</span></div>
+        <span class="n">hubble</span><span class="o">.</span><span class="n">login</span><span class="p">(</span>
+            <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">post_success</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_state</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="n">interactive</span>
+        <span class="p">)</span></div>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_cwd</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -480,6 +469,8 @@
         <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span><span class="p">,</span>
         <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
         <span class="n">to_onnx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">csv_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CSVOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">public</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Run</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Create a run.</span>
 
@@ -515,6 +506,8 @@
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
             <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span>
             <span class="n">to_onnx</span><span class="o">=</span><span class="n">to_onnx</span><span class="p">,</span>
+            <span class="n">csv_options</span><span class="o">=</span><span class="n">csv_options</span><span class="p">,</span>
+            <span class="n">public</span><span class="o">=</span><span class="n">public</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="nd">@login_required</span>
@@ -602,7 +595,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 27, 2022</div>
+                            Last updated on Nov 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -3,21 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
 <meta property="og:title" content="Save Artifact" />
-  
 <meta property="og:type" content="website" />
-  
 <meta property="og:url" content="https://finetuner.jina.ai/walkthrough/save-model/" />
-  
 <meta property="og:site_name" content="Finetuner Documentation" />
-  
 <meta property="og:description" content="Perfect! Now, you have started the fine-tuning job in the Jina AI Cloud. When the fine-tuning job is finished, the resulting model is automatically stored under your Jina account in the Jina AI Cloud. Next, we can get its artifact id and download the model. Please note that fine-tuning takes time..." />
-  
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
-  
 <meta property="og:image:alt" content="Finetuner Documentation" />
-  
+<meta name="description" content="Perfect! Now, you have started the fine-tuning job in the Jina AI Cloud. When the fine-tuning job is finished, the resulting model is automatically stored under your Jina account in the Jina AI Cloud. Next, we can get its artifact id and download the model. Please note that fine-tuning takes time..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -35,7 +28,8 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Using Callbacks" href="../using-callbacks/" /><link rel="prev" title="Run Job" href="../run-job/" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Using Callbacks" href="../using-callbacks/" /><link rel="prev" title="Run Job" href="../run-job/" />
         <link rel="canonical" href="https://finetuner.jina.ai/walkthrough/save-model.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
@@ -254,6 +248,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
@@ -353,23 +348,48 @@ Because of this, you might have to close the session and reconnect to it several
 <p>In the example below, we show how to connect to an existing run and download a tuned model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>  <span class="c1"># use finetuner.notebook_login() in Jupyter notebook or Google Colab</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
 
-<span class="c1"># connect to the experiment we created previously.</span>
-<span class="n">experiment</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_experiment</span><span class="p">(</span><span class="s1">&#39;finetune-flickr-dataset&#39;</span><span class="p">)</span>
 <span class="c1"># connect to the run we created previously.</span>
-<span class="n">run</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span><span class="s1">&#39;finetune-flickr-dataset-efficientnet-1&#39;</span><span class="p">)</span>
+<span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span>
+    <span class="n">run_name</span><span class="o">=</span><span class="s1">&#39;finetune-flickr-dataset-efficientnet-1&#39;</span><span class="p">,</span>
+    <span class="n">experiment_name</span><span class="o">=</span><span class="s1">&#39;finetune-flickr-dataset&#39;</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run status: </span><span class="si">{</span><span class="n">run</span><span class="o">.</span><span class="n">status</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run artifact id: </span><span class="si">{</span><span class="n">run</span><span class="o">.</span><span class="n">artifact_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="c1"># Once run status is `STARTED`, you can stream logs with:</span>
-<span class="k">for</span> <span class="n">log_entry</span> <span class="ow">in</span> <span class="n">run</span><span class="o">.</span><span class="n">stream_logs</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">log_entry</span><span class="p">)</span>
-<span class="c1"># save the artifact.</span>
-<span class="n">run</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="s1">&#39;tuned_model&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>You can monitor your run status in two ways:</p>
+<ol class="simple">
+<li><p>Log streaming: Pull logs from Jina AI Cloud lively, suitable for small fine-tuning tasks.</p></li>
+<li><p>Query logs: Pull up-to-date logs from Jina AI Cloud, suitable for long-running tasks.</p></li>
+</ol>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Stream logs</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">run</span><span class="o">.</span><span class="n">stream_logs</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Query logs</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">status</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">logs</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Once run status is <code class="docutils literal notranslate"><span class="pre">FINISHED</span></code>, you can save the artifact with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">run</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="s1">&#39;tuned_model&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="hint admonition">
+<p class="admonition-title">Share artifact with others</p>
+<p>Finetuner allows you to set your artifact as a public artifact.
+At training time, you need to set <code class="docutils literal notranslate"><span class="pre">public=True</span></code> when calling the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">public=True</span></code>, anyone has the same artifact id can download your artifact with the above function.</p>
+</div>
 <p>If the fine-tuning finished,
-you can see this in the terminal:</p>
+you can see the following message in the terminal:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🔐 Successfully logged <span class="k">in</span> to Jina AI as <span class="o">[</span>USER NAME<span class="o">]</span>!
 Run status: FINISHED
 Run Artifact id: 62972acb5de25a53fdbfcecc
@@ -423,7 +443,7 @@ Run logs:
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 27, 2022</div>
+                            Last updated on Nov 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

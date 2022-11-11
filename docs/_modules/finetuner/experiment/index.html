@@ -221,6 +221,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.console/">finetuner.console module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
@@ -306,7 +307,7 @@
                     <h1>Source code for finetuner.experiment</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">fields</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">_finetuner.runner.stubs</span> <span class="kn">import</span> <span class="n">config</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -335,8 +336,10 @@
     <span class="n">OPTIMIZER</span><span class="p">,</span>
     <span class="n">OPTIMIZER_OPTIONS</span><span class="p">,</span>
     <span class="n">OUTPUT_DIM</span><span class="p">,</span>
+    <span class="n">PUBLIC</span><span class="p">,</span>
     <span class="n">SCHEDULER_STEP</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">finetuner.data</span> <span class="kn">import</span> <span class="n">build_finetuning_dataset</span>
 <span class="kn">from</span> <span class="nn">finetuner.hubble</span> <span class="kn">import</span> <span class="n">push_data</span>
 <span class="kn">from</span> <span class="nn">finetuner.names</span> <span class="kn">import</span> <span class="n">get_random_name</span>
 <span class="kn">from</span> <span class="nn">finetuner.run</span> <span class="kn">import</span> <span class="n">Run</span>
@@ -423,19 +426,13 @@
 <div class="viewcode-block" id="Experiment.create_run"><a class="viewcode-back" href="../../../api/finetuner.experiment/#finetuner.experiment.Experiment.create_run">[docs]</a>    <span class="k">def</span> <span class="nf">create_run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">train_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DocumentArray</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+        <span class="n">train_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">],</span>
         <span class="n">run_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">eval_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">csv_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Run</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Create a run inside the experiment.</span>
-
-<span class="sd">        :param model: Name of the model to be fine-tuned.</span>
-<span class="sd">        :param train_data: Either a `DocumentArray` for training data or a</span>
-<span class="sd">            name of the `DocumentArray` that is pushed on Hubble.</span>
-<span class="sd">        :param run_name: Optional name of the run.</span>
-<span class="sd">        :param kwargs: Optional keyword arguments for the run config.</span>
-<span class="sd">        :return: A `Run` object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Create a run inside the experiment.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">run_name</span><span class="p">:</span>
             <span class="n">run_name</span> <span class="o">=</span> <span class="n">get_random_name</span><span class="p">()</span>
 
@@ -445,11 +442,27 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">EvaluationCallback</span><span class="p">):</span>
                 <span class="n">eval_callback</span> <span class="o">=</span> <span class="n">callback</span>
 
+        <span class="n">train_data</span> <span class="o">=</span> <span class="n">build_finetuning_dataset</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">csv_options</span><span class="p">)</span>
+
+        <span class="n">eval_data</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">build_finetuning_dataset</span><span class="p">(</span><span class="n">eval_data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">csv_options</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">eval_data</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">eval_callback</span><span class="p">:</span>
+            <span class="n">eval_callback</span><span class="o">.</span><span class="n">query_data</span> <span class="o">=</span> <span class="n">build_finetuning_dataset</span><span class="p">(</span>
+                <span class="n">eval_callback</span><span class="o">.</span><span class="n">query_data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">csv_options</span>
+            <span class="p">)</span>
+            <span class="n">eval_callback</span><span class="o">.</span><span class="n">index_data</span> <span class="o">=</span> <span class="n">build_finetuning_dataset</span><span class="p">(</span>
+                <span class="n">eval_callback</span><span class="o">.</span><span class="n">index_data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">csv_options</span>
+            <span class="p">)</span>
+
         <span class="n">train_data</span><span class="p">,</span> <span class="n">eval_data</span><span class="p">,</span> <span class="n">query_data</span><span class="p">,</span> <span class="n">index_data</span> <span class="o">=</span> <span class="n">push_data</span><span class="p">(</span>
             <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
             <span class="n">run_name</span><span class="o">=</span><span class="n">run_name</span><span class="p">,</span>
             <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
-            <span class="n">eval_data</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">EVAL_DATA</span><span class="p">),</span>
+            <span class="n">eval_data</span><span class="o">=</span><span class="n">eval_data</span><span class="p">,</span>
             <span class="n">query_data</span><span class="o">=</span><span class="n">eval_callback</span><span class="o">.</span><span class="n">query_data</span> <span class="k">if</span> <span class="n">eval_callback</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">index_data</span><span class="o">=</span><span class="n">eval_callback</span><span class="o">.</span><span class="n">index_data</span> <span class="k">if</span> <span class="n">eval_callback</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
@@ -525,6 +538,7 @@
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="n">callbacks</span>
         <span class="p">]</span>
+        <span class="n">public</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">PUBLIC</span><span class="p">]</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">PUBLIC</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">ModelConfig</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
             <span class="n">output_dim</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">OUTPUT_DIM</span><span class="p">),</span>
@@ -568,6 +582,7 @@
             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
             <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span>
             <span class="n">hyper_parameters</span><span class="o">=</span><span class="n">hyper_parameters</span><span class="p">,</span>
+            <span class="n">public</span><span class="o">=</span><span class="n">public</span><span class="p">,</span>
             <span class="n">experiment_name</span><span class="o">=</span><span class="n">experiment_name</span><span class="p">,</span>
             <span class="n">run_name</span><span class="o">=</span><span class="n">run_name</span><span class="p">,</span>
         <span class="p">)</span>
@@ -587,7 +602,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 27, 2022</div>
+                            Last updated on Nov 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

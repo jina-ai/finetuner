@@ -3,21 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
 <meta property="og:title" content="Run Job" />
-  
 <meta property="og:type" content="website" />
-  
 <meta property="og:url" content="https://finetuner.jina.ai/walkthrough/run-job/" />
-  
 <meta property="og:site_name" content="Finetuner Documentation" />
-  
-<meta property="og:description" content="Now you should have your training data and evaluation data (optional) prepared as DocumentArray s, and have selected your backbone model. Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud! Submit a Finetuni..." />
-  
+<meta property="og:description" content="Now you should have your training data and evaluation data (optional) prepared as CSV files or DocumentArray s, and have selected your backbone model. Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud! Subm..." />
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
-  
 <meta property="og:image:alt" content="Finetuner Documentation" />
-  
+<meta name="description" content="Now you should have your training data and evaluation data (optional) prepared as CSV files or DocumentArray s, and have selected your backbone model. Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud! Subm..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -35,7 +28,8 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Save Artifact" href="../save-model/" /><link rel="prev" title="Backbone Model" href="../choose-backbone/" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Save Artifact" href="../save-model/" /><link rel="prev" title="Backbone Model" href="../choose-backbone/" />
         <link rel="canonical" href="https://finetuner.jina.ai/walkthrough/run-job.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
@@ -254,6 +248,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
@@ -338,7 +333,7 @@
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="run-job">
 <span id="start-finetuner"></span><h1>Run Job<a class="headerlink" href="#run-job" title="Permalink to this headline">#</a></h1>
-<p>Now you should have your training data and evaluation data (optional) prepared as <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>s,
+<p>Now you should have your training data and evaluation data (optional) prepared as CSV files or <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>s,
 and have selected your backbone model.</p>
 <p>Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud!</p>
 <section id="submit-a-finetuning-job-to-the-cloud">
@@ -347,7 +342,7 @@ and have selected your backbone model.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
-<span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="s1">&#39;path/to/some/data.csv&#39;</span>
 
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">model</span><span class="o">=</span><span class="s1">&#39;efficientnet_b0&#39;</span><span class="p">,</span>
@@ -377,9 +372,10 @@ the run status changes from:</p>
 Finetuner gives you the flexibility to set hyper-parameters explicitly:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+<span class="kn">from</span> <span class="nn">finetuner.data</span> <span class="kn">import</span> <span class="n">CSVOptions</span>
 
-<span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="n">eval_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="s1">&#39;path/to/some/train_data.csv&#39;</span>
+<span class="n">eval_data</span> <span class="o">=</span> <span class="s1">&#39;path/to/some/eval_data.csv&#39;</span>
 
 <span class="c1"># Create an experiment</span>
 <span class="n">finetuner</span><span class="o">.</span><span class="n">create_experiment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;finetune-flickr-dataset&#39;</span><span class="p">)</span>
@@ -390,13 +386,13 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:</p>
     <span class="n">eval_data</span><span class="o">=</span><span class="n">eval_data</span><span class="p">,</span> 
     <span class="n">run_name</span><span class="o">=</span><span class="s1">&#39;finetune-flickr-dataset-efficientnet-1&#39;</span><span class="p">,</span>
     <span class="n">description</span><span class="o">=</span><span class="s1">&#39;this is a trial run on flickr8k dataset with efficientnet b0.&#39;</span><span class="p">,</span>
-    <span class="n">experiment_name</span><span class="o">=</span><span class="s1">&#39;finetune-flickr-dataset&#39;</span><span class="p">,</span> <span class="c1"># link to the experiment created above.</span>
-    <span class="n">model_options</span><span class="o">=</span><span class="p">{},</span> <span class="c1"># additional options to pass to the model constructor</span>
+    <span class="n">experiment_name</span><span class="o">=</span><span class="s1">&#39;finetune-flickr-dataset&#39;</span><span class="p">,</span> <span class="c1"># Link to the experiment created above.</span>
+    <span class="n">model_options</span><span class="o">=</span><span class="p">{},</span> <span class="c1"># Additional options to pass to the model constructor.</span>
     <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;TripletMarginLoss&#39;</span><span class="p">,</span> <span class="c1"># Use CLIPLoss for CLIP fine-tuning.</span>
     <span class="n">miner</span><span class="o">=</span><span class="s1">&#39;TripletMarginMiner&#39;</span><span class="p">,</span>
-    <span class="n">miner_options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;margin&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span> <span class="c1"># additional options for the miner constructor</span>
+    <span class="n">miner_options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;margin&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span> <span class="c1"># Additional options for the miner constructor.</span>
     <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;Adam&#39;</span><span class="p">,</span>
-    <span class="n">optimizer_options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;weight_decay&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">},</span> <span class="c1"># additional options for the optimizer</span>
+    <span class="n">optimizer_options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;weight_decay&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">},</span> <span class="c1"># Additional options for the optimizer.</span>
     <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span>
     <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
@@ -406,6 +402,8 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:</p>
     <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span>
     <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">to_onnx</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># If set, please pass `is_onnx` when making inference.</span>
+    <span class="n">csv_options</span><span class="o">=</span><span class="n">CSVOptions</span><span class="p">(),</span>  <span class="c1"># Additional options for reading data from a CSV file.</span>
+    <span class="n">public</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># If set, anyone has the artifact id can download your fine-tuned model.</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -488,7 +486,7 @@ A detailed description of the miners and their parameters is specified in the <a
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 27, 2022</div>
+                            Last updated on Nov 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

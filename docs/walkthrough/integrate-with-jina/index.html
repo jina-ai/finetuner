@@ -3,21 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
 <meta property="og:title" content="Encode Documents" />
-  
 <meta property="og:type" content="website" />
-  
 <meta property="og:url" content="https://finetuner.jina.ai/walkthrough/integrate-with-jina/" />
-  
 <meta property="og:site_name" content="Finetuner Documentation" />
-  
-<meta property="og:description" content="Once fine-tuning is finished, it’s time to actually use the model. You can use the fine-tuned models directly to encode DocumentArray objects or setting up an encoding service. Embed DocumentArray: To embed a DocumentArray with a fine-tuned model, you can get the model of your Run via the get_mod..." />
-  
+<meta property="og:description" content="Once fine-tuning is finished, it’s time to actually use the model. You can use the fine-tuned models directly to encode DocumentArray objects or setting up an encoding service. When encoding, data can also be provided as a regular list. Embed DocumentArray: To embed a DocumentArray with a fine-tu..." />
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
-  
 <meta property="og:image:alt" content="Finetuner Documentation" />
-  
+<meta name="description" content="Once fine-tuning is finished, it’s time to actually use the model. You can use the fine-tuned models directly to encode DocumentArray objects or setting up an encoding service. When encoding, data can also be provided as a regular list. Embed DocumentArray: To embed a DocumentArray with a fine-tu..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -35,7 +28,8 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Text-to-Text Search via BERT" href="../../notebooks/text_to_text/" /><link rel="prev" title="Using Callbacks" href="../using-callbacks/" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Text-to-Text Search via BERT" href="../../notebooks/text_to_text/" /><link rel="prev" title="Using Callbacks" href="../using-callbacks/" />
         <link rel="canonical" href="https://finetuner.jina.ai/walkthrough/integrate-with-jina.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
@@ -254,6 +248,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
@@ -339,16 +334,17 @@
                     <section class="tex2jax_ignore mathjax_ignore" id="encode-documents">
 <h1>Encode Documents<a class="headerlink" href="#encode-documents" title="Permalink to this headline">#</a></h1>
 <p>Once fine-tuning is finished, it’s time to actually use the model.
-You can use the fine-tuned models directly to encode <a class="reference external" href="https://docarray.jina.ai/">DocumentArray</a> objects or setting up an encoding service.</p>
+You can use the fine-tuned models directly to encode <a class="reference external" href="https://docarray.jina.ai/">DocumentArray</a> objects or setting up an encoding service.
+When encoding, data can also be provided as a regular list.</p>
 <section id="embed-documentarray">
 <span id="integrate-with-docarray"></span><h2>Embed DocumentArray<a class="headerlink" href="#embed-documentarray" title="Permalink to this headline">#</a></h2>
-<p>To embed a <a class="reference external" href="https://docarray.jina.ai/">DocumentArray</a> with a fine-tuned model, you can get the model of your Run via the <code class="docutils literal notranslate"><span class="pre">get_model</span></code> function and embed it via the <code class="docutils literal notranslate"><span class="pre">encode</span></code> function:</p>
+<p>To embed a <a class="reference external" href="https://docarray.jina.ai/">DocumentArray</a> with a fine-tuned model, you can get the model of your Run via the <a class="reference internal" href="../../api/finetuner/#finetuner.get_model" title="finetuner.get_model"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_model()</span></code></a> function and embed it via the <a class="reference internal" href="../../api/finetuner/#finetuner.encode" title="finetuner.encode"><code class="xref py py-func docutils literal notranslate"><span class="pre">finetuner.encode()</span></code></a> function:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Artifact id and token</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 <span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>  <span class="c1"># use finetuner.notebook_login() in Jupyter notebook or Google Colab</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
 
 <span class="n">token</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span>
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span>
@@ -393,11 +389,29 @@ You can use the fine-tuned models directly to encode <a class="reference externa
 <span class="go">Shape of the embedding: (768,)</span>
 </pre></div>
 </div>
+<section id="encoding-a-list">
+<h3>Encoding a List<a class="headerlink" href="#encoding-a-list" title="Permalink to this headline">#</a></h3>
+<p>Data that is stored in a regular list can be embedded in the same way you would a <a class="reference external" href="https://docarray.jina.ai/">DocumentArray</a>. Since the modality of your input data can be inferred from the model being used, there is no need to provide any additional information besides the content you want to encode. When providing data as a list, the <code class="docutils literal notranslate"><span class="pre">finetuner.encode</span></code> method will return a <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> of embeddings, instead of a <code class="docutils literal notranslate"><span class="pre">docarray.DocumentArray</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
+<span class="kn">import</span> <span class="nn">finetuner</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="s1">&#39;/path/to/YOUR-MODEL.zip&#39;</span><span class="p">)</span>
+
+<span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;some text to encode&#39;</span><span class="p">]</span>
+
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">texts</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">text</span><span class="p">,</span> <span class="n">embedding</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Text of the returned document: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Shape of the embedding: </span><span class="si">{</span><span class="n">embedding</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="tip admonition">
 <p class="admonition-title">Inference with ONNX</p>
 <p>In case you set <code class="docutils literal notranslate"><span class="pre">to_onnx=True</span></code> when calling <code class="docutils literal notranslate"><span class="pre">finetuner.fit</span></code> function,
 please use <code class="docutils literal notranslate"><span class="pre">model</span> <span class="pre">=</span> <span class="pre">finetuner.get_model('/path/to/YOUR-MODEL.zip',</span> <span class="pre">is_onnx=True)</span></code></p>
 </div>
+</section>
 </section>
 <section id="fine-tuned-model-as-executor">
 <span id="integrate-with-jina"></span><h2>Fine-tuned model as Executor<a class="headerlink" href="#fine-tuned-model-as-executor" title="Permalink to this headline">#</a></h2>
@@ -411,7 +425,7 @@ You have three options:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>  <span class="c1"># use finetuner.notebook_login() in Jupyter notebook or Google Colab</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
 
 <span class="n">token</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span>
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span>
@@ -452,7 +466,7 @@ You have three options:</p>
 </div>
 </div>
 <p>As you can see, it’s super easy!
-If you did not call <code class="docutils literal notranslate"><span class="pre">save_artifact</span></code>,
+If you did not call <a class="reference internal" href="../../api/finetuner.run/#finetuner.run.Run.save_artifact" title="finetuner.run.Run.save_artifact"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_artifact()</span></code></a>,
 you need to provide the <code class="docutils literal notranslate"><span class="pre">artifact_id</span></code> and <code class="docutils literal notranslate"><span class="pre">token</span></code>.
 <code class="docutils literal notranslate"><span class="pre">FinetunerExecutor</span></code> will automatically pull your model from the Jina AI Cloud to the container.</p>
 <p>On the other hand,
@@ -495,13 +509,13 @@ models: <code class="docutils literal notranslate"><span class="pre">clip-vision
 The vision model allows you to embed images and the text model can encode text passages
 into the same vector space.
 To use those models, you have to provide the name of the model via an additional
-<code class="docutils literal notranslate"><span class="pre">select_model</span></code> parameter to the <code class="docutils literal notranslate"><span class="pre">get_model</span></code> function.</p>
+<code class="docutils literal notranslate"><span class="pre">select_model</span></code> parameter to the <a class="reference internal" href="../../api/finetuner/#finetuner.get_model" title="finetuner.get_model"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_model()</span></code></a> function.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">CLIP text model</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 <span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>  <span class="c1"># use finetuner.notebook_login() in Jupyter notebook or Google Colab</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
 
 <span class="n">token</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span>
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span>
@@ -526,7 +540,7 @@ To use those models, you have to provide the name of the model via an additional
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 <span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>  <span class="c1"># use finetuner.notebook_login() in Jupyter notebook or Google Colab</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
 
 <span class="n">token</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span>
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span>
@@ -553,7 +567,7 @@ To use those models, you have to provide the name of the model via an additional
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>  <span class="c1"># use finetuner.notebook_login() in Jupyter notebook or Google Colab</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
 
 <span class="n">token</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span>
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span>
@@ -608,7 +622,7 @@ To use those models, you have to provide the name of the model via an additional
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 27, 2022</div>
+                            Last updated on Nov 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -641,7 +655,10 @@ To use those models, you have to provide the name of the model via an additional
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">Encode Documents</a><ul>
-<li><a class="reference internal" href="#embed-documentarray">Embed DocumentArray</a></li>
+<li><a class="reference internal" href="#embed-documentarray">Embed DocumentArray</a><ul>
+<li><a class="reference internal" href="#encoding-a-list">Encoding a List</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#fine-tuned-model-as-executor">Fine-tuned model as Executor</a></li>
 <li><a class="reference internal" href="#special-case-artifacts-with-clip-models">Special case: Artifacts with CLIP models</a></li>
 </ul>

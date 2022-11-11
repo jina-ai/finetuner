@@ -3,21 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
 <meta property="og:title" content="Login" />
-  
 <meta property="og:type" content="website" />
-  
 <meta property="og:url" content="https://finetuner.jina.ai/walkthrough/login/" />
-  
 <meta property="og:site_name" content="Finetuner Documentation" />
-  
-<meta property="og:description" content="Since Finetuner leverages cloud resources for fine-tuning, you are required to login()(or~finetuner.notebook_login()) and obtain a token from Jina before starting a fine-tuning job. It is as simple as: A browser window should pop up with different login options. After login() or~finetuner.noteboo..." />
-  
+<meta property="og:description" content="Since Finetuner leverages cloud resources for fine-tuning, you are required to login() and obtain a token from Jina before starting a fine-tuning job. It is as simple as: A browser window should pop up with different login options. After login() you will see the following message in your terminal..." />
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
-  
 <meta property="og:image:alt" content="Finetuner Documentation" />
-  
+<meta name="description" content="Since Finetuner leverages cloud resources for fine-tuning, you are required to login() and obtain a token from Jina before starting a fine-tuning job. It is as simple as: A browser window should pop up with different login options. After login() you will see the following message in your terminal..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -35,7 +28,8 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Prepare Training Data" href="../create-training-data/" /><link rel="prev" title="Basic Concepts" href="../basic-concepts/" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Prepare Training Data" href="../create-training-data/" /><link rel="prev" title="Basic Concepts" href="../basic-concepts/" />
         <link rel="canonical" href="https://finetuner.jina.ai/walkthrough/login.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
@@ -254,6 +248,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
@@ -339,21 +334,26 @@
                     <section class="tex2jax_ignore mathjax_ignore" id="login">
 <span id="login-to-jina-ecosystem"></span><h1>Login<a class="headerlink" href="#login" title="Permalink to this headline">#</a></h1>
 <p>Since Finetuner leverages cloud resources for fine-tuning,
-you are required to <a class="reference internal" href="../../api/finetuner/#finetuner.login" title="finetuner.login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">login()</span></code></a> (or <code class="docutils literal notranslate"><span class="pre">~finetuner.notebook_login()</span></code>) and obtain a token from Jina before starting a fine-tuning job.
+you are required to <a class="reference internal" href="../../api/finetuner/#finetuner.login" title="finetuner.login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">login()</span></code></a> and obtain a token from Jina before starting a fine-tuning job.
 It is as simple as:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>  <span class="c1"># use finetuner.notebook_login() in Jupyter notebook or Google Colab</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>A browser window should pop up with different login options.
-After <a class="reference internal" href="../../api/finetuner/#finetuner.login" title="finetuner.login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">login()</span></code></a> or <code class="docutils literal notranslate"><span class="pre">~finetuner.notebook_login()</span></code> you will see this in your terminal:</p>
+After <a class="reference internal" href="../../api/finetuner/#finetuner.login" title="finetuner.login"><code class="xref py py-meth docutils literal notranslate"><span class="pre">login()</span></code></a> you will see the following message in your terminal:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🔐 Successfully logged <span class="k">in</span> to Jina AI as <span class="o">[</span>USER NAME<span class="o">]</span>!
+</pre></div>
+</div>
+<p>Now, an authentication token is generated which can be read with the <a class="reference internal" href="../../api/finetuner/#finetuner.get_token" title="finetuner.get_token"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_token()</span></code></a> function.
+If you have been logged in before, the existing token will not be overwritten, however, if you want this to be happen, you can set the <code class="docutils literal notranslate"><span class="pre">force</span></code> attribute in the login function to true.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="hint admonition">
 <p class="admonition-title">Why do I need to login?</p>
-<p>Login is required since Finetuner needs to push your <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> into the Jina AI Cloud as training data.
+<p>Login is required since Finetuner needs to push your <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> or CSV file into the Jina AI Cloud as training or evaluation data.
 Once you have successfully logged in, your training data will be linked to your personal user profile and will only be visible to you.</p>
 <p>Once fine-tuning is completed, the fine-tuned model will be visible only to you in the Jina AI Cloud.</p>
 </div>
@@ -394,7 +394,7 @@ Once you have successfully logged in, your training data will be linked to your 
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 27, 2022</div>
+                            Last updated on Nov 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

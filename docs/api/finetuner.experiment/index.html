@@ -3,19 +3,12 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
 <meta property="og:title" content="finetuner.experiment module" />
-  
 <meta property="og:type" content="website" />
-  
 <meta property="og:url" content="https://finetuner.jina.ai/api/finetuner.experiment/" />
-  
 <meta property="og:site_name" content="Finetuner Documentation" />
-  
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
-  
 <meta property="og:image:alt" content="Finetuner Documentation" />
-  
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +26,8 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.finetuner module" href="../finetuner.finetuner/" /><link rel="prev" title="finetuner.excepts module" href="../finetuner.excepts/" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.finetuner module" href="../finetuner.finetuner/" /><link rel="prev" title="finetuner.excepts module" href="../finetuner.excepts/" />
         <link rel="canonical" href="https://finetuner.jina.ai/api/finetuner.experiment.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
@@ -252,6 +246,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.console/">finetuner.console module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.finetuner/">finetuner.finetuner module</a></li>
@@ -422,23 +417,11 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="finetuner.experiment.Experiment.create_run">
-<span class="sig-name descname"><span class="pre">create_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/experiment/#Experiment.create_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.experiment.Experiment.create_run" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">create_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/experiment/#Experiment.create_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.experiment.Experiment.create_run" title="Permalink to this definition">#</a></dt>
 <dd><p>Create a run inside the experiment.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the model to be fine-tuned.</p></li>
-<li><p><strong>train_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Either a <cite>DocumentArray</cite> for training data or a
-name of the <cite>DocumentArray</cite> that is pushed on Hubble.</p></li>
-<li><p><strong>run_name</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Optional name of the run.</p></li>
-<li><p><strong>kwargs</strong> – Optional keyword arguments for the run config.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../finetuner.run/#finetuner.run.Run" title="finetuner.run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A <cite>Run</cite> object.</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../finetuner.run/#finetuner.run.Run" title="finetuner.run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -482,7 +465,7 @@ name of the <cite>DocumentArray</cite> that is pushed on Hubble.</p></li>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 27, 2022</div>
+                            Last updated on Nov 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

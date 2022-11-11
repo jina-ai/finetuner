@@ -3,21 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
 <meta property="og:title" content="Text-to-Image Search via CLIP" />
-  
 <meta property="og:type" content="website" />
-  
 <meta property="og:url" content="https://finetuner.jina.ai/notebooks/text_to_image/" />
-  
 <meta property="og:site_name" content="Finetuner Documentation" />
-  
 <meta property="og:description" content="Traditionally, searching images from text (text-image-retrieval) relies heavily on human annotations, this is commonly referred to as Text/Tag based Image Retrieval (TBIR). The OpenAI CLIP model maps the dense vectors extracted from text and image into the same semantic space and produces a stron..." />
-  
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
-  
 <meta property="og:image:alt" content="Finetuner Documentation" />
-  
+<meta name="description" content="Traditionally, searching images from text (text-image-retrieval) relies heavily on human annotations, this is commonly referred to as Text/Tag based Image Retrieval (TBIR). The OpenAI CLIP model maps the dense vectors extracted from text and image into the same semantic space and produces a stron..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -35,7 +28,8 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner package" href="../../api/finetuner/" /><link rel="prev" title="Image-to-Image Search via ResNet50" href="../image_to_image/" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner package" href="../../api/finetuner/" /><link rel="prev" title="Image-to-Image Search via ResNet50" href="../image_to_image/" />
         <link rel="canonical" href="https://finetuner.jina.ai/notebooks/text_to_image.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
@@ -254,6 +248,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
@@ -347,7 +342,7 @@
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">#</a></h2>
 <!-- #endregion -->
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>!pip install &#39;finetuner[full]==0.6.4&#39;
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>!pip install &#39;finetuner[full]&#39;
 </pre></div>
 </div>
 <!-- #region id="GXddluSIwCGW" -->
@@ -367,7 +362,7 @@ we already prepared the data, and we’ll provide the names of training and eval
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">notebook_login</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;fashion-train-data-clip&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -425,7 +420,7 @@ we already prepared the data, and we’ll provide the names of training and eval
 <p>Since some runs might take up to several hours/days, it’s important to know how to reconnect to Finetuner and retrieve your run.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">notebook_login</span><span class="p">()</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -525,7 +520,7 @@ Then use the textual Documents to search image Documents.</p>
 let’s use the fine-tuned model to encode a new <code class="docutils literal notranslate"><span class="pre">Document</span></code>:</p>
 <!-- #endregion -->
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">text_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;some text to encode&#39;</span><span class="p">)])</span>
-<span class="n">image_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;my-image.png&#39;</span><span class="p">)])</span>
+<span class="n">image_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;https://upload.wikimedia.org/wikipedia/commons/4/4e/Single_apple.png&#39;</span><span class="p">)])</span>
 
 <span class="n">clip_text_encoder</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">artifact</span><span class="o">=</span><span class="n">artifact</span><span class="p">,</span> <span class="n">select_model</span><span class="o">=</span><span class="s1">&#39;clip-text&#39;</span><span class="p">)</span>
 <span class="n">clip_image_encoder</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">artifact</span><span class="o">=</span><span class="n">artifact</span><span class="p">,</span> <span class="n">select_model</span><span class="o">=</span><span class="s1">&#39;clip-vision&#39;</span><span class="p">)</span>
@@ -629,7 +624,7 @@ Finetuner will trigger the callback when the fine-tuning job is finished and mer
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 27, 2022</div>
+                            Last updated on Nov 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

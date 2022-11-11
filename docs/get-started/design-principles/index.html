@@ -3,21 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
 <meta property="og:title" content="Design Principles" />
-  
 <meta property="og:type" content="website" />
-  
 <meta property="og:url" content="https://finetuner.jina.ai/get-started/design-principles/" />
-  
 <meta property="og:site_name" content="Finetuner Documentation" />
-  
 <meta property="og:description" content="There are several fancy machine learning libraries out there, so what makes Finetuner unique? Focus on the quality of embeddings: Finetuner is not designed to tackle classification, sentiment analysis or object detection task. Finetuner cares about the quality of the embeddings for neural search,..." />
-  
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
-  
 <meta property="og:image:alt" content="Finetuner Documentation" />
-  
+<meta name="description" content="There are several fancy machine learning libraries out there, so what makes Finetuner unique? Focus on the quality of embeddings: Finetuner is not designed to tackle classification, sentiment analysis or object detection task. Finetuner cares about the quality of the embeddings for neural search,..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -35,7 +28,8 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Walkthrough" href="../../walkthrough/" /><link rel="prev" title="Installation" href="../installation/" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Walkthrough" href="../../walkthrough/" /><link rel="prev" title="Installation" href="../installation/" />
         <link rel="canonical" href="https://finetuner.jina.ai/get-started/design-principles.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
@@ -254,6 +248,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
@@ -374,7 +369,7 @@ such as mean recipal rank (mRR) or normalized discounted cumulative gain (nDCG).
 while all these parameters are optional.</p>
 <p>If you do not have a machine learning background,
 don’t worry about it.
-As was stated before, you only need to provide the training data organized as a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>.
+As was stated before, you only need to provide the training data organized as a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> or as a CSV file.
 In case you do not know which backbone to choose,
 use <a class="reference internal" href="../../api/finetuner/#finetuner.describe_models" title="finetuner.describe_models"><code class="xref py py-meth docutils literal notranslate"><span class="pre">describe_models()</span></code></a> to let Finetuner suggest a backbone model for you.</p>
 </section>
@@ -415,7 +410,7 @@ use <a class="reference internal" href="../../api/finetuner/#finetuner.describe_
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 27, 2022</div>
+                            Last updated on Nov 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

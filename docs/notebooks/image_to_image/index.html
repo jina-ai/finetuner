@@ -3,21 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
 <meta property="og:title" content="Image-to-Image Search via ResNet50" />
-  
 <meta property="og:type" content="website" />
-  
 <meta property="og:url" content="https://finetuner.jina.ai/notebooks/image_to_image/" />
-  
 <meta property="og:site_name" content="Finetuner Documentation" />
-  
 <meta property="og:description" content="Searching visually similar images with image queries is a very popular use-case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here’s where Finetuner comes in! It enables you to acc..." />
-  
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
-  
 <meta property="og:image:alt" content="Finetuner Documentation" />
-  
+<meta name="description" content="Searching visually similar images with image queries is a very popular use-case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here’s where Finetuner comes in! It enables you to acc..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -35,7 +28,8 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Text-to-Image Search via CLIP" href="../text_to_image/" /><link rel="prev" title="Text-to-Text Search via BERT" href="../text_to_text/" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Text-to-Image Search via CLIP" href="../text_to_image/" /><link rel="prev" title="Text-to-Text Search via BERT" href="../text_to_text/" />
         <link rel="canonical" href="https://finetuner.jina.ai/notebooks/image_to_image.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
@@ -254,6 +248,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
@@ -346,7 +341,7 @@
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">#</a></h2>
 <!-- #endregion -->
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>!pip install &#39;finetuner[full]==0.6.4&#39;
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>!pip install &#39;finetuner[full]&#39;
 </pre></div>
 </div>
 <!-- #region id="7EliQdGCsdL0" -->
@@ -363,7 +358,7 @@ The dataset consists of 6016 pairs of images (12032 in total).</p>
 <section id="data">
 <h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">#</a></h2>
 <p>Our journey starts locally. We have to prepare the data and push it to the Jina AI Cloud and Finetuner will be able to get the dataset by its name. For this example,
-we already prepared the data, and we’ll provide the names of training data (<code class="docutils literal notranslate"><span class="pre">tll-train-da</span></code>) directly to Finetuner.</p>
+we already prepared the data, and we’ll provide the names of training data (<code class="docutils literal notranslate"><span class="pre">tll-train-data</span></code>) directly to Finetuner.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>We don’t require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> and Finetuner will do the job for you.</p>
@@ -376,12 +371,12 @@ we already prepared the data, and we’ll provide the names of training data (<c
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">notebook_login</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;tll-train-da&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">query_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;tll-test-query-da&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">index_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;tll-test-index-da&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;tll-train-data&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">query_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;tll-test-query-data&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">index_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;tll-test-index-data&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">train_data</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
@@ -403,15 +398,15 @@ we already prepared the data, and we’ll provide the names of training data (<c
 
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">model</span><span class="o">=</span><span class="s1">&#39;resnet50&#39;</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="s1">&#39;tll-train-da&#39;</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="s1">&#39;tll-train-data&#39;</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
     <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
     <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span>
     <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span>
         <span class="n">EvaluationCallback</span><span class="p">(</span>
-            <span class="n">query_data</span><span class="o">=</span><span class="s1">&#39;tll-test-query-da&#39;</span><span class="p">,</span>
-            <span class="n">index_data</span><span class="o">=</span><span class="s1">&#39;tll-test-index-da&#39;</span><span class="p">,</span>
+            <span class="n">query_data</span><span class="o">=</span><span class="s1">&#39;tll-test-query-data&#39;</span><span class="p">,</span>
+            <span class="n">index_data</span><span class="o">=</span><span class="s1">&#39;tll-test-index-data&#39;</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="p">],</span>
 <span class="p">)</span>
@@ -425,7 +420,7 @@ we already prepared the data, and we’ll provide the names of training data (<c
 but recommended in order to retrieve your run easily and have some context about it.</p></li>
 <li><p>Furthermore, we had to provide names of the <code class="docutils literal notranslate"><span class="pre">train_data</span></code>.</p></li>
 <li><p>We set <code class="docutils literal notranslate"><span class="pre">TripletMarginLoss</span></code>.</p></li>
-<li><p>Additionally, we use <code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> for evaluation.</p></li>
+<li><p>Additionally, we use <code class="docutils literal notranslate"><span class="pre">finetuner.callback.EvaluationCallback</span></code> for evaluation.</p></li>
 <li><p>Lastly, we set the number of <code class="docutils literal notranslate"><span class="pre">epochs</span></code> and provide a <code class="docutils literal notranslate"><span class="pre">learning_rate</span></code>.</p></li>
 </ul>
 <!-- #endregion -->
@@ -443,7 +438,7 @@ but recommended in order to retrieve your run easily and have some context about
 <!-- #region id="N8O-Ms_El-lV" -->
 <p>Since some runs might take up to several hours, it’s important to know how to reconnect to Finetuner and retrieve your runs.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-<span class="n">finetuner</span><span class="o">.</span><span class="n">notebook_login</span><span class="p">()</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
 
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
@@ -454,22 +449,22 @@ but recommended in order to retrieve your run easily and have some context about
 </section>
 <section id="evaluating">
 <h2>Evaluating<a class="headerlink" href="#evaluating" title="Permalink to this headline">#</a></h2>
-<p>Currently, we don’t have a user-friendly way to get evaluation metrics from the <code class="docutils literal notranslate"><span class="pre">~finetuner.callback.EvaluationCallback</span></code> we initialized previously.
-What you can do for now is to call <code class="docutils literal notranslate"><span class="pre">~finetuner.run.Run.logs()</span></code> in the end of the run and see evaluation results:</p>
+<p>Currently, we don’t have a user-friendly way to get evaluation metrics from the <code class="docutils literal notranslate"><span class="pre">finetuner.callback.EvaluationCallback</span></code> we initialized previously.
+What you can do for now is to call <code class="docutils literal notranslate"><span class="pre">run.logs()</span></code> in the end of the run and see evaluation results:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>  Training <span class="o">[</span><span class="m">5</span>/5<span class="o">]</span> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="m">76</span>/76 <span class="m">0</span>:00:00 <span class="m">0</span>:03:15 • loss: <span class="m">0</span>.003
-<span class="o">[</span><span class="m">16</span>:39:13<span class="o">]</span> DEBUG    Metric: <span class="s1">&#39;model_average_precision&#39;</span> Value: <span class="m">0</span>.16603                                     __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_dcg_at_k&#39;</span> Value: <span class="m">0</span>.23632                                              __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_f1_score_at_k&#39;</span> Value: <span class="m">0</span>.03544                                         __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_hit_at_k&#39;</span> Value: <span class="m">0</span>.37209                                              __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_ndcg_at_k&#39;</span> Value: <span class="m">0</span>.23632                                             __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_precision_at_k&#39;</span> Value: <span class="m">0</span>.01860                                        __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_r_precision&#39;</span> Value: <span class="m">0</span>.16603                                           __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_recall_at_k&#39;</span> Value: <span class="m">0</span>.37209                                           __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_reciprocal_rank&#39;</span> Value: <span class="m">0</span>.16603                                       __main__.py:202
+<span class="o">[</span><span class="m">16</span>:39:13<span class="o">]</span> DEBUG    Metric: <span class="s1">&#39;model_average_precision&#39;</span> Value: <span class="m">0</span>.19598                                     __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_dcg_at_k&#39;</span> Value: <span class="m">0</span>.28571                                              __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_f1_score_at_k&#39;</span> Value: <span class="m">0</span>.04382                                         __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_hit_at_k&#39;</span> Value: <span class="m">0</span>.46013                                              __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_ndcg_at_k&#39;</span> Value: <span class="m">0</span>.28571                                             __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_precision_at_k&#39;</span> Value: <span class="m">0</span>.02301                                        __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_r_precision&#39;</span> Value: <span class="m">0</span>.19598                                           __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_recall_at_k&#39;</span> Value: <span class="m">0</span>.46013                                           __main__.py:202
+           DEBUG    Metric: <span class="s1">&#39;model_reciprocal_rank&#39;</span> Value: <span class="m">0</span>.19598                                       __main__.py:202
            INFO     Done ✨                                                                              __main__.py:204
            INFO     Saving fine-tuned models ...                                                         __main__.py:207
            INFO     Saving model <span class="s1">&#39;model&#39;</span> <span class="k">in</span> /usr/src/app/tuned-models/model ...                          __main__.py:218
-           INFO     Pushing saved model to Jina AI Cloud ...                                                    __main__.py:225
+           INFO     Pushing saved model to Jina AI Cloud ...                                             __main__.py:225
 <span class="o">[</span><span class="m">16</span>:39:41<span class="o">]</span> INFO     Pushed model artifact ID: <span class="s1">&#39;62b33cb0037ad91ca7f20530&#39;</span>                                 __main__.py:231
            INFO     Finished 🚀                                                                          __main__.py:233                           __main__.py:248
 </pre></div>
@@ -550,7 +545,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 27, 2022</div>
+                            Last updated on Nov 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

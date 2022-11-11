@@ -3,21 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
 <meta property="og:title" content="Using Callbacks" />
-  
 <meta property="og:type" content="website" />
-  
 <meta property="og:url" content="https://finetuner.jina.ai/walkthrough/using-callbacks/" />
-  
 <meta property="og:site_name" content="Finetuner Documentation" />
-  
 <meta property="og:description" content="Callbacks are a way of adding additional methods to the finetuning process. The methods are executed when certain events occur and there are several callback classes, each serving a different function by providing different methods for different events. A run can be assigned multiple callbacks us..." />
-  
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
-  
 <meta property="og:image:alt" content="Finetuner Documentation" />
-  
+<meta name="description" content="Callbacks are a way of adding additional methods to the finetuning process. The methods are executed when certain events occur and there are several callback classes, each serving a different function by providing different methods for different events. A run can be assigned multiple callbacks us..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -35,7 +28,8 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Encode Documents" href="../integrate-with-jina/" /><link rel="prev" title="Save Artifact" href="../save-model/" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Encode Documents" href="../integrate-with-jina/" /><link rel="prev" title="Save Artifact" href="../save-model/" />
         <link rel="canonical" href="https://finetuner.jina.ai/walkthrough/using-callbacks.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
@@ -254,6 +248,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
@@ -375,8 +370,8 @@ A run can be assigned multiple callbacks using the optional <code class="docutil
            INFO     Pushing artifact to Hubble ...                                                       __main__.py:231
 </pre></div>
 </div>
-<p>The evaluation callback is triggered at the end of each epoch, in which the model is evaluated using the <code class="docutils literal notranslate"><span class="pre">query_data</span></code> and <code class="docutils literal notranslate"><span class="pre">index_data</span></code> datasets that were provided when the callback was created.
-It is worth noting that the evaluation callback and the <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameter of the fit method do not do the same thing. The eval data parameter takes a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> (or the name of one that has been pushed on the Jina AI Cloud) and uses its contents to evaluate the loss of the model whereas the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall. These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.</p>
+<p>The evaluation callback is triggered at the end of each epoch, in which the model is evaluated using the <code class="docutils literal notranslate"><span class="pre">query_data</span></code> and <code class="docutils literal notranslate"><span class="pre">index_data</span></code> datasets that were provided when the callback was created. These datasets can be provided in the same way the <code class="docutils literal notranslate"><span class="pre">train_data</span></code> and <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameters of the <a class="reference internal" href="../../api/finetuner/#finetuner.fit" title="finetuner.fit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit()</span></code></a> method; either as a path to a CSV file, a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> or the name of a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> that has been pushed on the Jina AI Cloud. See <a class="reference internal" href="../create-training-data/"><span class="doc">Prepare Training Data</span></a> for more information about how to prepare your data.</p>
+<p>It is worth noting that the evaluation callback and the <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameter of the fit method do not do the same thing. The <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameter is used to evaluate the loss of the model. On the other hand, the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall. These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.</p>
 </section>
 <section id="bestmodelcheckpoint">
 <h2>BestModelCheckpoint<a class="headerlink" href="#bestmodelcheckpoint" title="Permalink to this headline">#</a></h2>
@@ -464,7 +459,54 @@ such as CLIP.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>It is recommended to use WiSEFTCallback when fine-tuning CLIP.
-We can not ensure it works for other category of models, such as ResNet or Bert.</p>
+We can not ensure it works for other types of models, such as ResNet or BERT.</p>
+</div>
+</section>
+<section id="wandblogger">
+<h2>WandBLogger<a class="headerlink" href="#wandblogger" title="Permalink to this headline">#</a></h2>
+<p>Finetuner allows you to utilize Weights &amp; Biases for experiment tracking and visualization.
+The <code class="docutils literal notranslate"><span class="pre">WandBLogger</span></code> uses Weights &amp; Biases <a class="reference external" href="https://docs.wandb.ai/ref/app/features/anon">Anonymous Mode</a>
+to track a Finetuner Run. The benefits of anonymous mode is: you do not need to share your
+Weights &amp; Biases api_key with us since no login is required.</p>
+<div class="hint admonition">
+<p class="admonition-title">Use WandBLogger together with EvaluationCallback</p>
+<p>The WandBLogger will track the training loss, plus the evaluation loss if <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> is not None.</p>
+<p>If you use EvaluationCallback together with WandBLogger, search metrics will be tracked as well.
+Such as <code class="docutils literal notranslate"><span class="pre">mrr</span></code>, <code class="docutils literal notranslate"><span class="pre">precision</span></code>, <code class="docutils literal notranslate"><span class="pre">recall</span></code> etc.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.callback</span> <span class="kn">import</span> <span class="n">WandBLogger</span><span class="p">,</span> <span class="n">EvaluationCallback</span>
+
+<span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;resnet50&#39;</span><span class="p">,</span>
+    <span class="n">run_name</span> <span class="o">=</span> <span class="s1">&#39;resnet-tll-early-6&#39;</span><span class="p">,</span>
+    <span class="n">train_data</span> <span class="o">=</span> <span class="s1">&#39;tll-train-da&#39;</span><span class="p">,</span>
+    <span class="n">epochs</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">EvaluationCallback</span><span class="p">(</span>
+            <span class="n">query_data</span><span class="o">=</span><span class="s1">&#39;tll-test-query-da&#39;</span><span class="p">,</span>
+            <span class="n">index_data</span><span class="o">=</span><span class="s1">&#39;tll-test-index-da&#39;</span>
+        <span class="p">),</span>
+        <span class="n">WandBLogger</span><span class="p">(),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># stream the logs, or use run.logs() to get logs</span>
+<span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">run</span><span class="o">.</span><span class="n">stream_logs</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can find the Weights &amp; Biases entry in the logs, copy the link of <em>View run at</em>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wandb: Currently logged <span class="k">in</span> as: anony-mouse-279369. Use <span class="sb">`</span>wandb login --relogin<span class="sb">`</span> to force relogin
+wandb: wandb version <span class="m">0</span>.13.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version <span class="m">0</span>.12.19
+wandb: Run data is saved locally <span class="k">in</span> <span class="o">[</span>YOUR-PATH<span class="o">]</span>
+wandb: Run <span class="sb">`</span>wandb offline<span class="sb">`</span> to turn off syncing.
+wandb: Syncing run cool-wildflower-2
+wandb:  View project at https://wandb.ai/anony-mouse-279369/<span class="o">[</span>YOUR-PROJECT-URL<span class="o">]</span>
+wandb:  View run at https://wandb.ai/anony-mouse-279369/<span class="o">[</span>YOUR-RUN-URL<span class="o">]</span>
+</pre></div>
 </div>
 </section>
 </section>
@@ -504,7 +546,7 @@ We can not ensure it works for other category of models, such as ResNet or Bert.
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 27, 2022</div>
+                            Last updated on Nov 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -541,6 +583,7 @@ We can not ensure it works for other category of models, such as ResNet or Bert.
 <li><a class="reference internal" href="#bestmodelcheckpoint">BestModelCheckpoint</a></li>
 <li><a class="reference internal" href="#earlystopping">EarlyStopping</a></li>
 <li><a class="reference internal" href="#wiseftcallback">WiSEFTCallback</a></li>
+<li><a class="reference internal" href="#wandblogger">WandBLogger</a></li>
 </ul>
 </li>
 </ul>

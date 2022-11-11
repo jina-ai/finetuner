@@ -21,23 +21,51 @@ In the example below, we show how to connect to an existing run and download a t
 ```python
 import finetuner
 
-finetuner.login()  # use finetuner.notebook_login() in Jupyter notebook or Google Colab
+finetuner.login()
 
-# connect to the experiment we created previously.
-experiment = finetuner.get_experiment('finetune-flickr-dataset')
 # connect to the run we created previously.
-run = experiment.get_run('finetune-flickr-dataset-efficientnet-1')
+run = finetuner.get_run(
+    run_name='finetune-flickr-dataset-efficientnet-1',
+    experiment_name='finetune-flickr-dataset',
+)
 print(f'Run status: {run.status()}')
 print(f'Run artifact id: {run.artifact_id}')
-# Once run status is `STARTED`, you can stream logs with:
-for log_entry in run.stream_logs():
-    print(log_entry)
-# save the artifact.
+```
+
+You can monitor your run status in two ways:
+
+1. Log streaming: Pull logs from Jina AI Cloud lively, suitable for small fine-tuning tasks.
+2. Query logs: Pull up-to-date logs from Jina AI Cloud, suitable for long-running tasks.
+
+````{tab} Stream logs
+```python
+for entry in run.stream_logs():
+    print(entry)
+```
+````
+````{tab} Query logs
+```python
+print(run.status())
+print(run.logs())
+```
+````
+
+Once run status is `FINISHED`, you can save the artifact with:
+
+```python
 run.save_artifact('tuned_model')
 ```
 
+```{admonition} Share artifact with others
+:class: hint
+Finetuner allows you to set your artifact as a public artifact.
+At training time, you need to set `public=True` when calling the `fit` function.
+
+If `public=True`, anyone has the same artifact id can download your artifact with the above function.
+```
+
 If the fine-tuning finished,
-you can see this in the terminal:
+you can see the following message in the terminal:
 
 ```bash
 🔐 Successfully logged in to Jina AI as [USER NAME]!

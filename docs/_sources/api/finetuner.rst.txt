@@ -17,6 +17,7 @@ Submodules
 
    finetuner.callback
    finetuner.console
+   finetuner.data
    finetuner.excepts
    finetuner.experiment
    finetuner.finetuner
