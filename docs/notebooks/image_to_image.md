@@ -26,7 +26,7 @@ This guide will demonstrate how to fine-tune a ResNet model for image to image r
 <!-- #endregion -->
 
 ```python id="VdKH0S0FrwS3"
-!pip install 'finetuner[full]==0.6.4'
+!pip install 'finetuner[full]'
 ```
 
 <!-- #region id="7EliQdGCsdL0" -->
@@ -59,7 +59,7 @@ When working with Document where images are stored locally, please call `doc.loa
 import finetuner
 from docarray import DocumentArray, Document
 
-finetuner.notebook_login(force=True)
+finetuner.login(force=True)
 ```
 
 ```python id="ONpXDwFBsqQS"
@@ -132,7 +132,7 @@ Since some runs might take up to several hours, it's important to know how to re
 
 ```python
 import finetuner
-finetuner.notebook_login()
+finetuner.login()
 
 run = finetuner.get_run(run.name)
 ```
@@ -159,7 +159,7 @@ What you can do for now is to call `run.logs()` in the end of the run and see ev
            INFO     Done ✨                                                                              __main__.py:204
            INFO     Saving fine-tuned models ...                                                         __main__.py:207
            INFO     Saving model 'model' in /usr/src/app/tuned-models/model ...                          __main__.py:218
-           INFO     Pushing saved model to Jina AI Cloud ...                                                    __main__.py:225
+           INFO     Pushing saved model to Jina AI Cloud ...                                             __main__.py:225
 [16:39:41] INFO     Pushed model artifact ID: '62b33cb0037ad91ca7f20530'                                 __main__.py:231
            INFO     Finished 🚀                                                                          __main__.py:233                           __main__.py:248
 ```

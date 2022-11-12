@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add support for CSV files to the `EvaluationCallback`. ([#608](https://github.com/jina-ai/finetuner/pull/608))
+
 - Add support for CSV files to the `fit` function. ([#592](https://github.com/jina-ai/finetuner/pull/592))
 
 - Add support for lists to the `encode` function. [#598](https://github.com/jina-ai/finetuner/pull/598)
@@ -51,6 +53,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add documentation for `WandBLogger`. [#600](https://github.com/jina-ai/finetuner/pull/600)
 
 - Change datasets and hyperparameters for ResNet experiment. ([#599](https://github.com/jina-ai/finetuner/pull/599))
+
+- Use `login` instead of `notebook_login` in examples. ([#605](https://github.com/jina-ai/finetuner/pull/605))
 
 
 ## [0.6.4] - 2022-10-27
