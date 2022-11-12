@@ -99,9 +99,15 @@ def list_model_options() -> Dict[str, List[Dict[str, Any]]]:
     }
 
 
-def describe_models() -> None:
-    """Describe available models in a table."""
-    print_model_table(model)
+def describe_models(task: Optional[str] = None) -> None:
+    """Describe available models in a table.
+
+    :param task: The task for the backbone model designed for, one of `text-to-text`,
+        `text-to-image`, `image-to-image`. If not provided, will print all backbone
+        models.
+
+    """
+    print_model_table(model, task=task)
 
 
 @login_required

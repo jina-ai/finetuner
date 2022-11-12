@@ -1,3 +1,5 @@
+from typing import Optional
+
 from rich.console import Console
 from rich.table import Table
 
@@ -6,10 +8,11 @@ from finetuner.model import list_model_classes
 console = Console()
 
 
-def print_model_table(model):
+def print_model_table(model, task: Optional[str] = None):
     """Prints a table of model descriptions.
 
     :param model: Module with model definitions
+    :param task: The fine-tuning task, should be one of `text-to-text`,
     """
 
     table = Table(title='Finetuner backbones')
@@ -21,6 +24,9 @@ def print_model_table(model):
 
     for _, _model_class in list_model_classes().items():
         if _model_class.descriptor not in model_descriptors:
+            row = model.get_row(_model_class)
+            if task and row[1] != task:
+                continue
             table.add_row(*model.get_row(_model_class))
             model_descriptors.add(_model_class.descriptor)
 
