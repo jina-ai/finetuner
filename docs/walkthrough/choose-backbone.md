@@ -12,11 +12,27 @@ The embedding model can be fine-tuned for text-to-text, image-to-image or text-t
 search tasks.
 
 You can call:
+````{tab} text-to-text
 ```python
 import finetuner
 
-finetuner.describe_models()
+finetuner.describe_models(task='text-to-text')
 ```
+````
+````{tab} image-to-image
+```python
+import finetuner
+
+finetuner.describe_models(task='image-to-image')
+```
+````
+````{tab} text-to-image
+```python
+import finetuner
+
+finetuner.describe_models(task='text-to-image')
+```
+````
 
 To get a list of supported models:
 
