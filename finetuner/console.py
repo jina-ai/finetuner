@@ -14,8 +14,10 @@ def print_model_table(model, task: Optional[str] = None):
     :param model: Module with model definitions
     :param task: The fine-tuning task, should be one of `text-to-text`,
     """
-
-    table = Table(title='Finetuner backbones')
+    title = 'Finetuner backbones'
+    if task:
+        title += f': {task}'
+    table = Table(title=title)
     header = model.get_header()
     model_descriptors = set()
 
@@ -27,7 +29,7 @@ def print_model_table(model, task: Optional[str] = None):
             row = model.get_row(_model_class)
             if task and row[1] != task:
                 continue
-            table.add_row(*model.get_row(_model_class))
+            table.add_row(*row)
             model_descriptors.add(_model_class.descriptor)
 
     console.print(table)
