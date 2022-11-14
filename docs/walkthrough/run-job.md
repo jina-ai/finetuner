@@ -127,8 +127,8 @@ The example below shows how to apply hard-negative mining:
 run = finetuner.fit(
     ...,
     loss='TripleMarginLoss',
-+    miner='TripletMarginMiner',
-+    miner_options={'margin': 0.3, 'type_of_triplets': 'hard'}
++   miner='TripletMarginMiner',
++   miner_options={'margin': 0.3, 'type_of_triplets': 'hard'}
 )
 ```
 
