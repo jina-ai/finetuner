@@ -55,7 +55,7 @@ train_data.summary()
 ```
 
 ## Backbone Model
-Currently, we only support one multilingual CLIP model, which has been made available by [open-clip](https://github.com/mlfoundations/open_clip).
+Currently, we only support one multilingual CLIP model, which has been made available by [open-clip](https://github.com/mlfoundations/open_clip). This model is the `xlm-roberta-base-ViT-B-32`, which has been trained on the `laion5b` dataset.
 
 
 ## Fine-tuning
