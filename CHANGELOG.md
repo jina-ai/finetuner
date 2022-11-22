@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Add notebook for multilingual CLIP models. ([#611](https://github.com/jina-ai/finetuner/pull/611))
+
 - Improve `describe_models` with `task` to better organize list of backbones. ([#610](https://github.com/jina-ai/finetuner/pull/610))
 
 
