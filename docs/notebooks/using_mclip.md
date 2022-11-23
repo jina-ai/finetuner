@@ -19,7 +19,7 @@ Most text-image models are only able to provide embeddings for text in a single 
 
 This guide will show you how to finetune a multilingual CLIP model for a text to image retrieval in non-English languages.
 
-*Note, please consider switching to GPU/TPU Runtime for faster inference.*
+*Note, Check the runtime menu to be sure you are using a GPU/TPU instance, or this code will run very slowly.*
 
 
 
@@ -32,13 +32,13 @@ This guide will show you how to finetune a multilingual CLIP model for a text to
 ## Task
 
 
-We'll be finetuning multilingual CLIP on the `toloka-fashion` dataset, which contains information about fashion products, with all descriptions being in German.  
+We'll be fine-tuning multilingual CLIP on the `toloka-fashion` dataset, which contains images and descriptions of fashion products in German.  
 
 Each product in the dataset contains several attributes, we will be making use of the image and category attributes to create a [`Document`](https://docarray.jina.ai/fundamentals/document/#document) containing two [chunks](https://docarray.jina.ai/fundamentals/document/nested/#nested-structure), one containing the image and another containing the category of the product.
 
 
 ## Data
-We will use the `toloka-fashion` dataset, which we have already pre-processed and made available on the Jina AI Cloud. You can access it by like so:
+We will use the `toloka-fashion` dataset, which we have already pre-processed and made available on the Jina AI Cloud. You can access it using `DocArray.pull`:
 
 ```python
 import finetuner
@@ -55,7 +55,7 @@ train_data.summary()
 ```
 
 ## Backbone Model
-Currently, we only support one multilingual CLIP model, which has been made available by [open-clip](https://github.com/mlfoundations/open_clip). This model is the `xlm-roberta-base-ViT-B-32`, which has been trained on the `laion5b` dataset.
+Currently, we only support one multilingual CLIP model. This model is the `xlm-roberta-base-ViT-B-32` from [open-clip](https://github.com/mlfoundations/open_clip), which has been trained on the [`laion5b` dataset](https://github.com/LAION-AI/laion5B-paper).
 
 
 ## Fine-tuning
@@ -80,7 +80,7 @@ You may notice that this piece of code looks very similar to the one used to fin
 
 ## Monitoring
 
-Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()` and - the logs - `run.logs()` or - `run.stream_logs()`. 
+Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()` - and the logs - `run.logs()` - or `run.stream_logs()`. 
 
 ```python tags=[]
 # note, the fine-tuning might takes 20~ minutes
@@ -98,7 +98,7 @@ finetuner.login()
 run = finetuner.get_run(run.name)
 ```
 
-You can continue monitoring the run by checking the status - `finetuner.run.Run.status()` or the logs - `finetuner.run.Run.logs()`.
+You can continue monitoring the run by checking the status - `finetuner.run.Run.status()` - or the logs `finetuner.run.Run.logs()`.
 <!-- #endregion -->
 
 <!-- #region -->
@@ -141,7 +141,7 @@ We have done the evaulation for you in the table below.
 After the run has finished successfully, you can download the tuned model on your local machine:
 
 ```python
-artifact = run.save_artifact('m-clip-model')
+artifact = run.save_artifact('mclip-model')
 ```
 
 ## Inference
