@@ -181,3 +181,8 @@ In case you set `to_onnx=True` when calling `finetuner.fit` function,
 please use `model = finetuner.get_model(artifact, is_onnx=True)`
 ```
 <!-- #endregion -->
+
+## Before and After
+Now that we have shown you how to fine tune multilingual CLIP model, we can compare the difference between the returned results for the two models:
+![mclip-example-1](images/mclip-example-1.jpg)
+![mclip-example-2](images/mclip-example-2.jpg)
