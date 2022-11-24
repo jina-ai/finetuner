@@ -164,6 +164,7 @@ class Finetuner:
         to_onnx: bool = False,
         csv_options: Optional[CSVOptions] = None,
         public: bool = False,
+        num_items_per_class: int = 4,
     ) -> Run:
         """Create a run.
 
@@ -201,6 +202,7 @@ class Finetuner:
             to_onnx=to_onnx,
             csv_options=csv_options,
             public=public,
+            num_items_per_class=num_items_per_class,
         )
 
     @login_required

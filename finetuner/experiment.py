@@ -24,6 +24,7 @@ from finetuner.constants import (
     MINER_OPTIONS,
     MODEL_OPTIONS,
     NAME,
+    NUM_ITEMS_PER_CLASS,
     NUM_WORKERS,
     ONNX,
     OPTIMIZER,
@@ -246,6 +247,7 @@ class Experiment:
         data = config.DataConfig(
             train_data=train_data,
             eval_data=kwargs.get(EVAL_DATA),
+            num_items_per_class=kwargs.get(NUM_ITEMS_PER_CLASS),
         )
         if kwargs.get(NUM_WORKERS):
             data.num_workers = kwargs.get(NUM_WORKERS)
