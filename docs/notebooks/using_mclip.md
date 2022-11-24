@@ -32,13 +32,13 @@ This guide will show you how to finetune a multilingual CLIP model for a text to
 ## Task
 
 
-We'll be fine-tuning multilingual CLIP on the `toloka-fashion` dataset, which contains images and descriptions of fashion products in German.  
+We'll be fine-tuning multilingual CLIP on the electronics section of the [German xmarket dataset](https://xmrec.github.io/data/de/), which contains images and descriptions of electronics products in German.  
 
 Each product in the dataset contains several attributes, we will be making use of the image and category attributes to create a [`Document`](https://docarray.jina.ai/fundamentals/document/#document) containing two [chunks](https://docarray.jina.ai/fundamentals/document/nested/#nested-structure), one containing the image and another containing the category of the product.
 
 
 ## Data
-We will use the `toloka-fashion` dataset, which we have already pre-processed and made available on the Jina AI Cloud. You can access it using `DocArray.pull`:
+We will use the `xmarket-de-electronics` dataset, which we have already pre-processed and made available on the Jina AI Cloud. You can access it using `DocArray.pull`:
 
 ```python
 import finetuner
@@ -48,8 +48,11 @@ finetuner.login(force=True)
 ```
 
 ```python
-train_data = DocumentArray.pull('toloka-fashion-train-data', show_progress=True)
-eval_data = DocumentArray.pull('toloka-fashion-eval-data', show_progress=True)
+train_data = DocumentArray.pull('xmarket-de-electronics-train-data', show_progress=True)
+eval_data = DocumentArray.pull('xmarket-de-electronics-test-data', show_progress=True)
+
+query_data = DocumentArray.pull('xmarket-de-electronics-query-data', show_progress=True)
+index_data = DocumentArray.pull('xmarket-de-electronics-index-data', show_progress=True)
 
 train_data.summary()
 ```
@@ -63,6 +66,7 @@ Now that our data has been prepared, we can start our fine-tuning run.
 
 ```python
 import finetuner
+from finetuner.callback import EvaluationCallback, WandBLogger
 
 run = finetuner.fit(
     model='xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
@@ -72,10 +76,25 @@ run = finetuner.fit(
     learning_rate=1e-6,
     loss='CLIPLoss',
     device='cuda',
+    callbacks=[
+        EvaluationCallback(
+            query_data='xmarket-de-electronics-query-data',
+            index_data='xmarket-de-electronics-index-data',
+            model='clip-text',
+            index_model='clip-vision'
+        ),
+        WandBLogger(),
+    ]
 )
 ```
 
-You may notice that this piece of code looks very similar to the one used to fine-tune regular clip models, as shown [here](https://finetuner.jina.ai/notebooks/text_to_image/). The only real difference is the data being provided and the model being used. 
+Let's understand what this piece of code does:
+
+* We start with providing `model`, names of training and evaluation data.
+* We also provide some hyper-parameters such as number of `epochs` and a `learning_rate`.
+* We use `CLIPLoss` to optimize the CLIP model.
+* We use `finetuner.callback.EvaluationCallback` for evaluation.
+* We then use the `finetuner.callback.WandBLogger` to display our results.
 
 
 ## Monitoring
@@ -103,37 +122,24 @@ You can continue monitoring the run by checking the status - `finetuner.run.Run.
 
 <!-- #region -->
 ## Evaluating
-Currently, we don't have a user-friendly way to get evaluation metrics from the {class}`~finetuner.callback.EvaluationCallback` we initialized previously.
+Once the run is finished, the metrics calculated by the {class}`~finetuner.callback.EvaluationCallback` are plotted using the {class}`~finetuner.callback.WandBLogger` callback. These plots can be accessed using the link provided in the logs once finetuning starts:
 
 ```bash
-           INFO     Done ✨                                                                              __main__.py:219
-           INFO     Saving fine-tuned models ...                                                         __main__.py:222
-           INFO     Saving model 'model' in /usr/src/app/tuned-models/model ...                          __main__.py:233
-           INFO     Pushing saved model to Jina AI Cloud ...                                                    __main__.py:240
-[10:38:14] INFO     Pushed model artifact ID: '62a1af491597c219f6a330fe'                                 __main__.py:246
-           INFO     Finished 🚀                                                                          __main__.py:248
+           INFO     Finetuning ... 
+wandb: Currently logged in as: anony-mouse-448424. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.13.5
+wandb: Run data is saved locally in <path-to-file>
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run ancient-galaxy-2
+wandb:  View project at <link-to-project>
+wandb:  View run at <link-to-run>
+
 ```
 
-```{admonition} Evaluation of CLIP
+The generated plots should look like this:
 
-In this example, we did not plug-in an `EvaluationCallback` since the callback can evaluate one model at one time.
-In most cases, we want to evaluate two models: i.e. use `CLIPTextEncoder` to encode textual Documents as `query_data` while use `CLIPImageEncoder` to encode image Documents as `index_data`.
-Then use the textual Documents to search image Documents.
+![WandB-mclip](images/WandB-mclip.png)
 
-We have done the evaulation for you in the table below.
-```
-
-|                   | Before Finetuning   | After Finetuning    |
-|-------------------|---------------------|---------------------|
-| average_precision | 0.449150592183874   | 0.5229004685258555  |
-| dcg_at_k          | 0.6027663856128129  | 0.669843418638272   |
-| f1_score_at_k     | 0.0796103896103896  | 0.08326118326118326 |
-| hit_at_k          | 0.83                | 0.8683333333333333  |
-| ndcg_at_k         | 0.5998242304751983  | 0.6652403194597005  |
-| precision_at_k    | 0.04183333333333333 | 0.04375             |
-| r_precision       | 0.4489283699616517  | 0.5226226907480778  |
-| recall_at_k       | 0.8283333333333334  | 0.8666666666666667  |
-| reciprocal_rank   | 0.44937281440609617 | 0.5231782463036333  |
 <!-- #endregion -->
 
 ## Saving
@@ -181,8 +187,3 @@ In case you set `to_onnx=True` when calling `finetuner.fit` function,
 please use `model = finetuner.get_model(artifact, is_onnx=True)`
 ```
 <!-- #endregion -->
-
-## Before and After
-Now that we have shown you how to fine tune multilingual CLIP model, we can compare the difference between the returned results for the two models:
-![mclip-example-1](images/mclip-example-1.jpg)
-![mclip-example-2](images/mclip-example-2.jpg)
