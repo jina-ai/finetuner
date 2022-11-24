@@ -34,6 +34,7 @@ walkthrough/index
 notebooks/text_to_text
 notebooks/image_to_image
 notebooks/text_to_image
+notebooks/multilingual_text_to_image
 ```
 
 ```{toctree}
