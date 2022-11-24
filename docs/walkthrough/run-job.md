@@ -77,6 +77,7 @@ run = finetuner.fit(
     to_onnx=False,  # If set, please pass `is_onnx` when making inference.
     csv_options=CSVOptions(),  # Additional options for reading data from a CSV file.
     public=False,  # If set, anyone has the artifact id can download your fine-tuned model.
+    num_items_per_class=None,  # How many items per class to include in a batch.
 )
 ```
 
