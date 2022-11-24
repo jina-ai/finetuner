@@ -41,7 +41,8 @@ For each product the dataset contains a title and images of multiple variants of
 <!-- #region id="EVBez7dHwIye" -->
 ## Data
 Our journey starts locally. We have to [prepare the data and push it to the Jina AI Cloud](https://finetuner.jina.ai/walkthrough/create-training-data/) and Finetuner will be able to get the dataset by its name. For this example,
-we already prepared the data, and we'll provide the names of training and evaluation data (`fashion-train-data-clip` and `fashion-eval-data-clip`) directly to Finetuner.
+we already prepared the data, and we'll provide the names of traning and evaluation data (`fashion-train-data-clip` and `fashion-eval-data-clip`) directly to Finetuner.
+In addition, we 
 
 ```{admonition} 
 We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
@@ -58,6 +59,8 @@ finetuner.login(force=True)
 ```python id="cpIj7viExFti"
 train_data = DocumentArray.pull('fashion-train-data-clip', show_progress=True)
 eval_data = DocumentArray.pull('fashion-eval-data-clip', show_progress=True)
+eval_queries = DocumentArray.pull('fashion-eval-data-queries', show_progress=True)
+eval_index = DocumentArray.pull('fashion-eval-data-index', show_progress=True)
 
 train_data.summary()
 ```
@@ -86,6 +89,14 @@ run = finetuner.fit(
     learning_rate= 1e-7,
     loss='CLIPLoss',
     device='cuda',
+    callbacks=[
+        EvaluationCallback(
+            model='clip-text',
+            index_model='clip-vision',
+            query_data='fashion-eval-data-queries',
+            index_data='fashion-eval-data-index',
+        )
+    ],
 )
 ```
 
@@ -95,6 +106,8 @@ Let's understand what this piece of code does:
 * We start with providing `model`, names of training and evaluation data.
 * We also provide some hyper-parameters such as number of `epochs` and a `learning_rate`.
 * We use `CLIPLoss` to optimize the CLIP model.
+* We use an evaluation callback, which uses the `'clip-text'` model for encoding the text queries and the `'clip-vision'` model for encoding the images in `'fashion-eval-data-index'`.
+
 <!-- #endregion -->
 
 <!-- #region id="qKv3VcMKyG8d" -->
@@ -124,38 +137,21 @@ You can continue monitoring the run by checking the status - `finetuner.run.Run.
 
 <!-- #region id="Xeq_aVRxyqlW" -->
 ## Evaluating
-Currently, we don't have a user-friendly way to get evaluation metrics from the {class}`~finetuner.callback.EvaluationCallback` we initialized previously.
+
+Our `EvaluationCallback` during fine-tuning ensures that after each epoch, an evaluation of our model is run. We can access the results of the last evaluation in the logs as follows `print(run.logs())`:
 
 ```bash
-           INFO     Done ✨                                                                              __main__.py:219
-           INFO     Saving fine-tuned models ...                                                         __main__.py:222
-           INFO     Saving model 'model' in /usr/src/app/tuned-models/model ...                          __main__.py:233
-           INFO     Pushing saved model to Jina AI Cloud ...                                                    __main__.py:240
-[10:38:14] INFO     Pushed model artifact ID: '62a1af491597c219f6a330fe'                                 __main__.py:246
-           INFO     Finished 🚀                                                                          __main__.py:248
+  Training [5/5] ━━━━ 195/195 0:00… 0:0… • loss: 2.419 • val_loss: 2.803
+[13:32:41] INFO     Done ✨                              __main__.py:195
+           DEBUG    Finetuning took 0 days, 0 hours 5 minutes and 30 seconds
+           DEBUG    Metric: 'clip-text-to-clip-vision_precision_at_k' Value: 0.28532                                                   
+           DEBUG    Metric: 'clip-text-to-clip-vision_hit_at_k' Value: 0.94282                                            
+           DEBUG    Metric: 'clip-text-to-clip-vision_average_precision' Value: 0.53372                             
+           DEBUG    Metric: 'clip-text-to-clip-vision_reciprocal_rank' Value: 0.67706                               
+           DEBUG    Metric: 'clip-text-to-clip-vision_dcg_at_k' Value: 2.71247                                      
+...
 ```
 
-```{admonition} Evaluation of CLIP
-
-In this example, we did not plug-in an `EvaluationCallback` since the callback can evaluate one model at one time.
-In most cases, we want to evaluate two models: i.e. use `CLIPTextEncoder` to encode textual Documents as `query_data` while use `CLIPImageEncoder` to encode image Documents as `index_data`.
-Then use the textual Documents to search image Documents.
-
-We have done the evaulation for you in the table below.
-```
-
-
-|                   | Before Finetuning | After Finetuning |
-|:------------------|---------:|---------:|
-| average_precision | 0.47219  | 0.532773 |
-| dcg_at_k          | 2.25565  | 2.70725  |
-| f1_score_at_k     | 0.296816 | 0.353499 |
-| hit_at_k          | 0.94028  | 0.942821 |
-| ndcg_at_k         | 0.613387 | 0.673644 |
-| precision_at_k    | 0.240407 | 0.285324 |
-| r_precision       | 0.364697 | 0.409577 |
-| recall_at_k       | 0.472681 | 0.564168 |
-| reciprocal_rank   | 0.575481 | 0.67571  |
 <!-- #endregion -->
 
 <!-- #region id="h3qC3yAcy-Es" -->
