@@ -32,7 +32,7 @@ This guide will show you how to finetune a multilingual CLIP model for a text to
 ## Task
 
 
-We'll be fine-tuning multilingual CLIP on the electronics section of the [German xmarket dataset](https://xmrec.github.io/data/de/), which contains images and descriptions of electronics products in German.  
+We'll be fine-tuning multilingual CLIP on the electronics section of the [German XMarket dataset](https://xmrec.github.io/data/de/), which contains images and descriptions of electronics products in German.  
 
 Each product in the dataset contains several attributes, we will be making use of the image and category attributes to create a [`Document`](https://docarray.jina.ai/fundamentals/document/#document) containing two [chunks](https://docarray.jina.ai/fundamentals/document/nested/#nested-structure), one containing the image and another containing the category of the product.
 
@@ -189,8 +189,9 @@ please use `model = finetuner.get_model(artifact, is_onnx=True)`
 <!-- #endregion -->
 
 ## Before and After
-We can directly compare the results of our fine-tuned model with an untained multilingual clip model by displaying the matches each model has for the same query:
+We can directly compare the results of our fine-tuned model with an untrained multilingual clip model by displaying the matches each model has for the same query, while the difference between the results of the two models are quite similar for some queries, the examples below clearly show that finetuning increses the quality of the search results:
 
+<!-- #region -->
 ```python
 from finetuner import build_model
 
@@ -219,11 +220,30 @@ pt_query.match(pt_index)
 ft_query.match(ft_index)
 
 print('results for query: "externe mikrofone (external microphone)" using a zero-shot model (top) and the fine-tuned model (bottom)')
-query_pt[72].matches[0].plot_image_sprites()
-query_ft[72].matches[0].plot_image_sprites()
+pt_query[72].matches[0].plot_image_sprites()
+ft_query[72].matches[0].plot_image_sprites()
 
 print('results for query: "prozessorlüfter (processor fan)" using a zero-shot model (top) and the fine-tuned model (bottom)')
-query_pt[189].matches[0].plot_image_sprites()
-query_ft[189].matches[0].plot_image_sprites()
+pt_query[189].matches[0].plot_image_sprites()
+ft_query[189].matches[0].plot_image_sprites()
+```
+```bash
+results for query: "externe mikrofone (external microphone)" using a zero-shot model (top) and the fine-tuned model (bottom)
+```
+![mclip-example-pt-1](images/mclip-example-pt-1.png)
+![mclip-example-ft-1](images/mclip-example-ft-1.png)
+
+```bash
+results for query: "prozessorlüfter (processor fan)" using a zero-shot model (top) and the fine-tuned model (bottom)
+```
+
+![mclip-example-pt-2](images/mclip-example-pt-2.png)
+![mclip-example-ft-2](images/mclip-example-ft-2.png)
+
+
+
+<!-- #endregion -->
+
+```python
 
 ```
