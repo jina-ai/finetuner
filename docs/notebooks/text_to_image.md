@@ -42,7 +42,8 @@ For each product the dataset contains a title and images of multiple variants of
 ## Data
 Our journey starts locally. We have to [prepare the data and push it to the Jina AI Cloud](https://finetuner.jina.ai/walkthrough/create-training-data/) and Finetuner will be able to get the dataset by its name. For this example,
 we already prepared the data, and we'll provide the names of traning and evaluation data (`fashion-train-data-clip` and `fashion-eval-data-clip`) directly to Finetuner.
-In addition, we 
+In addition, we also provide labeled queries and an index of labeled documents for evaluating the retrieval capabilities of the resulting fine-tuned model stored in the datasets `fashion-eval-data-queries` and `fashion-eval-data-index`.
+
 
 ```{admonition} 
 We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
