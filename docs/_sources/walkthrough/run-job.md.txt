@@ -77,6 +77,7 @@ run = finetuner.fit(
     to_onnx=False,  # If set, please pass `is_onnx` when making inference.
     csv_options=CSVOptions(),  # Additional options for reading data from a CSV file.
     public=False,  # If set, anyone has the artifact id can download your fine-tuned model.
+    num_items_per_class=4,  # How many items per class to include in a batch.
 )
 ```
 
@@ -121,6 +122,24 @@ For instance, if you choose to train a model with the `TripleMarginLoss`, you ca
 While without this miner, all possible triples with an anchor, a positive, and a negative candidate are constructed, the miner reduces this set of triples.
 Usually, only triples with hard negatives are selected where the distance between the positive and the negative example is inside a margin of `0.2`.
 If you want to pass additional parameters to configure the miner, you can specify the `miner_options` parameter of the fit function.
-For example, you can modify the size of the margin to `0.3` by setting `miner_options={'margin': 0.3}'`.
+The example below shows how to apply hard-negative mining:
+
+```diff
+run = finetuner.fit(
+    ...,
+    loss='TripleMarginLoss',
++   miner='TripletMarginMiner',
++   miner_options={'margin': 0.3, 'type_of_triplets': 'hard'}
+)
+```
+
+The possible choices `type_of_triplets` are:
+
++ `all`: Use all triplets, identical to no mining.
++ `easy`: Use all easy triplets, all triplets that do not violate the margin.
++ `semihard`: Use semi-hard triplets, the negative is further from the anchor than the positive.
++ `hard`: Use hard triplets, the negative is closer to the anchor than the positive.
+
+Finetuner takes `TripleMarginLoss` as default loss function with no negative mining.
 A detailed description of the miners and their parameters is specified in the [PyTorch Metric Learning documentation](https://kevinmusgrave.github.io/pytorch-metric-learning/miners/).
 

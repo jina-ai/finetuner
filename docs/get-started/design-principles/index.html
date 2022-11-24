@@ -237,6 +237,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/multilingual_text_to_image/">Multilingual Text-to-Image search with MultilingualCLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -246,7 +247,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.client.session/">finetuner.client.session module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
@@ -341,7 +341,7 @@ so what makes Finetuner unique?</p>
 sentiment analysis or object detection task.
 Finetuner cares about the quality of the embeddings for neural search,
 and this is what the fine-tuned model will produce.</p>
-<p>Given a query <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> represented by <code class="docutils literal notranslate"><span class="pre">embeddings</span></code>,
+<p>Given a query <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.19.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> represented by <code class="docutils literal notranslate"><span class="pre">embeddings</span></code>,
 you can compare the similarity/distance of the query Documents against all indexed (embedded) Documents in your storage backend.</p>
 </section>
 <section id="dedicated-to-optimizing-your-search-task">
@@ -369,7 +369,7 @@ such as mean recipal rank (mRR) or normalized discounted cumulative gain (nDCG).
 while all these parameters are optional.</p>
 <p>If you do not have a machine learning background,
 don’t worry about it.
-As was stated before, you only need to provide the training data organized as a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> or as a CSV file.
+As was stated before, you only need to provide the training data organized as a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.19.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> or as a CSV file.
 In case you do not know which backbone to choose,
 use <a class="reference internal" href="../../api/finetuner/#finetuner.describe_models" title="finetuner.describe_models"><code class="xref py py-meth docutils literal notranslate"><span class="pre">describe_models()</span></code></a> to let Finetuner suggest a backbone model for you.</p>
 </section>
@@ -410,7 +410,7 @@ use <a class="reference internal" href="../../api/finetuner/#finetuner.describe_
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 11, 2022</div>
+                            Last updated on Nov 24, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -237,6 +237,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/multilingual_text_to_image/">Multilingual Text-to-Image search with MultilingualCLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -246,7 +247,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.client.session/">finetuner.client.session module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
@@ -353,7 +353,7 @@ If you have been logged in before, the existing token will not be overwritten, h
 </div>
 <div class="hint admonition">
 <p class="admonition-title">Why do I need to login?</p>
-<p>Login is required since Finetuner needs to push your <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> or CSV file into the Jina AI Cloud as training or evaluation data.
+<p>Login is required since Finetuner needs to push your <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.19.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> or CSV file into the Jina AI Cloud as training or evaluation data.
 Once you have successfully logged in, your training data will be linked to your personal user profile and will only be visible to you.</p>
 <p>Once fine-tuning is completed, the fine-tuned model will be visible only to you in the Jina AI Cloud.</p>
 </div>
@@ -394,7 +394,7 @@ Once you have successfully logged in, your training data will be linked to your 
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 11, 2022</div>
+                            Last updated on Nov 24, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -210,6 +210,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/multilingual_text_to_image/">Multilingual Text-to-Image search with MultilingualCLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -219,7 +220,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/finetuner.client.session/">finetuner.client.session module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.console/">finetuner.console module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/finetuner.excepts/">finetuner.excepts module</a></li>
@@ -305,7 +305,9 @@
                 </div>
                 <article role="main">
                     <h1>Source code for finetuner.console</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
 <span class="kn">from</span> <span class="nn">rich.table</span> <span class="kn">import</span> <span class="n">Table</span>
 
 <span class="kn">from</span> <span class="nn">finetuner.model</span> <span class="kn">import</span> <span class="n">list_model_classes</span>
@@ -313,13 +315,16 @@
 <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="print_model_table"><a class="viewcode-back" href="../../../api/finetuner.console/#finetuner.console.print_model_table">[docs]</a><span class="k">def</span> <span class="nf">print_model_table</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+<div class="viewcode-block" id="print_model_table"><a class="viewcode-back" href="../../../api/finetuner.console/#finetuner.console.print_model_table">[docs]</a><span class="k">def</span> <span class="nf">print_model_table</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Prints a table of model descriptions.</span>
 
 <span class="sd">    :param model: Module with model definitions</span>
+<span class="sd">    :param task: The fine-tuning task, should be one of `text-to-text`,</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Finetuner backbones&#39;</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Finetuner backbones&#39;</span>
+    <span class="k">if</span> <span class="n">task</span><span class="p">:</span>
+        <span class="n">title</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;: </span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
     <span class="n">header</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_header</span><span class="p">()</span>
     <span class="n">model_descriptors</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
@@ -328,7 +333,10 @@
 
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_model_class</span> <span class="ow">in</span> <span class="n">list_model_classes</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">_model_class</span><span class="o">.</span><span class="n">descriptor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">model_descriptors</span><span class="p">:</span>
-            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="o">*</span><span class="n">model</span><span class="o">.</span><span class="n">get_row</span><span class="p">(</span><span class="n">_model_class</span><span class="p">))</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_row</span><span class="p">(</span><span class="n">_model_class</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">task</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">task</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="o">*</span><span class="n">row</span><span class="p">)</span>
             <span class="n">model_descriptors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">_model_class</span><span class="o">.</span><span class="n">descriptor</span><span class="p">)</span>
 
     <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></div>
@@ -346,7 +354,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 11, 2022</div>
+                            Last updated on Nov 24, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

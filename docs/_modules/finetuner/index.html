@@ -210,6 +210,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/multilingual_text_to_image/">Multilingual Text-to-Image search with MultilingualCLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -219,7 +220,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.client.session/">finetuner.client.session module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
@@ -406,9 +406,15 @@
     <span class="p">}</span></div>
 
 
-<div class="viewcode-block" id="describe_models"><a class="viewcode-back" href="../../api/finetuner/#finetuner.describe_models">[docs]</a><span class="k">def</span> <span class="nf">describe_models</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Describe available models in a table.&quot;&quot;&quot;</span>
-    <span class="n">print_model_table</span><span class="p">(</span><span class="n">model</span><span class="p">)</span></div>
+<div class="viewcode-block" id="describe_models"><a class="viewcode-back" href="../../api/finetuner/#finetuner.describe_models">[docs]</a><span class="k">def</span> <span class="nf">describe_models</span><span class="p">(</span><span class="n">task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Describe available models in a table.</span>
+
+<span class="sd">    :param task: The task for the backbone model, one of `text-to-text`,</span>
+<span class="sd">        `text-to-image`, `image-to-image`. If not provided, will print all backbone</span>
+<span class="sd">        models.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">print_model_table</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">)</span></div>
 
 
 <span class="nd">@login_required</span>
@@ -438,6 +444,7 @@
     <span class="n">to_onnx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">csv_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CSVOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">public</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">num_items_per_class</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Run</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Start a finetuner run!</span>
 
@@ -504,6 +511,10 @@
 <span class="sd">        provided as such.</span>
 <span class="sd">    :param public: A boolean value indicates if the artifact is public. It should be</span>
 <span class="sd">        set to `True` if you would like to share your fine-tuned model with others.</span>
+<span class="sd">    :param num_items_per_class: How many items per class (unique labels) to include</span>
+<span class="sd">        in a batch. For example, if ``batch_size`` is 20, and</span>
+<span class="sd">        ``num_items_per_class`` is 4, the batch will consist of 4 items for each of</span>
+<span class="sd">        the 5 classes. Batch size must be divisible by `num_items_per_class`.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">       Unless necessary, please stick with `device=&quot;cuda&quot;`, `cpu` training could be</span>
@@ -536,6 +547,7 @@
         <span class="n">to_onnx</span><span class="o">=</span><span class="n">to_onnx</span><span class="p">,</span>
         <span class="n">csv_options</span><span class="o">=</span><span class="n">csv_options</span><span class="p">,</span>
         <span class="n">public</span><span class="o">=</span><span class="n">public</span><span class="p">,</span>
+        <span class="n">num_items_per_class</span><span class="o">=</span><span class="n">num_items_per_class</span><span class="p">,</span>
     <span class="p">)</span>
 
 
@@ -829,7 +841,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 11, 2022</div>
+                            Last updated on Nov 24, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

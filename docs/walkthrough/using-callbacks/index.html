@@ -237,6 +237,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/multilingual_text_to_image/">Multilingual Text-to-Image search with MultilingualCLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -246,7 +247,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.client.session/">finetuner.client.session module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
@@ -353,7 +353,9 @@ A run can be assigned multiple callbacks using the optional <code class="docutil
 </div>
 <section id="evaluationcallback">
 <h2>EvaluationCallback<a class="headerlink" href="#evaluationcallback" title="Permalink to this headline">#</a></h2>
-<p>The evaluation callback is used to calculate performance metrics for the model being tuned at the end of each epoch. In order to evaluate the model, two additional data sets - a query dataset and an index dataset - need to be provided as arguments. If no index set is provided, the query dataset is reused instead. Below is an example of the metrics as they are output at the end of finetuning:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> is used to calculate performance metrics for the model being tuned at the end of each epoch.
+In order to evaluate the model, two additional data sets - a query dataset and an index dataset - need to be provided as arguments.
+If no index set is provided, the query dataset is reused instead. Below is an example of the metrics as they are printed at the end of finetuning:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>  Training <span class="o">[</span><span class="m">5</span>/5<span class="o">]</span> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="m">76</span>/76 <span class="m">0</span>:00:00 <span class="m">0</span>:00:16 • loss: <span class="m">0</span>.003
 <span class="o">[</span><span class="m">14</span>:10:40<span class="o">]</span> INFO     Done ✨                                                                              __main__.py:194
            DEBUG    Finetuning took <span class="m">0</span> days, <span class="m">0</span> hours <span class="m">3</span> minutes and <span class="m">38</span> seconds                             __main__.py:196
@@ -370,8 +372,21 @@ A run can be assigned multiple callbacks using the optional <code class="docutil
            INFO     Pushing artifact to Hubble ...                                                       __main__.py:231
 </pre></div>
 </div>
-<p>The evaluation callback is triggered at the end of each epoch, in which the model is evaluated using the <code class="docutils literal notranslate"><span class="pre">query_data</span></code> and <code class="docutils literal notranslate"><span class="pre">index_data</span></code> datasets that were provided when the callback was created. These datasets can be provided in the same way the <code class="docutils literal notranslate"><span class="pre">train_data</span></code> and <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameters of the <a class="reference internal" href="../../api/finetuner/#finetuner.fit" title="finetuner.fit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit()</span></code></a> method; either as a path to a CSV file, a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> or the name of a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> that has been pushed on the Jina AI Cloud. See <a class="reference internal" href="../create-training-data/"><span class="doc">Prepare Training Data</span></a> for more information about how to prepare your data.</p>
-<p>It is worth noting that the evaluation callback and the <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameter of the fit method do not do the same thing. The <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameter is used to evaluate the loss of the model. On the other hand, the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall. These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.</p>
+<p>The evaluation callback is triggered at the end of each epoch, in which the model is evaluated using the <code class="docutils literal notranslate"><span class="pre">query_data</span></code> and <code class="docutils literal notranslate"><span class="pre">index_data</span></code> datasets that were provided when the callback was created.
+These datasets can be provided in the same way the <code class="docutils literal notranslate"><span class="pre">train_data</span></code> and <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameters of the <a class="reference internal" href="../../api/finetuner/#finetuner.fit" title="finetuner.fit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit()</span></code></a> method; either as a path to a CSV file, a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.19.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> or the name of a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.19.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> that has been pushed on the Jina AI Cloud. See <a class="reference internal" href="../create-training-data/"><span class="doc">Prepare Training Data</span></a> for more information about how to prepare your data.</p>
+<p>It is worth noting that the evaluation callback and the <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameter of the fit method do not do the same thing.
+The <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameter is used to evaluate the loss of the model.
+On the other hand, the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall.
+These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.</p>
+<div class="admonition-evaluation-callback-with-two-models admonition">
+<p class="admonition-title">Evaluation callback with two models</p>
+<p>Usually, you don’t need to provide the name of a model to the evalution callback.
+The callback just takes the model which is fine-tuned.
+However, if multiple models are involved in the fine-tuning process, like this is the case for CLIP models, it needs to be clear which model is used to encode the documents in <code class="docutils literal notranslate"><span class="pre">query_data</span></code> and <code class="docutils literal notranslate"><span class="pre">index_data</span></code>.
+This can be specified by the <code class="docutils literal notranslate"><span class="pre">model</span></code> attribute of the callback.
+If a different model should be used for the <code class="docutils literal notranslate"><span class="pre">index_data</span></code>, you can set this via the <code class="docutils literal notranslate"><span class="pre">index_model</span></code> attribute.
+For an example, see <a class="reference internal" href="../../notebooks/text_to_image/"><span class="doc">Text-to-Image Search via CLIP</span></a>.</p>
+</div>
 </section>
 <section id="bestmodelcheckpoint">
 <h2>BestModelCheckpoint<a class="headerlink" href="#bestmodelcheckpoint" title="Permalink to this headline">#</a></h2>
@@ -546,7 +561,7 @@ wandb:  View run at https://wandb.ai/anony-mouse-279369/<span class="o">[</span>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 11, 2022</div>
+                            Last updated on Nov 24, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

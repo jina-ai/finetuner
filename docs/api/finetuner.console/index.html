@@ -27,7 +27,7 @@
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.data module" href="../finetuner.data/" /><link rel="prev" title="finetuner.callback module" href="../finetuner.callback/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner.data module" href="../finetuner.data/" /><link rel="prev" title="finetuner.client.session module" href="../finetuner.client.session/" />
         <link rel="canonical" href="https://finetuner.jina.ai/api/finetuner.console.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
@@ -235,6 +235,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/multilingual_text_to_image/">Multilingual Text-to-Image search with MultilingualCLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul class="current">
@@ -244,7 +245,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.client.session/">finetuner.client.session module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">finetuner.console module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../finetuner.excepts/">finetuner.excepts module</a></li>
@@ -333,11 +333,14 @@
 <span id="finetuner-console-module"></span><h1>finetuner.console module<a class="headerlink" href="#module-finetuner.console" title="Permalink to this headline">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="finetuner.console.print_model_table">
-<span class="sig-prename descclassname"><span class="pre">finetuner.console.</span></span><span class="sig-name descname"><span class="pre">print_model_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/console/#print_model_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.console.print_model_table" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">finetuner.console.</span></span><span class="sig-name descname"><span class="pre">print_model_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/console/#print_model_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.console.print_model_table" title="Permalink to this definition">#</a></dt>
 <dd><p>Prints a table of model descriptions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>model</strong> – Module with model definitions</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – Module with model definitions</p></li>
+<li><p><strong>task</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The fine-tuning task, should be one of <cite>text-to-text</cite>,</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -360,7 +363,7 @@
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../finetuner.callback/">
+                    <a class="prev-page" href="../finetuner.client.session/">
                         <svg class="furo-related-icon">
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -369,7 +372,7 @@
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">finetuner.callback module</div>
+                            <div class="title">finetuner.client.session module</div>
                             
                         </div>
                     </a>
@@ -379,7 +382,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 11, 2022</div>
+                            Last updated on Nov 24, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

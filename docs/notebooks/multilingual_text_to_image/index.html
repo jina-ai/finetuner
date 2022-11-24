@@ -3,14 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<meta property="og:title" content="Image-to-Image Search via ResNet50" />
+<meta property="og:title" content="Multilingual Text-to-Image search with MultilingualCLIP" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://finetuner.jina.ai/notebooks/image_to_image/" />
+<meta property="og:url" content="https://finetuner.jina.ai/notebooks/multilingual_text_to_image/" />
 <meta property="og:site_name" content="Finetuner Documentation" />
-<meta property="og:description" content="Searching visually similar images with image queries is a very popular use-case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here’s where Finetuner comes in! It enables you to acc..." />
-<meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="Finetuner Documentation" />
-<meta name="description" content="Searching visually similar images with image queries is a very popular use-case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here’s where Finetuner comes in! It enables you to acc..." />
+<meta property="og:description" content="Most text-image models are only able to provide embeddings for text in a single language, typically English. Multilingual CLIP models, however, are models that have been trained on multiple different languages. This allows the model to produce similar embeddings for the same sentence in multiple ..." />
+<meta property="og:image" content="https://finetuner.jina.ai/_images/WandB-mclip.png" />
+<meta property="og:image:alt" content="WandB-mclip" />
+<meta name="description" content="Most text-image models are only able to provide embeddings for text in a single language, typically English. Multilingual CLIP models, however, are models that have been trained on multiple different languages. This allows the model to produce similar embeddings for the same sentence in multiple ..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -29,11 +29,11 @@
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Text-to-Image Search via CLIP" href="../text_to_image/" /><link rel="prev" title="Text-to-Text Search via BERT" href="../text_to_text/" />
-        <link rel="canonical" href="https://finetuner.jina.ai/notebooks/image_to_image.html" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner package" href="../../api/finetuner/" /><link rel="prev" title="Text-to-Image Search via CLIP" href="../text_to_image/" />
+        <link rel="canonical" href="https://finetuner.jina.ai/notebooks/multilingual_text_to_image.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
-        <title>Image-to-Image Search via ResNet50 - Finetuner documentation</title>
+        <title>Multilingual Text-to-Image search with MultilingualCLIP - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -235,9 +235,9 @@
 <p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../text_to_text/">Text-to-Text Search via BERT</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image_to_image/">Image-to-Image Search via ResNet50</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../text_to_image/">Text-to-Image Search via CLIP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../multilingual_text_to_image/">Multilingual Text-to-Image search with MultilingualCLIP</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Multilingual Text-to-Image search with MultilingualCLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -331,180 +331,212 @@
                     </label>
                 </div>
                 <article role="main">
-                    <!-- #region id="p8jc8EyfruKw" -->
-<section class="tex2jax_ignore mathjax_ignore" id="image-to-image-search-via-resnet50">
-<h1>Image-to-Image Search via ResNet50<a class="headerlink" href="#image-to-image-search-via-resnet50" title="Permalink to this headline">#</a></h1>
-<p><a href="https://colab.research.google.com/drive/1QuUTy3iVR-kTPljkwplKYaJ-NTCgPEc_?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p>
-<p>Searching visually similar images with image queries is a very popular use-case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here’s where Finetuner comes in! It enables you to accomplish this easily.</p>
-<p>This guide will demonstrate how to fine-tune a ResNet model for image to image retrieval.</p>
-<p><em>Note, please consider switching to GPU/TPU Runtime for faster inference.</em></p>
+                    <section class="tex2jax_ignore mathjax_ignore" id="multilingual-text-to-image-search-with-multilingualclip">
+<h1>Multilingual Text-to-Image search with MultilingualCLIP<a class="headerlink" href="#multilingual-text-to-image-search-with-multilingualclip" title="Permalink to this headline">#</a></h1>
+<p><a href="https://colab.research.google.com/drive/1N7iWZV0OunFZSLtsQxoazS808MPXhCwq?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p>
+<p>Most text-image models are only able to provide embeddings for text in a single language, typically English. Multilingual CLIP models, however, are models that have been trained on multiple different languages. This allows the model to produce similar embeddings for the same sentence in multiple different languages.</p>
+<p>This guide will show you how to finetune a multilingual CLIP model for a text to image retrieval task in non-English languages.</p>
+<p><em>Note, Check the runtime menu to be sure you are using a GPU/TPU instance, or this code will run very slowly.</em></p>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">#</a></h2>
-<!-- #endregion -->
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>!pip install &#39;finetuner[full]&#39;
 </pre></div>
 </div>
-<!-- #region id="7EliQdGCsdL0" -->
 </section>
 <section id="task">
 <h2>Task<a class="headerlink" href="#task" title="Permalink to this headline">#</a></h2>
-<p>More specifically, we will fine-tune ResNet50 on <a class="reference external" href="https://sites.google.com/view/totally-looks-like-dataset">Totally Looks Like Dataset</a>.
-The dataset consists of 6016 pairs of images (12032 in total).</p>
-<p>The dataset consists of pairs of images, these are the positive pairs. Negative pairs are constructed by taking two different images, i.e. images that are not in the same pair initially. Following this approach, we construct triplets and use the <code class="docutils literal notranslate"><span class="pre">TripletLoss</span></code>. You can find more in the <a class="reference external" href="https://finetuner.jina.ai/get-started/how-it-works/#contrastive-metric-learning">how Finetuner works</a> section.</p>
-<p>After fine-tuning, the embeddings of positive pairs are expected to be pulled closer, while the embeddings for negative pairs are expected to be pushed away.</p>
-<!-- #endregion -->
-<!-- #region id="M1sii3xdtD2y" -->
+<p>We’ll be fine-tuning multilingual CLIP on the electronics section of the <a class="reference external" href="https://xmrec.github.io/data/de/">German XMarket dataset</a>, which contains images and descriptions of electronics products in German.</p>
+<p>Each product in the dataset contains several attributes, we will be making use of the image and category attributes to create a <a class="reference external" href="https://docarray.jina.ai/fundamentals/document/#document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a> containing two <a class="reference external" href="https://docarray.jina.ai/fundamentals/document/nested/#nested-structure">chunks</a>, one containing the image and another containing the category of the product.</p>
 </section>
 <section id="data">
 <h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">#</a></h2>
-<p>Our journey starts locally. We have to prepare the data and push it to the Jina AI Cloud and Finetuner will be able to get the dataset by its name. For this example,
-we already prepared the data, and we’ll provide the names of training data (<code class="docutils literal notranslate"><span class="pre">tll-train-data</span></code>) directly to Finetuner.</p>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>We don’t require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> and Finetuner will do the job for you.</p>
-</div>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>When working with Document where images are stored locally, please call <code class="docutils literal notranslate"><span class="pre">doc.load_uri_to_image_tensor(width=224,</span> <span class="pre">height=224)</span></code> or another image shape to reduce network transmission and speed up training.</p>
-</div>
-<!-- #endregion -->
+<p>We will use the <code class="docutils literal notranslate"><span class="pre">xmarket-de-electronics</span></code> dataset, which we have already pre-processed and made available on the Jina AI Cloud. You can access it using <code class="docutils literal notranslate"><span class="pre">DocArray.pull</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;tll-train-data&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">query_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;tll-test-query-data&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">index_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;tll-test-index-data&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;xmarket-de-electronics-train-data&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">eval_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;xmarket-de-electronics-test-data&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">query_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;xmarket-de-electronics-query-data&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">index_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;xmarket-de-electronics-index-data&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">train_data</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
-<!-- #region id="mUoY1jq0klwk" -->
 </section>
 <section id="backbone-model">
-<h2>Backbone model<a class="headerlink" href="#backbone-model" title="Permalink to this headline">#</a></h2>
-<p>Now let’s see which backbone models we can use. You can see available models by calling <code class="docutils literal notranslate"><span class="pre">finetuner.describe_models()</span></code>.</p>
-<p>For this example, we’re gonna go with <code class="docutils literal notranslate"><span class="pre">resnet50</span></code>.</p>
-<!-- #endregion -->
-<!-- #region id="xA7IIhIOk0h0" -->
+<h2>Backbone Model<a class="headerlink" href="#backbone-model" title="Permalink to this headline">#</a></h2>
+<p>Currently, we only support one multilingual CLIP model. This model is the <code class="docutils literal notranslate"><span class="pre">xlm-roberta-base-ViT-B-32</span></code> from <a class="reference external" href="https://github.com/mlfoundations/open_clip">open-clip</a>, which has been trained on the <a class="reference external" href="https://github.com/LAION-AI/laion5B-paper"><code class="docutils literal notranslate"><span class="pre">laion5b</span></code> dataset</a>.</p>
 </section>
 <section id="fine-tuning">
 <h2>Fine-tuning<a class="headerlink" href="#fine-tuning" title="Permalink to this headline">#</a></h2>
-<p>Now that we have the training and evaluation datasets loaded as <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>s and selected our model, we can start our fine-tuning run.</p>
-<!-- #endregion -->
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.callback</span> <span class="kn">import</span> <span class="n">EvaluationCallback</span>
+<p>Now that our data has been prepared, we can start our fine-tuning run.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
+<span class="kn">from</span> <span class="nn">finetuner.callback</span> <span class="kn">import</span> <span class="n">EvaluationCallback</span><span class="p">,</span> <span class="n">WandBLogger</span>
 
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;resnet50&#39;</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="s1">&#39;tll-train-data&#39;</span><span class="p">,</span>
-    <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k&#39;</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
+    <span class="n">eval_data</span><span class="o">=</span><span class="n">eval_data</span><span class="p">,</span>
     <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
-    <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span>
+    <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;CLIPLoss&#39;</span><span class="p">,</span>
+    <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
     <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span>
         <span class="n">EvaluationCallback</span><span class="p">(</span>
-            <span class="n">query_data</span><span class="o">=</span><span class="s1">&#39;tll-test-query-data&#39;</span><span class="p">,</span>
-            <span class="n">index_data</span><span class="o">=</span><span class="s1">&#39;tll-test-index-data&#39;</span><span class="p">,</span>
-        <span class="p">)</span>
-    <span class="p">],</span>
+            <span class="n">query_data</span><span class="o">=</span><span class="s1">&#39;xmarket-de-electronics-query-data&#39;</span><span class="p">,</span>
+            <span class="n">index_data</span><span class="o">=</span><span class="s1">&#39;xmarket-de-electronics-index-data&#39;</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="s1">&#39;clip-text&#39;</span><span class="p">,</span>
+            <span class="n">index_model</span><span class="o">=</span><span class="s1">&#39;clip-vision&#39;</span>
+        <span class="p">),</span>
+        <span class="n">WandBLogger</span><span class="p">(),</span>
+    <span class="p">]</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<!-- #region id="9gvoWipMlG5P" -->
 <p>Let’s understand what this piece of code does:</p>
 <ul class="simple">
-<li><p>As you can see, we have to provide the <code class="docutils literal notranslate"><span class="pre">model</span></code> which we picked before.</p></li>
-<li><p>We also set <code class="docutils literal notranslate"><span class="pre">run_name</span></code> and <code class="docutils literal notranslate"><span class="pre">description</span></code>, which are optional,
-but recommended in order to retrieve your run easily and have some context about it.</p></li>
-<li><p>Furthermore, we had to provide names of the <code class="docutils literal notranslate"><span class="pre">train_data</span></code>.</p></li>
-<li><p>We set <code class="docutils literal notranslate"><span class="pre">TripletMarginLoss</span></code>.</p></li>
-<li><p>Additionally, we use <code class="docutils literal notranslate"><span class="pre">finetuner.callback.EvaluationCallback</span></code> for evaluation.</p></li>
-<li><p>Lastly, we set the number of <code class="docutils literal notranslate"><span class="pre">epochs</span></code> and provide a <code class="docutils literal notranslate"><span class="pre">learning_rate</span></code>.</p></li>
+<li><p>We start with providing <code class="docutils literal notranslate"><span class="pre">model</span></code>, names of training and evaluation data.</p></li>
+<li><p>We also provide some hyper-parameters such as number of <code class="docutils literal notranslate"><span class="pre">epochs</span></code> and a <code class="docutils literal notranslate"><span class="pre">learning_rate</span></code>.</p></li>
+<li><p>We use <code class="docutils literal notranslate"><span class="pre">CLIPLoss</span></code> to optimize the CLIP model.</p></li>
+<li><p>We use <code class="docutils literal notranslate"><span class="pre">finetuner.callback.EvaluationCallback</span></code> for evaluation.</p></li>
+<li><p>We then use the <code class="docutils literal notranslate"><span class="pre">finetuner.callback.WandBLogger</span></code> to display our results.</p></li>
 </ul>
-<!-- #endregion -->
-<!-- #region id="7ftSOH_olcak" -->
 </section>
 <section id="monitoring">
 <h2>Monitoring<a class="headerlink" href="#monitoring" title="Permalink to this headline">#</a></h2>
 <p>Now that we’ve created a run, let’s see its status. You can monitor the run by checking the status - <code class="docutils literal notranslate"><span class="pre">run.status()</span></code> - and the logs - <code class="docutils literal notranslate"><span class="pre">run.logs()</span></code> or <code class="docutils literal notranslate"><span class="pre">run.stream_logs()</span></code>.</p>
-<!-- #endregion -->
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># note, the fine-tuning might takes 30~ minutes</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># note, the fine-tuning might takes 20~ minutes</span>
 <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">run</span><span class="o">.</span><span class="n">stream_logs</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
 </pre></div>
 </div>
-<!-- #region id="N8O-Ms_El-lV" -->
-<p>Since some runs might take up to several hours, it’s important to know how to reconnect to Finetuner and retrieve your runs.</p>
+<!-- #region -->
+<p>Since some runs might take up to several hours/days, it’s important to know how to reconnect to Finetuner and retrieve your run.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
 
+<span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You can continue monitoring the runs by checking the status - <code class="docutils literal notranslate"><span class="pre">finetuner.run.Run.status()</span></code> or the logs - <code class="docutils literal notranslate"><span class="pre">finetuner.run.Run.logs()</span></code>.</p>
+<p>You can continue monitoring the run by checking the status - <code class="docutils literal notranslate"><span class="pre">finetuner.run.Run.status()</span></code> or the logs <code class="docutils literal notranslate"><span class="pre">finetuner.run.Run.logs()</span></code>.</p>
 <!-- #endregion -->
-<!-- #region id="BMpQxydypeZ3" -->
+<!-- #region -->
 </section>
 <section id="evaluating">
 <h2>Evaluating<a class="headerlink" href="#evaluating" title="Permalink to this headline">#</a></h2>
-<p>Currently, we don’t have a user-friendly way to get evaluation metrics from the <code class="docutils literal notranslate"><span class="pre">finetuner.callback.EvaluationCallback</span></code> we initialized previously.
-What you can do for now is to call <code class="docutils literal notranslate"><span class="pre">run.logs()</span></code> in the end of the run and see evaluation results:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>  Training <span class="o">[</span><span class="m">5</span>/5<span class="o">]</span> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class="m">76</span>/76 <span class="m">0</span>:00:00 <span class="m">0</span>:03:15 • loss: <span class="m">0</span>.003
-<span class="o">[</span><span class="m">16</span>:39:13<span class="o">]</span> DEBUG    Metric: <span class="s1">&#39;model_average_precision&#39;</span> Value: <span class="m">0</span>.19598                                     __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_dcg_at_k&#39;</span> Value: <span class="m">0</span>.28571                                              __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_f1_score_at_k&#39;</span> Value: <span class="m">0</span>.04382                                         __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_hit_at_k&#39;</span> Value: <span class="m">0</span>.46013                                              __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_ndcg_at_k&#39;</span> Value: <span class="m">0</span>.28571                                             __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_precision_at_k&#39;</span> Value: <span class="m">0</span>.02301                                        __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_r_precision&#39;</span> Value: <span class="m">0</span>.19598                                           __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_recall_at_k&#39;</span> Value: <span class="m">0</span>.46013                                           __main__.py:202
-           DEBUG    Metric: <span class="s1">&#39;model_reciprocal_rank&#39;</span> Value: <span class="m">0</span>.19598                                       __main__.py:202
-           INFO     Done ✨                                                                              __main__.py:204
-           INFO     Saving fine-tuned models ...                                                         __main__.py:207
-           INFO     Saving model <span class="s1">&#39;model&#39;</span> <span class="k">in</span> /usr/src/app/tuned-models/model ...                          __main__.py:218
-           INFO     Pushing saved model to Jina AI Cloud ...                                             __main__.py:225
-<span class="o">[</span><span class="m">16</span>:39:41<span class="o">]</span> INFO     Pushed model artifact ID: <span class="s1">&#39;62b33cb0037ad91ca7f20530&#39;</span>                                 __main__.py:231
-           INFO     Finished 🚀                                                                          __main__.py:233                           __main__.py:248
+<p>Once the run is finished, the metrics calculated by the <code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> are plotted using the <code class="xref py py-class docutils literal notranslate"><span class="pre">WandBLogger</span></code> callback. These plots can be accessed using the link provided in the logs once finetuning starts:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>           INFO     Finetuning ... 
+wandb: Currently logged <span class="k">in</span> as: anony-mouse-448424. Use <span class="sb">`</span>wandb login --relogin<span class="sb">`</span> to force relogin
+wandb: Tracking run with wandb version <span class="m">0</span>.13.5
+wandb: Run data is saved locally <span class="k">in</span> &lt;path-to-file&gt;
+wandb: Run <span class="sb">`</span>wandb offline<span class="sb">`</span> to turn off syncing.
+wandb: Syncing run ancient-galaxy-2
+wandb:  View project at &lt;link-to-project&gt;
+wandb:  View run at &lt;link-to-run&gt;
 </pre></div>
 </div>
+<p>The generated plots should look like this:</p>
+<p><img alt="WandB-mclip" src="../../_images/WandB-mclip.png" /></p>
 <!-- #endregion -->
-<!-- #region id="0l4e4GrspilM" -->
 </section>
 <section id="saving">
 <h2>Saving<a class="headerlink" href="#saving" title="Permalink to this headline">#</a></h2>
 <p>After the run has finished successfully, you can download the tuned model on your local machine:</p>
-<!-- #endregion -->
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">artifact</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="s1">&#39;resnet-model&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">artifact</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="s1">&#39;mclip-model&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<!-- #region id="gkNHTyBkprQ0" -->
 </section>
 <section id="inference">
 <h2>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">#</a></h2>
 <p>Now you saved the <code class="docutils literal notranslate"><span class="pre">artifact</span></code> into your host machine,
 let’s use the fine-tuned model to encode a new <code class="docutils literal notranslate"><span class="pre">Document</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">text_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;setwas Text zum Codieren&#39;</span><span class="p">)])</span>
+<span class="n">image_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;https://upload.wikimedia.org/wikipedia/commons/4/4e/Single_apple.png&#39;</span><span class="p">)])</span>
+
+<span class="n">mclip_text_encoder</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">artifact</span><span class="o">=</span><span class="n">artifact</span><span class="p">,</span> <span class="n">select_model</span><span class="o">=</span><span class="s1">&#39;clip-text&#39;</span><span class="p">)</span>
+<span class="n">mclip_image_encoder</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">artifact</span><span class="o">=</span><span class="n">artifact</span><span class="p">,</span> <span class="n">select_model</span><span class="o">=</span><span class="s1">&#39;clip-vision&#39;</span><span class="p">)</span>
+
+<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">mclip_text_encoder</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">text_da</span><span class="p">)</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">mclip_image_encoder</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">image_da</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">text_da</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">image_da</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<!-- #region -->
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span><span class="m">1</span>, <span class="m">512</span><span class="o">)</span>
+<span class="o">(</span><span class="m">1</span>, <span class="m">512</span><span class="o">)</span>
+</pre></div>
+</div>
+<div class="admonition-what-is-select-model admonition">
+<p class="admonition-title">what is select_model?</p>
+<p>When fine-tuning CLIP, we are fine-tuning the CLIPVisionEncoder and CLIPTextEncoder in parallel.
+The artifact contains two models: <code class="docutils literal notranslate"><span class="pre">clip-vision</span></code> and <code class="docutils literal notranslate"><span class="pre">clip-text</span></code>.
+The parameter <code class="docutils literal notranslate"><span class="pre">select_model</span></code> tells finetuner which model to use for inference, in the above example,
+we use <code class="docutils literal notranslate"><span class="pre">clip-text</span></code> to encode a Document with text content.</p>
+</div>
 <div class="admonition-inference-with-onnx admonition">
 <p class="admonition-title">Inference with ONNX</p>
 <p>In case you set <code class="docutils literal notranslate"><span class="pre">to_onnx=True</span></code> when calling <code class="docutils literal notranslate"><span class="pre">finetuner.fit</span></code> function,
 please use <code class="docutils literal notranslate"><span class="pre">model</span> <span class="pre">=</span> <span class="pre">finetuner.get_model(artifact,</span> <span class="pre">is_onnx=True)</span></code></p>
 </div>
 <!-- #endregion -->
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">query_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+</section>
+<section id="before-and-after">
+<h2>Before and After<a class="headerlink" href="#before-and-after" title="Permalink to this headline">#</a></h2>
+<p>We can directly compare the results of our fine-tuned model with an untrained multilingual clip model by displaying the matches each model has for the same query, while the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increses the quality of the search results:</p>
+<!-- #region -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner</span> <span class="kn">import</span> <span class="n">build_model</span>
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">artifact</span><span class="o">=</span><span class="n">artifact</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">pt_query</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">query_data</span><span class="p">)</span>
+<span class="n">pt_index</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">index_data</span><span class="p">)</span>
 
-<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
-<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">index_data</span><span class="p">)</span>
+<span class="n">ft_query</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">query_data</span><span class="p">)</span>
+<span class="n">ft_index</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">index_data</span><span class="p">)</span>
 
-<span class="k">assert</span> <span class="n">query</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2048</span><span class="p">)</span>
+<span class="n">zero_shot_text_encoder</span> <span class="o">=</span> <span class="n">build_model</span><span class="p">(</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k&#39;</span><span class="p">,</span>
+    <span class="n">select_model</span> <span class="o">=</span> <span class="s1">&#39;clip_text&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">zero_shot_image_encoder</span> <span class="o">=</span> <span class="n">build_model</span><span class="p">(</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k&#39;</span><span class="p">,</span>
+    <span class="n">select_model</span> <span class="o">=</span> <span class="s1">&#39;clip_vision&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">zero_shot_text_encoder</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">pt_query</span><span class="p">)</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">zero_shot_image_encoder</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">pt_index</span><span class="p">)</span>
+
+<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">mclip_text_encoder</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ft_query</span><span class="p">)</span>
+<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">mclip_image_encoder</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ft_index</span><span class="p">)</span>
+
+<span class="n">pt_query</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pt_index</span><span class="p">)</span>
+<span class="n">ft_query</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">ft_index</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;results for query: &quot;externe mikrofone (external microphone)&quot; using a zero-shot model (top) and the fine-tuned model (bottom)&#39;</span><span class="p">)</span>
+<span class="n">pt_query</span><span class="p">[</span><span class="mi">72</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">()</span>
+<span class="n">ft_query</span><span class="p">[</span><span class="mi">72</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;results for query: &quot;prozessorlüfter (processor fan)&quot; using a zero-shot model (top) and the fine-tuned model (bottom)&#39;</span><span class="p">)</span>
+<span class="n">pt_query</span><span class="p">[</span><span class="mi">189</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">()</span>
+<span class="n">ft_query</span><span class="p">[</span><span class="mi">189</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">()</span>
 </pre></div>
 </div>
-<!-- #region id="1cC46TQ9pw-H" -->
-<p>And finally you can use the embeded <code class="docutils literal notranslate"><span class="pre">query</span></code> to find top-k visually related images within <code class="docutils literal notranslate"><span class="pre">index_data</span></code> as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>results <span class="k">for</span> query: <span class="s2">&quot;externe mikrofone (external microphone)&quot;</span> using a zero-shot model <span class="o">(</span>top<span class="o">)</span> and the fine-tuned model <span class="o">(</span>bottom<span class="o">)</span>
+</pre></div>
+</div>
+<p><img alt="mclip-example-pt-1" src="../../_images/mclip-example-pt-1.png" />
+<img alt="mclip-example-ft-1" src="../../_images/mclip-example-ft-1.png" /></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>results <span class="k">for</span> query: <span class="s2">&quot;prozessorlüfter (processor fan)&quot;</span> using a zero-shot model <span class="o">(</span>top<span class="o">)</span> and the fine-tuned model <span class="o">(</span>bottom<span class="o">)</span>
+</pre></div>
+</div>
+<p><img alt="mclip-example-pt-2" src="../../_images/mclip-example-pt-2.png" />
+<img alt="mclip-example-ft-2" src="../../_images/mclip-example-ft-2.png" /></p>
 <!-- #endregion -->
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">query</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">index_data</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 </section>
@@ -515,18 +547,18 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../text_to_image/">
+                    <a class="next-page" href="../../api/finetuner/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">Text-to-Image Search via CLIP</div>
+                            <div class="title">finetuner package</div>
                         </div>
                         <svg class="furo-related-icon">
                             <use href="#svg-arrow-right"></use>
                         </svg>
                     </a>
-                    <a class="prev-page" href="../text_to_text/">
+                    <a class="prev-page" href="../text_to_image/">
                         <svg class="furo-related-icon">
                             <use href="#svg-arrow-right"></use>
                         </svg>
@@ -535,7 +567,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
                                 <span>Previous</span>
                             </div>
                             
-                            <div class="title">Text-to-Text Search via BERT</div>
+                            <div class="title">Text-to-Image Search via CLIP</div>
                             
                         </div>
                     </a>
@@ -577,16 +609,17 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
                 <div class="toc-tree-container">
                     <div class="toc-tree">
                         <ul>
-<li><a class="reference internal" href="#">Image-to-Image Search via ResNet50</a><ul>
+<li><a class="reference internal" href="#">Multilingual Text-to-Image search with MultilingualCLIP</a><ul>
 <li><a class="reference internal" href="#install">Install</a></li>
 <li><a class="reference internal" href="#task">Task</a></li>
 <li><a class="reference internal" href="#data">Data</a></li>
-<li><a class="reference internal" href="#backbone-model">Backbone model</a></li>
+<li><a class="reference internal" href="#backbone-model">Backbone Model</a></li>
 <li><a class="reference internal" href="#fine-tuning">Fine-tuning</a></li>
 <li><a class="reference internal" href="#monitoring">Monitoring</a></li>
 <li><a class="reference internal" href="#evaluating">Evaluating</a></li>
 <li><a class="reference internal" href="#saving">Saving</a></li>
 <li><a class="reference internal" href="#inference">Inference</a></li>
+<li><a class="reference internal" href="#before-and-after">Before and After</a></li>
 </ul>
 </li>
 </ul>

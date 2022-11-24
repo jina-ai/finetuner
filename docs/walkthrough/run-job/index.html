@@ -237,6 +237,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/multilingual_text_to_image/">Multilingual Text-to-Image search with MultilingualCLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -246,7 +247,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.client.session/">finetuner.client.session module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
@@ -333,7 +333,7 @@
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="run-job">
 <span id="start-finetuner"></span><h1>Run Job<a class="headerlink" href="#run-job" title="Permalink to this headline">#</a></h1>
-<p>Now you should have your training data and evaluation data (optional) prepared as CSV files or <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.18.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>s,
+<p>Now you should have your training data and evaluation data (optional) prepared as CSV files or <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.19.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>s,
 and have selected your backbone model.</p>
 <p>Up until now, you have worked locally to prepare a dataset and select our model. From here on out, you will send your processes to the cloud!</p>
 <section id="submit-a-finetuning-job-to-the-cloud">
@@ -404,6 +404,7 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:</p>
     <span class="n">to_onnx</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># If set, please pass `is_onnx` when making inference.</span>
     <span class="n">csv_options</span><span class="o">=</span><span class="n">CSVOptions</span><span class="p">(),</span>  <span class="c1"># Additional options for reading data from a CSV file.</span>
     <span class="n">public</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># If set, anyone has the artifact id can download your fine-tuned model.</span>
+    <span class="n">num_items_per_class</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>  <span class="c1"># How many items per class to include in a batch.</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -445,7 +446,23 @@ For instance, if you choose to train a model with the <code class="docutils lite
 While without this miner, all possible triples with an anchor, a positive, and a negative candidate are constructed, the miner reduces this set of triples.
 Usually, only triples with hard negatives are selected where the distance between the positive and the negative example is inside a margin of <code class="docutils literal notranslate"><span class="pre">0.2</span></code>.
 If you want to pass additional parameters to configure the miner, you can specify the <code class="docutils literal notranslate"><span class="pre">miner_options</span></code> parameter of the fit function.
-For example, you can modify the size of the margin to <code class="docutils literal notranslate"><span class="pre">0.3</span></code> by setting <code class="docutils literal notranslate"><span class="pre">miner_options={'margin':</span> <span class="pre">0.3}'</span></code>.
+The example below shows how to apply hard-negative mining:</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">run = finetuner.fit(</span>
+<span class="w"> </span>   ...,<span class="w"></span>
+<span class="w"> </span>   loss=&#39;TripleMarginLoss&#39;,<span class="w"></span>
+<span class="gi">+   miner=&#39;TripletMarginMiner&#39;,</span><span class="w"></span>
+<span class="gi">+   miner_options={&#39;margin&#39;: 0.3, &#39;type_of_triplets&#39;: &#39;hard&#39;}</span><span class="w"></span>
+<span class="w">)</span>
+</pre></div>
+</div>
+<p>The possible choices <code class="docutils literal notranslate"><span class="pre">type_of_triplets</span></code> are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">all</span></code>: Use all triplets, identical to no mining.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">easy</span></code>: Use all easy triplets, all triplets that do not violate the margin.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">semihard</span></code>: Use semi-hard triplets, the negative is further from the anchor than the positive.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hard</span></code>: Use hard triplets, the negative is closer to the anchor than the positive.</p></li>
+</ul>
+<p>Finetuner takes <code class="docutils literal notranslate"><span class="pre">TripleMarginLoss</span></code> as default loss function with no negative mining.
 A detailed description of the miners and their parameters is specified in the <a class="reference external" href="https://kevinmusgrave.github.io/pytorch-metric-learning/miners/">PyTorch Metric Learning documentation</a>.</p>
 </section>
 </section>
@@ -486,7 +503,7 @@ A detailed description of the miners and their parameters is specified in the <a
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 11, 2022</div>
+                            Last updated on Nov 24, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

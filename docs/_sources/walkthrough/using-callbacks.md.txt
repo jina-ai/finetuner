@@ -23,7 +23,10 @@ run = finetuner.fit(
 
 ## EvaluationCallback
 
-The evaluation callback is used to calculate performance metrics for the model being tuned at the end of each epoch. In order to evaluate the model, two additional data sets - a query dataset and an index dataset - need to be provided as arguments. If no index set is provided, the query dataset is reused instead. Below is an example of the metrics as they are output at the end of finetuning:
+The `EvaluationCallback` is used to calculate performance metrics for the model being tuned at the end of each epoch.
+In order to evaluate the model, two additional data sets - a query dataset and an index dataset - need to be provided as arguments.
+If no index set is provided, the query dataset is reused instead. Below is an example of the metrics as they are printed at the end of finetuning:
+
 
 ```bash
   Training [5/5] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:00 0:00:16 • loss: 0.003
@@ -42,10 +45,22 @@ The evaluation callback is used to calculate performance metrics for the model b
            INFO     Pushing artifact to Hubble ...                                                       __main__.py:231
 ```
 
-The evaluation callback is triggered at the end of each epoch, in which the model is evaluated using the `query_data` and `index_data` datasets that were provided when the callback was created. These datasets can be provided in the same way the `train_data` and `eval_data` parameters of the {meth}`~finetuner.fit` method; either as a path to a CSV file, a {class}`~docarray.array.document.DocumentArray` or the name of a {class}`~docarray.array.document.DocumentArray` that has been pushed on the Jina AI Cloud. See {doc}`/walkthrough/create-training-data` for more information about how to prepare your data.
+The evaluation callback is triggered at the end of each epoch, in which the model is evaluated using the `query_data` and `index_data` datasets that were provided when the callback was created.
+These datasets can be provided in the same way the `train_data` and `eval_data` parameters of the {meth}`~finetuner.fit` method; either as a path to a CSV file, a {class}`~docarray.array.document.DocumentArray` or the name of a {class}`~docarray.array.document.DocumentArray` that has been pushed on the Jina AI Cloud. See {doc}`/walkthrough/create-training-data` for more information about how to prepare your data.
 
-It is worth noting that the evaluation callback and the `eval_data` parameter of the fit method do not do the same thing. The `eval_data` parameter is used to evaluate the loss of the model. On the other hand, the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall. These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.
+It is worth noting that the evaluation callback and the `eval_data` parameter of the fit method do not do the same thing.
+The `eval_data` parameter is used to evaluate the loss of the model.
+On the other hand, the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall.
+These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.
 
+```{admonition} Evaluation callback with two models
+Usually, you don't need to provide the name of a model to the evalution callback.
+The callback just takes the model which is fine-tuned.
+However, if multiple models are involved in the fine-tuning process, like this is the case for CLIP models, it needs to be clear which model is used to encode the documents in `query_data` and `index_data`.
+This can be specified by the `model` attribute of the callback.
+If a different model should be used for the `index_data`, you can set this via the `index_model` attribute.
+For an example, see {doc}`/notebooks/text_to_image`.
+```
 
 ## BestModelCheckpoint
 

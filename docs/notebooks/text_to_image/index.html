@@ -29,7 +29,7 @@
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner package" href="../../api/finetuner/" /><link rel="prev" title="Image-to-Image Search via ResNet50" href="../image_to_image/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Multilingual Text-to-Image search with MultilingualCLIP" href="../multilingual_text_to_image/" /><link rel="prev" title="Image-to-Image Search via ResNet50" href="../image_to_image/" />
         <link rel="canonical" href="https://finetuner.jina.ai/notebooks/text_to_image.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
@@ -237,6 +237,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../text_to_text/">Text-to-Text Search via BERT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image_to_image/">Image-to-Image Search via ResNet50</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multilingual_text_to_image/">Multilingual Text-to-Image search with MultilingualCLIP</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
@@ -246,7 +247,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.client.session/">finetuner.client.session module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.callback/">finetuner.callback module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
@@ -357,7 +357,8 @@
 <section id="data">
 <h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">#</a></h2>
 <p>Our journey starts locally. We have to <a class="reference external" href="https://finetuner.jina.ai/walkthrough/create-training-data/">prepare the data and push it to the Jina AI Cloud</a> and Finetuner will be able to get the dataset by its name. For this example,
-we already prepared the data, and we’ll provide the names of training and evaluation data (<code class="docutils literal notranslate"><span class="pre">fashion-train-data-clip</span></code> and <code class="docutils literal notranslate"><span class="pre">fashion-eval-data-clip</span></code>) directly to Finetuner.</p>
+we already prepared the data, and we’ll provide the names of traning and evaluation data (<code class="docutils literal notranslate"><span class="pre">fashion-train-data-clip</span></code> and <code class="docutils literal notranslate"><span class="pre">fashion-eval-data-clip</span></code>) directly to Finetuner.
+In addition, we also provide labeled queries and an index of labeled documents for evaluating the retrieval capabilities of the resulting fine-tuned model stored in the datasets <code class="docutils literal notranslate"><span class="pre">fashion-eval-data-queries</span></code> and <code class="docutils literal notranslate"><span class="pre">fashion-eval-data-index</span></code>.</p>
 <!-- #endregion -->
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
@@ -367,6 +368,8 @@ we already prepared the data, and we’ll provide the names of training and eval
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;fashion-train-data-clip&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">eval_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;fashion-eval-data-clip&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">query_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;fashion-eval-data-queries&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">index_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;fashion-eval-data-index&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">train_data</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
@@ -394,6 +397,14 @@ we already prepared the data, and we’ll provide the names of training and eval
     <span class="n">learning_rate</span><span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
     <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;CLIPLoss&#39;</span><span class="p">,</span>
     <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">EvaluationCallback</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s1">&#39;clip-text&#39;</span><span class="p">,</span>
+            <span class="n">index_model</span><span class="o">=</span><span class="s1">&#39;clip-vision&#39;</span><span class="p">,</span>
+            <span class="n">query_data</span><span class="o">=</span><span class="s1">&#39;fashion-eval-data-queries&#39;</span><span class="p">,</span>
+            <span class="n">index_data</span><span class="o">=</span><span class="s1">&#39;fashion-eval-data-index&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">],</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -403,6 +414,7 @@ we already prepared the data, and we’ll provide the names of training and eval
 <li><p>We start with providing <code class="docutils literal notranslate"><span class="pre">model</span></code>, names of training and evaluation data.</p></li>
 <li><p>We also provide some hyper-parameters such as number of <code class="docutils literal notranslate"><span class="pre">epochs</span></code> and a <code class="docutils literal notranslate"><span class="pre">learning_rate</span></code>.</p></li>
 <li><p>We use <code class="docutils literal notranslate"><span class="pre">CLIPLoss</span></code> to optimize the CLIP model.</p></li>
+<li><p>We use an evaluation callback, which uses the <code class="docutils literal notranslate"><span class="pre">'clip-text'</span></code> model for encoding the text queries and the <code class="docutils literal notranslate"><span class="pre">'clip-vision'</span></code> model for encoding the images in <code class="docutils literal notranslate"><span class="pre">'fashion-eval-data-index'</span></code>.</p></li>
 </ul>
 <!-- #endregion -->
 <!-- #region id="qKv3VcMKyG8d" -->
@@ -430,78 +442,18 @@ we already prepared the data, and we’ll provide the names of training and eval
 </section>
 <section id="evaluating">
 <h2>Evaluating<a class="headerlink" href="#evaluating" title="Permalink to this headline">#</a></h2>
-<p>Currently, we don’t have a user-friendly way to get evaluation metrics from the <code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> we initialized previously.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>           INFO     Done ✨                                                                              __main__.py:219
-           INFO     Saving fine-tuned models ...                                                         __main__.py:222
-           INFO     Saving model <span class="s1">&#39;model&#39;</span> <span class="k">in</span> /usr/src/app/tuned-models/model ...                          __main__.py:233
-           INFO     Pushing saved model to Jina AI Cloud ...                                                    __main__.py:240
-<span class="o">[</span><span class="m">10</span>:38:14<span class="o">]</span> INFO     Pushed model artifact ID: <span class="s1">&#39;62a1af491597c219f6a330fe&#39;</span>                                 __main__.py:246
-           INFO     Finished 🚀                                                                          __main__.py:248
+<p>Our <code class="docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> during fine-tuning ensures that after each epoch, an evaluation of our model is run. We can access the results of the last evaluation in the logs as follows <code class="docutils literal notranslate"><span class="pre">print(run.logs())</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>  Training <span class="o">[</span><span class="m">5</span>/5<span class="o">]</span> ━━━━ <span class="m">195</span>/195 <span class="m">0</span>:00… <span class="m">0</span>:0… • loss: <span class="m">2</span>.419 • val_loss: <span class="m">2</span>.803
+<span class="o">[</span><span class="m">13</span>:32:41<span class="o">]</span> INFO     Done ✨                              __main__.py:195
+           DEBUG    Finetuning took <span class="m">0</span> days, <span class="m">0</span> hours <span class="m">5</span> minutes and <span class="m">30</span> seconds
+           DEBUG    Metric: <span class="s1">&#39;clip-text-to-clip-vision_precision_at_k&#39;</span> Value: <span class="m">0</span>.28532                                                   
+           DEBUG    Metric: <span class="s1">&#39;clip-text-to-clip-vision_hit_at_k&#39;</span> Value: <span class="m">0</span>.94282                                            
+           DEBUG    Metric: <span class="s1">&#39;clip-text-to-clip-vision_average_precision&#39;</span> Value: <span class="m">0</span>.53372                             
+           DEBUG    Metric: <span class="s1">&#39;clip-text-to-clip-vision_reciprocal_rank&#39;</span> Value: <span class="m">0</span>.67706                               
+           DEBUG    Metric: <span class="s1">&#39;clip-text-to-clip-vision_dcg_at_k&#39;</span> Value: <span class="m">2</span>.71247                                      
+...
 </pre></div>
 </div>
-<div class="admonition-evaluation-of-clip admonition">
-<p class="admonition-title">Evaluation of CLIP</p>
-<p>In this example, we did not plug-in an <code class="docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> since the callback can evaluate one model at one time.
-In most cases, we want to evaluate two models: i.e. use <code class="docutils literal notranslate"><span class="pre">CLIPTextEncoder</span></code> to encode textual Documents as <code class="docutils literal notranslate"><span class="pre">query_data</span></code> while use <code class="docutils literal notranslate"><span class="pre">CLIPImageEncoder</span></code> to encode image Documents as <code class="docutils literal notranslate"><span class="pre">index_data</span></code>.
-Then use the textual Documents to search image Documents.</p>
-<p>We have done the evaulation for you in the table below.</p>
-</div>
-<table border="1" class="docutils">
-<thead>
-<tr>
-<th style="text-align: left;"></th>
-<th style="text-align: right;">Before Finetuning</th>
-<th style="text-align: right;">After Finetuning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">average_precision</td>
-<td style="text-align: right;">0.47219</td>
-<td style="text-align: right;">0.532773</td>
-</tr>
-<tr>
-<td style="text-align: left;">dcg_at_k</td>
-<td style="text-align: right;">2.25565</td>
-<td style="text-align: right;">2.70725</td>
-</tr>
-<tr>
-<td style="text-align: left;">f1_score_at_k</td>
-<td style="text-align: right;">0.296816</td>
-<td style="text-align: right;">0.353499</td>
-</tr>
-<tr>
-<td style="text-align: left;">hit_at_k</td>
-<td style="text-align: right;">0.94028</td>
-<td style="text-align: right;">0.942821</td>
-</tr>
-<tr>
-<td style="text-align: left;">ndcg_at_k</td>
-<td style="text-align: right;">0.613387</td>
-<td style="text-align: right;">0.673644</td>
-</tr>
-<tr>
-<td style="text-align: left;">precision_at_k</td>
-<td style="text-align: right;">0.240407</td>
-<td style="text-align: right;">0.285324</td>
-</tr>
-<tr>
-<td style="text-align: left;">r_precision</td>
-<td style="text-align: right;">0.364697</td>
-<td style="text-align: right;">0.409577</td>
-</tr>
-<tr>
-<td style="text-align: left;">recall_at_k</td>
-<td style="text-align: right;">0.472681</td>
-<td style="text-align: right;">0.564168</td>
-</tr>
-<tr>
-<td style="text-align: left;">reciprocal_rank</td>
-<td style="text-align: right;">0.575481</td>
-<td style="text-align: right;">0.67571</td>
-</tr>
-</tbody>
-</table>
 <!-- #endregion -->
 <!-- #region id="h3qC3yAcy-Es" -->
 </section>
@@ -594,12 +546,12 @@ Finetuner will trigger the callback when the fine-tuning job is finished and mer
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../../api/finetuner/">
+                    <a class="next-page" href="../multilingual_text_to_image/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">finetuner package</div>
+                            <div class="title">Multilingual Text-to-Image search with MultilingualCLIP</div>
                         </div>
                         <svg class="furo-related-icon">
                             <use href="#svg-arrow-right"></use>
@@ -624,7 +576,7 @@ Finetuner will trigger the callback when the fine-tuning job is finished and mer
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 11, 2022</div>
+                            Last updated on Nov 24, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
