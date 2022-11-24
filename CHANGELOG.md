@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improve `describe_models` with `task` to better organize list of backbones. ([#610](https://github.com/jina-ai/finetuner/pull/610))
 
+- Add documentation on using the evaluation callback for CLIP (multiple models). ([#615](https://github.com/jina-ai/finetuner/pull/615))
+
 - Ignore `callback` module in apidoc. ([#614](https://github.com/jina-ai/finetuner/pull/614))
 
 
