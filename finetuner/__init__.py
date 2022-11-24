@@ -137,7 +137,7 @@ def fit(
     to_onnx: bool = False,
     csv_options: Optional[CSVOptions] = None,
     public: bool = False,
-    num_items_per_class: Optional[int] = None,
+    num_items_per_class: int = 4,
 ) -> Run:
     """Start a finetuner run!
 
