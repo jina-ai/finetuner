@@ -25,7 +25,8 @@ run = finetuner.fit(
 
 The `EvaluationCallback` is used to calculate performance metrics for the model being tuned at the end of each epoch.
 In order to evaluate the model, two additional data sets - a query dataset and an index dataset - need to be provided as arguments.
-If no index set is provided, the query dataset is reused instead. Below is an example of the metrics as they are output at the end of finetuning:
+If no index set is provided, the query dataset is reused instead. Below is an example of the metrics as they are printed at the end of finetuning:
+
 
 ```bash
   Training [5/5] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:00 0:00:16 • loss: 0.003
