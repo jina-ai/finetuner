@@ -12,7 +12,7 @@ jupyter:
     name: python3
 ---
 
-# Multilingual Text To Image search with MultilingualCLIP
+# Multilingual Text-to-Image search with MultilingualCLIP
 
 
 Most text-image models are only able to provide embeddings for text in a single language, typically English. Multilingual CLIP models, however, are models that have been trained on multiple different languages. This allows the model to produce similar embeddings for the same sentence in multiple different languages.  
