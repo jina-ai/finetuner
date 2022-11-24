@@ -189,7 +189,7 @@ please use `model = finetuner.get_model(artifact, is_onnx=True)`
 <!-- #endregion -->
 
 ## Before and After
-We can directly compare the results of our fine-tuned model with an untrained multilingual clip model by displaying the matches each model has for the same query, while the difference between the results of the two models are quite similar for some queries, the examples below clearly show that finetuning increses the quality of the search results:
+We can directly compare the results of our fine-tuned model with an untrained multilingual clip model by displaying the matches each model has for the same query, while the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increses the quality of the search results:
 
 <!-- #region -->
 ```python
