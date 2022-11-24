@@ -12,7 +12,7 @@ jupyter:
     name: python3
 ---
 
-# Multilingual Text To Image search with MultilingualCLIP
+# Multilingual Text-to-Image search with MultilingualCLIP
 
 <a href="https://colab.research.google.com/drive/1N7iWZV0OunFZSLtsQxoazS808MPXhCwq?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
