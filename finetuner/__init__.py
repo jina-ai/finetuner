@@ -137,6 +137,7 @@ def fit(
     to_onnx: bool = False,
     csv_options: Optional[CSVOptions] = None,
     public: bool = False,
+    num_items_per_class: Optional[int] = None,
 ) -> Run:
     """Start a finetuner run!
 
@@ -203,6 +204,10 @@ def fit(
         provided as such.
     :param public: A boolean value indicates if the artifact is public. It should be
         set to `True` if you would like to share your fine-tuned model with others.
+    :param num_items_per_class: How many items per class (unique labels) to include
+        in a batch. For example, if ``batch_size`` is 20, and
+        ``num_items_per_class`` is 4, the batch will consist of 4 items for each of
+        the 5 classes. Batch size must be divisible by `num_items_per_class`.
 
     .. note::
        Unless necessary, please stick with `device="cuda"`, `cpu` training could be
@@ -235,6 +240,7 @@ def fit(
         to_onnx=to_onnx,
         csv_options=csv_options,
         public=public,
+        num_items_per_class=num_items_per_class,
     )
 
 
