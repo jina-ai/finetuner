@@ -15,9 +15,9 @@ jupyter:
 # Multilingual Text To Image search with MultilingualCLIP
 
 
-Most text-image models are only able to provide embeddings for text in a single language, typically English. Multilingual CLIP models, however, are models that have been trained on multiple different languages. This allows the model the produce similar embeddings for the same sentence in multiple different languages.  
+Most text-image models are only able to provide embeddings for text in a single language, typically English. Multilingual CLIP models, however, are models that have been trained on multiple different languages. This allows the model to produce similar embeddings for the same sentence in multiple different languages.  
 
-This guide will show you how to finetune a multilingual CLIP model for a text to image retrieval in non-English languages.
+This guide will show you how to finetune a multilingual CLIP model for a text to image retrieval task in non-English languages.
 
 *Note, Check the runtime menu to be sure you are using a GPU/TPU instance, or this code will run very slowly.*
 
@@ -75,7 +75,7 @@ run = finetuner.fit(
     epochs=5,
     learning_rate=1e-6,
     loss='CLIPLoss',
-    device='cuda',
+    device='cpu',
     callbacks=[
         EvaluationCallback(
             query_data='xmarket-de-electronics-query-data',
@@ -99,7 +99,7 @@ Let's understand what this piece of code does:
 
 ## Monitoring
 
-Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()` - and the logs - `run.logs()` - or `run.stream_logs()`. 
+Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()` - and the logs - `run.logs()` or `run.stream_logs()`. 
 
 ```python tags=[]
 # note, the fine-tuning might takes 20~ minutes
@@ -117,7 +117,7 @@ finetuner.login()
 run = finetuner.get_run(run.name)
 ```
 
-You can continue monitoring the run by checking the status - `finetuner.run.Run.status()` - or the logs `finetuner.run.Run.logs()`.
+You can continue monitoring the run by checking the status - `finetuner.run.Run.status()` or the logs `finetuner.run.Run.logs()`.
 <!-- #endregion -->
 
 <!-- #region -->
@@ -159,11 +159,11 @@ let's use the fine-tuned model to encode a new `Document`:
 text_da = DocumentArray([Document(text='setwas Text zum Codieren')])
 image_da = DocumentArray([Document(uri='https://upload.wikimedia.org/wikipedia/commons/4/4e/Single_apple.png')])
 
-clip_text_encoder = finetuner.get_model(artifact=artifact, select_model='clip-text')
-clip_image_encoder = finetuner.get_model(artifact=artifact, select_model='clip-vision')
+mclip_text_encoder = finetuner.get_model(artifact=artifact, select_model='clip-text')
+mclip_image_encoder = finetuner.get_model(artifact=artifact, select_model='clip-vision')
 
-finetuner.encode(model=clip_text_encoder, data=text_da)
-finetuner.encode(model=clip_image_encoder, data=image_da)
+finetuner.encode(model=mclip_text_encoder, data=text_da)
+finetuner.encode(model=mclip_image_encoder, data=image_da)
 
 print(text_da.embeddings.shape)
 print(image_da.embeddings.shape)
@@ -187,3 +187,43 @@ In case you set `to_onnx=True` when calling `finetuner.fit` function,
 please use `model = finetuner.get_model(artifact, is_onnx=True)`
 ```
 <!-- #endregion -->
+
+## Before and After
+We can directly compare the results of our fine-tuned model with an untained multilingual clip model by displaying the matches each model has for the same query:
+
+```python
+from finetuner import build_model
+
+pt_query = copy.deepcopy(query_data)
+pt_index = copy.deepcopy(index_data)
+
+ft_query = copy.deepcopy(query_data)
+ft_index = copy.deepcopy(index_data)
+
+zero_shot_text_encoder = build_model(
+    name = 'xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
+    select_model = 'clip_text',
+)
+zero_shot_image_encoder = build_model(
+    name = 'xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
+    select_model = 'clip_vision',
+)
+
+finetuner.encode(model=zero_shot_text_encoder, data=pt_query)
+finetuner.encode(model=zero_shot_image_encoder, data=pt_index)
+
+finetuner.encode(model=mclip_text_encoder, data=ft_query)
+finetuner.encode(model=mclip_image_encoder, data=ft_index)
+
+pt_query.match(pt_index)
+ft_query.match(ft_index)
+
+print('results for query: "externe mikrofone (external microphone)" using a zero-shot model (top) and the fine-tuned model (bottom)')
+query_pt[72].matches[0].plot_image_sprites()
+query_ft[72].matches[0].plot_image_sprites()
+
+print('results for query: "prozessorlüfter (processor fan)" using a zero-shot model (top) and the fine-tuned model (bottom)')
+query_pt[189].matches[0].plot_image_sprites()
+query_ft[189].matches[0].plot_image_sprites()
+
+```
