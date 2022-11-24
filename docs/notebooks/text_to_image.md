@@ -59,8 +59,8 @@ finetuner.login(force=True)
 ```python id="cpIj7viExFti"
 train_data = DocumentArray.pull('fashion-train-data-clip', show_progress=True)
 eval_data = DocumentArray.pull('fashion-eval-data-clip', show_progress=True)
-eval_queries = DocumentArray.pull('fashion-eval-data-queries', show_progress=True)
-eval_index = DocumentArray.pull('fashion-eval-data-index', show_progress=True)
+query_data = DocumentArray.pull('fashion-eval-data-queries', show_progress=True)
+index_data = DocumentArray.pull('fashion-eval-data-index', show_progress=True)
 
 train_data.summary()
 ```
