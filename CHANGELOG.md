@@ -14,16 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update commons and stubs versions. ([#618](https://github.com/jina-ai/finetuner/pull/618))
-
 ### Fixed
-
-- Valid configuration of `num_items_per_class`. ([#618](https://github.com/jina-ai/finetuner/pull/618))
 
 ### Docs
 
 
-## [0.6.6] - 2022-11-24
+## [0.6.7] - 2022-11-25
 
 ### Added
 
@@ -33,7 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update commons and stubs versions. ([#618](https://github.com/jina-ai/finetuner/pull/618))
+
 ### Fixed
+
+- Valid configuration of `num_items_per_class`. ([#618](https://github.com/jina-ai/finetuner/pull/618))
 
 ### Docs
 
@@ -44,6 +44,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add documentation on using the evaluation callback for CLIP (multiple models). ([#615](https://github.com/jina-ai/finetuner/pull/615))
 
 - Ignore `callback` module in apidoc. ([#614](https://github.com/jina-ai/finetuner/pull/614))
+
+
+## [0.6.6] - 2022-11-24
+
+This release was broken and was deleted.
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+
+### Docs
 
 
 ## [0.6.5] - 2022-11-10
