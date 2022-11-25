@@ -14,7 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update commons and stubs versions. ([#618](https://github.com/jina-ai/finetuner/pull/618))
+
 ### Fixed
+
+- Valid configuration of `num_items_per_class`. ([#618](https://github.com/jina-ai/finetuner/pull/618))
 
 ### Docs
 
