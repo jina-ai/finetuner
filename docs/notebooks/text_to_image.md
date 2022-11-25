@@ -80,7 +80,7 @@ Now that we have the training and evaluation datasets loaded as `DocumentArray`s
 <!-- #endregion -->
 
 ```python id="UDcpfybOv1dh"
-import finetuner
+from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
     model='openai/clip-vit-base-patch32',
