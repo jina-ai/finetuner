@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Align text-to-image notebook with its corresponding markdown file. ([#621](https://github.com/jina-ai/finetuner/pull/621))
+
 
 ## [0.6.7] - 2022-11-25
 
