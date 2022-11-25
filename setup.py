@@ -27,9 +27,9 @@ if __name__ == '__main__':
         zip_safe=False,
         setup_requires=['setuptools>=18.0', 'wheel'],
         install_requires=[
-            'docarray[common]>=0.18.0',
+            'docarray[common]>=0.19.0',
             'finetuner-stubs==0.11.5',
-            'jina-hubble-sdk==0.23.3',
+            'jina-hubble-sdk==0.24.0',
         ],
         extras_require={
             'full': [
