@@ -45,7 +45,7 @@ we already prepared the data, and we'll provide the names of traning and evaluat
 In addition, we also provide labeled queries and an index of labeled documents for evaluating the retrieval capabilities of the resulting fine-tuned model stored in the datasets `fashion-eval-data-queries` and `fashion-eval-data-index`.
 
 
-```{admonition} 
+```{admonition} Push data to the cloud
 We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
 ```
 <!-- #endregion -->
@@ -80,7 +80,7 @@ Now that we have the training and evaluation datasets loaded as `DocumentArray`s
 <!-- #endregion -->
 
 ```python id="UDcpfybOv1dh"
-import finetuner
+from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
     model='openai/clip-vit-base-patch32',
