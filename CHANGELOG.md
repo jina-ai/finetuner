@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## [Unreleased] - 2022-MM-DD
 
 ### Added
@@ -17,7 +18,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Align text-to-image notebook with its corresponding markdown file. ([#621](https://github.com/jina-ai/finetuner/pull/621))
+
+
+## [0.6.7] - 2022-11-25
+
+### Added
+
+- Allow user to control `num_items_per_class` to sample to each batch. ([#614](https://github.com/jina-ai/finetuner/pull/614))
+
+### Removed
+
+### Changed
+
+- Update commons and stubs versions. ([#618](https://github.com/jina-ai/finetuner/pull/618))
+
+### Fixed
+
+- Valid configuration of `num_items_per_class`. ([#618](https://github.com/jina-ai/finetuner/pull/618))
+
+### Docs
+
+- Add notebook for multilingual CLIP models. ([#611](https://github.com/jina-ai/finetuner/pull/611))
+
 - Improve `describe_models` with `task` to better organize list of backbones. ([#610](https://github.com/jina-ai/finetuner/pull/610))
+
+- Add documentation on using the evaluation callback for CLIP (multiple models). ([#615](https://github.com/jina-ai/finetuner/pull/615))
+
+- Ignore `callback` module in apidoc. ([#614](https://github.com/jina-ai/finetuner/pull/614))
+
+
+## [0.6.6] - 2022-11-24
+
+This release was broken and was deleted.
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+
+### Docs
 
 
 ## [0.6.5] - 2022-11-10

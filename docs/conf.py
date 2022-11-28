@@ -129,6 +129,7 @@ apidoc_excluded_paths = [
     'finetuner/hubble.py',
     'finetuner/client/base.py',
     'finetuner/client/exception.py',
+    'finetuner/callback.py',
 ]
 apidoc_separate_modules = True
 apidoc_extra_args = ['-t', 'template/']

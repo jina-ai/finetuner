@@ -35,7 +35,7 @@ def test_runs(finetuner_mocker, get_feature_data):
         loss='TripletMarginLoss',
         optimizer='Adam',
         learning_rate=1e-3,
-        batch_size=10,
+        batch_size=12,
         epochs=2,
         device='cpu',
     )
@@ -55,7 +55,7 @@ def test_runs(finetuner_mocker, get_feature_data):
         loss='TripletMarginLoss',
         optimizer='Adam',
         learning_rate=1e-3,
-        batch_size=10,
+        batch_size=12,
         epochs=1,
         device='cpu',
     )
@@ -98,7 +98,7 @@ def test_create_run_and_save_model(
         loss='TripletMarginLoss',
         optimizer='Adam',
         learning_rate=0.001,
-        batch_size=10,
+        batch_size=12,
         epochs=2,
         experiment_name=experiment_name,
         to_onnx=use_onnx,

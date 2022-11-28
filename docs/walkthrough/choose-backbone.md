@@ -65,46 +65,43 @@ To get a list of supported models:
 ````{tab} text-to-image
 ```bash
                                               Finetuner backbones: text-to-image                                              
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃                              name ┃          task ┃ output_dim ┃ architecture ┃                                description ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│      openai/clip-vit-base-patch16 │ text-to-image │        512 │  transformer │         CLIP base model with patch size 16 │
-│      openai/clip-vit-base-patch32 │ text-to-image │        512 │  transformer │                            CLIP base model │
-│ openai/clip-vit-large-patch14-336 │ text-to-image │        768 │  transformer │        CLIP large model for 336x336 images │
-│     openai/clip-vit-large-patch14 │ text-to-image │       1024 │  transformer │        CLIP large model with patch size 14 │
-│                     RN101::openai │ text-to-image │        512 │  transformer │            Open CLIP "RN101::openai" model │
-│           RN101-quickgelu::openai │ text-to-image │        512 │  transformer │  Open CLIP "RN101-quickgelu::openai" model │
-│          RN101-quickgelu::yfcc15m │ text-to-image │        512 │  transformer │ Open CLIP "RN101-quickgelu::yfcc15m" model │
-│                    RN101::yfcc15m │ text-to-image │        512 │  transformer │           Open CLIP "RN101::yfcc15m" model │
-│                       RN50::cc12m │ text-to-image │       1024 │  transformer │              Open CLIP "RN50::cc12m" model │
-│                      RN50::openai │ text-to-image │       1024 │  transformer │             Open CLIP "RN50::openai" model │
-│             RN50-quickgelu::cc12m │ text-to-image │       1024 │  transformer │    Open CLIP "RN50-quickgelu::cc12m" model │
-│            RN50-quickgelu::openai │ text-to-image │       1024 │  transformer │   Open CLIP "RN50-quickgelu::openai" model │
-│           RN50-quickgelu::yfcc15m │ text-to-image │       1024 │  transformer │  Open CLIP "RN50-quickgelu::yfcc15m" model │
-│                   RN50x16::openai │ text-to-image │        768 │  transformer │          Open CLIP "RN50x16::openai" model │
-│                    RN50x4::openai │ text-to-image │        640 │  transformer │           Open CLIP "RN50x4::openai" model │
-│                   RN50x64::openai │ text-to-image │       1024 │  transformer │          Open CLIP "RN50x64::openai" model │
-│                     RN50::yfcc15m │ text-to-image │       1024 │  transformer │            Open CLIP "RN50::yfcc15m" model │
-│           ViT-B-16::laion400m_e31 │ text-to-image │        512 │  transformer │  Open CLIP "ViT-B-16::laion400m_e31" model │
-│           ViT-B-16::laion400m_e32 │ text-to-image │        512 │  transformer │  Open CLIP "ViT-B-16::laion400m_e32" model │
-│                  ViT-B-16::openai │ text-to-image │        512 │  transformer │         Open CLIP "ViT-B-16::openai" model │
-│  ViT-B-16-plus-240::laion400m_e31 │ text-to-image │        640 │  transformer │                                  Open CLIP │
-│                                   │               │            │              │   "ViT-B-16-plus-240::laion400m_e31" model │
-│  ViT-B-16-plus-240::laion400m_e32 │ text-to-image │        640 │  transformer │                                  Open CLIP │
-│                                   │               │            │              │   "ViT-B-16-plus-240::laion400m_e32" model │
-│             ViT-B-32::laion2b_e16 │ text-to-image │        512 │  transformer │    Open CLIP "ViT-B-32::laion2b_e16" model │
-│           ViT-B-32::laion400m_e31 │ text-to-image │        512 │  transformer │  Open CLIP "ViT-B-32::laion400m_e31" model │
-│           ViT-B-32::laion400m_e32 │ text-to-image │        512 │  transformer │  Open CLIP "ViT-B-32::laion400m_e32" model │
-│                  ViT-B-32::openai │ text-to-image │        512 │  transformer │         Open CLIP "ViT-B-32::openai" model │
-│ ViT-B-32-quickgelu::laion400m_e31 │ text-to-image │        512 │  transformer │                                  Open CLIP │
-│                                   │               │            │              │  "ViT-B-32-quickgelu::laion400m_e31" model │
-│ ViT-B-32-quickgelu::laion400m_e32 │ text-to-image │        512 │  transformer │                                  Open CLIP │
-│                                   │               │            │              │  "ViT-B-32-quickgelu::laion400m_e32" model │
-│        ViT-B-32-quickgelu::openai │ text-to-image │        512 │  transformer │     Open CLIP "ViT-B-32-quickgelu::openai" │
-│                                   │               │            │              │                                      model │
-│              ViT-L-14-336::openai │ text-to-image │        768 │  transformer │     Open CLIP "ViT-L-14-336::openai" model │
-│                  ViT-L-14::openai │ text-to-image │        768 │  transformer │         Open CLIP "ViT-L-14::openai" model │
-└───────────────────────────────────┴───────────────┴────────────┴──────────────┴────────────────────────────────────────────┘
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                         name ┃          task ┃ output_dim ┃ architecture ┃                                              description ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│                 openai/clip-vit-base-patch16 │ text-to-image │        512 │  transformer │                       CLIP base model with patch size 16 │
+│                 openai/clip-vit-base-patch32 │ text-to-image │        512 │  transformer │                                          CLIP base model │
+│            openai/clip-vit-large-patch14-336 │ text-to-image │        768 │  transformer │                      CLIP large model for 336x336 images │
+│                openai/clip-vit-large-patch14 │ text-to-image │       1024 │  transformer │                      CLIP large model with patch size 14 │
+│                                RN101::openai │ text-to-image │        512 │  transformer │                          Open CLIP "RN101::openai" model │
+│                      RN101-quickgelu::openai │ text-to-image │        512 │  transformer │                Open CLIP "RN101-quickgelu::openai" model │
+│                     RN101-quickgelu::yfcc15m │ text-to-image │        512 │  transformer │               Open CLIP "RN101-quickgelu::yfcc15m" model │
+│                               RN101::yfcc15m │ text-to-image │        512 │  transformer │                         Open CLIP "RN101::yfcc15m" model │
+│                                  RN50::cc12m │ text-to-image │       1024 │  transformer │                            Open CLIP "RN50::cc12m" model │
+│                                 RN50::openai │ text-to-image │       1024 │  transformer │                           Open CLIP "RN50::openai" model │
+│                        RN50-quickgelu::cc12m │ text-to-image │       1024 │  transformer │                  Open CLIP "RN50-quickgelu::cc12m" model │
+│                       RN50-quickgelu::openai │ text-to-image │       1024 │  transformer │                 Open CLIP "RN50-quickgelu::openai" model │
+│                      RN50-quickgelu::yfcc15m │ text-to-image │       1024 │  transformer │                Open CLIP "RN50-quickgelu::yfcc15m" model │
+│                              RN50x16::openai │ text-to-image │        768 │  transformer │                        Open CLIP "RN50x16::openai" model │
+│                               RN50x4::openai │ text-to-image │        640 │  transformer │                         Open CLIP "RN50x4::openai" model │
+│                              RN50x64::openai │ text-to-image │       1024 │  transformer │                        Open CLIP "RN50x64::openai" model │
+│                                RN50::yfcc15m │ text-to-image │       1024 │  transformer │                          Open CLIP "RN50::yfcc15m" model │
+│                      ViT-B-16::laion400m_e31 │ text-to-image │        512 │  transformer │                Open CLIP "ViT-B-16::laion400m_e31" model │
+│                      ViT-B-16::laion400m_e32 │ text-to-image │        512 │  transformer │                Open CLIP "ViT-B-16::laion400m_e32" model │
+│                             ViT-B-16::openai │ text-to-image │        512 │  transformer │                       Open CLIP "ViT-B-16::openai" model │
+│             ViT-B-16-plus-240::laion400m_e31 │ text-to-image │        640 │  transformer │       Open CLIP "ViT-B-16-plus-240::laion400m_e31" model │
+│             ViT-B-16-plus-240::laion400m_e32 │ text-to-image │        640 │  transformer │       Open CLIP "ViT-B-16-plus-240::laion400m_e32" model │
+│                        ViT-B-32::laion2b_e16 │ text-to-image │        512 │  transformer │                  Open CLIP "ViT-B-32::laion2b_e16" model │
+│                      ViT-B-32::laion400m_e31 │ text-to-image │        512 │  transformer │                Open CLIP "ViT-B-32::laion400m_e31" model │
+│                      ViT-B-32::laion400m_e32 │ text-to-image │        512 │  transformer │                Open CLIP "ViT-B-32::laion400m_e32" model │
+│                             ViT-B-32::openai │ text-to-image │        512 │  transformer │                       Open CLIP "ViT-B-32::openai" model │
+│            ViT-B-32-quickgelu::laion400m_e31 │ text-to-image │        512 │  transformer │      Open CLIP "ViT-B-32-quickgelu::laion400m_e31" model │
+│            ViT-B-32-quickgelu::laion400m_e32 │ text-to-image │        512 │  transformer │      Open CLIP "ViT-B-32-quickgelu::laion400m_e32" model │
+│                   ViT-B-32-quickgelu::openai │ text-to-image │        512 │  transformer │             Open CLIP "ViT-B-32-quickgelu::openai" model │
+│                         ViT-L-14-336::openai │ text-to-image │        768 │  transformer │                   Open CLIP "ViT-L-14-336::openai" model │
+│                             ViT-L-14::openai │ text-to-image │        768 │  transformer │                       Open CLIP "ViT-L-14::openai" model │
+│ xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k │ text-to-image │        512 │  transformer │ Open MCLIP "xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k"│
+│                                              │               │            │              │                                                    model │
+└──────────────────────────────────────────────┴───────────────┴────────────┴──────────────┴───────────────────━━━━━━━━━━━━━━─────────────────────────┘
 ```
 ````
 

@@ -21,6 +21,7 @@ from finetuner.constants import (
     MINER_OPTIONS,
     MODEL,
     NAME,
+    NUM_ITEMS_PER_CLASS,
     NUM_WORKERS,
     ONNX,
     OPTIMIZER,
@@ -103,6 +104,7 @@ def test_create_run_config():
             TRAIN_DATA: 'train_data',
             EVAL_DATA: 'eval_data',
             NUM_WORKERS: 8,
+            NUM_ITEMS_PER_CLASS: 4,
         },
         HYPER_PARAMETERS: {
             LOSS: 'TripletMarginLoss',
