@@ -206,11 +206,11 @@ ft_index = copy.deepcopy(index_data)
 
 zero_shot_text_encoder = build_model(
     name = 'xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
-    select_model = 'clip_text',
+    select_model = 'clip-text',
 )
 zero_shot_image_encoder = build_model(
     name = 'xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
-    select_model = 'clip_vision',
+    select_model = 'clip-vision',
 )
 
 finetuner.encode(model=zero_shot_text_encoder, data=pt_query)

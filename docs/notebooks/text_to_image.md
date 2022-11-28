@@ -205,6 +205,50 @@ please use `model = finetuner.get_model(artifact, is_onnx=True)`
 ```
 <!-- #endregion -->
 
+## Before and After
+We can directly compare the results of our fine-tuned model with an untrained clip model by displaying the matches each model has for the same query, while the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increses the quality of the search results:
+
+<!-- #region -->
+```python
+from finetuner import build_model
+
+pt_query = copy.deepcopy(query_data)
+pt_index = copy.deepcopy(index_data)
+
+ft_query = copy.deepcopy(query_data)
+ft_index = copy.deepcopy(index_data)
+
+zero_shot_text_encoder = build_model(
+    name = 'openai/clip-vit-base-patch32',
+    select_model = 'clip-text',
+)
+zero_shot_image_encoder = build_model(
+    name = 'openai/clip-vit-base-patch32',
+    select_model = 'clip-vision',
+)
+
+finetuner.encode(model=zero_shot_text_encoder, data=pt_query)
+finetuner.encode(model=zero_shot_image_encoder, data=pt_index)
+
+finetuner.encode(model=clip_text_encoder, data=ft_query)
+finetuner.encode(model=clip_image_encoder, data=ft_index)
+
+pt_query.match(pt_index)
+ft_query.match(ft_index)
+
+print('results for query: "nightingale tee jacket" using a zero-shot model (top) and the fine-tuned model (bottom)')
+pt_query[187].matches[:3].plot_image_sprites(fig_size=(3,3))
+ft_query[187].matches[:3].plot_image_sprites(fig_size=(3,3))
+```
+```bash
+results for query: "nightingale tee jacket" using a zero-shot model (top) and the fine-tuned model (bottom)
+```
+![mclip-example-pt-1](images/clip-example-pt.png)
+
+![mclip-example-ft-1](images/clip-example-ft.png)
+
+<!-- #endregion -->
+
 <!-- #region id="LHyMm_M1zxdt" -->
 ## Advanced: WiSE-FT 
 
