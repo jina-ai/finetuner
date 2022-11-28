@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Correctly infer the type of models created using `get_model` in the `build_encoding_dataset` function. )[#623](https://github.com/jina-ai/finetuner/pull/623))
+
 ### Docs
 
 - Align text-to-image notebook with its corresponding markdown file. ([#621](https://github.com/jina-ai/finetuner/pull/621))

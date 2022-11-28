@@ -69,7 +69,10 @@ def build_encoding_dataset(model: 'InferenceEngine', data: List[str]) -> Documen
     """
     modalities = model._metadata['preprocess_types']
     if model._select_model:
-        task = modalities[model._select_model]
+        if model._select_model == 'clip-text':
+            task = 'text'
+        else:
+            task = 'image'
     elif list(modalities)[0] == ['features']:
         raise ValueError('MLP model does not support values from a list.')
     else:
