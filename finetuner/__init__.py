@@ -148,9 +148,9 @@ def fit(
         `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
     :param eval_data: Either a `DocumentArray` for evaluation data, a name of the
         `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
-    :param val_split: Determines which portion of the `train_data` is hold out
+    :param val_split: Determines which portion of the `train_data` is held out
         for calculating a validation loss. If it is set to 0, or an `eval_data`
-        parameter is provided, no data is hold out from the training data. Instead, the
+        parameter is provided, no data is held out from the training data. Instead, the
         `eval_data` is used to calculate the validation loss if it is provided.
     :param run_name: Name of the run.
     :param description: Run description.

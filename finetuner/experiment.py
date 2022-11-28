@@ -248,7 +248,7 @@ class Experiment:
         data = config.DataConfig(
             train_data=train_data,
             eval_data=kwargs.get(EVAL_DATA),
-            val_split=kwargs.get(VAL_SPLIT),
+            val_split=kwargs.get(VAL_SPLIT, 0.0),
             num_items_per_class=kwargs.get(NUM_ITEMS_PER_CLASS, 4),
         )
         if kwargs.get(NUM_WORKERS):
