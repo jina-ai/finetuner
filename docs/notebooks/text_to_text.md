@@ -247,6 +247,9 @@ finetuner.encode(model=model, data=index_ft)
 finetuner.encode(model=model_pt, data=query_pt)
 finetuner.encode(model=model_pt, data=index_pt)
 
+query_ft.match(index_ft)
+query_py.match(index_pt)
+
 examples = [7, 10]
 
 for i, (doc_pt, doc_ft) in enumerate(zip(query_pt, query_ft)):

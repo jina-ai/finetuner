@@ -206,3 +206,78 @@ And finally you can use the embeded `query` to find top-k visually related image
 ```python id="tBYG9OKrpZ36"
 query.match(index_data, limit=10, metric='cosine')
 ```
+
+<!-- #region -->
+## Before and After
+We can directly compare the results of our fine-tuned model with a its zero-shot counterpart to getter a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, the examples below show a clear improvement in the quality of the search results:
+
+```python
+import copy
+
+query_pt = copy.deepcopy(query_data)
+index_pt = copy.deepcopy(index_data)
+
+query_ft = copy.deepcopy(query_pt)
+index_ft = copy.deepcopy(index_pt)
+
+model_pt = finetuner.build_model('resnet50')
+
+finetuner.encode(model=model, data=query_ft)
+finetuner.encode(model=model, data=index_ft)
+
+finetuner.encode(model=model_pt, data=query_pt)
+finetuner.encode(model=model_pt, data=index_pt)
+
+query_ft.match(index_ft)
+query_pt.match(index_pt)
+
+examples = [11, 14]
+
+from PIL import Image
+from io import BytesIO
+for i, (doc_pt, doc_ft) in enumerate(zip(query_pt, query_ft)):
+    if i in examples:
+        print(f'\n\nQuery:')
+        display(Image.open(BytesIO(doc_pt.blob)))
+        print(f'top match pretrained:')
+        for doc in doc_pt.matches[:1]:
+            display(Image.open(BytesIO(doc.blob)))
+        print(f'top match finetuned:')
+        for doc in doc_ft.matches[:1]:
+            display(Image.open(BytesIO(doc.blob)))
+```
+
+```bash
+Query:
+```
+![image-image-query-1](images/image-image-query-1.png)
+
+```bash
+top match pretrained:
+```
+![image-image-pt-1](images/image-image-pt-1.png)
+
+```bash
+top match finetuned:
+```
+![image-image-ft-1](images/image-image-ft-1.png)
+
+```bash
+
+
+Query:
+```
+![image-image-query-2](images/image-image-query-2.png)
+
+```bash
+top match pretrained:
+```
+![image-image-pt-2](images/image-image-pt-2.png)
+
+```bash
+top match finetuned:
+```
+![image-image-ft-2](images/image-image-ft-2.png)
+<!-- #endregion -->
+
+
