@@ -47,6 +47,7 @@ In addition, we also provide labeled queries and an index of labeled documents f
 
 ```{admonition} Push data to the cloud
 We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
+When working with documents where images are stored locally, please call `doc.load_uri_to_blob` to reduce network transmission and speed up training.
 ```
 <!-- #endregion -->
 
@@ -240,7 +241,3 @@ The value you set to `alpha` should be greater equal than 0 and less equal than 
 
 That's it! Check out [clip-as-service](https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models) to learn how to plug-in a fine-tuned CLIP model to our CLIP specific service.
 <!-- #endregion -->
-
-```python id="DYmj0nozyVCL"
-
-```
