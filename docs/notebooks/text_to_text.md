@@ -228,7 +228,7 @@ query.match(index_data, limit=10, metric='cosine')
 
 <!-- #region -->
 ## Before and After
-We can directly compare the results of our fine-tuned model with a its zero-shot counterpart to getter a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, the examples below show a clear improvement in the quality of the search results:
+We can directly compare the results of our fine-tuned model with a its zero-shot counterpart to getter a better idea of how finetuning affects the results of a search. While the zero-shot model is able to produce results that are very similar to the initial query, it is common for the topic of the question to change, with the structure staying the same. After fine-tuning, the returned questions are consistently relevant to the initial query, even in cases where the structure of the sentence is different.
 
 ```python
 import copy
@@ -295,8 +295,6 @@ Query: What online platforms can I post ads for beer money opportunity?
  - What are the legitimate ways to earn money online?
 
 ```
-
-You can see that the pretrained model returned questions that were written similarly to the initial query, but about different topics. On the other hand, the finetuned model returned questions that were always relevant to the query.
 
 <!-- #endregion -->
 

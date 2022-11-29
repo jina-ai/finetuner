@@ -7,7 +7,8 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.14.1
   kernelspec:
-    display_name: Python 3
+    display_name: 'Python 3.7.15 (''.venv'': venv)'
+    language: python
     name: python3
 ---
 
@@ -236,12 +237,12 @@ finetuner.encode(model=clip_image_encoder, data=ft_index)
 pt_query.match(pt_index)
 ft_query.match(ft_index)
 
-print('results for query: "nightingale tee jacket" using a zero-shot model (top) and the fine-tuned model (bottom)')
+print('Results for query: "nightingale tee jacket" using a zero-shot model (top) and the fine-tuned model (bottom)')
 pt_query[187].matches[:3].plot_image_sprites(fig_size=(3,3))
 ft_query[187].matches[:3].plot_image_sprites(fig_size=(3,3))
 ```
 ```bash
-results for query: "nightingale tee jacket" using a zero-shot model (top) and the fine-tuned model (bottom)
+Results for query: "nightingale tee jacket" using a zero-shot model (top) and the fine-tuned model (bottom)
 ```
 ![mclip-example-pt-1](images/clip-example-pt.png)
 
@@ -284,7 +285,3 @@ The value you set to `alpha` should be greater equal than 0 and less equal than 
 
 That's it! Check out [clip-as-service](https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models) to learn how to plug-in a fine-tuned CLIP model to our CLIP specific service.
 <!-- #endregion -->
-
-```python id="DYmj0nozyVCL"
-
-```

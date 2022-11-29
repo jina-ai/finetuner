@@ -7,7 +7,8 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.14.1
   kernelspec:
-    display_name: Python 3
+    display_name: 'Python 3.7.15 (''.venv'': venv)'
+    language: python
     name: python3
 ---
 
@@ -209,10 +210,12 @@ query.match(index_data, limit=10, metric='cosine')
 
 <!-- #region -->
 ## Before and After
-We can directly compare the results of our fine-tuned model with a its zero-shot counterpart to getter a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, the examples below show a clear improvement in the quality of the search results:
+We can directly compare the results of our fine-tuned model with a its zero-shot counterpart to getter a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, the examples below show that the model after fine-tuning is able to better match images look similar (like the first query), as well as match images that represent the same (or similar) things, despite not looking similar (like the second query):
 
 ```python
 import copy
+from PIL import Image
+from io import BytesIO
 
 query_pt = copy.deepcopy(query_data)
 index_pt = copy.deepcopy(index_data)
@@ -233,18 +236,14 @@ query_pt.match(index_pt)
 
 examples = [11, 14]
 
-from PIL import Image
-from io import BytesIO
 for i, (doc_pt, doc_ft) in enumerate(zip(query_pt, query_ft)):
     if i in examples:
         print(f'\n\nQuery:')
         display(Image.open(BytesIO(doc_pt.blob)))
-        print(f'top match pretrained:')
-        for doc in doc_pt.matches[:1]:
-            display(Image.open(BytesIO(doc.blob)))
-        print(f'top match finetuned:')
-        for doc in doc_ft.matches[:1]:
-            display(Image.open(BytesIO(doc.blob)))
+        print(f'top match before fine-tuning:')
+        display(Image.open(BytesIO(doc_pt.matches[0].blob)))
+        print(f'top match after fine-tuning:')
+        display(Image.open(BytesIO(doc_ft.matches[0].blob)))
 ```
 
 ```bash
@@ -253,12 +252,12 @@ Query:
 ![image-image-query-1](images/image-image-query-1.png)
 
 ```bash
-top match pretrained:
+top match before fine-tuning:
 ```
 ![image-image-pt-1](images/image-image-pt-1.png)
 
 ```bash
-top match finetuned:
+top match after fine-tuning:
 ```
 ![image-image-ft-1](images/image-image-ft-1.png)
 
@@ -270,14 +269,12 @@ Query:
 ![image-image-query-2](images/image-image-query-2.png)
 
 ```bash
-top match pretrained:
+top match before fine-tuning:
 ```
 ![image-image-pt-2](images/image-image-pt-2.png)
 
 ```bash
-top match finetuned:
+top match after fine-tuning:
 ```
 ![image-image-ft-2](images/image-image-ft-2.png)
 <!-- #endregion -->
-
-

@@ -234,6 +234,7 @@ ft_query[189].matches[0].plot_image_sprites()
 results for query: "externe mikrofone (external microphone)" using a zero-shot model (top) and the fine-tuned model (bottom)
 ```
 ![mclip-example-pt-1](images/mclip-example-pt-1.png)
+
 ![mclip-example-ft-1](images/mclip-example-ft-1.png)
 
 ```bash
@@ -241,12 +242,9 @@ results for query: "prozessorlüfter (processor fan)" using a zero-shot model (t
 ```
 
 ![mclip-example-pt-2](images/mclip-example-pt-2.png)
+
 ![mclip-example-ft-2](images/mclip-example-ft-2.png)
 
 
 
 <!-- #endregion -->
-
-```python
-
-```
