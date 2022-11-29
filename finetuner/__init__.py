@@ -115,6 +115,7 @@ def fit(
     model: str,
     train_data: Union[str, TextIO, DocumentArray],
     eval_data: Optional[Union[str, TextIO, DocumentArray]] = None,
+    val_split: float = 0.0,
     run_name: Optional[str] = None,
     description: Optional[str] = None,
     experiment_name: Optional[str] = None,
@@ -147,6 +148,10 @@ def fit(
         `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
     :param eval_data: Either a `DocumentArray` for evaluation data, a name of the
         `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
+    :param val_split: Determines which portion of the `train_data` is held out
+        for calculating a validation loss. If it is set to 0, or an `eval_data`
+        parameter is provided, no data is held out from the training data. Instead, the
+        `eval_data` is used to calculate the validation loss if it is provided.
     :param run_name: Name of the run.
     :param description: Run description.
     :param experiment_name: Name of the experiment.
@@ -218,6 +223,7 @@ def fit(
         model=model,
         train_data=train_data,
         eval_data=eval_data,
+        val_split=val_split,
         run_name=run_name,
         description=description,
         experiment_name=experiment_name,
