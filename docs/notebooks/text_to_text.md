@@ -250,10 +250,10 @@ finetuner.encode(model=model_pt, data=index_pt)
 query_ft.match(index_ft)
 query_py.match(index_pt)
 
-examples = [7, 10]
+num_samples = 5
 
 for i, (doc_pt, doc_ft) in enumerate(zip(query_pt, query_ft)):
-  if i in examples:
+  if i < num_samples:
     print(f'\nQuery: {doc_ft.text}')
     print(' matches pretrained:')
     for match in doc_pt.matches[:5]:

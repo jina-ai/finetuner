@@ -234,10 +234,10 @@ finetuner.encode(model=model_pt, data=index_pt)
 query_ft.match(index_ft)
 query_pt.match(index_pt)
 
-examples = [11, 14]
+num_samples = 10
 
 for i, (doc_pt, doc_ft) in enumerate(zip(query_pt, query_ft)):
-    if i in examples:
+    if i < num_samples:
         print(f'\n\nQuery:')
         display(Image.open(BytesIO(doc_pt.blob)))
         print(f'top match before fine-tuning:')
@@ -246,35 +246,7 @@ for i, (doc_pt, doc_ft) in enumerate(zip(query_pt, query_ft)):
         display(Image.open(BytesIO(doc_ft.matches[0].blob)))
 ```
 
-```bash
-Query:
-```
-![image-image-query-1](images/image-image-query-1.png)
-
-```bash
-top match before fine-tuning:
-```
-![image-image-pt-1](images/image-image-pt-1.png)
-
-```bash
-top match after fine-tuning:
-```
-![image-image-ft-1](images/image-image-ft-1.png)
-
-```bash
-
-
-Query:
-```
-![image-image-query-2](images/image-image-query-2.png)
-
-```bash
-top match before fine-tuning:
-```
-![image-image-pt-2](images/image-image-pt-2.png)
-
-```bash
-top match after fine-tuning:
-```
-![image-image-ft-2](images/image-image-ft-2.png)
+![image-image-example](images/image-image-example.png)
 <!-- #endregion -->
+
+
