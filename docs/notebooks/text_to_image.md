@@ -211,6 +211,7 @@ We can directly compare the results of our fine-tuned model with an untrained cl
 
 <!-- #region -->
 ```python
+import copy
 from finetuner import build_model
 
 pt_query = copy.deepcopy(query_data)
@@ -237,11 +238,24 @@ finetuner.encode(model=clip_image_encoder, data=ft_index)
 pt_query.match(pt_index)
 ft_query.match(ft_index)
 
-print('Results for query: "nightingale tee jacket" using a zero-shot model (top) and the fine-tuned model (bottom)')
-pt_query[187].matches[:3].plot_image_sprites(fig_size=(3,3))
-ft_query[187].matches[:3].plot_image_sprites(fig_size=(3,3))
+def plot_matches(num_samples = 5):
+    seen = set()
+    for i, (pt_q, ft_q) in enumerate(zip(pt_query, ft_query)):
+        if i > num_samples: break
+        if pt_q.text in seen:
+            continue
+        seen.add(pt_q.text)
+        print(f'results for query "{pt_q.text}" using a zero-shot model (top) and the fine-tuned model (bottom):')
+        pt_q.matches[:4].plot_image_sprites(fig_size=(3,3))
+        ft_q.matches[:4].plot_image_sprites(fig_size=(3,3))
+   
+plot_matches()
+
+
 ```
-```bash
+
+
+```plaintext
 Results for query: "nightingale tee jacket" using a zero-shot model (top) and the fine-tuned model (bottom)
 ```
 ![mclip-example-pt-1](images/clip-example-pt.png)
