@@ -11,11 +11,7 @@ on:
 #         description: Pass the finetuner-core branch
 #         required: true
 #         default: main
-#       only_api_changed:
-#         description: Check the box only if API related code was changed
-#         type: boolean
-#         default: false
-#         required: false
+
 
 jobs:
   style-flake:
@@ -30,7 +26,7 @@ jobs:
         with:
           repository: jina-ai/finetuner-core
           ref: main
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.JINA_DEV_BOT }}
       - name: Install requirements
         run: |
           make install package=style
@@ -49,7 +45,7 @@ jobs:
         with:
           repository: jina-ai/finetuner-core
           ref: main
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.JINA_DEV_BOT }}
       - name: Install requirements
         run: make install package=style
       - name: check black
@@ -67,7 +63,7 @@ jobs:
         with:
           repository: jina-ai/finetuner-core
           ref: main
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.JINA_DEV_BOT }}
       - name: Install requirements
         run: make install package=style
       - name: check isort
