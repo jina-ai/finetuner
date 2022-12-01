@@ -30,7 +30,7 @@ jobs:
         with:
           repository: jina-ai/finetuner-core
           ref: main
-          token: ${{ secrets.JINA_DEV_BOT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install requirements
         run: |
           make install package=style
@@ -49,7 +49,7 @@ jobs:
         with:
           repository: jina-ai/finetuner-core
           ref: main
-          token: ${{ secrets.JINA_DEV_BOT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install requirements
         run: make install package=style
       - name: check black
@@ -67,7 +67,7 @@ jobs:
         with:
           repository: jina-ai/finetuner-core
           ref: main
-          token: ${{ secrets.JINA_DEV_BOT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install requirements
         run: make install package=style
       - name: check isort
