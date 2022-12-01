@@ -1,17 +1,21 @@
 name: Core-CI
 
 on:
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: Pass the finetuner-core branch
-        required: true
-        default: main
-      only_api_changed:
-        description: Check the box only if API related code was changed
-        type: boolean
-        default: false
-        required: false
+  pull_request:
+
+
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       branch:
+#         description: Pass the finetuner-core branch
+#         required: true
+#         default: main
+#       only_api_changed:
+#         description: Check the box only if API related code was changed
+#         type: boolean
+#         default: false
+#         required: false
 
 jobs:
   style-flake:
@@ -25,7 +29,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: jina-ai/finetuner-core
-          ref: ${{ github.event.inputs.branch }}
+          ref: main
           token: ${{ secrets.JINA_DEV_BOT }}
       - name: Install requirements
         run: |
@@ -44,7 +48,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: jina-ai/finetuner-core
-          ref: ${{ github.event.inputs.branch }}
+          ref: main
           token: ${{ secrets.JINA_DEV_BOT }}
       - name: Install requirements
         run: make install package=style
@@ -62,7 +66,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: jina-ai/finetuner-core
-          ref: ${{ github.event.inputs.branch }}
+          ref: main
           token: ${{ secrets.JINA_DEV_BOT }}
       - name: Install requirements
         run: make install package=style
