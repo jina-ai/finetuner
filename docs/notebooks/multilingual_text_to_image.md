@@ -222,23 +222,27 @@ finetuner.encode(model=mclip_image_encoder, data=ft_index)
 pt_query.match(pt_index)
 ft_query.match(ft_index)
 
-print('results for query: "externe mikrofone (external microphone)" using a zero-shot model (top) and the fine-tuned model (bottom)')
-pt_query[72].matches[0].plot_image_sprites()
-ft_query[72].matches[0].plot_image_sprites()
-
-print('results for query: "prozessorlüfter (processor fan)" using a zero-shot model (top) and the fine-tuned model (bottom)')
-pt_query[189].matches[0].plot_image_sprites()
-ft_query[189].matches[0].plot_image_sprites()
+def plot_matches(num_samples = 10):
+    seen = set()
+    for i, (pt_q, ft_q) in enumerate(zip(pt_query, ft_query)):
+        if i >= num_samples: break
+        if pt_q.text in seen:
+            i = i - 1
+            continue
+        seen.add(pt_q.text)
+        print(f'results for query "{pt_q.text}" using a zero-shot model (top) and the fine-tuned model (bottom):')
+        pt_q.matches[:1].plot_image_sprites(fig_size=(3,3))
+        ft_q.matches[:1].plot_image_sprites(fig_size=(3,3))
 ```
-```bash
-results for query: "externe mikrofone (external microphone)" using a zero-shot model (top) and the fine-tuned model (bottom)
+```plaintext
+results for query: "externe mikrofone" (external microphone) using a zero-shot model (top) and the fine-tuned model (bottom)
 ```
 ![mclip-example-pt-1](images/mclip-example-pt-1.png)
 
 ![mclip-example-ft-1](images/mclip-example-ft-1.png)
 
-```bash
-results for query: "prozessorlüfter (processor fan)" using a zero-shot model (top) and the fine-tuned model (bottom)
+```plaintext
+results for query: "prozessorlüfter" (processor fan) using a zero-shot model (top) and the fine-tuned model (bottom)
 ```
 
 ![mclip-example-pt-2](images/mclip-example-pt-2.png)
