@@ -1,0 +1,70 @@
+name: Core-CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Pass the finetuner-core branch
+        required: true
+        default: main
+      only_api_changed:
+        description: Check the box only if API related code was changed
+        type: boolean
+        default: false
+        required: false
+
+jobs:
+  style-flake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - uses: actions/checkout@v3
+        with:
+          repository: jina-ai/finetuner-core
+          ref: ${{ github.event.inputs.branch }}
+          token: ${{ secrets.JINA_DEV_BOT }}
+      - name: Install requirements
+        run: |
+          make install package=style
+      - name: Lint with flake8
+        run: make flake
+
+  style-black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - uses: actions/checkout@v3
+        with:
+          repository: jina-ai/finetuner-core
+          ref: ${{ github.event.inputs.branch }}
+          token: ${{ secrets.JINA_DEV_BOT }}
+      - name: Install requirements
+        run: make install package=style
+      - name: check black
+        run: make black-check
+
+  style-isort:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - uses: actions/checkout@v3
+        with:
+          repository: jina-ai/finetuner-core
+          ref: ${{ github.event.inputs.branch }}
+          token: ${{ secrets.JINA_DEV_BOT }}
+      - name: Install requirements
+        run: make install package=style
+      - name: check isort
+        run: make isort-check
