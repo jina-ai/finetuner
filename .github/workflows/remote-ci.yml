@@ -3,15 +3,8 @@ name: Core-CI
 on:
   pull_request:
 
-
-# on:
-#   workflow_dispatch:
-#     inputs:
-#       branch:
-#         description: Pass the finetuner-core branch
-#         required: true
-#         default: main
-
+env:
+  JINA_AUTH_TOKEN: ${{ secrets.JINA_AUTH_TOKEN }}
 
 jobs:
   style-flake:
@@ -68,3 +61,155 @@ jobs:
         run: make install package=style
       - name: check isort
         run: make isort-check
+
+  prep-testbed:
+    runs-on: ubuntu-latest
+    needs: [style-flake, style-black, style-isort]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install jq
+        run: sudo apt-get install jq
+      - uses: actions/checkout@v3
+        with:
+          repository: jina-ai/finetuner-core
+          ref: main
+          token: ${{ secrets.FINETUNER_CORE_REPO }}
+      - name: Gather core test paths
+        id: gather-core-tests
+        run: |
+          core_test_paths=$( find 'tests' -name 'test_*.py' | xargs grep -l 'def test_' | xargs dirname | sort -u | jq -R . | jq -cs . )
+          echo "::set-output name=core-tests-matrix::$core_test_paths"
+      - name: Gather CUDA test paths
+        id: gather-cuda-tests
+        run: |
+          cuda_test_paths=$( find 'tests' -name 'test_*.py' | xargs grep -l 'def test_' | xargs grep -l 'pytest.mark.gpu' | xargs dirname | sort -u | jq -R . | jq -cs . )
+          echo "::set-output name=cuda-tests-matrix::$cuda_test_paths"
+      - name: Generate UUID for the artifact of the current run
+        id: generate-artifact-id
+        run: |
+          echo "::set-output name=artifact-id::$(uuidgen)"
+    outputs:
+      artifact-id: ${{ steps.generate-artifact-id.outputs.artifact-id }}
+      core-tests-matrix: ${{ steps.gather-core-tests.outputs.core-tests-matrix }}
+      cuda-tests-matrix: ${{ steps.gather-cuda-tests.outputs.cuda-tests-matrix }}
+
+  test-core:
+    needs: prep-testbed
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        tests-path: ${{fromJson(needs.prep-testbed.outputs.core-tests-matrix)}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - uses: actions/checkout@v3
+        with:
+          repository: jina-ai/finetuner-core
+          ref: main
+          token: ${{ secrets.FINETUNER_CORE_REPO }}
+      - name: Prepare enviroment
+        run: |
+          python -m pip install --upgrade pip
+          make install package=cicd.cpu
+          make prepare-executor
+      - name: Test
+        id: test
+        run: |
+          make test TESTS_PATH=${{ matrix.tests-path }}/test_\*.py
+          COVERAGE_NAME=.coverage.core.$( echo ${{ matrix.tests-path }} | tr "/" . )
+          echo "COVERAGE_NAME=$COVERAGE_NAME" >> $GITHUB_ENV
+          mv .coverage $COVERAGE_NAME
+        timeout-minutes: 30
+      - name: Upload coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-${{ needs.prep-testbed.outputs.artifact-id }}
+          path: ${{ env.COVERAGE_NAME }}
+          retention-days: 1
+
+  test-cuda:
+    needs: prep-testbed
+    runs-on: [self-hosted, x64, gpu, linux]
+    strategy:
+      fail-fast: false
+      matrix:
+        tests-path: ${{fromJson(needs.prep-testbed.outputs.cuda-tests-matrix)}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - uses: actions/checkout@v3
+        with:
+          repository: jina-ai/finetuner-core
+          ref: main
+          token: ${{ secrets.FINETUNER_CORE_REPO }}
+      - name: Prepare enviroment
+        run: |
+          python -m pip install --upgrade pip
+          make install package=cicd.cuda
+          make prepare-executor
+      - name: Test
+        id: test
+        run: |
+          make test-cuda TESTS_PATH=${{ matrix.tests-path }}/test_\*.py
+          COVERAGE_NAME=.coverage.cuda.$( echo ${{ matrix.tests-path }} | tr "/" . )
+          echo "COVERAGE_NAME=$COVERAGE_NAME" >> $GITHUB_ENV
+          mv .coverage $COVERAGE_NAME
+        timeout-minutes: 30
+      - name: Upload coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-${{ needs.prep-testbed.outputs.artifact-id }}
+          path: ${{ env.COVERAGE_NAME }}
+          retention-days: 1
+
+  get-coverage:
+    needs: [prep-testbed, test-core, test-cuda]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - uses: actions/checkout@v3
+        with:
+          repository: jina-ai/finetuner-core
+          ref: main
+          token: ${{ secrets.FINETUNER_CORE_REPO }}
+      - name: Prepare enviroment
+        run: |
+          python -m pip install --upgrade pip pytest pytest-cov
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-${{ needs.prep-testbed.outputs.artifact-id }}
+      - name: Combine coverages
+        run: |
+          coverage combine -a .coverage*
+          coverage xml
+      - name: Comment with coverage report
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-xml-coverage-path: ./coverage.xml
+          title: Finetuner Coverage Report
+
+  # just for blocking the merge until all parallel core-test are successful
+  success-tests:
+    needs: [get-coverage, test-core, test-cuda]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/workflow-conclusion-action@v2
+      - name: Check Failure
+        if: env.WORKFLOW_CONCLUSION == 'failure'
+        run: exit 1
+      - name: Success
+        if: ${{ success() }}
+        run: echo "All Done"
