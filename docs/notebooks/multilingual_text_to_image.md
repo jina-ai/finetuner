@@ -191,7 +191,7 @@ please use `model = finetuner.get_model(artifact, is_onnx=True)`
 ```
 <!-- #endregion -->
 
-## Before and After
+## Before and after
 We can directly compare the results of our fine-tuned model with an untrained multilingual clip model by displaying the matches each model has for the same query, while the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increses the quality of the search results:
 
 <!-- #region -->
@@ -205,12 +205,12 @@ ft_query = copy.deepcopy(query_data)
 ft_index = copy.deepcopy(index_data)
 
 zero_shot_text_encoder = build_model(
-    name = 'xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
-    select_model = 'clip-text',
+    name='xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
+    select_model='clip-text',
 )
 zero_shot_image_encoder = build_model(
-    name = 'xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
-    select_model = 'clip-vision',
+    name='xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
+    select_model='clip-vision',
 )
 
 finetuner.encode(model=zero_shot_text_encoder, data=pt_query)

@@ -209,13 +209,13 @@ query.match(index_data, limit=10, metric='cosine')
 ```
 
 <!-- #region -->
-## Before and After
-We can directly compare the results of our fine-tuned model with a its zero-shot counterpart to getter a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, the examples below show that the model after fine-tuning is able to better match images look similar (like the first query), as well as match images that represent the same (or similar) things, despite not looking similar (like the second query):
+## Before and after
+We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, some of the examples the examples below (such as the the second example) show that the model after fine-tuning is able to better match similar images.
 
 ```python
 import copy
-from PIL import Image
 from io import BytesIO
+from PIL import Image
 
 query_pt = copy.deepcopy(query_data)
 index_pt = copy.deepcopy(index_data)

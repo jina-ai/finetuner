@@ -227,8 +227,8 @@ query.match(index_data, limit=10, metric='cosine')
 ```
 
 <!-- #region -->
-## Before and After
-We can directly compare the results of our fine-tuned model with a its zero-shot counterpart to getter a better idea of how finetuning affects the results of a search. While the zero-shot model is able to produce results that are very similar to the initial query, it is common for the topic of the question to change, with the structure staying the same. After fine-tuning, the returned questions are consistently relevant to the initial query, even in cases where the structure of the sentence is different.
+## Before and after
+We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the zero-shot model is able to produce results that are very similar to the initial query, it is common for the topic of the question to change, with the structure staying the same. After fine-tuning, the returned questions are consistently relevant to the initial query, even in cases where the structure of the sentence is different.
 
 ```python
 import copy

@@ -206,8 +206,8 @@ please use `model = finetuner.get_model(artifact, is_onnx=True)`
 ```
 <!-- #endregion -->
 
-## Before and After
-We can directly compare the results of our fine-tuned model with an untrained clip model by displaying the matches each model has for the same query, while the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increses the quality of the search results:
+## Before and after
+We can directly compare the results of our fine-tuned model with a pre-trained clip model by displaying the matches each model has for the same query. While the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increases the quality of the search results:
 
 <!-- #region -->
 ```python
@@ -221,12 +221,12 @@ ft_query = copy.deepcopy(query_data)
 ft_index = copy.deepcopy(index_data)
 
 zero_shot_text_encoder = build_model(
-    name = 'openai/clip-vit-base-patch32',
-    select_model = 'clip-text',
+    name='openai/clip-vit-base-patch32',
+    select_model='clip-text',
 )
 zero_shot_image_encoder = build_model(
-    name = 'openai/clip-vit-base-patch32',
-    select_model = 'clip-vision',
+    name='openai/clip-vit-base-patch32',
+    select_model='clip-vision',
 )
 
 finetuner.encode(model=zero_shot_text_encoder, data=pt_query)
