@@ -1,7 +1,12 @@
 name: Core-CI
 
 on:
-  pull_request:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Pass the finetuner-core branch
+        required: true
+        default: main
 
 env:
   JINA_AUTH_TOKEN: ${{ secrets.JINA_AUTH_TOKEN }}
