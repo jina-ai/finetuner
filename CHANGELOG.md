@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `val_split` parameter to `fit` function. ([#624](https://github.com/jina-ai/finetuner/pull/624))
 
+- Add `core-ci` workflow to remotely run the ci of finetuner-core. ([#628](https://github.com/jina-ai/finetuner/pull/628))
+
 ### Removed
 
 ### Changed
