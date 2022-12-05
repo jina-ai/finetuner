@@ -210,7 +210,7 @@ query.match(index_data, limit=10, metric='cosine')
 
 <!-- #region -->
 ## Before and after
-We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, some of the examples the examples below (such as the the second example) show that the model after fine-tuning is able to better match similar images.
+We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, some of the examples below (such as the the second example) show that the model after fine-tuning is able to better match similar images.
 
 ```python
 import copy
