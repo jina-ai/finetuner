@@ -132,7 +132,6 @@ def fit(
     scheduler_step: str = 'batch',
     freeze: bool = False,
     output_dim: Optional[int] = None,
-    cpu: bool = True,
     device: str = 'cuda',
     num_workers: int = 4,
     to_onnx: bool = False,
@@ -196,8 +195,6 @@ def fit(
     :param freeze: If set to `True`, will freeze all layers except the last one.
     :param output_dim: The expected output dimension as `int`.
         If set, will attach a projection head.
-    :param cpu: Whether to use the CPU. If set to `False` a GPU will be used.
-        Will be deprecated from 0.7.0.
     :param device: Whether to use the CPU, if set to `cuda`, a Nvidia GPU will be used.
         otherwise use `cpu` to run a cpu job.
     :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
@@ -240,7 +237,6 @@ def fit(
         scheduler_step=scheduler_step,
         freeze=freeze,
         output_dim=output_dim,
-        cpu=cpu,
         device=device,
         num_workers=num_workers,
         to_onnx=to_onnx,
