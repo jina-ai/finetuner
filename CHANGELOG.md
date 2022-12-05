@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove `cpu` parameter from `create_run` function. ([#631](https://github.com/jina-ai/finetuner/pull/631))
+
 ### Changed
 
 ### Fixed
