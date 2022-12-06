@@ -1,12 +1,6 @@
 name: Core-CI
 
 on:
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: Pass the finetuner-core branch
-        required: true
-        default: main
   repository_dispatch:
     types: [triggered_from_core]
     
