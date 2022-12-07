@@ -214,15 +214,18 @@ embeddings = finetuner.encode(model=model, data=images)
 
 ## Training on your own data
 
-If you want to train a model using your own dataset instead of one on the Jina AI Cloud, you can provide labeled data in a CSV file in the following way:
+If you want to train a model using your own dataset instead of one on the Jina AI Cloud, you can provide labeled data in a CSV file.
+
+A CSV file is a tab or comma-delimited plain text file. For example:
 
 ```plaintext
 This is an apple    apple_label
 This is a pear      pear_label
 ...
 ```
+The file should have two columns: The first for the data and the second for the category label.
 
-You can then provide the path to your CSV file as your training data:
+You can then provide a path to a CSV file as training data for Finetuner:
 
 ```python
 run = finetuner.fit(
@@ -231,7 +234,7 @@ run = finetuner.fit(
     train_data='path/to/some/data.csv',
 )
 ```
-More information on providing your own training data is found in the [Prepare Training Data](https://finetuner.jina.ai/walkthrough/create-training-data/) section of the [walkthrough](https://finetuner.jina.ai/walkthrough/).
+More information on providing your own training data is found in the [Prepare Training Data](https://finetuner.jina.ai/walkthrough/create-training-data/) section of the [Finetuner documentation](https://finetuner.jina.ai/).
 
 
 
@@ -243,7 +246,7 @@ More information on providing your own training data is found in the [Prepare Tr
   - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/notebooks/image_to_image/)
   - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/notebooks/text_to_image/)
 
-Intrigued? That's only scratching the surface of what Finetuner is capable of. [Read our docs to learn more](https://finetuner.jina.ai/).
+[Read our documentation](https://finetuner.jina.ai/) to learn more about what Finetuner can do.
 
 <!-- start support-pitch -->
 ## Support
@@ -260,6 +263,9 @@ Intrigued? That's only scratching the surface of what Finetuner is capable of. [
 
 ## Join Us
 
-Finetuner is backed by [Jina AI](https://jina.ai) and licensed under [Apache-2.0](./LICENSE). [We are actively hiring](https://jobs.jina.ai) AI engineers, solution engineers to build the next neural search ecosystem in opensource.
+Finetuner is backed by [Jina AI](https://jina.ai) and licensed under [Apache-2.0](./LICENSE). 
+
+[We are actively hiring](https://jobs.jina.ai) AI engineers and solution engineers to build the next generation of
+open-source AI ecosystems.
 
 <!-- end support-pitch -->
