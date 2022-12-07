@@ -22,8 +22,8 @@ Fine-tuning is an effective way to improve performance on neural search tasks. H
 many deep learning engineers to do.
 
 Jina AI's Finetuner makes fine-tuning easier and faster by streamlining the workflow and handling all complexity and 
-infrastructure on the cloud. With Finetuner, one can easily enhance the performance of pre-trained models and make them 
-production-ready without expensive hardware.
+infrastructure in the cloud. With Finetuner, one can easily enhance the performance of pre-trained models, making them 
+production-ready without buying expensive hardware.
 
 📈 **Performance promise**: enhance the performance of pre-trained models and deliver state-of-the-art performance on 
 domain-specific neural search applications.
