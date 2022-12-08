@@ -15,25 +15,30 @@
 <a href="https://pypistats.org/packages/finetuner"><img alt="PyPI - Downloads from official pypistats" src="https://img.shields.io/pypi/dm/finetuner?style=flat-square"></a>
 <a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-3.6k-blueviolet?logo=slack&amp;logoColor=white&style=flat-square"></a>
 </p>
-
+gho
 <!-- start elevator-pitch -->
 
-Fine-tuning is an effective way to improve the performance on neural search tasks. However, it is non-trivial for many deep learning engineers.
+Fine-tuning is an effective way to improve performance on neural search tasks. However, setting up and performing 
+fine-tuning can be very time-consuming and resource-intensive.
 
-Finetuner makes fine-tuning easier, faster and performant by streamlining the workflow and handling all complexity and infrastructure on the cloud.
-With Finetuner, one can easily uplift pre-trained models to be more performant and production ready.
+Jina AI's Finetuner makes fine-tuning easier and faster by streamlining the workflow and handling all complexity and 
+infrastructure in the cloud. With Finetuner, one can easily enhance the performance of pre-trained models, making them 
+production-ready without buying expensive hardware.
 
-📈 **Performance promise**: uplift pretrained model and deliver SOTA performance on domain-specific neural search applications.
+📈 **Performance promise**: enhance the performance of pre-trained models and deliver state-of-the-art performance on 
+domain-specific neural search applications.
 
-🔱 **Simple yet powerful**: easy access to 40+ mainstream losses, 10+ optimisers, layer pruning, weights freezing, dimensionality reduction, hard-negative mining, cross-modal model, distributed training. 
+🔱 **Simple yet powerful**: easy access to 40+ mainstream loss functions, 10+ optimisers, layer pruning, weight 
+freezing, dimensionality reduction, hard-negative mining, cross-modal models, and distributed training. 
 
-☁ **All-in-cloud**: instant training with our free GPU; manage runs, experiments and artifacts on Jina AI Cloud without worrying about provisioning resources, integration complexity and infrastructure.
+☁ **All-in-cloud**: train using our free GPU infrastructure, manage runs, experiments and artifacts on Jina AI Cloud
+without worrying about resource availability, complex integration, or infrastructure costs.
 
 <!-- end elevator-pitch -->
 
 ## [Documentation](https://finetuner.jina.ai/)
 
-## Benchmark
+## Benchmarks
 
 <table>
 <thead>
@@ -97,21 +102,21 @@ With Finetuner, one can easily uplift pre-trained models to be more performant a
 </tbody>
 </table>
 
-<sub><sup>All metrics are evaluated on k@20 after training for 5 epochs using Adam optimizer with learning rates of 1e-4 for ResNet, 1e-7 for CLIP and 1e-5 for the BERT models.</sup></sub>
+<span style="font-size:small">All metrics were evaluated for k@20 after training for 5 epochs using the Adam optimizer with learning rates of 1e-4 for ResNet, 1e-7 for CLIP and 1e-5 for the BERT models.</span>
 
 <!-- start install-instruction -->
 
 ## Install
 
-Make sure you have Python 3.7+ installed.
-Finetuner can be installed via pip by executing:
+Make sure you have Python 3.7+ installed. Finetuner can be installed via `pip` by executing:
 
 ```bash
 pip install -U finetuner
 ```
 
-If you want to encode `docarray.DocumentArray` objects with the `finetuner.encode` function, you need to install `"finetuner[full]"`.
-In this case, some extra dependencies are installed which are necessary to do the inference, e.g., torch, torchvision, and open clip:
+If you want to encode `docarray.DocumentArray` objects with the `finetuner.encode` function, you need to install 
+`"finetuner[full]"`. This includes a number of additional dependencies, which are necessary for encoding: Torch, 
+Torchvision and OpenCLIP:
 
 ```bash
 pip install "finetuner[full]"
@@ -119,7 +124,8 @@ pip install "finetuner[full]"
 
 <!-- end install-instruction -->
 
-> From 0.5.0, Finetuner computing is hosted on Jina AI Cloud. THe last local version is `0.4.1`, one can install it via pip or check out [git tags/releases here](https://github.com/jina-ai/finetuner/releases).
+> ⚠️ Starting with version 0.5.0, Finetuner computing is performed on Jina AI Cloud. The last local version is `0.4.1`. 
+> This version is still available for installation via `pip`. See [Finetuner git tags and releases](https://github.com/jina-ai/finetuner/releases).
 
 
 
@@ -127,7 +133,10 @@ pip install "finetuner[full]"
   
 ## Get Started
 
-The following code snippet describes how to fine-tune ResNet50 on [Totally Looks Like dataset](https://sites.google.com/view/totally-looks-like-dataset), it can be run as-is (If there is already a run called `resnet50-tll-run`, choose a different name):
+The following code snippet describes how to fine-tune ResNet50 on the [_Totally Looks Like_ dataset](https://sites.google.com/view/totally-looks-like-dataset). 
+You can run it as-is. The model and training data are already hosted in Jina AI Cloud and Finetuner will 
+download them automatically.
+(NB: If there is already a run called `resnet50-tll-run`, choose a different run-name in the code below.)
 
 ```python
 import finetuner
@@ -147,9 +156,16 @@ run = finetuner.fit(
     ],
 )
 ```
+This code snippet describes the following steps:
 
-Here, the training data used is gathered from the Jina AI Cloud, however data can also be passed as a CSV file or DocumentArray, as described [here](https://finetuner.jina.ai/walkthrough/create-training-data/).  
-Fine-tuning might take 5 minutes to finish. You can later re-connect your run with:
+1. Log in to Jina AI Cloud.
+2. Select backbone model, training and evaluation data for your evaluation callback.
+3. Start the cloud run.
+
+You can also pass data to Finetuner as a CSV file or a `DocumentArray` object, as described [in the Finetuner documentation](https://finetuner.jina.ai/walkthrough/create-training-data/).  
+
+Depending on the data, task, model, hyperparameters, fine-tuning might take some time to finish. You can leave your jobs 
+to run on the Jina AI Cloud, and later reconnect to them, using code like this below:
 
 ```python
 import finetuner
@@ -164,16 +180,13 @@ for log_entry in run.stream_logs():
 run.save_artifact('resnet-tll')
 ```
 
-Specifically, the code snippet describes the following steps:
+This code logs into Jina AI Cloud, then connects to your run by name. After that, it does the following:
+  * Monitors the status of the run and prints out the logs.
+  * Saves the model once fine-tuning is done.
 
-  * Login to Jina AI Cloud.
-  * Select backbone model, training and evaluation data for your evaluation callback.
-  * Start the cloud run.
-  * Monitor the status: check the status and logs of the run.
-  * Save model for further use and integration.
+## Using Finetuner to encode
 
-
-Finally, you can use the model to encode images:
+Finetuner has interfaces for using models to do encoding:
 
 ```python
 import finetuner
@@ -201,15 +214,18 @@ embeddings = finetuner.encode(model=model, data=images)
 
 ## Training on your own data
 
-If you want to train a model using your own dataset instead of one on the Jina AI Cloud, you can provide labeled data in a CSV file in the following way:
+If you want to train a model using your own dataset instead of one on the Jina AI Cloud, you can provide labeled data in a CSV file.
+
+A CSV file is a tab or comma-delimited plain text file. For example:
 
 ```plaintext
 This is an apple    apple_label
 This is a pear      pear_label
 ...
 ```
+The file should have two columns: The first for the data and the second for the category label.
 
-You can then provide the path to your CSV file as your training data:
+You can then provide a path to a CSV file as training data for Finetuner:
 
 ```python
 run = finetuner.fit(
@@ -218,7 +234,7 @@ run = finetuner.fit(
     train_data='path/to/some/data.csv',
 )
 ```
-More information on providing your own training data is found in the [Prepare Training Data](https://finetuner.jina.ai/walkthrough/create-training-data/) section of the [walkthrough](https://finetuner.jina.ai/walkthrough/).
+More information on providing your own training data is found in the [Prepare Training Data](https://finetuner.jina.ai/walkthrough/create-training-data/) section of the [Finetuner documentation](https://finetuner.jina.ai/).
 
 
 
@@ -230,7 +246,7 @@ More information on providing your own training data is found in the [Prepare Tr
   - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/notebooks/image_to_image/)
   - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/notebooks/text_to_image/)
 
-Intrigued? That's only scratching the surface of what Finetuner is capable of. [Read our docs to learn more](https://finetuner.jina.ai/).
+[Read our documentation](https://finetuner.jina.ai/) to learn more about what Finetuner can do.
 
 <!-- start support-pitch -->
 ## Support
@@ -247,6 +263,9 @@ Intrigued? That's only scratching the surface of what Finetuner is capable of. [
 
 ## Join Us
 
-Finetuner is backed by [Jina AI](https://jina.ai) and licensed under [Apache-2.0](./LICENSE). [We are actively hiring](https://jobs.jina.ai) AI engineers, solution engineers to build the next neural search ecosystem in opensource.
+Finetuner is backed by [Jina AI](https://jina.ai) and licensed under [Apache-2.0](./LICENSE). 
+
+[We are actively hiring](https://jobs.jina.ai) AI engineers and solution engineers to build the next generation of
+open-source AI ecosystems.
 
 <!-- end support-pitch -->
