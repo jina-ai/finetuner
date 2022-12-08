@@ -31,7 +31,7 @@ domain-specific neural search applications.
 🔱 **Simple yet powerful**: easy access to 40+ mainstream loss functions, 10+ optimisers, layer pruning, weight 
 freezing, dimensionality reduction, hard-negative mining, cross-modal models, and distributed training. 
 
-☁ **All-in-cloud**: train using our free GPU, manage runs, experiments and artifacts on Jina AI Cloud without worrying 
+☁ **All-in-cloud**: train using our free GPU infrastructure, manage runs, experiments and artifacts on Jina AI Cloud without worrying 
 about resource availability, complex integration, or scalable infrastructure.
 
 <!-- end elevator-pitch -->
