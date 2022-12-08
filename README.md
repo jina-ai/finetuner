@@ -15,7 +15,7 @@
 <a href="https://pypistats.org/packages/finetuner"><img alt="PyPI - Downloads from official pypistats" src="https://img.shields.io/pypi/dm/finetuner?style=flat-square"></a>
 <a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-3.6k-blueviolet?logo=slack&amp;logoColor=white&style=flat-square"></a>
 </p>
-
+gho
 <!-- start elevator-pitch -->
 
 Fine-tuning is an effective way to improve performance on neural search tasks. However, setting up and performing 
@@ -102,7 +102,7 @@ without worrying about resource availability, complex integration, or infrastruc
 </tbody>
 </table>
 
-<sub><sup>All metrics were evaluated for k@20 after training for 5 epochs using the Adam optimizer with learning rates of 1e-4 for ResNet, 1e-7 for CLIP and 1e-5 for the BERT models.</sup></sub>
+<span style="font-size:small">All metrics were evaluated for k@20 after training for 5 epochs using the Adam optimizer with learning rates of 1e-4 for ResNet, 1e-7 for CLIP and 1e-5 for the BERT models.</span>
 
 <!-- start install-instruction -->
 
