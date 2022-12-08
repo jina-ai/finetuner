@@ -115,7 +115,7 @@ pip install -U finetuner
 ```
 
 If you want to encode `docarray.DocumentArray` objects with the `finetuner.encode` function, you will need to install 
-`"finetuner[full]"`. This includes a number of additional dependencies, which are necessary for encoding: Torch, 
+`"finetuner[full]"`. This includes a number of additional dependencies, which are necessary for encoding: torch, 
 torchvision and OpenCLIP:
 
 ```bash
