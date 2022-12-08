@@ -102,7 +102,7 @@ without worrying about resource availability, complex integration, or infrastruc
 </tbody>
 </table>
 
-<span style="font-size:small">All metrics were evaluated for k@20 after training for 5 epochs using the Adam optimizer with learning rates of 1e-4 for ResNet, 1e-7 for CLIP and 1e-5 for the BERT models.</span>
+<sub><sup>All metrics were evaluated for k@20 after training for 5 epochs using the Adam optimizer with learning rates of 1e-4 for ResNet, 1e-7 for CLIP and 1e-5 for the BERT models.</sup></sub>
 
 <!-- start install-instruction -->
 
