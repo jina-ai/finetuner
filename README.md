@@ -18,8 +18,8 @@
 
 <!-- start elevator-pitch -->
 
-Fine-tuning is an effective way to improve performance on neural search tasks. However, it can be very difficult for
-many deep learning engineers to do.
+Fine-tuning is an effective way to improve performance on neural search tasks. However, setting up and performing 
+fine-tuning can be very time-consuming and resource-intensive.
 
 Jina AI's Finetuner makes fine-tuning easier and faster by streamlining the workflow and handling all complexity and 
 infrastructure in the cloud. With Finetuner, one can easily enhance the performance of pre-trained models, making them 
@@ -31,8 +31,8 @@ domain-specific neural search applications.
 🔱 **Simple yet powerful**: easy access to 40+ mainstream loss functions, 10+ optimisers, layer pruning, weight 
 freezing, dimensionality reduction, hard-negative mining, cross-modal models, and distributed training. 
 
-☁ **All-in-cloud**: train using our free GPU infrastructure, manage runs, experiments and artifacts on Jina AI Cloud without worrying 
-about resource availability, complex integration, or scalable infrastructure.
+☁ **All-in-cloud**: train using our free GPU infrastructure, manage runs, experiments and artifacts on Jina AI Cloud
+without worrying about resource availability, complex integration, or infrastructure costs.
 
 <!-- end elevator-pitch -->
 
@@ -106,7 +106,7 @@ about resource availability, complex integration, or scalable infrastructure.
 
 <!-- start install-instruction -->
 
-## Installation
+## Install
 
 Make sure you have Python 3.7+ installed. Finetuner can be installed via `pip` by executing:
 
@@ -114,9 +114,9 @@ Make sure you have Python 3.7+ installed. Finetuner can be installed via `pip` b
 pip install -U finetuner
 ```
 
-If you want to encode `docarray.DocumentArray` objects with the `finetuner.encode` function, you will need to install 
-`"finetuner[full]"`. This includes a number of additional dependencies, which are necessary for encoding: torch, 
-torchvision and OpenCLIP:
+If you want to encode `docarray.DocumentArray` objects with the `finetuner.encode` function, you need to install 
+`"finetuner[full]"`. This includes a number of additional dependencies, which are necessary for encoding: Torch, 
+Torchvision and OpenCLIP:
 
 ```bash
 pip install "finetuner[full]"
@@ -158,9 +158,9 @@ run = finetuner.fit(
 ```
 This code snippet describes the following steps:
 
-* Login to Jina AI Cloud.
-* Select backbone model, training and evaluation data for your evaluation callback.
-* Start the cloud run.
+1. Log in to Jina AI Cloud.
+2. Select backbone model, training and evaluation data for your evaluation callback.
+3. Start the cloud run.
 
 You can also pass data to Finetuner as a CSV file or a `DocumentArray` object, as described [in the Finetuner documentation](https://finetuner.jina.ai/walkthrough/create-training-data/).  
 
