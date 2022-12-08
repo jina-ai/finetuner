@@ -134,7 +134,7 @@ pip install "finetuner[full]"
 ## Get Started
 
 The following code snippet describes how to fine-tune ResNet50 on the [_Totally Looks Like_ dataset](https://sites.google.com/view/totally-looks-like-dataset). 
-You can run it as-is. The model and training data are already hosted in Jina AI Cloud and the Finetuner server will 
+You can run it as-is. The model and training data are already hosted in Jina AI Cloud and Finetuner will 
 download them automatically.
 (NB: If there is already a run called `resnet50-tll-run`, choose a different run-name in the code below.)
 
