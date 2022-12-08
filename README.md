@@ -184,7 +184,7 @@ This code logs into Jina AI Cloud, then connects to your run by name. After that
   * Monitors the status of the run and prints out the logs.
   * Saves the model once fine-tuning is done.
 
-## Using Finetuner to do encoding
+## Using Finetuner to encode
 
 Finetuner has interfaces for using models to do encoding:
 
