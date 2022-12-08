@@ -165,7 +165,7 @@ This code snippet describes the following steps:
 You can also pass data to Finetuner as a CSV file or a `DocumentArray` object, as described [in the Finetuner documentation](https://finetuner.jina.ai/walkthrough/create-training-data/).  
 
 Depending on the data, task, model, metaparameters, fine-tuning might take some time to finish. You can leave your jobs 
-to run on the Jina AI Cloud, and later reconnect to it, using code like this below:
+to run on the Jina AI Cloud, and later reconnect to them, using code like this below:
 
 ```python
 import finetuner
