@@ -10,17 +10,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `val_split` parameter to `fit` function. ([#624](https://github.com/jina-ai/finetuner/pull/624))
+
+- Add `core-ci` workflow to remotely run the ci of finetuner-core. ([#628](https://github.com/jina-ai/finetuner/pull/628))
+
 ### Removed
 
 ### Changed
 
 ### Fixed
 
+- Correctly infer the type of models created using `get_model` in the `build_encoding_dataset` function. )[#623](https://github.com/jina-ai/finetuner/pull/623))
+
 ### Docs
 
 - Add before and after section to the example notebooks. ([#622](https://github.com/jina-ai/finetuner/pull/622))
 
 - Align text-to-image notebook with its corresponding markdown file. ([#621](https://github.com/jina-ai/finetuner/pull/621))
+
+- Change hint in notebooks to use `load_uri_to_blob` instead of `load_uri_to_image_tensor`. ([#625](https://github.com/jina-ai/finetuner/pull/625))
 
 
 ## [0.6.7] - 2022-11-25

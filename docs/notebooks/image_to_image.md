@@ -49,10 +49,7 @@ we already prepared the data, and we'll provide the names of training data (`tll
 
 ```{important} 
 We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
-```
-
-```{important}
-When working with Document where images are stored locally, please call `doc.load_uri_to_image_tensor(width=224, height=224)` or another image shape to reduce network transmission and speed up training.
+When working with documents where images are stored locally, please call `doc.load_uri_to_blob()` to reduce network transmission and speed up training.
 ```
 <!-- #endregion -->
 
@@ -210,7 +207,7 @@ query.match(index_data, limit=10, metric='cosine')
 
 <!-- #region -->
 ## Before and after
-We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, some of the examples below (such as the the second example) show that the model after fine-tuning is able to better match similar images.
+We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, some of the examples the examples below (such as the the second example) show that the model after fine-tuning is able to better match similar images.
 
 ```python
 import copy
@@ -246,7 +243,13 @@ for i, (doc_pt, doc_ft) in enumerate(zip(query_pt, query_ft)):
         display(Image.open(BytesIO(doc_ft.matches[0].blob)))
 ```
 
-![image-image-example](images/image-image-example.png)
+To save you some time, we have plotted some examples where the model's ability to return similar images has clearly improved:
+
+![image-image-triplets-good](images/image-image-triplets-good.png)
+
+On the other hand, there are also cases where the fine-tuned model performs worse, and fails to correctly match images that it previously could. This case is much rarer than the the previous case, but it still can happen:
+
+![image-image-triplets-bad](images/image-image-triplets-bad.png)
 <!-- #endregion -->
 
 
