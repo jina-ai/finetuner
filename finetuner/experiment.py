@@ -89,12 +89,15 @@ class Experiment:
         )
         return run
 
-    def list_runs(self) -> List[Run]:
+    def list_runs(self, size: int = 50) -> List[Run]:
         """List every run inside the experiment.
 
+        :param size: Number of runs to retrieve.
         :return: List of `Run` objects.
         """
-        run_infos = self._client.list_runs(experiment_name=self._name)['items']
+        run_infos = self._client.list_runs(experiment_name=self._name, size=size)[
+            'items'
+        ]
         return [
             Run(
                 name=run_info[NAME],

@@ -267,16 +267,16 @@ def get_run(run_name: str, experiment_name: Optional[str] = None) -> Run:
     return ft.get_run(run_name=run_name, experiment_name=experiment_name)
 
 
-def list_runs(experiment_name: Optional[str] = None) -> List[Run]:
+def list_runs(experiment_name: Optional[str] = None, size: int = 50) -> List[Run]:
     """List every run.
 
     If an experiment name is not specified, we'll list every run across all
     experiments.
 
     :param experiment_name: Optional name of the experiment.
-    :return: A list of `Run` objects.
+    :param size: Number of runs to retrieve.
     """
-    return ft.list_runs(experiment_name=experiment_name)
+    return ft.list_runs(experiment_name=experiment_name, size=size)
 
 
 def delete_run(run_name: str, experiment_name: Optional[str] = None) -> None:

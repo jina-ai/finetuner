@@ -229,13 +229,16 @@ class Finetuner:
         return experiment.get_run(name=run_name)
 
     @login_required
-    def list_runs(self, experiment_name: Optional[str] = None) -> List[Run]:
+    def list_runs(
+        self, experiment_name: Optional[str] = None, size: int = 50
+    ) -> List[Run]:
         """List every run.
 
         If an experiment name is not specified, we'll list every run across all
         experiments.
 
         :param experiment_name: Optional name of the experiment.
+        :param size: Number of runs to retrieve.
         :return: A list of `Run` objects.
         """
         if not experiment_name:
@@ -244,7 +247,7 @@ class Finetuner:
             experiments = [self.get_experiment(name=experiment_name)]
         runs = []
         for experiment in experiments:
-            runs.extend(experiment.list_runs())
+            runs.extend(experiment.list_runs(size=size))
         return runs
 
     @login_required

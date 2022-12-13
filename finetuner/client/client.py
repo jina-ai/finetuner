@@ -94,11 +94,14 @@ class FinetunerV1Client(_BaseClient):
         )
         return self._handle_request(url=url, method=GET)
 
-    def list_runs(self, experiment_name: Optional[str] = None) -> List[dict]:
+    def list_runs(
+        self, experiment_name: Optional[str] = None, size: int = 50
+    ) -> List[dict]:
         """List all created runs inside a given experiment.
 
         If no experiment is specified, list runs for all available experiments.
         :param experiment_name: The name of the experiment.
+        :param size: Number of runs to retrieve.
         :return: List of all runs.
         """
         if not experiment_name:
@@ -107,6 +110,8 @@ class FinetunerV1Client(_BaseClient):
             url = self._construct_url(
                 self._base_url, API_VERSION, EXPERIMENTS, experiment_name, RUNS
             )
+        if size:
+            url += f'?size={size}'
         return self._handle_request(url=url, method=GET)
 
     def delete_run(self, experiment_name: str, run_name: str) -> dict:
