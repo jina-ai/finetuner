@@ -322,9 +322,13 @@ def get_experiment(name: str) -> Experiment:
     return ft.get_experiment(name=name)
 
 
-def list_experiments() -> List[Experiment]:
-    """List every experiment."""
-    return ft.list_experiments()
+def list_experiments(size: int = 50) -> List[Experiment]:
+    """List every experiment.
+
+    :param size: The number of experiments to retrieve.
+    :return: A list of :class:`Experiment`.
+    """
+    return ft.list_experiments(size=size)
 
 
 def delete_experiment(name: str) -> Experiment:

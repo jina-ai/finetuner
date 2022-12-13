@@ -89,9 +89,13 @@ class Finetuner:
         )
 
     @login_required
-    def list_experiments(self) -> List[Experiment]:
-        """List every experiment."""
-        experiment_infos = self._client.list_experiments()
+    def list_experiments(self, size: int = 50) -> List[Experiment]:
+        """List every experiment.
+
+        :param size: The number of experiments to retrieve.
+        :return: A list of :class:`Experiment`.
+        """
+        experiment_infos = self._client.list_experiments(size=size)['items']
 
         return [
             Experiment(
