@@ -59,9 +59,9 @@ class FinetunerV1Client(_BaseClient):
         :param size: The number of experiments to retrieve.
         :return: A list of :class:`Experiment`.
         """
+        params = {'size': size}
         url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS)
-        url += f'?size={size}'
-        return self._handle_request(url=url, method=GET)
+        return self._handle_request(url=url, method=GET, params=params)
 
     def delete_experiment(self, name: str) -> dict:
         """Delete an experiment given its name.
@@ -110,9 +110,8 @@ class FinetunerV1Client(_BaseClient):
             url = self._construct_url(
                 self._base_url, API_VERSION, EXPERIMENTS, experiment_name, RUNS
             )
-        if size:
-            url += f'?size={size}'
-        return self._handle_request(url=url, method=GET)
+        params = {'size': size}
+        return self._handle_request(url=url, method=GET, params=params)
 
     def delete_run(self, experiment_name: str, run_name: str) -> dict:
         """Delete a run by its name and experiment.
