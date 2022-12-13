@@ -94,7 +94,7 @@ class Experiment:
 
         :return: List of `Run` objects.
         """
-        run_infos = self._client.list_runs(experiment_name=self._name)
+        run_infos = self._client.list_runs(experiment_name=self._name)['items']
         return [
             Run(
                 name=run_info[NAME],

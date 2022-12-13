@@ -102,18 +102,12 @@ class FinetunerV1Client(_BaseClient):
         :return: List of all runs.
         """
         if not experiment_name:
-            target_experiments = [
-                experiment[NAME] for experiment in self.list_experiments()
-            ]
+            url = self._construct_url(self._base_url, API_VERSION, RUNS, RUNS)
         else:
-            target_experiments = [experiment_name]
-        response = []
-        for experiment_name in target_experiments:
             url = self._construct_url(
                 self._base_url, API_VERSION, EXPERIMENTS, experiment_name, RUNS
             )
-            response.extend(self._handle_request(url=url, method=GET))
-        return response
+        return self._handle_request(url=url, method=GET)
 
     def delete_run(self, experiment_name: str, run_name: str) -> dict:
         """Delete a run by its name and experiment.
