@@ -32,6 +32,10 @@ class CSVOptions:
         should be assigned to the item in the first column (True), or if it is another
         item that should be semantically close to the first (False).
     :param convert_to_blob: Whether uris to local files should be converted to blobs
+    :param create_point_clouds: Determines the number of points sampled from a mesh to
+        create a point cloud.
+    :param point_cloud_size: Determines the number of points sampled from a mesh to
+        create a point cloud.
     """
 
     size: Optional[int] = None
@@ -40,6 +44,8 @@ class CSVOptions:
     encoding: str = 'utf-8'
     is_labeled: bool = False
     convert_to_blob: bool = True
+    create_point_clouds: bool = True
+    point_cloud_size: int = 2048
 
 
 def build_finetuning_dataset(
@@ -51,7 +57,9 @@ def build_finetuning_dataset(
     and a :class:`DocumentArray` is created.
     """
     if isinstance(data, (TextIO)) or (isinstance(data, str) and isfile(data)):
-        model_stub = get_stub(model, select_model='clip-text')
+        model_stub = get_stub(
+            model, select_model='clip-text'
+        )  # for clip select_model is mandatory, though any model will get us the task
         data = DocumentArray(
             load_finetune_data_from_csv(
                 file=data,
@@ -125,17 +133,33 @@ def load_finetune_data_from_csv(
         artificial_label = 0
         t1, t2 = None, None
 
-        for col1, col2 in _subsample(lines, options.size, options.sampling_rate):
+        for columns in _subsample(lines, options.size, options.sampling_rate):
+            if columns:
+                col1, col2 = columns
+            else:
+                continue  # skip empty lines
             if not t1:  # determining which column contains images
                 t1, t2 = check_columns(task, col1, col2)
 
-            d1 = create_document(t1, col1, options.convert_to_blob)
+            d1 = create_document(
+                t1,
+                col1,
+                options.convert_to_blob,
+                options.create_point_clouds,
+                point_cloud_size=options.point_cloud_size,
+            )
 
             if options.is_labeled:
                 label = col2
                 d2 = None
             else:
-                d2 = create_document(t2, col2, options.convert_to_blob)
+                d2 = create_document(
+                    t2,
+                    col2,
+                    options.convert_to_blob,
+                    options.create_point_clouds,
+                    point_cloud_size=options.point_cloud_size,
+                )
 
             if d2 is None:
                 d1.tags[DEFAULT_TAG_KEY] = label
@@ -196,19 +220,33 @@ def create_document(
     modality: str,
     column: str,
     convert_to_blob: bool,
+    create_point_clouds: bool,
+    point_cloud_size: int = 2048,
 ) -> Document:
     """Checks the expected modality of the value in the given column
         and creates a :class:`Document` with that value
 
     :param modality: The expected modality of the value in the given column
     :param column: A single value of a column
-    :convert_to_blob: Whether uris to local files should be converted to blobs
+    :param convert_to_blob: Whether uris to local image files should be converted to
+        blobs.
+    :param create_point_clouds: Whether from uris to local 3D mesh files should point
+        clouds be sampled.
+    :param point_cloud_size: Determines the number of points sampled from a mesh to
+        create a point cloud.
     """
     if modality == 'image':
         if _is_uri(column):
             doc = Document(uri=column)
             if convert_to_blob and os.path.isfile(column):
                 doc.load_uri_to_blob()
+        else:
+            raise ValueError(f'Expected uri in column 1, got {column}')
+    elif modality == 'mesh':
+        if _is_uri(column):
+            doc = Document(uri=column)
+            if create_point_clouds and os.path.isfile(column):
+                doc.load_uri_to_point_cloud_tensor(point_cloud_size)
         else:
             raise ValueError(f'Expected uri in column 1, got {column}')
     else:
