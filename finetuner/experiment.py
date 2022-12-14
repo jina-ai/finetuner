@@ -1,4 +1,3 @@
-import warnings
 from dataclasses import fields
 from typing import Any, Dict, List, Optional, TextIO, Union
 
@@ -11,7 +10,6 @@ from finetuner.constants import (
     BATCH_SIZE,
     CALLBACKS,
     CONFIG,
-    CPU,
     CREATED_AT,
     DESCRIPTION,
     DEVICE,
@@ -32,6 +30,7 @@ from finetuner.constants import (
     OUTPUT_DIM,
     PUBLIC,
     SCHEDULER_STEP,
+    VAL_SPLIT,
 )
 from finetuner.data import build_finetuning_dataset
 from finetuner.hubble import push_data
@@ -77,33 +76,41 @@ class Experiment:
         :param name: Name of the run.
         :return: A `Run` object.
         """
-        run_info = self._client.get_run(experiment_name=self._name, run_name=name)
+        run = self._client.get_run(experiment_name=self._name, run_name=name)
         run = Run(
-            name=run_info[NAME],
-            config=run_info[CONFIG],
-            created_at=run_info[CREATED_AT],
-            description=run_info[DESCRIPTION],
+            name=run[NAME],
+            config=run[CONFIG],
+            created_at=run[CREATED_AT],
+            description=run[DESCRIPTION],
             experiment_name=self._name,
             client=self._client,
         )
         return run
 
-    def list_runs(self) -> List[Run]:
-        """List every run inside the experiment.
+    def list_runs(self, page: int = 50, size: int = 50) -> List[Run]:
+        """List every run.
 
-        :return: List of `Run` objects.
+        :param page: The page index.
+        :param size: The number of runs to retrieve per page.
+        :return: A list of :class:`Run` instance.
+
+        ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+            the 50 runs in the first page. To get 50-100, set `page` as 2.
+        ..note:: The maximum number for `size` per page is 100.
         """
-        run_infos = self._client.list_runs(experiment_name=self._name)
+        runs = self._client.list_runs(experiment_name=self._name, page=page, size=size)[
+            'items'
+        ]
         return [
             Run(
-                name=run_info[NAME],
-                config=run_info[CONFIG],
-                created_at=run_info[CREATED_AT],
-                description=run_info[DESCRIPTION],
+                name=run[NAME],
+                config=run[CONFIG],
+                created_at=run[CREATED_AT],
+                description=run[DESCRIPTION],
                 experiment_name=self._name,
                 client=self._client,
             )
-            for run_info in run_infos
+            for run in runs
         ]
 
     def delete_run(self, name: str):
@@ -177,15 +184,9 @@ class Experiment:
         device = kwargs.get(DEVICE, 'cuda')
         if device == 'cuda':
             device = 'gpu'
-            if kwargs.get(CPU, True):
-                warnings.warn(
-                    message='Parameter `cpu` will be deprecated from Finetuner 0.7.0,'
-                    'please use `device="cpu" or `device="cuda" instead.`',
-                    category=DeprecationWarning,
-                )
 
         num_workers = kwargs.get(NUM_WORKERS, 4)
-        run_info = self._client.create_run(
+        run = self._client.create_run(
             run_name=run_name,
             experiment_name=self._name,
             run_config=config,
@@ -195,11 +196,11 @@ class Experiment:
         )
         run = Run(
             client=self._client,
-            name=run_info[NAME],
+            name=run[NAME],
             experiment_name=self._name,
-            config=run_info[CONFIG],
-            created_at=run_info[CREATED_AT],
-            description=run_info[DESCRIPTION],
+            config=run[CONFIG],
+            created_at=run[CREATED_AT],
+            description=run[DESCRIPTION],
         )
         return run
 
@@ -247,6 +248,7 @@ class Experiment:
         data = config.DataConfig(
             train_data=train_data,
             eval_data=kwargs.get(EVAL_DATA),
+            val_split=kwargs.get(VAL_SPLIT, 0.0),
             num_items_per_class=kwargs.get(NUM_ITEMS_PER_CLASS, 4),
         )
         if kwargs.get(NUM_WORKERS):

@@ -85,7 +85,7 @@ build-sdist:
 
 # ---------------------------------------------------------------- Test related targets
 
-PYTEST_ARGS = --show-capture no --full-trace --verbose --cov finetuner/ --cov-report term-missing --cov-report html
+PYTEST_ARGS = --show-capture no --verbose --cov finetuner/ --cov-report term-missing --cov-report html
 
 ## Run tests
 test:

@@ -48,15 +48,6 @@ def login(force: bool = False, interactive: Optional[bool] = None):
     ft.login(force=force, interactive=interactive)
 
 
-def notebook_login(force: bool = False):
-    warnings.warn(
-        message='Function `notebook_login` will be deprecated from Finetuner 0.7.0,'
-        'please use `login(interactive=True)` instead.',
-        category=DeprecationWarning,
-    )
-    ft.login(force=force, interactive=True)
-
-
 def list_callbacks() -> Dict[str, callback.CallbackStubType]:
     """List available callbacks."""
     return {
@@ -115,6 +106,7 @@ def fit(
     model: str,
     train_data: Union[str, TextIO, DocumentArray],
     eval_data: Optional[Union[str, TextIO, DocumentArray]] = None,
+    val_split: float = 0.0,
     run_name: Optional[str] = None,
     description: Optional[str] = None,
     experiment_name: Optional[str] = None,
@@ -131,7 +123,6 @@ def fit(
     scheduler_step: str = 'batch',
     freeze: bool = False,
     output_dim: Optional[int] = None,
-    cpu: bool = True,
     device: str = 'cuda',
     num_workers: int = 4,
     to_onnx: bool = False,
@@ -147,6 +138,10 @@ def fit(
         `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
     :param eval_data: Either a `DocumentArray` for evaluation data, a name of the
         `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
+    :param val_split: Determines which portion of the `train_data` is held out
+        for calculating a validation loss. If it is set to 0, or an `eval_data`
+        parameter is provided, no data is held out from the training data. Instead, the
+        `eval_data` is used to calculate the validation loss if it is provided.
     :param run_name: Name of the run.
     :param description: Run description.
     :param experiment_name: Name of the experiment.
@@ -191,8 +186,6 @@ def fit(
     :param freeze: If set to `True`, will freeze all layers except the last one.
     :param output_dim: The expected output dimension as `int`.
         If set, will attach a projection head.
-    :param cpu: Whether to use the CPU. If set to `False` a GPU will be used.
-        Will be deprecated from 0.7.0.
     :param device: Whether to use the CPU, if set to `cuda`, a Nvidia GPU will be used.
         otherwise use `cpu` to run a cpu job.
     :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
@@ -218,6 +211,7 @@ def fit(
         model=model,
         train_data=train_data,
         eval_data=eval_data,
+        val_split=val_split,
         run_name=run_name,
         description=description,
         experiment_name=experiment_name,
@@ -234,7 +228,6 @@ def fit(
         scheduler_step=scheduler_step,
         freeze=freeze,
         output_dim=output_dim,
-        cpu=cpu,
         device=device,
         num_workers=num_workers,
         to_onnx=to_onnx,
@@ -261,16 +254,22 @@ def get_run(run_name: str, experiment_name: Optional[str] = None) -> Run:
     return ft.get_run(run_name=run_name, experiment_name=experiment_name)
 
 
-def list_runs(experiment_name: Optional[str] = None) -> List[Run]:
-    """List every run.
+def list_runs(
+    experiment_name: Optional[str] = None, page: int = 1, size: int = 50
+) -> List[Run]:
+    """List all created runs inside a given experiment.
 
-    If an experiment name is not specified, we'll list every run across all
-    experiments.
+    If no experiment is specified, list runs for all available experiments.
+    :param experiment_name: The name of the experiment.
+    :param page: The page index.
+    :param size: Number of runs to retrieve.
+    :return: List of all runs.
 
-    :param experiment_name: Optional name of the experiment.
-    :return: A list of `Run` objects.
+    ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+        the 50 runs in the first page. To get 50-100, set `page` as 2.
+    ..note:: The maximum number for `size` per page is 100.
     """
-    return ft.list_runs(experiment_name=experiment_name)
+    return ft.list_runs(experiment_name=experiment_name, page=page, size=size)
 
 
 def delete_run(run_name: str, experiment_name: Optional[str] = None) -> None:
@@ -297,11 +296,11 @@ def delete_runs(experiment_name: Optional[str] = None) -> None:
     ft.delete_runs(experiment_name=experiment_name)
 
 
-def create_experiment(name: Optional[str] = None) -> Experiment:
+def create_experiment(name: str = 'default') -> Experiment:
     """Create an experiment.
 
-    :param name: Optional name of the experiment. If `None`,
-        the experiment is named after the current directory.
+    :param name: The name of the experiment. If not provided,
+        the experiment is named as `default`.
     :return: An `Experiment` object.
     """
     return ft.create_experiment(name=name)
@@ -316,9 +315,18 @@ def get_experiment(name: str) -> Experiment:
     return ft.get_experiment(name=name)
 
 
-def list_experiments() -> List[Experiment]:
-    """List every experiment."""
-    return ft.list_experiments()
+def list_experiments(page: int = 1, size: int = 50) -> List[Experiment]:
+    """List every experiment.
+
+    :param page: The page index.
+    :param size: The number of experiments to retrieve.
+    :return: A list of :class:`Experiment` instance.
+
+    ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+        the 50 experiments in the first page. To get 50-100, set `page` as 2.
+    ..note:: The maximum number for `size` per page is 100.
+    """
+    return ft.list_experiments(page=page, size=size)
 
 
 def delete_experiment(name: str) -> Experiment:

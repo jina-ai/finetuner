@@ -1,4 +1,4 @@
-from typing import Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 import pkg_resources
 
@@ -32,7 +32,9 @@ class FinetunerV1Client(_BaseClient):
 
     """ Experiment API """
 
-    def create_experiment(self, name: str, description: Optional[str] = '') -> dict:
+    def create_experiment(
+        self, name: str = 'default', description: Optional[str] = ''
+    ) -> Dict[str, Any]:
         """Create a new experiment.
 
         :param name: The name of the experiment.
@@ -53,15 +55,23 @@ class FinetunerV1Client(_BaseClient):
         url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS, name)
         return self._handle_request(url=url, method=GET)
 
-    def list_experiments(self) -> List[dict]:
-        """List all available experiments.
+    def list_experiments(self, page: int = 1, size: int = 50) -> Dict[str, Any]:
+        """List every experiment.
 
-        :return: List of all experiments.
+        :param page: The page index.
+        :param size: The number of experiments to retrieve.
+        :return: Paginated results as a dict, where `items` are the `Experiment`s being
+            retrieved.
+
+        ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+            the 50 experiments in the first page. To get 50-100, set `page` as 2.
+        ..note:: The maximum number for `size` per page is 100.
         """
+        params = {'page': page, 'size': size}
         url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS)
-        return self._handle_request(url=url, method=GET)
+        return self._handle_request(url=url, method=GET, params=params)
 
-    def delete_experiment(self, name: str) -> dict:
+    def delete_experiment(self, name: str) -> Dict[str, Any]:
         """Delete an experiment given its name.
 
         :param name: The name of the experiment.
@@ -92,28 +102,32 @@ class FinetunerV1Client(_BaseClient):
         )
         return self._handle_request(url=url, method=GET)
 
-    def list_runs(self, experiment_name: Optional[str] = None) -> List[dict]:
+    def list_runs(
+        self, experiment_name: Optional[str] = None, page: int = 50, size: int = 50
+    ) -> Dict[str, Any]:
         """List all created runs inside a given experiment.
 
         If no experiment is specified, list runs for all available experiments.
         :param experiment_name: The name of the experiment.
-        :return: List of all runs.
+        :param page: The page index.
+        :param size: Number of runs to retrieve.
+        :return: Paginated results as a dict, where `items` are the `Runs` being
+            retrieved.
+
+        ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+            the 50 runs in the first page. To get 50-100, set `page` as 2.
+        ..note:: The maximum number for `size` per page is 100.
         """
         if not experiment_name:
-            target_experiments = [
-                experiment[NAME] for experiment in self.list_experiments()
-            ]
+            url = self._construct_url(self._base_url, API_VERSION, RUNS, RUNS)
         else:
-            target_experiments = [experiment_name]
-        response = []
-        for experiment_name in target_experiments:
             url = self._construct_url(
                 self._base_url, API_VERSION, EXPERIMENTS, experiment_name, RUNS
             )
-            response.extend(self._handle_request(url=url, method=GET))
-        return response
+        params = {'page': page, 'size': size}
+        return self._handle_request(url=url, method=GET, params=params)
 
-    def delete_run(self, experiment_name: str, run_name: str) -> dict:
+    def delete_run(self, experiment_name: str, run_name: str) -> Dict[str, Any]:
         """Delete a run by its name and experiment.
 
         :param experiment_name: The name of the experiment.

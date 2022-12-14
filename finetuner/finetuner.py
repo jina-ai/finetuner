@@ -1,4 +1,3 @@
-import os
 from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
@@ -7,6 +6,7 @@ import hubble
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
 from finetuner.data import CSVOptions
+from finetuner.excepts import FinetunerServerError
 from finetuner.experiment import Experiment
 from finetuner.run import Run
 from hubble import login_required
@@ -18,25 +18,19 @@ class Finetuner:
     def __init__(self):
         self._client = None
         self._default_experiment = None
+        self._default_experiment_name = 'default'
 
     def login(self, force: bool = False, interactive: Optional[bool] = None):
         """Login to Hubble account, initialize a client object
         and create a default experiment.
 
         :param force: If set to true, overwrite token and re-login.
-        :param interactive: If set to true, will use `notebook_login` as interactive
-            mode.
 
         Note: Calling `login` is necessary for using finetuner.
         """
         hubble.login(
             force=force, post_success=self._init_state, interactive=interactive
         )
-
-    @staticmethod
-    def _get_cwd() -> str:
-        """Returns current working directory."""
-        return os.getcwd().split('/')[-1]
 
     @login_required
     def _init_state(self):
@@ -47,29 +41,29 @@ class Finetuner:
     def _get_default_experiment(self) -> Experiment:
         """Create or retrieve (if it already exists) a default experiment
         for the current working directory."""
-        experiment_name = self._get_cwd()
         for experiment in self.list_experiments():
-            if experiment.name == experiment_name:
+            if experiment.name == self._default_experiment_name:
                 return experiment
-        return self.create_experiment(name=experiment_name)
+        return self.create_experiment(name=self._default_experiment_name)
 
     @login_required
-    def create_experiment(self, name: Optional[str] = None) -> Experiment:
+    def create_experiment(self, name: str = 'default') -> Experiment:
         """Create an experiment.
 
         :param name: Optional name of the experiment. If `None`,
             the experiment is named after the current directory.
         :return: An `Experiment` object.
         """
-        if not name:
-            name = self._get_cwd()
-        experiment_info = self._client.create_experiment(name=name)
+        try:
+            experiment = self._client.get_experiment(name=name)
+        except FinetunerServerError:
+            experiment = self._client.create_experiment(name=name)
         return Experiment(
             client=self._client,
-            name=experiment_info[NAME],
-            status=experiment_info[STATUS],
-            created_at=experiment_info[CREATED_AT],
-            description=experiment_info[DESCRIPTION],
+            name=experiment[NAME],
+            status=experiment[STATUS],
+            created_at=experiment[CREATED_AT],
+            description=experiment[DESCRIPTION],
         )
 
     @login_required
@@ -79,29 +73,38 @@ class Finetuner:
         :param name: Name of the experiment.
         :return: An `Experiment` object.
         """
-        experiment_info = self._client.get_experiment(name=name)
+        experiment = self._client.get_experiment(name=name)
         return Experiment(
             client=self._client,
-            name=experiment_info[NAME],
-            status=experiment_info[STATUS],
-            created_at=experiment_info[CREATED_AT],
-            description=experiment_info[DESCRIPTION],
+            name=experiment[NAME],
+            status=experiment[STATUS],
+            created_at=experiment[CREATED_AT],
+            description=experiment[DESCRIPTION],
         )
 
     @login_required
-    def list_experiments(self) -> List[Experiment]:
-        """List every experiment."""
-        experiment_infos = self._client.list_experiments()
+    def list_experiments(self, page: int = 1, size: int = 50) -> List[Experiment]:
+        """List every experiment.
+
+        :param page: The page index.
+        :param size: The number of experiments to retrieve.
+        :return: A list of :class:`Experiment` instance.
+
+        ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+            the 50 experiments in the first page. To get 50-100, set `page` as 2.
+        ..note:: The maximum number for `size` per page is 100.
+        """
+        experiments = self._client.list_experiments(page=page, size=size)['items']
 
         return [
             Experiment(
                 client=self._client,
-                name=experiment_info[NAME],
-                status=experiment_info[STATUS],
-                created_at=experiment_info[CREATED_AT],
-                description=experiment_info[DESCRIPTION],
+                name=experiment[NAME],
+                status=experiment[STATUS],
+                created_at=experiment[CREATED_AT],
+                description=experiment[DESCRIPTION],
             )
-            for experiment_info in experiment_infos
+            for experiment in experiments
         ]
 
     @login_required
@@ -110,13 +113,13 @@ class Finetuner:
         :param name: Name of the experiment.
         :return: Deleted experiment.
         """
-        experiment_info = self._client.delete_experiment(name=name)
+        experiment = self._client.delete_experiment(name=name)
         return Experiment(
             client=self._client,
-            name=experiment_info[NAME],
-            status=experiment_info[STATUS],
-            created_at=experiment_info[CREATED_AT],
-            description=experiment_info[DESCRIPTION],
+            name=experiment[NAME],
+            status=experiment[STATUS],
+            created_at=experiment[CREATED_AT],
+            description=experiment[DESCRIPTION],
         )
 
     @login_required
@@ -124,16 +127,16 @@ class Finetuner:
         """Delete every experiment.
         :return: List of deleted experiments.
         """
-        experiment_infos = self._client.delete_experiments()
+        experiments = self._client.delete_experiments()
         return [
             Experiment(
                 client=self._client,
-                name=experiment_info[NAME],
-                status=experiment_info[STATUS],
-                created_at=experiment_info[CREATED_AT],
-                description=experiment_info[DESCRIPTION],
+                name=experiment[NAME],
+                status=experiment[STATUS],
+                created_at=experiment[CREATED_AT],
+                description=experiment[DESCRIPTION],
             )
-            for experiment_info in experiment_infos
+            for experiment in experiments
         ]
 
     @login_required
@@ -142,6 +145,7 @@ class Finetuner:
         model: str,
         train_data: Union[str, DocumentArray],
         eval_data: Optional[Union[str, DocumentArray]] = None,
+        val_split: float = 0.0,
         run_name: Optional[str] = None,
         description: Optional[str] = None,
         experiment_name: Optional[str] = None,
@@ -158,7 +162,6 @@ class Finetuner:
         scheduler_step: str = 'batch',
         freeze: bool = False,
         output_dim: Optional[int] = None,
-        cpu: bool = True,
         device: str = 'cuda',
         num_workers: int = 4,
         to_onnx: bool = False,
@@ -181,6 +184,7 @@ class Finetuner:
             model=model,
             train_data=train_data,
             eval_data=eval_data,
+            val_split=val_split,
             run_name=run_name,
             description=description,
             model_options=model_options or {},
@@ -196,7 +200,6 @@ class Finetuner:
             scheduler_step=scheduler_step,
             freeze=freeze,
             output_dim=output_dim,
-            cpu=cpu,
             device=device,
             num_workers=num_workers,
             to_onnx=to_onnx,
@@ -223,14 +226,20 @@ class Finetuner:
         return experiment.get_run(name=run_name)
 
     @login_required
-    def list_runs(self, experiment_name: Optional[str] = None) -> List[Run]:
-        """List every run.
+    def list_runs(
+        self, experiment_name: Optional[str] = None, page: int = 1, size: int = 50
+    ) -> List[Run]:
+        """List all created runs inside a given experiment.
 
-        If an experiment name is not specified, we'll list every run across all
-        experiments.
+        If no experiment is specified, list runs for all available experiments.
+        :param experiment_name: The name of the experiment.
+        :param page: The page index.
+        :param size: Number of runs to retrieve.
+        :return: List of all runs.
 
-        :param experiment_name: Optional name of the experiment.
-        :return: A list of `Run` objects.
+        ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+            the 50 runs in the first page. To get 50-100, set `page` as 2.
+        ..note:: The maximum number for `size` per page is 100.
         """
         if not experiment_name:
             experiments = self.list_experiments()
@@ -238,7 +247,7 @@ class Finetuner:
             experiments = [self.get_experiment(name=experiment_name)]
         runs = []
         for experiment in experiments:
-            runs.extend(experiment.list_runs())
+            runs.extend(experiment.list_runs(page=page, size=size))
         return runs
 
     @login_required
