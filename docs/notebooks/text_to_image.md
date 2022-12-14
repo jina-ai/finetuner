@@ -7,7 +7,8 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.14.1
   kernelspec:
-    display_name: Python 3
+    display_name: 'Python 3.7.15 (''.venv'': venv)'
+    language: python
     name: python3
 ---
 
@@ -175,7 +176,9 @@ let's use the fine-tuned model to encode a new `Document`:
 
 ```python id="v95QsuEyzE-B"
 text_da = DocumentArray([Document(text='some text to encode')])
-image_da = DocumentArray([Document(uri='https://upload.wikimedia.org/wikipedia/commons/4/4e/Single_apple.png')])
+image_da = DocumentArray([Document(
+    uri='https://upload.wikimedia.org/wikipedia/commons/4/4e/Single_apple.png'
+    )])
 
 clip_text_encoder = finetuner.get_model(artifact=artifact, select_model='clip-text')
 clip_image_encoder = finetuner.get_model(artifact=artifact, select_model='clip-vision')
@@ -241,3 +244,67 @@ The value you set to `alpha` should be greater equal than 0 and less equal than 
 
 That's it! Check out [clip-as-service](https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models) to learn how to plug-in a fine-tuned CLIP model to our CLIP specific service.
 <!-- #endregion -->
+
+## Before and after
+We can directly compare the results of our fine-tuned model with a pre-trained clip model by displaying the matches each model has for the same query. While the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increases the quality of the search results:
+
+<!-- #region -->
+```python
+import copy
+from finetuner import build_model
+
+pt_query = copy.deepcopy(query_data)
+pt_index = copy.deepcopy(index_data)
+
+ft_query = copy.deepcopy(query_data)
+ft_index = copy.deepcopy(index_data)
+
+zero_shot_text_encoder = build_model(
+    name='openai/clip-vit-base-patch32',
+    select_model='clip-text',
+)
+zero_shot_image_encoder = build_model(
+    name='openai/clip-vit-base-patch32',
+    select_model='clip-vision',
+)
+
+finetuner.encode(model=zero_shot_text_encoder, data=pt_query)
+finetuner.encode(model=zero_shot_image_encoder, data=pt_index)
+
+finetuner.encode(model=clip_text_encoder, data=ft_query)
+finetuner.encode(model=clip_image_encoder, data=ft_index)
+
+pt_query.match(pt_index)
+ft_query.match(ft_index)
+
+def plot_matches(num_samples = 5):
+    seen = set()
+    for i, (pt_q, ft_q) in enumerate(zip(pt_query, ft_query)):
+        if i > num_samples: break
+        if pt_q.text in seen:
+            continue
+        seen.add(pt_q.text)
+        print((
+            f'results for query "{pt_q.text}"'
+            ' using a zero-shot model (top) and '
+            'the fine-tuned model (bottom):'
+        ))
+        pt_q.matches[:4].plot_image_sprites(fig_size=(3,3))
+        ft_q.matches[:4].plot_image_sprites(fig_size=(3,3))
+   
+plot_matches()
+
+
+```
+
+
+```plaintext
+Results for query: "nightingale tee jacket" using a zero-shot model (top) and the fine-tuned model (bottom)
+```
+![clip-example-pt](images/clip-example-pt.png)
+
+![clip-example-ft](images/clip-example-ft.png)
+
+<!-- #endregion -->
+
+
