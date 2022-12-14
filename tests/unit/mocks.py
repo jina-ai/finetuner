@@ -60,7 +60,12 @@ def create_client_mocker(mocker):
 
     def return_experiments(**_):
         names = ['first experiment', 'second experiment']
-        return [return_experiment(name=name) for name in names]
+        return {
+            'items': [return_experiment(name=name) for name in names],
+            'total': 0,
+            'page': 1,
+            'size': len(names),
+        }
 
     def return_status(**_):
         return {
@@ -80,7 +85,12 @@ def create_client_mocker(mocker):
 
     def return_runs(**_):
         names = ['first run', 'second run']
-        return [return_run(run_name=name) for name in names]
+        return {
+            'items': [return_run(run_name=name) for name in names],
+            'total': 0,
+            'page': 1,
+            'size': len(names),
+        }
 
     base_mocker = _create_base_mocker(mocker)
 
