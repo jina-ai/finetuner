@@ -89,13 +89,20 @@ class Experiment:
         )
         return run
 
-    def list_runs(self, size: int = 50) -> List[Run]:
-        """List every run inside the experiment.
+    def list_runs(self, page: int = 50, size: int = 50) -> List[Run]:
+        """List every run.
 
-        :param size: Number of runs to retrieve.
-        :return: List of `Run` objects.
+        :param page: The page index.
+        :param size: The number of runs to retrieve per page.
+        :return: A list of :class:`Run`.
+
+        ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+            the 50 runs in the first page. To get 50-100, set `page` as 2.
+        ..note:: The maximum number for `size` per page is 100.
         """
-        runs = self._client.list_runs(experiment_name=self._name, size=size)['items']
+        runs = self._client.list_runs(experiment_name=self._name, page=page, size=size)[
+            'items'
+        ]
         return [
             Run(
                 name=run[NAME],

@@ -85,13 +85,18 @@ class Finetuner:
         )
 
     @login_required
-    def list_experiments(self, size: int = 50) -> List[Experiment]:
+    def list_experiments(self, page: int = 1, size: int = 50) -> List[Experiment]:
         """List every experiment.
 
+        :param page: The page index.
         :param size: The number of experiments to retrieve.
         :return: A list of :class:`Experiment`.
+
+        ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+            the 50 experiments in the first page. To get 50-100, set `page` as 2.
+        ..note:: The maximum number for `size` per page is 100.
         """
-        experiments = self._client.list_experiments(size=size)['items']
+        experiments = self._client.list_experiments(page=page, size=size)['items']
 
         return [
             Experiment(
@@ -226,16 +231,19 @@ class Finetuner:
 
     @login_required
     def list_runs(
-        self, experiment_name: Optional[str] = None, size: int = 50
+        self, experiment_name: Optional[str] = None, page: int = 1, size: int = 50
     ) -> List[Run]:
-        """List every run.
+        """List all created runs inside a given experiment.
 
-        If an experiment name is not specified, we'll list every run across all
-        experiments.
-
-        :param experiment_name: Optional name of the experiment.
+        If no experiment is specified, list runs for all available experiments.
+        :param experiment_name: The name of the experiment.
+        :param page: The page index.
         :param size: Number of runs to retrieve.
-        :return: A list of `Run` objects.
+        :return: List of all runs.
+
+        ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+            the 50 runs in the first page. To get 50-100, set `page` as 2.
+        ..note:: The maximum number for `size` per page is 100.
         """
         if not experiment_name:
             experiments = self.list_experiments()
@@ -243,7 +251,7 @@ class Finetuner:
             experiments = [self.get_experiment(name=experiment_name)]
         runs = []
         for experiment in experiments:
-            runs.extend(experiment.list_runs(size=size))
+            runs.extend(experiment.list_runs(page=page, size=size))
         return runs
 
     @login_required
