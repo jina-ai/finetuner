@@ -78,12 +78,12 @@ class Experiment:
         :param name: Name of the run.
         :return: A `Run` object.
         """
-        run_info = self._client.get_run(experiment_name=self._name, run_name=name)
+        run = self._client.get_run(experiment_name=self._name, run_name=name)
         run = Run(
-            name=run_info[NAME],
-            config=run_info[CONFIG],
-            created_at=run_info[CREATED_AT],
-            description=run_info[DESCRIPTION],
+            name=run[NAME],
+            config=run[CONFIG],
+            created_at=run[CREATED_AT],
+            description=run[DESCRIPTION],
             experiment_name=self._name,
             client=self._client,
         )
@@ -95,19 +95,17 @@ class Experiment:
         :param size: Number of runs to retrieve.
         :return: List of `Run` objects.
         """
-        run_infos = self._client.list_runs(experiment_name=self._name, size=size)[
-            'items'
-        ]
+        runs = self._client.list_runs(experiment_name=self._name, size=size)['items']
         return [
             Run(
-                name=run_info[NAME],
-                config=run_info[CONFIG],
-                created_at=run_info[CREATED_AT],
-                description=run_info[DESCRIPTION],
+                name=run[NAME],
+                config=run[CONFIG],
+                created_at=run[CREATED_AT],
+                description=run[DESCRIPTION],
                 experiment_name=self._name,
                 client=self._client,
             )
-            for run_info in run_infos
+            for run in runs
         ]
 
     def delete_run(self, name: str):
@@ -189,7 +187,7 @@ class Experiment:
                 )
 
         num_workers = kwargs.get(NUM_WORKERS, 4)
-        run_info = self._client.create_run(
+        run = self._client.create_run(
             run_name=run_name,
             experiment_name=self._name,
             run_config=config,
@@ -199,11 +197,11 @@ class Experiment:
         )
         run = Run(
             client=self._client,
-            name=run_info[NAME],
+            name=run[NAME],
             experiment_name=self._name,
-            config=run_info[CONFIG],
-            created_at=run_info[CREATED_AT],
-            description=run_info[DESCRIPTION],
+            config=run[CONFIG],
+            created_at=run[CREATED_AT],
+            description=run[DESCRIPTION],
         )
         return run
 
