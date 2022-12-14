@@ -55,12 +55,13 @@ class FinetunerV1Client(_BaseClient):
         url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS, name)
         return self._handle_request(url=url, method=GET)
 
-    def list_experiments(self, page: int = 1, size: int = 50) -> List[Dict[str, Any]]:
+    def list_experiments(self, page: int = 1, size: int = 50) -> Dict[str, Any]:
         """List every experiment.
 
         :param page: The page index.
         :param size: The number of experiments to retrieve.
-        :return: A list of :class:`Experiment` instance.
+        :return: Paginated results as a dict, where `items` are the `Experiment`s being
+            retrieved.
 
         ..note:: `page` and `size` works together. For example, page 1 size 50 gives
             the 50 experiments in the first page. To get 50-100, set `page` as 2.
@@ -103,14 +104,15 @@ class FinetunerV1Client(_BaseClient):
 
     def list_runs(
         self, experiment_name: Optional[str] = None, page: int = 50, size: int = 50
-    ) -> List[Dict[str, Any]]:
+    ) -> Dict[str, Any]:
         """List all created runs inside a given experiment.
 
         If no experiment is specified, list runs for all available experiments.
         :param experiment_name: The name of the experiment.
         :param page: The page index.
         :param size: Number of runs to retrieve.
-        :return: List of all runs.
+        :return: Paginated results as a dict, where `items` are the `Runs` being
+            retrieved.
 
         ..note:: `page` and `size` works together. For example, page 1 size 50 gives
             the 50 runs in the first page. To get 50-100, set `page` as 2.
