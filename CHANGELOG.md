@@ -18,9 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Adjust Finetuner based on API changes for Jina AI Cloud. ([#636](https://github.com/jina-ai/finetuner/pull/636))
+- Adjust Finetuner based on API changes for Jina AI Cloud. ([#637](https://github.com/jina-ai/finetuner/pull/637))
 
-- Change default `experiment_name` from current working dir to `default`. ([#636](https://github.com/jina-ai/finetuner/pull/636))
+- Change default `experiment_name` from current working dir to `default`. ([#637](https://github.com/jina-ai/finetuner/pull/637))
 
 ### Fixed
 
