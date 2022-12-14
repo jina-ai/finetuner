@@ -9,7 +9,10 @@ from finetuner.constants import CREATED, FAILED, FINISHED, STARTED, STATUS
     ['exp name', None],
 )
 def test_create_experiment(finetuner_mocker, experiment_name):
-    experiment = finetuner_mocker.create_experiment(name=experiment_name)
+    if experiment_name:
+        experiment = finetuner_mocker.create_experiment(name=experiment_name)
+    else:
+        experiment = finetuner_mocker.create_experiment()
     expected_name = experiment_name or 'default'
     assert experiment.name == expected_name
     assert experiment._status == 'ACTIVE'
