@@ -65,7 +65,7 @@ class FinetunerV1Client(_BaseClient):
         url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS)
         return self._handle_request(url=url, method=GET, params=params)
 
-    def delete_experiment(self, name: str) -> dict:
+    def delete_experiment(self, name: str) -> Dict[str, Any]:
         """Delete an experiment given its name.
 
         :param name: The name of the experiment.
