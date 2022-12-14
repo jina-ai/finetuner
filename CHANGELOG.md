@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Adjust Finetuner based on API changes for Jina AI Cloud. ([#637](https://github.com/jina-ai/finetuner/pull/637))
+
+- Change default `experiment_name` from current working dir to `default`. ([#637](https://github.com/jina-ai/finetuner/pull/637))
+
 ### Fixed
 
 - Correctly infer the type of models created using `get_model` in the `build_encoding_dataset` function. )[#623](https://github.com/jina-ai/finetuner/pull/623))
@@ -29,6 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Align text-to-image notebook with its corresponding markdown file. ([#621](https://github.com/jina-ai/finetuner/pull/621))
 
 - Change hint in notebooks to use `load_uri_to_blob` instead of `load_uri_to_image_tensor`. ([#625](https://github.com/jina-ai/finetuner/pull/625))
+
+- Copyedit `README.md`, changes to language but not contents. ([#635](https://github.com/jina-ai/finetuner/pull/635))
 
 
 ## [0.6.7] - 2022-11-25
