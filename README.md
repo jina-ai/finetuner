@@ -100,7 +100,7 @@ without worrying about resource availability, complex integration, or infrastruc
   </tr>
   <tr>
     <td rowspan="2">M-CLIP</td>
-    <td rowspan="2"><a href="https://xmrec.github.io/">Cross market</a> text-to-image search (German)</td>
+    <td rowspan="2"><a href="https://xmrec.github.io/">Cross market</a> product recommendation (German)</td>
     <td>mRR</td>
     <td>0.430</td>
     <td>0.648</td>
