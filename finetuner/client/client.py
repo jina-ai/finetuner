@@ -98,7 +98,7 @@ class FinetunerV1Client(_BaseClient):
 
     def list_runs(
         self, experiment_name: Optional[str] = None, size: int = 50
-    ) -> List[dict]:
+    ) -> List[Dict[str, Any]]:
         """List all created runs inside a given experiment.
 
         If no experiment is specified, list runs for all available experiments.
