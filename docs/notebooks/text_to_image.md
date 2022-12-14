@@ -207,6 +207,42 @@ please use `model = finetuner.get_model(artifact, is_onnx=True)`
 ```
 <!-- #endregion -->
 
+<!-- #region id="LHyMm_M1zxdt" -->
+## Advanced: WiSE-FT 
+
+WiSE-FT, proposed by Mitchell et al. in [Robust fine-tuning of zero-shot models](https://arxiv.org/abs/2109.01903),
+has been proven to be an effective way for fine-tuning models with a strong zero-shot capability,
+such as CLIP.
+As was introduced in the paper:
+
+> Large pre-trained models such as CLIP or ALIGN offer consistent accuracy across a range of data distributions when performing zero-shot inference (i.e., without fine-tuning on a specific dataset). Although existing fine-tuning methods substantially improve accuracy on a given target distribution, they often reduce robustness to distribution shifts. We address this tension by introducing a simple and effective method for improving robustness while fine-tuning: ensembling the weights of the zero-shot and fine-tuned models (WiSE-FT).
+
+Finetuner allows you to apply WiSE-FT easily,
+all you need to do is use the `WiSEFTCallback`.
+Finetuner will trigger the callback when the fine-tuning job is finished and merge the weights between the pre-trained model and the fine-tuned model:
+
+```diff
+from finetuner.callback import WiSEFTCallback
+
+run = finetuner.fit(
+    model='ViT-B-32#openai',
+    ...,
+    loss='CLIPLoss',
+-   callbacks=[],
++   callbacks=[WiSEFTCallback(alpha=0.5)],
+)
+```
+
+The value you set to `alpha` should be greater equal than 0 and less equal than 1:
+
++ if `alpha` is a float between 0 and 1, we merge the weights between the pre-trained model and the fine-tuned model.
++ if `alpha` is 0, the fine-tuned model is identical to the pre-trained model.
++ if `alpha` is 1, the pre-trained weights will not be utilized.
+
+
+That's it! Check out [clip-as-service](https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models) to learn how to plug-in a fine-tuned CLIP model to our CLIP specific service.
+<!-- #endregion -->
+
 ## Before and after
 We can directly compare the results of our fine-tuned model with a pre-trained clip model by displaying the matches each model has for the same query. While the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increases the quality of the search results:
 
@@ -263,40 +299,4 @@ Results for query: "nightingale tee jacket" using a zero-shot model (top) and th
 
 ![mclip-example-ft-1](images/clip-example-ft.png)
 
-<!-- #endregion -->
-
-<!-- #region id="LHyMm_M1zxdt" -->
-## Advanced: WiSE-FT 
-
-WiSE-FT, proposed by Mitchell et al. in [Robust fine-tuning of zero-shot models](https://arxiv.org/abs/2109.01903),
-has been proven to be an effective way for fine-tuning models with a strong zero-shot capability,
-such as CLIP.
-As was introduced in the paper:
-
-> Large pre-trained models such as CLIP or ALIGN offer consistent accuracy across a range of data distributions when performing zero-shot inference (i.e., without fine-tuning on a specific dataset). Although existing fine-tuning methods substantially improve accuracy on a given target distribution, they often reduce robustness to distribution shifts. We address this tension by introducing a simple and effective method for improving robustness while fine-tuning: ensembling the weights of the zero-shot and fine-tuned models (WiSE-FT).
-
-Finetuner allows you to apply WiSE-FT easily,
-all you need to do is use the `WiSEFTCallback`.
-Finetuner will trigger the callback when the fine-tuning job is finished and merge the weights between the pre-trained model and the fine-tuned model:
-
-```diff
-from finetuner.callback import WiSEFTCallback
-
-run = finetuner.fit(
-    model='ViT-B-32#openai',
-    ...,
-    loss='CLIPLoss',
--   callbacks=[],
-+   callbacks=[WiSEFTCallback(alpha=0.5)],
-)
-```
-
-The value you set to `alpha` should be greater equal than 0 and less equal than 1:
-
-+ if `alpha` is a float between 0 and 1, we merge the weights between the pre-trained model and the fine-tuned model.
-+ if `alpha` is 0, the fine-tuned model is identical to the pre-trained model.
-+ if `alpha` is 1, the pre-trained weights will not be utilized.
-
-
-That's it! Check out [clip-as-service](https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models) to learn how to plug-in a fine-tuned CLIP model to our CLIP specific service.
 <!-- #endregion -->
