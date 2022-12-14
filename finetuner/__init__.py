@@ -267,16 +267,22 @@ def get_run(run_name: str, experiment_name: Optional[str] = None) -> Run:
     return ft.get_run(run_name=run_name, experiment_name=experiment_name)
 
 
-def list_runs(experiment_name: Optional[str] = None) -> List[Run]:
-    """List every run.
+def list_runs(
+    experiment_name: Optional[str] = None, page: int = 1, size: int = 50
+) -> List[Run]:
+    """List all created runs inside a given experiment.
 
-    If an experiment name is not specified, we'll list every run across all
-    experiments.
+    If no experiment is specified, list runs for all available experiments.
+    :param experiment_name: The name of the experiment.
+    :param page: The page index.
+    :param size: Number of runs to retrieve.
+    :return: List of all runs.
 
-    :param experiment_name: Optional name of the experiment.
-    :return: A list of `Run` objects.
+    ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+        the 50 runs in the first page. To get 50-100, set `page` as 2.
+    ..note:: The maximum number for `size` per page is 100.
     """
-    return ft.list_runs(experiment_name=experiment_name)
+    return ft.list_runs(experiment_name=experiment_name, page=page, size=size)
 
 
 def delete_run(run_name: str, experiment_name: Optional[str] = None) -> None:
@@ -303,11 +309,11 @@ def delete_runs(experiment_name: Optional[str] = None) -> None:
     ft.delete_runs(experiment_name=experiment_name)
 
 
-def create_experiment(name: Optional[str] = None) -> Experiment:
+def create_experiment(name: str = 'default') -> Experiment:
     """Create an experiment.
 
-    :param name: Optional name of the experiment. If `None`,
-        the experiment is named after the current directory.
+    :param name: The name of the experiment. If not provided,
+        the experiment is named as `default`.
     :return: An `Experiment` object.
     """
     return ft.create_experiment(name=name)
@@ -322,9 +328,18 @@ def get_experiment(name: str) -> Experiment:
     return ft.get_experiment(name=name)
 
 
-def list_experiments() -> List[Experiment]:
-    """List every experiment."""
-    return ft.list_experiments()
+def list_experiments(page: int = 1, size: int = 50) -> List[Experiment]:
+    """List every experiment.
+
+    :param page: The page index.
+    :param size: The number of experiments to retrieve.
+    :return: A list of :class:`Experiment` instance.
+
+    ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+        the 50 experiments in the first page. To get 50-100, set `page` as 2.
+    ..note:: The maximum number for `size` per page is 100.
+    """
+    return ft.list_experiments(page=page, size=size)
 
 
 def delete_experiment(name: str) -> Experiment:
