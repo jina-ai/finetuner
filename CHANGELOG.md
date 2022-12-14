@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `val_split` parameter to `fit` function. ([#624](https://github.com/jina-ai/finetuner/pull/624))
 
+- Add `core-ci` workflow to remotely run the ci of finetuner-core. ([#628](https://github.com/jina-ai/finetuner/pull/628))
+
 ### Removed
 
 - Remove `cpu` parameter from `create_run` function. ([#631](https://github.com/jina-ai/finetuner/pull/631))
@@ -27,6 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Docs
 
 - Align text-to-image notebook with its corresponding markdown file. ([#621](https://github.com/jina-ai/finetuner/pull/621))
+
+- Change hint in notebooks to use `load_uri_to_blob` instead of `load_uri_to_image_tensor`. ([#625](https://github.com/jina-ai/finetuner/pull/625))
 
 
 ## [0.6.7] - 2022-11-25
