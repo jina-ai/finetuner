@@ -115,7 +115,7 @@ class FinetunerV1Client(_BaseClient):
         params = {'size': size}
         return self._handle_request(url=url, method=GET, params=params)
 
-    def delete_run(self, experiment_name: str, run_name: str) -> dict:
+    def delete_run(self, experiment_name: str, run_name: str) -> Dict[str, Any]:
         """Delete a run by its name and experiment.
 
         :param experiment_name: The name of the experiment.
