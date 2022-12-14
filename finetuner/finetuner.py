@@ -24,8 +24,6 @@ class Finetuner:
         and create a default experiment.
 
         :param force: If set to true, overwrite token and re-login.
-        :param interactive: If set to true, will use `notebook_login` as interactive
-            mode.
 
         Note: Calling `login` is necessary for using finetuner.
         """
