@@ -176,7 +176,9 @@ let's use the fine-tuned model to encode a new `Document`:
 
 ```python id="v95QsuEyzE-B"
 text_da = DocumentArray([Document(text='some text to encode')])
-image_da = DocumentArray([Document(uri='https://upload.wikimedia.org/wikipedia/commons/4/4e/Single_apple.png')])
+image_da = DocumentArray([Document(
+    uri='https://upload.wikimedia.org/wikipedia/commons/4/4e/Single_apple.png'
+    )])
 
 clip_text_encoder = finetuner.get_model(artifact=artifact, select_model='clip-text')
 clip_image_encoder = finetuner.get_model(artifact=artifact, select_model='clip-vision')
@@ -282,7 +284,11 @@ def plot_matches(num_samples = 5):
         if pt_q.text in seen:
             continue
         seen.add(pt_q.text)
-        print(f'results for query "{pt_q.text}" using a zero-shot model (top) and the fine-tuned model (bottom):')
+        print((
+            f'results for query "{pt_q.text}"'
+            ' using a zero-shot model (top) and '
+            'the fine-tuned model (bottom):'
+        ))
         pt_q.matches[:4].plot_image_sprites(fig_size=(3,3))
         ft_q.matches[:4].plot_image_sprites(fig_size=(3,3))
    
@@ -300,3 +306,5 @@ Results for query: "nightingale tee jacket" using a zero-shot model (top) and th
 ![clip-example-ft](images/clip-example-ft.png)
 
 <!-- #endregion -->
+
+

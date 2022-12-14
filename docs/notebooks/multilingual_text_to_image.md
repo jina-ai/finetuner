@@ -230,7 +230,11 @@ def plot_matches(num_samples = 10):
             i = i - 1
             continue
         seen.add(pt_q.text)
-        print(f'results for query "{pt_q.text}" using a zero-shot model (top) and the fine-tuned model (bottom):')
+        print((
+            f'results for query "{pt_q.text}"'
+            ' using a zero-shot model (top) and '
+            'the fine-tuned model (bottom):'
+            ))
         pt_q.matches[:1].plot_image_sprites(fig_size=(3,3))
         ft_q.matches[:1].plot_image_sprites(fig_size=(3,3))
 ```
@@ -252,3 +256,5 @@ results for query: "prozessorlüfter" (processor fan) using a zero-shot model (t
 
 
 <!-- #endregion -->
+
+
