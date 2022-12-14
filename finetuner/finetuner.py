@@ -1,4 +1,3 @@
-import os
 from typing import Any, Dict, List, Optional, Union
 
 from docarray import DocumentArray
@@ -7,6 +6,7 @@ import hubble
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
 from finetuner.data import CSVOptions
+from finetuner.excepts import FinetunerServerError
 from finetuner.experiment import Experiment
 from finetuner.run import Run
 from hubble import login_required
@@ -18,6 +18,7 @@ class Finetuner:
     def __init__(self):
         self._client = None
         self._default_experiment = None
+        self._default_experiment_name = 'default'
 
     def login(self, force: bool = False, interactive: Optional[bool] = None):
         """Login to Hubble account, initialize a client object
@@ -33,11 +34,6 @@ class Finetuner:
             force=force, post_success=self._init_state, interactive=interactive
         )
 
-    @staticmethod
-    def _get_cwd() -> str:
-        """Returns current working directory."""
-        return os.getcwd().split('/')[-1]
-
     @login_required
     def _init_state(self):
         """Initialize client and default experiment."""
@@ -47,29 +43,29 @@ class Finetuner:
     def _get_default_experiment(self) -> Experiment:
         """Create or retrieve (if it already exists) a default experiment
         for the current working directory."""
-        experiment_name = self._get_cwd()
         for experiment in self.list_experiments():
-            if experiment.name == experiment_name:
+            if experiment.name == self._default_experiment_name:
                 return experiment
-        return self.create_experiment(name=experiment_name)
+        return self.create_experiment(name=self._default_experiment_name)
 
     @login_required
-    def create_experiment(self, name: Optional[str] = None) -> Experiment:
+    def create_experiment(self, name: str = 'default') -> Experiment:
         """Create an experiment.
 
         :param name: Optional name of the experiment. If `None`,
             the experiment is named after the current directory.
         :return: An `Experiment` object.
         """
-        if not name:
-            name = self._get_cwd()
-        experiment_info = self._client.create_experiment(name=name)
+        try:
+            experiment = self._client.get_experiment(name=name)
+        except FinetunerServerError:
+            experiment = self._client.create_experiment(name=name)
         return Experiment(
             client=self._client,
-            name=experiment_info[NAME],
-            status=experiment_info[STATUS],
-            created_at=experiment_info[CREATED_AT],
-            description=experiment_info[DESCRIPTION],
+            name=experiment[NAME],
+            status=experiment[STATUS],
+            created_at=experiment[CREATED_AT],
+            description=experiment[DESCRIPTION],
         )
 
     @login_required
@@ -79,13 +75,13 @@ class Finetuner:
         :param name: Name of the experiment.
         :return: An `Experiment` object.
         """
-        experiment_info = self._client.get_experiment(name=name)
+        experiment = self._client.get_experiment(name=name)
         return Experiment(
             client=self._client,
-            name=experiment_info[NAME],
-            status=experiment_info[STATUS],
-            created_at=experiment_info[CREATED_AT],
-            description=experiment_info[DESCRIPTION],
+            name=experiment[NAME],
+            status=experiment[STATUS],
+            created_at=experiment[CREATED_AT],
+            description=experiment[DESCRIPTION],
         )
 
     @login_required
@@ -95,17 +91,17 @@ class Finetuner:
         :param size: The number of experiments to retrieve.
         :return: A list of :class:`Experiment`.
         """
-        experiment_infos = self._client.list_experiments(size=size)['items']
+        experiments = self._client.list_experiments(size=size)['items']
 
         return [
             Experiment(
                 client=self._client,
-                name=experiment_info[NAME],
-                status=experiment_info[STATUS],
-                created_at=experiment_info[CREATED_AT],
-                description=experiment_info[DESCRIPTION],
+                name=experiment[NAME],
+                status=experiment[STATUS],
+                created_at=experiment[CREATED_AT],
+                description=experiment[DESCRIPTION],
             )
-            for experiment_info in experiment_infos
+            for experiment in experiments
         ]
 
     @login_required
@@ -114,13 +110,13 @@ class Finetuner:
         :param name: Name of the experiment.
         :return: Deleted experiment.
         """
-        experiment_info = self._client.delete_experiment(name=name)
+        experiment = self._client.delete_experiment(name=name)
         return Experiment(
             client=self._client,
-            name=experiment_info[NAME],
-            status=experiment_info[STATUS],
-            created_at=experiment_info[CREATED_AT],
-            description=experiment_info[DESCRIPTION],
+            name=experiment[NAME],
+            status=experiment[STATUS],
+            created_at=experiment[CREATED_AT],
+            description=experiment[DESCRIPTION],
         )
 
     @login_required
@@ -128,16 +124,16 @@ class Finetuner:
         """Delete every experiment.
         :return: List of deleted experiments.
         """
-        experiment_infos = self._client.delete_experiments()
+        experiments = self._client.delete_experiments()
         return [
             Experiment(
                 client=self._client,
-                name=experiment_info[NAME],
-                status=experiment_info[STATUS],
-                created_at=experiment_info[CREATED_AT],
-                description=experiment_info[DESCRIPTION],
+                name=experiment[NAME],
+                status=experiment[STATUS],
+                created_at=experiment[CREATED_AT],
+                description=experiment[DESCRIPTION],
             )
-            for experiment_info in experiment_infos
+            for experiment in experiments
         ]
 
     @login_required

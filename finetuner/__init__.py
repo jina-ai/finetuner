@@ -303,11 +303,11 @@ def delete_runs(experiment_name: Optional[str] = None) -> None:
     ft.delete_runs(experiment_name=experiment_name)
 
 
-def create_experiment(name: Optional[str] = None) -> Experiment:
+def create_experiment(name: str = 'default') -> Experiment:
     """Create an experiment.
 
-    :param name: Optional name of the experiment. If `None`,
-        the experiment is named after the current directory.
+    :param name: The name of the experiment. If not provided,
+        the experiment is named as `default`.
     :return: An `Experiment` object.
     """
     return ft.create_experiment(name=name)
