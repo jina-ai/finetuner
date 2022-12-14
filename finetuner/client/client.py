@@ -55,7 +55,7 @@ class FinetunerV1Client(_BaseClient):
         url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS, name)
         return self._handle_request(url=url, method=GET)
 
-    def list_experiments(self, size: int = 50) -> List[dict]:
+    def list_experiments(self, size: int = 50) -> List[Dict[str, Any]]:
         """List every experiment.
 
         :param size: The number of experiments to retrieve.
