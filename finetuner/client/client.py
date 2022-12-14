@@ -34,7 +34,7 @@ class FinetunerV1Client(_BaseClient):
 
     def create_experiment(
         self, name: str = 'default', description: Optional[str] = ''
-    ) -> dict:
+    ) -> Dict[str, Any]:
         """Create a new experiment.
 
         :param name: The name of the experiment.
