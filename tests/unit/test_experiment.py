@@ -149,7 +149,6 @@ def test_create_run_config():
         freeze=False,
         output_dim=None,
         multi_modal=False,
-        cpu=False,
         device='cuda',
     )
     assert config == expected_config
