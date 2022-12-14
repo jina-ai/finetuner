@@ -295,8 +295,8 @@ plot_matches()
 ```plaintext
 Results for query: "nightingale tee jacket" using a zero-shot model (top) and the fine-tuned model (bottom)
 ```
-![mclip-example-pt-1](images/clip-example-pt.png)
+![clip-example-pt](images/clip-example-pt.png)
 
-![mclip-example-ft-1](images/clip-example-ft.png)
+![clip-example-ft](images/clip-example-ft.png)
 
 <!-- #endregion -->
