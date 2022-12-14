@@ -94,7 +94,7 @@ class Experiment:
 
         :param page: The page index.
         :param size: The number of runs to retrieve per page.
-        :return: A list of :class:`Run`.
+        :return: A list of :class:`Run` instance.
 
         ..note:: `page` and `size` works together. For example, page 1 size 50 gives
             the 50 runs in the first page. To get 50-100, set `page` as 2.
