@@ -7,7 +7,8 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.14.1
   kernelspec:
-    display_name: Python 3
+    display_name: 'Python 3.7.15 (''.venv'': venv)'
+    language: python
     name: python3
 ---
 
@@ -224,6 +225,78 @@ And finally you can use the embeded `query` to find top-k semantically related t
 ```python id="-_bM-TXRE2h7"
 query.match(index_data, limit=10, metric='cosine')
 ```
+
+<!-- #region -->
+## Before and after
+We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the zero-shot model is able to produce results that are very similar to the initial query, it is common for the topic of the question to change, with the structure staying the same. After fine-tuning, the returned questions are consistently relevant to the initial query, even in cases where the structure of the sentence is different.
+
+```python
+import copy
+
+query_pt = DocumentArray.pull('quora_query_dev.da', show_progress=True)
+index_pt = DocumentArray.pull('quora_index_dev.da', show_progress=True)
+
+query_ft = copy.deepcopy(query_pt)
+index_ft = copy.deepcopy(index_pt)
+
+model_pt = finetuner.build_model('bert-base-cased')
+
+finetuner.encode(model=model, data=query_ft)
+finetuner.encode(model=model, data=index_ft)
+
+finetuner.encode(model=model_pt, data=query_pt)
+finetuner.encode(model=model_pt, data=index_pt)
+
+query_ft.match(index_ft)
+query_py.match(index_pt)
+
+num_samples = 5
+
+for i, (doc_pt, doc_ft) in enumerate(zip(query_pt, query_ft)):
+  if i < num_samples:
+    print(f'\nQuery: {doc_ft.text}')
+    print(' matches pretrained:')
+    for match in doc_pt.matches[:5]:
+      print(f' - {match.text}')
+    print(' matches finetuned')
+    for match in doc_ft.matches[:5]:
+      print(f' - {match.text}')
+
+```
+
+```plaintext
+
+Query: What's the best way to start learning robotics?
+ matches pretrained:
+ - What is the best way to start with robotics?
+ - What is the best way to learn web programming?
+ - What is the best way to start learning Japanese from scratch?
+ - What is the best way to start learning a language?
+ - What is the best place to learn data science?
+ matches finetuned
+ - What is good way to learn robotics?
+ - What is the best way to start with robotics?
+ - How can I get started learning about robotics?
+ - How can I start to learn robotics from zero?
+ - From where should a complete beginner (0 knowledge) start in learning robotics?
+
+Query: What online platforms can I post ads for beer money opportunity?
+ matches pretrained:
+ - On what online platforms can I post ads for beer money opportunity?
+ - How can I restore a mobile-number only Facebook messenger account?
+ - How do I earn money online without any blog or website?
+ - Do I need to register my self to selling products on online platforms in India?
+ - Which is the best website where we can buy instagram followers and likes?
+ matches finetuned
+ - On what online platforms can I post ads for beer money opportunity?
+ - What are some legit ways to earn money online?
+ - What are some genuine ways to earn money online?
+ - What are the best legitimate methods to making money online?
+ - What are the legitimate ways to earn money online?
+
+```
+
+<!-- #endregion -->
 
 <!-- #region id="czK5pSUEAcdS" -->
 That's it!

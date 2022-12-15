@@ -98,6 +98,21 @@ without worrying about resource availability, complex integration, or infrastruc
     <td>0.564</td>
     <td><span style="color:green">19.2%</span></td>
   </tr>
+  <tr>
+    <td rowspan="2">M-CLIP</td>
+    <td rowspan="2"><a href="https://xmrec.github.io/">Cross market</a> product recommendation (German)</td>
+    <td>mRR</td>
+    <td>0.430</td>
+    <td>0.648</td>
+    <td><span style="color:green">50.7%</span></td>
+    <td rowspan="2"><p align=center><a href="https://colab.research.google.com/drive/1N7iWZV0OunFZSLtsQxoazS808MPXhCwq?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
+  </tr>
+  <tr>
+    <td>Recall</td>
+    <td>0.247</td>
+    <td>0.340</td>
+    <td><span style="color:green">37.7%</span></td>
+  </tr>
 
 </tbody>
 </table>

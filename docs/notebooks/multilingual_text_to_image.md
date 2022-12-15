@@ -191,7 +191,7 @@ please use `model = finetuner.get_model(artifact, is_onnx=True)`
 ```
 <!-- #endregion -->
 
-## Before and After
+## Before and after
 We can directly compare the results of our fine-tuned model with an untrained multilingual clip model by displaying the matches each model has for the same query, while the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increses the quality of the search results:
 
 <!-- #region -->
@@ -205,12 +205,12 @@ ft_query = copy.deepcopy(query_data)
 ft_index = copy.deepcopy(index_data)
 
 zero_shot_text_encoder = build_model(
-    name = 'xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
-    select_model = 'clip_text',
+    name='xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
+    select_model='clip-text',
 )
 zero_shot_image_encoder = build_model(
-    name = 'xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
-    select_model = 'clip_vision',
+    name='xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
+    select_model='clip-vision',
 )
 
 finetuner.encode(model=zero_shot_text_encoder, data=pt_query)
@@ -222,31 +222,39 @@ finetuner.encode(model=mclip_image_encoder, data=ft_index)
 pt_query.match(pt_index)
 ft_query.match(ft_index)
 
-print('results for query: "externe mikrofone (external microphone)" using a zero-shot model (top) and the fine-tuned model (bottom)')
-pt_query[72].matches[0].plot_image_sprites()
-ft_query[72].matches[0].plot_image_sprites()
-
-print('results for query: "prozessorlüfter (processor fan)" using a zero-shot model (top) and the fine-tuned model (bottom)')
-pt_query[189].matches[0].plot_image_sprites()
-ft_query[189].matches[0].plot_image_sprites()
+def plot_matches(num_samples = 10):
+    seen = set()
+    for i, (pt_q, ft_q) in enumerate(zip(pt_query, ft_query)):
+        if i >= num_samples: break
+        if pt_q.text in seen:
+            i = i - 1
+            continue
+        seen.add(pt_q.text)
+        print((
+            f'results for query "{pt_q.text}"'
+            ' using a zero-shot model (top) and '
+            'the fine-tuned model (bottom):'
+            ))
+        pt_q.matches[:1].plot_image_sprites(fig_size=(3,3))
+        ft_q.matches[:1].plot_image_sprites(fig_size=(3,3))
 ```
-```bash
-results for query: "externe mikrofone (external microphone)" using a zero-shot model (top) and the fine-tuned model (bottom)
+```plaintext
+results for query: "externe mikrofone" (external microphone) using a zero-shot model (top) and the fine-tuned model (bottom)
 ```
 ![mclip-example-pt-1](images/mclip-example-pt-1.png)
+
 ![mclip-example-ft-1](images/mclip-example-ft-1.png)
 
-```bash
-results for query: "prozessorlüfter (processor fan)" using a zero-shot model (top) and the fine-tuned model (bottom)
+```plaintext
+results for query: "prozessorlüfter" (processor fan) using a zero-shot model (top) and the fine-tuned model (bottom)
 ```
 
 ![mclip-example-pt-2](images/mclip-example-pt-2.png)
+
 ![mclip-example-ft-2](images/mclip-example-ft-2.png)
 
 
 
 <!-- #endregion -->
 
-```python
 
-```
