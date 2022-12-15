@@ -12,7 +12,7 @@ jupyter:
 ---
 
 <!-- #region id="C0RxIJmLkTGk" -->
-# 3D Mesh-to-3D Mesh Search via Pointnet++
+# 3D Mesh-to-3D Mesh Search via PointNet++
 
 <a href="https://colab.research.google.com/drive/1lIMDFkUVsWMshU-akJ_hwzBfJ37zLFzU?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
@@ -47,6 +47,12 @@ ModelNet40 consists of 9843 meshes provided for training and 2468 meshes for tes
 For this tutorial, we already prepared the data and uploaded it. Specifically the training data is uploaded as `modelnet40-train`. For evaluating the model, we split the test set of the original dataset in 300 meshes, which serve as queries (`modelnet40-queries`) and 2168 meshes which serve as the mesh collection, which is searched in (`modelnet40-index`).
 
 Each 3D mesh in the dataset is represented by a [DocArray](https://github.com/docarray/docarray) Document object. It contains the uri (local filepath) of the original file and a tensor which contains a point cloud with 2048 3D points sampled from the mesh as explained in (TODO add link to documentation)
+
+```{admonition} Push data to the cloud
+We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` or a path to a CSV file.
+In those cases Finetuner will do the job for you.
+When you construct a DocArray dataset with documents of 3D meshes, please call `doc.load_uri_to_point_cloud_tensor(2048)` to create point clouds from your local mesh files before pushing the data to the cloud since Finetuner has no access to your local files.
+```
 
 The code below loads the data and prints a summary of the training datasets:
 <!-- #endregion -->
