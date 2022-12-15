@@ -40,6 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Copyedit `README.md`, changes to language but not contents. ([#635](https://github.com/jina-ai/finetuner/pull/635))
 
+- Add multilingual clip colab to readme. ([#620](https://github.com/jina-ai/finetuner/pull/620))
+
 
 ## [0.6.7] - 2022-11-25
 
