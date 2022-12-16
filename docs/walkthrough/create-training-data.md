@@ -25,7 +25,7 @@ I'm sorry to have…      apologize-english
 Please, forgive me!     apologize-english
 ```
 
-When using image-to-image retrieval models, images can be represented as a URI or a path to a file:
+When using image-to-image or mesh-to-mesh retrieval models, images and meshes can be represented as a URI or a path to a file:
 
 ```markdown
 /Users/images/apples/green_apple.jpg    picture of apple
@@ -49,8 +49,10 @@ run = finetuner.fit(
 
 ```{important} 
 If paths to local images are provided,
-they can be loaded into memory by setting `convert_to_blob = True` in the {class}`~finetuner.data.CSVOptions` object.
+they can be loaded into memory by setting `convert_to_blob = True` (default) in the {class}`~finetuner.data.CSVOptions` object.
 It is important to note that this setting does not cause Internet URLs to be loaded into memory.
+For 3D meshes the option `create_point_clouds` (`True` by default) creates point cloud tensors, which are used as input by the mesh encoding models.
+Please note, that local files can not be processed by the Finetuner if you deactivate `convert_to_blob` or `create_point_clouds`.
 ```
 
 ````
@@ -103,8 +105,11 @@ Please remove/replace comma in your data fields if you are using a comma `,` as 
 
 ## Preparing a DocumentArray
 When providing training data in a DocumentArray, each element is represented as a {class}`~docarray.document.Document`. You should assign a label to each {class}`~docarray.document.Document` inside your {class}`~docarray.array.document.DocumentArray`.
-For most of the models, this is done by adding a `finetuner_label` tag to each document. {class}`~docarray.document.Document`s containing uris that point to local images can load these images into memory using the {meth}`docarray.document.Document.load_uri_to_blob` function of that {class}`~docarray.document.Document`.
+For most of the models, this is done by adding a `finetuner_label` tag to each document.
 Only for cross-modality (text-to-image) fine-tuning with CLIP, is this not necessary as explained at the bottom of this section.
+{class}`~docarray.document.Document`s containing uris that point to local images can load these images into memory using the {meth}`docarray.document.Document.load_uri_to_blob` function of that {class}`~docarray.document.Document`.
+Similarly, {class}`~docarray.document.Document`s with uris of local 3D meshes, can be converted into point clouds which are stored in the Document by calling {meth}`docarray.document.Document.load_uri_to_point_cloud_tensor`.
+The function requires a number of points, which we recommend to set to 2048.
 
 
 ````{tab} text-to-text search
@@ -136,6 +141,23 @@ train_da = DocumentArray([
     Document(
         uri='https://...t-shirt-1.png',
         tags={'finetuner_label': 't-shirt'},
+    ),
+    ...,
+])
+```
+````
+````{tab} mesh-to-mesh search
+```python
+from docarray import Document, DocumentArray
+
+train_da = DocumentArray([
+    Document(
+        uri='https://...desk-001.off',
+        tags={'finetuner_label': 'desk'},
+    ),
+    Document(
+        uri='https://...table-001.off',
+        tags={'finetuner_label': 'table'},
     ),
     ...,
 ])
