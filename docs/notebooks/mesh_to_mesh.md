@@ -25,6 +25,7 @@ Finding similar 3D Meshes can become very time consuming. To support this task, 
 
 ```python id="vDVkw65kkQcn"
 !pip install 'finetuner[full]'
+!pip install 'docarray[full]'
 ```
 
 <!-- #region id="q7Bb9o5ZHSZ3" -->
@@ -72,6 +73,18 @@ index_data = DocumentArray.pull('modelnet40-index', show_progress=True)
 train_data.summary()
 ```
 
+<!-- #region id="r4cP95RzLybw" -->
+Now we want to take a look at the point clouds of some of the meshes:
+<!-- #endregion -->
+
+```python id="kCv455NPMD1O"
+index_data[0].display()
+```
+
+<!-- #region id="XlttkaD5Omhk" -->
+![A point cloud example](https://user-images.githubusercontent.com/6599259/208113813-bcf498d9-edf7-4496-a087-03bb783f3b70.png)
+<!-- #endregion -->
+
 <!-- #region id="B3I_QUeFT_V0" -->
 ## Backbone model
 
@@ -90,11 +103,11 @@ from finetuner.callback import EvaluationCallback
 run = finetuner.fit(
     model='pointnet++',
     train_data='modelnet40-train',
-    epochs=5,
+    epochs=10,
     batch_size=64,
     learning_rate= 5e-4,
     loss='TripletMarginLoss',
-    device='cpu',
+    device='cuda',
     callbacks=[
         EvaluationCallback(
             query_data='modelnet40-queries',
@@ -147,8 +160,22 @@ You can continue monitoring the run by checking the status - `finetuner.run.Run.
 Our `EvaluationCallback` during fine-tuning ensures that after each epoch, an evaluation of our model is run. We can access the results of the last evaluation in the logs as follows `print(run.logs())`:
 
 ```bash
-...
-...
+  Training [10/10] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 154/154 0:00:00 0:00:26 • loss: 0.001
+           INFO     Done ✨                                                                                                                                            __main__.py:195
+           DEBUG    Finetuning took 0 days, 0 hours 5 minutes and 39 seconds                                                                                           __main__.py:197
+           INFO     Metric: 'pointnet++_precision_at_k' before fine-tuning:  0.56533 after fine-tuning: 0.81100                                                        __main__.py:210
+           INFO     Metric: 'pointnet++_recall_at_k' before fine-tuning:  0.15467 after fine-tuning: 0.24175                                                           __main__.py:210
+           INFO     Metric: 'pointnet++_f1_score_at_k' before fine-tuning:  0.23209 after fine-tuning: 0.34774                                                         __main__.py:210
+           INFO     Metric: 'pointnet++_hit_at_k' before fine-tuning:  0.95667 after fine-tuning: 0.95333                                                              __main__.py:210
+           INFO     Metric: 'pointnet++_average_precision' before fine-tuning:  0.71027 after fine-tuning: 0.85515                                                     __main__.py:210
+           INFO     Metric: 'pointnet++_reciprocal_rank' before fine-tuning:  0.79103 after fine-tuning: 0.89103                                                       __main__.py:210
+           INFO     Metric: 'pointnet++_dcg_at_k' before fine-tuning:  4.71826 after fine-tuning: 6.41999                                                              __main__.py:210
+           INFO     Building the artifact ...                                                                                                                          __main__.py:215
+           INFO     Saving artifact locally ...                                                                                                                        __main__.py:237
+[15:46:55] INFO     Artifact saved in artifacts/                                                                                                                       __main__.py:239
+           DEBUG    Artifact size is 27.379 MB                                                                                                                         __main__.py:245
+           INFO     Finished 🚀                                                                                                                                        __main__.py:246
+
 ```
 
 <!-- #endregion -->
@@ -191,4 +218,13 @@ And finally you can use the embeded `query` to find top-k visually related image
 
 ```python id="_jGsSyedrsJp"
 query.match(index_data, limit=10, metric='cosine')
+```
+
+<!-- #region id="CgZHPInNWWHn" -->
+When investigating the matches, we can see that the model is able to identify similar meshes. However, this does not necessarily mean that all results are correct. For example, our first query (a mesh of a desk) returns results from those some are actual desk. Nevertheless, some results are tables, which looks similar to the desk, but obtain a different label:
+![picture of query mesh and its matches](https://user-images.githubusercontent.com/6599259/208120667-c6633178-154c-40ab-a88c-0955b18d304b.png)
+<!-- #endregion -->
+
+```python id="JsV87_rrW4dT"
+
 ```
