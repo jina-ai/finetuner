@@ -227,7 +227,16 @@ query_data.match(index_data, limit=10, metric='cosine')
 <!-- #region id="CgZHPInNWWHn" -->
 ## Before and After
 
-After the inference, you can investigate the results with the [`display`](https://docarray.jina.ai/api/docarray.document/#docarray.document.Document.display) function. While you will notice that the PointNet++ might already deliver good results for some queries without training, the fine-tuned model does perform better on many queries like the ones shown below:
+After the inference, you can investigate the results with the [`display`](https://docarray.jina.ai/api/docarray.document/#docarray.document.Document.display) function, as shown in the code block below:
+<!-- #endregion -->
+
+```python id="p37Ryip2dKoO"
+query_data[5].display()
+query_data[5].matches[0].display()
+```
+
+<!-- #region id="lybyfx6OdMJL" -->
+While you will notice that the PointNet++ might already deliver good results for some queries without training, the fine-tuned model does perform better on many queries like the ones shown below:
 
 ![Results](https://user-images.githubusercontent.com/6599259/208422496-37b93ea8-0e26-48ad-bc8d-cce8d51545a9.png)
 
