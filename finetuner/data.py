@@ -32,8 +32,8 @@ class CSVOptions:
         should be assigned to the item in the first column (True), or if it is another
         item that should be semantically close to the first (False).
     :param convert_to_blob: Whether uris to local files should be converted to blobs
-    :param create_point_clouds: Determines the number of points sampled from a mesh to
-        create a point cloud.
+    :param create_point_clouds: Determines whether from uris to local 3D mesh files
+        should point clouds be sampled.
     :param point_cloud_size: Determines the number of points sampled from a mesh to
         create a point cloud.
     """
