@@ -16,7 +16,7 @@ jupyter:
 
 <a href="https://colab.research.google.com/drive/1lIMDFkUVsWMshU-akJ_hwzBfJ37zLFzU?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
-Finding similar 3D Meshes can become very time consuming. To support this task, one can build search systems. To directly search on the 3D meshes without relying on metadata one can use encoder model which extract create a point cloud from the mesh and encode it into vector dense representations which can be compared to each other. To enable those models to detect the right attributes of an 3D Mesh, this tutorial show you how to use Finetuner to train and use a model for 3D mesh search system.
+Finding similar 3D Meshes can become very time-consuming. To support this task, one can build search systems. To directly search on the 3D meshes without relying on metadata one can use an encoder model which creates a point cloud from the mesh and encode it into vector dense representations which can be compared to each other. To enable those models to detect the right attributes of a 3D mesh, this tutorial shows you how to use Finetuner to train and use a model for a 3D mesh search system.
 <!-- #endregion -->
 
 <!-- #region id="mk4gxLZnYJry" -->
@@ -31,12 +31,10 @@ Finding similar 3D Meshes can become very time consuming. To support this task, 
 <!-- #region id="q7Bb9o5ZHSZ3" -->
 ## Task
 
-Finetuner supports an embedding model which is based on the Pytorch [implemention](https://github.com/yanx27/Pointnet_Pointnet2_pytorch) of the [PointNet++ model](https://proceedings.neurips.cc/paper/2017/file/d8bf84be3800d12f74d8b05e9b89836f-Paper.pdf). This tutorial will show you how to train and use this model for 3D mesh search.
+Finetuner supports an embedding model which is based on the Pytorch [implementation](https://github.com/yanx27/Pointnet_Pointnet2_pytorch) of the [PointNet++ model](https://proceedings.neurips.cc/paper/2017/file/d8bf84be3800d12f74d8b05e9b89836f-Paper.pdf). This tutorial will show you how to train and use this model for 3D mesh search.
 
-We demonstrate this on the [Modelnet40](https://modelnet.cs.princeton.edu/) dataset which consist of more than 12k 3D meshes of objects from 40 classes.
-Specifically, we want to build a search system, which can receive a 3D mehs and retrieves meshes of the same class.
-
-We will buid a dataset with some images for 
+We demonstrate this on the [Modelnet40](https://modelnet.cs.princeton.edu/) dataset, which consists of more than 12k 3D meshes of objects from 40 classes.
+Specifically, we want to build a search system, which can receive a 3D mesh and retrieves meshes of the same class.
 
 <!-- #endregion -->
 
@@ -45,9 +43,9 @@ We will buid a dataset with some images for
 
 ModelNet40 consists of 9843 meshes provided for training and 2468 meshes for testing. Usually, you would have to download the [dataset](https://modelnet.cs.princeton.edu/) unzip it, [prepare it, and upload it to the Jina AI Cloud](https://https://finetuner.jina.ai/walkthrough/create-training-data/). After that, you can provide the name of the dataset used for the upload to Finetuner.
 
-For this tutorial, we already prepared the data and uploaded it. Specifically the training data is uploaded as `modelnet40-train`. For evaluating the model, we split the test set of the original dataset in 300 meshes, which serve as queries (`modelnet40-queries`) and 2168 meshes which serve as the mesh collection, which is searched in (`modelnet40-index`).
+For this tutorial, we already prepared the data and uploaded it. Specifically, the training data is uploaded as `modelnet40-train`. For evaluating the model, we split the test set of the original dataset into 300 meshes, which serve as queries (`modelnet40-queries`), and 2168 meshes which serve as the mesh collection, which is searched in (`modelnet40-index`).
 
-Each 3D mesh in the dataset is represented by a [DocArray](https://github.com/docarray/docarray) Document object. It contains the uri (local filepath) of the original file and a tensor which contains a point cloud with 2048 3D points sampled from the mesh as explained in (TODO add link to documentation)
+Each 3D mesh in the dataset is represented by a [DocArray](https://github.com/docarray/docarray) Document object. It contains the URI (local file path) of the original file and a tensor that contains a point cloud with 2048 3D points sampled from the mesh.
 
 ```{admonition} Push data to the cloud
 We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` or a path to a CSV file.
@@ -74,7 +72,7 @@ train_data.summary()
 ```
 
 <!-- #region id="r4cP95RzLybw" -->
-Now we want to take a look at the point clouds of some of the meshes:
+Now, we want to take a look at the point clouds of some of the meshes. Therefore, you can use the [`display`](https://docarray.jina.ai/api/docarray.document/#docarray.document.Document.display) function:
 <!-- #endregion -->
 
 ```python id="kCv455NPMD1O"
@@ -88,13 +86,13 @@ index_data[0].display()
 <!-- #region id="B3I_QUeFT_V0" -->
 ## Backbone model
 
-The model, we provide for 3d mesh encoding is called `pointnet++`. In the following, we show you how to train it on the modelnet training dataset.
+The model we provide for 3d mesh encoding is called `pointnet++`. In the following, we show you how to train it on the modelnet training dataset.
 <!-- #endregion -->
 
 <!-- #region id="lqg0eY9oknLL" -->
 ## Fine-tuning
 
-Now that we have data for training and evaluation as well as the name of the model, which we want to train, we can configure and submit a fine-tuning run:
+Now that we have data for training and evaluation. as well as the name of the model, which we want to train, we can configure and submit a fine-tuning run:
 <!-- #endregion -->
 
 ```python id="rR22MbgITp8M"
@@ -121,9 +119,9 @@ run = finetuner.fit(
 <!-- #region id="ossT9LH1oh6K" -->
 Let's understand what this piece of code does:
 
-* We start with providing `model`, in our case "pointnet++".
+* We start with providing a `model` name, in our case "pointnet++".
 * Via the `train_data` parameter, we inform the Finetuner about the name of the dataset in the Jina AI Cloud
-* We also provide some hyper-parameters such as number of `epochs`, `batch_size`, and a `learning_rate`.
+* We also provide some hyper-parameters such as the number of `epochs`, `batch_size`, and a `learning_rate`.
 * We use `TripletMarginLoss` to optimize the PointNet++ model.
 * We use an evaluation callback, which uses the fine-tuned model for encoding the text queries and meshes in the index data collection. It also accepts the `batch_size` attribute. By encoding 64 meshes at once, the evaluation gets faster.
 
@@ -151,7 +149,7 @@ finetuner.login()
 run = finetuner.get_run(run.name)
 ```
 
-You can continue monitoring the run by checking the status - `finetuner.run.Run.status()` or the logs - `finetuner.run.Run.logs()`.*kursiver Text*
+You can continue monitoring the run by checking the status - `finetuner.run.Run.status()` or the logs - `finetuner.run.Run.logs()`.
 <!-- #endregion -->
 
 <!-- #region id="WgTrq9D5q0zc" -->
@@ -194,19 +192,12 @@ artifact = run.save_artifact('pointnet_model')
 
 Now you saved the `artifact` into your host machine,
 let's use the fine-tuned model to encode a new `Document`:
-
-```{admonition} Inference with ONNX
-In case you set `to_onnx=True` when calling `finetuner.fit` function,
-please use `model = finetuner.get_model(artifact, is_onnx=True)`
-```
 <!-- #endregion -->
 
 ```python id="rDGxi7kVq_sH"
-query = DocumentArray([query_data[0]])
-
 model = finetuner.get_model(artifact=artifact, device='cuda')
 
-finetuner.encode(model=model, data=query)
+finetuner.encode(model=model, data=query_data)
 finetuner.encode(model=model, data=index_data)
 
 assert query.embeddings.shape == (1, 512)
@@ -217,14 +208,27 @@ And finally you can use the embeded `query` to find top-k visually related image
 <!-- #endregion -->
 
 ```python id="_jGsSyedrsJp"
-query.match(index_data, limit=10, metric='cosine')
+query_data.match(index_data, limit=10, metric='cosine')
+```
+
+<!-- #region id="xGAjr26o6j-n" -->
+To compare the matches against results obtained with a PointNet++ model without training, you can use the `build_model` function:
+<!-- #endregion -->
+
+```python id="cChTjw3b6iXq"
+zero_shot_model = finetuner.build_model('pointnet++')
+
+finetuner.encode(model=zero_shot_model, data=query_data)
+finetuner.encode(model=zero_shot_model, data=index_data)
+
+query_data.match(index_data, limit=10, metric='cosine')
 ```
 
 <!-- #region id="CgZHPInNWWHn" -->
-When investigating the matches, we can see that the model is able to identify similar meshes. However, this does not necessarily mean that all results are correct. For example, our first query (a mesh of a desk) returns results from those some are actual desk. Nevertheless, some results are tables, which looks similar to the desk, but obtain a different label:
-![picture of query mesh and its matches](https://user-images.githubusercontent.com/6599259/208120667-c6633178-154c-40ab-a88c-0955b18d304b.png)
+## Before and After
+
+After the inference, you can investigate the results with the [`display`](https://docarray.jina.ai/api/docarray.document/#docarray.document.Document.display) function. While you will notice that the PointNet++ might already deliver good results for some queries without training, the fine-tuned model does perform better on many queries like the ones shown below:
+
+![Results](https://user-images.githubusercontent.com/6599259/208422496-37b93ea8-0e26-48ad-bc8d-cce8d51545a9.png)
+
 <!-- #endregion -->
-
-```python id="JsV87_rrW4dT"
-
-```

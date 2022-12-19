@@ -32,13 +32,14 @@ import finetuner
 
 finetuner.describe_models(task='text-to-image')
 ```
-```
+````
 ````{tab} mesh-to-mesh
 ```python
+import finetuner
 
-finetuner.describe_models(task='mesh-to-mesh')`
+finetuner.describe_models(task='mesh-to-mesh')
 ```
-```
+````
 
 To get a list of supported models:
 

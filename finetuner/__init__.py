@@ -190,8 +190,10 @@ def fit(
         otherwise use `cpu` to run a cpu job.
     :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
         workers used by the dataloader.
-    :param to_onnx: If the model is an onnx model or not. If you call the `fit` function
-        with `to_onnx=True`, please set this parameter as `True`.
+    :param to_onnx: Set this parameter as `True` to convert the model to an onnx model.
+        Please note that not all models support this. If this parameter is set, please
+        pass `is_onnx` when making inference, e.g., when calling the `get_model`
+        function.
     :param csv_options: A :class:`CSVOptions` object containing options used for
         reading in training and evaluation data from a CSV file, if they are
         provided as such.
