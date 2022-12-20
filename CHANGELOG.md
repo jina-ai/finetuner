@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `core-ci` workflow to remotely run the ci of finetuner-core. ([#628](https://github.com/jina-ai/finetuner/pull/628))
 
-- Ass support for 3d meshes to `build_finetuning_dataset`. ([#638](https://github.com/jina-ai/finetuner/pull/638))
+- Add support for 3d meshes to `build_finetuning_dataset`. ([#638](https://github.com/jina-ai/finetuner/pull/638))
 
 ### Removed
 
