@@ -238,6 +238,7 @@ query_data[5].matches[0].display()
 <!-- #region id="lybyfx6OdMJL" -->
 While you will notice that the PointNet++ might already deliver good results for some queries without training, the fine-tuned model does perform better on many queries like the ones shown below:
 
-![Results](https://user-images.githubusercontent.com/6599259/208422496-37b93ea8-0e26-48ad-bc8d-cce8d51545a9.png)
+![Results](https://user-images.githubusercontent.com/6599259/208681224-aa3263f2-326a-4c66-baf0-7fa1dbf594a2.png)
+
 
 <!-- #endregion -->
