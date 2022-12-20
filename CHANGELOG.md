@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Change default `experiment_name` from current working dir to `default`. ([#637](https://github.com/jina-ai/finetuner/pull/637))
 
+- Use github token provided by dispatcer when running remote-ci. ([#640](https://github.com/jina-ai/finetuner/pull/640))
+
 ### Fixed
 
 - Correctly infer the type of models created using `get_model` in the `build_encoding_dataset` function. )[#623](https://github.com/jina-ai/finetuner/pull/623))
