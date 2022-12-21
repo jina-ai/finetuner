@@ -3,7 +3,10 @@ name: Core-CI
 on:
   repository_dispatch:
     types: [triggered_from_core]
-    
+
+env:
+  JINA_AUTH_TOKEN: ${{ secrets.JINA_AUTH_TOKEN }}
+
 jobs:
   style-flake:
     runs-on: ubuntu-latest
