@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `core-ci` workflow to remotely run the ci of finetuner-core. ([#628](https://github.com/jina-ai/finetuner/pull/628))
 
+- Add support for 3d meshes to `build_finetuning_dataset`. ([#638](https://github.com/jina-ai/finetuner/pull/638))
+
 ### Removed
 
 - Remove `cpu` parameter from `create_run` function. ([#631](https://github.com/jina-ai/finetuner/pull/631))
@@ -41,6 +43,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyedit `README.md`, changes to language but not contents. ([#635](https://github.com/jina-ai/finetuner/pull/635))
 
 - Add multilingual clip colab to readme. ([#620](https://github.com/jina-ai/finetuner/pull/620))
+
+- Add tutorial for mesh-to-mesh search. ([#638](https://github.com/jina-ai/finetuner/pull/638))
+
+- Add documentation for PointNet++ model and handling 3D mesh dataset. ([#638](https://github.com/jina-ai/finetuner/pull/638))
 
 
 ## [0.6.7] - 2022-11-25
