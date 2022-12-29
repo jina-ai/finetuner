@@ -1,10 +1,9 @@
-# How Does it Work?
-
-## Contrastive learning
+# {octicon}`question` How Does it Work?
 
 From an algorithmic perspective,
-**Finetuner** leverages a contrastive metric learning approach to improve your model.
-How does it work?
+**Finetuner** leverages the contrastive approach to improve your model for similarity matching.
+
+
 
 ### Step 1: Convert a model into an embedding model
 

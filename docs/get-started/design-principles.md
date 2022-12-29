@@ -1,4 +1,4 @@
-# Design Principles
+# {octicon}`star` Design Principles
 
 There are several fancy machine learning libraries out there,
 so what makes Finetuner unique?

@@ -1,4 +1,4 @@
-# Walkthrough
+# {octicon}`list-ordered` Walkthrough
 
 Why do I need Finetuner?
 
