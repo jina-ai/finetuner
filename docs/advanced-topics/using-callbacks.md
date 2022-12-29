@@ -1,5 +1,5 @@
 (using-callbacks)=
-# Using Callbacks
+# {octicon}`link` Using Callbacks
 
 Callbacks are a way of adding additional methods to the finetuning process. The methods are executed when certain events occur and there are several callback classes, each serving a different function by providing different methods for different events.
 A run can be assigned multiple callbacks using the optional `callbacks` parameter when it is created.

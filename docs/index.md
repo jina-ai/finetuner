@@ -23,7 +23,16 @@ get-started/how-it-works
 get-started/installation
 get-started/design-principles
 walkthrough/index
-advance/index
+```
+
+```{toctree}
+:caption: Advanced Topics
+:hidden:
+
+advanced-topics/budget
+advanced-topics/negative-mining
+advanced-topics/using-callbacks
+advanced-topics/linear-probe
 ```
 
 
