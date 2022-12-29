@@ -1,4 +1,4 @@
-# Encode Documents
+# Inference
 
 Once fine-tuning is finished, it's time to actually use the model.
 You can use the fine-tuned models directly to encode [DocumentArray](https://docarray.jina.ai/) objects or setting up an encoding service.
@@ -84,7 +84,7 @@ In case you set `to_onnx=True` when calling `finetuner.fit` function,
 please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)`
 ```
 
-(integrate-with-jina)=
+(inference)=
 ## Fine-tuned model as Executor
 
 Finetuner, being part of the Jina AI Cloud, provides a convenient way to use tuned models via [Jina Executors](https://docs.jina.ai/fundamentals/executor/).
