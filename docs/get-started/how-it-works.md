@@ -1,6 +1,6 @@
 # How Does it Work?
 
-## Contrastive metric learning
+## Contrastive learning
 
 From an algorithmic perspective,
 **Finetuner** leverages a contrastive metric learning approach to improve your model.
