@@ -18,12 +18,17 @@
 
 <!-- start elevator-pitch -->
 
-Fine-tuning is an effective way to improve performance on neural search tasks. However, setting up and performing 
-fine-tuning can be very time-consuming and resource-intensive.
+Fine-tuning is an effective way to improve performance on [neural search](https://jina.ai/news/what-is-neural-search-and-learn-to-build-a-neural-search-engine/) tasks.
+However, setting up and performing fine-tuning can be very time-consuming and resource-intensive.
 
-Jina AI's Finetuner makes fine-tuning easier and faster by streamlining the workflow and handling all complexity and 
-infrastructure in the cloud. With Finetuner, one can easily enhance the performance of pre-trained models, making them 
-production-ready without buying expensive hardware.
+Jina AI's Finetuner makes fine-tuning easier and faster by streamlining the workflow and handling all complexity and infrastructure in the cloud.
+With Finetuner, one can easily enhance the performance of pre-trained models,
+making them production-ready [without extensive labeling](https://jina.ai/news/fine-tuning-with-low-budget-and-high-expectations/) and maintaining hardware.
+
+🎏 **Better embeddings**: encode your data into high-quality embeddings for semantic search, visual similarity search, text image match, recommendation,
+clustering, duplication detection, anomaly detection etc.
+
+⏰ **Low budget, high expectation**: effectively use a few hundreds of training samples and finish tuning within an hour while bring [large improvements](https://jina.ai/news/fine-tuning-with-low-budget-and-high-expectations/).
 
 📈 **Performance promise**: enhance the performance of pre-trained models and deliver state-of-the-art performance on 
 domain-specific neural search applications.
