@@ -1,11 +1,9 @@
 # {octicon}`question` How Does it Work?
 
 From an algorithmic perspective,
-**Finetuner** leverages the contrastive approach to improve your model for similarity matching.
+Finetuner leverages the contrastive approach to improve your model for similarity matching.
 
-
-
-### Step 1: Convert a model into an embedding model
+*Step 1: Convert your model into an embedding model*
 
 Finetuner interprets the backbone model architecture,
 removes the default *head*, applies *pooling* and freezes layers that do not need to be trained.
@@ -15,8 +13,9 @@ Finetuner is going to remove the classification head (cat-dog classifier) and tu
 This embedding model does not make predictions or outputs a probability,
 but instead outputs a feature vector to represent your data.
 
-### Step 2: Triplet construction and training on-the-fly
+*Step 2: Tuple/Triplet construction*
 
+````{tab} Uni-modal (with label)
 Finetuner works on labeled data.
 It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray` consisting of {class}`~docarray.document.Document`s where each one contains `finetuner_label` corresponding to the class of a specific training example. After receiving a CSV file, its contents are parsed and a {class}`~docarray.array.document.DocumentArray` is constructed.
 
@@ -27,20 +26,39 @@ Finetuner looks for a `Document` with the same `finetuner_label` (positive),
 and a `Document` with a different `finetuner_label` (negative).
 The objective is to pull `Document`s which belong to the same class together,
 while pushing the `Document`s which belong to a different class away from each other.
+````
+````{tab} Cross-modal (without label)
+Finetuner works on unlabeled text image pairs.
+You can fine-tune the CLIP like model to use text to search images directly without any annotations.
+It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray` consisting a list of {class}`~docarray.array.document.Document` contains two chunks: an image chunk and a text chunk.
 
+During the fine-tuning, Finetuner leavearge text-image pairs and jointly optimize two models (`CLIPTextEncoder` and `CLIPImageEncoder`) and two classification losses: given the text to find the best match
+image and given an image to find the best match text. Then aggregate two losses into the `CLIPLoss`.
+At the end, the output embedding of your data from the `CLIPTextEncoder` is comparable against the `CLIPImageEncoder`.
+````
+````{tab} Uni-modal (without label, Coming Soon)
+Finetuner works on unlabeled texts or images.
+While this feature is not opened to the user at the moment.
+It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray`, labeles are not required.
 
-## Cloud-based fine-tuning
+Finetuner employ self-supervised learning approach to apply random augmentation on your data and generate two/multiple Views of your data.
+These Views can be considered as positives to each other.
+It should be noted that self-supervised approach needs huge amount of training data.
+We will rolling this feautre out until we prove it's effectiveness.
+````
+
+*Step 3: Tuning in the cloud*
 
 From an engineering perspective,
 we have hidden all the complexity of machine learning algorithms and resource configuration (such as GPUs).
 All you need to do is decide on your backbone model and prepare your training data.
 
 Once you have logged in to the Jina Ecosystem with {meth}`~finetuner.login()`,
-Finetuner will push your training data into our *Cloud Artifact Storage* (only visible to you).
+Finetuner will push your training data into Jina AI Cloud (only visible to you).
 At the same time, we will spin-up an isolated computational resource
 with proper memory, CPU, GPU dedicated to your fine-tuning job.
 
-Once fine-tuning is done, Finetuner will again push your fine-tuned model to the *Cloud Artifact Storage*
+Once fine-tuning is done, Finetuner will again push your fine-tuned model to the *Jina AI Cloud*
 and make it available for you to pull it back to your machine.
 That's it!
 
