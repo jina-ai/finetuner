@@ -118,11 +118,26 @@ without worrying about resource availability, complex integration, or infrastruc
     <td>0.340</td>
     <td><span style="color:green">37.7%</span></td>
   </tr>
+  <tr>
+    <td rowspan="2">PointNet++</td>
+    <td rowspan="2"><a href="https://modelnet.cs.princeton.edu/">ModelNet40</a> 3D Mesh Search</td>
+    <td>mRR</td>
+    <td>0.791</td>
+    <td>0.891</td>
+    <td><span style="color:green">12.7%</span></td>
+    <td rowspan="2"><p align=center><a href="https://colab.research.google.com/drive/1lIMDFkUVsWMshU-akJ_hwzBfJ37zLFzU?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
+  </tr>
+  <tr>
+    <td>Recall</td>
+    <td>0.154</td>
+    <td>0.242</td>
+    <td><span style="color:green">57.1%</span></td>
+  </tr>
 
 </tbody>
 </table>
 
-<sub><sup>All metrics were evaluated for k@20 after training for 5 epochs using the Adam optimizer with learning rates of 1e-4 for ResNet, 1e-7 for CLIP and 1e-5 for the BERT models.</sup></sub>
+<sub><sup>All metrics were evaluated for k@20 after training for 5 epochs using the Adam optimizer with learning rates of 1e-4 for ResNet, 1e-7 for CLIP and 1e-5 for the BERT models, 5e-4 for PointNet++</sup></sub>
 
 <!-- start install-instruction -->
 
