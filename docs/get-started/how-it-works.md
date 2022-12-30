@@ -54,7 +54,7 @@ we have hidden all the complexity of machine learning algorithms and resource co
 All you need to do is decide on your backbone model and prepare your training data.
 
 Once you have logged in to the Jina Ecosystem with {meth}`~finetuner.login()`,
-Finetuner will push your training data into Jina AI Cloud (only visible to you).
+Finetuner will push your training data into the *Jina AI Cloud* (only visible to you).
 At the same time, we will spin-up an isolated computational resource
 with proper memory, CPU, GPU dedicated to your fine-tuning job.
 
