@@ -34,6 +34,7 @@ advanced-topics/negative-mining
 advanced-topics/using-callbacks
 advanced-topics/linear-probe
 advanced-topics/finetuner-executor
+advanced-topics/self-hosting
 ```
 
 
