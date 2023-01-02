@@ -43,12 +43,7 @@ run = finetuner.fit(
     ...,
 +   freeze=True,
 +   output_dim=1024,  # default output_dim of ResNet50 is 2048.
-    callbacks=[
-        EvaluationCallback(
-            query_data='tll-test-query-data',
-            index_data='tll-test-index-data',
-        )
-    ],
+    ...,
 )
 ```
 

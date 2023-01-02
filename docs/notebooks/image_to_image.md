@@ -7,7 +7,7 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.14.1
   kernelspec:
-    display_name: 'Python 3.7.15 (''.venv'': venv)'
+    display_name: Python 3 (ipykernel)
     language: python
     name: python3
 ---
@@ -208,41 +208,6 @@ query.match(index_data, limit=10, metric='cosine')
 ## Before and after
 We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, some of the examples the examples below (such as the the second example) show that the model after fine-tuning is able to better match similar images.
 
-<!-- #region -->
-```python
-import copy
-from io import BytesIO
-from PIL import Image
-
-query_pt = copy.deepcopy(query_data)
-index_pt = copy.deepcopy(index_data)
-
-query_ft = copy.deepcopy(query_pt)
-index_ft = copy.deepcopy(index_pt)
-
-model_pt = finetuner.build_model('resnet50')
-
-finetuner.encode(model=model, data=query_ft)
-finetuner.encode(model=model, data=index_ft)
-
-finetuner.encode(model=model_pt, data=query_pt)
-finetuner.encode(model=model_pt, data=index_pt)
-
-query_ft.match(index_ft)
-query_pt.match(index_pt)
-
-num_samples = 10
-
-for i, (doc_pt, doc_ft) in enumerate(zip(query_pt, query_ft)):
-    if i < num_samples:
-        print(f'\n\nQuery:')
-        display(Image.open(BytesIO(doc_pt.blob)))
-        print(f'top match before fine-tuning:')
-        display(Image.open(BytesIO(doc_pt.matches[0].blob)))
-        print(f'top match after fine-tuning:')
-        display(Image.open(BytesIO(doc_ft.matches[0].blob)))
-```
-<!-- #endregion -->
 
 To save you some time, we have plotted some examples where the model's ability to return similar images has clearly improved:
 
@@ -251,6 +216,3 @@ To save you some time, we have plotted some examples where the model's ability t
 On the other hand, there are also cases where the fine-tuned model performs worse, and fails to correctly match images that it previously could. This case is much rarer than the the previous case. For this dataset there were 108 occasions where the fine-tuned model returned the correct pair where it couldn't before, and oly 33 occasions where the the finetuned model returned an incorrect image after fine-tuning but returned a correct one before. Nevertheless it still can happen:
 
 ![image-image-triplets-bad](images/image-image-triplets-bad.png)
-
-
-

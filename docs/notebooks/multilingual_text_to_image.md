@@ -194,50 +194,7 @@ please use `model = finetuner.get_model(artifact, is_onnx=True)`
 ## Before and after
 We can directly compare the results of our fine-tuned model with an untrained multilingual clip model by displaying the matches each model has for the same query, while the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increses the quality of the search results:
 
-<!-- #region -->
-```python
-from finetuner import build_model
 
-pt_query = copy.deepcopy(query_data)
-pt_index = copy.deepcopy(index_data)
-
-ft_query = copy.deepcopy(query_data)
-ft_index = copy.deepcopy(index_data)
-
-zero_shot_text_encoder = build_model(
-    name='xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
-    select_model='clip-text',
-)
-zero_shot_image_encoder = build_model(
-    name='xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
-    select_model='clip-vision',
-)
-
-finetuner.encode(model=zero_shot_text_encoder, data=pt_query)
-finetuner.encode(model=zero_shot_image_encoder, data=pt_index)
-
-finetuner.encode(model=mclip_text_encoder, data=ft_query)
-finetuner.encode(model=mclip_image_encoder, data=ft_index)
-
-pt_query.match(pt_index)
-ft_query.match(ft_index)
-
-def plot_matches(num_samples = 10):
-    seen = set()
-    for i, (pt_q, ft_q) in enumerate(zip(pt_query, ft_query)):
-        if i >= num_samples: break
-        if pt_q.text in seen:
-            i = i - 1
-            continue
-        seen.add(pt_q.text)
-        print((
-            f'results for query "{pt_q.text}"'
-            ' using a zero-shot model (top) and '
-            'the fine-tuned model (bottom):'
-            ))
-        pt_q.matches[:1].plot_image_sprites(fig_size=(3,3))
-        ft_q.matches[:1].plot_image_sprites(fig_size=(3,3))
-```
 ```plaintext
 results for query: "externe mikrofone" (external microphone) using a zero-shot model (top) and the fine-tuned model (bottom)
 ```
@@ -253,8 +210,5 @@ results for query: "prozessorlüfter" (processor fan) using a zero-shot model (t
 
 ![mclip-example-ft-2](images/mclip-example-ft-2.png)
 
-
-
-<!-- #endregion -->
 
 
