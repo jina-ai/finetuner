@@ -31,7 +31,7 @@ clustering, duplication detection, anomaly detection etc.
 ⏰ **Low budget, high expectation**: effectively use a few hundreds of training samples and finish tuning within an hour while bring considerable improvements.
 
 📈 **Performance promise**: enhance the performance of pre-trained models and deliver state-of-the-art performance on 
-domain-specific neural search applications.
+domain-specific applications.
 
 🔱 **Simple yet powerful**: easy access to 40+ mainstream loss functions, 10+ optimisers, layer pruning, weight 
 freezing, dimensionality reduction, hard-negative mining, cross-modal models, and distributed training. 
