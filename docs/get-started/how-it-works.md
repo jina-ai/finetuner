@@ -3,7 +3,7 @@
 From an algorithmic perspective,
 Finetuner leverages the contrastive approach to improve your model for similarity matching.
 
-*Step 1: Convert your model into an embedding model*
+## Step 1: Build embedding model
 
 Finetuner interprets the backbone model architecture,
 removes the default *head*, applies *pooling* and freezes layers that do not need to be trained.
@@ -13,7 +13,7 @@ Finetuner is going to remove the classification head (cat-dog classifier) and tu
 This embedding model does not make predictions or outputs a probability,
 but instead outputs a feature vector to represent your data.
 
-*Step 2: Tuple/Triplet construction*
+## Step 2: Tuple/Triplet construction
 
 ````{tab} Uni-modal (with label)
 Finetuner works on labeled data.
@@ -47,7 +47,7 @@ It should be noted that self-supervised approach needs huge amount of training d
 We will rolling this feautre out until we prove it's effectiveness.
 ````
 
-*Step 3: Tuning in the cloud*
+## Step 3: Tuning in the cloud
 
 From an engineering perspective,
 we have hidden all the complexity of machine learning algorithms and resource configuration (such as GPUs).

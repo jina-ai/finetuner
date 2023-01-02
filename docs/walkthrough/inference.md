@@ -4,10 +4,44 @@ Once fine-tuning is finished, it's time to actually use the model.
 You can use the fine-tuned models directly to encode [DocumentArray](https://docarray.jina.ai/) objects or setting up an encoding service.
 When encoding, data can also be provided as a regular list.
 
+```{admonition} Use FinetunerExecutor inside a Jina Flow
+:class: hint
+Finetuner offers the {class}`~finetuner.encode` interface to embed your data locally
+If you would like to use fine-tuned model inside a Jina Flow as an Executor, checkout
+{doc}`/advanced-topics/finetuner-executor`.
+```
+
 (integrate-with-list)=
 ## Encoding a List
 Data that is stored in a regular list can be embedded in the same way you would a [DocumentArray](https://docarray.jina.ai/). Since the modality of your input data can be inferred from the model being used, there is no need to provide any additional information besides the content you want to encode. When providing data as a list, the `finetuner.encode` method will return a `np.ndarray` of embeddings, instead of a `docarray.DocumentArray`:
 
+````{tab} Artifact id and token
+```python
+import finetuner
+
+finetuner.login()
+
+token = finetuner.get_token()
+run = finetuner.get_run(
+    experiment_name='YOUR-EXPERIMENT',
+    run_name='YOUR-RUN'
+)
+
+model = finetuner.get_model(
+    run.artifact_id,
+    token=token,
+)
+
+texts = ['some text to encode']
+
+embeddings = finetuner.encode(model=model, data=texts)
+
+for text, embedding in zip(texts, embeddings):
+    print(f'Text of the returned document: {text}')
+    print(f'Shape of the embedding: {embedding.shape}')
+```
+````
+````{tab} Locally saved artifact
 ```python
 import finetuner
 
@@ -21,6 +55,7 @@ for text, embedding in zip(texts, embeddings):
     print(f'Text of the returned document: {text}')
     print(f'Shape of the embedding: {embedding.shape}')
 ```
+````
 
 
 ```{admonition} Inference with ONNX
@@ -30,7 +65,7 @@ please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)
 ```
 
 (integrate-with-docarray)=
-## Encode a DocumentArray
+## Encoding a DocumentArray
 
 To embed a [DocumentArray](https://docarray.jina.ai/) with a fine-tuned model, you can get the model of your Run via the {func}`~finetuner.get_model` function and embed it via the {func}`finetuner.encode` function:
 
@@ -50,7 +85,6 @@ run = finetuner.get_run(
 model = finetuner.get_model(
     run.artifact_id,
     token=token,
-    device='cuda', # model will be placed on cpu by default.
 )
 
 da = DocumentArray([Document(text='some text to encode')])

@@ -21,7 +21,6 @@
 
 get-started/how-it-works
 get-started/installation
-get-started/design-principles
 walkthrough/index
 ```
 
