@@ -54,7 +54,7 @@ notebooks/mesh_to_mesh
 :hidden:
 :maxdepth: 1
 
-api/finetuner
+api-rst
 ```
 
 ---
