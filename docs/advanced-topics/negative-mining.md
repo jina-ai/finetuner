@@ -79,7 +79,7 @@ The possible choices `type_of_triplets` are:
 Finetuner takes `TripleMarginLoss` as default loss function with no negative mining.
 A detailed description of the miners and their parameters is specified in the [PyTorch Metric Learning documentation](https://kevinmusgrave.github.io/pytorch-metric-learning/miners/).
 
-## Conclusion
+## Summary
 
 Metric Learning and Triplets are extremely useful for fine-tuning models for similarity search.
 Easy Triples have little impact on improving the model.
