@@ -24,7 +24,7 @@ We designed two experiments to quantitatively study how labeled data and trainin
 For each experiment, we construct three search tasks by fine-tuning three deep neural networks.
 We chose seven datasets, two of which are non-domain-specific public datasets, to ensure the generality of our experiment.
 
-We measure the performance of fine-tuned models by evaluating their ability to perform search tasks, as measured by Mean Reciprocal Rank (mRR), Recall, and Mean Average Precision (mAP).
+We measured the performance of the fine-tuned models by evaluating their ability to perform search tasks, as measured by Mean Reciprocal Rank (mRR), Recall, and Mean Average Precision (mAP).
 These metrics are calculated using the top 20 results of each search in the validation subset held out from each dataset.
 
 ### How much labeled data is needed?
