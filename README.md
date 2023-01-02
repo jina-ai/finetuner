@@ -28,7 +28,7 @@ making them production-ready [without extensive labeling](https://jina.ai/news/f
 🎏 **Better embeddings**: create high-quality embeddings for semantic search, visual similarity search, cross-modal text image search, recommendation,
 clustering, duplication detection, anomaly detection etc.
 
-⏰ **Low budget, high expectation**: effectively use a few hundreds of training samples and finish tuning within an hour while bring large improvements.
+⏰ **Low budget, high expectation**: effectively use a few hundreds of training samples and finish tuning within an hour while bring considerable improvements.
 
 📈 **Performance promise**: enhance the performance of pre-trained models and deliver state-of-the-art performance on 
 domain-specific neural search applications.
