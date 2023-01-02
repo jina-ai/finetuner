@@ -23,7 +23,7 @@ However, setting up and performing fine-tuning can be very time-consuming and re
 
 Jina AI's Finetuner makes fine-tuning easier and faster by streamlining the workflow and handling all complexity and infrastructure in the cloud.
 With Finetuner, one can easily enhance the performance of pre-trained models,
-making them production-ready [without extensive labeling](https://jina.ai/news/fine-tuning-with-low-budget-and-high-expectations/) and maintaining hardware.
+making them production-ready [without extensive labeling](https://jina.ai/news/fine-tuning-with-low-budget-and-high-expectations/) or expensive hardware.
 
 🎏 **Better embeddings**: create high-quality embeddings for semantic search, visual similarity search, cross-modal text image search, recommendation,
 clustering, duplication detection, anomaly detection, or other uses.
