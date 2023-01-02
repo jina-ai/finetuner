@@ -56,6 +56,32 @@ for text, embedding in zip(texts, embeddings):
     print(f'Shape of the embedding: {embedding.shape}')
 ```
 ````
+````{tab} (Special case) CLIP inference
+```python
+import finetuner
+
+finetuner.login()
+
+token = finetuner.get_token()
+run = finetuner.get_run(
+    experiment_name='YOUR-EXPERIMENT',
+    run_name='YOUR-RUN'
+)
+
+model = finetuner.get_model(
+    run.artifact_id,
+    token=token,
+    select_model='clip-text'  # use `clip-vision` to encode image.
+)
+
+texts = ['some text to encode']
+embeddings = finetuner.encode(model=model, data=texts)
+
+for text, embedding in zip(texts, embeddings):
+    print(f'Text of the returned document: {text}')
+    print(f'Shape of the embedding: {embedding.shape}')
+```
+````
 
 
 ```{admonition} Inference with ONNX
@@ -88,7 +114,6 @@ model = finetuner.get_model(
 )
 
 da = DocumentArray([Document(text='some text to encode')])
-
 finetuner.encode(model=model, data=da)
 
 for doc in da:
@@ -104,7 +129,33 @@ import finetuner
 model = finetuner.get_model('/path/to/YOUR-MODEL.zip')
 
 da = DocumentArray([Document(text='some text to encode')])
+finetuner.encode(model=model, data=da)
 
+for doc in da:
+    print(f'Text of the returned document: {doc.text}')
+    print(f'Shape of the embedding: {doc.embedding.shape}')
+```
+````
+````{tab} (Special case) CLIP inference
+```python
+from docarray import DocumentArray, Document
+import finetuner
+
+finetuner.login()
+
+token = finetuner.get_token()
+run = finetuner.get_run(
+    experiment_name='YOUR-EXPERIMENT',
+    run_name='YOUR-RUN'
+)
+
+model = finetuner.get_model(
+    run.artifact_id,
+    token=token,
+    select_model='clip-text'  # use `clip-vision` to encode image.
+)
+
+da = DocumentArray([Document(text='some text to encode')])
 finetuner.encode(model=model, data=da)
 
 for doc in da:

@@ -104,58 +104,6 @@ into the same vector space.
 To use those models, you have to provide the name of the model via an additional
 `select_model` parameter to the {func}`~finetuner.get_model` function.
 
-
-````{tab} CLIP text model
-```python
-from docarray import DocumentArray, Document
-import finetuner
-
-finetuner.login()
-
-token = finetuner.get_token()
-run = finetuner.get_run(
-    experiment_name='YOUR-EXPERIMENT',
-    run_name='YOUR-RUN'
-)
-
-model = finetuner.get_model(
-    run.artifact_id,
-    token=token,
-    device='cuda',
-    select_model='clip-text'
-)
-
-da = DocumentArray([Document(text='some text to encode')])
-
-finetuner.encode(model=model, data=da)
-```
-````
-````{tab} CLIP vision model
-```python
-from docarray import DocumentArray, Document
-import finetuner
-
-finetuner.login()
-
-token = finetuner.get_token()
-run = finetuner.get_run(
-    experiment_name='YOUR-EXPERIMENT',
-    run_name='YOUR-RUN'
-)
-
-model = finetuner.get_model(
-    run.artifact_id,
-    token=token,
-    device='cuda',
-    select_model='clip-vision'
-)
-
-da = DocumentArray([Document(text='~/Pictures/my_img.png')])
-
-finetuner.encode(model=model, data=da)
-```
-````
-
 If you want to host the CLIP models, you also have to provide the name of the model via the
 `select_model` parameter inside the `uses_with` attribute:
 
