@@ -25,7 +25,7 @@ Jina AI's Finetuner makes fine-tuning easier and faster by streamlining the work
 With Finetuner, you can easily enhance the performance of pre-trained models,
 making them production-ready [without extensive labeling](https://jina.ai/news/fine-tuning-with-low-budget-and-high-expectations/) or expensive hardware.
 
-🎏 **Better embeddings**: create high-quality embeddings for semantic search, visual similarity search, cross-modal text image search, recommendation,
+🎏 **Better embeddings**: create high-quality embeddings for semantic search, visual similarity search, cross-modal text<->image search, recommendation systems,
 clustering, duplication detection, anomaly detection, or other uses.
 
 ⏰ **Low budget, high expectation**: bring considerable improvements to model performance, making the most out of as little as a few hundred training samples, and finish fine-tuning in as little as an hour.
