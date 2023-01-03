@@ -4,38 +4,38 @@
 ## Why freezing?
 
 Depending on your task and the amount of training data,
-sometimes it is unnecessary to tune the entire model.
-In these cases,
-freezing the weights of the pre-trained model and fine-tuning specific layers is sufficient enough.
-Besides, freezing can reduce the training time considerably.
+it is not always necessary to tune the entire model.
+In some cases,
+freezing some of the weights of the pre-trained model and just fine-tuning specific layers produces comparable or better results.
+Furthermore, freezing weights can reduce the training time dramatically.
 
 Finetuner allows you to fine-tune a Linear Probe (or Projection Head) easily.
 
 ```{warning}
 Currently, we only allow you to freeze layers for image-to-image search tasks.
-These models are built on top of Convolution Neural Networks (CNNs).
+These models are built on top of Convolutional Neural Networks (CNNs).
 
-For transformer architecture,
-we always train the entire Neural Nets.
-If this feature is needed, consider submitting a feature request in our [Github Issues page](https://github.com/jina-ai/finetuner/issues)
+For transformer architectures,
+we can only fine-tune the entire neural network.
+If you need to freeze weights for transformers, consider submitting a feature request in our [Github Issues page](https://github.com/jina-ai/finetuner/issues)
 ```
 
 ## How?
 
 Finetuner has a built-in module called Tailor.
 Given a general model written in Pytorch,
-Tailor performs micro-operations on the model architecture and outputs an embedding model.
+Tailor performs the micro-operations on the model architecture required for fine-tuning and outputs an embedding model.
 
-Given a general model with weights, Tailor preserves its weights and performs (some of) the following steps:
+Given a general model with weights, Tailor performs some or all of the following steps:
 
-+ Finding all dense layers by iterating over layers.
++ Iterating over all layers to find dense layers.
 + Chopping off all layers after a certain dense layer.
-+ Freezing weights of specific layers.
-+ Adding a new module on top of the embedding model.
++ Freezing weights on specific layers.
++ Adding new layers on top of the model.
 
 ![tailor](../imgs/tailor.svg)
 
-With Finetuner, you can simply put `freeze=True` and `output_dim=X` like this:
+For example, just using the arguments `freeze=True` and `output_dim=X` with the `fit` function, as shown below:
 
 ```diff
 run = finetuner.fit(
@@ -55,7 +55,7 @@ Finetuner will:
 
 ## Summary
 
-If you want to achieve efficient fine-tuning without training the entire model,
+If you want to achieve efficient fine-tuning without retraining the entire model,
 tuning a Linear Probe could be a good solution.
-Keep in mind that whenever you use `freeze=True`, always set the `output_dim`.
+Keep in mind that whenever you use `freeze=True`, always set `output_dim`.
 Otherwise, nothing can be tuned since all layers are frozen.

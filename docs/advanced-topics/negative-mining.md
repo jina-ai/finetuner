@@ -7,12 +7,12 @@ Metric Learning algorithms attempt to teach the Deep Neural Network (DNN) to tel
 which objects are semantically/visually similar and which ones are not.
 
 For uni-modal fine-tuning tasks such as text-to-text, image-to-image, or mesh-to-mesh,
-Finetuner is dependent on algorithms & tricks developed for metric learning.
+Finetuner is dependent on algorithms and tricks developed for metric learning.
 
 ![batch-sample](../imgs/batch-sampling.png)
 
 Assume we have a list of Documents belonging to four classes: `1`, `2`, `3`, and `4`,
-Finetuner will evenly sample *X* items per class to fulfill a batch *B*.
+Finetuner will evenly sample *X* items per class to make a batch *B*.
 
 In the next step,
 Finetuner creates all possible Triplets *(anchor, pos, neg)* from a batch.
