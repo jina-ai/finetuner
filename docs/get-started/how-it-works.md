@@ -32,7 +32,7 @@ Finetuner works on unlabeled text image pairs.
 You can fine-tune the CLIP like model to use text to search images directly without any annotations.
 It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray` consisting a list of {class}`~docarray.array.document.Document` contains two chunks: an image chunk and a text chunk.
 
-During the fine-tuning, Finetuner leavearge text-image pairs and jointly optimize two models (`CLIPTextEncoder` and `CLIPImageEncoder`) and two classification losses: given the text to find the best match
+During the fine-tuning, Finetuner leverages text-image pairs and jointly optimize two models (`CLIPTextEncoder` and `CLIPImageEncoder`) and two classification losses: given the text to find the best match
 image and given an image to find the best match text. Then aggregate two losses into the `CLIPLoss`.
 At the end, the output embedding of your data from the `CLIPTextEncoder` is comparable against the `CLIPImageEncoder`.
 ````
