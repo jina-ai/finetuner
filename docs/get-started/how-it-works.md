@@ -41,10 +41,10 @@ Finetuner works on unlabeled texts or images.
 While this feature is not opened to the user at the moment.
 It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray`, labeles are not required.
 
-Finetuner employ self-supervised learning approach to apply random augmentation on your data and generate two/multiple Views of your data.
+Finetuner employs self-supervised learning approach to apply random augmentation on your data and generate two/multiple Views of your data.
 These Views can be considered as positives to each other.
 It should be noted that self-supervised approach needs huge amount of training data.
-We will rolling this feautre out until we prove it's effectiveness.
+We will postpone rolling this feature out until we prove it's effectiveness.
 ````
 
 ## Step 3: Tuning in the cloud
