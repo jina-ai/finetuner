@@ -82,5 +82,5 @@ A detailed description of the miners and their parameters is specified in the [P
 ## Summary
 
 Metric Learning and Triplets are extremely useful for fine-tuning models for similarity search.
-Easy Triples have little impact on improving the model.
+Easy Triplets have little impact on improving the model.
 Consider using semi-hard/hard Triplets for model tuning.
