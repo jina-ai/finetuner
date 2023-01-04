@@ -30,7 +30,7 @@ We gradually increase the amount of labeled data fed to Finetuner from 100 items
 
 In the figures below, the X-axis represents the amount of labeled data, and the Y-axis represents the relative improvement over the pre-trained model. The higher, the better.
 
-Solarized dark             |  Solarized Ocean
+...             |  ...
 :-------------------------:|:-------------------------:
 ![text-text-quora](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Text-to-text-search-on-QuoraQA--3-.svg)  |  ![text-text-clinc](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Text-to-text-search-on-Clinc150--3-.svg)
 ![image-image-tll](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Image-to-image-search-on-Totally-looks-like.svg) | ![image-image-celeba](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Image-to-image-search-on-Celeba--4-.svg)
@@ -47,7 +47,7 @@ by dividing the relative improvement (a proxy for net profit) by the amount of l
 In the figures below, the X-axis represents the amount of labeled data, and the Y-axis represents the ROI per labeled data item. The higher, the better.
 In particular, `ROI=0` means adding new labeled data at that point no longer contributes to any improvement.
 
-Solarized dark             |  Solarized Ocean
+...             |  ...
 :-------------------------:|:-------------------------:
 ![text-text-quora](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Text-to-text-search-on-QuoraQA--7-.svg)  |  ![text-text-clinc](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Text-to-text-search-on-Clinc150--7-.svg)
 ![image-image-tll](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Image-to-image-search-on-Totally-looks-like--1-.svg) | ![image-image-celeba](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Image-to-image-search-on-Celeba--5-.svg)
@@ -62,7 +62,7 @@ At each increase, we measure improvement over the pre-trained model and calculat
 For these experiments, the ROI is calculated by dividing the relative improvement by the elapsed time in seconds.
 This means that when `ROI=0`, adding training time no longer improves performance.
 
-Solarized dark             |  Solarized Ocean
+...            |  ...
 :-------------------------:|:-------------------------:
 ![text-text-quora](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Text-to-text-search-on-QuoraQA--4-.svg)  |  ![text-text-clinc](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Text-to-text-search-on-Clinc150--4-.svg)
 ![image-image-tll](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Image-to-image-search-on-Totally-look-like--2-.svg) | ![image-image-celeba](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Image-to-image-search-on-Celeba--2-.svg)
@@ -75,7 +75,7 @@ In principle, if we keep training with the same 1000 data points over and over, 
 
 Let's look at the ROI curves.
 
-Solarized dark             |  Solarized Ocean
+...             |  ...
 :-------------------------:|:-------------------------:
 ![text-text-quora](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Text-to-text-search-on-QuoraQA--5-.svg)  |  ![text-text-clinc](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Text-to-text-search-on-Clinc150--9-.svg)
 ![image-image-tll](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Image-to-image-search-on-Totally-look-like--3-.svg) | ![image-image-celeba](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Image-to-image-search-on-Celeba--3-.svg)
