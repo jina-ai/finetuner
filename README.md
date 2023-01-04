@@ -33,7 +33,7 @@ clustering, duplication detection, anomaly detection, or other uses.
 📈 **Performance promise**: enhance the performance of pre-trained models so that they deliver state-of-the-art performance on 
 domain-specific applications.
 
-🔱 **Simple yet powerful**: easy access to 40+ mainstream loss functions, 10+ optimisers, layer pruning, weight 
+🔱 **Simple yet powerful**: Easy access to 40+ mainstream loss functions, 10+ optimisers, layer pruning, weight 
 freezing, dimensionality reduction, hard-negative mining, cross-modal models, and distributed training. 
 
 ☁ **All-in-cloud**: train using our free GPU infrastructure, manage runs, experiments and artifacts on Jina AI Cloud
