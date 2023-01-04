@@ -29,7 +29,7 @@ while pushing the `Document`s which belong to a different class away from each o
 ````
 ````{tab} Cross-modal (without label)
 Finetuner works on unlabeled text image pairs.
-You can fine-tune the CLIP like model to use text to search images directly without any annotations.
+You can fine-tune a CLIP like model for text to images search directly without any annotations.
 It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray` consisting a list of {class}`~docarray.array.document.Document` contains two chunks: an image chunk and a text chunk.
 
 During the fine-tuning, Finetuner leverages text-image pairs and jointly optimize two models (`CLIPTextEncoder` and `CLIPImageEncoder`) with respect to two classification losses: (1) given a text, find the best matching
