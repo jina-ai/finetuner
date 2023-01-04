@@ -1,7 +1,7 @@
 # {octicon}`question` How Does it Work?
 
 From an algorithmic perspective,
-Finetuner leverages the contrastive approach to improve your model for similarity matching.
+Finetuner leverages the contrastive approach to improve models for similarity matching.
 
 ## Step 1: Build embedding model
 
