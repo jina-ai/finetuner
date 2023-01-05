@@ -1,5 +1,5 @@
-(linear-probe)=
-# {octicon}`pin` Linear Probe
+(projection-head)=
+# {octicon}`pin` Projection Head
 
 ## Why freezing?
 
@@ -9,7 +9,7 @@ In some cases,
 freezing some of the weights of the pre-trained model and just fine-tuning specific layers produces comparable or better results.
 Furthermore, freezing weights can reduce the training time dramatically.
 
-Finetuner allows you to fine-tune a Linear Probe (or Projection Head) easily.
+Finetuner allows you to fine-tune a Linear Projection Head easily.
 
 ```{warning}
 Currently, we only allow you to freeze layers for image-to-image search tasks.
@@ -18,6 +18,11 @@ These models are built on top of Convolutional Neural Networks (CNNs).
 For transformer architectures,
 we can only fine-tune the entire neural network.
 If you need to freeze weights for transformers, consider submitting a feature request in our [Github Issues page](https://github.com/jina-ai/finetuner/issues)
+```
+
+```{admonition} Dimensionality reduction
+:class: hint
+Use a smaller `output_dim` to get compact embeddings.
 ```
 
 ## How?
@@ -51,11 +56,14 @@ Finetuner will:
 
 1. Remove the classification head of `ResNet` model, and convert it into an embedding model.
 2. Freeze all layers of the embedding model.
-3. Attach a trainable 3-layer Linear Probe on top of the embedding model with an `output_dim=1024`.
+3. Attach a trainable 3-layer Linear Projection Head on top of the embedding model with an `output_dim=1024`.
+
+```warning
+Keep in mind that whenever you use `freeze=True`, always set `output_dim`.
+Otherwise, nothing can be tuned since all layers are frozen.
+```
 
 ## Summary
 
 If you want to achieve efficient fine-tuning without retraining the entire model,
-tuning a Linear Probe could be a good solution.
-Keep in mind that whenever you use `freeze=True`, always set `output_dim`.
-Otherwise, nothing can be tuned since all layers are frozen.
+tuning a Linear Projection Head could be a good solution.
