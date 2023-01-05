@@ -34,7 +34,7 @@ It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray
 
 During fine-tuning, Finetuner leverages text-image pairs and jointly optimizes two models (`CLIPTextEncoder` and `CLIPImageEncoder`) with respect to two classification losses: (1) given a text, find the best matching
 image and (2) given an image, find the best matching text. Then it aggregates the two losses into the `CLIPLoss`.
-At the end, the output embedding of your data from the `CLIPTextEncoder` is comparable against the `CLIPImageEncoder`.
+At the end, the output embedding of your data from the `CLIPTextEncoder` is comparable to `CLIPImageEncoder`.
 ````
 ````{tab} Uni-modal (without label, Coming Soon)
 Finetuner works on unlabeled texts or images.
