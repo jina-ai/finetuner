@@ -39,7 +39,7 @@ At the end, the output embedding of your data from the `CLIPTextEncoder` is comp
 ````{tab} Uni-modal (without label, Coming Soon)
 Finetuner works on unlabeled texts or images.
 While this feature is not opened to the user at the moment.
-It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray`, labeles are not required.
+It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray`. Labels are not required.
 
 Finetuner employs a self-supervised learning approach that applies random augmentation to your data and generates two/multiple Views of your data.
 These Views can be considered as positives to each other.
