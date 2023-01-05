@@ -82,7 +82,7 @@ Let's look at the ROI curves.
 ![image-image-flickr30k](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Text-to-image-search-on-Flickr30K--4-.svg) | ![image-image-coco](https://jina-ai-gmbh.ghost.io/content/images/2022/12/Text-to-image-search-on-CocoCaptions--3-.svg)
 
 The ROI drops immediately after the first epoch of fine-tuning.
-Unlike in the last experiment, where ROI approached zero but stayed positive when increasing the labeled data, here, the ROI on added time can go negative due to the overfitting problem!
+Unlike in the last experiment, where ROI approached zero but stayed positive when increasing the number of epochs, here, the ROI on added time can go negative due to the overfitting problem!
 
 ## Summary
 
