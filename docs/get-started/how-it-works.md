@@ -43,7 +43,7 @@ It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray
 
 Finetuner employs self-supervised learning approach to apply random augmentation on your data and generate two/multiple Views of your data.
 These Views can be considered as positives to each other.
-It should be noted that self-supervised approach needs huge amount of training data.
+It should be noted that self-supervised approach needs a very large amount of training data.
 We have postponed rolling this feature out until we have proven its effectiveness.
 ````
 
