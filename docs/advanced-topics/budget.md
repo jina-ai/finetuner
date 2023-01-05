@@ -71,7 +71,7 @@ This means that when `ROI=0`, adding training time no longer improves performanc
 We knew in advance that adding more time does not guarantee any improvement at all.
 It can, in fact, reduce performance due to the overfitting problem.
 Some models (e.g. CLIP) are more prone to overfitting than others.
-In principle, if we keep training with the same 1000 data points over and over, we are guaranteed to overfit the data and the overall performance will drop.
+In principle, if we keep training with the same 1000 data points over and over, we are guaranteed to overfit on the data and the overall performance will drop.
 
 Let's look at the ROI curves.
 
