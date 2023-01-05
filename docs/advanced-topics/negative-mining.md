@@ -3,7 +3,7 @@
 
 ## Context: Deep Metric Learning
 
-Metric Learning algorithms attempt to teach the Deep Neural Network (DNN) to tell
+Metric Learning algorithms attempt to teach neural network models to tell
 which objects are semantically/visually similar and which ones are not.
 
 For uni-modal fine-tuning tasks such as text-to-text, image-to-image, or mesh-to-mesh,
