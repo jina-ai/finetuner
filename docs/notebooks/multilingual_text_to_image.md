@@ -35,7 +35,7 @@ This guide will show you how to finetune a multilingual CLIP model for a text to
 ## Task
 
 
-We'll be fine-tuning multilingual CLIP on the electronics section of the The [German Fashion12k dataset](https://github.com/Toloka/Fashion12K_german_queries), which contains images and descriptions of fashion products in German.
+We'll be fine-tuning multilingual CLIP on the electronics section of the [German Fashion12k dataset](https://github.com/Toloka/Fashion12K_german_queries), which contains images and descriptions of fashion products in German.
 
 The images are a subset of the [xthan/fashion-200k dataset](https://github.com/xthan/fashion-200k), and we have commissioned their human annotations via crowdsourcing platform. Annotations were made in two steps.  First, we passed the 12,000 images to annotators in their large international user community, who added descriptive captions.
 
