@@ -7,8 +7,7 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.14.1
   kernelspec:
-    display_name: 'Python 3.7.15 (''.venv'': venv)'
-    language: python
+    display_name: Python 3
     name: python3
 ---
 
@@ -28,6 +27,10 @@ This guide will lead you through an example use-case to show you how Finetuner c
 
 ```python id="CSuWo72R7Sno"
 !pip install 'finetuner[full]'
+```
+
+```python id="cu1HRyCAlH_A"
+!pip install git+https://github.com/jina-ai/jina-hubble-sdk.git@fix-post-success-type
 ```
 
 <!-- #region id="FPDhvWkw7kas" -->
@@ -65,13 +68,14 @@ We will use the [Quora Question Pairs](https://www.sbert.net/examples/training/q
 import finetuner
 from docarray import DocumentArray, Document
 
-finetuner.login()
+finetuner.login(force=True)
+
 ```
 
 ```python id="8PIO5T--p4tR"
-train_data = DocumentArray.pull('quora_train.da', show_progress=True)
-query_data = DocumentArray.pull('quora_query_dev.da', show_progress=True)
-index_data = DocumentArray.pull('quora_index_dev.da', show_progress=True)
+train_data = DocumentArray.pull('finetuner/quora-train-da', show_progress=True)
+query_data = DocumentArray.pull('finetuner/quora-test-query-da', show_progress=True)
+index_data = DocumentArray.pull('finetuner/quora-test-index-da', show_progress=True)
 
 train_data.summary()
 ```
@@ -108,7 +112,7 @@ from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
     model='bert-base-cased',
-    train_data='quora_train.da',
+    train_data='finetuner/quora-train-da',
     loss='TripletMarginLoss',
     optimizer='Adam',
     learning_rate = 1e-5,
@@ -117,8 +121,8 @@ run = finetuner.fit(
     device='cuda',
     callbacks=[
         EvaluationCallback(
-            query_data='quora_query_dev.da',
-            index_data='quora_index_dev.da',
+            query_data='finetuner/quora-test-query-da',
+            index_data='finetuner/quora-test-index-da',
             batch_size=32
         )
     ]
@@ -226,15 +230,15 @@ And finally you can use the embeded `query` to find top-k semantically related t
 query.match(index_data, limit=10, metric='cosine')
 ```
 
-<!-- #region -->
+<!-- #region id="53Xtm0hidrjs" -->
 ## Before and after
 We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the zero-shot model is able to produce results that are very similar to the initial query, it is common for the topic of the question to change, with the structure staying the same. After fine-tuning, the returned questions are consistently relevant to the initial query, even in cases where the structure of the sentence is different.
 
 ```python
 import copy
 
-query_pt = DocumentArray.pull('quora_query_dev.da', show_progress=True)
-index_pt = DocumentArray.pull('quora_index_dev.da', show_progress=True)
+query_pt = DocumentArray.pull('finetuner/quora-test-query-da', show_progress=True)
+index_pt = DocumentArray.pull('finetuner/quora-test-index-da', show_progress=True)
 
 query_ft = copy.deepcopy(query_pt)
 index_ft = copy.deepcopy(index_pt)

@@ -7,8 +7,7 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.14.1
   kernelspec:
-    display_name: 'Python 3.7.15 (''.venv'': venv)'
-    language: python
+    display_name: Python 3
     name: python3
 ---
 
@@ -61,9 +60,9 @@ finetuner.login(force=True)
 ```
 
 ```python id="ONpXDwFBsqQS"
-train_data = DocumentArray.pull('tll-train-data', show_progress=True)
-query_data = DocumentArray.pull('tll-test-query-data', show_progress=True)
-index_data = DocumentArray.pull('tll-test-index-data', show_progress=True)
+train_data = DocumentArray.pull('finetuner/tll-train-data', show_progress=True)
+query_data = DocumentArray.pull('finetuner/tll-test-query-data', show_progress=True)
+index_data = DocumentArray.pull('finetuner/tll-test-index-data', show_progress=True)
 
 train_data.summary()
 ```
@@ -87,15 +86,15 @@ from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
     model='resnet50',
-    train_data='tll-train-data',
+    train_data='finetuner/tll-train-data',
     batch_size=128,
     epochs=5,
     learning_rate=1e-4,
     device='cuda',
     callbacks=[
         EvaluationCallback(
-            query_data='tll-test-query-data',
-            index_data='tll-test-index-data',
+            query_data='finetuner/tll-test-query-data',
+            index_data='finetuner/tll-test-index-data',
         )
     ],
 )
@@ -205,10 +204,12 @@ And finally you can use the embeded `query` to find top-k visually related image
 query.match(index_data, limit=10, metric='cosine')
 ```
 
+<!-- #region id="irvn0igWdLOf" -->
 ## Before and after
 We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, some of the examples the examples below (such as the the second example) show that the model after fine-tuning is able to better match similar images.
+<!-- #endregion -->
 
-<!-- #region -->
+<!-- #region id="cVVqC_vsdXlK" -->
 ```python
 import copy
 from io import BytesIO
@@ -244,13 +245,12 @@ for i, (doc_pt, doc_ft) in enumerate(zip(query_pt, query_ft)):
 ```
 <!-- #endregion -->
 
+<!-- #region id="TwL33Jz1datD" -->
 To save you some time, we have plotted some examples where the model's ability to return similar images has clearly improved:
 
-![image-image-triplets-good](images/image-image-triplets-good.png)
+![image-image-triplets-good](https://finetuner.jina.ai/_images/image-image-triplets-good.png)
 
-On the other hand, there are also cases where the fine-tuned model performs worse, and fails to correctly match images that it previously could. This case is much rarer than the the previous case. For this dataset there were 108 occasions where the fine-tuned model returned the correct pair where it couldn't before, and oly 33 occasions where the the finetuned model returned an incorrect image after fine-tuning but returned a correct one before. Nevertheless it still can happen:
+On the other hand, there are also cases where the fine-tuned model performs worse, and fails to correctly match images that it previously could. This case is much rarer than the the previous case. For this dataset there were 108 occasions where the fine-tuned model returned the correct pair where it couldn't before, and only 33 occasions where the the finetuned model returned an incorrect image after fine-tuning but returned a correct one before. Nevertheless it still can happen:
 
-![image-image-triplets-bad](images/image-image-triplets-bad.png)
-
-
-
+![image-image-triplets-bad](https://finetuner.jina.ai/_images/image-image-triplets-bad.png)
+<!-- #endregion -->

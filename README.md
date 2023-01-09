@@ -162,11 +162,11 @@ finetuner.login()
 run = finetuner.fit(
     model='resnet50',
     run_name='resnet50-tll-run',
-    train_data='tll-train-data',
+    train_data='finetuner/tll-train-data',
     callbacks=[
         EvaluationCallback(
-            query_data='tll-test-query-data',
-            index_data='tll-test-index-data',
+            query_data='finetuner/tll-test-query-data',
+            index_data='finetuner/tll-test-index-data',
         )
     ],
 )
