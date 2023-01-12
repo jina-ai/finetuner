@@ -1,21 +1,29 @@
 (negative-mining)=
 # {octicon}`telescope` Negative Mining
 
+Negative Mining is an advanced technique, which optimizes the way data is sampled from you training dataset.
+Usually, it aims at making the metric learning tasks for the model harder during the training. 
+In this way it can lead to better fine-tuning results.
+
 ## Context: Deep Metric Learning
+
+To understand negative mining, we first take a look at how the training data 
+construction is done for metric learning tasks.
 
 Metric Learning algorithms attempt to teach neural network models to tell
 which objects are semantically/visually similar and which ones are not.
 
 For uni-modal fine-tuning tasks such as text-to-text, image-to-image, or mesh-to-mesh,
-Finetuner is dependent on algorithms and tricks developed for metric learning.
+Finetuner constructs training data in the following way:
 
 ![batch-sample](../imgs/batch-sampling.png)
 
 Assume we have a list of Documents belonging to four classes: `1`, `2`, `3`, and `4`,
 Finetuner will evenly sample *X* items per class to make a batch *B*.
 
-In the next step,
-Finetuner creates all possible Triplets *(anchor, pos, neg)* from a batch.
+In the next step, arranges the items.
+Many loss functions used by Finetuner are calculated based on the embeddings of Triples. 
+For those, Finetuner creates all possible Triplets *(anchor, pos, neg)* from this batch.
 These Triplets become the training data.
 The objective is to pull Documents that belong to the same class together,
 while pushing the Documents which belong to a different class away from each other.
@@ -23,18 +31,16 @@ while pushing the Documents which belong to a different class away from each oth
 ![training](../imgs/metric-train.png)
 
 
-## Why mining?
+## The Triplet Margin Miner
 
 After Triplets construction,
 all possible *(anchor, pos, neg)* Triplets becomes the training data.
-However,
-what if the pre-trained model already performs well on some of the Triplets?
+However, what if the pre-trained model already performs well on some of the Triplets?
 
-To put it in another way: *what if the distance between `anchor` and `pos` is smaller than
+To put it in another way: *what if the distance between `anchor` and `pos` is much smaller than
 the distance between `anchor` and `neg`?*
 
-These Triplets,
-does not contribute to improving the model.
+These Triplets, does not contribute to improving the model.
 A more effective way is to use hard/semi-hard negative samples for model training.
 
 ![mining](../imgs/mining.png)
@@ -45,8 +51,7 @@ Let's say `1₀` is an `anchor`, `1₁` is the `pos` while `2₄` is the `neg`, 
 + `D(anchor, pos) < D(anchor, neg) < D(anchor, pos) + margin`, where `neg` is a little further from the `pos`, but within the margin, then `neg` can be considered as a "semi-hard negative" (`2₄ - S`).
 + `D(anchor, neg) > D(anchor, pos) + margin`, then `neg` can be considered as "easy negative" (`2₄ - E`).
 
-An effective training scheme should make the most of the hard negatives,
-using semi-hard negatives while filtering out easy negatives.
+Usually the training is more effective, when using only hard negatives (and semi-hard negatives) while filtering out easy negatives.
 
 ## How?
 
@@ -71,10 +76,10 @@ run = finetuner.fit(
 
 The possible choices `type_of_triplets` are:
 
-+ `all`: Use all triplets, identical to no mining.
-+ `easy`: Use all easy triplets, all triplets that do not violate the margin.
-+ `semihard`: Use semi-hard triplets, the negative is further from the anchor than the positive.
-+ `hard`: Use hard triplets, the negative is closer to the anchor than the positive.
++ `easy`: Use all easy triplets - all triplets that do not violate the margin.
++ `semihard`: Use semi-hard triplets, but not hard triples - the negative is violating the margin but not as similar as the positve example.
++ `hard`: Use only hard triplets - the negative is closer to the anchor than the positive.
++ `all`: Use `hard` and `semihard` triples - all but the `easy` triples
 
 Finetuner takes `TripleMarginLoss` as default loss function with no negative mining.
 A detailed description of the miners and their parameters is specified in the [PyTorch Metric Learning documentation](https://kevinmusgrave.github.io/pytorch-metric-learning/miners/).

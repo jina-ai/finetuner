@@ -1,14 +1,17 @@
 # {octicon}`question` How Does it Work?
 
-From an algorithmic perspective,
-Finetuner leverages the contrastive approach to improve models for similarity matching.
+Finetuner is a framework to improve models that encode data into embedding for similarity matching.
+From an algorithmic perspective, it leverages the contrastive learning approach.
+This involves three steps:
 
 ## Step 1: Build embedding model
 
-Finetuner interprets the backbone model architecture,
-removes the default *head*, applies *pooling* and freezes layers that do not need to be trained.
-For an image classification task (e.g. cats and dogs),
-Finetuner is going to remove the classification head (cat-dog classifier) and turn your model into an *embedding model*.
+Finetuner interprets the architecture of an existing (pre-trained model) which we call backbone.
+Those model might not be an embedding model upfront and the architecture not suitable for training it to encode data into embeddings.
+Therefore, Finetuner removes the default *head*, applies *pooling* and freezes layers that do not need to be trained.
+
+For instance, Finetuner will turn an image classification model, e.g., to separate cats from dogs, into an *embedding model*. 
+by removing the classification head (cat-dog classifier).
 
 This embedding model does not make predictions or outputs a probability,
 but instead outputs a feature vector to represent your data.
@@ -35,16 +38,6 @@ It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray
 During fine-tuning, Finetuner leverages text-image pairs and jointly optimizes two models (`CLIPTextEncoder` and `CLIPImageEncoder`) with respect to two classification losses: (1) given a text, find the best matching
 image and (2) given an image, find the best matching text. Then it aggregates the two losses into the `CLIPLoss`.
 At the end, the output embedding of your data from the `CLIPTextEncoder` is comparable to `CLIPImageEncoder`.
-````
-````{tab} Uni-modal (without label, Coming Soon)
-Finetuner works on unlabeled texts or images.
-While this feature is not opened to the user at the moment.
-It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray`. Labels are not required.
-
-Finetuner employs a self-supervised learning approach that applies random augmentation to your data and generates two/multiple Views of your data.
-These Views can be considered as positives to each other.
-It should be noted that self-supervised approach needs a very large amount of training data.
-We have postponed rolling this feature out until we have proven its effectiveness.
 ````
 
 ## Step 3: Tuning in the cloud
