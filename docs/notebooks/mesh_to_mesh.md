@@ -7,8 +7,7 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.14.1
   kernelspec:
-    display_name: Python 3 (ipykernel)
-    language: python
+    display_name: Python 3
     name: python3
 ---
 
@@ -65,9 +64,9 @@ finetuner.login(force=True)
 ```
 
 ```python id="Y-Um5gE8IORv"
-train_data = DocumentArray.pull('modelnet40-train', show_progress=True)
-query_data = DocumentArray.pull('modelnet40-queries', show_progress=True)
-index_data = DocumentArray.pull('modelnet40-index', show_progress=True)
+train_data = DocumentArray.pull('finetuner/modelnet40-train', show_progress=True)
+query_data = DocumentArray.pull('finetuner/modelnet40-queries', show_progress=True)
+index_data = DocumentArray.pull('finetuner/modelnet40-index', show_progress=True)
 
 train_data.summary()
 ```
@@ -101,7 +100,7 @@ from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
     model='pointnet++',
-    train_data='modelnet40-train',
+    train_data='finetuner/modelnet40-train',
     epochs=10,
     batch_size=64,
     learning_rate= 5e-4,
@@ -109,8 +108,8 @@ run = finetuner.fit(
     device='cuda',
     callbacks=[
         EvaluationCallback(
-            query_data='modelnet40-queries',
-            index_data='modelnet40-index',
+            query_data='finetuner/modelnet40-queries',
+            index_data='finetuner/modelnet40-index',
             batch_size=64,
         )
     ],

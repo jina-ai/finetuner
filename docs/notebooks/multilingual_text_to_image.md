@@ -53,11 +53,11 @@ finetuner.login(force=True)
 ```
 
 ```python
-train_data = DocumentArray.pull('DE-Fashion-Image-Text-Multimodal-train', show_progress=True)
-eval_data = DocumentArray.pull('DE-Fashion-Image-Text-Multimodal-test', show_progress=True)
+train_data = DocumentArray.pull('finetuner/DE-Fashion-Image-Text-Multimodal-train', show_progress=True)
+eval_data = DocumentArray.pull('finetuner/DE-Fashion-Image-Text-Multimodal-test', show_progress=True)
 
-query_data = DocumentArray.pull('DE-Fashion-Image-Text-Multimodal-query', show_progress=True)
-index_data = DocumentArray.pull('DE-Fashion-Image-Text-Multimodal-index', show_progress=True)
+query_data = DocumentArray.pull('finetuner/DE-Fashion-Image-Text-Multimodal-query', show_progress=True)
+index_data = DocumentArray.pull('finetuner/DE-Fashion-Image-Text-Multimodal-index', show_progress=True)
 
 train_data.summary()
 ```
@@ -74,15 +74,15 @@ from finetuner.callback import EvaluationCallback, WandBLogger
 
 run = finetuner.fit(
     model='xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
-    train_data='DE-Fashion-Image-Text-Multimodal-train',
+    train_data='finetuner/DE-Fashion-Image-Text-Multimodal-train',
     epochs=5,
     learning_rate=1e-6,
     loss='CLIPLoss',
     device='cuda',
     callbacks=[
         EvaluationCallback(
-            query_data='DE-Fashion-Image-Text-Multimodal-query',
-            index_data='DE-Fashion-Image-Text-Multimodal-index',
+            query_data='finetuner/DE-Fashion-Image-Text-Multimodal-query',
+            index_data='finetuner/DE-Fashion-Image-Text-Multimodal-index',
             model='clip-text',
             index_model='clip-vision'
         ),
