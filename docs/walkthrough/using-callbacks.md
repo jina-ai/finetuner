@@ -8,13 +8,13 @@ A run can be assigned multiple callbacks using the optional `callbacks` paramete
 run = finetuner.fit(
     model = 'resnet50',
     run_name = 'resnet-tll-early-6',
-    train_data = 'tll-train-da',
+    train_data = 'finetuner/tll-train-da',
     epochs = 5,
     learning_rate = 1e-6,
     callbacks=[
         EvaluationCallback(
-            query_data='tll-test-query-da',
-            index_data='tll-test-index-da'
+            query_data='finetuner/tll-test-query-da',
+            index_data='finetuner/tll-test-index-da'
         ),
         EarlyStopping()
     ]
@@ -121,7 +121,7 @@ from finetuner.callback import EarlyStopping, EvaluationCallback
 run = finetuner.fit(
     model='openai/clip-vit-base-patch32',
     run_name='clip-fashion-early',
-    train_data='clip-fashion-train-data',
+    train_data='finetuner/fashion-train-data-clip',
     epochs=10,
     learning_rate= 1e-5,
     loss='CLIPLoss',
@@ -179,13 +179,13 @@ from finetuner.callback import WandBLogger, EvaluationCallback
 run = finetuner.fit(
     model='resnet50',
     run_name = 'resnet-tll-early-6',
-    train_data = 'tll-train-da',
+    train_data = 'finetuner/tll-train-da',
     epochs = 5,
     learning_rate = 1e-6,
     callbacks=[
         EvaluationCallback(
-            query_data='tll-test-query-da',
-            index_data='tll-test-index-da'
+            query_data='finetuner/tll-test-query-da',
+            index_data='finetuner/tll-test-index-da'
         ),
         WandBLogger(),
     ]

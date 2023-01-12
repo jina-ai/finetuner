@@ -7,8 +7,7 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.14.1
   kernelspec:
-    display_name: 'Python 3.7.15 (''.venv'': venv)'
-    language: python
+    display_name: Python 3
     name: python3
 ---
 
@@ -60,10 +59,10 @@ finetuner.login(force=True)
 ```
 
 ```python id="cpIj7viExFti"
-train_data = DocumentArray.pull('fashion-train-data-clip', show_progress=True)
-eval_data = DocumentArray.pull('fashion-eval-data-clip', show_progress=True)
-query_data = DocumentArray.pull('fashion-eval-data-queries', show_progress=True)
-index_data = DocumentArray.pull('fashion-eval-data-index', show_progress=True)
+train_data = DocumentArray.pull('finetuner/fashion-train-data-clip', show_progress=True)
+eval_data = DocumentArray.pull('finetuner/fashion-eval-data-clip', show_progress=True)
+query_data = DocumentArray.pull('finetuner/fashion-eval-data-queries', show_progress=True)
+index_data = DocumentArray.pull('finetuner/fashion-eval-data-index', show_progress=True)
 
 train_data.summary()
 ```
@@ -86,8 +85,8 @@ from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
     model='openai/clip-vit-base-patch32',
-    train_data='fashion-train-data-clip',
-    eval_data='fashion-eval-data-clip',
+    train_data='finetuner/fashion-train-data-clip',
+    eval_data='finetuner/fashion-eval-data-clip',
     epochs=5,
     learning_rate= 1e-7,
     loss='CLIPLoss',
@@ -96,8 +95,8 @@ run = finetuner.fit(
         EvaluationCallback(
             model='clip-text',
             index_model='clip-vision',
-            query_data='fashion-eval-data-queries',
-            index_data='fashion-eval-data-index',
+            query_data='finetuner/fashion-eval-data-queries',
+            index_data='finetuner/fashion-eval-data-index',
         )
     ],
 )
@@ -176,9 +175,7 @@ let's use the fine-tuned model to encode a new `Document`:
 
 ```python id="v95QsuEyzE-B"
 text_da = DocumentArray([Document(text='some text to encode')])
-image_da = DocumentArray([Document(
-    uri='https://upload.wikimedia.org/wikipedia/commons/4/4e/Single_apple.png'
-    )])
+image_da = DocumentArray([Document(uri='https://upload.wikimedia.org/wikipedia/commons/4/4e/Single_apple.png')])
 
 clip_text_encoder = finetuner.get_model(artifact=artifact, select_model='clip-text')
 clip_image_encoder = finetuner.get_model(artifact=artifact, select_model='clip-vision')
@@ -245,10 +242,12 @@ The value you set to `alpha` should be greater equal than 0 and less equal than 
 That's it! Check out [clip-as-service](https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models) to learn how to plug-in a fine-tuned CLIP model to our CLIP specific service.
 <!-- #endregion -->
 
+<!-- #region id="tpm8eVRFX20B" -->
 ## Before and after
 We can directly compare the results of our fine-tuned model with a pre-trained clip model by displaying the matches each model has for the same query. While the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increases the quality of the search results:
+<!-- #endregion -->
 
-<!-- #region -->
+<!-- #region id="C30UVpHDX4HF" -->
 ```python
 import copy
 from finetuner import build_model
@@ -301,10 +300,8 @@ plot_matches()
 ```plaintext
 Results for query: "nightingale tee jacket" using a zero-shot model (top) and the fine-tuned model (bottom)
 ```
-![clip-example-pt](images/clip-example-pt.png)
+![clip-example-pt](https://finetuner.jina.ai/_images/clip-example-pt.png)
 
-![clip-example-ft](images/clip-example-ft.png)
+![clip-example-ft](https://finetuner.jina.ai/_images/clip-example-ft.png)
 
 <!-- #endregion -->
-
-

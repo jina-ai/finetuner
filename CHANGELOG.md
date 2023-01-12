@@ -48,6 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add documentation for PointNet++ model and handling 3D mesh dataset. ([#638](https://github.com/jina-ai/finetuner/pull/638))
 
+- Add `finetuner` namespace to artifact names in the documentation. ([#649](https://github.com/jina-ai/finetuner/pull/649))
+
 
 ## [0.6.7] - 2022-11-25
 
