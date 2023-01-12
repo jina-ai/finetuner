@@ -206,7 +206,7 @@ query.match(index_data, limit=10, metric='cosine')
 
 <!-- #region id="irvn0igWdLOf" -->
 ## Before and after
-We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, some of the examples the examples below (such as the the second example) show that the model after fine-tuning is able to better match similar images.
+We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, some of the examples the examples below (such as the second example) show that the model after fine-tuning is able to better match similar images.
 <!-- #endregion -->
 
 <!-- #region id="cVVqC_vsdXlK" -->
@@ -250,7 +250,7 @@ To save you some time, we have plotted some examples where the model's ability t
 
 ![image-image-triplets-good](https://finetuner.jina.ai/_images/image-image-triplets-good.png)
 
-On the other hand, there are also cases where the fine-tuned model performs worse, and fails to correctly match images that it previously could. This case is much rarer than the the previous case. For this dataset there were 108 occasions where the fine-tuned model returned the correct pair where it couldn't before, and only 33 occasions where the the finetuned model returned an incorrect image after fine-tuning but returned a correct one before. Nevertheless it still can happen:
+On the other hand, there are also cases where the fine-tuned model performs worse, and fails to correctly match images that it previously could. This case is much rarer than the previous case. For this dataset there were 108 occasions where the fine-tuned model returned the correct pair where it couldn't before, and only 33 occasions where the finetuned model returned an incorrect image after fine-tuning but returned a correct one before. Nevertheless it still can happen:
 
 ![image-image-triplets-bad](https://finetuner.jina.ai/_images/image-image-triplets-bad.png)
 <!-- #endregion -->

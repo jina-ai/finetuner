@@ -33,7 +33,7 @@ This guide will show you how to finetune a multilingual CLIP model for a text to
 <!-- #endregion -->
 
 ```python id="9261d0a7-ad6d-461f-bdf7-54e9804cc45d"
-!pip install finetuner
+!pip install "finetuner[full]"
 ```
 
 <!-- #region id="11f13ad8-e0a7-4ba6-b52b-f85dd221db0f" -->
