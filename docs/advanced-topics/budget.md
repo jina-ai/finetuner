@@ -8,12 +8,12 @@ to read the full tech blog.
 ```
 
 Fine-tuning takes a pre-trained model,
-trained on a related task, and then further trains it for the new task.
+trained on a related task, and then further trains it for a new task.
 Alternately, it can mean taking a model pre-trained for an open domain task, and further training it for a domain-specific one.
 Compared to training from scratch, fine-tuning is a much more cost-efficient solution whenever it is feasible. But:
 
-+ Exactly how much data do you need to get a good result?
-+ Exactly how much time do you need to get good results?
++ Exactly how much **data** do you need to get a good result?
++ Exactly how much **time** do you need to get good results?
 
 ## Experiments
 
