@@ -110,3 +110,14 @@ In general, you should choose a low learning rate (`1e-6` to `1e-4`) for fine-tu
 Otherwise, it could happen, that your model overfits on the training data and forgets the knowledge learned during pre-training.
 Similarly, two or three epochs (number of passes thorough the training data) are often enough for a fine-tuning job. 
 ```
+
+
+### Construction of Training Batches
+
+The training of your model is done in batches.
+The `batch_size` parameter determines the number of items per batch.
+Finetuner constructs batches so that each batch contains the same number of classes and
+as many items per class as configured via the `num_items_per_class` parameter.
+However, if it is not possible, e.g., because `batch_size` is not dividable by
+`num_items_per_class` or the training dataset does not contain enough classes,
+Finetuner tries to choose a similar value for `num_items_per_class` which is working.

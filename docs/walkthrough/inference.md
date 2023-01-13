@@ -1,4 +1,4 @@
-# Inference
+x# Inference
 
 Once fine-tuning is finished, it's time to actually use the model.
 You can use the fine-tuned models directly to encode [DocumentArray](https://docarray.jina.ai/) objects or setting up an encoding service.
@@ -88,6 +88,13 @@ for text, embedding in zip(texts, embeddings):
 :class: tip
 In case you set `to_onnx=True` when calling `finetuner.fit` function,
 please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)`
+```
+
+```{admonition} Encoding other Modalities
+:class: tip
+Of cause you can not only encode texts.
+For encoding a list of images, you can provide uris, e.g.,
+`embeddings = finetuner.encode(model=model, data=['path/to/apple.png'])`
 ```
 
 (integrate-with-docarray)=

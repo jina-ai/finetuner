@@ -10,8 +10,8 @@ Finetuner interprets the architecture of an existing (pre-trained model) which w
 Those model might not be an embedding model upfront and the architecture not suitable for training it to encode data into embeddings.
 Therefore, Finetuner removes the default *head*, applies *pooling* and freezes layers that do not need to be trained.
 
-For instance, Finetuner will turn an image classification model, e.g., to separate cats from dogs, into an *embedding model*. 
-by removing the classification head (cat-dog classifier).
+For instance, Finetuner will turn an image classification model, e.g., for separating cats from dogs, into an *embedding model* 
+by removing its last layer - the classification head (cat-dog classifier).
 
 This embedding model does not make predictions or outputs a probability,
 but instead outputs a feature vector to represent your data.
