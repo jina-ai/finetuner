@@ -1,14 +1,16 @@
 # {octicon}`question` How Does it Work?
 
-Finetuner is a framework to improve models that encode data into embedding for similarity matching.
-From an algorithmic perspective, it leverages the contrastive learning approach.
+Finetuner is a framework for using the contrastive learning approach to improve similarity matching with models that encode data into embeddings.
 This involves three steps:
 
-## Step 1: Build embedding model
+## Step 1: Build an embedding model
 
 Finetuner interprets the architecture of an existing (pre-trained model) which we call backbone.
 Those model might not be an embedding model upfront and the architecture not suitable for training it to encode data into embeddings.
 Therefore, Finetuner removes the default *head*, applies *pooling* and freezes layers that do not need to be trained.
+
+Finetuner takes an existing, pre-trained model, typically called the __backbone__, and analyzes its architecture.
+If this model does not already produce embeddings, Finetuner is able to remove the default *head* (the last layers of the network), add new projection layers, apply *pooling*, and freeze layers that do not need to be trained.
 
 For instance, Finetuner will turn an image classification model, e.g., for separating cats from dogs, into an *embedding model* 
 by removing its last layer - the classification head (cat-dog classifier).

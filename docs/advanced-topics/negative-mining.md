@@ -18,12 +18,12 @@ Finetuner constructs training data in the following way:
 ![batch-sample](../imgs/batch-sampling.png)
 
 Assume we have a list of Documents belonging to four classes: `1`, `2`, `3`, and `4`,
-Finetuner will evenly sample *X* items per class to make a batch *B*.
+Finetuner will evenly sample *X* items per class to make a batch *B* which is encoded by the model into a set of embeddings.
 
-In the next step, arranges the items.
+Afterward, the loss is calculated based on the relations between the embeddings.
 Many of Finetuner's loss functions contrast the embeddings of three items, or a __Triplet__. 
-Finetuner creates all possible Triplets *(anchor, pos, neg)* from this batch.
-For each Triplet, the first is the __anchor__, the second is an embedding that ought to be closer to the embedding of the anchor, and the second is one that should be further from the anchor.
+Finetuner creates all possible Triplets *(anchor, pos, neg)* from this batch which satisfy the following conditions:
+For each Triplet, the first is the __anchor__, the second is an embedding that ought to be closer to the embedding of the anchor (has the same label), and the third is one that should be further from the anchor (has a different label).
 The objective is to pull the embeddings of items that belong to the same class closer together in the embedding space,
 while pushing the embeddings of items which belong to different classes farther away from each other.
 
@@ -58,8 +58,8 @@ To select a specific miner, pass its name to the `fit` function, e.g., `AngularM
 
 Please note that the miner has to be compatible with the loss function you selected.
 For instance, if you choose to train a model with the `TripleMarginLoss`, you can use the `TripletMarginMiner`.
-While without this miner, all possible triples with an anchor, a positive, and a negative candidate are constructed, the miner reduces this set of triples.
-Usually, only triples with hard negatives are selected where the distance between the positive and the negative example is inside a margin of `0.2`.
+While without this miner, all possible triples with an anchor, a positive, and a negative candidate are used to calculate the loss, the miner reduces this set of triples.
+By default, the miner only selects triples with hard negatives where the distance between the positive and the negative example is inside a margin of `0.2`.
 To pass additional parameters to configure the miner, use the `miner_options` parameter of the fit function.
 For example, to use only hard-negative Triples and set the margin to `0.3`:
 
