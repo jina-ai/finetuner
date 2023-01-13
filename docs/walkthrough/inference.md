@@ -92,7 +92,7 @@ please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)
 
 ```{admonition} Encoding other Modalities
 :class: tip
-Of cause you can not only encode texts.
+Of course you can not only encode texts.
 For encoding a list of images, you can provide uris, e.g.,
 `embeddings = finetuner.encode(model=model, data=['path/to/apple.png'])`
 ```
