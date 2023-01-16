@@ -15,8 +15,8 @@ If this model does not already produce embeddings, Finetuner is able to remove t
 For instance, Finetuner will turn an image classification model, e.g., for separating cats from dogs, into an *embedding model* 
 by removing its last layer - the classification head (cat-dog classifier).
 
-This embedding model does not make predictions or outputs a probability,
-but instead outputs a feature vector to represent your data.
+This embedding model does not make predictions or output a probability,
+but instead outputs a feature vector (an __embedding__) that represents its input.
 
 ## Step 2: Tuple/Triplet construction
 
@@ -34,7 +34,7 @@ while pushing the `Document`s which belong to a different class away from each o
 ````
 ````{tab} Cross-modal (without label)
 Finetuner works on unlabeled text image pairs.
-You can fine-tune a CLIP like model for text to images search directly without any annotations.
+You can fine-tune a CLIP-like model for text to images search directly without any labels.
 It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray` consisting a list of {class}`~docarray.array.document.Document` that contain two chunks: an image chunk and a text chunk.
 
 During fine-tuning, Finetuner leverages text-image pairs and jointly optimizes two models (`CLIPTextEncoder` and `CLIPImageEncoder`) with respect to two classification losses: (1) given a text, find the best matching
@@ -44,17 +44,17 @@ At the end, the output embedding of your data from the `CLIPTextEncoder` is comp
 
 ## Step 3: Tuning in the cloud
 
-From an engineering perspective,
+From an operational perspective,
 we have hidden all the complexity of machine learning algorithms and resource configuration (such as GPUs).
 All you need to do is decide on your backbone model and prepare your training data.
 
 Once you have logged in to the Jina Ecosystem with {meth}`~finetuner.login()`,
 Finetuner will push your training data into the *Jina AI Cloud* (only visible to you).
 At the same time, we will spin-up an isolated computational resource
-with proper memory, CPU, GPU dedicated to your fine-tuning job.
+with proper memory, CPU, and a GPU dedicated to your fine-tuning job.
 
-Once fine-tuning is done, Finetuner will again push your fine-tuned model to the *Jina AI Cloud*
-and make it available for you to pull it back to your machine.
+Once fine-tuning is done, Finetuner will push your fine-tuned model to the *Jina AI Cloud*
+and make it available for you to download.
 That's it!
 
 On the other hand,
