@@ -248,60 +248,12 @@ We can directly compare the results of our fine-tuned model with a pre-trained c
 <!-- #endregion -->
 
 <!-- #region id="C30UVpHDX4HF" -->
-```python
-import copy
-from finetuner import build_model
-
-pt_query = copy.deepcopy(query_data)
-pt_index = copy.deepcopy(index_data)
-
-ft_query = copy.deepcopy(query_data)
-ft_index = copy.deepcopy(index_data)
-
-zero_shot_text_encoder = build_model(
-    name='openai/clip-vit-base-patch32',
-    select_model='clip-text',
-)
-zero_shot_image_encoder = build_model(
-    name='openai/clip-vit-base-patch32',
-    select_model='clip-vision',
-)
-
-finetuner.encode(model=zero_shot_text_encoder, data=pt_query)
-finetuner.encode(model=zero_shot_image_encoder, data=pt_index)
-
-finetuner.encode(model=clip_text_encoder, data=ft_query)
-finetuner.encode(model=clip_image_encoder, data=ft_index)
-
-pt_query.match(pt_index)
-ft_query.match(ft_index)
-
-def plot_matches(num_samples = 5):
-    seen = set()
-    for i, (pt_q, ft_q) in enumerate(zip(pt_query, ft_query)):
-        if i > num_samples: break
-        if pt_q.text in seen:
-            continue
-        seen.add(pt_q.text)
-        print((
-            f'results for query "{pt_q.text}"'
-            ' using a zero-shot model (top) and '
-            'the fine-tuned model (bottom):'
-        ))
-        pt_q.matches[:4].plot_image_sprites(fig_size=(3,3))
-        ft_q.matches[:4].plot_image_sprites(fig_size=(3,3))
-   
-plot_matches()
-
-
-```
-
 
 ```plaintext
 Results for query: "nightingale tee jacket" using a zero-shot model (top) and the fine-tuned model (bottom)
 ```
-![clip-example-pt](https://finetuner.jina.ai/_images/clip-example-pt.png)
+![clip-example-pt](https://user-images.githubusercontent.com/6599259/212634395-6f336d39-cda7-425d-80a2-10facae3b824.png)
 
-![clip-example-ft](https://finetuner.jina.ai/_images/clip-example-ft.png)
+![clip-example-ft](https://user-images.githubusercontent.com/6599259/212634112-a44c6c4c-2cc1-4dfb-8e29-0d02b2d6b95c.png)
 
 <!-- #endregion -->

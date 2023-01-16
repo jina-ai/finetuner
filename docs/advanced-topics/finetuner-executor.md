@@ -1,91 +1,5 @@
-# Encode Documents
-
-Once fine-tuning is finished, it's time to actually use the model.
-You can use the fine-tuned models directly to encode [DocumentArray](https://docarray.jina.ai/) objects or setting up an encoding service.
-When encoding, data can also be provided as a regular list.
-
-(integrate-with-docarray)=
-## Embed DocumentArray
-
-To embed a [DocumentArray](https://docarray.jina.ai/) with a fine-tuned model, you can get the model of your Run via the {func}`~finetuner.get_model` function and embed it via the {func}`finetuner.encode` function:
-
-````{tab} Artifact id and token
-```python
-from docarray import DocumentArray, Document
-import finetuner
-
-finetuner.login()
-
-token = finetuner.get_token()
-run = finetuner.get_run(
-    experiment_name='YOUR-EXPERIMENT',
-    run_name='YOUR-RUN'
-)
-
-model = finetuner.get_model(
-    run.artifact_id,
-    token=token,
-    device='cuda', # model will be placed on cpu by default.
-)
-
-da = DocumentArray([Document(text='some text to encode')])
-
-finetuner.encode(model=model, data=da)
-
-for doc in da:
-    print(f'Text of the returned document: {doc.text}')
-    print(f'Shape of the embedding: {doc.embedding.shape}')
-```
-````
-````{tab} Locally saved artifact
-```python
-from docarray import DocumentArray, Document
-import finetuner
-
-model = finetuner.get_model('/path/to/YOUR-MODEL.zip')
-
-da = DocumentArray([Document(text='some text to encode')])
-
-finetuner.encode(model=model, data=da)
-
-for doc in da:
-    print(f'Text of the returned document: {doc.text}')
-    print(f'Shape of the embedding: {doc.embedding.shape}')
-```
-````
-
-```console
-Text of the returned document: some text to encode
-Shape of the embedding: (768,)
-```
-
-## Encoding a List
-Data that is stored in a regular list can be embedded in the same way you would a [DocumentArray](https://docarray.jina.ai/). Since the modality of your input data can be inferred from the model being used, there is no need to provide any additional information besides the content you want to encode. When providing data as a list, the `finetuner.encode` method will return a `np.ndarray` of embeddings, instead of a `docarray.DocumentArray`:
-
-```python
-from docarray import DocumentArray, Document
-import finetuner
-
-model = finetuner.get_model('/path/to/YOUR-MODEL.zip')
-
-texts = ['some text to encode']
-
-embeddings = finetuner.encode(model=model, data=texts)
-
-for text, embedding in zip(texts, embeddings):
-    print(f'Text of the returned document: {text}')
-    print(f'Shape of the embedding: {embedding.shape}')
-```
-
-
-```{admonition} Inference with ONNX
-:class: tip
-In case you set `to_onnx=True` when calling `finetuner.fit` function,
-please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)`
-```
-
-(integrate-with-jina)=
-## Fine-tuned model as Executor
+(finetuner-executor)=
+# {octicon}`gear` Use FinetunerExecutor inside a Jina Flow
 
 Finetuner, being part of the Jina AI Cloud, provides a convenient way to use tuned models via [Jina Executors](https://docs.jina.ai/fundamentals/executor/).
 
@@ -190,58 +104,6 @@ into the same vector space.
 To use those models, you have to provide the name of the model via an additional
 `select_model` parameter to the {func}`~finetuner.get_model` function.
 
-
-````{tab} CLIP text model
-```python
-from docarray import DocumentArray, Document
-import finetuner
-
-finetuner.login()
-
-token = finetuner.get_token()
-run = finetuner.get_run(
-    experiment_name='YOUR-EXPERIMENT',
-    run_name='YOUR-RUN'
-)
-
-model = finetuner.get_model(
-    run.artifact_id,
-    token=token,
-    device='cuda',
-    select_model='clip-text'
-)
-
-da = DocumentArray([Document(text='some text to encode')])
-
-finetuner.encode(model=model, data=da)
-```
-````
-````{tab} CLIP vision model
-```python
-from docarray import DocumentArray, Document
-import finetuner
-
-finetuner.login()
-
-token = finetuner.get_token()
-run = finetuner.get_run(
-    experiment_name='YOUR-EXPERIMENT',
-    run_name='YOUR-RUN'
-)
-
-model = finetuner.get_model(
-    run.artifact_id,
-    token=token,
-    device='cuda',
-    select_model='clip-vision'
-)
-
-da = DocumentArray([Document(text='~/Pictures/my_img.png')])
-
-finetuner.encode(model=model, data=da)
-```
-````
-
 If you want to host the CLIP models, you also have to provide the name of the model via the
 `select_model` parameter inside the `uses_with` attribute:
 
@@ -265,3 +127,4 @@ f = Flow().add(
 )
 
 ```
+

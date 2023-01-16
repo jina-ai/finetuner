@@ -50,6 +50,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `finetuner` namespace to artifact names in the documentation. ([#649](https://github.com/jina-ai/finetuner/pull/649))
 
+- Rewrite M-CLIP notebook to use German fashion dataset. ([#643](https://github.com/jina-ai/finetuner/pull/643))
+
+- New advanced topics section. ([#643](https://github.com/jina-ai/finetuner/pull/643))
+
+- Improve developer reference. ([#643](https://github.com/jina-ai/finetuner/pull/643))
+
+- Improve walkthrough sections. ([#643](https://github.com/jina-ai/finetuner/pull/643))
+
 
 ## [0.6.7] - 2022-11-25
 

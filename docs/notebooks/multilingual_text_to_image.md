@@ -13,9 +13,9 @@ jupyter:
 ---
 
 <!-- #region id="72867ba9-6a8c-4b14-acbf-487ea0a61836" -->
-# Multilingual Text-to-Image search with MultilingualCLIP
+# Multilingual Text-to-Image Search with MultilingualCLIP
 
-<a href="https://colab.research.google.com/drive/1N7iWZV0OunFZSLtsQxoazS808MPXhCwq?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
+<a href="https://colab.research.google.com/drive/10Wldbu0Zugj7NmQyZwZzuorZ6SSAhtIo"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
 <!-- #endregion -->
 
@@ -33,7 +33,7 @@ This guide will show you how to finetune a multilingual CLIP model for a text to
 <!-- #endregion -->
 
 ```python id="9261d0a7-ad6d-461f-bdf7-54e9804cc45d"
-!pip install "finetuner[full]"
+!pip install 'finetuner[full]'
 ```
 
 <!-- #region id="11f13ad8-e0a7-4ba6-b52b-f85dd221db0f" -->
@@ -41,14 +41,16 @@ This guide will show you how to finetune a multilingual CLIP model for a text to
 <!-- #endregion -->
 
 <!-- #region id="ed1f88d4-f140-48d4-9d20-00e628c73e38" -->
-We'll be fine-tuning multilingual CLIP on the electronics section of the [German XMarket dataset](https://xmrec.github.io/data/de/), which contains images and descriptions of electronics products in German.  
+We'll be fine-tuning multilingual CLIP on the electronics section of the [German Fashion12k dataset](https://github.com/Toloka/Fashion12K_german_queries), which contains images and descriptions of fashion products in German.
 
-Each product in the dataset contains several attributes, we will be making use of the image and category attributes to create a [`Document`](https://docarray.jina.ai/fundamentals/document/#document) containing two [chunks](https://docarray.jina.ai/fundamentals/document/nested/#nested-structure), one containing the image and another containing the category of the product.
+The images are a subset of the [xthan/fashion-200k dataset](https://github.com/xthan/fashion-200k), and we have commissioned their human annotations via crowdsourcing platform. Annotations were made in two steps.  First, we passed the 12,000 images to annotators in their large international user community, who added descriptive captions.
+
+Each product in the dataset contains several attributes, we will be making use of the image and captions to create a [`Document`](https://docarray.jina.ai/fundamentals/document/#document) containing two [chunks](https://docarray.jina.ai/fundamentals/document/nested/#nested-structure), one containing the image and another containing the category of the product.
 <!-- #endregion -->
 
 <!-- #region id="2a40f0b1-7272-4ae6-9d0a-f5c8d6d534d8" -->
 ## Data
-We will use the `xmarket-de-electronics` dataset, which we have already pre-processed and made available on the Jina AI Cloud. You can access it using `DocArray.pull`:
+We will use the `DE-Fashion-Image-Text-Multimodal-train` dataset, which we have already pre-processed and made available on the Jina AI Cloud. You can access it using `DocArray.pull`:
 <!-- #endregion -->
 
 ```python id="4420a4ac-531a-4db3-af75-ebb58d8f828b"
@@ -59,12 +61,13 @@ finetuner.login(force=True)
 ```
 
 ```python id="bab5c3fb-ee75-4818-bd18-23c7a5983e1b"
-train_data = 'finetuner/xmarket-de-electronics-train-data'
-eval_data = 'finetuner/xmarket-de-electronics-test-data'
+train_data = DocumentArray.pull('finetuner/DE-Fashion-Image-Text-Multimodal-train', show_progress=True)
+eval_data = DocumentArray.pull('finetuner/DE-Fashion-Image-Text-Multimodal-test', show_progress=True)
 
-query_data = 'finetuner/xmarket-de-electronics-query-data'
-index_data = 'finetuner/xmarket-de-electronics-index-data'
+query_data = DocumentArray.pull('finetuner/DE-Fashion-Image-Text-Multimodal-query', show_progress=True)
+index_data = DocumentArray.pull('finetuner/DE-Fashion-Image-Text-Multimodal-index', show_progress=True)
 
+train_data.summary()
 ```
 
 <!-- #region id="3b859e9c-99e0-484b-98d5-643ad51de8f0" -->
@@ -78,21 +81,19 @@ Now that our data has been prepared, we can start our fine-tuning run.
 <!-- #endregion -->
 
 ```python id="a0cba20d-e335-43e0-8936-d926568034b3"
-import finetuner
 from finetuner.callback import EvaluationCallback, WandBLogger
 
 run = finetuner.fit(
     model='xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
-    train_data=train_data,
-    eval_data=eval_data,
+    train_data='finetuner/DE-Fashion-Image-Text-Multimodal-train',
     epochs=5,
     learning_rate=1e-6,
     loss='CLIPLoss',
     device='cuda',
     callbacks=[
         EvaluationCallback(
-            query_data=query_data,
-            index_data=index_data,
+            query_data='finetuner/DE-Fashion-Image-Text-Multimodal-query',
+            index_data='finetuner/DE-Fashion-Image-Text-Multimodal-index',
             model='clip-text',
             index_model='clip-vision'
         ),
@@ -149,12 +150,23 @@ wandb: Run `wandb offline` to turn off syncing.
 wandb: Syncing run ancient-galaxy-2
 wandb:  View project at <link-to-project>
 wandb:  View run at <link-to-run>
-
+[07:48:21] INFO     Done ✨                                                                              __main__.py:195
+           DEBUG    Finetuning took 0 days, 0 hours 8 minutes and 19 seconds                             __main__.py:197
+           DEBUG    Metric: 'clip-text-to-clip-vision_precision_at_k' Value: 0.04035                     __main__.py:206
+           DEBUG    Metric: 'clip-text-to-clip-vision_hit_at_k' Value: 0.79200                           __main__.py:206
+           DEBUG    Metric: 'clip-text-to-clip-vision_average_precision' Value: 0.41681                  __main__.py:206
+           DEBUG    Metric: 'clip-text-to-clip-vision_reciprocal_rank' Value: 0.41773                    __main__.py:206
+           DEBUG    Metric: 'clip-text-to-clip-vision_dcg_at_k' Value: 0.57113                           __main__.py:206
+           INFO     Building the artifact ...                                                            __main__.py:208
+           INFO     Pushing artifact to Jina AI Cloud ...                                                __main__.py:234
+[08:02:33] INFO     Artifact pushed under ID '63b52b5b3278416c15353bf3'                                  __main__.py:236
+           DEBUG    Artifact size is 2599.190 MB                                                         __main__.py:238
+           INFO     Finished 🚀                                                                          __main__.py:239
 ```
 
 The generated plots should look like this:
 
-![WandB-mclip](https://finetuner.jina.ai/_images/WandB-mclip.png)
+![WandB-mclip](https://user-images.githubusercontent.com/6599259/212645881-20071aba-8643-4878-bc53-97eb6f766bf0.png)
 
 <!-- #endregion -->
 
@@ -176,7 +188,6 @@ let's use the fine-tuned model to encode a new `Document`:
 <!-- #endregion -->
 
 ```python id="fe43402f-4191-4343-905c-c75c64694662"
-from docarray import Document, DocumentArray
 text_da = DocumentArray([Document(text='setwas Text zum Codieren')])
 image_da = DocumentArray([Document(uri='https://upload.wikimedia.org/wikipedia/commons/4/4e/Single_apple.png')])
 
@@ -215,61 +226,13 @@ We can directly compare the results of our fine-tuned model with an untrained mu
 <!-- #endregion -->
 
 <!-- #region id="e69fdfb2-6482-45fb-9c4d-41e548ef8f06" -->
-```python
-from finetuner import build_model
-
-pt_query = copy.deepcopy(query_data)
-pt_index = copy.deepcopy(index_data)
-
-ft_query = copy.deepcopy(query_data)
-ft_index = copy.deepcopy(index_data)
-
-zero_shot_text_encoder = build_model(
-    name='xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
-    select_model='clip-text',
-)
-zero_shot_image_encoder = build_model(
-    name='xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
-    select_model='clip-vision',
-)
-
-finetuner.encode(model=zero_shot_text_encoder, data=pt_query)
-finetuner.encode(model=zero_shot_image_encoder, data=pt_index)
-
-finetuner.encode(model=mclip_text_encoder, data=ft_query)
-finetuner.encode(model=mclip_image_encoder, data=ft_index)
-
-pt_query.match(pt_index)
-ft_query.match(ft_index)
-
-def plot_matches(num_samples = 10):
-    seen = set()
-    for i, (pt_q, ft_q) in enumerate(zip(pt_query, ft_query)):
-        if i >= num_samples: break
-        if pt_q.text in seen:
-            i = i - 1
-            continue
-        seen.add(pt_q.text)
-        print((
-            f'results for query "{pt_q.text}"'
-            ' using a zero-shot model (top) and '
-            'the fine-tuned model (bottom):'
-            ))
-        pt_q.matches[:1].plot_image_sprites(fig_size=(3,3))
-        ft_q.matches[:1].plot_image_sprites(fig_size=(3,3))
-```
 ```plaintext
-results for query: "externe mikrofone (external microphone)" using a zero-shot model (top) and the fine-tuned model (bottom)
-```
-![mclip-example-pt-1](https://finetuner.jina.ai/_images/mclip-example-pt-1.png)
-![mclip-example-ft-1](https://finetuner.jina.ai/_images/mclip-example-ft-1.png)
-
-```plaintext
-results for query: "prozessorlüfter (processor fan)" using a zero-shot model (top) and the fine-tuned model (bottom)
+results for query: "Spitzen-Midirock Teilfutter Schwarz" (Lace midi skirt partial lining black) using a zero-shot model and the fine-tuned model
 ```
 
-![mclip-example-pt-2](https://finetuner.jina.ai/_images/mclip-example-pt-2.png)
-![mclip-example-ft-2](https://finetuner.jina.ai/_images/mclip-example-ft-2.png)
+before             |  after
+:-------------------------:|:-------------------------:
+![mclip-example-pt-1](https://jina-ai-gmbh.ghost.io/content/images/2022/12/mclip-before.png)  |  ![mclip-example-ft-1](https://jina-ai-gmbh.ghost.io/content/images/2022/12/mclip-after.png)
 
 
 

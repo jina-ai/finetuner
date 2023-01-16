@@ -21,8 +21,18 @@
 
 get-started/how-it-works
 get-started/installation
-get-started/design-principles
 walkthrough/index
+```
+
+```{toctree}
+:caption: Advanced Topics
+:hidden:
+
+advanced-topics/budget
+advanced-topics/negative-mining
+advanced-topics/using-callbacks
+advanced-topics/linear-probe
+advanced-topics/finetuner-executor
 ```
 
 
@@ -43,7 +53,7 @@ notebooks/mesh_to_mesh
 :hidden:
 :maxdepth: 1
 
-api/finetuner
+api-rst
 ```
 
 ---

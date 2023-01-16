@@ -45,10 +45,12 @@ class Run:
 
     @property
     def name(self) -> str:
+        """Get the name of the :class:`Run`."""
         return self._name
 
     @property
     def config(self) -> dict:
+        """Get the config of the :class:`Run`."""
         return self._config
 
     def _get_run(self) -> dict:
@@ -58,16 +60,16 @@ class Run:
         )
 
     def status(self) -> dict:
-        """Run status.
+        """Get :class:`Run` status.
 
-        :returns: A string representing the run status.
+        :returns: A dict representing the :class:`Run` status.
         """
         return self._client.get_run_status(
             experiment_name=self._experiment_name, run_name=self._name
         )
 
     def logs(self) -> str:
-        """Check the run logs.
+        """Check the :class:`Run` logs.
 
         :returns: A string dump of the run logs.
         """
@@ -77,7 +79,7 @@ class Run:
         )
 
     def stream_logs(self, interval: int = 5) -> Iterator[str]:
-        """Stream the run logs.
+        """Stream the :class:`Run` logs lively.
 
         :param interval: The time interval to sync the status of finetuner `Run`.
         :yield: An iterators keep stream the logs from server.
@@ -117,7 +119,7 @@ class Run:
             )
 
     def save_artifact(self, directory: str = ARTIFACTS_DIR) -> str:
-        """Save artifact if the run is finished.
+        """Save artifact if the :class:`Run` is finished.
 
         :param directory: Directory where the artifact will be stored.
         :returns: A string object that indicates the download path.
@@ -132,7 +134,7 @@ class Run:
 
     @property
     def artifact_id(self):
-        """Get artifact id from the run.
+        """Get artifact id of the :class:`Run`.
 
         An artifact in finetuner contains fine-tuned model and its metadata.
         Such as preprocessing function, collate function. This id could be useful
