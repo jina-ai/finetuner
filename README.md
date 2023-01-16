@@ -110,7 +110,7 @@ without worrying about resource availability, complex integration, or infrastruc
     <td>0.430</td>
     <td>0.648</td>
     <td><span style="color:green">50.7%</span></td>
-    <td rowspan="2"><p align=center><a href="https://colab.research.google.com/drive/1N7iWZV0OunFZSLtsQxoazS808MPXhCwq?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
+    <td rowspan="2"><p align=center><a href="https://colab.research.google.com/drive/10Wldbu0Zugj7NmQyZwZzuorZ6SSAhtIo"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
   </tr>
   <tr>
     <td>Recall</td>

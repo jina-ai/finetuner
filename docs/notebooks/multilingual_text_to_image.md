@@ -15,7 +15,7 @@ jupyter:
 <!-- #region id="72867ba9-6a8c-4b14-acbf-487ea0a61836" -->
 # Multilingual Text-to-Image Search with MultilingualCLIP
 
-<a href="https://drive.google.com/file/d/10Wldbu0Zugj7NmQyZwZzuorZ6SSAhtIo/view?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
+<a href="https://colab.research.google.com/drive/10Wldbu0Zugj7NmQyZwZzuorZ6SSAhtIo"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
 <!-- #endregion -->
 
