@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Removed
+
+### Changed
+
+### Fixed
+
+### Docs
+
+
+## [0.7.0] - 2023-01-16
+
+### Added
+
 - Add `val_split` parameter to `fit` function. ([#624](https://github.com/jina-ai/finetuner/pull/624))
 
 - Add `core-ci` workflow to remotely run the ci of finetuner-core. ([#628](https://github.com/jina-ai/finetuner/pull/628))
@@ -32,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Correctly infer the type of models created using `get_model` in the `build_encoding_dataset` function. )[#623](https://github.com/jina-ai/finetuner/pull/623))
+- Correctly infer the type of models created using `get_model` in the `build_encoding_dataset` function. ([#623](https://github.com/jina-ai/finetuner/pull/623))
 
 ### Docs
 
