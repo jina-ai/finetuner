@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove `notebook_login` function. ([#631](https://github.com/jina-ai/finetuner/pull/631))
 
+- Remove support for python 3.7 ([#653](https://github.com/jina-ai/finetuner/pull/653))
+
 ### Changed
 
 - Adjust Finetuner based on API changes for Jina AI Cloud. ([#637](https://github.com/jina-ai/finetuner/pull/637))
