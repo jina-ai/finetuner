@@ -29,10 +29,6 @@ This guide will lead you through an example use-case to show you how Finetuner c
 !pip install 'finetuner[full]'
 ```
 
-```python id="cu1HRyCAlH_A"
-!pip install git+https://github.com/jina-ai/jina-hubble-sdk.git@fix-post-success-type
-```
-
 <!-- #region id="FPDhvWkw7kas" -->
 ## Task
 
@@ -234,42 +230,7 @@ query.match(index_data, limit=10, metric='cosine')
 ## Before and after
 We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the zero-shot model is able to produce results that are very similar to the initial query, it is common for the topic of the question to change, with the structure staying the same. After fine-tuning, the returned questions are consistently relevant to the initial query, even in cases where the structure of the sentence is different.
 
-```python
-import copy
-
-query_pt = DocumentArray.pull('finetuner/quora-test-query-da', show_progress=True)
-index_pt = DocumentArray.pull('finetuner/quora-test-index-da', show_progress=True)
-
-query_ft = copy.deepcopy(query_pt)
-index_ft = copy.deepcopy(index_pt)
-
-model_pt = finetuner.build_model('bert-base-cased')
-
-finetuner.encode(model=model, data=query_ft)
-finetuner.encode(model=model, data=index_ft)
-
-finetuner.encode(model=model_pt, data=query_pt)
-finetuner.encode(model=model_pt, data=index_pt)
-
-query_ft.match(index_ft)
-query_py.match(index_pt)
-
-num_samples = 5
-
-for i, (doc_pt, doc_ft) in enumerate(zip(query_pt, query_ft)):
-  if i < num_samples:
-    print(f'\nQuery: {doc_ft.text}')
-    print(' matches pretrained:')
-    for match in doc_pt.matches[:5]:
-      print(f' - {match.text}')
-    print(' matches finetuned')
-    for match in doc_ft.matches[:5]:
-      print(f' - {match.text}')
-
-```
-
 ```plaintext
-
 Query: What's the best way to start learning robotics?
  matches pretrained:
  - What is the best way to start with robotics?
