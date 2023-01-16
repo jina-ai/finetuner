@@ -33,7 +33,7 @@ The objective is to pull `Document`s which belong to the same class together,
 while pushing the `Document`s which belong to a different class away from each other.
 ````
 ````{tab} Cross-modal (without label)
-Finetuner works on unlabeled text image pairs.
+Finetuner works on unlabeled text-image pairs.
 You can fine-tune a CLIP-like model for text to images search directly without any labels.
 It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray` consisting a list of {class}`~docarray.array.document.Document` that contain two chunks: an image chunk and a text chunk.
 
