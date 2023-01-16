@@ -143,7 +143,7 @@ without worrying about resource availability, complex integration, or infrastruc
 
 ## Install
 
-Make sure you have Python 3.7+ installed. Finetuner can be installed via `pip` by executing:
+Make sure you have Python 3.8+ installed. Finetuner can be installed via `pip` by executing:
 
 ```bash
 pip install -U finetuner
