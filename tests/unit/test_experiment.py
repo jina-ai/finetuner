@@ -99,7 +99,7 @@ def test_create_run_config():
             NAME: 'resnet50',
             FREEZE: False,
             OUTPUT_DIM: None,
-            OPTIONS: {},
+            OPTIONS: None,
             ONNX: False,
         },
         DATA: {
@@ -111,7 +111,7 @@ def test_create_run_config():
         },
         HYPER_PARAMETERS: {
             LOSS: 'TripletMarginLoss',
-            LOSS_OPTIONS: {},
+            LOSS_OPTIONS: None,
             OPTIMIZER: 'Adam',
             OPTIMIZER_OPTIONS: {'weight_decay': 0.01},
             MINER: 'TripletMarginMiner',
