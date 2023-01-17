@@ -55,6 +55,11 @@ For 3D meshes the option `create_point_clouds` (`True` by default) creates point
 Please note, that local files can not be processed by the Finetuner if you deactivate `convert_to_blob` or `create_point_clouds`.
 ```
 
+```{important} 
+If the text field contains commas, it breaks the CSV format since it is interpreted as spanning over multiple columns.
+In this case, please enclose the field in double quotes, such as `field1,"field, 2"`.
+```
+
 ````
 
 ````{tab} text-to-image search using CLIP

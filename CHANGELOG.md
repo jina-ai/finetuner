@@ -73,6 +73,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improve walkthrough sections. ([#643](https://github.com/jina-ai/finetuner/pull/643))
 
+- Add hints to escape common to prepare csv training data. ([#655](https://github.com/jina-ai/finetuner/pull/655))
+
 
 ## [0.6.7] - 2022-11-25
 
