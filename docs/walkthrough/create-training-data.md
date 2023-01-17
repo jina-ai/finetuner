@@ -56,7 +56,7 @@ Please note, that local files can not be processed by the Finetuner if you deact
 ```
 
 ```{important} 
-If the text field use commas,it breaks the CSV format since it's interpreted as a new column.
+If the text field use commas, it breaks the CSV format since it is interpreted as a new column.
 In this case, please enclose the field in double quates, such as `field1,"field, 2",field3, ...`.
 ```
 
