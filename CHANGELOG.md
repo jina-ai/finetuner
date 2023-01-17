@@ -73,6 +73,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improve walkthrough sections. ([#643](https://github.com/jina-ai/finetuner/pull/643))
 
+- Correct artifact names in image to image notebook. ([#656](https://github.com/jina-ai/finetuner/pull/656))
+
 
 ## [0.6.7] - 2022-11-25
 
