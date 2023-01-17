@@ -44,7 +44,7 @@ After fine-tuning, the embeddings of positive pairs are expected to be pulled cl
 ## Data
 
 Our journey starts locally. We have to prepare the data and push it to the Jina AI Cloud and Finetuner will be able to get the dataset by its name. For this example,
-we already prepared the data, and we'll provide the names of training data (`tll-train-data`) directly to Finetuner.
+we already prepared the data, and we'll provide the names of training data (`tll-train-da`) directly to Finetuner.
 
 ```{important} 
 We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
@@ -60,9 +60,9 @@ finetuner.login(force=True)
 ```
 
 ```python id="ONpXDwFBsqQS"
-train_data = DocumentArray.pull('finetuner/tll-train-data', show_progress=True)
-query_data = DocumentArray.pull('finetuner/tll-test-query-data', show_progress=True)
-index_data = DocumentArray.pull('finetuner/tll-test-index-data', show_progress=True)
+train_data = DocumentArray.pull('finetuner/tll-train-da', show_progress=True)
+query_data = DocumentArray.pull('finetuner/tll-test-query-da', show_progress=True)
+index_data = DocumentArray.pull('finetuner/tll-test-index-da', show_progress=True)
 
 train_data.summary()
 ```
@@ -86,15 +86,15 @@ from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
     model='resnet50',
-    train_data='finetuner/tll-train-data',
+    train_data='finetuner/tll-train-da',
     batch_size=128,
     epochs=5,
     learning_rate=1e-4,
     device='cuda',
     callbacks=[
         EvaluationCallback(
-            query_data='finetuner/tll-test-query-data',
-            index_data='finetuner/tll-test-index-data',
+            query_data='finetuner/tll-test-query-da',
+            index_data='finetuner/tll-test-index-da',
         )
     ],
 )
