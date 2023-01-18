@@ -15,7 +15,6 @@ function ready() {
 function onLabelClick() {
   // Activate other labels with the same text.
   for (label of labels_by_text[this.textContent]) {
-    if (label === this) continue;
     label.previousSibling.checked = true;
   }
 }

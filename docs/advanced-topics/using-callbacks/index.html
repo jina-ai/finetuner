@@ -1,0 +1,637 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content=" Using Callbacks" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://finetuner.jina.ai/advanced-topics/using-callbacks/" />
+<meta property="og:site_name" content="Finetuner Documentation" />
+<meta property="og:description" content="Using Callbacks: Callbacks are a way of adding additional methods to the finetuning process. The methods are executed when certain events occur and there are several callback classes, each serving a different function by providing different methods for different events. A run can be assigned mult..." />
+<meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
+<meta property="og:image:alt" content="Finetuner Documentation" />
+<meta name="description" content="Using Callbacks: Callbacks are a way of adding additional methods to the finetuning process. The methods are executed when certain events occur and there are several callback classes, each serving a different function by providing different methods for different events. A run can be assigned mult..." />
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description" content="Finetuner is a library for tune the weights of any deep neural network for better embeddings on search tasks.">
+<meta property="og:description" content="Finetuner allows one to tune the weights of any deep neural network for better embeddings on search tasks. It accompanies Jina to deliver the last mile of performance for domain-specific neural search applications.">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1ESRNDCK35"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1ESRNDCK35');
+</script>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Projection Head" href="../linear-probe/" /><link rel="prev" title="Negative Mining" href="../negative-mining/" />
+        <link rel="canonical" href="https://finetuner.jina.ai/advanced-topics/using-callbacks.html" />
+
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+        <title>Using Callbacks - Finetuner documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+    <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+    <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+    <header class="mobile-header">
+        <div class="header-left">
+            <label class="nav-overlay-icon" for="__navigation">
+                <div class="visually-hidden">Toggle site navigation sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-menu"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+        <div class="header-center">
+            <a href="../../">
+                <div class="brand">Finetuner  documentation</div>
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="theme-toggle-container theme-toggle-header">
+                <button class="theme-toggle">
+                    <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                    <svg class="theme-icon-when-auto">
+                        <use href="#svg-sun-half"></use>
+                    </svg>
+                    <svg class="theme-icon-when-dark">
+                        <use href="#svg-moon"></use>
+                    </svg>
+                    <svg class="theme-icon-when-light">
+                        <use href="#svg-sun"></use>
+                    </svg>
+                </button>
+            </div>
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
+                <div class="visually-hidden">Toggle table of contents sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-toc"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+    </header>
+    <aside class="sidebar-drawer">
+        <div class="sidebar-container">
+            
+            <div class="sidebar-sticky"><a class="sidebar-brand" href="../../">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo-light.svg" alt="Light Logo" />
+    <img class="sidebar-logo only-dark" src="../../_static/logo-dark.svg" alt="Dark Logo" />
+  </div>
+  
+  
+</a>
+<div class="sd-d-flex-row sd-align-major-spaced">
+  <a class="github-button" href="https://github.com/jina-ai/finetuner" data-icon="octicon-star" data-show-count="true" aria-label="Star jina-ai/jina on GitHub" style="opacity: 0;">Star</a>
+  
+</div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+    <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/how-it-works/"><svg aria-hidden="true" class="sd-octicon sd-octicon-question" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zM6.92 6.085c.081-.16.19-.299.34-.398.145-.097.371-.187.74-.187.28 0 .553.087.738.225A.613.613 0 019 6.25c0 .177-.04.264-.077.318a.956.956 0 01-.277.245c-.076.051-.158.1-.258.161l-.007.004a7.728 7.728 0 00-.313.195 2.416 2.416 0 00-.692.661.75.75 0 001.248.832.956.956 0 01.276-.245 6.3 6.3 0 01.26-.16l.006-.004c.093-.057.204-.123.313-.195.222-.149.487-.355.692-.662.214-.32.329-.702.329-1.15 0-.76-.36-1.348-.863-1.725A2.76 2.76 0 008 4c-.631 0-1.155.16-1.572.438-.413.276-.68.638-.849.977a.75.75 0 101.342.67z" fill-rule="evenodd"></path></svg> How Does it Work?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/installation/"><svg aria-hidden="true" class="sd-octicon sd-octicon-desktop-download" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M4.927 5.427l2.896 2.896a.25.25 0 00.354 0l2.896-2.896A.25.25 0 0010.896 5H8.75V.75a.75.75 0 10-1.5 0V5H5.104a.25.25 0 00-.177.427z"></path><path d="M1.573 2.573a.25.25 0 00-.073.177v7.5a.25.25 0 00.25.25h12.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-3a.75.75 0 110-1.5h3A1.75 1.75 0 0116 2.75v7.5A1.75 1.75 0 0114.25 12h-3.727c.099 1.041.52 1.872 1.292 2.757A.75.75 0 0111.25 16h-6.5a.75.75 0 01-.565-1.243c.772-.885 1.192-1.716 1.292-2.757H1.75A1.75 1.75 0 010 10.25v-7.5A1.75 1.75 0 011.75 1h3a.75.75 0 010 1.5h-3a.25.25 0 00-.177.073zM6.982 12a5.72 5.72 0 01-.765 2.5h3.566a5.72 5.72 0 01-.765-2.5H6.982z"></path></svg> Installation</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../walkthrough/"><svg aria-hidden="true" class="sd-octicon sd-octicon-list-ordered" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M2.003 2.5a.5.5 0 00-.723-.447l-1.003.5a.5.5 0 00.446.895l.28-.14V6H.5a.5.5 0 000 1h2.006a.5.5 0 100-1h-.503V2.5zM5 3.25a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 3.25zm0 5a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 8.25zm0 5a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5a.75.75 0 01-.75-.75zM.924 10.32l.003-.004a.851.851 0 01.144-.153A.66.66 0 011.5 10c.195 0 .306.068.374.146a.57.57 0 01.128.376c0 .453-.269.682-.8 1.078l-.035.025C.692 11.98 0 12.495 0 13.5a.5.5 0 00.5.5h2.003a.5.5 0 000-1H1.146c.132-.197.351-.372.654-.597l.047-.035c.47-.35 1.156-.858 1.156-1.845 0-.365-.118-.744-.377-1.038-.268-.303-.658-.484-1.126-.484-.48 0-.84.202-1.068.392a1.858 1.858 0 00-.348.384l-.007.011-.002.004-.001.002-.001.001a.5.5 0 00.851.525zM.5 10.055l-.427-.26.427.26z" fill-rule="evenodd"></path></svg> Walkthrough</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/basic-concepts/">Basic Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/login/">Login</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/create-training-data/">Prepare Training Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Artifact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/inference/">Inference</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../budget/"><svg aria-hidden="true" class="sd-octicon sd-octicon-database" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M2.5 3.5c0-.133.058-.318.282-.55.227-.237.592-.484 1.1-.708C4.899 1.795 6.354 1.5 8 1.5c1.647 0 3.102.295 4.117.742.51.224.874.47 1.101.707.224.233.282.418.282.551 0 .133-.058.318-.282.55-.227.237-.592.484-1.1.708C11.101 5.205 9.646 5.5 8 5.5c-1.647 0-3.102-.295-4.117-.742-.51-.224-.874-.47-1.101-.707-.224-.233-.282-.418-.282-.551zM1 3.5c0-.626.292-1.165.7-1.59.406-.422.956-.767 1.579-1.041C4.525.32 6.195 0 8 0c1.805 0 3.475.32 4.722.869.622.274 1.172.62 1.578 1.04.408.426.7.965.7 1.591v9c0 .626-.292 1.165-.7 1.59-.406.422-.956.767-1.579 1.041C11.476 15.68 9.806 16 8 16c-1.805 0-3.475-.32-4.721-.869-.623-.274-1.173-.62-1.579-1.04-.408-.426-.7-.965-.7-1.591v-9zM2.5 8V5.724c.241.15.503.286.779.407C4.525 6.68 6.195 7 8 7c1.805 0 3.475-.32 4.722-.869.275-.121.537-.257.778-.407V8c0 .133-.058.318-.282.55-.227.237-.592.484-1.1.708C11.101 9.705 9.646 10 8 10c-1.647 0-3.102-.295-4.117-.742-.51-.224-.874-.47-1.101-.707C2.558 8.318 2.5 8.133 2.5 8zm0 2.225V12.5c0 .133.058.318.282.55.227.237.592.484 1.1.708 1.016.447 2.471.742 4.118.742 1.647 0 3.102-.295 4.117-.742.51-.224.874-.47 1.101-.707.224-.233.282-.418.282-.551v-2.275c-.241.15-.503.285-.778.406-1.247.549-2.917.869-4.722.869-1.805 0-3.475-.32-4.721-.869a6.236 6.236 0 01-.779-.406z" fill-rule="evenodd"></path></svg> How much data?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../negative-mining/"><svg aria-hidden="true" class="sd-octicon sd-octicon-telescope" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M14.184 1.143a1.75 1.75 0 00-2.502-.57L.912 7.916a1.75 1.75 0 00-.53 2.32l.447.775a1.75 1.75 0 002.275.702l11.745-5.656a1.75 1.75 0 00.757-2.451l-1.422-2.464zm-1.657.669a.25.25 0 01.358.081l1.422 2.464a.25.25 0 01-.108.35l-2.016.97-1.505-2.605 1.85-1.26zM9.436 3.92l1.391 2.41-5.42 2.61-.942-1.63 4.97-3.39zM3.222 8.157l-1.466 1a.25.25 0 00-.075.33l.447.775a.25.25 0 00.325.1l1.598-.769-.83-1.436zm6.253 2.306a.75.75 0 00-.944-.252l-1.809.87a.75.75 0 00-.293.253L4.38 14.326a.75.75 0 101.238.848l1.881-2.75v2.826a.75.75 0 001.5 0v-2.826l1.881 2.75a.75.75 0 001.238-.848l-2.644-3.863z" fill-rule="evenodd"></path></svg> Negative Mining</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#"><svg aria-hidden="true" class="sd-octicon sd-octicon-link" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z" fill-rule="evenodd"></path></svg> Using Callbacks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../linear-probe/"><svg aria-hidden="true" class="sd-octicon sd-octicon-pin" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z" fill-rule="evenodd"></path></svg> Projection Head</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../finetuner-executor/"><svg aria-hidden="true" class="sd-octicon sd-octicon-gear" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M7.429 1.525a6.593 6.593 0 011.142 0c.036.003.108.036.137.146l.289 1.105c.147.56.55.967.997 1.189.174.086.341.183.501.29.417.278.97.423 1.53.27l1.102-.303c.11-.03.175.016.195.046.219.31.41.641.573.989.014.031.022.11-.059.19l-.815.806c-.411.406-.562.957-.53 1.456a4.588 4.588 0 010 .582c-.032.499.119 1.05.53 1.456l.815.806c.08.08.073.159.059.19a6.494 6.494 0 01-.573.99c-.02.029-.086.074-.195.045l-1.103-.303c-.559-.153-1.112-.008-1.529.27-.16.107-.327.204-.5.29-.449.222-.851.628-.998 1.189l-.289 1.105c-.029.11-.101.143-.137.146a6.613 6.613 0 01-1.142 0c-.036-.003-.108-.037-.137-.146l-.289-1.105c-.147-.56-.55-.967-.997-1.189a4.502 4.502 0 01-.501-.29c-.417-.278-.97-.423-1.53-.27l-1.102.303c-.11.03-.175-.016-.195-.046a6.492 6.492 0 01-.573-.989c-.014-.031-.022-.11.059-.19l.815-.806c.411-.406.562-.957.53-1.456a4.587 4.587 0 010-.582c.032-.499-.119-1.05-.53-1.456l-.815-.806c-.08-.08-.073-.159-.059-.19a6.44 6.44 0 01.573-.99c.02-.029.086-.075.195-.045l1.103.303c.559.153 1.112.008 1.529-.27.16-.107.327-.204.5-.29.449-.222.851-.628.998-1.189l.289-1.105c.029-.11.101-.143.137-.146zM8 0c-.236 0-.47.01-.701.03-.743.065-1.29.615-1.458 1.261l-.29 1.106c-.017.066-.078.158-.211.224a5.994 5.994 0 00-.668.386c-.123.082-.233.09-.3.071L3.27 2.776c-.644-.177-1.392.02-1.82.63a7.977 7.977 0 00-.704 1.217c-.315.675-.111 1.422.363 1.891l.815.806c.05.048.098.147.088.294a6.084 6.084 0 000 .772c.01.147-.038.246-.088.294l-.815.806c-.474.469-.678 1.216-.363 1.891.2.428.436.835.704 1.218.428.609 1.176.806 1.82.63l1.103-.303c.066-.019.176-.011.299.071.213.143.436.272.668.386.133.066.194.158.212.224l.289 1.106c.169.646.715 1.196 1.458 1.26a8.094 8.094 0 001.402 0c.743-.064 1.29-.614 1.458-1.26l.29-1.106c.017-.066.078-.158.211-.224a5.98 5.98 0 00.668-.386c.123-.082.233-.09.3-.071l1.102.302c.644.177 1.392-.02 1.82-.63.268-.382.505-.789.704-1.217.315-.675.111-1.422-.364-1.891l-.814-.806c-.05-.048-.098-.147-.088-.294a6.1 6.1 0 000-.772c-.01-.147.039-.246.088-.294l.814-.806c.475-.469.679-1.216.364-1.891a7.992 7.992 0 00-.704-1.218c-.428-.609-1.176-.806-1.82-.63l-1.103.303c-.066.019-.176.011-.299-.071a5.991 5.991 0 00-.668-.386c-.133-.066-.194-.158-.212-.224L10.16 1.29C9.99.645 9.444.095 8.701.031A8.094 8.094 0 008 0zm1.5 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM11 8a3 3 0 11-6 0 3 3 0 016 0z" fill-rule="evenodd"></path></svg> Use FinetunerExecutor inside a Jina Flow</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_text/">Text-to-Text Search via BERT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/image_to_image/">Image-to-Image Search via ResNet50</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/text_to_image/">Text-to-Image Search via CLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/multilingual_text_to_image/">Multilingual Text-to-Image Search with MultilingualCLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/mesh_to_mesh/">3D Mesh-to-3D Mesh Search via PointNet++</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api-rst/"><span class="fab fa-python"></span> Python API</a></li>
+</ul>
+
+    <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
+    <ul>
+        <li class="toctree-l1">
+            <a class="reference external" href="https://docs.jina.ai">
+                <img class="sidebar-ecosys-logo only-light-line" src="../../_static/search-light.svg">
+                <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/search-dark.svg">
+                Jina</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/hub-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/hub-dark.svg">
+            Jina Hub</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="#">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/finetuner-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/finetuner-dark.svg">
+            Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
+            DocArray</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://clip-as-service.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/cas-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/cas-dark.svg">
+            CLIP-as-service</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jcloud">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/JCloud-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/JCloud-dark.svg">
+            JCloud</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/now">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/now-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/now-dark.svg">
+            NOW</a></li>
+    </ul>
+</div>
+</div>
+
+            </div>
+            
+        </div>
+    </aside>
+    <div class="main">
+        <div class="content">
+            <div class="article-container">
+                <a href="#" class="back-to-top muted-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+                    </svg>
+                    <span>Back to top</span>
+                </a>
+                <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+                        <button class="theme-toggle">
+                            <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                            <svg class="theme-icon-when-auto">
+                                <use href="#svg-sun-half"></use>
+                            </svg>
+                            <svg class="theme-icon-when-dark">
+                                <use href="#svg-moon"></use>
+                            </svg>
+                            <svg class="theme-icon-when-light">
+                                <use href="#svg-sun"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <label class="toc-overlay-icon toc-content-icon"
+                           for="__toc">
+                        <div class="visually-hidden">Toggle table of contents sidebar</div>
+                        <i class="icon">
+                            <svg>
+                                <use href="#svg-toc"></use>
+                            </svg>
+                        </i>
+                    </label>
+                </div>
+                <article role="main">
+                    <section class="tex2jax_ignore mathjax_ignore" id="svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-link-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m7-775-3-275a-75-75-0-001-06-1-06l1-25-1-25a2-2-0-112-83-2-83l-2-5-2-5a2-2-0-01-2-83-0-75-75-0-00-1-06-1-06-3-5-3-5-0-004-95-0l2-5-2-5a3-5-3-5-0-00-4-95-4-95l-1-25-1-25zm-4-69-9-64a2-2-0-010-2-83l2-5-2-5a2-2-0-012-83-0-75-75-0-001-06-1-06-3-5-3-5-0-00-4-95-0l-2-5-2-5a3-5-3-5-0-004-95-4-95l1-25-1-25a-75-75-0-00-1-06-1-06l-1-25-1-25a2-2-0-01-2-83-0z-path-svg-using-callbacks">
+<span id="using-callbacks"></span><h1><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-link" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg> Using Callbacks<a class="headerlink" href="#svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-link-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m7-775-3-275a-75-75-0-001-06-1-06l1-25-1-25a2-2-0-112-83-2-83l-2-5-2-5a2-2-0-01-2-83-0-75-75-0-00-1-06-1-06-3-5-3-5-0-004-95-0l2-5-2-5a3-5-3-5-0-00-4-95-4-95l-1-25-1-25zm-4-69-9-64a2-2-0-010-2-83l2-5-2-5a2-2-0-012-83-0-75-75-0-001-06-1-06-3-5-3-5-0-00-4-95-0l-2-5-2-5a3-5-3-5-0-004-95-4-95l1-25-1-25a-75-75-0-00-1-06-1-06l-1-25-1-25a2-2-0-01-2-83-0z-path-svg-using-callbacks" title="Permalink to this heading">#</a></h1>
+<p>Callbacks are a way of adding additional methods to the finetuning process. The methods are executed when certain events occur and there are several callback classes, each serving a different function by providing different methods for different events.
+A run can be assigned multiple callbacks using the optional <code class="docutils literal notranslate"><span class="pre">callbacks</span></code> parameter when it is created.</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">run = finetuner.fit(</span>
+<span class="w"> </span>   ...,
+<span class="gi">+   callbacks=[</span>
+<span class="gi">+       EvaluationCallback(</span>
+<span class="gi">+           query_data=&#39;finetuner/tll-test-query-da&#39;,</span>
+<span class="gi">+           index_data=&#39;finetuner/tll-test-index-da&#39;</span>
+<span class="gi">+       ),</span>
+<span class="gi">+   ]</span>
+<span class="w">)</span>
+</pre></div>
+</div>
+<section id="evaluationcallback">
+<h2>EvaluationCallback<a class="headerlink" href="#evaluationcallback" title="Permalink to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> is used to calculate performance metrics for the model being tuned at the end of each epoch.
+In order to evaluate the model, two additional data sets - a query dataset and an index dataset - need to be provided as arguments.
+If no index set is provided, the query dataset is reused instead. Below is an example of the metrics as they are printed at the end of finetuning:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>Training<span class="w"> </span><span class="o">[</span><span class="m">5</span>/5<span class="o">]</span><span class="w"> </span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<span class="w"> </span><span class="m">76</span>/76<span class="w"> </span><span class="m">0</span>:00:00<span class="w"> </span><span class="m">0</span>:00:16<span class="w"> </span>•<span class="w"> </span>loss:<span class="w"> </span><span class="m">0</span>.003
+<span class="o">[</span><span class="m">14</span>:10:40<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Done<span class="w"> </span>✨<span class="w">                                                                              </span>__main__.py:194
+<span class="w">           </span>DEBUG<span class="w">    </span>Finetuning<span class="w"> </span>took<span class="w"> </span><span class="m">0</span><span class="w"> </span>days,<span class="w"> </span><span class="m">0</span><span class="w"> </span>hours<span class="w"> </span><span class="m">3</span><span class="w"> </span>minutes<span class="w"> </span>and<span class="w"> </span><span class="m">38</span><span class="w"> </span>seconds<span class="w">                             </span>__main__.py:196
+<span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_average_precision&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.16654<span class="w">                                  </span>__main__.py:205
+<span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_dcg_at_k&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.24018<span class="w">                                           </span>__main__.py:205
+<span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_f1_score_at_k&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.03631<span class="w">                                      </span>__main__.py:205
+<span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_hit_at_k&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.38123<span class="w">                                           </span>__main__.py:205
+<span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_ndcg_at_k&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.24018<span class="w">                                          </span>__main__.py:205
+<span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_precision_at_k&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.01906<span class="w">                                     </span>__main__.py:205
+<span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_r_precision&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.16654<span class="w">                                        </span>__main__.py:205
+<span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_recall_at_k&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.38123<span class="w">                                        </span>__main__.py:205
+<span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_reciprocal_rank&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.16654<span class="w">                                    </span>__main__.py:205
+<span class="w">           </span>INFO<span class="w">     </span>Building<span class="w"> </span>the<span class="w"> </span>artifact<span class="w"> </span>...<span class="w">                                                            </span>__main__.py:207
+<span class="w">           </span>INFO<span class="w">     </span>Pushing<span class="w"> </span>artifact<span class="w"> </span>to<span class="w"> </span>Hubble<span class="w"> </span>...<span class="w">                                                       </span>__main__.py:231
+</pre></div>
+</div>
+<p>The evaluation callback is triggered at the end of each epoch, in which the model is evaluated using the <code class="docutils literal notranslate"><span class="pre">query_data</span></code> and <code class="docutils literal notranslate"><span class="pre">index_data</span></code> datasets that were provided when the callback was created.
+These datasets can be provided in the same way the <code class="docutils literal notranslate"><span class="pre">train_data</span></code> and <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameters of the <a class="reference internal" href="../../api/finetuner/#finetuner.fit" title="finetuner.fit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit()</span></code></a> method; either as a path to a CSV file, a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.21.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> or the name of a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.21.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> that has been pushed on the Jina AI Cloud. See <a class="reference internal" href="../../walkthrough/create-training-data/"><span class="doc">Prepare Training Data</span></a> for more information about how to prepare your data.</p>
+<p>It is worth noting that the evaluation callback and the <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameter of the fit method do not do the same thing.
+The <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> parameter is used to evaluate the loss of the model.
+On the other hand, the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall.
+These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.</p>
+<div class="hint admonition">
+<p class="admonition-title">Evaluation callback with two models</p>
+<p>Usually, you don’t need to provide the name of a model to the evalution callback.
+The callback just takes the model which is fine-tuned.
+However, if multiple models are involved in the fine-tuning process, like this is the case for CLIP models, it needs to be clear which model is used to encode the documents in <code class="docutils literal notranslate"><span class="pre">query_data</span></code> and <code class="docutils literal notranslate"><span class="pre">index_data</span></code>.
+This can be specified by the <code class="docutils literal notranslate"><span class="pre">model</span></code> attribute of the callback.
+If a different model should be used for the <code class="docutils literal notranslate"><span class="pre">index_data</span></code>, you can set this via the <code class="docutils literal notranslate"><span class="pre">index_model</span></code> attribute.
+For an example, see <a class="reference internal" href="../../notebooks/text_to_image/"><span class="doc">Text-to-Image Search via CLIP</span></a>.</p>
+</div>
+</section>
+<section id="bestmodelcheckpoint">
+<h2>BestModelCheckpoint<a class="headerlink" href="#bestmodelcheckpoint" title="Permalink to this heading">#</a></h2>
+<p>This callback evaluates the performance of the model at the end of each epoch, and keeps a record of the best perfoming model across all epochs. Once fitting is finished the best performing model is saved instead of the most recent model. The definition of best is based on two parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">monitor</span></code>: The metric that is used to compare models to each other. By default this value is <code class="docutils literal notranslate"><span class="pre">val_loss</span></code>, the loss function calculated using the evaluation data, however the loss calculated on the training data can be used instead with <code class="docutils literal notranslate"><span class="pre">train_loss</span></code>; any metric that is recorded by the evaluation callback can also be used.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mode</span></code>: Whether the monitored metric should be maximised (<code class="docutils literal notranslate"><span class="pre">max</span></code>) or minimised (<code class="docutils literal notranslate"><span class="pre">min</span></code>). By default the mode is set to <code class="docutils literal notranslate"><span class="pre">auto</span></code>, meaning that it will automatically choose the correct mode depending on the chosen metric: ‘min’ if the metric is loss and ‘max’ if the metric is one recorded by the evaluation callback.</p></li>
+</ul>
+<p>The console output below shows how the evaluation loss of the model is monitored between each epoch, and how the best performing model is tracked. Since the final model has a higher loss than the previously recorded best model, the best model will be saved instead of the latest one.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">           </span>INFO<span class="w">     </span>Finetuning<span class="w"> </span>...<span class="w">                                                   </span>
+<span class="w">                    </span>__main__.py:173
+<span class="o">[</span><span class="m">11</span>:50:33<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Model<span class="w"> </span>improved<span class="w"> </span>from<span class="w"> </span>inf<span class="w"> </span>to<span class="w"> </span><span class="m">2</span>.756!<span class="w">                                </span>
+<span class="w">       </span>best_model_checkpoint.py:112
+<span class="o">[</span><span class="m">11</span>:50:52<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Model<span class="w"> </span>improved<span class="w"> </span>from<span class="w"> </span><span class="m">2</span>.756<span class="w"> </span>to<span class="w"> </span><span class="m">2</span>.711!<span class="w">                              </span>
+<span class="w">       </span>best_model_checkpoint.py:112
+<span class="o">[</span><span class="m">11</span>:51:10<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Model<span class="w"> </span>did<span class="w"> </span>not<span class="w"> </span>improve<span class="w">                                            </span>
+<span class="w">       </span>best_model_checkpoint.py:120
+<span class="o">[</span><span class="m">11</span>:51:28<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Model<span class="w"> </span>did<span class="w"> </span>not<span class="w"> </span>improve<span class="w">                                            </span>
+<span class="w">       </span>best_model_checkpoint.py:120
+<span class="w">  </span>Training<span class="w"> </span><span class="o">[</span><span class="m">4</span>/4<span class="o">]</span><span class="w"> </span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<span class="w"> </span><span class="m">54</span>/54<span class="w"> </span><span class="m">0</span>:00:00<span class="w"> </span><span class="m">0</span>:00:15<span class="w"> </span>•<span class="w"> </span>loss:<span class="w"> </span><span class="m">0</span>.496<span class="w"> </span>•<span class="w"> </span>val_loss:<span class="w"> </span><span class="m">2</span>.797
+<span class="w">           </span>INFO<span class="w">     </span>Done<span class="w"> </span>✨<span class="w">                                                          </span>
+<span class="w">                    </span>__main__.py:194
+<span class="w">           </span>DEBUG<span class="w">    </span>Finetuning<span class="w"> </span>took<span class="w"> </span><span class="m">0</span><span class="w"> </span>days,<span class="w"> </span><span class="m">0</span><span class="w"> </span>hours<span class="w"> </span><span class="m">1</span><span class="w"> </span>minutes<span class="w"> </span>and<span class="w"> </span><span class="m">16</span><span class="w"> </span>seconds<span class="w">         </span>
+<span class="w">                    </span>__main__.py:196
+<span class="w">           </span>INFO<span class="w">     </span>Building<span class="w"> </span>the<span class="w"> </span>artifact<span class="w"> </span>...<span class="w">                                        </span>
+<span class="w">                    </span>__main__.py:207
+<span class="w">           </span>INFO<span class="w">     </span>Pushing<span class="w"> </span>artifact<span class="w"> </span>to<span class="w"> </span>Hubble<span class="w"> </span>...<span class="w">                                   </span>
+<span class="w">                    </span>__main__.py:231
+</pre></div>
+</div>
+</section>
+<section id="earlystopping">
+<h2>EarlyStopping<a class="headerlink" href="#earlystopping" title="Permalink to this heading">#</a></h2>
+<p>Similarly to the best model checkpoint callback, the early stopping callback measures a given metric at the end of every epoch. Unlike the best model checkpoint callback, the early stopping callback does not save the best model; only the monitored metric is recorded between runs in order to assess the rate of improvement.</p>
+<p>Below is some example output for a run with the early stopping callback followed by the output for the same run without the early stopping callback, and then the python code used to create the run. The output for the run with early stopping finished after just ten epochs whereas the other run finished all twenty epochs, resulting in nearly twice the runtime. That said, the resulting loss value of the early stopping run is only 0.284, compared to the full run’s 0.272, less than five percent higher. The early stopping callback can be used in this way to reduce the amount of training time while still showing improvement.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>Training<span class="w"> </span><span class="o">[</span><span class="m">10</span>/20<span class="o">]</span><span class="w"> </span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<span class="w"> </span><span class="m">54</span>/54<span class="w"> </span><span class="m">0</span>:00:00<span class="w"> </span><span class="m">0</span>:00:14<span class="w"> </span>•<span class="w"> </span>loss:<span class="w"> </span><span class="m">0</span>.284
+<span class="o">[</span><span class="m">11</span>:19:28<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Done<span class="w"> </span>✨<span class="w">                                                                              </span>__main__.py:194
+<span class="w">           </span>DEBUG<span class="w">    </span>Finetuning<span class="w"> </span>took<span class="w"> </span><span class="m">0</span><span class="w"> </span>days,<span class="w"> </span><span class="m">0</span><span class="w"> </span>hours<span class="w"> </span><span class="m">2</span><span class="w"> </span>minutes<span class="w"> </span>and<span class="w"> </span><span class="m">30</span><span class="w"> </span>seconds<span class="w">                             </span>__main__.py:196
+<span class="w">           </span>INFO<span class="w">     </span>Building<span class="w"> </span>the<span class="w"> </span>artifact<span class="w"> </span>...<span class="w">                                                            </span>__main__.py:207
+<span class="w">           </span>INFO<span class="w">     </span>Pushing<span class="w"> </span>artifact<span class="w"> </span>to<span class="w"> </span>Hubble<span class="w"> </span>...<span class="w">                                                       </span>__main__.py:231
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>Training<span class="w"> </span><span class="o">[</span><span class="m">20</span>/20<span class="o">]</span><span class="w"> </span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<span class="w"> </span><span class="m">54</span>/54<span class="w"> </span><span class="m">0</span>:00:00<span class="w"> </span><span class="m">0</span>:00:14<span class="w"> </span>•<span class="w"> </span>loss:<span class="w"> </span><span class="m">0</span>.272
+<span class="o">[</span><span class="m">10</span>:37:33<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Done<span class="w"> </span>✨<span class="w">                                                                              </span>__main__.py:194
+<span class="w">           </span>DEBUG<span class="w">    </span>Finetuning<span class="w"> </span>took<span class="w"> </span><span class="m">0</span><span class="w"> </span>days,<span class="w"> </span><span class="m">0</span><span class="w"> </span>hours<span class="w"> </span><span class="m">4</span><span class="w"> </span>minutes<span class="w"> </span>and<span class="w"> </span><span class="m">54</span><span class="w"> </span>seconds<span class="w">                             </span>__main__.py:196
+<span class="w">           </span>INFO<span class="w">     </span>Building<span class="w"> </span>the<span class="w"> </span>artifact<span class="w"> </span>...<span class="w">                                                            </span>__main__.py:207
+<span class="w">           </span>INFO<span class="w">     </span>Pushing<span class="w"> </span>artifact<span class="w"> </span>to<span class="w"> </span>Hubble<span class="w"> </span>...<span class="w">                                                       </span>__main__.py:231
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.callback</span> <span class="kn">import</span> <span class="n">EarlyStopping</span><span class="p">,</span> <span class="n">EvaluationCallback</span>
+
+<span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;openai/clip-vit-base-patch32&#39;</span><span class="p">,</span>
+    <span class="n">run_name</span><span class="o">=</span><span class="s1">&#39;clip-fashion-early&#39;</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="s1">&#39;finetuner/fashion-train-data-clip&#39;</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
+    <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;CLIPLoss&#39;</span><span class="p">,</span>
+    <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span> <span class="p">[</span>
+        <span class="n">callback</span><span class="o">.</span><span class="n">EarlyStopping</span><span class="p">(</span>
+            <span class="n">monitor</span> <span class="o">=</span> <span class="s2">&quot;train_loss&quot;</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span>
+            <span class="n">patience</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">min_delta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">baseline</span><span class="o">=</span><span class="mf">1.5</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The early stopping callback triggers at the end of training and evaluation batches to record the loss, and at the end of each epoch to evaluate the model and compare it to the best so far. Whether it stops training at the end of an epoch depends on several parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">minimum_delta</span></code>: The minimum amount of improvement that a model can have over the previous best model to be considered worthwhile, zero by default, meaning that the training will not stop early unless the performance starts to decrease</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">patience</span></code>: The number of consecutive rounds without improvement before the training is stopped, two by default.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">baseline</span></code>: an optional parameter that is used to compare the model’s score against instead of the best previous model when checking for improvement. This baseline does not get changed over the course of a run.</p></li>
+</ul>
+</section>
+<section id="wiseftcallback">
+<h2>WiSEFTCallback<a class="headerlink" href="#wiseftcallback" title="Permalink to this heading">#</a></h2>
+<p>WiSE-FT, proposed by Mitchell et al. in <a class="reference external" href="https://arxiv.org/abs/2109.01903">Robust fine-tuning of zero-shot models</a>,
+has been proven to be an effective way for fine-tuning models with a strong zero-shot capability,
+such as CLIP.</p>
+<p>Please refer to <span class="xref std std-ref">Apply WiSE-FT</span> in the CLIP fine-tuning example.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is recommended to use WiSEFTCallback when fine-tuning CLIP.
+We can not ensure it works for other types of models, such as ResNet or BERT.</p>
+</div>
+</section>
+<section id="wandblogger">
+<h2>WandBLogger<a class="headerlink" href="#wandblogger" title="Permalink to this heading">#</a></h2>
+<p>Finetuner allows you to utilize Weights &amp; Biases for experiment tracking and visualization.
+The <code class="docutils literal notranslate"><span class="pre">WandBLogger</span></code> uses Weights &amp; Biases <a class="reference external" href="https://docs.wandb.ai/ref/app/features/anon">Anonymous Mode</a>
+to track a Finetuner Run. The benefits of anonymous mode is: you do not need to share your
+Weights &amp; Biases api_key with us since no login is required.</p>
+<div class="hint admonition">
+<p class="admonition-title">Use WandBLogger together with EvaluationCallback</p>
+<p>The WandBLogger will track the training loss, plus the evaluation loss if <code class="docutils literal notranslate"><span class="pre">eval_data</span></code> is not None.</p>
+<p>If you use EvaluationCallback together with WandBLogger, search metrics will be tracked as well.
+Such as <code class="docutils literal notranslate"><span class="pre">mrr</span></code>, <code class="docutils literal notranslate"><span class="pre">precision</span></code>, <code class="docutils literal notranslate"><span class="pre">recall</span></code> etc.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.callback</span> <span class="kn">import</span> <span class="n">WandBLogger</span><span class="p">,</span> <span class="n">EvaluationCallback</span>
+
+<span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;resnet50&#39;</span><span class="p">,</span>
+    <span class="n">run_name</span> <span class="o">=</span> <span class="s1">&#39;resnet-tll-early-6&#39;</span><span class="p">,</span>
+    <span class="n">train_data</span> <span class="o">=</span> <span class="s1">&#39;finetuner/tll-train-da&#39;</span><span class="p">,</span>
+    <span class="n">epochs</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">EvaluationCallback</span><span class="p">(</span>
+            <span class="n">query_data</span><span class="o">=</span><span class="s1">&#39;finetuner/tll-test-query-da&#39;</span><span class="p">,</span>
+            <span class="n">index_data</span><span class="o">=</span><span class="s1">&#39;finetuner/tll-test-index-da&#39;</span>
+        <span class="p">),</span>
+        <span class="n">WandBLogger</span><span class="p">(),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># stream the logs, or use run.logs() to get logs</span>
+<span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">run</span><span class="o">.</span><span class="n">stream_logs</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can find the Weights &amp; Biases entry in the logs, copy the link of <em>View run at</em>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wandb:<span class="w"> </span>Currently<span class="w"> </span>logged<span class="w"> </span><span class="k">in</span><span class="w"> </span>as:<span class="w"> </span>anony-mouse-279369.<span class="w"> </span>Use<span class="w"> </span><span class="sb">`</span>wandb<span class="w"> </span>login<span class="w"> </span>--relogin<span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>force<span class="w"> </span>relogin
+wandb:<span class="w"> </span>wandb<span class="w"> </span>version<span class="w"> </span><span class="m">0</span>.13.5<span class="w"> </span>is<span class="w"> </span>available!<span class="w">  </span>To<span class="w"> </span>upgrade,<span class="w"> </span>please<span class="w"> </span>run:
+wandb:<span class="w">  </span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>wandb<span class="w"> </span>--upgrade
+wandb:<span class="w"> </span>Tracking<span class="w"> </span>run<span class="w"> </span>with<span class="w"> </span>wandb<span class="w"> </span>version<span class="w"> </span><span class="m">0</span>.12.19
+wandb:<span class="w"> </span>Run<span class="w"> </span>data<span class="w"> </span>is<span class="w"> </span>saved<span class="w"> </span>locally<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">[</span>YOUR-PATH<span class="o">]</span>
+wandb:<span class="w"> </span>Run<span class="w"> </span><span class="sb">`</span>wandb<span class="w"> </span>offline<span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>turn<span class="w"> </span>off<span class="w"> </span>syncing.
+wandb:<span class="w"> </span>Syncing<span class="w"> </span>run<span class="w"> </span>cool-wildflower-2
+wandb:<span class="w">  </span>View<span class="w"> </span>project<span class="w"> </span>at<span class="w"> </span>https://wandb.ai/anony-mouse-279369/<span class="o">[</span>YOUR-PROJECT-URL<span class="o">]</span>
+wandb:<span class="w">  </span>View<span class="w"> </span>run<span class="w"> </span>at<span class="w"> </span>https://wandb.ai/anony-mouse-279369/<span class="o">[</span>YOUR-RUN-URL<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+                </article>
+            </div>
+            <footer>
+                
+                <div class="related-pages">
+                    <a class="next-page" href="../linear-probe/">
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Next</span>
+                            </div>
+                            <div class="title"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-pin" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"></path></svg> Projection Head</div>
+                        </div>
+                        <svg class="furo-related-icon">
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                    </a>
+                    <a class="prev-page" href="../negative-mining/">
+                        <svg class="furo-related-icon">
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Previous</span>
+                            </div>
+                            
+                            <div class="title"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-telescope" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M14.184 1.143a1.75 1.75 0 00-2.502-.57L.912 7.916a1.75 1.75 0 00-.53 2.32l.447.775a1.75 1.75 0 002.275.702l11.745-5.656a1.75 1.75 0 00.757-2.451l-1.422-2.464zm-1.657.669a.25.25 0 01.358.081l1.422 2.464a.25.25 0 01-.108.35l-2.016.97-1.505-2.605 1.85-1.26zM9.436 3.92l1.391 2.41-5.42 2.61-.942-1.63 4.97-3.39zM3.222 8.157l-1.466 1a.25.25 0 00-.075.33l.447.775a.25.25 0 00.325.1l1.598-.769-.83-1.436zm6.253 2.306a.75.75 0 00-.944-.252l-1.809.87a.75.75 0 00-.293.253L4.38 14.326a.75.75 0 101.238.848l1.881-2.75v2.826a.75.75 0 001.5 0v-2.826l1.881 2.75a.75.75 0 001.238-.848l-2.644-3.863z"></path></svg> Negative Mining</div>
+                            
+                        </div>
+                    </a>
+                </div>
+                <div class="bottom-of-page">
+                    <div class="left-details">
+                        <div class="copyright">
+                            Copyright &#169; Jina AI Limited. All rights reserved.
+                        </div><div class="last-updated">
+                            Last updated on Jan 18, 2023</div>
+                    </div>
+                    <div class="right-details">
+                        <div class="social-btns">
+                            <a class='social-btn' href="https://github.com/jina-ai/finetuner/" aria-label="GitHub"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
+                            <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank"
+                               rel="noreferrer"> <i class="fab fa-slack"></i></a>
+                            <a class='social-btn' href="https://youtube.com/c/jina-ai" aria-label="YouTube"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-youtube"></i></a>
+                            <a class='social-btn' href="https://twitter.com/JinaAI_" aria-label="Twitter"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-twitter"></i></a>
+                            <a class='social-btn' href="https://www.linkedin.com/company/jinaai/" aria-label="LinkedIn"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+            </footer>
+        </div>
+        <aside class="toc-drawer">
+            
+            
+            <div class="toc-sticky toc-scroll">
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-link" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg> Using Callbacks</a><ul>
+<li><a class="reference internal" href="#evaluationcallback">EvaluationCallback</a></li>
+<li><a class="reference internal" href="#bestmodelcheckpoint">BestModelCheckpoint</a></li>
+<li><a class="reference internal" href="#earlystopping">EarlyStopping</a></li>
+<li><a class="reference internal" href="#wiseftcallback">WiSEFTCallback</a></li>
+<li><a class="reference internal" href="#wandblogger">WandBLogger</a></li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+            </div>
+            
+            
+        </aside>
+
+        <qa-bot
+            token="vizI4XaM1li8kQW2kQOiiBjtk02hzBDl0Em8lBjpzAKsjhX_z03mix_i3wKpiA=="
+            theme="infer"
+            target="_self"
+            orientation="bottom-right"
+            title="Finetuner"
+            description="Task-oriented finetuning for better embeddings on neural search"
+            show-tip>
+          <template>
+            <dl>
+             <dt>You can ask questions about our docs. Try:</dt>
+             <dd>What is Finetuner?</dd>
+             <dd>How does Finetuner Work?</dd>
+             <dd>What makes Finetuner unique?</dd>
+            </dl>
+          </template>
+          <template slot="texts">
+            <span for="tip">Hi there 👋
+         Ask our docs!</span>
+            <span for="unknownAnswerText">😵‍💫 I'm sorry but I don't know the answer.</span>
+          </template>
+        </qa-bot>
+</div>
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=e0caedb8-a833-4e85-983d-d3394a5f16d2" /><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
+    <script src="../../_static/source-in-links.js"></script>
+    </body>
+</html>

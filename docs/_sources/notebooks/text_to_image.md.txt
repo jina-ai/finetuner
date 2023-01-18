@@ -47,6 +47,7 @@ In addition, we also provide labeled queries and an index of labeled documents f
 
 ```{admonition} Push data to the cloud
 We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
+When working with documents where images are stored locally, please call `doc.load_uri_to_blob()` to reduce network transmission and speed up training.
 ```
 <!-- #endregion -->
 
@@ -58,10 +59,10 @@ finetuner.login(force=True)
 ```
 
 ```python id="cpIj7viExFti"
-train_data = DocumentArray.pull('fashion-train-data-clip', show_progress=True)
-eval_data = DocumentArray.pull('fashion-eval-data-clip', show_progress=True)
-query_data = DocumentArray.pull('fashion-eval-data-queries', show_progress=True)
-index_data = DocumentArray.pull('fashion-eval-data-index', show_progress=True)
+train_data = DocumentArray.pull('finetuner/fashion-train-data-clip', show_progress=True)
+eval_data = DocumentArray.pull('finetuner/fashion-eval-data-clip', show_progress=True)
+query_data = DocumentArray.pull('finetuner/fashion-eval-data-queries', show_progress=True)
+index_data = DocumentArray.pull('finetuner/fashion-eval-data-index', show_progress=True)
 
 train_data.summary()
 ```
@@ -84,8 +85,8 @@ from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
     model='openai/clip-vit-base-patch32',
-    train_data='fashion-train-data-clip',
-    eval_data='fashion-eval-data-clip',
+    train_data='finetuner/fashion-train-data-clip',
+    eval_data='finetuner/fashion-eval-data-clip',
     epochs=5,
     learning_rate= 1e-7,
     loss='CLIPLoss',
@@ -94,8 +95,8 @@ run = finetuner.fit(
         EvaluationCallback(
             model='clip-text',
             index_model='clip-vision',
-            query_data='fashion-eval-data-queries',
-            index_data='fashion-eval-data-index',
+            query_data='finetuner/fashion-eval-data-queries',
+            index_data='finetuner/fashion-eval-data-index',
         )
     ],
 )
@@ -241,6 +242,18 @@ The value you set to `alpha` should be greater equal than 0 and less equal than 
 That's it! Check out [clip-as-service](https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models) to learn how to plug-in a fine-tuned CLIP model to our CLIP specific service.
 <!-- #endregion -->
 
-```python id="DYmj0nozyVCL"
+<!-- #region id="tpm8eVRFX20B" -->
+## Before and after
+We can directly compare the results of our fine-tuned model with a pre-trained clip model by displaying the matches each model has for the same query. While the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increases the quality of the search results:
+<!-- #endregion -->
 
+<!-- #region id="C30UVpHDX4HF" -->
+
+```plaintext
+Results for query: "nightingale tee jacket" using a zero-shot model (top) and the fine-tuned model (bottom)
 ```
+![clip-example-pt](https://user-images.githubusercontent.com/6599259/212634395-6f336d39-cda7-425d-80a2-10facae3b824.png)
+
+![clip-example-ft](https://user-images.githubusercontent.com/6599259/212634112-a44c6c4c-2cc1-4dfb-8e29-0d02b2d6b95c.png)
+
+<!-- #endregion -->

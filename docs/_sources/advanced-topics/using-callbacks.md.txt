@@ -1,23 +1,18 @@
 (using-callbacks)=
-# Using Callbacks
+# {octicon}`link` Using Callbacks
 
 Callbacks are a way of adding additional methods to the finetuning process. The methods are executed when certain events occur and there are several callback classes, each serving a different function by providing different methods for different events.
 A run can be assigned multiple callbacks using the optional `callbacks` parameter when it is created.
 
-```python
+```diff
 run = finetuner.fit(
-    model = 'resnet50',
-    run_name = 'resnet-tll-early-6',
-    train_data = 'tll-train-da',
-    epochs = 5,
-    learning_rate = 1e-6,
-    callbacks=[
-        EvaluationCallback(
-            query_data='tll-test-query-da',
-            index_data='tll-test-index-da'
-        ),
-        EarlyStopping()
-    ]
+    ...,
++   callbacks=[
++       EvaluationCallback(
++           query_data='finetuner/tll-test-query-da',
++           index_data='finetuner/tll-test-index-da'
++       ),
++   ]
 )
 ```
 
@@ -54,6 +49,7 @@ On the other hand, the evaluation callback is used to evaluate the quality of th
 These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.
 
 ```{admonition} Evaluation callback with two models
+:class: hint
 Usually, you don't need to provide the name of a model to the evalution callback.
 The callback just takes the model which is fine-tuned.
 However, if multiple models are involved in the fine-tuning process, like this is the case for CLIP models, it needs to be clear which model is used to encode the documents in `query_data` and `index_data`.
@@ -121,7 +117,7 @@ from finetuner.callback import EarlyStopping, EvaluationCallback
 run = finetuner.fit(
     model='openai/clip-vit-base-patch32',
     run_name='clip-fashion-early',
-    train_data='clip-fashion-train-data',
+    train_data='finetuner/fashion-train-data-clip',
     epochs=10,
     learning_rate= 1e-5,
     loss='CLIPLoss',
@@ -179,13 +175,13 @@ from finetuner.callback import WandBLogger, EvaluationCallback
 run = finetuner.fit(
     model='resnet50',
     run_name = 'resnet-tll-early-6',
-    train_data = 'tll-train-da',
+    train_data = 'finetuner/tll-train-da',
     epochs = 5,
     learning_rate = 1e-6,
     callbacks=[
         EvaluationCallback(
-            query_data='tll-test-query-da',
-            index_data='tll-test-index-da'
+            query_data='finetuner/tll-test-query-da',
+            index_data='finetuner/tll-test-index-da'
         ),
         WandBLogger(),
     ]

@@ -2,13 +2,13 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<meta property="og:title" content="Multilingual Text-to-Image search with MultilingualCLIP" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="Multilingual Text-to-Image Search with MultilingualCLIP" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://finetuner.jina.ai/notebooks/multilingual_text_to_image/" />
 <meta property="og:site_name" content="Finetuner Documentation" />
 <meta property="og:description" content="Most text-image models are only able to provide embeddings for text in a single language, typically English. Multilingual CLIP models, however, are models that have been trained on multiple different languages. This allows the model to produce similar embeddings for the same sentence in multiple ..." />
-<meta property="og:image" content="https://finetuner.jina.ai/_images/WandB-mclip.png" />
+<meta property="og:image" content="https://user-images.githubusercontent.com/6599259/212645881-20071aba-8643-4878-bc53-97eb6f766bf0.png" />
 <meta property="og:image:alt" content="WandB-mclip" />
 <meta name="description" content="Most text-image models are only able to provide embeddings for text in a single language, typically English. Multilingual CLIP models, however, are models that have been trained on multiple different languages. This allows the model to produce similar embeddings for the same sentence in multiple ..." />
 <meta name="twitter:card" content="summary_large_image">
@@ -29,13 +29,13 @@
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="finetuner package" href="../../api/finetuner/" /><link rel="prev" title="Text-to-Image Search via CLIP" href="../text_to_image/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="3D Mesh-to-3D Mesh Search via PointNet++" href="../mesh_to_mesh/" /><link rel="prev" title="Text-to-Image Search via CLIP" href="../text_to_image/" />
         <link rel="canonical" href="https://finetuner.jina.ai/notebooks/multilingual_text_to_image.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
-        <title>Multilingual Text-to-Image search with MultilingualCLIP - Finetuner documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+        <title>Multilingual Text-to-Image Search with MultilingualCLIP - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -210,52 +210,45 @@
   <a class="github-button" href="https://github.com/jina-ai/finetuner" data-icon="octicon-star" data-show-count="true" aria-label="Star jina-ai/jina on GitHub" style="opacity: 0;">Star</a>
   
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
     <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../get-started/how-it-works/">How Does it Work?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../get-started/installation/">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../get-started/design-principles/">Design Principles</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../walkthrough/">Walkthrough</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/how-it-works/"><svg aria-hidden="true" class="sd-octicon sd-octicon-question" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zM6.92 6.085c.081-.16.19-.299.34-.398.145-.097.371-.187.74-.187.28 0 .553.087.738.225A.613.613 0 019 6.25c0 .177-.04.264-.077.318a.956.956 0 01-.277.245c-.076.051-.158.1-.258.161l-.007.004a7.728 7.728 0 00-.313.195 2.416 2.416 0 00-.692.661.75.75 0 001.248.832.956.956 0 01.276-.245 6.3 6.3 0 01.26-.16l.006-.004c.093-.057.204-.123.313-.195.222-.149.487-.355.692-.662.214-.32.329-.702.329-1.15 0-.76-.36-1.348-.863-1.725A2.76 2.76 0 008 4c-.631 0-1.155.16-1.572.438-.413.276-.68.638-.849.977a.75.75 0 101.342.67z" fill-rule="evenodd"></path></svg> How Does it Work?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/installation/"><svg aria-hidden="true" class="sd-octicon sd-octicon-desktop-download" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M4.927 5.427l2.896 2.896a.25.25 0 00.354 0l2.896-2.896A.25.25 0 0010.896 5H8.75V.75a.75.75 0 10-1.5 0V5H5.104a.25.25 0 00-.177.427z"></path><path d="M1.573 2.573a.25.25 0 00-.073.177v7.5a.25.25 0 00.25.25h12.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-3a.75.75 0 110-1.5h3A1.75 1.75 0 0116 2.75v7.5A1.75 1.75 0 0114.25 12h-3.727c.099 1.041.52 1.872 1.292 2.757A.75.75 0 0111.25 16h-6.5a.75.75 0 01-.565-1.243c.772-.885 1.192-1.716 1.292-2.757H1.75A1.75 1.75 0 010 10.25v-7.5A1.75 1.75 0 011.75 1h3a.75.75 0 010 1.5h-3a.25.25 0 00-.177.073zM6.982 12a5.72 5.72 0 01-.765 2.5h3.566a5.72 5.72 0 01-.765-2.5H6.982z"></path></svg> Installation</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../walkthrough/"><svg aria-hidden="true" class="sd-octicon sd-octicon-list-ordered" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M2.003 2.5a.5.5 0 00-.723-.447l-1.003.5a.5.5 0 00.446.895l.28-.14V6H.5a.5.5 0 000 1h2.006a.5.5 0 100-1h-.503V2.5zM5 3.25a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 3.25zm0 5a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 8.25zm0 5a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5a.75.75 0 01-.75-.75zM.924 10.32l.003-.004a.851.851 0 01.144-.153A.66.66 0 011.5 10c.195 0 .306.068.374.146a.57.57 0 01.128.376c0 .453-.269.682-.8 1.078l-.035.025C.692 11.98 0 12.495 0 13.5a.5.5 0 00.5.5h2.003a.5.5 0 000-1H1.146c.132-.197.351-.372.654-.597l.047-.035c.47-.35 1.156-.858 1.156-1.845 0-.365-.118-.744-.377-1.038-.268-.303-.658-.484-1.126-.484-.48 0-.84.202-1.068.392a1.858 1.858 0 00-.348.384l-.007.011-.002.004-.001.002-.001.001a.5.5 0 00.851.525zM.5 10.055l-.427-.26.427.26z" fill-rule="evenodd"></path></svg> Walkthrough</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/basic-concepts/">Basic Concepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/login/">Login</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/create-training-data/">Prepare Training Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/choose-backbone/">Backbone Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/run-job/">Run Job</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../walkthrough/save-model/">Save Artifact</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/using-callbacks/">Using Callbacks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/integrate-with-jina/">Encode Documents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../walkthrough/inference/">Inference</a></li>
 </ul>
 </li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced-topics/budget/"><svg aria-hidden="true" class="sd-octicon sd-octicon-database" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M2.5 3.5c0-.133.058-.318.282-.55.227-.237.592-.484 1.1-.708C4.899 1.795 6.354 1.5 8 1.5c1.647 0 3.102.295 4.117.742.51.224.874.47 1.101.707.224.233.282.418.282.551 0 .133-.058.318-.282.55-.227.237-.592.484-1.1.708C11.101 5.205 9.646 5.5 8 5.5c-1.647 0-3.102-.295-4.117-.742-.51-.224-.874-.47-1.101-.707-.224-.233-.282-.418-.282-.551zM1 3.5c0-.626.292-1.165.7-1.59.406-.422.956-.767 1.579-1.041C4.525.32 6.195 0 8 0c1.805 0 3.475.32 4.722.869.622.274 1.172.62 1.578 1.04.408.426.7.965.7 1.591v9c0 .626-.292 1.165-.7 1.59-.406.422-.956.767-1.579 1.041C11.476 15.68 9.806 16 8 16c-1.805 0-3.475-.32-4.721-.869-.623-.274-1.173-.62-1.579-1.04-.408-.426-.7-.965-.7-1.591v-9zM2.5 8V5.724c.241.15.503.286.779.407C4.525 6.68 6.195 7 8 7c1.805 0 3.475-.32 4.722-.869.275-.121.537-.257.778-.407V8c0 .133-.058.318-.282.55-.227.237-.592.484-1.1.708C11.101 9.705 9.646 10 8 10c-1.647 0-3.102-.295-4.117-.742-.51-.224-.874-.47-1.101-.707C2.558 8.318 2.5 8.133 2.5 8zm0 2.225V12.5c0 .133.058.318.282.55.227.237.592.484 1.1.708 1.016.447 2.471.742 4.118.742 1.647 0 3.102-.295 4.117-.742.51-.224.874-.47 1.101-.707.224-.233.282-.418.282-.551v-2.275c-.241.15-.503.285-.778.406-1.247.549-2.917.869-4.722.869-1.805 0-3.475-.32-4.721-.869a6.236 6.236 0 01-.779-.406z" fill-rule="evenodd"></path></svg> How much data?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced-topics/negative-mining/"><svg aria-hidden="true" class="sd-octicon sd-octicon-telescope" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M14.184 1.143a1.75 1.75 0 00-2.502-.57L.912 7.916a1.75 1.75 0 00-.53 2.32l.447.775a1.75 1.75 0 002.275.702l11.745-5.656a1.75 1.75 0 00.757-2.451l-1.422-2.464zm-1.657.669a.25.25 0 01.358.081l1.422 2.464a.25.25 0 01-.108.35l-2.016.97-1.505-2.605 1.85-1.26zM9.436 3.92l1.391 2.41-5.42 2.61-.942-1.63 4.97-3.39zM3.222 8.157l-1.466 1a.25.25 0 00-.075.33l.447.775a.25.25 0 00.325.1l1.598-.769-.83-1.436zm6.253 2.306a.75.75 0 00-.944-.252l-1.809.87a.75.75 0 00-.293.253L4.38 14.326a.75.75 0 101.238.848l1.881-2.75v2.826a.75.75 0 001.5 0v-2.826l1.881 2.75a.75.75 0 001.238-.848l-2.644-3.863z" fill-rule="evenodd"></path></svg> Negative Mining</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced-topics/using-callbacks/"><svg aria-hidden="true" class="sd-octicon sd-octicon-link" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z" fill-rule="evenodd"></path></svg> Using Callbacks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced-topics/linear-probe/"><svg aria-hidden="true" class="sd-octicon sd-octicon-pin" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z" fill-rule="evenodd"></path></svg> Projection Head</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced-topics/finetuner-executor/"><svg aria-hidden="true" class="sd-octicon sd-octicon-gear" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M7.429 1.525a6.593 6.593 0 011.142 0c.036.003.108.036.137.146l.289 1.105c.147.56.55.967.997 1.189.174.086.341.183.501.29.417.278.97.423 1.53.27l1.102-.303c.11-.03.175.016.195.046.219.31.41.641.573.989.014.031.022.11-.059.19l-.815.806c-.411.406-.562.957-.53 1.456a4.588 4.588 0 010 .582c-.032.499.119 1.05.53 1.456l.815.806c.08.08.073.159.059.19a6.494 6.494 0 01-.573.99c-.02.029-.086.074-.195.045l-1.103-.303c-.559-.153-1.112-.008-1.529.27-.16.107-.327.204-.5.29-.449.222-.851.628-.998 1.189l-.289 1.105c-.029.11-.101.143-.137.146a6.613 6.613 0 01-1.142 0c-.036-.003-.108-.037-.137-.146l-.289-1.105c-.147-.56-.55-.967-.997-1.189a4.502 4.502 0 01-.501-.29c-.417-.278-.97-.423-1.53-.27l-1.102.303c-.11.03-.175-.016-.195-.046a6.492 6.492 0 01-.573-.989c-.014-.031-.022-.11.059-.19l.815-.806c.411-.406.562-.957.53-1.456a4.587 4.587 0 010-.582c.032-.499-.119-1.05-.53-1.456l-.815-.806c-.08-.08-.073-.159-.059-.19a6.44 6.44 0 01.573-.99c.02-.029.086-.075.195-.045l1.103.303c.559.153 1.112.008 1.529-.27.16-.107.327-.204.5-.29.449-.222.851-.628.998-1.189l.289-1.105c.029-.11.101-.143.137-.146zM8 0c-.236 0-.47.01-.701.03-.743.065-1.29.615-1.458 1.261l-.29 1.106c-.017.066-.078.158-.211.224a5.994 5.994 0 00-.668.386c-.123.082-.233.09-.3.071L3.27 2.776c-.644-.177-1.392.02-1.82.63a7.977 7.977 0 00-.704 1.217c-.315.675-.111 1.422.363 1.891l.815.806c.05.048.098.147.088.294a6.084 6.084 0 000 .772c.01.147-.038.246-.088.294l-.815.806c-.474.469-.678 1.216-.363 1.891.2.428.436.835.704 1.218.428.609 1.176.806 1.82.63l1.103-.303c.066-.019.176-.011.299.071.213.143.436.272.668.386.133.066.194.158.212.224l.289 1.106c.169.646.715 1.196 1.458 1.26a8.094 8.094 0 001.402 0c.743-.064 1.29-.614 1.458-1.26l.29-1.106c.017-.066.078-.158.211-.224a5.98 5.98 0 00.668-.386c.123-.082.233-.09.3-.071l1.102.302c.644.177 1.392-.02 1.82-.63.268-.382.505-.789.704-1.217.315-.675.111-1.422-.364-1.891l-.814-.806c-.05-.048-.098-.147-.088-.294a6.1 6.1 0 000-.772c-.01-.147.039-.246.088-.294l.814-.806c.475-.469.679-1.216.364-1.891a7.992 7.992 0 00-.704-1.218c-.428-.609-1.176-.806-1.82-.63l-1.103.303c-.066.019-.176.011-.299-.071a5.991 5.991 0 00-.668-.386c-.133-.066-.194-.158-.212-.224L10.16 1.29C9.99.645 9.444.095 8.701.031A8.094 8.094 0 008 0zm1.5 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM11 8a3 3 0 11-6 0 3 3 0 016 0z" fill-rule="evenodd"></path></svg> Use FinetunerExecutor inside a Jina Flow</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Finetuning Tasks</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../text_to_text/">Text-to-Text Search via BERT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image_to_image/">Image-to-Image Search via ResNet50</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../text_to_image/">Text-to-Image Search via CLIP</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Multilingual Text-to-Image search with MultilingualCLIP</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Multilingual Text-to-Image Search with MultilingualCLIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mesh_to_mesh/">3D Mesh-to-3D Mesh Search via PointNet++</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Reference</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/finetuner/">finetuner package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/finetuner.client/">finetuner.client package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.client.client/">finetuner.client.client module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/finetuner.client.session/">finetuner.client.session module</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.console/">finetuner.console module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.data/">finetuner.data module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.excepts/">finetuner.excepts module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.experiment/">finetuner.experiment module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.finetuner/">finetuner.finetuner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.model/">finetuner.model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/finetuner.run/">finetuner.run module</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-rst/"><span class="fab fa-python"></span> Python API</a></li>
 </ul>
 
     <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
@@ -331,64 +324,79 @@
                     </label>
                 </div>
                 <article role="main">
-                    <section class="tex2jax_ignore mathjax_ignore" id="multilingual-text-to-image-search-with-multilingualclip">
-<h1>Multilingual Text-to-Image search with MultilingualCLIP<a class="headerlink" href="#multilingual-text-to-image-search-with-multilingualclip" title="Permalink to this headline">#</a></h1>
-<p><a href="https://colab.research.google.com/drive/1N7iWZV0OunFZSLtsQxoazS808MPXhCwq?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p>
+                    <!-- #region id="72867ba9-6a8c-4b14-acbf-487ea0a61836" -->
+<section class="tex2jax_ignore mathjax_ignore" id="multilingual-text-to-image-search-with-multilingualclip">
+<h1>Multilingual Text-to-Image Search with MultilingualCLIP<a class="headerlink" href="#multilingual-text-to-image-search-with-multilingualclip" title="Permalink to this heading">#</a></h1>
+<p><a href="https://colab.research.google.com/drive/10Wldbu0Zugj7NmQyZwZzuorZ6SSAhtIo"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p>
+<!-- #endregion -->
+<!-- #region id="f576573b-a48f-4790-817d-e99f8bd28fd0" -->
 <p>Most text-image models are only able to provide embeddings for text in a single language, typically English. Multilingual CLIP models, however, are models that have been trained on multiple different languages. This allows the model to produce similar embeddings for the same sentence in multiple different languages.</p>
 <p>This guide will show you how to finetune a multilingual CLIP model for a text to image retrieval task in non-English languages.</p>
 <p><em>Note, Check the runtime menu to be sure you are using a GPU/TPU instance, or this code will run very slowly.</em></p>
+<!-- #endregion -->
+<!-- #region id="ed1e7d55-a458-4dfd-8f4c-eeb02521c221" -->
 <section id="install">
-<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">#</a></h2>
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this heading">#</a></h2>
+<!-- #endregion -->
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>!pip install &#39;finetuner[full]&#39;
 </pre></div>
 </div>
+<!-- #region id="11f13ad8-e0a7-4ba6-b52b-f85dd221db0f" -->
 </section>
 <section id="task">
-<h2>Task<a class="headerlink" href="#task" title="Permalink to this headline">#</a></h2>
-<p>We’ll be fine-tuning multilingual CLIP on the electronics section of the <a class="reference external" href="https://xmrec.github.io/data/de/">German XMarket dataset</a>, which contains images and descriptions of electronics products in German.</p>
-<p>Each product in the dataset contains several attributes, we will be making use of the image and category attributes to create a <a class="reference external" href="https://docarray.jina.ai/fundamentals/document/#document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a> containing two <a class="reference external" href="https://docarray.jina.ai/fundamentals/document/nested/#nested-structure">chunks</a>, one containing the image and another containing the category of the product.</p>
+<h2>Task<a class="headerlink" href="#task" title="Permalink to this heading">#</a></h2>
+<!-- #endregion -->
+<!-- #region id="ed1f88d4-f140-48d4-9d20-00e628c73e38" -->
+<p>We’ll be fine-tuning multilingual CLIP on the electronics section of the <a class="reference external" href="https://github.com/Toloka/Fashion12K_german_queries">German Fashion12k dataset</a>, which contains images and descriptions of fashion products in German.</p>
+<p>The images are a subset of the <a class="reference external" href="https://github.com/xthan/fashion-200k">xthan/fashion-200k dataset</a>, and we have commissioned their human annotations via crowdsourcing platform. Annotations were made in two steps.  First, we passed the 12,000 images to annotators in their large international user community, who added descriptive captions.</p>
+<p>Each product in the dataset contains several attributes, we will be making use of the image and captions to create a <a class="reference external" href="https://docarray.jina.ai/fundamentals/document/#document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a> containing two <a class="reference external" href="https://docarray.jina.ai/fundamentals/document/nested/#nested-structure">chunks</a>, one containing the image and another containing the category of the product.</p>
+<!-- #endregion -->
+<!-- #region id="2a40f0b1-7272-4ae6-9d0a-f5c8d6d534d8" -->
 </section>
 <section id="data">
-<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">#</a></h2>
-<p>We will use the <code class="docutils literal notranslate"><span class="pre">xmarket-de-electronics</span></code> dataset, which we have already pre-processed and made available on the Jina AI Cloud. You can access it using <code class="docutils literal notranslate"><span class="pre">DocArray.pull</span></code>:</p>
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this heading">#</a></h2>
+<p>We will use the <code class="docutils literal notranslate"><span class="pre">DE-Fashion-Image-Text-Multimodal-train</span></code> dataset, which we have already pre-processed and made available on the Jina AI Cloud. You can access it using <code class="docutils literal notranslate"><span class="pre">DocArray.pull</span></code>:</p>
+<!-- #endregion -->
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;xmarket-de-electronics-train-data&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">eval_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;xmarket-de-electronics-test-data&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;finetuner/DE-Fashion-Image-Text-Multimodal-train&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">eval_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;finetuner/DE-Fashion-Image-Text-Multimodal-test&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">query_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;xmarket-de-electronics-query-data&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">index_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;xmarket-de-electronics-index-data&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">query_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;finetuner/DE-Fashion-Image-Text-Multimodal-query&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">index_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;finetuner/DE-Fashion-Image-Text-Multimodal-index&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">train_data</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
+<!-- #region id="3b859e9c-99e0-484b-98d5-643ad51de8f0" -->
 </section>
 <section id="backbone-model">
-<h2>Backbone Model<a class="headerlink" href="#backbone-model" title="Permalink to this headline">#</a></h2>
+<h2>Backbone Model<a class="headerlink" href="#backbone-model" title="Permalink to this heading">#</a></h2>
 <p>Currently, we only support one multilingual CLIP model. This model is the <code class="docutils literal notranslate"><span class="pre">xlm-roberta-base-ViT-B-32</span></code> from <a class="reference external" href="https://github.com/mlfoundations/open_clip">open-clip</a>, which has been trained on the <a class="reference external" href="https://github.com/LAION-AI/laion5B-paper"><code class="docutils literal notranslate"><span class="pre">laion5b</span></code> dataset</a>.</p>
+<!-- #endregion -->
+<!-- #region id="0b57559c-aa55-40ff-9d05-f061dfb01354" -->
 </section>
 <section id="fine-tuning">
-<h2>Fine-tuning<a class="headerlink" href="#fine-tuning" title="Permalink to this headline">#</a></h2>
+<h2>Fine-tuning<a class="headerlink" href="#fine-tuning" title="Permalink to this heading">#</a></h2>
 <p>Now that our data has been prepared, we can start our fine-tuning run.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
-<span class="kn">from</span> <span class="nn">finetuner.callback</span> <span class="kn">import</span> <span class="n">EvaluationCallback</span><span class="p">,</span> <span class="n">WandBLogger</span>
+<!-- #endregion -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.callback</span> <span class="kn">import</span> <span class="n">EvaluationCallback</span><span class="p">,</span> <span class="n">WandBLogger</span>
 
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">model</span><span class="o">=</span><span class="s1">&#39;xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k&#39;</span><span class="p">,</span>
-    <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
-    <span class="n">eval_data</span><span class="o">=</span><span class="n">eval_data</span><span class="p">,</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="s1">&#39;finetuner/DE-Fashion-Image-Text-Multimodal-train&#39;</span><span class="p">,</span>
     <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
     <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span>
     <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;CLIPLoss&#39;</span><span class="p">,</span>
-    <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
+    <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">,</span>
     <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span>
         <span class="n">EvaluationCallback</span><span class="p">(</span>
-            <span class="n">query_data</span><span class="o">=</span><span class="s1">&#39;xmarket-de-electronics-query-data&#39;</span><span class="p">,</span>
-            <span class="n">index_data</span><span class="o">=</span><span class="s1">&#39;xmarket-de-electronics-index-data&#39;</span><span class="p">,</span>
+            <span class="n">query_data</span><span class="o">=</span><span class="s1">&#39;finetuner/DE-Fashion-Image-Text-Multimodal-query&#39;</span><span class="p">,</span>
+            <span class="n">index_data</span><span class="o">=</span><span class="s1">&#39;finetuner/DE-Fashion-Image-Text-Multimodal-index&#39;</span><span class="p">,</span>
             <span class="n">model</span><span class="o">=</span><span class="s1">&#39;clip-text&#39;</span><span class="p">,</span>
             <span class="n">index_model</span><span class="o">=</span><span class="s1">&#39;clip-vision&#39;</span>
         <span class="p">),</span>
@@ -397,6 +405,7 @@
 <span class="p">)</span>
 </pre></div>
 </div>
+<!-- #region id="6be36da7-452b-4450-a5d5-6cae84522bb5" -->
 <p>Let’s understand what this piece of code does:</p>
 <ul class="simple">
 <li><p>We start with providing <code class="docutils literal notranslate"><span class="pre">model</span></code>, names of training and evaluation data.</p></li>
@@ -405,16 +414,19 @@
 <li><p>We use <code class="docutils literal notranslate"><span class="pre">finetuner.callback.EvaluationCallback</span></code> for evaluation.</p></li>
 <li><p>We then use the <code class="docutils literal notranslate"><span class="pre">finetuner.callback.WandBLogger</span></code> to display our results.</p></li>
 </ul>
+<!-- #endregion -->
+<!-- #region id="923e4206-ac60-4a75-bb3d-4acfc4218cea" -->
 </section>
 <section id="monitoring">
-<h2>Monitoring<a class="headerlink" href="#monitoring" title="Permalink to this headline">#</a></h2>
+<h2>Monitoring<a class="headerlink" href="#monitoring" title="Permalink to this heading">#</a></h2>
 <p>Now that we’ve created a run, let’s see its status. You can monitor the run by checking the status - <code class="docutils literal notranslate"><span class="pre">run.status()</span></code> - and the logs - <code class="docutils literal notranslate"><span class="pre">run.logs()</span></code> or <code class="docutils literal notranslate"><span class="pre">run.stream_logs()</span></code>.</p>
+<!-- #endregion -->
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># note, the fine-tuning might takes 20~ minutes</span>
 <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">run</span><span class="o">.</span><span class="n">stream_logs</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
 </pre></div>
 </div>
-<!-- #region -->
+<!-- #region id="b58930f1-d9f5-43d3-b852-5cbaa04cb1aa" -->
 <p>Since some runs might take up to several hours/days, it’s important to know how to reconnect to Finetuner and retrieve your run.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
@@ -424,36 +436,52 @@
 </div>
 <p>You can continue monitoring the run by checking the status - <code class="docutils literal notranslate"><span class="pre">finetuner.run.Run.status()</span></code> or the logs <code class="docutils literal notranslate"><span class="pre">finetuner.run.Run.logs()</span></code>.</p>
 <!-- #endregion -->
-<!-- #region -->
+<!-- #region id="f0b81ec1-2e02-472f-b2f4-27085bb041cc" -->
 </section>
 <section id="evaluating">
-<h2>Evaluating<a class="headerlink" href="#evaluating" title="Permalink to this headline">#</a></h2>
+<h2>Evaluating<a class="headerlink" href="#evaluating" title="Permalink to this heading">#</a></h2>
 <p>Once the run is finished, the metrics calculated by the <code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> are plotted using the <code class="xref py py-class docutils literal notranslate"><span class="pre">WandBLogger</span></code> callback. These plots can be accessed using the link provided in the logs once finetuning starts:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>           INFO     Finetuning ... 
-wandb: Currently logged <span class="k">in</span> as: anony-mouse-448424. Use <span class="sb">`</span>wandb login --relogin<span class="sb">`</span> to force relogin
-wandb: Tracking run with wandb version <span class="m">0</span>.13.5
-wandb: Run data is saved locally <span class="k">in</span> &lt;path-to-file&gt;
-wandb: Run <span class="sb">`</span>wandb offline<span class="sb">`</span> to turn off syncing.
-wandb: Syncing run ancient-galaxy-2
-wandb:  View project at &lt;link-to-project&gt;
-wandb:  View run at &lt;link-to-run&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">           </span>INFO<span class="w">     </span>Finetuning<span class="w"> </span>...<span class="w"> </span>
+wandb:<span class="w"> </span>Currently<span class="w"> </span>logged<span class="w"> </span><span class="k">in</span><span class="w"> </span>as:<span class="w"> </span>anony-mouse-448424.<span class="w"> </span>Use<span class="w"> </span><span class="sb">`</span>wandb<span class="w"> </span>login<span class="w"> </span>--relogin<span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>force<span class="w"> </span>relogin
+wandb:<span class="w"> </span>Tracking<span class="w"> </span>run<span class="w"> </span>with<span class="w"> </span>wandb<span class="w"> </span>version<span class="w"> </span><span class="m">0</span>.13.5
+wandb:<span class="w"> </span>Run<span class="w"> </span>data<span class="w"> </span>is<span class="w"> </span>saved<span class="w"> </span>locally<span class="w"> </span><span class="k">in</span><span class="w"> </span>&lt;path-to-file&gt;
+wandb:<span class="w"> </span>Run<span class="w"> </span><span class="sb">`</span>wandb<span class="w"> </span>offline<span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>turn<span class="w"> </span>off<span class="w"> </span>syncing.
+wandb:<span class="w"> </span>Syncing<span class="w"> </span>run<span class="w"> </span>ancient-galaxy-2
+wandb:<span class="w">  </span>View<span class="w"> </span>project<span class="w"> </span>at<span class="w"> </span>&lt;link-to-project&gt;
+wandb:<span class="w">  </span>View<span class="w"> </span>run<span class="w"> </span>at<span class="w"> </span>&lt;link-to-run&gt;
+<span class="o">[</span><span class="m">07</span>:48:21<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Done<span class="w"> </span>✨<span class="w">                                                                              </span>__main__.py:195
+<span class="w">           </span>DEBUG<span class="w">    </span>Finetuning<span class="w"> </span>took<span class="w"> </span><span class="m">0</span><span class="w"> </span>days,<span class="w"> </span><span class="m">0</span><span class="w"> </span>hours<span class="w"> </span><span class="m">8</span><span class="w"> </span>minutes<span class="w"> </span>and<span class="w"> </span><span class="m">19</span><span class="w"> </span>seconds<span class="w">                             </span>__main__.py:197
+<span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;clip-text-to-clip-vision_precision_at_k&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.04035<span class="w">                     </span>__main__.py:206
+<span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;clip-text-to-clip-vision_hit_at_k&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.79200<span class="w">                           </span>__main__.py:206
+<span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;clip-text-to-clip-vision_average_precision&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.41681<span class="w">                  </span>__main__.py:206
+<span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;clip-text-to-clip-vision_reciprocal_rank&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.41773<span class="w">                    </span>__main__.py:206
+<span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;clip-text-to-clip-vision_dcg_at_k&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.57113<span class="w">                           </span>__main__.py:206
+<span class="w">           </span>INFO<span class="w">     </span>Building<span class="w"> </span>the<span class="w"> </span>artifact<span class="w"> </span>...<span class="w">                                                            </span>__main__.py:208
+<span class="w">           </span>INFO<span class="w">     </span>Pushing<span class="w"> </span>artifact<span class="w"> </span>to<span class="w"> </span>Jina<span class="w"> </span>AI<span class="w"> </span>Cloud<span class="w"> </span>...<span class="w">                                                </span>__main__.py:234
+<span class="o">[</span><span class="m">08</span>:02:33<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Artifact<span class="w"> </span>pushed<span class="w"> </span>under<span class="w"> </span>ID<span class="w"> </span><span class="s1">&#39;63b52b5b3278416c15353bf3&#39;</span><span class="w">                                  </span>__main__.py:236
+<span class="w">           </span>DEBUG<span class="w">    </span>Artifact<span class="w"> </span>size<span class="w"> </span>is<span class="w"> </span><span class="m">2599</span>.190<span class="w"> </span>MB<span class="w">                                                         </span>__main__.py:238
+<span class="w">           </span>INFO<span class="w">     </span>Finished<span class="w"> </span>🚀<span class="w">                                                                          </span>__main__.py:239
 </pre></div>
 </div>
 <p>The generated plots should look like this:</p>
-<p><img alt="WandB-mclip" src="../../_images/WandB-mclip.png" /></p>
+<p><img alt="WandB-mclip" src="https://user-images.githubusercontent.com/6599259/212645881-20071aba-8643-4878-bc53-97eb6f766bf0.png" /></p>
 <!-- #endregion -->
+<!-- #region id="2b8da34d-4c14-424a-bae5-6770f40a0721" -->
 </section>
 <section id="saving">
-<h2>Saving<a class="headerlink" href="#saving" title="Permalink to this headline">#</a></h2>
+<h2>Saving<a class="headerlink" href="#saving" title="Permalink to this heading">#</a></h2>
 <p>After the run has finished successfully, you can download the tuned model on your local machine:</p>
+<!-- #endregion -->
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">artifact</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="s1">&#39;mclip-model&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<!-- #region id="baabd6be-8660-47cc-a48d-feb43d0a507b" -->
 </section>
 <section id="inference">
-<h2>Inference<a class="headerlink" href="#inference" title="Permalink to this headline">#</a></h2>
+<h2>Inference<a class="headerlink" href="#inference" title="Permalink to this heading">#</a></h2>
 <p>Now you saved the <code class="docutils literal notranslate"><span class="pre">artifact</span></code> into your host machine,
 let’s use the fine-tuned model to encode a new <code class="docutils literal notranslate"><span class="pre">Document</span></code>:</p>
+<!-- #endregion -->
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">text_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;setwas Text zum Codieren&#39;</span><span class="p">)])</span>
 <span class="n">image_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;https://upload.wikimedia.org/wikipedia/commons/4/4e/Single_apple.png&#39;</span><span class="p">)])</span>
 
@@ -467,9 +495,9 @@ let’s use the fine-tuned model to encode a new <code class="docutils literal n
 <span class="nb">print</span><span class="p">(</span><span class="n">image_da</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
-<!-- #region -->
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span><span class="m">1</span>, <span class="m">512</span><span class="o">)</span>
-<span class="o">(</span><span class="m">1</span>, <span class="m">512</span><span class="o">)</span>
+<!-- #region id="ff2e7818-bf11-4179-a34d-d7b790b0db12" -->
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span><span class="m">1</span>,<span class="w"> </span><span class="m">512</span><span class="o">)</span>
+<span class="o">(</span><span class="m">1</span>,<span class="w"> </span><span class="m">512</span><span class="o">)</span>
 </pre></div>
 </div>
 <div class="admonition-what-is-select-model admonition">
@@ -485,60 +513,31 @@ we use <code class="docutils literal notranslate"><span class="pre">clip-text</s
 please use <code class="docutils literal notranslate"><span class="pre">model</span> <span class="pre">=</span> <span class="pre">finetuner.get_model(artifact,</span> <span class="pre">is_onnx=True)</span></code></p>
 </div>
 <!-- #endregion -->
+<!-- #region id="38bc9069-0f0e-47c6-8560-bf77ad200774" -->
 </section>
 <section id="before-and-after">
-<h2>Before and After<a class="headerlink" href="#before-and-after" title="Permalink to this headline">#</a></h2>
+<h2>Before and after<a class="headerlink" href="#before-and-after" title="Permalink to this heading">#</a></h2>
 <p>We can directly compare the results of our fine-tuned model with an untrained multilingual clip model by displaying the matches each model has for the same query, while the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increses the quality of the search results:</p>
-<!-- #region -->
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner</span> <span class="kn">import</span> <span class="n">build_model</span>
-
-<span class="n">pt_query</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">query_data</span><span class="p">)</span>
-<span class="n">pt_index</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">index_data</span><span class="p">)</span>
-
-<span class="n">ft_query</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">query_data</span><span class="p">)</span>
-<span class="n">ft_index</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">index_data</span><span class="p">)</span>
-
-<span class="n">zero_shot_text_encoder</span> <span class="o">=</span> <span class="n">build_model</span><span class="p">(</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k&#39;</span><span class="p">,</span>
-    <span class="n">select_model</span> <span class="o">=</span> <span class="s1">&#39;clip_text&#39;</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">zero_shot_image_encoder</span> <span class="o">=</span> <span class="n">build_model</span><span class="p">(</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k&#39;</span><span class="p">,</span>
-    <span class="n">select_model</span> <span class="o">=</span> <span class="s1">&#39;clip_vision&#39;</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">zero_shot_text_encoder</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">pt_query</span><span class="p">)</span>
-<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">zero_shot_image_encoder</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">pt_index</span><span class="p">)</span>
-
-<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">mclip_text_encoder</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ft_query</span><span class="p">)</span>
-<span class="n">finetuner</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">mclip_image_encoder</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ft_index</span><span class="p">)</span>
-
-<span class="n">pt_query</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pt_index</span><span class="p">)</span>
-<span class="n">ft_query</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">ft_index</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;results for query: &quot;externe mikrofone (external microphone)&quot; using a zero-shot model (top) and the fine-tuned model (bottom)&#39;</span><span class="p">)</span>
-<span class="n">pt_query</span><span class="p">[</span><span class="mi">72</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">()</span>
-<span class="n">ft_query</span><span class="p">[</span><span class="mi">72</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">()</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;results for query: &quot;prozessorlüfter (processor fan)&quot; using a zero-shot model (top) and the fine-tuned model (bottom)&#39;</span><span class="p">)</span>
-<span class="n">pt_query</span><span class="p">[</span><span class="mi">189</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">()</span>
-<span class="n">ft_query</span><span class="p">[</span><span class="mi">189</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>results <span class="k">for</span> query: <span class="s2">&quot;externe mikrofone (external microphone)&quot;</span> using a zero-shot model <span class="o">(</span>top<span class="o">)</span> and the fine-tuned model <span class="o">(</span>bottom<span class="o">)</span>
-</pre></div>
-</div>
-<p><img alt="mclip-example-pt-1" src="../../_images/mclip-example-pt-1.png" />
-<img alt="mclip-example-ft-1" src="../../_images/mclip-example-ft-1.png" /></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>results <span class="k">for</span> query: <span class="s2">&quot;prozessorlüfter (processor fan)&quot;</span> using a zero-shot model <span class="o">(</span>top<span class="o">)</span> and the fine-tuned model <span class="o">(</span>bottom<span class="o">)</span>
-</pre></div>
-</div>
-<p><img alt="mclip-example-pt-2" src="../../_images/mclip-example-pt-2.png" />
-<img alt="mclip-example-ft-2" src="../../_images/mclip-example-ft-2.png" /></p>
 <!-- #endregion -->
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<!-- #region id="e69fdfb2-6482-45fb-9c4d-41e548ef8f06" -->
+<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>results for query: &quot;Spitzen-Midirock Teilfutter Schwarz&quot; (Lace midi skirt partial lining black) using a zero-shot model and the fine-tuned model
 </pre></div>
 </div>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th style="text-align: center;">before</th>
+<th style="text-align: center;">after</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><img alt="mclip-example-pt-1" src="https://jina-ai-gmbh.ghost.io/content/images/2022/12/mclip-before.png" /></td>
+<td style="text-align: center;"><img alt="mclip-example-ft-1" src="https://jina-ai-gmbh.ghost.io/content/images/2022/12/mclip-after.png" /></td>
+</tr>
+</tbody>
+</table>
+<!-- #endregion -->
 </section>
 </section>
 
@@ -547,12 +546,12 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../../api/finetuner/">
+                    <a class="next-page" href="../mesh_to_mesh/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">finetuner package</div>
+                            <div class="title">3D Mesh-to-3D Mesh Search via PointNet++</div>
                         </div>
                         <svg class="furo-related-icon">
                             <use href="#svg-arrow-right"></use>
@@ -577,7 +576,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Nov 25, 2022</div>
+                            Last updated on Jan 18, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -609,7 +608,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
                 <div class="toc-tree-container">
                     <div class="toc-tree">
                         <ul>
-<li><a class="reference internal" href="#">Multilingual Text-to-Image search with MultilingualCLIP</a><ul>
+<li><a class="reference internal" href="#">Multilingual Text-to-Image Search with MultilingualCLIP</a><ul>
 <li><a class="reference internal" href="#install">Install</a></li>
 <li><a class="reference internal" href="#task">Task</a></li>
 <li><a class="reference internal" href="#data">Data</a></li>
@@ -619,7 +618,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
 <li><a class="reference internal" href="#evaluating">Evaluating</a></li>
 <li><a class="reference internal" href="#saving">Saving</a></li>
 <li><a class="reference internal" href="#inference">Inference</a></li>
-<li><a class="reference internal" href="#before-and-after">Before and After</a></li>
+<li><a class="reference internal" href="#before-and-after">Before and after</a></li>
 </ul>
 </li>
 </ul>
@@ -655,9 +654,8 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
         </qa-bot>
 </div>
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=e0caedb8-a833-4e85-983d-d3394a5f16d2" /><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
