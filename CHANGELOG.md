@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Use python 3.8 in Github actions. ([#659](https://github.com/jina-ai/finetuner/pull/659))
+
 ### Docs
 
 
