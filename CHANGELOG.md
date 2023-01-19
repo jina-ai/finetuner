@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Remove ResNet backbone support for clip fine-tuning. ([#662](https://github.com/jina-ai/finetuner/pull/662))
+
+- Add efficientnet b7 as a new image to image search backbone. ([#662](https://github.com/jina-ai/finetuner/pull/662))
+
 
 ## [0.7.0] - 2023-01-18
 
