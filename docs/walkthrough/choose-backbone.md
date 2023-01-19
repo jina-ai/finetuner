@@ -64,6 +64,7 @@ To get a list of supported models:
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
 │ efficientnet_b0 │ image-to-image │       1280 │          cnn │ EfficientNet B0 pre-trained on ImageNet │
 │ efficientnet_b4 │ image-to-image │       1792 │          cnn │ EfficientNet B4 pre-trained on ImageNet │
+│ efficientnet_b7 │ image-to-image │       2560 │          cnn │ EfficientNet B7 pre-trained on ImageNet │
 │       resnet152 │ image-to-image │       2048 │          cnn │       ResNet152 pre-trained on ImageNet │
 │        resnet50 │ image-to-image │       2048 │          cnn │        ResNet50 pre-trained on ImageNet │
 └─────────────────┴────────────────┴────────────┴──────────────┴─────────────────────────────────────────┘
@@ -79,19 +80,6 @@ To get a list of supported models:
 │                 openai/clip-vit-base-patch32 │ text-to-image │        512 │  transformer │                                          CLIP base model │
 │            openai/clip-vit-large-patch14-336 │ text-to-image │        768 │  transformer │                      CLIP large model for 336x336 images │
 │                openai/clip-vit-large-patch14 │ text-to-image │       1024 │  transformer │                      CLIP large model with patch size 14 │
-│                                RN101::openai │ text-to-image │        512 │  transformer │                          Open CLIP "RN101::openai" model │
-│                      RN101-quickgelu::openai │ text-to-image │        512 │  transformer │                Open CLIP "RN101-quickgelu::openai" model │
-│                     RN101-quickgelu::yfcc15m │ text-to-image │        512 │  transformer │               Open CLIP "RN101-quickgelu::yfcc15m" model │
-│                               RN101::yfcc15m │ text-to-image │        512 │  transformer │                         Open CLIP "RN101::yfcc15m" model │
-│                                  RN50::cc12m │ text-to-image │       1024 │  transformer │                            Open CLIP "RN50::cc12m" model │
-│                                 RN50::openai │ text-to-image │       1024 │  transformer │                           Open CLIP "RN50::openai" model │
-│                        RN50-quickgelu::cc12m │ text-to-image │       1024 │  transformer │                  Open CLIP "RN50-quickgelu::cc12m" model │
-│                       RN50-quickgelu::openai │ text-to-image │       1024 │  transformer │                 Open CLIP "RN50-quickgelu::openai" model │
-│                      RN50-quickgelu::yfcc15m │ text-to-image │       1024 │  transformer │                Open CLIP "RN50-quickgelu::yfcc15m" model │
-│                              RN50x16::openai │ text-to-image │        768 │  transformer │                        Open CLIP "RN50x16::openai" model │
-│                               RN50x4::openai │ text-to-image │        640 │  transformer │                         Open CLIP "RN50x4::openai" model │
-│                              RN50x64::openai │ text-to-image │       1024 │  transformer │                        Open CLIP "RN50x64::openai" model │
-│                                RN50::yfcc15m │ text-to-image │       1024 │  transformer │                          Open CLIP "RN50::yfcc15m" model │
 │                      ViT-B-16::laion400m_e31 │ text-to-image │        512 │  transformer │                Open CLIP "ViT-B-16::laion400m_e31" model │
 │                      ViT-B-16::laion400m_e32 │ text-to-image │        512 │  transformer │                Open CLIP "ViT-B-16::laion400m_e32" model │
 │                             ViT-B-16::openai │ text-to-image │        512 │  transformer │                       Open CLIP "ViT-B-16::openai" model │
