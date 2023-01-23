@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add folder for example CSV files ([#663](https://github.com/jina-ai/finetuner/pull/663))
+
 ### Removed
 
 ### Changed
