@@ -20,4 +20,4 @@ The other two loss functions that we support, ArcFace and CosFace, are both vari
 
 ![training](../imgs/SphereFace-training.png)
 
-The ArcFace and CosFace both adjust 
+The ArcFace and CosFace both include a margin and scaling parameter, which can be used to increase the boundary between each class. If an item's embedding is within the boundary of the class it belongs to, then no loss is incurred. Choosing appropriate values for the margin and scaling parameter is important for effective training, for more information on how ArcFace and CosFace calculate loss, and how these parameters affect the output, see [here](https://hav4ik.github.io/articles/deep-metric-learning-survey#cosface)
