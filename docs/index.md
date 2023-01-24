@@ -30,6 +30,7 @@ walkthrough/index
 
 advanced-topics/budget
 advanced-topics/negative-mining
+advanced-topics/advanced-methods
 advanced-topics/using-callbacks
 advanced-topics/linear-probe
 advanced-topics/finetuner-executor
