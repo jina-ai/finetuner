@@ -158,7 +158,7 @@ We can not ensure it works for other types of models, such as ResNet or BERT.
 
 Finetuner allows you to utilize Weights & Biases for experiment tracking and visualization.
 The `WandBLogger` uses Weights & Biases [Anonymous Mode](https://docs.wandb.ai/ref/app/features/anon)
-to track a Finetuner Run. The benefits of anonymous mode is: you do not need to share your
+to track a Finetuner Run. The benefits of the anonymous mode are: you do not need to share your
 Weights & Biases api_key with us since no login is required.
 
 ```{admonition} Use WandBLogger together with EvaluationCallback
@@ -166,7 +166,7 @@ Weights & Biases api_key with us since no login is required.
 The WandBLogger will track the training loss, plus the evaluation loss if `eval_data` is not None.
 
 If you use EvaluationCallback together with WandBLogger, search metrics will be tracked as well.
-Such as `mrr`, `precision`, `recall` etc.
+Such as `mrr`, `precision`, `recall`, etc.
 ```
 
 ```python
