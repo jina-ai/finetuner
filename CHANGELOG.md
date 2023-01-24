@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Add page on loss and pooling to `advanced-topics`. ([#664](https://github.com/jina-ai/finetuner/pull/664))
+
 - Remove ResNet backbone support for clip fine-tuning. ([#662](https://github.com/jina-ai/finetuner/pull/662))
 
 - Add efficientnet b7 as a new image to image search backbone. ([#662](https://github.com/jina-ai/finetuner/pull/662))
