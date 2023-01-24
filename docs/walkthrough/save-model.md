@@ -13,7 +13,7 @@ Each model has a artifact id, which is sufficient to setup an encoding serivce a
 Alternatively, you can also download the model using the artifact id, as explained below, e.g., to use it in a locally runnig Jina service. 
 ```
 
-Please note that fine-tuning takes time. It highly depends on the size of your training data, evaluation data and other hyper-parameters.
+Please note that fine-tuning takes time. It highly depends on the size of your training data, evaluation data, and other hyperparameters.
 Because of this, you might have to close the session and reconnect to it several times.
 
 In the example below, we show how to connect to an existing run and download a tuned model:
@@ -60,12 +60,10 @@ run.save_artifact('tuned_model')
 :class: hint
 Finetuner allows you to set your artifact as a public artifact.
 At training time, you need to set `public=True` when calling the `fit` function.
-
-If `public=True`, anyone has the same artifact id can download your artifact with the above function.
+If `public=True`, anyone who knows the artifact id can download your artifact with the above function.
 ```
 
-If the fine-tuning finished,
-you can see the following message in the terminal:
+If the fine-tuning finished, you can see the following message in the terminal:
 
 ```bash
 🔐 Successfully logged in to Jina AI as [USER NAME]!
