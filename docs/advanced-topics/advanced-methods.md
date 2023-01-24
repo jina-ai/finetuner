@@ -5,7 +5,11 @@ Many of the models supported by finetuner make use of similar methods throughout
 ## {octicon}`pin` Loss Functions
 
 Loss functions are used to calculate the quality of embeddings while training; the higher the output of the loss function, the more the parameters of the model will be updated.
-By default we use Triplet Margin Loss, however we also support two more advanced loss functions, ArcFace Loss and CosFace Loss.
+By default we use Triplet Margin Loss, however we support many other loss function as well, including ArcFace Loss and CosFace Loss.
+
+```{Important}
+Please check the [developer reference](../../api/finetuner/#finetuner.fit) to get the available options for `loss`.
+```
 
 ### Triplet Margin Loss
 
@@ -19,7 +23,8 @@ For a more detailed explanation on Triplet Loss, as well as how samples are gath
 
 ### SphereFace losses
 
-The other two loss functions that we support, ArcFace and CosFace, are both variations on the SphereFace loss function.
+SphereFace loss is a loss function that was first forumalted for computer vision and face recognition tasks,
+Finetuner supports two variations of this loss function, ArcFace and CosFace.
 Instead of attempting to minimise the distance between positive pairs and maximise the distance between negative pairs, the SphereFace loss functions compare each sample with the center of each class
 and attempts to minimize the *angular distance* between the document and its class centroid, and maximise the angular distance between the document and the centroids of the other classes.
 
@@ -35,27 +40,27 @@ By default, runs created ArcFace or Cosface loss will use random sampling, howev
 run = finetuner.fit(
     ...,
     loss='ArcFaceLoss',
-+   sampler = 'random'     # use random sampling
-+   sampler = 'class'      # use class sampling
-+   sampler = 'random'     # infer sampling method based on the loss function (default)
++   sampler='random'      # use random sampling
++   sampler='class'       # use class sampling
++   sampler='auto'        # infer sampling method based on the loss function (default)
 
 )
 ```
 
-Since Triplet Margin Loss needs a class sampler to properly function, this `sampler` parameter is ignored when the `loss=TripletMarginLoss`.
+Since Triplet Margin Loss needs a class sampler to properly function, this `sampler` parameter is ignored when `loss=TripletMarginLoss`.
 
 ### Using an Optimizer
 
 In order to keep track of the class centers across batches, these SphereFace loss functions require an additional optimizer during training.
-By default, the type of optimizer used will be the same as the one used for the model itself, but you can also choose a different optimizer for your loss function using the `loss_optimizer` parameter. \
+By default, the type of optimizer used will be the same as the one used for the model itself, but you can also choose a different optimizer for your loss function using the `loss_optimizer` parameter.
 The list of available optimizers are discussed in the [run job](../walkthrough/run-job.md) section.
 
 ```diff
 run = finetuner.fit(
     ...,
     loss='ArcFaceLoss',
-+   loss_optimizer = 'Adam',
-+   loss_optimizer_options = {'weight_decay':0.01}
++   loss_optimizer='Adam',
++   loss_optimizer_options={'weight_decay': 0.01}
 )
 ```
 
@@ -64,18 +69,19 @@ As an example, the figure below shows the domains of the 10 classes of the FMNIS
 
 ![distributions-loss](../imgs/distributions-loss.png)
 
-Each Color represents a Different class, you can see how each loss function is able to separate the some of the classes from the others,
+Each color represents a different class, you can see how each loss function is able to separate some of the classes from the others,
 but struggle to separate the green, blue, pink, purple and red classes,
 with Triplet Loss sperarating them the least, and ArcFace separating them the most.
 
 ## Pooling layers
 
-Pooling layers are layers in a machine learning model that is used to reduce the dimensionality of data. Typically this is done in two ways, average pooling or max pooling. While a model may have many pooling layers within it, it is unwise to replace a pooling layer with another unless it is the last layer of the model.
+Pooling layers are layers in a machine learning model that are used to reduce the dimensionality of data. Typically this is done in two ways, average pooling or max pooling.
+While a model may have many pooling layers within it, it is unwise to replace a pooling layer with another unless it is the last layer of the model.
 
 ### GeM Pooling
 
 `GeM` (Generalised Mean) pooling is an advanced pooling technique that has found popularity in computer vision and face recognition tasks.
-In cases where your chosen model does have a pooling layer as its last layer, finetuner allows to replace the default pooler with a `GeM` pooling layer.
+In cases where your chosen model does have a pooling layer as its last layer, finetuner allows you to replace the default pooler with a `GeM` pooling layer.
 Currently, all of our `text-to-text` and `image-to-image` models support replacing the pooling layer.
 For a list of all models that fit these categroies, see the [Backbone Model](../walkthrough/choose-backbone.md) section.  
 
@@ -87,7 +93,7 @@ By default, `p=3` and `eps=1e-6`, to adjust these parameters you can provide a d
 ```diff
 run = finetuner.fit(
     ...,
-+   pooler = 'GeM'
-+   pooler_options = {'p': 2.4, 'eps': 1e-5}
++   pooler='GeM'
++   pooler_options={'p': 2.4, 'eps': 1e-5}
 )
 ```
