@@ -23,7 +23,7 @@ Finding similar 3D Meshes can become very time-consuming. To support this task, 
 ## Install
 <!-- #endregion -->
 
-```python id="vDVkw65kkQcn"
+```python colab={"background_save": true} id="vDVkw65kkQcn"
 !pip install 'finetuner[full]'
 !pip install 'docarray[full]'
 ```
@@ -41,7 +41,7 @@ Specifically, we want to build a search system, which can receive a 3D mesh and 
 <!-- #region id="H1Yo3NuGP1Oi" -->
 ## Data
 
-ModelNet40 consists of 9843 meshes provided for training and 2468 meshes for testing. Usually, you would have to download the [dataset](https://modelnet.cs.princeton.edu/) unzip it, [prepare it, and upload it to the Jina AI Cloud](https://finetuner.jina.ai/walkthrough/create-training-data/). After that, you can provide the name of the dataset used for the upload to Finetuner.
+ModelNet40 consists of 9843 meshes provided for training and 2468 meshes for testing. Usually, you would have to download the [dataset](https://modelnet.cs.princeton.edu/) unzip it, [prepare it, and upload it to the Jina AI Cloud](https://https://finetuner.jina.ai/walkthrough/create-training-data/). After that, you can provide the name of the dataset used for the upload to Finetuner.
 
 For this tutorial, we already prepared the data and uploaded it. Specifically, the training data is uploaded as `modelnet40-train`. For evaluating the model, we split the test set of the original dataset into 300 meshes, which serve as queries (`modelnet40-queries`), and 2168 meshes which serve as the mesh collection, which is searched in (`modelnet40-index`).
 
@@ -86,7 +86,7 @@ index_data[0].display()
 <!-- #region id="B3I_QUeFT_V0" -->
 ## Backbone model
 
-The model we provide for 3d mesh encoding is called `pointnet++`. In the following, we show you how to train it on the modelnet training dataset.
+The model we provide for 3d mesh encoding is called `pointnet++`. In the following, we show you how to train it on the ModelNet training dataset.
 <!-- #endregion -->
 
 <!-- #region id="lqg0eY9oknLL" -->
@@ -204,7 +204,7 @@ assert query.embeddings.shape == (1, 512)
 ```
 
 <!-- #region id="pfoc4YG4rrkI" -->
-And finally you can use the embeded `query` to find top-k visually related images within `index_data` as follows:
+And finally, you can use the embedded `query` to find top-k visually related images within `index_data` as follows:
 <!-- #endregion -->
 
 ```python id="_jGsSyedrsJp"
