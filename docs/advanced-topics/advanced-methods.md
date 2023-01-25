@@ -1,8 +1,8 @@
 (advanced-methods)=
-# Advanced Methods
+# {octicon}`mortar-board` Advanced Methods
 Many of the models supported by finetuner make use of similar methods throughout finetuning, such as the methods used for *calculating loss*, *sampling* and *pooling* . Finetuner offers alternatives to each of these methods, which can improve the performance of your finetuning run in some cases.
 
-## {octicon}`pin` Loss Functions
+## Loss Functions
 
 Loss functions are used to calculate the quality of embeddings while training; the higher the output of the loss function, the more the parameters of the model will be updated.
 By default we use Triplet Margin Loss, however we support many other loss function as well, including ArcFace Loss and CosFace Loss.
