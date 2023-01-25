@@ -104,10 +104,6 @@ We support the following dialects of CSV:
 + `excel-tab` use `\t` as delimiter and `\r\n` as lineterminator.
 + `unix` use `,` as delimiter and `\n` as lineterminator.
 
-```{warning}
-Please remove/replace commas in your data fields if you are using a comma `,` as a delimiter.
-```
-
 
 ## Preparing a DocumentArray
 When providing training data in a DocumentArray, each element is represented as a {class}`~docarray.document.Document`. You should assign a label to each {class}`~docarray.document.Document` inside your {class}`~docarray.array.document.DocumentArray`.
