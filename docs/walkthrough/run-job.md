@@ -38,6 +38,23 @@ the run status changes from:
 3. FINISHED: the job finished successfully, model has been sent to Jina AI Cloud.
 4. FAILED: the job failed, please check the logs for more details.
 
+## Continue training on new data
+
+Finetuner also supports continuing training a model produced by a previous fine-tuning run.
+If you have additional data which you want to use to further train a model, you can do this by passing its artifact id to the fit function:
+
+```python
+train_data = 'path/to/another/data.csv'
+
+run2 = finetuner.fit(
+    model='efficientnet_b0',
+    train_data=train_data,
+     model_artifact=run.artifact_id,
+)
+print(f'Run name: {run2.name}')
+print(f'Run status: {run2.status()}')
+```
+
 ## Advanced configurations
 Beyond the simplest use case,
 Finetuner gives you the flexibility to set hyper-parameters explicitly:
