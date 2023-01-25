@@ -1,6 +1,6 @@
 (advanced-methods)=
 # Advanced Methods
-Many of the models supported by finetuner make use of similar methods throughout finetuning, such as the methods used for *calculating loss*, *sampling* and *pooling* . Finetuner offers alternatives to these methods, which can improve the performance of your finetuning run in some cases.
+Many of the models supported by finetuner make use of similar methods throughout finetuning, such as the methods used for *calculating loss*, *sampling* and *pooling* . Finetuner offers alternatives to each of these methods, which can improve the performance of your finetuning run in some cases.
 
 ## {octicon}`pin` Loss Functions
 
@@ -15,7 +15,7 @@ Please check the [developer reference](../../api/finetuner/#finetuner.fit) to ge
 
 Lets first take a look at our default loss function, Triplet Margin Loss.  
 
-Triplet Margin Loss is a *contrastive* loss function, meaning that the loss is calculated by comparing the embeddings of multiple documents, three, to be exact.
+Triplet Margin Loss is a *contrastive* loss function, meaning that the loss is calculated by comparing the embeddings of multiple documents to each other, three documents, to be exact.
 Each triplet of documents consists of an anchor document, a positive document and a negative document.
 The anchor and the positive document belong to the same class, and the negative document belongs to a different class.
 The goal of Triplet margin loss is to maximise the difference between the distance from the anchor to the positive document, and the distance from the anchor to the negative document.
@@ -32,9 +32,10 @@ and attempts to minimize the *angular distance* between the document and its cla
 
 The ArcFace and CosFace both deviate from the traditional SphereFace by including a margin and scaling parameter, which can be used to increase the boundary between each class. If an item's embedding is within the boundary of the class it belongs to, then no loss is incurred. Choosing appropriate values for the margin and scaling parameter is important for effective training, for more information on how ArcFace and CosFace calculate loss, and how these parameters affect the output, see this article on [loss metrics for deep learning](https://hav4ik.github.io/articles/deep-metric-learning-survey#cosface).  
 
-Since only one sample is needed to calculate the loss with the ArcFace and CosFace functions, there are no constraints on what each batch needs to contain, unlike Triplet Margin Loss, which uses a `ClassSampler` to construct batches an equal amount of each class in the batch.
+Since only one sample is needed to calculate the loss with the ArcFace and CosFace functions, there are no constraints on what each batch needs to contain, unlike Triplet Margin Loss
+which uses a `ClassSampler` to construct batches an equal amount of each class in the batch.
 Instead, we can construct batches using random sampling, a much simpler method which consequently takes less time to construct a batch.
-By default, runs created ArcFace or Cosface loss will use random sampling, however you can specify which type of sampling method you would like to use like so:
+By default, runs created using ArcFace or Cosface loss will use random sampling, however you can specify which type of sampling method you would like to use like so:
 
 ```diff
 run = finetuner.fit(
@@ -69,7 +70,7 @@ As an example, the figure below shows the domains of the 10 classes of the FMNIS
 
 ![distributions-loss](../imgs/distributions-loss.png)
 
-Each color represents a different class, you can see how each loss function is able to separate some of the classes from the others,
+Each color represents a different class. You can see how all of the loss functions are able to separate some of the classes from the others,
 but struggle to separate the green, blue, pink, purple and red classes,
 with Triplet Loss sperarating them the least, and ArcFace separating them the most.
 
