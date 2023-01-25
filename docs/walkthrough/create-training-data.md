@@ -17,22 +17,22 @@ Currently, `excel`, `excel-tab` and `unix` CSV dialects are supported. To specif
 In cases where you want multiple elements grouped together, you can provide a label in the second column. This way, all elements in the first column that have the same label will be considered similar when training. To indicate that the second column of your CSV file represents a label instead of a second element, set `is_labeled = True` in the `csv_options` argument of the {meth}`~finetuner.fit` function. Your data can then be structured like so:
 
 ```markdown
-Hello!                  greeting-english
-Hi there.               greeting-english
-Good morning.           greeting-english
-I'm (…) sorry!          apologize-english
-I'm sorry to have…      apologize-english
-Please, forgive me!     apologize-english
+Hello!, greeting-english
+Hi there., greeting-english
+Good morning., greeting-english
+I'm (…) sorry!, apologize-english
+I'm sorry to have…, apologize-english
+Please ... forgive me!, apologize-english
 ```
 
 When using image-to-image or mesh-to-mesh retrieval models, images and meshes can be represented as a URI or a path to a file:
 
 ```markdown
-/Users/images/apples/green_apple.jpg    picture of apple
-/Users/images/apples/red_apple.jpg      picture of apple
-https://example.com/apple-styling.jpg   picture of apple
-/Users/images/oranges/orange.jpg        picture of orange
-https://example.com/orange-styling.jpg  picture of orange
+/Users/images/apples/green_apple.jpg, picture of apple
+/Users/images/apples/red_apple.jpg, picture of apple
+https://example.com/apple-styling.jpg, picture of apple
+/Users/images/oranges/orange.jpg, picture of orange
+https://example.com/orange-styling.jpg, picture of orange
 ```
 
 ```diff
@@ -61,8 +61,8 @@ Please note, that local files can not be processed by the Finetuner if you deact
 To prepare data for text-to-image search, each row must contain one URI to an image and one piece of text. The order that these two are placed does not matter, so long as the ordering is kept consistent for all rows.
 
 ```markdown
-This is a photo of an apple.                apple.jpg
-This is a black-white photo of an organge.  orange.jpg
+This is a photo of an apple., apple.jpg
+This is a black-white photo of an organge., orange.jpg
 ```
 
 ```{admonition} CLIP model explained
@@ -80,8 +80,8 @@ At the model saving time, you will discover, we are saving two models to your lo
 If you want two elements to be semantically close together, they can be placed on the same row as a pair. Each pair will automatically be assigned a distinct label:
 
 ```markdown
-This is an English sentence         Das ist ein englischer Satz
-This is another English sentence    Dies ist ein weiterer englischer Satz
+This is an English sentence, Das ist ein englischer Satz
+This is another English sentence, Dies ist ein weiterer englischer Satz
 ...
 ```
 
