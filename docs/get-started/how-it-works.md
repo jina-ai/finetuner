@@ -6,7 +6,7 @@ This involves three steps:
 ## Step 1: Build an embedding model
 
 Finetuner takes an existing, pre-trained model, typically called the __backbone__, and analyzes its architecture.
-If this model does not already produce embeddings or the architecture not suitable for training it, Finetuner is able to remove the default *head* (the last layers of the network), add new projection layers, apply *pooling*, and freeze layers that do not need to be trained.
+If this model does not already produce embeddings or the architecture is not suitable for training it, Finetuner is able to remove the default *head* (the last layers of the network), add new projection layers, apply *pooling*, and freeze layers that do not need to be trained.
 
 For instance, Finetuner will turn an image classification model, e.g., for separating cats from dogs, into an *embedding model* 
 by removing its last layer - the classification head (cat-dog classifier).

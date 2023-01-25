@@ -61,7 +61,7 @@ For instance, if you choose to train a model with the `TripleMarginLoss`, you ca
 While without this miner, all possible triples with an anchor, a positive, and a negative candidate are used to calculate the loss, the miner reduces this set of triples.
 By default, the miner only selects triples with hard negatives where the distance between the positive and the negative example is inside a margin of `0.2`.
 To pass additional parameters to configure the miner, use the `miner_options` parameter of the fit function.
-For example, add the following to use only hard-negative triples and set the margin to `0.3`:
+For example, add the following to use only hard-negative triplets and set the margin to `0.3`:
 
 ```diff
 run = finetuner.fit(

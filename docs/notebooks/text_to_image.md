@@ -232,7 +232,7 @@ run = finetuner.fit(
 )
 ```
 
-The value you set to `alpha` should be greater or equal to 0 and less equal to 1:
+The value you set to `alpha` should be greater or equal to 0 and less or equal to 1:
 
 + if `alpha` is a float between 0 and 1, we merge the weights between the pre-trained model and the fine-tuned model.
 + if `alpha` is 0, the fine-tuned model is identical to the pre-trained model.
