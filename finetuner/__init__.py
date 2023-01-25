@@ -109,6 +109,7 @@ def fit(
     train_data: Union[str, TextIO, DocumentArray],
     eval_data: Optional[Union[str, TextIO, DocumentArray]] = None,
     val_split: float = 0.0,
+    model_artifact: Optional[str] = None,
     run_name: Optional[str] = None,
     description: Optional[str] = None,
     experiment_name: Optional[str] = None,
@@ -145,6 +146,9 @@ def fit(
         for calculating a validation loss. If it is set to 0, or an `eval_data`
         parameter is provided, no data is held out from the training data. Instead, the
         `eval_data` is used to calculate the validation loss if it is provided.
+    :param model_artifact: To continue training the training of a model which was
+        fine-tuned by a previous run, you can provide the artifact id of this model,
+        which you can get via :meth:`Run.artifact_id`.
     :param run_name: Name of the run.
     :param description: Run description.
     :param experiment_name: Name of the experiment.
@@ -217,6 +221,7 @@ def fit(
         train_data=train_data,
         eval_data=eval_data,
         val_split=val_split,
+        model_artifact=model_artifact,
         run_name=run_name,
         description=description,
         experiment_name=experiment_name,
