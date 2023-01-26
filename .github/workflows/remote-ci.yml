@@ -29,7 +29,8 @@ jobs:
             -H "Authorization: Bearer ${{ github.event.client_payload.token }}"\
             -H "X-GitHub-Api-Version: 2022-11-28" \
             $target_url \
-            -d '{"body":"Starting tests, see job here:\n '"$job_url"' "}'
+            -d '{"body":"REMOTE TESTING: \nstarting tests... See job here:\n '"$job_url"' "}'
+
   style-flake:
     runs-on: ubuntu-latest
     steps:
@@ -224,7 +225,8 @@ jobs:
 
   # just for blocking the merge until all parallel core-test are successful
   success-tests:
-    needs: [get-coverage]
+    needs: [style-flake, style-black, style-isort]
+    # needs: [get-coverage]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -236,16 +238,30 @@ jobs:
           message="Job finished with status: $WORKFLOW_CONCLUSION"
           echo "message: $message"
           echo "job_url: $job_url"
-          curl \
-            -X PATCH \
+
+          response=$(curl \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ github.event.client_payload.token }}"\
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            $target_url \
-            -d '{"body":"'"$message"', see job here:\n '"$job_url"'"}'
-          
-          if [ "$WORKFLOW_CONCLUSION" == "success" ]
-          then
+            $target_url
+            )
+
+          comment_body=$(echo $response | jq -r \
+          '.body | select(contains("'"$job_url"'")) // "OUTDATED"')
+
+          if [[ "$comment_body" != "OUTDATED" ]]; then
+            curl \
+              -X PATCH \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ github.event.client_payload.token }}"\
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              $target_url \
+              -d '{"body":"REMOTE TESTING: \n'"$message"', see job here:\n '"$job_url"'"}'
+          else
+            echo "CI job is outdated, comment will not be updated"
+          fi
+
+          if [ "$WORKFLOW_CONCLUSION" == "success" ]; then
             echo "All Done"
           else
             exit 1
