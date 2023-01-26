@@ -7,7 +7,7 @@ Thereby, for most of them, Finetuner provides multiple variants, e.g., the commo
 
 Finetuner will convert these backbone models to embedding models by removing
 the *head* or applying *pooling*,
-fine-tuning and producing the final embedding model.
+performing fine-tuning and producing the final embedding model.
 The embedding model can be fine-tuned for text-to-text, image-to-image or text-to-image
 search tasks.
 
@@ -41,7 +41,7 @@ finetuner.describe_models(task='mesh-to-mesh')
 ```
 ````
 
-To get a list of supported models:
+to get a list of supported models:
 
 ````{tab} text-to-text
 ```bash
@@ -120,6 +120,6 @@ To get a list of supported models:
 
 It should be noted that:
 
-+ resnet/efficientnet models are loaded from the [torchvision](https://pytorch.org/vision/stable/index.html) library.
-+ transformer based models are loaded from the huggingface [transformers](https://github.com/huggingface/transformers) library.
++ ResNet/EfficientNet models are loaded from the [torchvision](https://pytorch.org/vision/stable/index.html) library.
++ Transformer-based models are loaded from the huggingface [transformers](https://github.com/huggingface/transformers) library.
 + `msmarco-distilbert-base-v3` has been fine-tuned once by [sentence-transformers](https://www.sbert.net/) on the [MS MARCO](https://microsoft.github.io/msmarco/) dataset on top of BERT.

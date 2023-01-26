@@ -16,9 +16,9 @@ jupyter:
 
 <a href="https://colab.research.google.com/drive/1QuUTy3iVR-kTPljkwplKYaJ-NTCgPEc_?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
-Searching visually similar images with image queries is a very popular use-case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here's where Finetuner comes in! It enables you to accomplish this easily.
+Searching visually similar images with image queries is a very popular use case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here's where Finetuner comes in! It enables you to accomplish this easily.
 
-This guide will demonstrate how to fine-tune a ResNet model for image to image retrieval.
+This guide will demonstrate how to fine-tune a ResNet model for image-to-image retrieval.
 
 *Note, please consider switching to GPU/TPU Runtime for faster inference.*
 
@@ -140,7 +140,7 @@ You can continue monitoring the runs by checking the status - `finetuner.run.Run
 <!-- #region id="BMpQxydypeZ3" -->
 ## Evaluating
 Currently, we don't have a user-friendly way to get evaluation metrics from the `finetuner.callback.EvaluationCallback` we initialized previously.
-What you can do for now is to call `run.logs()` in the end of the run and see evaluation results:
+What you can do for now is to call `run.logs()` after the end of the run and see the evaluation results:
 
 ```bash
   Training [5/5] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:00 0:03:15 • loss: 0.003
@@ -197,7 +197,7 @@ assert query.embeddings.shape == (1, 2048)
 ```
 
 <!-- #region id="1cC46TQ9pw-H" -->
-And finally you can use the embeded `query` to find top-k visually related images within `index_data` as follows:
+And finally, you can use the embedded `query` to find top-k visually related images within `index_data` as follows:
 <!-- #endregion -->
 
 ```python id="tBYG9OKrpZ36"
@@ -206,7 +206,7 @@ query.match(index_data, limit=10, metric='cosine')
 
 <!-- #region id="irvn0igWdLOf" -->
 ## Before and after
-We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, some of the examples the examples below (such as the second example) show that the model after fine-tuning is able to better match similar images.
+We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, some of the examples below (such as the second example) show that the model after fine-tuning is able to better match similar images.
 <!-- #endregion -->
 
 <!-- #region id="TwL33Jz1datD" -->
@@ -214,7 +214,7 @@ To save you some time, we have plotted some examples where the model's ability t
 
 ![image-image-triplets-good](https://user-images.githubusercontent.com/6599259/212634591-03bd93dc-900f-47c5-8ada-77cf1d4f9fe6.png)
 
-On the other hand, there are also cases where the fine-tuned model performs worse, and fails to correctly match images that it previously could. This case is much rarer than the previous case. For this dataset there were 108 occasions where the fine-tuned model returned the correct pair where it couldn't before, and only 33 occasions where the finetuned model returned an incorrect image after fine-tuning but returned a correct one before. Nevertheless it still can happen:
+On the other hand, there are also cases where the fine-tuned model performs worse, and fails to correctly match images that it previously could. This case is much rarer than the previous case. For this dataset, there were 108 occasions where the fine-tuned model returned the correct pair where it couldn't before and only 33 occasions where the finetuned model returned an incorrect image after fine-tuning but returned a correct one before. Nevertheless, it still can happen:
 
 ![image-image-triplets-bad](https://user-images.githubusercontent.com/6599259/212634649-370b643b-63ad-4d46-8a16-bc4988265568.png)
 <!-- #endregion -->

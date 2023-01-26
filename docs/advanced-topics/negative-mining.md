@@ -3,7 +3,7 @@
 
 Negative Mining is an advanced machine learning technique, which optimizes the way data is sampled from your training dataset.
 Usually, it aims at making the metric learning tasks for the model harder during the training. 
-In this way it can lead to better fine-tuning results.
+In this way, it can lead to better fine-tuning results.
 
 ## Context: Deep Metric Learning
 
@@ -22,8 +22,8 @@ Finetuner will evenly sample *X* items per class to make a batch *B* which is en
 
 Afterward, the loss is calculated based on the relations between the embeddings.
 Many of Finetuner's loss functions contrast the embeddings of three items, or a __Triplet__. 
-Finetuner creates all possible Triplets *(anchor, pos, neg)* from this batch which satisfy the following conditions:
-For each Triplet, the first is the __anchor__, the second is an embedding that ought to be closer to the embedding of the anchor (has the same label), and the third is one that should be further from the anchor (has a different label).
+Finetuner creates all possible triplets *(anchor, pos, neg)* from this batch which satisfy the following conditions:
+For each triplet, the first is the __anchor__, the second is an embedding that ought to be closer to the embedding of the anchor (has the same label), and the third is one that should be further from the anchor (has a different label).
 The objective is to pull the embeddings of items that belong to the same class closer together in the embedding space,
 while pushing the embeddings of items which belong to different classes farther away from each other.
 
@@ -32,12 +32,12 @@ while pushing the embeddings of items which belong to different classes farther 
 
 ## The Triplet Margin Miner
 
-For some Triplets, the pre-trained model already performs well, i.e.
+For some triplets, the pre-trained model already performs well, i.e.
 
 the distance between the `anchor` embedding and `pos` is much smaller than
 the distance between `anchor` and `neg`?
-These Triplets do not contribute to improving the model, since they are already in the desired relation to each other in the embedding space.
-A more effective way is to use only a subset of all Triplets for model training. We call this subset the **hard** or **semi-hard negative samples**.
+These triplets do not contribute to improving the model, since they are already in the desired relation to each other in the embedding space.
+A more effective way is to use only a subset of all triplets for model training. We call this subset the **hard** or **semi-hard negative samples**.
 
 ![mining](../imgs/mining.png)
 
@@ -49,7 +49,7 @@ If:
 + `D(anchor, pos) < D(anchor, neg) < D(anchor, pos) + margin`, where `neg` is a little further from the `pos`, but within the margin, then `neg` can be considered as a "semi-hard negative" (`2₄ - S`).
 + `D(anchor, neg) > D(anchor, pos) + margin`, then `neg` can be considered as "easy negative" (`2₄ - E`).
 
-Training is more effective when using only **hard** and **semi-hard** negatives, given a reasonable margin value to distinguish them from **easy** Triplets.
+Training is more effective when using only **hard** and **semi-hard** negatives, given a reasonable margin value to distinguish them from **easy** triplets.
 
 ## Doing Negative Mining in Finetuner
 
@@ -61,7 +61,7 @@ For instance, if you choose to train a model with the `TripleMarginLoss`, you ca
 While without this miner, all possible triples with an anchor, a positive, and a negative candidate are used to calculate the loss, the miner reduces this set of triples.
 By default, the miner only selects triples with hard negatives where the distance between the positive and the negative example is inside a margin of `0.2`.
 To pass additional parameters to configure the miner, use the `miner_options` parameter of the fit function.
-For example, to use only hard-negative Triples and set the margin to `0.3`:
+For example, add the following to use only hard-negative triplets and set the margin to `0.3`:
 
 ```diff
 run = finetuner.fit(
@@ -84,6 +84,6 @@ For a detailed description of the miners and their parameters, see the [PyTorch 
 
 ## Summary
 
-Metric Learning and Triplets are extremely useful for fine-tuning models for similarity search.
-Easy Triplets have little impact on improving the model.
-Consider using semi-hard/hard Triplets for model tuning.
+Metric Learning and triplets are extremely useful for fine-tuning models for similarity search.
+Easy triplets have little impact on improving the model.
+Consider using semi-hard/hard triplets for model tuning.

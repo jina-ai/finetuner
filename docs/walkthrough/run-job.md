@@ -24,7 +24,7 @@ print(f'Run name: {run.name}')
 print(f'Run status: {run.status()}')
 ```
 
-You'll see something like this in the terminal, with a different run name:
+You'll see something like this in the terminal with a different run name:
 
 ```bash
 Run name: vigilant-tereshkova
@@ -88,7 +88,7 @@ The type of loss function which is most suitable for your task depends heavily o
 For many retrieval tasks, the `TripletMarginLoss` is a good choice.
 
 ```{Important}
-Please check the [developer reference](../../api/finetuner/#finetuner.fit) to get the available options for `loss`, `miner`, `optimizer` and `scheduler_step`.
+Please check the [developer reference](../../api/finetuner/#finetuner.fit) to get the available options for `loss`, `miner`, `optimizer`, and `scheduler_step`.
 ```
 
 ### Configuration of the optimizer
