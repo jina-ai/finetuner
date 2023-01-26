@@ -49,10 +49,16 @@ train_data = 'path/to/another/data.csv'
 run2 = finetuner.fit(
     model='efficientnet_b0',
     train_data=train_data,
-     model_artifact=run.artifact_id,
+    model_artifact=run.artifact_id,
 )
 print(f'Run name: {run2.name}')
 print(f'Run status: {run2.status()}')
+```
+
+```{admonition} Continue training requires a model parameter 
+:class: hint
+When you want to continue training, you still need to provide the `model` parameter
+beside the `model_artifact` parameter for Finetuner to correctly configure the new run.
 ```
 
 ## Advanced configurations
