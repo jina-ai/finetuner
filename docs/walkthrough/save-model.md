@@ -63,7 +63,7 @@ At training time, you need to set `public=True` when calling the `fit` function.
 If `public=True`, anyone who knows the artifact id can download your artifact with the above function.
 ```
 
-If the fine-tuning finished, you can see the following message in the terminal:
+If the fine-tuning is finished, you will see the following message in the terminal:
 
 ```bash
 🔐 Successfully logged in to Jina AI as [USER NAME]!

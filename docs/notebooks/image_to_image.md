@@ -140,7 +140,7 @@ You can continue monitoring the runs by checking the status - `finetuner.run.Run
 <!-- #region id="BMpQxydypeZ3" -->
 ## Evaluating
 Currently, we don't have a user-friendly way to get evaluation metrics from the `finetuner.callback.EvaluationCallback` we initialized previously.
-What you can do for now is to call `run.logs()` in the end of the run and see the evaluation results:
+What you can do for now is to call `run.logs()` after the end of the run and see the evaluation results:
 
 ```bash
   Training [5/5] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 76/76 0:00:00 0:03:15 • loss: 0.003

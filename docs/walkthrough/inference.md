@@ -1,7 +1,7 @@
 # Inference
 
 Once fine-tuning is finished, it's time to actually use the model.
-You can use the fine-tuned models directly to encode [DocumentArray](https://docarray.jina.ai/) objects or set up an encoding service.
+You can use the fine-tuned models directly to encode [DocumentArray](https://docarray.jina.ai/) objects or to set up an encoding service.
 When encoding, data can also be provided as a regular list.
 
 ```{admonition} Use FinetunerExecutor inside a Jina Flow

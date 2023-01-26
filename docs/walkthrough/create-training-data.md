@@ -58,7 +58,7 @@ Please note, that local files can not be processed by the Finetuner if you deact
 ````
 
 ````{tab} text-to-image search using CLIP
-To prepare data for text-to-image search, each row must contain one URI to an image and one piece of text. The order that these two are placed does not matter, so long as the ordering is kept consistent for all rows.
+To prepare data for text-to-image search, each row must contain one URI pointing to an image and one piece of text. The order that these two are placed does not matter, so long as the ordering is kept consistent for all rows.
 
 ```markdown
 This is a photo of an apple., apple.jpg
