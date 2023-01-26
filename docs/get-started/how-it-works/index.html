@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://finetuner.jina.ai/get-started/how-it-works/" />
 <meta property="og:site_name" content="Finetuner Documentation" />
-<meta property="og:description" content="How Does it Work?: Finetuner is a framework for using the contrastive learning approach to improve similarity matching with models that encode data into embeddings. This involves three steps: Step 1: Build an embedding model: Finetuner interprets the architecture of an existing (pre-trained model..." />
+<meta property="og:description" content="How Does it Work?: Finetuner is a framework for using the contrastive learning approach to improve similarity matching with models that encode data into embeddings. This involves three steps: Step 1: Build an embedding model: Finetuner takes an existing, pre-trained model, typically called the ba..." />
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
 <meta property="og:image:alt" content="Finetuner Documentation" />
-<meta name="description" content="How Does it Work?: Finetuner is a framework for using the contrastive learning approach to improve similarity matching with models that encode data into embeddings. This involves three steps: Step 1: Build an embedding model: Finetuner interprets the architecture of an existing (pre-trained model..." />
+<meta name="description" content="How Does it Work?: Finetuner is a framework for using the contrastive learning approach to improve similarity matching with models that encode data into embeddings. This involves three steps: Step 1: Build an embedding model: Finetuner takes an existing, pre-trained model, typically called the ba..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -330,11 +330,8 @@
 This involves three steps:</p>
 <section id="step-1-build-an-embedding-model">
 <h2>Step 1: Build an embedding model<a class="headerlink" href="#step-1-build-an-embedding-model" title="Permalink to this heading">#</a></h2>
-<p>Finetuner interprets the architecture of an existing (pre-trained model) which we call backbone.
-Those model might not be an embedding model upfront and the architecture not suitable for training it to encode data into embeddings.
-Therefore, Finetuner removes the default <em>head</em>, applies <em>pooling</em> and freezes layers that do not need to be trained.</p>
 <p>Finetuner takes an existing, pre-trained model, typically called the <strong>backbone</strong>, and analyzes its architecture.
-If this model does not already produce embeddings, Finetuner is able to remove the default <em>head</em> (the last layers of the network), add new projection layers, apply <em>pooling</em>, and freeze layers that do not need to be trained.</p>
+If this model does not already produce embeddings or the architecture is not suitable for training, Finetuner is able to remove the default <em>head</em> (the last layers of the network), add new projection layers, apply <em>pooling</em>, and freeze layers that do not need to be trained.</p>
 <p>For instance, Finetuner will turn an image classification model, e.g., for separating cats from dogs, into an <em>embedding model</em>
 by removing its last layer - the classification head (cat-dog classifier).</p>
 <p>This embedding model does not make predictions or output a probability,
@@ -418,7 +415,7 @@ This will be explained in a later section.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jan 18, 2023</div>
+                            Last updated on Jan 26, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

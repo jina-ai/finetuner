@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://finetuner.jina.ai/walkthrough/inference/" />
 <meta property="og:site_name" content="Finetuner Documentation" />
-<meta property="og:description" content="Once fine-tuning is finished, it’s time to actually use the model. You can use the fine-tuned models directly to encode DocumentArray objects or setting up an encoding service. When encoding, data can also be provided as a regular list. Encoding a List: Data that is stored in a regular list can b..." />
+<meta property="og:description" content="Once fine-tuning is finished, it’s time to actually use the model. You can use the fine-tuned models directly to encode DocumentArray objects or to set up an encoding service. When encoding, data can also be provided as a regular list. Encoding a List: Data that is stored in a regular list can be..." />
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
 <meta property="og:image:alt" content="Finetuner Documentation" />
-<meta name="description" content="Once fine-tuning is finished, it’s time to actually use the model. You can use the fine-tuned models directly to encode DocumentArray objects or setting up an encoding service. When encoding, data can also be provided as a regular list. Encoding a List: Data that is stored in a regular list can b..." />
+<meta name="description" content="Once fine-tuning is finished, it’s time to actually use the model. You can use the fine-tuned models directly to encode DocumentArray objects or to set up an encoding service. When encoding, data can also be provided as a regular list. Encoding a List: Data that is stored in a regular list can be..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -327,7 +327,7 @@
                     <section class="tex2jax_ignore mathjax_ignore" id="inference">
 <h1>Inference<a class="headerlink" href="#inference" title="Permalink to this heading">#</a></h1>
 <p>Once fine-tuning is finished, it’s time to actually use the model.
-You can use the fine-tuned models directly to encode <a class="reference external" href="https://docarray.jina.ai/">DocumentArray</a> objects or setting up an encoding service.
+You can use the fine-tuned models directly to encode <a class="reference external" href="https://docarray.jina.ai/">DocumentArray</a> objects or to set up an encoding service.
 When encoding, data can also be provided as a regular list.</p>
 <div class="hint admonition">
 <p class="admonition-title">Use FinetunerExecutor inside a Jina Flow</p>
@@ -337,7 +337,9 @@ If you would like to use fine-tuned model inside a Jina Flow as an Executor, che
 </div>
 <section id="encoding-a-list">
 <span id="integrate-with-list"></span><h2>Encoding a List<a class="headerlink" href="#encoding-a-list" title="Permalink to this heading">#</a></h2>
-<p>Data that is stored in a regular list can be embedded in the same way you would a <a class="reference external" href="https://docarray.jina.ai/">DocumentArray</a>. Since the modality of your input data can be inferred from the model being used, there is no need to provide any additional information besides the content you want to encode. When providing data as a list, the <code class="docutils literal notranslate"><span class="pre">finetuner.encode</span></code> method will return a <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> of embeddings, instead of a <code class="docutils literal notranslate"><span class="pre">docarray.DocumentArray</span></code>:</p>
+<p>Data that is stored in a regular list can be embedded in the same way you would embed a <a class="reference external" href="https://docarray.jina.ai/">DocumentArray</a>.
+Since the modality of your input data can be inferred from the model being used, there is no need to provide any additional information besides the content you want to encode.
+When providing data as a list, the <code class="docutils literal notranslate"><span class="pre">finetuner.encode</span></code> method will return a <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> of embeddings, instead of a <code class="docutils literal notranslate"><span class="pre">docarray.DocumentArray</span></code>:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Artifact id and token</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
@@ -410,13 +412,13 @@ If you would like to use fine-tuned model inside a Jina Flow as an Executor, che
 <div class="tip admonition">
 <p class="admonition-title">Inference with ONNX</p>
 <p>In case you set <code class="docutils literal notranslate"><span class="pre">to_onnx=True</span></code> when calling <code class="docutils literal notranslate"><span class="pre">finetuner.fit</span></code> function,
-please use <code class="docutils literal notranslate"><span class="pre">model</span> <span class="pre">=</span> <span class="pre">finetuner.get_model('/path/to/YOUR-MODEL.zip',</span> <span class="pre">is_onnx=True)</span></code></p>
+please use <code class="docutils literal notranslate"><span class="pre">model</span> <span class="pre">=</span> <span class="pre">finetuner.get_model('/path/to/YOUR-MODEL.zip',</span> <span class="pre">is_onnx=True)</span></code>.</p>
 </div>
 <div class="tip admonition">
 <p class="admonition-title">Encoding other Modalities</p>
 <p>Of course you can not only encode texts.
-For encoding a list of images, you can provide uris, e.g.,
-<code class="docutils literal notranslate"><span class="pre">embeddings</span> <span class="pre">=</span> <span class="pre">finetuner.encode(model=model,</span> <span class="pre">data=['path/to/apple.png'])</span></code></p>
+For encoding a list of images, you can provide URIs, e.g.,
+<code class="docutils literal notranslate"><span class="pre">embeddings</span> <span class="pre">=</span> <span class="pre">finetuner.encode(model=model,</span> <span class="pre">data=['path/to/apple.png'])</span></code>.</p>
 </div>
 </section>
 <section id="encoding-a-documentarray">
@@ -534,7 +536,7 @@ For encoding a list of images, you can provide uris, e.g.,
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jan 18, 2023</div>
+                            Last updated on Jan 26, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

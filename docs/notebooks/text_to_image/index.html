@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://finetuner.jina.ai/notebooks/text_to_image/" />
 <meta property="og:site_name" content="Finetuner Documentation" />
-<meta property="og:description" content="Traditionally, searching images from text (text-image-retrieval) relies heavily on human annotations, this is commonly referred to as Text/Tag based Image Retrieval (TBIR). The OpenAI CLIP model maps the dense vectors extracted from text and image into the same semantic space and produces a stron..." />
+<meta property="og:description" content="Traditionally, searching images from text (text-image-retrieval) relies heavily on human annotations, this is commonly referred to as Text/Tag-based Image Retrieval (TBIR). The OpenAI CLIP model maps the dense vectors extracted from text and image into the same semantic space and produces a stron..." />
 <meta property="og:image" content="https://user-images.githubusercontent.com/6599259/212634395-6f336d39-cda7-425d-80a2-10facae3b824.png" />
 <meta property="og:image:alt" content="clip-example-pt" />
-<meta name="description" content="Traditionally, searching images from text (text-image-retrieval) relies heavily on human annotations, this is commonly referred to as Text/Tag based Image Retrieval (TBIR). The OpenAI CLIP model maps the dense vectors extracted from text and image into the same semantic space and produces a stron..." />
+<meta name="description" content="Traditionally, searching images from text (text-image-retrieval) relies heavily on human annotations, this is commonly referred to as Text/Tag-based Image Retrieval (TBIR). The OpenAI CLIP model maps the dense vectors extracted from text and image into the same semantic space and produces a stron..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -328,9 +328,9 @@
 <section class="tex2jax_ignore mathjax_ignore" id="text-to-image-search-via-clip">
 <h1>Text-to-Image Search via CLIP<a class="headerlink" href="#text-to-image-search-via-clip" title="Permalink to this heading">#</a></h1>
 <p><a href="https://colab.research.google.com/drive/1yKnmy2Qotrh3OhgwWRsMWPFwOSAecBxg?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p>
-<p>Traditionally, searching images from text (text-image-retrieval) relies heavily on human annotations, this is commonly referred to as <em>Text/Tag based Image Retrieval (TBIR)</em>.</p>
+<p>Traditionally, searching images from text (text-image-retrieval) relies heavily on human annotations, this is commonly referred to as <em>Text/Tag-based Image Retrieval (TBIR)</em>.</p>
 <p>The <a class="reference external" href="https://github.com/openai/CLIP">OpenAI CLIP</a> model maps the dense vectors extracted from text and image into the same semantic space and produces a strong zero-shot model to measure the similarity between text and images.</p>
-<p>This guide will showcase fine-tuning a <code class="docutils literal notranslate"><span class="pre">CLIP</span></code> model for text to image retrieval.</p>
+<p>This guide will showcase fine-tuning a <code class="docutils literal notranslate"><span class="pre">CLIP</span></code> model for text-to-image retrieval.</p>
 <p><em>Note, please consider switching to GPU/TPU Runtime for faster inference.</em></p>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this heading">#</a></h2>
@@ -343,14 +343,14 @@
 <section id="task">
 <h2>Task<a class="headerlink" href="#task" title="Permalink to this heading">#</a></h2>
 <p>We’ll be fine-tuning CLIP on the <a class="reference external" href="https://github.com/xuewyang/Fashion_Captioning">fashion captioning dataset</a> which contains information about fashion products.</p>
-<p>For each product the dataset contains a title and images of multiple variants of the product. We constructed a parent <a class="reference external" href="https://docarray.jina.ai/fundamentals/document/#document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a> for each picture, which contains two <a class="reference external" href="https://docarray.jina.ai/fundamentals/document/nested/#nested-structure">chunks</a>: an image document and a text document holding the description of the product.</p>
+<p>For each product, the dataset contains a title and images of multiple variants of the product. We constructed a parent <a class="reference external" href="https://docarray.jina.ai/fundamentals/document/#document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a> for each picture, which contains two <a class="reference external" href="https://docarray.jina.ai/fundamentals/document/nested/#nested-structure">chunks</a>: an image document and a text document holding the description of the product.</p>
 <!-- #endregion -->
 <!-- #region id="EVBez7dHwIye" -->
 </section>
 <section id="data">
 <h2>Data<a class="headerlink" href="#data" title="Permalink to this heading">#</a></h2>
 <p>Our journey starts locally. We have to <a class="reference external" href="https://finetuner.jina.ai/walkthrough/create-training-data/">prepare the data and push it to the Jina AI Cloud</a> and Finetuner will be able to get the dataset by its name. For this example,
-we already prepared the data, and we’ll provide the names of traning and evaluation data (<code class="docutils literal notranslate"><span class="pre">fashion-train-data-clip</span></code> and <code class="docutils literal notranslate"><span class="pre">fashion-eval-data-clip</span></code>) directly to Finetuner.
+we already prepared the data, and we’ll provide the names of training and evaluation data (<code class="docutils literal notranslate"><span class="pre">fashion-train-data-clip</span></code> and <code class="docutils literal notranslate"><span class="pre">fashion-eval-data-clip</span></code>) directly to Finetuner.
 In addition, we also provide labeled queries and an index of labeled documents for evaluating the retrieval capabilities of the resulting fine-tuned model stored in the datasets <code class="docutils literal notranslate"><span class="pre">fashion-eval-data-queries</span></code> and <code class="docutils literal notranslate"><span class="pre">fashion-eval-data-index</span></code>.</p>
 <div class="admonition-push-data-to-the-cloud admonition">
 <p class="admonition-title">Push data to the cloud</p>
@@ -410,7 +410,7 @@ When working with documents where images are stored locally, please call <code c
 <p>Let’s understand what this piece of code does:</p>
 <ul class="simple">
 <li><p>We start with providing <code class="docutils literal notranslate"><span class="pre">model</span></code>, names of training and evaluation data.</p></li>
-<li><p>We also provide some hyper-parameters such as number of <code class="docutils literal notranslate"><span class="pre">epochs</span></code> and a <code class="docutils literal notranslate"><span class="pre">learning_rate</span></code>.</p></li>
+<li><p>We also provide some hyperparameters such as number of <code class="docutils literal notranslate"><span class="pre">epochs</span></code> and a <code class="docutils literal notranslate"><span class="pre">learning_rate</span></code>.</p></li>
 <li><p>We use <code class="docutils literal notranslate"><span class="pre">CLIPLoss</span></code> to optimize the CLIP model.</p></li>
 <li><p>We use an evaluation callback, which uses the <code class="docutils literal notranslate"><span class="pre">'clip-text'</span></code> model for encoding the text queries and the <code class="docutils literal notranslate"><span class="pre">'clip-vision'</span></code> model for encoding the images in <code class="docutils literal notranslate"><span class="pre">'fashion-eval-data-index'</span></code>.</p></li>
 </ul>
@@ -525,13 +525,13 @@ Finetuner will trigger the callback when the fine-tuning job is finished and mer
 <span class="w">)</span>
 </pre></div>
 </div>
-<p>The value you set to <code class="docutils literal notranslate"><span class="pre">alpha</span></code> should be greater equal than 0 and less equal than 1:</p>
+<p>The value you set for <code class="docutils literal notranslate"><span class="pre">alpha</span></code> should be greater than or equal to 0 and less than or equal to 1:</p>
 <ul class="simple">
 <li><p>if <code class="docutils literal notranslate"><span class="pre">alpha</span></code> is a float between 0 and 1, we merge the weights between the pre-trained model and the fine-tuned model.</p></li>
 <li><p>if <code class="docutils literal notranslate"><span class="pre">alpha</span></code> is 0, the fine-tuned model is identical to the pre-trained model.</p></li>
 <li><p>if <code class="docutils literal notranslate"><span class="pre">alpha</span></code> is 1, the pre-trained weights will not be utilized.</p></li>
 </ul>
-<p>That’s it! Check out <a class="reference external" href="https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models">clip-as-service</a> to learn how to plug-in a fine-tuned CLIP model to our CLIP specific service.</p>
+<p>That’s it! Check out <a class="reference external" href="https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models">clip-as-service</a> to learn how to plug in a fine-tuned CLIP model to our CLIP-specific service.</p>
 <!-- #endregion -->
 <!-- #region id="tpm8eVRFX20B" -->
 </section>
@@ -584,7 +584,7 @@ Finetuner will trigger the callback when the fine-tuning job is finished and mer
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jan 18, 2023</div>
+                            Last updated on Jan 26, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

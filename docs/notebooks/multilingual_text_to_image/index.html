@@ -440,7 +440,7 @@
 </section>
 <section id="evaluating">
 <h2>Evaluating<a class="headerlink" href="#evaluating" title="Permalink to this heading">#</a></h2>
-<p>Once the run is finished, the metrics calculated by the <code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> are plotted using the <code class="xref py py-class docutils literal notranslate"><span class="pre">WandBLogger</span></code> callback. These plots can be accessed using the link provided in the logs once finetuning starts:</p>
+<p>Once the run is finished, the metrics are calculated by the <code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> and plotted using the <code class="xref py py-class docutils literal notranslate"><span class="pre">WandBLogger</span></code> callback. These plots can be accessed using the link provided in the logs once finetuning starts:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">           </span>INFO<span class="w">     </span>Finetuning<span class="w"> </span>...<span class="w"> </span>
 wandb:<span class="w"> </span>Currently<span class="w"> </span>logged<span class="w"> </span><span class="k">in</span><span class="w"> </span>as:<span class="w"> </span>anony-mouse-448424.<span class="w"> </span>Use<span class="w"> </span><span class="sb">`</span>wandb<span class="w"> </span>login<span class="w"> </span>--relogin<span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>force<span class="w"> </span>relogin
 wandb:<span class="w"> </span>Tracking<span class="w"> </span>run<span class="w"> </span>with<span class="w"> </span>wandb<span class="w"> </span>version<span class="w"> </span><span class="m">0</span>.13.5
@@ -517,7 +517,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
 </section>
 <section id="before-and-after">
 <h2>Before and after<a class="headerlink" href="#before-and-after" title="Permalink to this heading">#</a></h2>
-<p>We can directly compare the results of our fine-tuned model with an untrained multilingual clip model by displaying the matches each model has for the same query, while the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increses the quality of the search results:</p>
+<p>We can directly compare the results of our fine-tuned model with an untrained multilingual clip model by displaying the matches each model has for the same query, while the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that fine-tuning increases the quality of the search results:</p>
 <!-- #endregion -->
 <!-- #region id="e69fdfb2-6482-45fb-9c4d-41e548ef8f06" -->
 <div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>results for query: &quot;Spitzen-Midirock Teilfutter Schwarz&quot; (Lace midi skirt partial lining black) using a zero-shot model and the fine-tuned model
@@ -576,7 +576,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jan 18, 2023</div>
+                            Last updated on Jan 26, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

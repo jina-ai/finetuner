@@ -16,11 +16,11 @@ jupyter:
 
 <a href="https://colab.research.google.com/drive/1yKnmy2Qotrh3OhgwWRsMWPFwOSAecBxg?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
-Traditionally, searching images from text (text-image-retrieval) relies heavily on human annotations, this is commonly referred to as *Text/Tag based Image Retrieval (TBIR)*.
+Traditionally, searching images from text (text-image-retrieval) relies heavily on human annotations, this is commonly referred to as *Text/Tag-based Image Retrieval (TBIR)*.
 
 The [OpenAI CLIP](https://github.com/openai/CLIP) model maps the dense vectors extracted from text and image into the same semantic space and produces a strong zero-shot model to measure the similarity between text and images.
 
-This guide will showcase fine-tuning a `CLIP` model for text to image retrieval.
+This guide will showcase fine-tuning a `CLIP` model for text-to-image retrieval.
 
 *Note, please consider switching to GPU/TPU Runtime for faster inference.*
 
@@ -35,13 +35,13 @@ This guide will showcase fine-tuning a `CLIP` model for text to image retrieval.
 ## Task
 We'll be fine-tuning CLIP on the [fashion captioning dataset](https://github.com/xuewyang/Fashion_Captioning) which contains information about fashion products.
 
-For each product the dataset contains a title and images of multiple variants of the product. We constructed a parent [`Document`](https://docarray.jina.ai/fundamentals/document/#document) for each picture, which contains two [chunks](https://docarray.jina.ai/fundamentals/document/nested/#nested-structure): an image document and a text document holding the description of the product.
+For each product, the dataset contains a title and images of multiple variants of the product. We constructed a parent [`Document`](https://docarray.jina.ai/fundamentals/document/#document) for each picture, which contains two [chunks](https://docarray.jina.ai/fundamentals/document/nested/#nested-structure): an image document and a text document holding the description of the product.
 <!-- #endregion -->
 
 <!-- #region id="EVBez7dHwIye" -->
 ## Data
 Our journey starts locally. We have to [prepare the data and push it to the Jina AI Cloud](https://finetuner.jina.ai/walkthrough/create-training-data/) and Finetuner will be able to get the dataset by its name. For this example,
-we already prepared the data, and we'll provide the names of traning and evaluation data (`fashion-train-data-clip` and `fashion-eval-data-clip`) directly to Finetuner.
+we already prepared the data, and we'll provide the names of training and evaluation data (`fashion-train-data-clip` and `fashion-eval-data-clip`) directly to Finetuner.
 In addition, we also provide labeled queries and an index of labeled documents for evaluating the retrieval capabilities of the resulting fine-tuned model stored in the datasets `fashion-eval-data-queries` and `fashion-eval-data-index`.
 
 
@@ -106,7 +106,7 @@ run = finetuner.fit(
 Let's understand what this piece of code does:
 
 * We start with providing `model`, names of training and evaluation data.
-* We also provide some hyper-parameters such as number of `epochs` and a `learning_rate`.
+* We also provide some hyperparameters such as number of `epochs` and a `learning_rate`.
 * We use `CLIPLoss` to optimize the CLIP model.
 * We use an evaluation callback, which uses the `'clip-text'` model for encoding the text queries and the `'clip-vision'` model for encoding the images in `'fashion-eval-data-index'`.
 
@@ -232,14 +232,14 @@ run = finetuner.fit(
 )
 ```
 
-The value you set to `alpha` should be greater equal than 0 and less equal than 1:
+The value you set for `alpha` should be greater than or equal to 0 and less than or equal to 1:
 
 + if `alpha` is a float between 0 and 1, we merge the weights between the pre-trained model and the fine-tuned model.
 + if `alpha` is 0, the fine-tuned model is identical to the pre-trained model.
 + if `alpha` is 1, the pre-trained weights will not be utilized.
 
 
-That's it! Check out [clip-as-service](https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models) to learn how to plug-in a fine-tuned CLIP model to our CLIP specific service.
+That's it! Check out [clip-as-service](https://clip-as-service.jina.ai/user-guides/finetuner/?highlight=finetuner#fine-tune-models) to learn how to plug in a fine-tuned CLIP model to our CLIP-specific service.
 <!-- #endregion -->
 
 <!-- #region id="tpm8eVRFX20B" -->

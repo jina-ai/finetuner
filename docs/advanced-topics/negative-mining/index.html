@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://finetuner.jina.ai/advanced-topics/negative-mining/" />
 <meta property="og:site_name" content="Finetuner Documentation" />
-<meta property="og:description" content="Negative Mining: Negative Mining is an advanced machine learning technique, which optimizes the way data is sampled from your training dataset. Usually, it aims at making the metric learning tasks for the model harder during the training. In this way it can lead to better fine-tuning results. Con..." />
+<meta property="og:description" content="Negative Mining: Negative Mining is an advanced machine learning technique, which optimizes the way data is sampled from your training dataset. Usually, it aims at making the metric learning tasks for the model harder during the training. In this way, it can lead to better fine-tuning results. Co..." />
 <meta property="og:image" content="https://finetuner.jina.ai/_images/batch-sampling.png" />
 <meta property="og:image:alt" content="batch-sample" />
-<meta name="description" content="Negative Mining: Negative Mining is an advanced machine learning technique, which optimizes the way data is sampled from your training dataset. Usually, it aims at making the metric learning tasks for the model harder during the training. In this way it can lead to better fine-tuning results. Con..." />
+<meta name="description" content="Negative Mining: Negative Mining is an advanced machine learning technique, which optimizes the way data is sampled from your training dataset. Usually, it aims at making the metric learning tasks for the model harder during the training. In this way, it can lead to better fine-tuning results. Co..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -328,7 +328,7 @@
 <span id="negative-mining"></span><h1><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-telescope" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M14.184 1.143a1.75 1.75 0 00-2.502-.57L.912 7.916a1.75 1.75 0 00-.53 2.32l.447.775a1.75 1.75 0 002.275.702l11.745-5.656a1.75 1.75 0 00.757-2.451l-1.422-2.464zm-1.657.669a.25.25 0 01.358.081l1.422 2.464a.25.25 0 01-.108.35l-2.016.97-1.505-2.605 1.85-1.26zM9.436 3.92l1.391 2.41-5.42 2.61-.942-1.63 4.97-3.39zM3.222 8.157l-1.466 1a.25.25 0 00-.075.33l.447.775a.25.25 0 00.325.1l1.598-.769-.83-1.436zm6.253 2.306a.75.75 0 00-.944-.252l-1.809.87a.75.75 0 00-.293.253L4.38 14.326a.75.75 0 101.238.848l1.881-2.75v2.826a.75.75 0 001.5 0v-2.826l1.881 2.75a.75.75 0 001.238-.848l-2.644-3.863z"></path></svg> Negative Mining<a class="headerlink" href="#svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-telescope-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m14-184-1-143a1-75-1-75-0-00-2-502-57l-912-7-916a1-75-1-75-0-00-53-2-32l-447-775a1-75-1-75-0-002-275-702l11-745-5-656a1-75-1-75-0-00-757-2-451l-1-422-2-464zm-1-657-669a-25-25-0-01-358-081l1-422-2-464a-25-25-0-01-108-35l-2-016-97-1-505-2-605-1-85-1-26zm9-436-3-92l1-391-2-41-5-42-2-61-942-1-63-4-97-3-39zm3-222-8-157l-1-466-1a-25-25-0-00-075-33l-447-775a-25-25-0-00-325-1l1-598-769-83-1-436zm6-253-2-306a-75-75-0-00-944-252l-1-809-87a-75-75-0-00-293-253l4-38-14-326a-75-75-0-101-238-848l1-881-2-75v2-826a-75-75-0-001-5-0v-2-826l1-881-2-75a-75-75-0-001-238-848l-2-644-3-863z-path-svg-negative-mining" title="Permalink to this heading">#</a></h1>
 <p>Negative Mining is an advanced machine learning technique, which optimizes the way data is sampled from your training dataset.
 Usually, it aims at making the metric learning tasks for the model harder during the training.
-In this way it can lead to better fine-tuning results.</p>
+In this way, it can lead to better fine-tuning results.</p>
 <section id="context-deep-metric-learning">
 <h2>Context: Deep Metric Learning<a class="headerlink" href="#context-deep-metric-learning" title="Permalink to this heading">#</a></h2>
 <p>First, let’s take a look at how we construct the training data for metric learning tasks.</p>
@@ -341,19 +341,19 @@ Finetuner constructs training data in the following way:</p>
 Finetuner will evenly sample <em>X</em> items per class to make a batch <em>B</em> which is encoded by the model into a set of embeddings.</p>
 <p>Afterward, the loss is calculated based on the relations between the embeddings.
 Many of Finetuner’s loss functions contrast the embeddings of three items, or a <strong>Triplet</strong>.
-Finetuner creates all possible Triplets <em>(anchor, pos, neg)</em> from this batch which satisfy the following conditions:
-For each Triplet, the first is the <strong>anchor</strong>, the second is an embedding that ought to be closer to the embedding of the anchor (has the same label), and the third is one that should be further from the anchor (has a different label).
+Finetuner creates all possible triplets <em>(anchor, pos, neg)</em> from this batch which satisfy the following conditions:
+For each triplet, the first is the <strong>anchor</strong>, the second is an embedding that ought to be closer to the embedding of the anchor (has the same label), and the third is one that should be further from the anchor (has a different label).
 The objective is to pull the embeddings of items that belong to the same class closer together in the embedding space,
 while pushing the embeddings of items which belong to different classes farther away from each other.</p>
 <p><img alt="training" src="../../_images/metric-train.png" /></p>
 </section>
 <section id="the-triplet-margin-miner">
 <h2>The Triplet Margin Miner<a class="headerlink" href="#the-triplet-margin-miner" title="Permalink to this heading">#</a></h2>
-<p>For some Triplets, the pre-trained model already performs well, i.e.</p>
+<p>For some triplets, the pre-trained model already performs well, i.e.</p>
 <p>the distance between the <code class="docutils literal notranslate"><span class="pre">anchor</span></code> embedding and <code class="docutils literal notranslate"><span class="pre">pos</span></code> is much smaller than
 the distance between <code class="docutils literal notranslate"><span class="pre">anchor</span></code> and <code class="docutils literal notranslate"><span class="pre">neg</span></code>?
-These Triplets do not contribute to improving the model, since they are already in the desired relation to each other in the embedding space.
-A more effective way is to use only a subset of all Triplets for model training. We call this subset the <strong>hard</strong> or <strong>semi-hard negative samples</strong>.</p>
+These triplets do not contribute to improving the model, since they are already in the desired relation to each other in the embedding space.
+A more effective way is to use only a subset of all triplets for model training. We call this subset the <strong>hard</strong> or <strong>semi-hard negative samples</strong>.</p>
 <p><img alt="mining" src="../../_images/mining.png" /></p>
 <p>Let’s say <code class="docutils literal notranslate"><span class="pre">1₀</span></code> is an <code class="docutils literal notranslate"><span class="pre">anchor</span></code>, <code class="docutils literal notranslate"><span class="pre">1₁</span></code> is the <code class="docutils literal notranslate"><span class="pre">pos</span></code> while <code class="docutils literal notranslate"><span class="pre">2₄</span></code> is the <code class="docutils literal notranslate"><span class="pre">neg</span></code>, and <code class="docutils literal notranslate"><span class="pre">D(x,y)</span></code> is the distance between the embeddings of <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
 <p>If:</p>
@@ -362,7 +362,7 @@ A more effective way is to use only a subset of all Triplets for model training.
 <li><p><code class="docutils literal notranslate"><span class="pre">D(anchor,</span> <span class="pre">pos)</span> <span class="pre">&lt;</span> <span class="pre">D(anchor,</span> <span class="pre">neg)</span> <span class="pre">&lt;</span> <span class="pre">D(anchor,</span> <span class="pre">pos)</span> <span class="pre">+</span> <span class="pre">margin</span></code>, where <code class="docutils literal notranslate"><span class="pre">neg</span></code> is a little further from the <code class="docutils literal notranslate"><span class="pre">pos</span></code>, but within the margin, then <code class="docutils literal notranslate"><span class="pre">neg</span></code> can be considered as a “semi-hard negative” (<code class="docutils literal notranslate"><span class="pre">2₄</span> <span class="pre">-</span> <span class="pre">S</span></code>).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">D(anchor,</span> <span class="pre">neg)</span> <span class="pre">&gt;</span> <span class="pre">D(anchor,</span> <span class="pre">pos)</span> <span class="pre">+</span> <span class="pre">margin</span></code>, then <code class="docutils literal notranslate"><span class="pre">neg</span></code> can be considered as “easy negative” (<code class="docutils literal notranslate"><span class="pre">2₄</span> <span class="pre">-</span> <span class="pre">E</span></code>).</p></li>
 </ul>
-<p>Training is more effective when using only <strong>hard</strong> and <strong>semi-hard</strong> negatives, given a reasonable margin value to distinguish them from <strong>easy</strong> Triplets.</p>
+<p>Training is more effective when using only <strong>hard</strong> and <strong>semi-hard</strong> negatives, given a reasonable margin value to distinguish them from <strong>easy</strong> triplets.</p>
 </section>
 <section id="doing-negative-mining-in-finetuner">
 <h2>Doing Negative Mining in Finetuner<a class="headerlink" href="#doing-negative-mining-in-finetuner" title="Permalink to this heading">#</a></h2>
@@ -373,7 +373,7 @@ For instance, if you choose to train a model with the <code class="docutils lite
 While without this miner, all possible triples with an anchor, a positive, and a negative candidate are used to calculate the loss, the miner reduces this set of triples.
 By default, the miner only selects triples with hard negatives where the distance between the positive and the negative example is inside a margin of <code class="docutils literal notranslate"><span class="pre">0.2</span></code>.
 To pass additional parameters to configure the miner, use the <code class="docutils literal notranslate"><span class="pre">miner_options</span></code> parameter of the fit function.
-For example, to use only hard-negative Triples and set the margin to <code class="docutils literal notranslate"><span class="pre">0.3</span></code>:</p>
+For example, add the following to use only hard-negative triplets and set the margin to <code class="docutils literal notranslate"><span class="pre">0.3</span></code>:</p>
 <div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">run = finetuner.fit(</span>
 <span class="w"> </span>   ...,
 <span class="w"> </span>   loss=&#39;TripleMarginLoss&#39;,
@@ -394,9 +394,9 @@ For a detailed description of the miners and their parameters, see the <a class=
 </section>
 <section id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">#</a></h2>
-<p>Metric Learning and Triplets are extremely useful for fine-tuning models for similarity search.
-Easy Triplets have little impact on improving the model.
-Consider using semi-hard/hard Triplets for model tuning.</p>
+<p>Metric Learning and triplets are extremely useful for fine-tuning models for similarity search.
+Easy triplets have little impact on improving the model.
+Consider using semi-hard/hard triplets for model tuning.</p>
 </section>
 </section>
 
@@ -435,7 +435,7 @@ Consider using semi-hard/hard Triplets for model tuning.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jan 18, 2023</div>
+                            Last updated on Jan 26, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

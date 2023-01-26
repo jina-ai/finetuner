@@ -329,7 +329,7 @@
 <p>Finetuner accepts training data and evaluation data in the form of CSV files
 or <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.21.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a> objects.
 Because Finetuner follows a <a class="reference external" href="https://en.wikipedia.org/wiki/Supervised_learning">supervised-learning</a> scheme, each element requires a label that identifies which other elements it should be similar to.
-If you need to evaluate metrics on separate evaluation data, it is recommended to create a dataset only for evaluation purposes. This can be done in the same way a a training dataset is created, as described below.</p>
+If you need to evaluate metrics on separate evaluation data, it is recommended to create a dataset only for evaluation purposes. This can be done in the same way as a training dataset is created, as described below.</p>
 <p>Data can be prepared in two different formats, either as a CSV file, or as a <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.21.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>. In the sections below, you can see examples which demonstrate how the training datasets should look like for each format.</p>
 <section id="preparing-csv-files">
 <h2>Preparing CSV Files<a class="headerlink" href="#preparing-csv-files" title="Permalink to this heading">#</a></h2>
@@ -338,20 +338,20 @@ Currently, <code class="docutils literal notranslate"><span class="pre">excel</s
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Labeled data</label><div class="tab-content docutils">
 <p>In cases where you want multiple elements grouped together, you can provide a label in the second column. This way, all elements in the first column that have the same label will be considered similar when training. To indicate that the second column of your CSV file represents a label instead of a second element, set <code class="docutils literal notranslate"><span class="pre">is_labeled</span> <span class="pre">=</span> <span class="pre">True</span></code> in the <code class="docutils literal notranslate"><span class="pre">csv_options</span></code> argument of the <a class="reference internal" href="../../api/finetuner/#finetuner.fit" title="finetuner.fit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit()</span></code></a> function. Your data can then be structured like so:</p>
-<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>Hello!                  greeting-english
-Hi there.               greeting-english
-Good morning.           greeting-english
-I&#39;m (…) sorry!          apologize-english
-I&#39;m sorry to have…      apologize-english
-Please, forgive me!     apologize-english
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>Hello!, greeting-english
+Hi there., greeting-english
+Good morning., greeting-english
+I&#39;m (…) sorry!, apologize-english
+I&#39;m sorry to have…, apologize-english
+Please ... forgive me!, apologize-english
 </pre></div>
 </div>
 <p>When using image-to-image or mesh-to-mesh retrieval models, images and meshes can be represented as a URI or a path to a file:</p>
-<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>/Users/images/apples/green_apple.jpg    picture of apple
-/Users/images/apples/red_apple.jpg      picture of apple
-https://example.com/apple-styling.jpg   picture of apple
-/Users/images/oranges/orange.jpg        picture of orange
-https://example.com/orange-styling.jpg  picture of orange
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>/Users/images/apples/green_apple.jpg, picture of apple
+/Users/images/apples/red_apple.jpg, picture of apple
+https://example.com/apple-styling.jpg, picture of apple
+/Users/images/oranges/orange.jpg, picture of orange
+https://example.com/orange-styling.jpg, picture of orange
 </pre></div>
 </div>
 <div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">import finetuner</span>
@@ -370,19 +370,14 @@ https://example.com/orange-styling.jpg  picture of orange
 <p>If paths to local images are provided,
 they can be loaded into memory by setting <code class="docutils literal notranslate"><span class="pre">convert_to_blob</span> <span class="pre">=</span> <span class="pre">True</span></code> (default) in the <a class="reference internal" href="../../api/finetuner.data/#finetuner.data.CSVOptions" title="finetuner.data.CSVOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSVOptions</span></code></a> object.
 It is important to note that this setting does not cause Internet URLs to be loaded into memory.
-For 3D meshes the option <code class="docutils literal notranslate"><span class="pre">create_point_clouds</span></code> (<code class="docutils literal notranslate"><span class="pre">True</span></code> by default) creates point cloud tensors, which are used as input by the mesh encoding models.
+For 3D meshes, the option <code class="docutils literal notranslate"><span class="pre">create_point_clouds</span></code> (<code class="docutils literal notranslate"><span class="pre">True</span></code> by default) creates point cloud tensors, which are used as input by the mesh encoding models.
 Please note, that local files can not be processed by the Finetuner if you deactivate <code class="docutils literal notranslate"><span class="pre">convert_to_blob</span></code> or <code class="docutils literal notranslate"><span class="pre">create_point_clouds</span></code>.</p>
-</div>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>If the text field contains commas, it breaks the CSV format since it is interpreted as spanning over multiple columns.
-In this case, please enclose the field in double quotes, such as <code class="docutils literal notranslate"><span class="pre">field1,&quot;field,</span> <span class="pre">2&quot;</span></code>.</p>
 </div>
 </div>
 <input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">text-to-image search using CLIP</label><div class="tab-content docutils">
-<p>To prepare data for text-to-image search, each row must contain one uri to an image, and one piece of text. The order that these two are placed does not matter, so long as the ordering is kept consistent for all rows.</p>
-<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>This is a photo of an apple.                apple.jpg
-This is a black-white photo of an organge.  orange.jpg
+<p>To prepare data for text-to-image search, each row must contain one URI pointing to an image and one piece of text. The order that these two are placed does not matter, so long as the ordering is kept consistent for all rows.</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>This is a photo of an apple., apple.jpg
+This is a black-white photo of an organge., orange.jpg
 </pre></div>
 </div>
 <div class="hint admonition">
@@ -393,9 +388,9 @@ During fine-tuning, we’re optimizing two models in parallel.</p>
 </div>
 </div>
 <input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--3">two elements per row</label><div class="tab-content docutils">
-<p>If you want two elements to be semantically close together, they can be placed on the same row as a pair, Each pair will automatically be assigned a distinct label:</p>
-<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>This is an English sentence         Das ist ein englischer Satz
-This is another English sentence    Dies ist ein weiterer englischer Satz
+<p>If you want two elements to be semantically close together, they can be placed on the same row as a pair. Each pair will automatically be assigned a distinct label:</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>This is an English sentence, Das ist ein englischer Satz
+This is another English sentence, Dies ist ein weiterer englischer Satz
 ...
 </pre></div>
 </div>
@@ -406,25 +401,26 @@ Some sampling methods that require more than two elements per class will not wor
 </div>
 </div>
 </div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>If a text field contains commas, it breaks the CSV format since it is interpreted as spanning over multiple columns.
+In this case, please enclose the field in double quotes, such as <code class="docutils literal notranslate"><span class="pre">field1,&quot;field,</span> <span class="pre">2&quot;</span></code>.</p>
+</div>
 <p>We support the following dialects of CSV:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">excel</span></code> use <code class="docutils literal notranslate"><span class="pre">,</span></code> as delimiter and <code class="docutils literal notranslate"><span class="pre">\r\n</span></code> as lineterminator.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">excel-tab</span></code> use <code class="docutils literal notranslate"><span class="pre">\t</span></code> as delimiter and <code class="docutils literal notranslate"><span class="pre">\r\n</span></code> as lineterminator.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">unix</span></code> use <code class="docutils literal notranslate"><span class="pre">,</span></code> as delimiter and <code class="docutils literal notranslate"><span class="pre">\n</span></code> as lineterminator.</p></li>
 </ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Please remove/replace comma in your data fields if you are using a comma <code class="docutils literal notranslate"><span class="pre">,</span></code> as a delimiter.</p>
-</div>
 </section>
 <section id="preparing-a-documentarray">
 <h2>Preparing a DocumentArray<a class="headerlink" href="#preparing-a-documentarray" title="Permalink to this heading">#</a></h2>
 <p>When providing training data in a DocumentArray, each element is represented as a <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.21.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>. You should assign a label to each <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.21.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> inside your <a class="reference external" href="https://docarray.jina.ai/api/docarray.array.document/#docarray.array.document.DocumentArray" title="(in DocArray v0.21.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>.
 For most of the models, this is done by adding a <code class="docutils literal notranslate"><span class="pre">finetuner_label</span></code> tag to each document.
 Only for cross-modality (text-to-image) fine-tuning with CLIP, is this not necessary as explained at the bottom of this section.
-<a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.21.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>s containing uris that point to local images can load these images into memory using the <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document.load_uri_to_blob" title="(in DocArray v0.21.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">docarray.document.Document.load_uri_to_blob()</span></code></a> function of that <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.21.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>.
-Similarly, <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.21.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>s with uris of local 3D meshes, can be converted into point clouds which are stored in the Document by calling <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document.load_uri_to_point_cloud_tensor" title="(in DocArray v0.21.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">docarray.document.Document.load_uri_to_point_cloud_tensor()</span></code></a>.
-The function requires a number of points, which we recommend to set to 2048.</p>
+<a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.21.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>s containing URIs that point to local images can load these images into memory using the <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document.load_uri_to_blob" title="(in DocArray v0.21.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">docarray.document.Document.load_uri_to_blob()</span></code></a> function of that <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.21.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>.
+Similarly, <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document" title="(in DocArray v0.21.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>s with URIs of local 3D meshes, can be converted into point clouds which are stored in the Document by calling <a class="reference external" href="https://docarray.jina.ai/api/docarray.document/#docarray.document.Document.load_uri_to_point_cloud_tensor" title="(in DocArray v0.21.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">docarray.document.Document.load_uri_to_point_cloud_tensor()</span></code></a>.
+The function requires a number of points, which we recommend setting to 2048.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">text-to-text search</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
@@ -557,7 +553,7 @@ As a result, no further labels need to be provided.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jan 18, 2023</div>
+                            Last updated on Jan 26, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

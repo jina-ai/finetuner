@@ -23,7 +23,7 @@ Finding similar 3D Meshes can become very time-consuming. To support this task, 
 ## Install
 <!-- #endregion -->
 
-```python id="vDVkw65kkQcn"
+```python colab={"background_save": true} id="vDVkw65kkQcn"
 !pip install 'finetuner[full]'
 !pip install 'docarray[full]'
 ```
@@ -86,7 +86,7 @@ index_data[0].display()
 <!-- #region id="B3I_QUeFT_V0" -->
 ## Backbone model
 
-The model we provide for 3d mesh encoding is called `pointnet++`. In the following, we show you how to train it on the modelnet training dataset.
+The model we provide for 3d mesh encoding is called `pointnet++`. In the following, we show you how to train it on the ModelNet training dataset.
 <!-- #endregion -->
 
 <!-- #region id="lqg0eY9oknLL" -->
@@ -204,7 +204,7 @@ assert query.embeddings.shape == (1, 512)
 ```
 
 <!-- #region id="pfoc4YG4rrkI" -->
-And finally you can use the embeded `query` to find top-k visually related images within `index_data` as follows:
+And finally, you can use the embedded `query` to find top-k visually related images within `index_data` as follows:
 <!-- #endregion -->
 
 ```python id="_jGsSyedrsJp"

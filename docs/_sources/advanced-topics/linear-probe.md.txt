@@ -54,7 +54,7 @@ run = finetuner.fit(
 
 Finetuner will:
 
-1. Remove the classification head of `ResNet` model, and convert it into an embedding model.
+1. Remove the classification head of a `ResNet` model, and convert it into an embedding model.
 2. Freeze all layers of the embedding model.
 3. Attach a trainable 3-layer Linear Projection Head on top of the embedding model with an `output_dim=1024`.
 

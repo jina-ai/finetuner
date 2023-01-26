@@ -336,7 +336,7 @@ Next, we can get its artifact id and download the model.</p>
 Each model has a artifact id, which is sufficient to setup an encoding serivce as explained in the section <span class="xref std std-doc">/walkthrough/integrate-with-jina</span>.
 Alternatively, you can also download the model using the artifact id, as explained below, e.g., to use it in a locally runnig Jina service.</p>
 </div>
-<p>Please note that fine-tuning takes time. It highly depends on the size of your training data, evaluation data and other hyper-parameters.
+<p>Please note that fine-tuning takes time. It highly depends on the size of your training data, evaluation data, and other hyperparameters.
 Because of this, you might have to close the session and reconnect to it several times.</p>
 <p>In the example below, we show how to connect to an existing run and download a tuned model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
@@ -378,11 +378,10 @@ Because of this, you might have to close the session and reconnect to it several
 <div class="hint admonition">
 <p class="admonition-title">Share artifact with others</p>
 <p>Finetuner allows you to set your artifact as a public artifact.
-At training time, you need to set <code class="docutils literal notranslate"><span class="pre">public=True</span></code> when calling the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">public=True</span></code>, anyone has the same artifact id can download your artifact with the above function.</p>
+At training time, you need to set <code class="docutils literal notranslate"><span class="pre">public=True</span></code> when calling the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function.
+If <code class="docutils literal notranslate"><span class="pre">public=True</span></code>, anyone who knows the artifact id can download your artifact with the above function.</p>
 </div>
-<p>If the fine-tuning finished,
-you can see the following message in the terminal:</p>
+<p>If the fine-tuning is finished, you will see the following message in the terminal:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>🔐<span class="w"> </span>Successfully<span class="w"> </span>logged<span class="w"> </span><span class="k">in</span><span class="w"> </span>to<span class="w"> </span>Jina<span class="w"> </span>AI<span class="w"> </span>as<span class="w"> </span><span class="o">[</span>USER<span class="w"> </span>NAME<span class="o">]</span>!
 Run<span class="w"> </span>status:<span class="w"> </span>FINISHED
 Run<span class="w"> </span>Artifact<span class="w"> </span>id:<span class="w"> </span>62972acb5de25a53fdbfcecc
@@ -436,7 +435,7 @@ Run<span class="w"> </span>logs:
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jan 18, 2023</div>
+                            Last updated on Jan 26, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

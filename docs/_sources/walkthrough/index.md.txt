@@ -13,8 +13,8 @@ this model on your dataset.
 
 Once fine-tuning is done, you get a model adapted to your domain. This new model leverages better search performance on your-task-of-interest.
 
-Fine-tuning a pre-trained model includes a certain complexity and requires Machine Learning plus domain knowledge (on NLP, Computer Vision e.t.c).
-Thus, it is a non-trivial task for business owners and engineers who lack the practical deep learning knowledge. Finetuner attempts
+Fine-tuning a pre-trained model includes a certain complexity and requires Machine Learning plus domain knowledge (on NLP, Computer Vision, etc.).
+Thus, it is a non-trivial task for business owners and engineers who lack practical deep-learning knowledge. Finetuner attempts
 to address this by providing a simple interface, which can be as easy as:
 
 ```python

@@ -387,7 +387,7 @@ When you construct a DocArray dataset with documents of 3D meshes, please call <
 </section>
 <section id="backbone-model">
 <h2>Backbone model<a class="headerlink" href="#backbone-model" title="Permalink to this heading">#</a></h2>
-<p>The model we provide for 3d mesh encoding is called <code class="docutils literal notranslate"><span class="pre">pointnet++</span></code>. In the following, we show you how to train it on the modelnet training dataset.</p>
+<p>The model we provide for 3d mesh encoding is called <code class="docutils literal notranslate"><span class="pre">pointnet++</span></code>. In the following, we show you how to train it on the ModelNet training dataset.</p>
 <!-- #endregion -->
 <!-- #region id="lqg0eY9oknLL" -->
 </section>
@@ -491,7 +491,7 @@ let’s use the fine-tuned model to encode a new <code class="docutils literal n
 </pre></div>
 </div>
 <!-- #region id="pfoc4YG4rrkI" -->
-<p>And finally you can use the embeded <code class="docutils literal notranslate"><span class="pre">query</span></code> to find top-k visually related images within <code class="docutils literal notranslate"><span class="pre">index_data</span></code> as follows:</p>
+<p>And finally, you can use the embedded <code class="docutils literal notranslate"><span class="pre">query</span></code> to find top-k visually related images within <code class="docutils literal notranslate"><span class="pre">index_data</span></code> as follows:</p>
 <!-- #endregion -->
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">query_data</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">index_data</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">)</span>
 </pre></div>
@@ -559,7 +559,7 @@ let’s use the fine-tuned model to encode a new <code class="docutils literal n
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jan 18, 2023</div>
+                            Last updated on Jan 26, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

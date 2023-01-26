@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://finetuner.jina.ai/notebooks/image_to_image/" />
 <meta property="og:site_name" content="Finetuner Documentation" />
-<meta property="og:description" content="Searching visually similar images with image queries is a very popular use-case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here’s where Finetuner comes in! It enables you to acc..." />
+<meta property="og:description" content="Searching visually similar images with image queries is a very popular use case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here’s where Finetuner comes in! It enables you to acc..." />
 <meta property="og:image" content="https://user-images.githubusercontent.com/6599259/212634591-03bd93dc-900f-47c5-8ada-77cf1d4f9fe6.png" />
 <meta property="og:image:alt" content="image-image-triplets-good" />
-<meta name="description" content="Searching visually similar images with image queries is a very popular use-case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here’s where Finetuner comes in! It enables you to acc..." />
+<meta name="description" content="Searching visually similar images with image queries is a very popular use case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here’s where Finetuner comes in! It enables you to acc..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -328,8 +328,8 @@
 <section class="tex2jax_ignore mathjax_ignore" id="image-to-image-search-via-resnet50">
 <h1>Image-to-Image Search via ResNet50<a class="headerlink" href="#image-to-image-search-via-resnet50" title="Permalink to this heading">#</a></h1>
 <p><a href="https://colab.research.google.com/drive/1QuUTy3iVR-kTPljkwplKYaJ-NTCgPEc_?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p>
-<p>Searching visually similar images with image queries is a very popular use-case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here’s where Finetuner comes in! It enables you to accomplish this easily.</p>
-<p>This guide will demonstrate how to fine-tune a ResNet model for image to image retrieval.</p>
+<p>Searching visually similar images with image queries is a very popular use case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here’s where Finetuner comes in! It enables you to accomplish this easily.</p>
+<p>This guide will demonstrate how to fine-tune a ResNet model for image-to-image retrieval.</p>
 <p><em>Note, please consider switching to GPU/TPU Runtime for faster inference.</em></p>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this heading">#</a></h2>
@@ -440,7 +440,7 @@ but recommended in order to retrieve your run easily and have some context about
 <section id="evaluating">
 <h2>Evaluating<a class="headerlink" href="#evaluating" title="Permalink to this heading">#</a></h2>
 <p>Currently, we don’t have a user-friendly way to get evaluation metrics from the <code class="docutils literal notranslate"><span class="pre">finetuner.callback.EvaluationCallback</span></code> we initialized previously.
-What you can do for now is to call <code class="docutils literal notranslate"><span class="pre">run.logs()</span></code> in the end of the run and see evaluation results:</p>
+What you can do for now is to call <code class="docutils literal notranslate"><span class="pre">run.logs()</span></code> after the end of the run and see the evaluation results:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>Training<span class="w"> </span><span class="o">[</span><span class="m">5</span>/5<span class="o">]</span><span class="w"> </span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<span class="w"> </span><span class="m">76</span>/76<span class="w"> </span><span class="m">0</span>:00:00<span class="w"> </span><span class="m">0</span>:03:15<span class="w"> </span>•<span class="w"> </span>loss:<span class="w"> </span><span class="m">0</span>.003
 <span class="o">[</span><span class="m">16</span>:39:13<span class="o">]</span><span class="w"> </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;model_average_precision&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.19598<span class="w">                                     </span>__main__.py:202
 <span class="w">           </span>DEBUG<span class="w">    </span>Metric:<span class="w"> </span><span class="s1">&#39;model_dcg_at_k&#39;</span><span class="w"> </span>Value:<span class="w"> </span><span class="m">0</span>.28571<span class="w">                                              </span>__main__.py:202
@@ -492,7 +492,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
 </pre></div>
 </div>
 <!-- #region id="1cC46TQ9pw-H" -->
-<p>And finally you can use the embeded <code class="docutils literal notranslate"><span class="pre">query</span></code> to find top-k visually related images within <code class="docutils literal notranslate"><span class="pre">index_data</span></code> as follows:</p>
+<p>And finally, you can use the embedded <code class="docutils literal notranslate"><span class="pre">query</span></code> to find top-k visually related images within <code class="docutils literal notranslate"><span class="pre">index_data</span></code> as follows:</p>
 <!-- #endregion -->
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">query</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">index_data</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">)</span>
 </pre></div>
@@ -501,12 +501,12 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
 </section>
 <section id="before-and-after">
 <h2>Before and after<a class="headerlink" href="#before-and-after" title="Permalink to this heading">#</a></h2>
-<p>We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, some of the examples the examples below (such as the second example) show that the model after fine-tuning is able to better match similar images.</p>
+<p>We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. While the differences between the two models may be subtle for some queries, some of the examples below (such as the second example) show that the model after fine-tuning is able to better match similar images.</p>
 <!-- #endregion -->
 <!-- #region id="TwL33Jz1datD" -->
 <p>To save you some time, we have plotted some examples where the model’s ability to return similar images has clearly improved:</p>
 <p><img alt="image-image-triplets-good" src="https://user-images.githubusercontent.com/6599259/212634591-03bd93dc-900f-47c5-8ada-77cf1d4f9fe6.png" /></p>
-<p>On the other hand, there are also cases where the fine-tuned model performs worse, and fails to correctly match images that it previously could. This case is much rarer than the previous case. For this dataset there were 108 occasions where the fine-tuned model returned the correct pair where it couldn’t before, and only 33 occasions where the finetuned model returned an incorrect image after fine-tuning but returned a correct one before. Nevertheless it still can happen:</p>
+<p>On the other hand, there are also cases where the fine-tuned model performs worse, and fails to correctly match images that it previously could. This case is much rarer than the previous case. For this dataset, there were 108 occasions where the fine-tuned model returned the correct pair where it couldn’t before and only 33 occasions where the finetuned model returned an incorrect image after fine-tuning but returned a correct one before. Nevertheless, it still can happen:</p>
 <p><img alt="image-image-triplets-bad" src="https://user-images.githubusercontent.com/6599259/212634649-370b643b-63ad-4d46-8a16-bc4988265568.png" /></p>
 <!-- #endregion -->
 </section>
@@ -547,7 +547,7 @@ please use <code class="docutils literal notranslate"><span class="pre">model</s
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jan 18, 2023</div>
+                            Last updated on Jan 26, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
