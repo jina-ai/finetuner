@@ -13,6 +13,7 @@ source_suffix = ['.rst', '.md']
 master_doc = 'index'
 language = 'en'
 repo_dir = '../'
+nitpick_ignore = [('py:class', 'type')]
 
 templates_path = ['_templates']
 exclude_patterns = [
@@ -77,6 +78,7 @@ epub_exclude_files = ['search.html']
 
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
     'sphinx_autodoc_typehints',
     'sphinx.ext.viewcode',
     'sphinx.ext.coverage',

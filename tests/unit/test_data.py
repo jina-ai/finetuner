@@ -21,6 +21,10 @@ def lena_img_file():
     return os.path.join(current_dir, 'resources/lena.png')
 
 
+def cube_mesh_file():
+    return os.path.join(current_dir, 'resources/cube.off')
+
+
 def dummy_csv_file():
     return os.path.join(current_dir, 'resources/dummy.csv')
 
@@ -232,23 +236,34 @@ def test_check_columns(task, col1, col2, exp1, exp2, expect_error):
 
 
 @pytest.mark.parametrize(
-    'modality, column, convert_to_blob, expect_error',
+    'modality, column, convert_to_blob, create_point_clouds, expect_error',
     [
-        ('text', 'apple', None, None),
-        ('image', lena_img_file(), False, None),
-        ('image', lena_img_file(), False, None),
-        ('image', 'not a real image', False, ValueError),
+        ('text', 'apple', False, False, None),
+        ('mesh', cube_mesh_file(), False, False, None),
+        ('mesh', cube_mesh_file(), False, True, None),
+        ('mesh', 'not a real mesh', False, False, ValueError),
+        ('image', lena_img_file(), False, False, None),
+        ('image', lena_img_file(), True, False, None),
+        ('image', 'not a real image', False, False, ValueError),
     ],
 )
-def test_create_document(modality, column, convert_to_blob, expect_error):
+def test_create_document(
+    modality, column, convert_to_blob, create_point_clouds, expect_error
+):
     if expect_error:
         with pytest.raises(ValueError):
             create_document(
-                modality=modality, column=column, convert_to_blob=convert_to_blob
+                modality=modality,
+                column=column,
+                convert_to_blob=convert_to_blob,
+                create_point_clouds=create_point_clouds,
             )
     else:
         doc = create_document(
-            modality=modality, column=column, convert_to_blob=convert_to_blob
+            modality=modality,
+            column=column,
+            convert_to_blob=convert_to_blob,
+            create_point_clouds=create_point_clouds,
         )
 
         assert isinstance(doc, Document)
@@ -256,5 +271,9 @@ def test_create_document(modality, column, convert_to_blob, expect_error):
             assert doc.uri == column
             if convert_to_blob:
                 assert doc.blob
+        elif modality == 'mesh':
+            assert doc.uri == column
+            if create_point_clouds:
+                assert doc.tensor is not None
         else:
             assert doc.text == column

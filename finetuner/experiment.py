@@ -64,14 +64,16 @@ class Experiment:
 
     @property
     def name(self) -> str:
+        """Get the name of the :class:`Experiment`."""
         return self._name
 
     @property
     def status(self) -> str:
+        """Get the status of the :class:`Experiment`."""
         return self._status
 
     def get_run(self, name: str) -> Run:
-        """Get a run by its name.
+        """Get a :class:`Run` given a `name`.
 
         :param name: Name of the run.
         :return: A `Run` object.
@@ -88,7 +90,7 @@ class Experiment:
         return run
 
     def list_runs(self, page: int = 50, size: int = 50) -> List[Run]:
-        """List every run.
+        """List all :class:`Run`.
 
         :param page: The page index.
         :param size: The number of runs to retrieve per page.
@@ -114,14 +116,14 @@ class Experiment:
         ]
 
     def delete_run(self, name: str):
-        """Delete a run by its name.
+        """Delete a :class:`Run` by its name.
 
         :param name: Name of the run.
         """
         self._client.delete_run(experiment_name=self._name, run_name=name)
 
     def delete_runs(self):
-        """Delete every run inside the experiment."""
+        """Delete all :class:`Run` inside the :class:`Experiment`."""
         self._client.delete_runs(experiment_name=self._name)
 
     def create_run(
@@ -133,7 +135,7 @@ class Experiment:
         csv_options: Optional[Dict[str, Any]] = None,
         **kwargs,
     ) -> Run:
-        """Create a run inside the experiment."""
+        """Create a :class:`Run` inside the :class:`Experiment`."""
         if not run_name:
             run_name = get_random_name()
 
@@ -212,7 +214,7 @@ class Experiment:
         run_name: str,
         **kwargs,
     ) -> Dict[str, Any]:
-        """Create config for a run.
+        """Create config for a :class:`Run`.
 
         :param model: Name of the model to be fine-tuned.
         :param train_data: Either a `DocumentArray` for training data or a

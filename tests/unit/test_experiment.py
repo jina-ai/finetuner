@@ -17,6 +17,7 @@ from finetuner.constants import (
     HYPER_PARAMETERS,
     LEARNING_RATE,
     LOSS,
+    LOSS_OPTIONS,
     MINER,
     MINER_OPTIONS,
     MODEL,
@@ -34,6 +35,7 @@ from finetuner.constants import (
     STARTED,
     STATUS,
     TRAIN_DATA,
+    VAL_SPLIT,
 )
 from finetuner.experiment import Experiment
 
@@ -97,7 +99,7 @@ def test_create_run_config():
             NAME: 'resnet50',
             FREEZE: False,
             OUTPUT_DIM: None,
-            OPTIONS: {},
+            OPTIONS: None,
             ONNX: False,
         },
         DATA: {
@@ -105,9 +107,11 @@ def test_create_run_config():
             EVAL_DATA: 'eval_data',
             NUM_WORKERS: 8,
             NUM_ITEMS_PER_CLASS: 4,
+            VAL_SPLIT: 0.0,
         },
         HYPER_PARAMETERS: {
             LOSS: 'TripletMarginLoss',
+            LOSS_OPTIONS: None,
             OPTIMIZER: 'Adam',
             OPTIMIZER_OPTIONS: {'weight_decay': 0.01},
             MINER: 'TripletMarginMiner',

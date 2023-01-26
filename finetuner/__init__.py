@@ -38,7 +38,8 @@ ft = Finetuner()
 
 def login(force: bool = False, interactive: Optional[bool] = None):
     """
-    Login to Jina AI to use cloud-based fine-tuning. Thereby, an authentication token is
+    Login to Jina AI Cloud to use cloud-based fine-tuning.
+    Thereby, an authentication token is
     generated which can be read with the :func:`~finetuner.get_token` function.
 
     :param force: If set to true, an existing token will be overwritten. Otherwise,
@@ -65,7 +66,7 @@ def _build_name_stub_map() -> Dict[str, model_stub.ModelStubType]:
 
 
 def list_models() -> List[str]:
-    """List available models for training."""
+    """List available models."""
     return [name for name in list_model_classes()]
 
 
@@ -91,7 +92,8 @@ def list_model_options() -> Dict[str, List[Dict[str, Any]]]:
 
 
 def describe_models(task: Optional[str] = None) -> None:
-    """Describe available models in a table.
+    """Print model information, such as name, task, output dimension, architecture
+    and description as a table.
 
     :param task: The task for the backbone model, one of `text-to-text`,
         `text-to-image`, `image-to-image`. If not provided, will print all backbone
@@ -130,7 +132,8 @@ def fit(
     public: bool = False,
     num_items_per_class: int = 4,
 ) -> Run:
-    """Start a finetuner run!
+    """Create a Finetuner :class:`Run`, calling this function will submit a fine-tuning
+    job to the Jina AI Cloud.
 
     :param model: The name of model to be fine-tuned. Run `finetuner.list_models()` or
         `finetuner.describe_models()` to see the available model names.
@@ -190,8 +193,10 @@ def fit(
         otherwise use `cpu` to run a cpu job.
     :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
         workers used by the dataloader.
-    :param to_onnx: If the model is an onnx model or not. If you call the `fit` function
-        with `to_onnx=True`, please set this parameter as `True`.
+    :param to_onnx: Set this parameter as `True` to convert the model to an onnx model.
+        Please note that not all models support this. If this parameter is set, please
+        pass `is_onnx` when making inference, e.g., when calling the `get_model`
+        function.
     :param csv_options: A :class:`CSVOptions` object containing options used for
         reading in training and evaluation data from a CSV file, if they are
         provided as such.
@@ -242,14 +247,14 @@ create_run = fit
 
 
 def get_run(run_name: str, experiment_name: Optional[str] = None) -> Run:
-    """Get run by its name and (optional) experiment.
+    """Get a :class:`Run` by its name and (optional) :class:`Experiment` name.
 
     If an experiment name is not specified, we'll look for the run in the default
     experiment.
 
-    :param run_name: Name of the run.
-    :param experiment_name: Optional name of the experiment.
-    :return: A `Run` object.
+    :param run_name: Name of the :class:`Run`.
+    :param experiment_name: Optional name of the :class:`Experiment`.
+    :return: A :class:`Run` object.
     """
     return ft.get_run(run_name=run_name, experiment_name=experiment_name)
 
@@ -257,13 +262,14 @@ def get_run(run_name: str, experiment_name: Optional[str] = None) -> Run:
 def list_runs(
     experiment_name: Optional[str] = None, page: int = 1, size: int = 50
 ) -> List[Run]:
-    """List all created runs inside a given experiment.
+    """List all created :class:`Run` inside a given :class:`Experiment`.
 
-    If no experiment is specified, list runs for all available experiments.
-    :param experiment_name: The name of the experiment.
+    If no :class:`Experiment` is specified, list :class:`Run` for all available
+      :class:`Experiment`.
+    :param experiment_name: The name of the :class:`Experiment`.
     :param page: The page index.
-    :param size: Number of runs to retrieve.
-    :return: List of all runs.
+    :param size: Number of :class:`Run` to retrieve.
+    :return: List of all :class:`Run`.
 
     ..note:: `page` and `size` works together. For example, page 1 size 50 gives
         the 50 runs in the first page. To get 50-100, set `page` as 2.
@@ -273,7 +279,8 @@ def list_runs(
 
 
 def delete_run(run_name: str, experiment_name: Optional[str] = None) -> None:
-    """Delete a run.
+    """Delete a :class:`Run` given a `run_name` and
+        optional `experiment_name`.
 
     If an experiment name is not specified, we'll look for the run in the default
     experiment.
@@ -285,7 +292,7 @@ def delete_run(run_name: str, experiment_name: Optional[str] = None) -> None:
 
 
 def delete_runs(experiment_name: Optional[str] = None) -> None:
-    """Delete every run.
+    """Delete all :class:`Run` given an optional `experiment_name`.
 
     If an experiment name is not specified, we'll delete every run across all
     experiments.
@@ -297,7 +304,7 @@ def delete_runs(experiment_name: Optional[str] = None) -> None:
 
 
 def create_experiment(name: str = 'default') -> Experiment:
-    """Create an experiment.
+    """Create an :class:`Experiment`.
 
     :param name: The name of the experiment. If not provided,
         the experiment is named as `default`.
@@ -307,7 +314,7 @@ def create_experiment(name: str = 'default') -> Experiment:
 
 
 def get_experiment(name: str) -> Experiment:
-    """Get an experiment by its name.
+    """Get an :class:`Experiment` given a `name`.
 
     :param name: Name of the experiment.
     :return: An `Experiment` object.
@@ -316,7 +323,7 @@ def get_experiment(name: str) -> Experiment:
 
 
 def list_experiments(page: int = 1, size: int = 50) -> List[Experiment]:
-    """List every experiment.
+    """List all :class:`Experiment`.
 
     :param page: The page index.
     :param size: The number of experiments to retrieve.
@@ -330,7 +337,8 @@ def list_experiments(page: int = 1, size: int = 50) -> List[Experiment]:
 
 
 def delete_experiment(name: str) -> Experiment:
-    """Delete an experiment by its name.
+    """Delete an :class:`Experiment` given a `name`.
+
     :param name: Name of the experiment.
         View your experiment names with `list_experiments()`.
     :return: Deleted experiment.
@@ -339,14 +347,14 @@ def delete_experiment(name: str) -> Experiment:
 
 
 def delete_experiments() -> List[Experiment]:
-    """Delete every experiment.
+    """Delete all :class:`Experiment`.
     :return: List of deleted experiments.
     """
     return ft.delete_experiments()
 
 
 def get_token() -> str:
-    """Get user token of jina ecosystem.
+    """Get user token from the Jina AI Cloud, :meth:`login` is required.
 
     :return: user token as string object.
     """
@@ -362,7 +370,7 @@ def build_model(
     is_onnx: bool = False,
 ) -> 'InferenceEngine':
     """
-    Builds a pre-trained model from a given descriptor.
+    Builds a pre-trained model given a `name`.
 
     :param name: Refers to a pre-trained model, see
         https://finetuner.jina.ai/walkthrough/choose-backbone/  or use the
@@ -487,7 +495,8 @@ def encode(
     data: Union[DocumentArray, List[str]],
     batch_size: int = 32,
 ) -> Union[DocumentArray, 'np.ndarray']:
-    """Preprocess, collate and encode the `DocumentArray` with embeddings.
+    """Preprocess, collate and encode the `list or :class:`DocumentArray`
+        with embeddings.
 
     :param model: The model to be used to encode `DocumentArray`. In this case
         an instance of `ONNXRuntimeInferenceEngine` or `TorchInferenceEngine`

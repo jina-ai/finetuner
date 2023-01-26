@@ -33,6 +33,13 @@ import finetuner
 finetuner.describe_models(task='text-to-image')
 ```
 ````
+````{tab} mesh-to-mesh
+```python
+import finetuner
+
+finetuner.describe_models(task='mesh-to-mesh')
+```
+````
 
 To get a list of supported models:
 
@@ -57,6 +64,7 @@ To get a list of supported models:
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
 │ efficientnet_b0 │ image-to-image │       1280 │          cnn │ EfficientNet B0 pre-trained on ImageNet │
 │ efficientnet_b4 │ image-to-image │       1792 │          cnn │ EfficientNet B4 pre-trained on ImageNet │
+│ efficientnet_b7 │ image-to-image │       2560 │          cnn │ EfficientNet B7 pre-trained on ImageNet │
 │       resnet152 │ image-to-image │       2048 │          cnn │       ResNet152 pre-trained on ImageNet │
 │        resnet50 │ image-to-image │       2048 │          cnn │        ResNet50 pre-trained on ImageNet │
 └─────────────────┴────────────────┴────────────┴──────────────┴─────────────────────────────────────────┘
@@ -72,19 +80,6 @@ To get a list of supported models:
 │                 openai/clip-vit-base-patch32 │ text-to-image │        512 │  transformer │                                          CLIP base model │
 │            openai/clip-vit-large-patch14-336 │ text-to-image │        768 │  transformer │                      CLIP large model for 336x336 images │
 │                openai/clip-vit-large-patch14 │ text-to-image │       1024 │  transformer │                      CLIP large model with patch size 14 │
-│                                RN101::openai │ text-to-image │        512 │  transformer │                          Open CLIP "RN101::openai" model │
-│                      RN101-quickgelu::openai │ text-to-image │        512 │  transformer │                Open CLIP "RN101-quickgelu::openai" model │
-│                     RN101-quickgelu::yfcc15m │ text-to-image │        512 │  transformer │               Open CLIP "RN101-quickgelu::yfcc15m" model │
-│                               RN101::yfcc15m │ text-to-image │        512 │  transformer │                         Open CLIP "RN101::yfcc15m" model │
-│                                  RN50::cc12m │ text-to-image │       1024 │  transformer │                            Open CLIP "RN50::cc12m" model │
-│                                 RN50::openai │ text-to-image │       1024 │  transformer │                           Open CLIP "RN50::openai" model │
-│                        RN50-quickgelu::cc12m │ text-to-image │       1024 │  transformer │                  Open CLIP "RN50-quickgelu::cc12m" model │
-│                       RN50-quickgelu::openai │ text-to-image │       1024 │  transformer │                 Open CLIP "RN50-quickgelu::openai" model │
-│                      RN50-quickgelu::yfcc15m │ text-to-image │       1024 │  transformer │                Open CLIP "RN50-quickgelu::yfcc15m" model │
-│                              RN50x16::openai │ text-to-image │        768 │  transformer │                        Open CLIP "RN50x16::openai" model │
-│                               RN50x4::openai │ text-to-image │        640 │  transformer │                         Open CLIP "RN50x4::openai" model │
-│                              RN50x64::openai │ text-to-image │       1024 │  transformer │                        Open CLIP "RN50x64::openai" model │
-│                                RN50::yfcc15m │ text-to-image │       1024 │  transformer │                          Open CLIP "RN50::yfcc15m" model │
 │                      ViT-B-16::laion400m_e31 │ text-to-image │        512 │  transformer │                Open CLIP "ViT-B-16::laion400m_e31" model │
 │                      ViT-B-16::laion400m_e32 │ text-to-image │        512 │  transformer │                Open CLIP "ViT-B-16::laion400m_e32" model │
 │                             ViT-B-16::openai │ text-to-image │        512 │  transformer │                       Open CLIP "ViT-B-16::openai" model │
@@ -104,12 +99,24 @@ To get a list of supported models:
 └──────────────────────────────────────────────┴───────────────┴────────────┴──────────────┴───────────────────━━━━━━━━━━━━━━─────────────────────────┘
 ```
 ````
+````{tab} mesh-to-mesh
+```bash
+                                       Finetuner backbones: mesh-to-mesh                                       
+┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃       name ┃         task ┃ output_dim ┃ architecture ┃                                         description ┃
+┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ pointnet++ │ mesh-to-mesh │        512 │     pointnet │ PointNet++ embedding model for 3D mesh point clouds │
+└────────────┴──────────────┴────────────┴──────────────┴─────────────────────────────────────────────────────┘
+```
+````
 
 + ResNets are suitable for image-to-image search tasks with high performance requirements, where `resnet152` is bigger and requires higher computational resources than `resnet50`.
 + EfficientNets are suitable for image-to-image search tasks with low training and inference times. The model is more light-weighted than ResNet. Here, `efficientnet_b4` is the bigger and more complex model.
 + CLIP is the one for text-to-image search, where the images do not need to have any text descriptors.
 + BERT is generally suitable for text-to-text search tasks.
 + Msmarco-distilbert-base-v3 is designed for matching web search queries to short text passages and is a suitable backbone for similar text-to-text search tasks.
++ PointNet++ is an embedding model, which we derived from the popular [PointNet++ model](https://proceedings.neurips.cc/paper/2017/file/d8bf84be3800d12f74d8b05e9b89836f-Paper.pdf).
+  The original model is designed for classifying 3D meshes. Our derived model can be used to encode meshes into vectors for search.
 
 It should be noted that:
 

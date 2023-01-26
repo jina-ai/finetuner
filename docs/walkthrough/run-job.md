@@ -111,35 +111,13 @@ Otherwise, it could happen, that your model overfits on the training data and fo
 Similarly, two or three epochs (number of passes thorough the training data) are often enough for a fine-tuning job. 
 ```
 
-### Configuration of the miner
 
-To filter the instances in a batch that are used to calculate the loss, you can use miners.
-Finetuner allows you to use miners provided by the [PyTorch Metric Learning](https://kevinmusgrave.github.io/pytorch-metric-learning) framework.
-To select a specific miner, you can pass its name to the fit function, e.g., `AngularMiner`, `TripletMarginMiner`, ...
+### Construction of Training Batches
 
-Please note that the miner has to be compatible with the loss function you selected.
-For instance, if you choose to train a model with the `TripleMarginLoss`, you can use the `TripletMarginMiner`.
-While without this miner, all possible triples with an anchor, a positive, and a negative candidate are constructed, the miner reduces this set of triples.
-Usually, only triples with hard negatives are selected where the distance between the positive and the negative example is inside a margin of `0.2`.
-If you want to pass additional parameters to configure the miner, you can specify the `miner_options` parameter of the fit function.
-The example below shows how to apply hard-negative mining:
-
-```diff
-run = finetuner.fit(
-    ...,
-    loss='TripleMarginLoss',
-+   miner='TripletMarginMiner',
-+   miner_options={'margin': 0.3, 'type_of_triplets': 'hard'}
-)
-```
-
-The possible choices `type_of_triplets` are:
-
-+ `all`: Use all triplets, identical to no mining.
-+ `easy`: Use all easy triplets, all triplets that do not violate the margin.
-+ `semihard`: Use semi-hard triplets, the negative is further from the anchor than the positive.
-+ `hard`: Use hard triplets, the negative is closer to the anchor than the positive.
-
-Finetuner takes `TripleMarginLoss` as default loss function with no negative mining.
-A detailed description of the miners and their parameters is specified in the [PyTorch Metric Learning documentation](https://kevinmusgrave.github.io/pytorch-metric-learning/miners/).
-
+The training of your model is done in batches.
+The `batch_size` parameter determines the number of items per batch.
+Finetuner constructs batches so that each batch contains the same number of classes and
+as many items per class as configured via the `num_items_per_class` parameter.
+However, if it is not possible, e.g., because `batch_size` is not dividable by
+`num_items_per_class` or the training dataset does not contain enough classes,
+Finetuner tries to choose a similar value for `num_items_per_class` which is working.
