@@ -211,8 +211,10 @@ def fit(
         the 5 classes. Batch size must be divisible by `num_items_per_class`.
     :param sampler: Determines which sampling method will be used in the case that the
         data is labeled. By default is `auto`, meaning that the appropriate sampler,
-        will be chosen depending on the loss function used. if set to `random` then
-        `num_items_per_class` is not used.
+        will be chosen depending on the loss function used.
+        Setting to `class` will result in the `ClassSampler` being used, and setting to
+        `random` will result in the `RandomSampler` being used.
+        If set to `random` then `num_items_per_class` is not used.
     :param loss_optimizer: Name of the optimizer used for fine-tuning to loss function,
         if it is a function that requires an optimizer. Options: `Adadelta`, `Adagrad`,
         `Adam`, `AdamW`, `SparseAdam`, `Adamax`, `ASGD`, `LBFGS`, `NAdam`, `RAdam`,
