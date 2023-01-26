@@ -238,7 +238,7 @@ class Experiment:
         ]
         public = kwargs[PUBLIC] if kwargs.get(PUBLIC) else False
         model = config.ModelConfig(
-            name=model,
+            name=model if not kwargs.get(MODEL_ARTIFACT) else None,
             artifact=kwargs.get(MODEL_ARTIFACT),
             output_dim=kwargs.get(OUTPUT_DIM),
         )
