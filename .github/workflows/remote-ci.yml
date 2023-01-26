@@ -32,6 +32,7 @@ jobs:
             -d '{"body":"REMOTE TESTING: \nstarting tests... See job here:\n '"$job_url"' "}'
 
   style-flake:
+    needs: [receive-message]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -50,6 +51,7 @@ jobs:
         run: make flake
 
   style-black:
+    needs: [receive-message]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -68,6 +70,7 @@ jobs:
         run: make black-check
 
   style-isort:
+    needs: [receive-message]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -225,8 +228,7 @@ jobs:
 
   # just for blocking the merge until all parallel core-test are successful
   success-tests:
-    needs: [style-flake, style-black, style-isort]
-    # needs: [get-coverage]
+    needs: [get-coverage]
     if: always()
     runs-on: ubuntu-latest
     steps:
