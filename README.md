@@ -18,20 +18,25 @@
 
 <!-- start elevator-pitch -->
 
-Fine-tuning is an effective way to improve performance on neural search tasks. However, setting up and performing 
-fine-tuning can be very time-consuming and resource-intensive.
+Fine-tuning is an effective way to improve performance on [neural search](https://jina.ai/news/what-is-neural-search-and-learn-to-build-a-neural-search-engine/) tasks.
+However, setting up and performing fine-tuning can be very time-consuming and resource-intensive.
 
-Jina AI's Finetuner makes fine-tuning easier and faster by streamlining the workflow and handling all complexity and 
-infrastructure in the cloud. With Finetuner, one can easily enhance the performance of pre-trained models, making them 
-production-ready without buying expensive hardware.
+Jina AI's Finetuner makes fine-tuning easier and faster by streamlining the workflow and handling all the complexity and infrastructure in the cloud.
+With Finetuner, you can easily enhance the performance of pre-trained models,
+making them production-ready [without extensive labeling](https://jina.ai/news/fine-tuning-with-low-budget-and-high-expectations/) or expensive hardware.
 
-📈 **Performance promise**: enhance the performance of pre-trained models and deliver state-of-the-art performance on 
-domain-specific neural search applications.
+🎏 **Better embeddings**: Create high-quality embeddings for semantic search, visual similarity search, cross-modal text<->image search, recommendation systems,
+clustering, duplication detection, anomaly detection, or other uses.
 
-🔱 **Simple yet powerful**: easy access to 40+ mainstream loss functions, 10+ optimisers, layer pruning, weight 
+⏰ **Low budget, high expectations**: Bring considerable improvements to model performance, making the most out of as little as a few hundred training samples, and finish fine-tuning in as little as an hour.
+
+📈 **Performance promise**: Enhance the performance of pre-trained models so that they deliver state-of-the-art performance on 
+domain-specific applications.
+
+🔱 **Simple yet powerful**: Easy access to 40+ mainstream loss functions, 10+ optimisers, layer pruning, weight 
 freezing, dimensionality reduction, hard-negative mining, cross-modal models, and distributed training. 
 
-☁ **All-in-cloud**: train using our free GPU infrastructure, manage runs, experiments and artifacts on Jina AI Cloud
+☁ **All-in-cloud**: Train using our free GPU infrastructure, manage runs, experiments and artifacts on Jina AI Cloud
 without worrying about resource availability, complex integration, or infrastructure costs.
 
 <!-- end elevator-pitch -->
@@ -105,7 +110,7 @@ without worrying about resource availability, complex integration, or infrastruc
     <td>0.430</td>
     <td>0.648</td>
     <td><span style="color:green">50.7%</span></td>
-    <td rowspan="2"><p align=center><a href="https://colab.research.google.com/drive/1N7iWZV0OunFZSLtsQxoazS808MPXhCwq?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
+    <td rowspan="2"><p align=center><a href="https://colab.research.google.com/drive/10Wldbu0Zugj7NmQyZwZzuorZ6SSAhtIo"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
   </tr>
   <tr>
     <td>Recall</td>
@@ -113,17 +118,32 @@ without worrying about resource availability, complex integration, or infrastruc
     <td>0.340</td>
     <td><span style="color:green">37.7%</span></td>
   </tr>
+  <tr>
+    <td rowspan="2">PointNet++</td>
+    <td rowspan="2"><a href="https://modelnet.cs.princeton.edu/">ModelNet40</a> 3D Mesh Search</td>
+    <td>mRR</td>
+    <td>0.791</td>
+    <td>0.891</td>
+    <td><span style="color:green">12.7%</span></td>
+    <td rowspan="2"><p align=center><a href="https://colab.research.google.com/drive/1lIMDFkUVsWMshU-akJ_hwzBfJ37zLFzU?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a></p></td>
+  </tr>
+  <tr>
+    <td>Recall</td>
+    <td>0.154</td>
+    <td>0.242</td>
+    <td><span style="color:green">57.1%</span></td>
+  </tr>
 
 </tbody>
 </table>
 
-<sub><sup>All metrics were evaluated for k@20 after training for 5 epochs using the Adam optimizer with learning rates of 1e-4 for ResNet, 1e-7 for CLIP and 1e-5 for the BERT models.</sup></sub>
+<sub><sup>All metrics were evaluated for k@20 after training for 5 epochs using the Adam optimizer with learning rates of 1e-4 for ResNet, 1e-7 for CLIP and 1e-5 for the BERT models, 5e-4 for PointNet++</sup></sub>
 
 <!-- start install-instruction -->
 
 ## Install
 
-Make sure you have Python 3.7+ installed. Finetuner can be installed via `pip` by executing:
+Make sure you have Python 3.8+ installed. Finetuner can be installed via `pip` by executing:
 
 ```bash
 pip install -U finetuner
@@ -141,127 +161,6 @@ pip install "finetuner[full]"
 
 > ⚠️ Starting with version 0.5.0, Finetuner computing is performed on Jina AI Cloud. The last local version is `0.4.1`. 
 > This version is still available for installation via `pip`. See [Finetuner git tags and releases](https://github.com/jina-ai/finetuner/releases).
-
-
-
-
-  
-## Get Started
-
-The following code snippet describes how to fine-tune ResNet50 on the [_Totally Looks Like_ dataset](https://sites.google.com/view/totally-looks-like-dataset). 
-You can run it as-is. The model and training data are already hosted in Jina AI Cloud and Finetuner will 
-download them automatically.
-(NB: If there is already a run called `resnet50-tll-run`, choose a different run-name in the code below.)
-
-```python
-import finetuner
-from finetuner.callback import EvaluationCallback
-
-finetuner.login()
-
-run = finetuner.fit(
-    model='resnet50',
-    run_name='resnet50-tll-run',
-    train_data='tll-train-data',
-    callbacks=[
-        EvaluationCallback(
-            query_data='tll-test-query-data',
-            index_data='tll-test-index-data',
-        )
-    ],
-)
-```
-This code snippet describes the following steps:
-
-1. Log in to Jina AI Cloud.
-2. Select backbone model, training and evaluation data for your evaluation callback.
-3. Start the cloud run.
-
-You can also pass data to Finetuner as a CSV file or a `DocumentArray` object, as described [in the Finetuner documentation](https://finetuner.jina.ai/walkthrough/create-training-data/).  
-
-Depending on the data, task, model, hyperparameters, fine-tuning might take some time to finish. You can leave your jobs 
-to run on the Jina AI Cloud, and later reconnect to them, using code like this below:
-
-```python
-import finetuner
-
-finetuner.login()
-
-run = finetuner.get_run('resnet50-tll-run')
-
-for log_entry in run.stream_logs():
-    print(log_entry)
-
-run.save_artifact('resnet-tll')
-```
-
-This code logs into Jina AI Cloud, then connects to your run by name. After that, it does the following:
-  * Monitors the status of the run and prints out the logs.
-  * Saves the model once fine-tuning is done.
-
-## Using Finetuner to encode
-
-Finetuner has interfaces for using models to do encoding:
-
-```python
-import finetuner
-from docarray import Document, DocumentArray
-
-da = DocumentArray([Document(uri='~/Pictures/your_img.png')])
-
-model = finetuner.get_model('resnet-tll')
-finetuner.encode(model=model, data=da)
-
-da.summary()
-```
-
-When encoding, you can provide data either as a DocumentArray or a list. Since the modality of your input data can be inferred from the model being used, there is no need to provide any additional information besides the content you want to encode. When providing data as a list, the `finetuner.encode` method will return a `np.ndarray` of embeddings, instead of a `docarray.DocumentArray`:
-
-```python
-import finetuner
-from docarray import Document, DocumentArray
-
-images = ['~/Pictures/your_img.png']
-
-model = finetuner.get_model('resnet-tll')
-embeddings = finetuner.encode(model=model, data=images)
-```
-
-## Training on your own data
-
-If you want to train a model using your own dataset instead of one on the Jina AI Cloud, you can provide labeled data in a CSV file.
-
-A CSV file is a tab or comma-delimited plain text file. For example:
-
-```plaintext
-This is an apple    apple_label
-This is a pear      pear_label
-...
-```
-The file should have two columns: The first for the data and the second for the category label.
-
-You can then provide a path to a CSV file as training data for Finetuner:
-
-```python
-run = finetuner.fit(
-    model='bert-base-cased',
-    run_name='bert-my-own-run',
-    train_data='path/to/some/data.csv',
-)
-```
-More information on providing your own training data is found in the [Prepare Training Data](https://finetuner.jina.ai/walkthrough/create-training-data/) section of the [Finetuner documentation](https://finetuner.jina.ai/).
-
-
-
-### Next steps
-
-- Take the [walkthrough](https://finetuner.jina.ai/walkthrough/) and submit your first fine-tuning job.
-- Try out different search tasks:
-  - [Text-to-Text Search via BERT](https://finetuner.jina.ai/notebooks/text_to_text/)
-  - [Image-to-Image Search via ResNet50](https://finetuner.jina.ai/notebooks/image_to_image/)
-  - [Text-to-Image Search via CLIP](https://finetuner.jina.ai/notebooks/text_to_image/)
-
-[Read our documentation](https://finetuner.jina.ai/) to learn more about what Finetuner can do.
 
 <!-- start support-pitch -->
 ## Support

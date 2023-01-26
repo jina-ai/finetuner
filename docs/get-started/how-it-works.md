@@ -1,23 +1,26 @@
-# How Does it Work?
+# {octicon}`question` How Does it Work?
 
-## Contrastive metric learning
+Finetuner is a framework for using the contrastive learning approach to improve similarity matching with models that encode data into embeddings.
+This involves three steps:
 
-From an algorithmic perspective,
-**Finetuner** leverages a contrastive metric learning approach to improve your model.
-How does it work?
+## Step 1: Build an embedding model
 
-### Step 1: Convert a model into an embedding model
+Finetuner interprets the architecture of an existing (pre-trained model) which we call backbone.
+Those model might not be an embedding model upfront and the architecture not suitable for training it to encode data into embeddings.
+Therefore, Finetuner removes the default *head*, applies *pooling* and freezes layers that do not need to be trained.
 
-Finetuner interprets the backbone model architecture,
-removes the default *head*, applies *pooling* and freezes layers that do not need to be trained.
-For an image classification task (e.g. cats and dogs),
-Finetuner is going to remove the classification head (cat-dog classifier) and turn your model into an *embedding model*.
+Finetuner takes an existing, pre-trained model, typically called the __backbone__, and analyzes its architecture.
+If this model does not already produce embeddings, Finetuner is able to remove the default *head* (the last layers of the network), add new projection layers, apply *pooling*, and freeze layers that do not need to be trained.
 
-This embedding model does not make predictions or outputs a probability,
-but instead outputs a feature vector to represent your data.
+For instance, Finetuner will turn an image classification model, e.g., for separating cats from dogs, into an *embedding model* 
+by removing its last layer - the classification head (cat-dog classifier).
 
-### Step 2: Triplet construction and training on-the-fly
+This embedding model does not make predictions or output a probability,
+but instead outputs a feature vector (an __embedding__) that represents its input.
 
+## Step 2: Tuple/Triplet construction
+
+````{tab} Uni-modal (with label)
 Finetuner works on labeled data.
 It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray` consisting of {class}`~docarray.document.Document`s where each one contains `finetuner_label` corresponding to the class of a specific training example. After receiving a CSV file, its contents are parsed and a {class}`~docarray.array.document.DocumentArray` is constructed.
 
@@ -28,21 +31,30 @@ Finetuner looks for a `Document` with the same `finetuner_label` (positive),
 and a `Document` with a different `finetuner_label` (negative).
 The objective is to pull `Document`s which belong to the same class together,
 while pushing the `Document`s which belong to a different class away from each other.
+````
+````{tab} Cross-modal (without label)
+Finetuner works on unlabeled text-image pairs.
+You can fine-tune a CLIP-like model for text to images search directly without any labels.
+It expects either a CSV file or a {class}`~docarray.array.document.DocumentArray` consisting a list of {class}`~docarray.array.document.Document` that contain two chunks: an image chunk and a text chunk.
 
+During fine-tuning, Finetuner leverages text-image pairs and jointly optimizes two models (`CLIPTextEncoder` and `CLIPImageEncoder`) with respect to two classification losses: (1) given a text, find the best matching
+image and (2) given an image, find the best matching text. Then it aggregates the two losses into the `CLIPLoss`.
+At the end, the output embedding of your data from the `CLIPTextEncoder` is comparable to `CLIPImageEncoder`.
+````
 
-## Cloud-based fine-tuning
+## Step 3: Tuning in the cloud
 
-From an engineering perspective,
+From an operational perspective,
 we have hidden all the complexity of machine learning algorithms and resource configuration (such as GPUs).
 All you need to do is decide on your backbone model and prepare your training data.
 
 Once you have logged in to the Jina Ecosystem with {meth}`~finetuner.login()`,
-Finetuner will push your training data into our *Cloud Artifact Storage* (only visible to you).
+Finetuner will push your training data into the *Jina AI Cloud* (only visible to you).
 At the same time, we will spin-up an isolated computational resource
-with proper memory, CPU, GPU dedicated to your fine-tuning job.
+with proper memory, CPU, and a GPU dedicated to your fine-tuning job.
 
-Once fine-tuning is done, Finetuner will again push your fine-tuned model to the *Cloud Artifact Storage*
-and make it available for you to pull it back to your machine.
+Once fine-tuning is done, Finetuner will push your fine-tuned model to the *Jina AI Cloud*
+and make it available for you to download.
 That's it!
 
 On the other hand,
