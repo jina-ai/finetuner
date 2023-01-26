@@ -161,7 +161,4 @@ def test_create_run_config():
         multi_modal=False,
         device='cuda',
     )
-    from pprint import pprint
-
-    pprint(config)
     assert config == expected_config
