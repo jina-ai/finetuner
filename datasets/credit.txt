@@ -1,0 +1,5 @@
+Data for `image-text_or_image_example.csv` is sourced from the Cross-Market Recommendation dataset.
+https://xmrec.github.io/data/de/
+
+Data for `text-text_example.csv` is sourced from the Quora Duplicate Questions dataset.
+https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset
