@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Use python 3.8 in Github actions. ([#659](https://github.com/jina-ai/finetuner/pull/659))
 
+- Add proper CSV file for image-image case. ([#667](https://github.com/jina-ai/finetuner/pull/667))
+
 ### Docs
 
 - Remove ResNet backbone support for clip fine-tuning. ([#662](https://github.com/jina-ai/finetuner/pull/662))
