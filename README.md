@@ -165,7 +165,7 @@ pip install "finetuner[full]"
 <!-- start finetuner-articles -->
 ## Articles about Finetuner
 
-We wrote several articles and tutorials in which our framework is used:
+Check out our published blogposts and tutorials to see Finetuner in action!
 
 - [Fine-tuning with Low Budget and High Expectations](https://jina.ai/news/fine-tuning-with-low-budget-and-high-expectations/)
 - [Hype and Hybrids: Search is more than Keywords and Vectors](https://jina.ai/news/hype-and-hybrids-multimodal-search-means-more-than-keywords-and-vectors-2/)
