@@ -31,8 +31,6 @@ jobs:
             $target_url \
             -d '{"body":"Starting tests, see job here:\n '"$job_url"' "}'
   style-flake:
-    needs: receieve-message
-    if: success()
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -46,14 +44,11 @@ jobs:
           ref: ${{ github.event.client_payload.branch  }}
           token: ${{ github.event.client_payload.token  }}
       - name: Install requirements
-        run: |
-          make install package=style
+        run: make install package=style
       - name: Lint with flake8
         run: make flake
 
   style-black:
-    needs: receieve-message
-    if: success()
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -72,8 +67,6 @@ jobs:
         run: make black-check
 
   style-isort:
-    needs: receieve-message
-    if: success()
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -190,7 +183,7 @@ jobs:
           COVERAGE_NAME=.coverage.cuda.$( echo ${{ matrix.tests-path }} | tr "/" . )
           echo "COVERAGE_NAME=$COVERAGE_NAME" >> $GITHUB_ENV
           mv .coverage $COVERAGE_NAME
-        timeout-minutes: 30
+        timeout-minutes: 40
       - name: Upload coverage
         uses: actions/upload-artifact@v3
         with:
