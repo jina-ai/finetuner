@@ -11,6 +11,11 @@
 ```
 
 ```{include} ../README.md
+:start-after: <!-- start finetuner-articles -->
+:end-before: <!-- end finetuner-articles -->
+```
+
+```{include} ../README.md
 :start-after: <!-- start support-pitch -->
 :end-before: <!-- end support-pitch -->
 ```

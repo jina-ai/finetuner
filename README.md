@@ -162,6 +162,18 @@ pip install "finetuner[full]"
 > ⚠️ Starting with version 0.5.0, Finetuner computing is performed on Jina AI Cloud. The last local version is `0.4.1`. 
 > This version is still available for installation via `pip`. See [Finetuner git tags and releases](https://github.com/jina-ai/finetuner/releases).
 
+<!-- start finetuner-articles -->
+## Articles about Finetuner
+
+There are several articles about Finetuner and tutorials which using our framework:
+
+- [Fine-tuning with Low Budget and High Expectations](https://jina.ai/news/fine-tuning-with-low-budget-and-high-expectations/)
+- [Hype and Hybrids: Search is more than Keywords and Vectors](https://jina.ai/news/hype-and-hybrids-multimodal-search-means-more-than-keywords-and-vectors-2/)
+- [Improving Search Quality for Non-English Queries with Fine-tuned Multilingual CLIP Models](https://jina.ai/news/improving-search-quality-non-english-queries-fine-tuned-multilingual-clip-models/)
+- [How Much Do We Get by Finetuning CLIP?](https://jina.ai/news/applying-jina-ai-finetuner-to-clip-less-data-smaller-models-higher-performance/)
+
+<!-- end finetuner-articles -->
+
 <!-- start support-pitch -->
 ## Support
 
