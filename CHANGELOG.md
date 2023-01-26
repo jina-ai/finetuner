@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Use github token provided by dispatcher when running remote-ci. ([#640](https://github.com/jina-ai/finetuner/pull/640))
+
 ### Fixed
 
 - Use python 3.8 in Github actions. ([#659](https://github.com/jina-ai/finetuner/pull/659))
@@ -50,8 +52,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adjust Finetuner based on API changes for Jina AI Cloud. ([#637](https://github.com/jina-ai/finetuner/pull/637))
 
 - Change default `experiment_name` from current working dir to `default`. ([#637](https://github.com/jina-ai/finetuner/pull/637))
-
-- Use github token provided by dispatcher when running remote-ci. ([#640](https://github.com/jina-ai/finetuner/pull/640))
 
 ### Fixed
 
