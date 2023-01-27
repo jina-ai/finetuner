@@ -5,7 +5,7 @@ Many of the models supported by Finetuner make use of similar methods throughout
 ## Loss Functions
 
 Loss functions are used to calculate the quality of embeddings while training; the higher the output of the loss function, the more the parameters of the model will be updated.
-By default we use `TripletMarginLoss`, however we support many other loss function as well, including `ArcFaceLoss` and `CosFaceLoss`.
+By default we use `TripletMarginLoss`, however we support many other loss functions as well, including `ArcFaceLoss` and `CosFaceLoss`.
 
 ```{Important}
 Please check the [developer reference](../../api/finetuner/#finetuner.fit) to get the available options for `loss`.
@@ -15,7 +15,7 @@ Please check the [developer reference](../../api/finetuner/#finetuner.fit) to ge
 
 Let's first take a look at our default loss function, `TripletMarginLoss`.  
 
-`TripletMarginLoss` is a *contrastive* loss function, meaning that the loss is calculated by comparing the embeddings of multiple documents to each other, three documents, to be exact.
+`TripletMarginLoss` is a *contrastive* loss function, meaning that the loss is calculated by comparing the embeddings of multiple documents (3 to be exact) documents to each other.
 Each triplet of documents consists of an anchor document, a positive document and a negative document.
 The anchor and the positive document belong to the same class, and the negative document belongs to a different class.
 The goal of `TripletMarginLoss` is to maximise the difference between the distance from the anchor to the positive document, and the distance from the anchor to the negative document.
@@ -23,7 +23,7 @@ For a more detailed explanation on Triplet Loss, as well as how samples are gath
 
 ### SphereFace losses
 
-SphereFace loss is a loss function that was first formulated for computer vision and face recognition tasks,
+SphereFace loss is a loss function that was first formulated for computer vision and face recognition tasks.
 Finetuner supports two variations of this loss function, `ArcFaceLoss` and `CosFaceLoss`.
 Instead of attempting to minimise the distance between positive pairs and maximise the distance between negative pairs, the SphereFace loss functions compare each sample with the center of each class
 and attempt to minimize the *angular distance* between the document and its class centroid, and maximise the angular distance between the document and the centroids of the other classes.
@@ -32,7 +32,7 @@ and attempt to minimize the *angular distance* between the document and its clas
 
 The `ArcFaceLoss` and `CosFaceLoss` both deviate from the traditional SphereFace loss by including a margin and scaling parameter, which can be used to increase the boundary between each class. If an item's embedding is within the boundary of the class it belongs to, then no loss is incurred. Choosing appropriate values for the margin and scaling parameter is important for effective training, for more information on how `ArcFaceLoss` and `CosFaceLoss` calculate loss, and how these parameters affect the output, see this article on [loss metrics for deep learning](https://hav4ik.github.io/articles/deep-metric-learning-survey#cosface).  
 
-`TripletMarginLoss` uses a `ClassSampler` to construct batches an equal amount of each class in the batch. However, Since only one sample is needed to calculate the loss with the `ArcFaceLoss` and `CosFaceLoss` functions, there are no constraints on what each batch needs to contain.
+`TripletMarginLoss` uses a `ClassSampler` to construct batches with an equal number of samples of each class in the batch. However, since only one sample is needed to calculate the loss with the `ArcFaceLoss` and `CosFaceLoss` functions, there are no constraints on what each batch needs to contain.
 Therefore we can instead construct batches using random sampling, a much simpler method which consequently takes less time to construct a batch.
 By default, runs created using `ArcFaceLoss` or `CosfaceLoss` will use random sampling, however you can specify which type of sampling method you would like to use like so:
 
