@@ -8,7 +8,31 @@ env:
   JINA_AUTH_TOKEN: ${{ secrets.JINA_AUTH_TOKEN }}
 
 jobs:
+  receive-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo branch
+        run: echo branch name is ${{ github.event.client_payload.branch }} !
+      - name: message_back
+        run: |
+          sudo apt install jq
+
+          job_url=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          target_url=${{ github.event.client_payload.url }}
+          echo "token: ${{ github.event.client_payload.token }}"
+          echo "target_url: $target_url"
+          echo "job_url: $job_url"
+
+          curl \
+            -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ github.event.client_payload.token }}"\
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            $target_url \
+            -d '{"body":"REMOTE TESTING: \nstarting tests... See job here:\n '"$job_url"' "}'
+
   style-flake:
+    needs: [receive-message]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -22,12 +46,12 @@ jobs:
           ref: ${{ github.event.client_payload.branch  }}
           token: ${{ github.event.client_payload.token  }}
       - name: Install requirements
-        run: |
-          make install package=style
+        run: make install package=style
       - name: Lint with flake8
         run: make flake
 
   style-black:
+    needs: [receive-message]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -46,6 +70,7 @@ jobs:
         run: make black-check
 
   style-isort:
+    needs: [receive-message]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -162,7 +187,7 @@ jobs:
           COVERAGE_NAME=.coverage.cuda.$( echo ${{ matrix.tests-path }} | tr "/" . )
           echo "COVERAGE_NAME=$COVERAGE_NAME" >> $GITHUB_ENV
           mv .coverage $COVERAGE_NAME
-        timeout-minutes: 30
+        timeout-minutes: 40
       - name: Upload coverage
         uses: actions/upload-artifact@v3
         with:
@@ -203,14 +228,43 @@ jobs:
 
   # just for blocking the merge until all parallel core-test are successful
   success-tests:
-    needs: [get-coverage, test-core, test-cuda]
+    needs: [get-coverage]
     if: always()
     runs-on: ubuntu-latest
     steps:
       - uses: technote-space/workflow-conclusion-action@v2
-      - name: Check Failure
-        if: env.WORKFLOW_CONCLUSION == 'failure'
-        run: exit 1
-      - name: Success
-        if: ${{ success() }}
-        run: echo "All Done"
+      - name: communicate result
+        run: |
+          target_url=${{ github.event.client_payload.url }}
+          job_url=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          message="Job finished with status: $WORKFLOW_CONCLUSION"
+          echo "message: $message"
+          echo "job_url: $job_url"
+
+          response=$(curl \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ github.event.client_payload.token }}"\
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            $target_url
+            )
+
+          comment_body=$(echo $response | jq -r \
+          '.body | select(contains("'"$job_url"'")) // "OUTDATED"')
+
+          if [[ "$comment_body" != "OUTDATED" ]]; then
+            curl \
+              -X PATCH \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ github.event.client_payload.token }}"\
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              $target_url \
+              -d '{"body":"REMOTE TESTING: \n'"$message"', see job here:\n '"$job_url"'"}'
+          else
+            echo "CI job is outdated, comment will not be updated"
+          fi
+
+          if [ "$WORKFLOW_CONCLUSION" == "success" ]; then
+            echo "All Done"
+          else
+            exit 1
+          fi

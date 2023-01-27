@@ -10,11 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add folder for example CSV files ([#663](https://github.com/jina-ai/finetuner/pull/663))
+- Add folder for example CSV files. ([#663](https://github.com/jina-ai/finetuner/pull/663))
+
+- Add communication between remote-ci job and the pr that triggered it. ([#642](https://github.com/jina-ai/finetuner/pull/642))
 
 ### Removed
 
 ### Changed
+
+- Use github token provided by dispatcher when running remote-ci. ([#640](https://github.com/jina-ai/finetuner/pull/640))
 
 ### Fixed
 
