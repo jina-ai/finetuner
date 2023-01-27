@@ -19,7 +19,7 @@ Let's first take a look at our default loss function, `TripletMarginLoss`.
 Each triplet of documents consists of an anchor document, a positive document and a negative document.
 The anchor and the positive document belong to the same class, and the negative document belongs to a different class.
 The goal of `TripletMarginLoss` is to maximise the difference between the distance from the anchor to the positive document, and the distance from the anchor to the negative document.
-For a more detailed explanation on Triplet Loss, as well as how samples are gathered to create these triplets, see {doc}`/advanced_topics/negative-mining`.
+For a more detailed explanation on Triplet Loss, as well as how samples are gathered to create these triplets, see {doc}`/advanced-topics/negative-mining/`.
 
 ### SphereFace losses
 
