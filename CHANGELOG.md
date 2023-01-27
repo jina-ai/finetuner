@@ -12,15 +12,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add support for new loss and pooling options to the `finetuner.fit` method. ([#664](https://github.com/jina-ai/finetuner/pull/664))
 
-- Add folder for example CSV files ([#663](https://github.com/jina-ai/finetuner/pull/663))
+- Add folder for example CSV files. ([#663](https://github.com/jina-ai/finetuner/pull/663))
+
+- Add communication between remote-ci job and the pr that triggered it. ([#642](https://github.com/jina-ai/finetuner/pull/642))
 
 ### Removed
 
 ### Changed
 
+- Use github token provided by dispatcher when running remote-ci. ([#640](https://github.com/jina-ai/finetuner/pull/640))
+
 ### Fixed
 
 - Use python 3.8 in Github actions. ([#659](https://github.com/jina-ai/finetuner/pull/659))
+
+- Add proper CSV file for image-image case. ([#667](https://github.com/jina-ai/finetuner/pull/667))
 
 ### Docs
 
@@ -29,6 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove ResNet backbone support for clip fine-tuning. ([#662](https://github.com/jina-ai/finetuner/pull/662))
 
 - Add efficientnet b7 as a new image to image search backbone. ([#662](https://github.com/jina-ai/finetuner/pull/662))
+
+- Fix typos, duplicate paragraphs, and wrong formulations. ([#666](https://github.com/jina-ai/finetuner/pull/666)) 
+
+- Add list of articles to README and docs. ([#669](https://github.com/jina-ai/finetuner/pull/669))
 
 
 ## [0.7.0] - 2023-01-18
@@ -54,6 +64,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adjust Finetuner based on API changes for Jina AI Cloud. ([#637](https://github.com/jina-ai/finetuner/pull/637))
 
 - Change default `experiment_name` from current working dir to `default`. ([#637](https://github.com/jina-ai/finetuner/pull/637))
+
+- Use github token provided by dispatcher when running remote-ci. ([#640](https://github.com/jina-ai/finetuner/pull/640))
 
 ### Fixed
 
