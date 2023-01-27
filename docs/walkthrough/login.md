@@ -19,7 +19,7 @@ After {meth}`~finetuner.login()` you will see the following message in your term
 ```
 
  Now, an authentication token is generated which can be read with the {func}`~finetuner.get_token` function.
-If you have been logged in before, the existing token will not be overwritten, however, if you want this to be happen, you can set the `force` attribute in the login function to true.
+If you have been logged in before, the existing token will not be overwritten, however, if you want this to happen, you can set the `force` attribute in the login function to true.
 
 ```
 finetuner.login(force=True)

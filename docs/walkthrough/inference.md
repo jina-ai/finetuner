@@ -1,7 +1,7 @@
 # Inference
 
 Once fine-tuning is finished, it's time to actually use the model.
-You can use the fine-tuned models directly to encode [DocumentArray](https://docarray.jina.ai/) objects or setting up an encoding service.
+You can use the fine-tuned models directly to encode [DocumentArray](https://docarray.jina.ai/) objects or to set up an encoding service.
 When encoding, data can also be provided as a regular list.
 
 ```{admonition} Use FinetunerExecutor inside a Jina Flow
@@ -13,7 +13,9 @@ If you would like to use fine-tuned model inside a Jina Flow as an Executor, che
 
 (integrate-with-list)=
 ## Encoding a List
-Data that is stored in a regular list can be embedded in the same way you would a [DocumentArray](https://docarray.jina.ai/). Since the modality of your input data can be inferred from the model being used, there is no need to provide any additional information besides the content you want to encode. When providing data as a list, the `finetuner.encode` method will return a `np.ndarray` of embeddings, instead of a `docarray.DocumentArray`:
+Data that is stored in a regular list can be embedded in the same way you would embed a [DocumentArray](https://docarray.jina.ai/).
+Since the modality of your input data can be inferred from the model being used, there is no need to provide any additional information besides the content you want to encode.
+When providing data as a list, the `finetuner.encode` method will return a `np.ndarray` of embeddings, instead of a `docarray.DocumentArray`:
 
 ````{tab} Artifact id and token
 ```python
@@ -87,14 +89,14 @@ for text, embedding in zip(texts, embeddings):
 ```{admonition} Inference with ONNX
 :class: tip
 In case you set `to_onnx=True` when calling `finetuner.fit` function,
-please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)`
+please use `model = finetuner.get_model('/path/to/YOUR-MODEL.zip', is_onnx=True)`.
 ```
 
 ```{admonition} Encoding other Modalities
 :class: tip
 Of course you can not only encode texts.
-For encoding a list of images, you can provide uris, e.g.,
-`embeddings = finetuner.encode(model=model, data=['path/to/apple.png'])`
+For encoding a list of images, you can provide URIs, e.g.,
+`embeddings = finetuner.encode(model=model, data=['path/to/apple.png'])`.
 ```
 
 (integrate-with-docarray)=

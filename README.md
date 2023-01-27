@@ -33,10 +33,10 @@ clustering, duplication detection, anomaly detection, or other uses.
 📈 **Performance promise**: Enhance the performance of pre-trained models so that they deliver state-of-the-art performance on 
 domain-specific applications.
 
-🔱 **Simple yet powerful**: Easy access to 40+ mainstream loss functions, 10+ optimisers, layer pruning, weight 
+🔱 **Simple yet powerful**: Easy access to 40+ mainstream loss functions, 10+ optimizers, layer pruning, weight
 freezing, dimensionality reduction, hard-negative mining, cross-modal models, and distributed training. 
 
-☁ **All-in-cloud**: Train using our free GPU infrastructure, manage runs, experiments and artifacts on Jina AI Cloud
+☁ **All-in-cloud**: Train using our free GPU infrastructure, manage runs, experiments, and artifacts on Jina AI Cloud
 without worrying about resource availability, complex integration, or infrastructure costs.
 
 <!-- end elevator-pitch -->
@@ -161,6 +161,18 @@ pip install "finetuner[full]"
 
 > ⚠️ Starting with version 0.5.0, Finetuner computing is performed on Jina AI Cloud. The last local version is `0.4.1`. 
 > This version is still available for installation via `pip`. See [Finetuner git tags and releases](https://github.com/jina-ai/finetuner/releases).
+
+<!-- start finetuner-articles -->
+## Articles about Finetuner
+
+Check out our published blogposts and tutorials to see Finetuner in action!
+
+- [Fine-tuning with Low Budget and High Expectations](https://jina.ai/news/fine-tuning-with-low-budget-and-high-expectations/)
+- [Hype and Hybrids: Search is more than Keywords and Vectors](https://jina.ai/news/hype-and-hybrids-multimodal-search-means-more-than-keywords-and-vectors-2/)
+- [Improving Search Quality for Non-English Queries with Fine-tuned Multilingual CLIP Models](https://jina.ai/news/improving-search-quality-non-english-queries-fine-tuned-multilingual-clip-models/)
+- [How Much Do We Get by Finetuning CLIP?](https://jina.ai/news/applying-jina-ai-finetuner-to-clip-less-data-smaller-models-higher-performance/)
+
+<!-- end finetuner-articles -->
 
 <!-- start support-pitch -->
 ## Support

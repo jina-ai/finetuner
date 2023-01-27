@@ -4,7 +4,7 @@
 Finetuner accepts training data and evaluation data in the form of CSV files 
 or {class}`~docarray.array.document.DocumentArray` objects.
 Because Finetuner follows a [supervised-learning](https://en.wikipedia.org/wiki/Supervised_learning) scheme, each element requires a label that identifies which other elements it should be similar to. 
-If you need to evaluate metrics on separate evaluation data, it is recommended to create a dataset only for evaluation purposes. This can be done in the same way a a training dataset is created, as described below.
+If you need to evaluate metrics on separate evaluation data, it is recommended to create a dataset only for evaluation purposes. This can be done in the same way as a training dataset is created, as described below.
 
 Data can be prepared in two different formats, either as a CSV file, or as a {class}`~docarray.array.document.DocumentArray`. In the sections below, you can see examples which demonstrate how the training datasets should look like for each format.
 
@@ -17,22 +17,22 @@ Currently, `excel`, `excel-tab` and `unix` CSV dialects are supported. To specif
 In cases where you want multiple elements grouped together, you can provide a label in the second column. This way, all elements in the first column that have the same label will be considered similar when training. To indicate that the second column of your CSV file represents a label instead of a second element, set `is_labeled = True` in the `csv_options` argument of the {meth}`~finetuner.fit` function. Your data can then be structured like so:
 
 ```markdown
-Hello!                  greeting-english
-Hi there.               greeting-english
-Good morning.           greeting-english
-I'm (…) sorry!          apologize-english
-I'm sorry to have…      apologize-english
-Please, forgive me!     apologize-english
+Hello!, greeting-english
+Hi there., greeting-english
+Good morning., greeting-english
+I'm (…) sorry!, apologize-english
+I'm sorry to have…, apologize-english
+Please ... forgive me!, apologize-english
 ```
 
 When using image-to-image or mesh-to-mesh retrieval models, images and meshes can be represented as a URI or a path to a file:
 
 ```markdown
-/Users/images/apples/green_apple.jpg    picture of apple
-/Users/images/apples/red_apple.jpg      picture of apple
-https://example.com/apple-styling.jpg   picture of apple
-/Users/images/oranges/orange.jpg        picture of orange
-https://example.com/orange-styling.jpg  picture of orange
+/Users/images/apples/green_apple.jpg, picture of apple
+/Users/images/apples/red_apple.jpg, picture of apple
+https://example.com/apple-styling.jpg, picture of apple
+/Users/images/oranges/orange.jpg, picture of orange
+https://example.com/orange-styling.jpg, picture of orange
 ```
 
 ```diff
@@ -51,23 +51,18 @@ run = finetuner.fit(
 If paths to local images are provided,
 they can be loaded into memory by setting `convert_to_blob = True` (default) in the {class}`~finetuner.data.CSVOptions` object.
 It is important to note that this setting does not cause Internet URLs to be loaded into memory.
-For 3D meshes the option `create_point_clouds` (`True` by default) creates point cloud tensors, which are used as input by the mesh encoding models.
+For 3D meshes, the option `create_point_clouds` (`True` by default) creates point cloud tensors, which are used as input by the mesh encoding models.
 Please note, that local files can not be processed by the Finetuner if you deactivate `convert_to_blob` or `create_point_clouds`.
-```
-
-```{important} 
-If the text field contains commas, it breaks the CSV format since it is interpreted as spanning over multiple columns.
-In this case, please enclose the field in double quotes, such as `field1,"field, 2"`.
 ```
 
 ````
 
 ````{tab} text-to-image search using CLIP
-To prepare data for text-to-image search, each row must contain one uri to an image, and one piece of text. The order that these two are placed does not matter, so long as the ordering is kept consistent for all rows.
+To prepare data for text-to-image search, each row must contain one URI pointing to an image and one piece of text. The order that these two are placed does not matter, so long as the ordering is kept consistent for all rows.
 
 ```markdown
-This is a photo of an apple.                apple.jpg
-This is a black-white photo of an organge.  orange.jpg
+This is a photo of an apple., apple.jpg
+This is a black-white photo of an organge., orange.jpg
 ```
 
 ```{admonition} CLIP model explained
@@ -82,11 +77,11 @@ At the model saving time, you will discover, we are saving two models to your lo
 
 
 ````{tab} two elements per row
-If you want two elements to be semantically close together, they can be placed on the same row as a pair, Each pair will automatically be assigned a distinct label:
+If you want two elements to be semantically close together, they can be placed on the same row as a pair. Each pair will automatically be assigned a distinct label:
 
 ```markdown
-This is an English sentence         Das ist ein englischer Satz
-This is another English sentence    Dies ist ein weiterer englischer Satz
+This is an English sentence, Das ist ein englischer Satz
+This is another English sentence, Dies ist ein weiterer englischer Satz
 ...
 ```
 
@@ -97,24 +92,26 @@ Some sampling methods that require more than two elements per class will not wor
 
 ````
 
+
+```{important} 
+If a text field contains commas, it breaks the CSV format since it is interpreted as spanning over multiple columns.
+In this case, please enclose the field in double quotes, such as `field1,"field, 2"`.
+```
+
 We support the following dialects of CSV:
 
 + `excel` use `,` as delimiter and `\r\n` as lineterminator.
 + `excel-tab` use `\t` as delimiter and `\r\n` as lineterminator.
 + `unix` use `,` as delimiter and `\n` as lineterminator.
 
-```{warning}
-Please remove/replace comma in your data fields if you are using a comma `,` as a delimiter.
-```
-
 
 ## Preparing a DocumentArray
 When providing training data in a DocumentArray, each element is represented as a {class}`~docarray.document.Document`. You should assign a label to each {class}`~docarray.document.Document` inside your {class}`~docarray.array.document.DocumentArray`.
 For most of the models, this is done by adding a `finetuner_label` tag to each document.
 Only for cross-modality (text-to-image) fine-tuning with CLIP, is this not necessary as explained at the bottom of this section.
-{class}`~docarray.document.Document`s containing uris that point to local images can load these images into memory using the {meth}`docarray.document.Document.load_uri_to_blob` function of that {class}`~docarray.document.Document`.
-Similarly, {class}`~docarray.document.Document`s with uris of local 3D meshes, can be converted into point clouds which are stored in the Document by calling {meth}`docarray.document.Document.load_uri_to_point_cloud_tensor`.
-The function requires a number of points, which we recommend to set to 2048.
+{class}`~docarray.document.Document`s containing URIs that point to local images can load these images into memory using the {meth}`docarray.document.Document.load_uri_to_blob` function of that {class}`~docarray.document.Document`.
+Similarly, {class}`~docarray.document.Document`s with URIs of local 3D meshes, can be converted into point clouds which are stored in the Document by calling {meth}`docarray.document.Document.load_uri_to_point_cloud_tensor`.
+The function requires a number of points, which we recommend setting to 2048.
 
 
 ````{tab} text-to-text search
