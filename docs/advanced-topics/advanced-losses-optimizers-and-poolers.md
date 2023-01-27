@@ -25,7 +25,7 @@ For a more detailed explanation on Triplet Loss, as well as how samples are gath
 
 SphereFace loss is a loss function that was first formulated for computer vision and face recognition tasks.
 Finetuner supports two variations of this loss function, `ArcFaceLoss` and `CosFaceLoss`.
-Instead of attempting to minimise the distance between positive pairs and maximise the distance between negative pairs, the SphereFace loss functions compare each sample with an estimate of the center point of each classes embeddings.
+Instead of attempting to minimise the distance between positive pairs and maximise the distance between negative pairs, the SphereFace loss functions compare each sample with an estimate of the center point of each classes' embeddings.
 and attempt to minimize the *angular distance* between the document and its class centroid, and maximise the angular distance between the document and the centroids of the other classes.
 
 ![training](../imgs/SphereFace-training.png)
