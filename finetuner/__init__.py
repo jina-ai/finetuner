@@ -209,17 +209,17 @@ def fit(
         in a batch. For example, if ``batch_size`` is 20, and
         ``num_items_per_class`` is 4, the batch will consist of 4 items for each of
         the 5 classes. Batch size must be divisible by `num_items_per_class`.
-    :param sampler: Determines which sampling method will be used in the case that the
-        data is labeled. By default is `auto`, meaning that the appropriate sampler,
-        will be chosen depending on the loss function used.
+    :param sampler: Determines which sampling method will be used if the
+        data is labeled. Default is `auto`, meaning that the sampler,
+        will be the default for the loss function used.
         Setting to `class` will result in the `ClassSampler` being used, and setting to
         `random` will result in the `RandomSampler` being used.
         If set to `random` then `num_items_per_class` is not used.
     :param loss_optimizer: Name of the optimizer used for fine-tuning to loss function,
         if it is a function that requires an optimizer. Options: `Adadelta`, `Adagrad`,
         `Adam`, `AdamW`, `SparseAdam`, `Adamax`, `ASGD`, `LBFGS`, `NAdam`, `RAdam`,
-        `RMSprop`, `Rprop`, `SGD`. If left as None then optimizer specified in
-        the `optimizer` will be used instead.
+        `RMSprop`, `Rprop`, `SGD`. If left as None then optimizer specified by
+        the `optimizer` argument will be used instead.
     :param loss_optimizer_options: Additional parameters to pass to the optimizer of
         the loss function. The set of applicable parameters is specific to the optimizer
         you choose. Details on the parameters can be found in the `PyTorch documentation
