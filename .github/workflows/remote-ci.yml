@@ -3,7 +3,7 @@ name: Core-CI
 on:
   repository_dispatch:
     types: [triggered_from_core]
-    
+
 env:
   JINA_AUTH_TOKEN: ${{ secrets.JINA_AUTH_TOKEN }}
 
@@ -20,7 +20,7 @@ jobs:
         with:
           repository: jina-ai/finetuner-core
           ref: ${{ github.event.client_payload.branch  }}
-          token: ${{ secrets.FINETUNER_CORE_REPO }}
+          token: ${{ github.event.client_payload.token  }}
       - name: Install requirements
         run: |
           make install package=style
@@ -39,7 +39,7 @@ jobs:
         with:
           repository: jina-ai/finetuner-core
           ref: ${{ github.event.client_payload.branch  }}
-          token: ${{ secrets.FINETUNER_CORE_REPO }}
+          token: ${{ github.event.client_payload.token  }}
       - name: Install requirements
         run: make install package=style
       - name: check black
@@ -57,7 +57,7 @@ jobs:
         with:
           repository: jina-ai/finetuner-core
           ref: ${{ github.event.client_payload.branch  }}
-          token: ${{ secrets.FINETUNER_CORE_REPO }}
+          token: ${{ github.event.client_payload.token  }}
       - name: Install requirements
         run: make install package=style
       - name: check isort
@@ -74,7 +74,7 @@ jobs:
         with:
           repository: jina-ai/finetuner-core
           ref: ${{ github.event.client_payload.branch  }}
-          token: ${{ secrets.FINETUNER_CORE_REPO }}
+          token: ${{ github.event.client_payload.token  }}
       - name: Gather core test paths
         id: gather-core-tests
         run: |
@@ -111,7 +111,7 @@ jobs:
         with:
           repository: jina-ai/finetuner-core
           ref: ${{ github.event.client_payload.branch  }}
-          token: ${{ secrets.FINETUNER_CORE_REPO }}
+          token: ${{ github.event.client_payload.token  }}
       - name: Prepare enviroment
         run: |
           python -m pip install --upgrade pip
@@ -149,7 +149,7 @@ jobs:
         with:
           repository: jina-ai/finetuner-core
           ref: ${{ github.event.client_payload.branch  }}
-          token: ${{ secrets.FINETUNER_CORE_REPO }}
+          token: ${{ github.event.client_payload.token  }}
       - name: Prepare enviroment
         run: |
           python -m pip install --upgrade pip
@@ -183,7 +183,7 @@ jobs:
         with:
           repository: jina-ai/finetuner-core
           ref: ${{ github.event.client_payload.branch  }}
-          token: ${{ secrets.FINETUNER_CORE_REPO }}
+          token: ${{ github.event.client_payload.token  }}
       - name: Prepare enviroment
         run: |
           python -m pip install --upgrade pip pytest pytest-cov
