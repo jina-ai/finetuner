@@ -18,6 +18,8 @@ from finetuner.constants import (
     FREEZE,
     LEARNING_RATE,
     LOSS,
+    LOSS_OPTIMIZER,
+    LOSS_OPTIMIZER_OPTIONS,
     MINER,
     MINER_OPTIONS,
     MODEL_ARTIFACT,
@@ -30,6 +32,7 @@ from finetuner.constants import (
     OPTIMIZER_OPTIONS,
     OUTPUT_DIM,
     PUBLIC,
+    SAMPLER,
     SCHEDULER_STEP,
     VAL_SPLIT,
 )
@@ -257,6 +260,8 @@ class Experiment:
         )
         if kwargs.get(NUM_WORKERS):
             data.num_workers = kwargs.get(NUM_WORKERS)
+        if kwargs.get(SAMPLER):
+            data.sampler = kwargs.get(SAMPLER)
 
         hyper_parameters = config.HyperParametersConfig(
             miner=kwargs.get(MINER),
@@ -277,6 +282,10 @@ class Experiment:
             hyper_parameters.epochs = epochs
         if kwargs.get(SCHEDULER_STEP):
             hyper_parameters.scheduler_step = kwargs.get(SCHEDULER_STEP)
+        if kwargs.get(LOSS_OPTIMIZER):
+            hyper_parameters.loss_optimizer = kwargs.get(LOSS_OPTIMIZER)
+        if kwargs.get(LOSS_OPTIMIZER_OPTIONS):
+            hyper_parameters.loss_optimizer_options = kwargs.get(LOSS_OPTIMIZER_OPTIONS)
 
         run_config = config.RunConfig(
             model=model,

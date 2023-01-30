@@ -18,6 +18,8 @@ from finetuner.constants import (
     HYPER_PARAMETERS,
     LEARNING_RATE,
     LOSS,
+    LOSS_OPTIMIZER,
+    LOSS_OPTIMIZER_OPTIONS,
     LOSS_OPTIONS,
     MINER,
     MINER_OPTIONS,
@@ -32,6 +34,7 @@ from finetuner.constants import (
     OUTPUT_DIM,
     PUBLIC,
     RUN_NAME,
+    SAMPLER,
     SCHEDULER_STEP,
     STARTED,
     STATUS,
@@ -110,6 +113,7 @@ def test_create_run_config():
             NUM_WORKERS: 8,
             NUM_ITEMS_PER_CLASS: 4,
             VAL_SPLIT: 0.0,
+            SAMPLER: 'auto',
         },
         HYPER_PARAMETERS: {
             LOSS: 'TripletMarginLoss',
@@ -122,6 +126,8 @@ def test_create_run_config():
             LEARNING_RATE: 0.001,
             EPOCHS: 20,
             SCHEDULER_STEP: 'batch',
+            LOSS_OPTIMIZER: None,
+            LOSS_OPTIMIZER_OPTIONS: None,
         },
         CALLBACKS: [
             {

@@ -139,7 +139,7 @@ You can continue monitoring the run by checking the status - `finetuner.run.Run.
 
 <!-- #region id="f0b81ec1-2e02-472f-b2f4-27085bb041cc" -->
 ## Evaluating
-Once the run is finished, the metrics calculated by the {class}`~finetuner.callback.EvaluationCallback` are plotted using the {class}`~finetuner.callback.WandBLogger` callback. These plots can be accessed using the link provided in the logs once finetuning starts:
+Once the run is finished, the metrics are calculated by the {class}`~finetuner.callback.EvaluationCallback` and plotted using the {class}`~finetuner.callback.WandBLogger` callback. These plots can be accessed using the link provided in the logs once finetuning starts:
 
 ```bash
            INFO     Finetuning ... 
@@ -222,7 +222,7 @@ please use `model = finetuner.get_model(artifact, is_onnx=True)`
 
 <!-- #region id="38bc9069-0f0e-47c6-8560-bf77ad200774" -->
 ## Before and after
-We can directly compare the results of our fine-tuned model with an untrained multilingual clip model by displaying the matches each model has for the same query, while the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that finetuning increses the quality of the search results:
+We can directly compare the results of our fine-tuned model with an untrained multilingual clip model by displaying the matches each model has for the same query, while the differences between the results of the two models are quite subtle for some queries, the examples below clearly show that fine-tuning increases the quality of the search results:
 <!-- #endregion -->
 
 <!-- #region id="e69fdfb2-6482-45fb-9c4d-41e548ef8f06" -->
