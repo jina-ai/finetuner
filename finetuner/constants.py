@@ -34,6 +34,8 @@ VAL_SPLIT = 'val_split'
 ARTIFACTS_DIR = 'artifacts/'
 MODEL = 'model'
 MODEL_OPTIONS = 'model_options'
+MODEL_ARTIFACT = 'model_artifact'
+ARTIFACT = 'artifact'
 ARTIFACT_ID = 'artifact_id'
 DEFAULT_TAG_KEY = 'finetuner_label'
 # Run status

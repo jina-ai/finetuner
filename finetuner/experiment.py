@@ -22,6 +22,7 @@ from finetuner.constants import (
     LOSS_OPTIMIZER_OPTIONS,
     MINER,
     MINER_OPTIONS,
+    MODEL_ARTIFACT,
     MODEL_OPTIONS,
     NAME,
     NUM_ITEMS_PER_CLASS,
@@ -240,7 +241,8 @@ class Experiment:
         ]
         public = kwargs[PUBLIC] if kwargs.get(PUBLIC) else False
         model = config.ModelConfig(
-            name=model,
+            name=model if not kwargs.get(MODEL_ARTIFACT) else None,
+            artifact=kwargs.get(MODEL_ARTIFACT),
             output_dim=kwargs.get(OUTPUT_DIM),
         )
         if kwargs.get(FREEZE):

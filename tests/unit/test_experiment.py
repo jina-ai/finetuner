@@ -3,6 +3,7 @@ import pytest
 
 from finetuner.callback import TrainingCheckpoint
 from finetuner.constants import (
+    ARTIFACT,
     BATCH_SIZE,
     CALLBACKS,
     CREATED,
@@ -100,6 +101,7 @@ def test_create_run_config():
     expected_config = {
         MODEL: {
             NAME: 'resnet50',
+            ARTIFACT: None,
             FREEZE: False,
             OUTPUT_DIM: None,
             OPTIONS: None,
