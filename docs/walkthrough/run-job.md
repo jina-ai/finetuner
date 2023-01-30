@@ -58,7 +58,7 @@ print(f'Run status: {run2.status()}')
 ```{admonition} Continue training requires a model parameter 
 :class: hint
 When you want to continue training, you still need to provide the `model` parameter
-beside the `model_artifact` parameter for Finetuner to correctly configure the new run.
+as well as the `model_artifact` parameter for Finetuner to correctly configure the new run.
 ```
 
 ## Advanced configurations
