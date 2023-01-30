@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add support for new loss and pooling options to the `finetuner.fit` method. ([#664](https://github.com/jina-ai/finetuner/pull/664))
+
 - Add folder for example CSV files. ([#663](https://github.com/jina-ai/finetuner/pull/663))
 
 - Add communication between remote-ci job and the pr that triggered it. ([#642](https://github.com/jina-ai/finetuner/pull/642))
@@ -27,6 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add proper CSV file for image-image case. ([#667](https://github.com/jina-ai/finetuner/pull/667))
 
 ### Docs
+
+- Add page on loss and pooling to `advanced-topics`. ([#664](https://github.com/jina-ai/finetuner/pull/664))
 
 - Remove ResNet backbone support for clip fine-tuning. ([#662](https://github.com/jina-ai/finetuner/pull/662))
 

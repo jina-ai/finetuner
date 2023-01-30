@@ -168,6 +168,9 @@ class Finetuner:
         csv_options: Optional[CSVOptions] = None,
         public: bool = False,
         num_items_per_class: int = 4,
+        sampler: str = 'auto',
+        loss_optimizer: Optional[str] = None,
+        loss_optimizer_options: Optional[Dict[str, Any]] = None,
     ) -> Run:
         """Create a run.
 
@@ -206,6 +209,9 @@ class Finetuner:
             csv_options=csv_options,
             public=public,
             num_items_per_class=num_items_per_class,
+            sampler=sampler,
+            loss_optimizer=loss_optimizer,
+            loss_optimizer_options=loss_optimizer_options,
         )
 
     @login_required

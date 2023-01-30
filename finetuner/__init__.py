@@ -131,6 +131,9 @@ def fit(
     csv_options: Optional[CSVOptions] = None,
     public: bool = False,
     num_items_per_class: int = 4,
+    sampler: str = 'auto',
+    loss_optimizer: Optional[str] = None,
+    loss_optimizer_options: Optional[Dict[str, Any]] = None,
 ) -> Run:
     """Create a Finetuner :class:`Run`, calling this function will submit a fine-tuning
     job to the Jina AI Cloud.
@@ -206,6 +209,21 @@ def fit(
         in a batch. For example, if ``batch_size`` is 20, and
         ``num_items_per_class`` is 4, the batch will consist of 4 items for each of
         the 5 classes. Batch size must be divisible by `num_items_per_class`.
+    :param sampler: Determines which sampling method will be used if the
+        data is labeled. Default is `auto`, meaning that the sampler,
+        will be the default for the loss function used.
+        Setting to `class` will result in the `ClassSampler` being used, and setting to
+        `random` will result in the `RandomSampler` being used.
+        If set to `random` then `num_items_per_class` is not used.
+    :param loss_optimizer: Name of the optimizer used for fine-tuning to loss function,
+        if it is a function that requires an optimizer. Options: `Adadelta`, `Adagrad`,
+        `Adam`, `AdamW`, `SparseAdam`, `Adamax`, `ASGD`, `LBFGS`, `NAdam`, `RAdam`,
+        `RMSprop`, `Rprop`, `SGD`. If left as None then optimizer specified by
+        the `optimizer` argument will be used instead.
+    :param loss_optimizer_options: Additional parameters to pass to the optimizer of
+        the loss function. The set of applicable parameters is specific to the optimizer
+        you choose. Details on the parameters can be found in the `PyTorch documentation
+        <https://pytorch.org/docs/stable/optim.html>`_.
 
     .. note::
        Unless necessary, please stick with `device="cuda"`, `cpu` training could be
@@ -239,6 +257,9 @@ def fit(
         csv_options=csv_options,
         public=public,
         num_items_per_class=num_items_per_class,
+        sampler=sampler,
+        loss_optimizer=loss_optimizer,
+        loss_optimizer_options=loss_optimizer_options,
     )
 
 
