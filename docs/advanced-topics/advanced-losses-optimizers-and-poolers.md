@@ -94,12 +94,14 @@ The `GeM` pooler has two adjustable parameters, a scaling parameter `p` and an e
 At `p = 1`, the `GeM` pooler will act like an average pooler.
 As `p` increases, more weight is given to larger values, making it act more like max pooling.
 `eps` is used to clamp values to be slightly above 0, altering this won't result in much change to the performance.
-By default, `p=3` and `eps=1e-6`, to adjust these parameters you can provide a dictionary as the argument to `pooler_options` like so:
-
+By default, `p=3` and `eps=1e-6`, you can specify the pooler and adjust these parameters in a dictionary provided to the `model_options` parameter:
 ```diff
 run = finetuner.fit(
     ...,
-+   pooler='GeM'
-+   pooler_options={'p': 2.4, 'eps': 1e-5}
+    model_options = {
+        ...
++       'pooler': 'GeM',
++       'pooler_options': {'p': 2.4, 'eps': 1e-5}
+    }
 )
 ```
