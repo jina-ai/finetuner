@@ -29,12 +29,12 @@ if __name__ == '__main__':
         install_requires=[
             'docarray[common]>=0.20.1',
             'trimesh==3.16.4',
-            'finetuner-stubs==0.12.4rc13',
+            'finetuner-stubs==0.12.4',
             'jina-hubble-sdk==0.24.0',
         ],
         extras_require={
             'full': [
-                'finetuner-commons==0.12.4rc13',
+                'finetuner-commons==0.12.4',
             ],
             'test': [
                 'black==22.3.0',
