@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Use github token provided by dispatcher when running remote-ci. ([#640](https://github.com/jina-ai/finetuner/pull/640))
 
-- Use github token provided by dispatcher when running remote-ci. ([#640](https://github.com/jina-ai/finetuner/pull/640))
+- Bump stubs and commons to 0.12.4 and release 0.7.1. ([#671](https://github.com/jina-ai/finetuner/pull/671))
 
 ### Fixed
 
