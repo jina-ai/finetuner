@@ -30,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add proper CSV file for image-image case. ([#667](https://github.com/jina-ai/finetuner/pull/667))
 
+- Fix problems with login function in notebooks by bumping hubble version. ([#672](https://github.com/jina-ai/finetuner/pull/672))
+
 ### Docs
 
 - Add page on loss and pooling to `advanced-topics`. ([#664](https://github.com/jina-ai/finetuner/pull/664))
