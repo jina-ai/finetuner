@@ -17,8 +17,12 @@ from finetuner.experiment import Experiment
 
 def test_create_experiment(client_mocker, name='name'):
     response = client_mocker.create_experiment(name)
-    assert response['url'] == client_mocker._construct_url(
-        client_mocker._base_url, API_VERSION, EXPERIMENTS
+    assert (
+        response['url']
+        == client_mocker._construct_url(
+            client_mocker._base_url, API_VERSION, EXPERIMENTS
+        )
+        + '/'
     )
     assert response['method'] == POST
     assert response['json_data'][NAME] == name

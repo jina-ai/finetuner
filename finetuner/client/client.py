@@ -85,7 +85,7 @@ class FinetunerV1Client(_BaseClient):
 
         :return: Experiments to be deleted.
         """
-        url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS)
+        url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS) + '/'
         return self._handle_request(url=url, method=DELETE)
 
     """ Run API """
