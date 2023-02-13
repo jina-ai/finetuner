@@ -54,9 +54,13 @@ def test_delete_experiment(client_mocker, name='name'):
 
 def test_delete_experiments(client_mocker):
     sent_request = client_mocker.delete_experiments()
-    assert sent_request['url'] == client_mocker._construct_url(
-        client_mocker._base_url, API_VERSION, EXPERIMENTS
-    ) + '/'
+    assert (
+        sent_request['url']
+        == client_mocker._construct_url(
+            client_mocker._base_url, API_VERSION, EXPERIMENTS
+        )
+        + '/'
+    )
     assert sent_request['method'] == DELETE
 
 
