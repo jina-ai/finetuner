@@ -30,7 +30,7 @@ if __name__ == '__main__':
             'docarray[common]>=0.20.1',
             'trimesh==3.16.4',
             'finetuner-stubs==0.12.4rc13',
-            'jina-hubble-sdk==0.24.0',
+            'jina-hubble-sdk==0.33.1',
         ],
         extras_require={
             'full': [
