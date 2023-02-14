@@ -27,14 +27,14 @@ if __name__ == '__main__':
         zip_safe=False,
         setup_requires=['setuptools>=18.0', 'wheel'],
         install_requires=[
-            'docarray[common]>=0.20.1',
+            'docarray[common]>=0.21.0',
             'trimesh==3.16.4',
-            'finetuner-stubs==0.12.4rc13',
-            'jina-hubble-sdk==0.24.0',
+            'finetuner-stubs==0.12.5',
+            'jina-hubble-sdk==0.33.1',
         ],
         extras_require={
             'full': [
-                'finetuner-commons==0.12.4rc13',
+                'finetuner-commons==0.12.5',
             ],
             'test': [
                 'black==22.3.0',
