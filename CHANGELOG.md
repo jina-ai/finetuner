@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Removed
+
+### Changed
+
+### Fixed
+
+### Docs
+
+
+## [0.7.1] - 2023-02-14
+
+### Added
+
 - Add support for new loss and pooling options to the `finetuner.fit` method. ([#664](https://github.com/jina-ai/finetuner/pull/664))
 
 - Add folder for example CSV files. ([#663](https://github.com/jina-ai/finetuner/pull/663))
