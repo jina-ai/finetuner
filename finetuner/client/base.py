@@ -25,7 +25,6 @@ class _BaseClient:
 
     def __init__(self):
         self._base_url = os.environ.get(HOST)
-        self._session = self._get_client_session()
         self.hubble_client = hubble.Client(max_retries=None, jsonify=True)
         self.hubble_user_id = self._get_hubble_user_id()
 
@@ -36,13 +35,6 @@ class _BaseClient:
             pass
         hubble_user_id = user_info[DATA][HUBBLE_USER_ID]
         return hubble_user_id
-
-    @staticmethod
-    def _get_client_session() -> _HeaderPreservingSession:
-        session = _HeaderPreservingSession(trusted_domains=[])
-        api_token = TOKEN_PREFIX + str(hubble.Auth.get_auth_token())
-        session.headers.update({CHARSET: UTF_8, AUTHORIZATION: api_token})
-        return session
 
     @staticmethod
     def _construct_url(*args) -> str:
@@ -65,14 +57,17 @@ class _BaseClient:
         :param stream: If the request is a streaming request set to True.
         :return: Response to the request.
         """
-        response = self._session.request(
-            url=url,
-            method=method,
-            json=json_data,
-            params=params,
-            allow_redirects=True,
-            stream=stream,
-        )
+        with _HeaderPreservingSession(trusted_domains=[]) as session:
+            api_token = TOKEN_PREFIX + str(hubble.Auth.get_auth_token())
+            session.headers.update({CHARSET: UTF_8, AUTHORIZATION: api_token})
+            response = session.request(
+                url=url,
+                method=method,
+                json=json_data,
+                params=params,
+                allow_redirects=True,
+                stream=stream,
+            )
         if not response.ok:
             raise FinetunerServerError(
                 message=response.reason,

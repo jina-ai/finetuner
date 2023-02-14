@@ -184,6 +184,7 @@ class FinetunerV1Client(_BaseClient):
             run_name,
             LOGS,
         )
+        print(f'\n\n{url}\n\n')
         return self._handle_request(url=url, method=GET)
 
     def stream_run_logs(self, experiment_name: str, run_name: str) -> Iterator[str]:
