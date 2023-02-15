@@ -11,6 +11,11 @@
 ```
 
 ```{include} ../README.md
+:start-after: <!-- start finetuner-articles -->
+:end-before: <!-- end finetuner-articles -->
+```
+
+```{include} ../README.md
 :start-after: <!-- start support-pitch -->
 :end-before: <!-- end support-pitch -->
 ```
@@ -30,6 +35,7 @@ walkthrough/index
 
 advanced-topics/budget
 advanced-topics/negative-mining
+advanced-topics/advanced-losses-optimizers-and-poolers
 advanced-topics/using-callbacks
 advanced-topics/linear-probe
 advanced-topics/finetuner-executor
