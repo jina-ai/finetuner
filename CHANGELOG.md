@@ -59,6 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add list of articles to README and docs. ([#669](https://github.com/jina-ai/finetuner/pull/669))
 
+- Removed section on GeM pooling from advanced topics. ([#676](https://github.com/jina-ai/finetuner/pull/676))
+
 
 ## [0.7.0] - 2023-01-18
 
