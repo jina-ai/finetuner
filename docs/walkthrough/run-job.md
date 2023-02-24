@@ -87,6 +87,8 @@ run = finetuner.fit(
     loss='TripletMarginLoss', # Use CLIPLoss for CLIP fine-tuning.
     miner='TripletMarginMiner',
     miner_options={'margin': 0.2}, # Additional options for the miner constructor.
+    scheduler='linear', # Use a linear scheduler to adjust the learning rate.
+    scheduler_options={}, # Additional options for the scheduler.
     optimizer='Adam',
     optimizer_options={'weight_decay': 0.01}, # Additional options for the optimizer.
     learning_rate = 1e-4,
@@ -134,8 +136,19 @@ Otherwise, it could happen, that your model overfits on the training data and fo
 Similarly, two or three epochs (number of passes thorough the training data) are often enough for a fine-tuning job. 
 ```
 
+### Configuration of a learning rate scheduler
+You can configure Finetuner to use a learning rate scheduler.
+The scheduler is used to adjust the learning rate during training.
+If no scheduler is configured, the learning rate is constant during training.
+When a scheduler is configured, the learning rate is adjusted after each batch by default.
+Alternatively, one can set `scheduler_optons = {'scheduler_step': 'epoch'}` to adjust the learning rate after each epoch.
+A scheduler usually has a warm-up phase, where the learning rate is increasing. After that most learning rate schedulers decrease the learning rate.
+For example, the `linear` scheduler decreases the learning rate linearly from the initial learning rate:
+![Learning Rate](https://user-images.githubusercontent.com/6599259/221238105-ee294b7e-544a-4de8-8c92-0c61275f29bb.png)
+The length of the warm-up phase is configured via the `num_warmup_steps` option inside `scheduler_optons`.
+By default, it is set to zero.
 
-### Construction of Training Batches
+### Construction of training batches
 
 The training of your model is done in batches.
 The `batch_size` parameter determines the number of items per batch.
