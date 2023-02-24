@@ -3,7 +3,8 @@
 
 Finetuner accepts training data and evaluation data in the form of CSV files 
 or {class}`~docarray.array.document.DocumentArray` objects.
-Because Finetuner follows a [supervised-learning](https://en.wikipedia.org/wiki/Supervised_learning) scheme, each element requires a label that identifies which other elements it should be similar to. 
+Because Finetuner follows a [supervised-learning](https://en.wikipedia.org/wiki/Supervised_learning) scheme, each element must belong to a group of similar elements,
+this is useually denoted by these similar elements all having the same label. 
 If you need to evaluate metrics on separate evaluation data, it is recommended to create a dataset only for evaluation purposes. This can be done in the same way as a training dataset is created, as described below.
 
 Data can be prepared in two different formats, either as a CSV file, or as a {class}`~docarray.array.document.DocumentArray`. In the sections below, you can see examples which demonstrate how the training datasets should look like for each format.
@@ -57,6 +58,21 @@ Please note, that local files can not be processed by the Finetuner if you deact
 
 ````
 
+````{tab} Unlabeled data
+In the case that you do not have labels for your document, data that should be semantically close together can be placed on the same row as a pair.
+All documents grouped this way will then be assigned a distinct label.
+
+```markdown
+This is an English sentence, Das ist ein englischer Satz
+This is an English sentence, Dit is een Engelse zin
+This is another English sentence, Dies ist ein weiterer englischer Satz
+...
+```
+In the example above, `This is an English sentence` is used on two lines, this will result in only one {class}`~docarray.document.Document` with that text being created but,
+`This is an English sentence`, `Das ist ein englischer Satz` and `Dit is een Engelse zin` will all be given the same label.
+
+````
+
 ````{tab} text-to-image search using CLIP
 To prepare data for text-to-image search, each row must contain one URI pointing to an image and one piece of text. The order that these two are placed does not matter, so long as the ordering is kept consistent for all rows.
 
@@ -74,24 +90,6 @@ At the model saving time, you will discover, we are saving two models to your lo
 ```
 
 ````
-
-
-````{tab} two elements per row
-If you want two elements to be semantically close together, they can be placed on the same row as a pair. Each pair will automatically be assigned a distinct label:
-
-```markdown
-This is an English sentence, Das ist ein englischer Satz
-This is another English sentence, Dies ist ein weiterer englischer Satz
-...
-```
-
-```{warning}
-When reading in files constructed in this way, a unique label is generated for each pair.
-Some sampling methods that require more than two elements per class will not work because each class in the dataset will only contain a single pair of elements.
-```
-
-````
-
 
 ```{important} 
 If a text field contains commas, it breaks the CSV format since it is interpreted as spanning over multiple columns.
