@@ -77,3 +77,13 @@ As an example, the figure below shows the domains of the 10 classes of the [FMNI
 Each color represents a different class. You can see how all of the loss functions are able to separate some of the classes from the others,
 but struggle to separate the green, blue, pink, purple and red classes,
 with `TripletMarginLoss` sperarating them the least, and `ArcFaceLoss` separating them the most.
+
+### Choosing an optimizer
+
+While `ArcFaceLoss` and `CosFaceLoss` are capable of outperforming `TripletMarginLoss`, There are some cases where the opposite is the case.  
+In cases where each class contains very few examples of each class, but many classes, `ArcFaceLoss` and `CosFaceLoss` struggle to separate every class,
+and doesn't perform as well as `TripletMarginLss`.  
+Another case where `ArcFaceLoss` and `CosFaceLoss` struggle is when attempting to embed documents of a class they were not trained on. 
+Since these loss functions operate by creating centroids, and then attempting to 'classify' input documents by embedding them in a space close to a centroid, 
+data that does not belong to a class with an existing centroid may erroneously be given an embedding similar to that of a class it does not belong to.  
+In cases such as these, `TripletMarginLoss` may result in a greater improvement in performance thatn `ArcFaceLoss` or `CosFaceLoss`.

@@ -7,20 +7,21 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.14.1
   kernelspec:
-    display_name: Python 3
+    display_name: .venv
+    language: python
     name: python3
 ---
 
 <!-- #region id="p8jc8EyfruKw" -->
-# Image-to-Image Search via ResNet50
+# Image-to-Image Search with TripletMarginLoss
 
 <a href="https://colab.research.google.com/drive/1QuUTy3iVR-kTPljkwplKYaJ-NTCgPEc_?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
-Searching visually similar images with image queries is a very popular use case. However, using pre-trained models does not deliver the best results – the models are trained on general data that lack the particularities of your specific task. Here's where Finetuner comes in! It enables you to accomplish this easily.
+Using image queries to search for visually similar images is a very popular use case. However, pre-trained models do not deliver the best results. Models are trained on general data that lack knowledge related to your specific task. Here's where Finetuner comes in! It enables you to easily add task-specific knowledge to a model.
 
 This guide will demonstrate how to fine-tune a ResNet model for image-to-image retrieval.
 
-*Note, please consider switching to GPU/TPU Runtime for faster inference.*
+*Note, please switch to a GPU/TPU Runtime or this will be extremely slow!*
 
 ## Install
 <!-- #endregion -->
@@ -32,7 +33,7 @@ This guide will demonstrate how to fine-tune a ResNet model for image-to-image r
 <!-- #region id="7EliQdGCsdL0" -->
 ## Task
 
-More specifically, we will fine-tune ResNet50 on [Totally Looks Like Dataset](https://sites.google.com/view/totally-looks-like-dataset).
+More specifically, we will fine-tune ResNet50 on the [Totally Looks Like Dataset](https://sites.google.com/view/totally-looks-like-dataset).
 The dataset consists of 6016 pairs of images (12032 in total).
 
 The dataset consists of pairs of images, these are the positive pairs. Negative pairs are constructed by taking two different images, i.e. images that are not in the same pair initially. Following this approach, we construct triplets and use the `TripletLoss`. You can find more in the [how Finetuner works](https://finetuner.jina.ai/get-started/how-it-works/#contrastive-metric-learning) section.
@@ -44,11 +45,10 @@ After fine-tuning, the embeddings of positive pairs are expected to be pulled cl
 ## Data
 
 Our journey starts locally. We have to prepare the data and push it to the Jina AI Cloud and Finetuner will be able to get the dataset by its name. For this example,
-we already prepared the data, and we'll provide the names of training data (`tll-train-data`) directly to Finetuner.
-
+we've already prepared the data, and we'll provide Finetuner with just the names of training, query and index dataset (e.g. `tll-train-data`).
 ```{important} 
-We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` and Finetuner will do the job for you.
-When working with documents where images are stored locally, please call `doc.load_uri_to_blob()` to reduce network transmission and speed up training.
+You don't have to push your data to the Jina AI Cloud before fine-tuning. Instead of a name, you can provide a `DocumentArray` and Finetuner will do upload your data directly.
+Important: If your documents refer to locally stored images, please call `doc.load_uri_to_blob()` before starting Finetuner to reduce network transmission and speed up training.
 ```
 <!-- #endregion -->
 
@@ -69,7 +69,7 @@ train_data.summary()
 
 <!-- #region id="mUoY1jq0klwk" -->
 ## Backbone model
-Now let's see which backbone models we can use. You can see available models by calling `finetuner.describe_models()`.
+Now let's see which backbone models we can use. You can see all the available models by calling `finetuner.describe_models()`.
 
 
 For this example, we're gonna go with `resnet50`.
@@ -78,7 +78,7 @@ For this example, we're gonna go with `resnet50`.
 <!-- #region id="xA7IIhIOk0h0" -->
 ## Fine-tuning
 
-Now that we have the training and evaluation datasets loaded as `DocumentArray`s and selected our model, we can start our fine-tuning run.
+Now that we have selected our model and loaded the training and evaluation datasets as `DocumentArray`s, we can start our fine-tuning run.
 <!-- #endregion -->
 
 ```python id="qGrHfz-2kVC7"

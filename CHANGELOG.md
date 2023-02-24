@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
-- Add notebook to demonstrate use of `ArcFaceLoss`. ([#680]()https://github.com/jina-ai/finetuner/pull/680)
+- Add notebook to demonstrate use of `ArcFaceLoss`. ([#680](https://github.com/jina-ai/finetuner/pull/680))
 
 
 ## [0.7.1] - 2023-02-15
