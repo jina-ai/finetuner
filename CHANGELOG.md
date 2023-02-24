@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update documentation on creating training data. ([#678](https://github.com/jina-ai/finetuner/pull/678))
 
+
 ## [0.7.1] - 2023-02-15
 
 ### Added

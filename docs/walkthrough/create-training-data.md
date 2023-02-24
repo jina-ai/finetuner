@@ -69,7 +69,7 @@ This is another English sentence, Dies ist ein weiterer englischer Satz
 ...
 ```
 In the example above, `This is an English sentence` is used on two lines, this will result in only one {class}`~docarray.document.Document` with that text being created but,
-`This is an English sentence`, `Das ist ein englischer Satz` and `Dit is een Engelse zin` will all be given the same label.
+`This is an English sentence`, `Das ist ein englischer Satz` and `Dit is een Engelse zin` will all be given the same label. 
 
 ````
 
