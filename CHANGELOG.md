@@ -14,10 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Remove duplicated documents when parsing unlabeled CSV files. ([#678](https://github.com/jina-ai/finetuner/pull/678))
+
 ### Fixed
 
 ### Docs
 
+- Update documentation on creating training data. ([#678](https://github.com/jina-ai/finetuner/pull/678))
 
 ## [0.7.1] - 2023-02-15
 
