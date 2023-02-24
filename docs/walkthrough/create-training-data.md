@@ -4,7 +4,7 @@
 Finetuner accepts training data and evaluation data in the form of CSV files 
 or {class}`~docarray.array.document.DocumentArray` objects.
 Because Finetuner follows a [supervised-learning](https://en.wikipedia.org/wiki/Supervised_learning) scheme, each element must belong to a group of similar elements,
-this is useually denoted by these similar elements all having the same label. 
+this is usually denoted by these similar elements all having the same label. 
 If you need to evaluate metrics on separate evaluation data, it is recommended to create a dataset only for evaluation purposes. This can be done in the same way as a training dataset is created, as described below.
 
 Data can be prepared in two different formats, either as a CSV file, or as a {class}`~docarray.array.document.DocumentArray`. In the sections below, you can see examples which demonstrate how the training datasets should look like for each format.
