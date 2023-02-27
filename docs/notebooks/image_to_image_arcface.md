@@ -19,8 +19,8 @@ jupyter:
 
 Using image queries to search for visually similar images is a very popular use case. However, pre-trained models do not deliver the best results. Models are trained on general data that lack knowledge related to your specific task. Here's where Finetuner comes in! It enables you to easily add task-specific knowledge to a model.
 
-Where our [previous guide](https://finetuner.jina.ai/notebooks/image_to_image/) showed off finetuning with `TripletMarginLoss`, 
-this guide will perform finetuning on a dataset with fewer classes, and more documents per class. To improve our performance in this case, we will use `ArcFaceLoss` as our loss function this time.
+Where [another guide](https://finetuner.jina.ai/notebooks/image_to_image/) showed off fine-tuning with `TripletMarginLoss`, 
+this guide will perform fine-tuning on a dataset with fewer classes, more documents per class and with training data that contains examples from every class in the evaluation data. To improve our performance in this case, we will use `ArcFaceLoss` as our loss function this time.
 
 *Note, please switch to a GPU/TPU Runtime or this will be extremely slow!*
 
@@ -75,7 +75,7 @@ train_data.summary()
 Now let's see which backbone models we can use. You can see all the available models by calling `finetuner.describe_models()`.
 
 
-For this example, we're gonna go with `resnet50`, a model that has been trained on the [ImageNet](https://www.image-net.org/) classification task. In the next step, finetuner will adapt this model, turning it into an embedding model instead.
+For this example, we're gonna go with `resnet50`, a model that has been trained on the [ImageNet](https://www.image-net.org/) classification task. In the next step, Finetuner will adapt this model, turning it into an embedding model instead.
 <!-- #endregion -->
 
 <!-- #region id="xA7IIhIOk0h0" -->
@@ -113,7 +113,7 @@ Let's understand what this piece of code does:
 but strongly recommended so that you can access and retain information about your run.
 * We specify the training data (`train_data`).
 * We set `ArcFaceLoss` as our loss function.
-* AWe use `finetuner.callback.EvaluationCallback` for evaluation and specify the query and index datasets for it. `finetuner/stanford-cars-query` and `finetuner/stanford-cars-index` are two subsamples of the Stanford cars dataset that have no overlap with each other or our training data.
+* We use `finetuner.callback.EvaluationCallback` for evaluation and specify the query and index datasets for it. `finetuner/stanford-cars-query` and `finetuner/stanford-cars-index` are two subsamples of the Stanford cars dataset that have no overlap with each other or our training data.
 * We set the number of training epochs (`epochs`) and the learning rate (`learning_rate`).
 <!-- #endregion -->
 
@@ -215,7 +215,7 @@ query.match(index_data, limit=10, metric='cosine')
 
 <!-- #region id="irvn0igWdLOf" -->
 ## Before and after
-We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how finetuning affects the results of a search. Each class of the Stanford cars dataset contains images for a single model of car. Therefore, we can define a 'good' search result as an image of a car that is the same model as the car in the query image, and not necessarily images of cars that are taken at a similar angle, or are the same colour.  
+We can directly compare the results of our fine-tuned model with its zero-shot counterpart to get a better idea of how fine-tuning affects the results of a search. Each class of the Stanford cars dataset contains images for a single model of car. Therefore, we can define a 'good' search result as an image of a car that is the same model as the car in the query image, and not necessarily images of cars that are taken at a similar angle, or are the same colour.  
 The example below shows exactly this:
 <!-- #endregion -->
 
