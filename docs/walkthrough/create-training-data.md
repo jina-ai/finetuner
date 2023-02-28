@@ -11,8 +11,12 @@ Data can be prepared in two different formats, either as a CSV file, or as a {cl
 
 ## Preparing CSV Files
 
-To record data in a CSV file, the contents of each element are stored plainly, with each row either representing one labeled item, a pair of items that should be semantically similar, or two items of different modalities in the case that a CLIP model is being used. The provided CSV files are then parsed and a {class}`~docarray.array.document.DocumentArray` is constructed containing the elements within the CSV file.
-Currently, `excel`, `excel-tab` and `unix` CSV dialects are supported. To specify which dialect to use, provide a {class}`~finetuner.data.CSVOptions` object with `dialect=chosen_dialect` as the `csv_options` argument to the {meth}`~finetuner.fit` function. The list of all options for reading CSV files can be found in the description of the {class}`~finetuner.data.CSVOptions` class.
+To record data in a CSV file, the contents of each element are stored plainly, with each row either representing one labeled item, 
+a pair of items that should be semantically similar, or two items of different modalities in the case that a CLIP model is being used.
+The provided CSV files are then parsed and a {class}`~docarray.array.document.DocumentArray` is constructed containing the elements within the CSV file.
+Currently, `excel`, `excel-tab` and `unix` CSV dialects are supported.
+To specify which dialect to use, provide a {class}`~finetuner.data.CSVOptions` object with `dialect=chosen_dialect` as the `csv_options` argument to the {meth}`~finetuner.fit` function.
+The list of all options for reading CSV files can be found in the description of the {class}`~finetuner.data.CSVOptions` class.
 
 ````{tab} Labeled data
 In cases where you want multiple elements grouped together, you can provide a label in the second column. This way, all elements in the first column that have the same label will be considered similar when training. To indicate that the second column of your CSV file represents a label instead of a second element, set `is_labeled = True` in the `csv_options` argument of the {meth}`~finetuner.fit` function. Your data can then be structured like so:
@@ -58,9 +62,10 @@ Please note, that local files can not be processed by the Finetuner if you deact
 
 ````
 
-````{tab} Unlabeled data
-In the case that you do not have labels for your document, data that should be semantically close together can be placed on the same row as a pair.
-All documents grouped this way will then be assigned a distinct label.
+````{tab} Query-Document relations
+In the case that you do not have explicitly annotated labels for your documents, but rather a set of query-document pairs which express that a document is relevant to a query, 
+you can provide a CSV file where each pairs is placed on one row.
+Finetuner resolves this format by assigning all documents related to a specific query with the same label.
 
 ```markdown
 This is an English sentence, Das ist ein englischer Satz

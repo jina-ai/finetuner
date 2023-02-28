@@ -169,10 +169,6 @@ def load_finetune_data_from_csv(
                     queries[col2] = queries[col1]
                     d2.tags[DEFAULT_TAG_KEY] = queries[col1]
                     # only yield d2
-                elif col2 in queries:
-                    queries[col1] = queries[col2]
-                    d1.tags[DEFAULT_TAG_KEY] = queries[col1]
-                    # only yield d1
                 else:
                     queries[col1] = artificial_label
                     queries[col2] = artificial_label
