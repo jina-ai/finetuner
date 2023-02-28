@@ -137,6 +137,7 @@ Similarly, two or three epochs (number of passes thorough the training data) are
 ```
 
 ### Configuration of a learning rate scheduler
+
 You can configure Finetuner to use a learning rate scheduler.
 The scheduler is used to adjust the learning rate during training.
 If no scheduler is configured, the learning rate is constant during training.

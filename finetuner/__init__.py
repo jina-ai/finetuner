@@ -194,10 +194,10 @@ def fit(
         subpackage for available options, or run `finetuner.list_callbacks()`.
     :param scheduler: Name of a scheduler to use for learning rate scheduling.
         Supported types are: `linear`, `cosine`, `cosine_with_restarts`, `polynomial`,
-        `constant`, `constant_with_warmup`
+        `constant`, `constant_with_warmup`.
     :param scheduler_options: Dictionary of additional parameters to pass to the
         scheduler: `num_warmup_steps`, `num_training_steps`, and `scheduler_step`
-        (either `batch` or `epoch`)
+        (either `batch` or `epoch`).
     :param freeze: If set to `True`, will freeze all layers except the last one.
     :param output_dim: The expected output dimension as `int`.
         If set, will attach a projection head.
