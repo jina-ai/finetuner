@@ -33,7 +33,8 @@ from finetuner.constants import (
     OUTPUT_DIM,
     PUBLIC,
     SAMPLER,
-    SCHEDULER_STEP,
+    SCHEDULER,
+    SCHEDULER_OPTIONS,
     VAL_SPLIT,
 )
 from finetuner.data import build_finetuning_dataset
@@ -280,8 +281,10 @@ class Experiment:
         if kwargs.get(EPOCHS):
             epochs = kwargs.get(EPOCHS)
             hyper_parameters.epochs = epochs
-        if kwargs.get(SCHEDULER_STEP):
-            hyper_parameters.scheduler_step = kwargs.get(SCHEDULER_STEP)
+        if kwargs.get(SCHEDULER):
+            hyper_parameters.scheduler = kwargs.get(SCHEDULER)
+        if kwargs.get(SCHEDULER_OPTIONS):
+            hyper_parameters.scheduler_options = kwargs.get(SCHEDULER_OPTIONS)
         if kwargs.get(LOSS_OPTIMIZER):
             hyper_parameters.loss_optimizer = kwargs.get(LOSS_OPTIMIZER)
         if kwargs.get(LOSS_OPTIMIZER_OPTIONS):
