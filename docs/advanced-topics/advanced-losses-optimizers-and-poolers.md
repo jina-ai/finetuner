@@ -80,7 +80,7 @@ with `TripletMarginLoss` sperarating them the least, and `ArcFaceLoss` separatin
 
 ## Pooling layers
 
-Pooling layers are layers in a machine learning model that are used to reduce the dimensionality of data. This is usually done for one of two reasons: to remove unnecessary information contained within an embedding of a larger size, or when a model outputs multiple embeddings and only one embedding is needed. Typically this is done in two ways, average pooling or max pooling.
+Pooling layers are layers in a machine learning model that are used to reduce the dimensionality of data. This is usually done for one of two reasons: to remove unnecessary information contained within an embedding of a larger size, or when a model outputs multiple embeddings and only one embedding is needed. Typically, there are two ways to do this: average pooling or max pooling.
 While a model may have many pooling layers within it, it is unwise to replace a pooling layer with another unless it is the last layer of the model.
 
 ### GeM pooling
