@@ -10,17 +10,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add support for learning rate schedulers. ([#679](https://github.com/jina-ai/finetuner/pull/679))
+
 ### Removed
 
 ### Changed
 
 - Remove duplicated documents when parsing unlabeled CSV files. ([#678](https://github.com/jina-ai/finetuner/pull/678))
 
+- The `scheduler_step` options is now part of `scheduler_options`. ([#679](https://github.com/jina-ai/finetuner/pull/679))
+
 ### Fixed
 
 ### Docs
 
 - Update documentation on creating training data. ([#678](https://github.com/jina-ai/finetuner/pull/678))
+
+- Add notebook to demonstrate use of `ArcFaceLoss`. ([#680](https://github.com/jina-ai/finetuner/pull/680))
 
 
 ## [0.7.1] - 2023-02-15
