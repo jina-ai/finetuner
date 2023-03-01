@@ -1,5 +1,5 @@
 (advanced-losses-optimizers-poolers)=
-# {octicon}`mortar-board` Advanced losses, optimizers and poolers
+# {octicon}`mortar-board` Advanced loss functions, optimizers and poolers
 Many of the models supported by Finetuner use of similar methods during finetuning, like methods for *calculating loss*, *sampling* and *pooling* . Finetuner offers alternative methods for each of these tasks, and in some cases, choosing specific methods can improve Finetuner performance.
 
 ## Loss functions
@@ -85,16 +85,16 @@ While a model may have many pooling layers within it, it is unwise to replace a 
 
 ### GeM pooling
 
-`GeM` (Generalised Mean) pooling is an advanced pooling technique that has found popularity in computer vision and face recognition tasks.
+`GeM` (Generalised Mean) pooling is an advanced pooling technique that is popular for computer vision and face recognition tasks.
 In cases where your chosen model does have a pooling layer as its last layer, Finetuner allows you to replace the default pooler with a `GeM` pooling layer.
 Currently, all of our `text-to-text` and `image-to-image` models support replacing the pooling layer.
-For a list of all models that fit these categroies, see the [Backbone Model](../walkthrough/choose-backbone.md) section.  
+For a list of all models that support replacing the pooling layer, see the [Backbone Model](../walkthrough/choose-backbone.md) section.  
 
-The `GeM` pooler has two adjustable parameters, a scaling parameter `p` and an epsilon `eps`.
+The `GeM` pooler has two adjustable parameters: a scaling parameter `p` and an epsilon `eps`.
 At `p = 1`, the `GeM` pooler will act like an average pooler.
 As `p` increases, more weight is given to larger values, making it act more like max pooling.
-`eps` is used to clamp values to be slightly above 0, altering this won't result in much change to the performance.
-By default, `p=3` and `eps=1e-6`, you can specify the pooler and adjust these parameters in a dictionary provided to the `model_options` parameter:
+`eps` is used to clamp values to be slightly above 0, and altering this won't result in much change to the performance.
+By default, `p=3` and `eps=1e-6`. You can specify the pooler and adjust these parameters in a dictionary provided to the `model_options` parameter:
 ```diff
 run = finetuner.fit(
     ...,
