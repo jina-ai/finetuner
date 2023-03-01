@@ -133,6 +133,8 @@ def load_finetune_data_from_csv(
         artificial_label = 0
         t1, t2 = None, None
 
+        if not options.is_labeled:
+            queries = {}
         for columns in _subsample(lines, options.size, options.sampling_rate):
             if columns:
                 col1, col2 = columns
@@ -151,7 +153,8 @@ def load_finetune_data_from_csv(
 
             if options.is_labeled:
                 label = col2
-                d2 = None
+                d1.tags[DEFAULT_TAG_KEY] = label
+                yield d1
             else:
                 d2 = create_document(
                     t2,
@@ -160,22 +163,34 @@ def load_finetune_data_from_csv(
                     options.create_point_clouds,
                     point_cloud_size=options.point_cloud_size,
                 )
+                if col1 in queries and col2 in queries:
+                    continue
+                if col1 in queries:
+                    queries[col2] = queries[col1]
+                    d2.tags[DEFAULT_TAG_KEY] = queries[col1]
+                    # only yield d2
+                else:
+                    queries[col1] = artificial_label
+                    queries[col2] = artificial_label
+                    # yield both
+                    d1.tags[DEFAULT_TAG_KEY] = queries[col1]
+                    d2.tags[DEFAULT_TAG_KEY] = queries[col1]
+                    artificial_label += 1
 
-            if d2 is None:
-                d1.tags[DEFAULT_TAG_KEY] = label
-                yield d1
-            elif (d1.text and d2.text) or (d1.uri and d2.uri):
-                # same modality
-                d1.tags[DEFAULT_TAG_KEY] = artificial_label
-                d2.tags[DEFAULT_TAG_KEY] = artificial_label
-                artificial_label += 1
-                yield d1
-                yield d2
-            else:
-                # different modalities, for CLIP
-                d1.modality = t1
-                d2.modality = t2
-                yield Document(chunks=[d1, d2])
+                if t1 == t2:
+                    d1.modality = t1
+                    d2.modality = t1
+                    if DEFAULT_TAG_KEY in d1.tags:
+                        yield d1
+                    if DEFAULT_TAG_KEY in d2.tags:
+                        yield d2
+                else:
+                    # different modalities, for CLIP
+                    d1.modality = t1
+                    d2.modality = t2
+                    yield Document(
+                        chunks=[d1, d2], tags={DEFAULT_TAG_KEY: queries[col1]}
+                    )
 
 
 def check_columns(
