@@ -67,13 +67,14 @@ you can provide a CSV file where each pairs is placed on one row.
 Finetuner resolves this format by assigning all documents related to a specific query with the same label.
 
 ```markdown
-This is an English sentence, Das ist ein englischer Satz
-This is an English sentence, Dit is een Engelse zin
-This is another English sentence, Dies ist ein weiterer englischer Satz
+Rice dishes, Chicken curry
+Rice dishes, Ristto
+Pasta dishes, Spaghetti bolognese
+Vegetable dishes, Ratitouille
 ...
 ```
-In the example above, `This is an English sentence` is used on two lines, this will result in only one {class}`~docarray.document.Document` with that text being created but,
-`This is an English sentence`, `Das ist ein englischer Satz` and `Dit is een Engelse zin` will all be given the same label. 
+In the example above, `Rice dishes` is used on two lines, this will result in only one {class}`~docarray.document.Document` with that text being created but,
+`Rice dishes`, `Chicken curry` and `Risotto` will all be given the same label.
 
 ### text-to-image search using CLIP
 To prepare data for text-to-image search, each row must contain one URI pointing to an image and one piece of text. The order that these two are placed does not matter, so long as the ordering is kept consistent for all rows.
