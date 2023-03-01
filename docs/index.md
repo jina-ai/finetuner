@@ -37,7 +37,7 @@ advanced-topics/budget
 advanced-topics/negative-mining
 advanced-topics/using-callbacks
 advanced-topics/linear-probe
-advanced-topics/advanced-losses-and-optimizers
+advanced-topics/advanced-losses-optimizers-and-poolers
 advanced-topics/finetuner-executor
 ```
 
