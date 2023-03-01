@@ -18,7 +18,7 @@ Currently, `excel`, `excel-tab` and `unix` CSV dialects are supported.
 To specify which dialect to use, provide a {class}`~finetuner.data.CSVOptions` object with `dialect=chosen_dialect` as the `csv_options` argument to the {meth}`~finetuner.fit` function.
 The list of all options for reading CSV files can be found in the description of the {class}`~finetuner.data.CSVOptions` class.
 
-````{tab} Labeled data
+### Labeled data
 In cases where you want multiple elements grouped together, you can provide a label in the second column. This way, all elements in the first column that have the same label will be considered similar when training. To indicate that the second column of your CSV file represents a label instead of a second element, set `is_labeled = True` in the `csv_options` argument of the {meth}`~finetuner.fit` function. Your data can then be structured like so:
 
 ```markdown
@@ -60,9 +60,8 @@ For 3D meshes, the option `create_point_clouds` (`True` by default) creates poin
 Please note, that local files can not be processed by the Finetuner if you deactivate `convert_to_blob` or `create_point_clouds`.
 ```
 
-````
 
-````{tab} Query-Document relations
+### Query-Document relations
 In the case that you do not have explicitly annotated labels for your documents, but rather a set of query-document pairs which express that a document is relevant to a query, 
 you can provide a CSV file where each pairs is placed on one row.
 Finetuner resolves this format by assigning all documents related to a specific query with the same label.
@@ -76,9 +75,7 @@ This is another English sentence, Dies ist ein weiterer englischer Satz
 In the example above, `This is an English sentence` is used on two lines, this will result in only one {class}`~docarray.document.Document` with that text being created but,
 `This is an English sentence`, `Das ist ein englischer Satz` and `Dit is een Engelse zin` will all be given the same label. 
 
-````
-
-````{tab} text-to-image search using CLIP
+### text-to-image search using CLIP
 To prepare data for text-to-image search, each row must contain one URI pointing to an image and one piece of text. The order that these two are placed does not matter, so long as the ordering is kept consistent for all rows.
 
 ```markdown
@@ -93,8 +90,6 @@ During fine-tuning, we're optimizing two models in parallel.
 
 At the model saving time, you will discover, we are saving two models to your local directory. 
 ```
-
-````
 
 ```{important} 
 If a text field contains commas, it breaks the CSV format since it is interpreted as spanning over multiple columns.
