@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Removed
+
+### Changed
+
+### Fixed
+
+### Docs
+
+
+## [0.7.2] - 2023-03-02
+
+### Added
+
 - Add support for learning rate schedulers. ([#679](https://github.com/jina-ai/finetuner/pull/679))
 
 ### Removed
