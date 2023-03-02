@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Remove unit test and integration test from CD. ([#686](https://github.com/jina-ai/finetuner/pull/686))
+
 ### Fixed
 
 ### Docs
