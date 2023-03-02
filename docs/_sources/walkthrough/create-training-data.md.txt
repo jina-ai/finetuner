@@ -3,17 +3,22 @@
 
 Finetuner accepts training data and evaluation data in the form of CSV files 
 or {class}`~docarray.array.document.DocumentArray` objects.
-Because Finetuner follows a [supervised-learning](https://en.wikipedia.org/wiki/Supervised_learning) scheme, each element requires a label that identifies which other elements it should be similar to. 
+Because Finetuner follows a [supervised-learning](https://en.wikipedia.org/wiki/Supervised_learning) scheme, each element must belong to a group of similar elements,
+this is usually denoted by these similar elements all having the same label. 
 If you need to evaluate metrics on separate evaluation data, it is recommended to create a dataset only for evaluation purposes. This can be done in the same way as a training dataset is created, as described below.
 
 Data can be prepared in two different formats, either as a CSV file, or as a {class}`~docarray.array.document.DocumentArray`. In the sections below, you can see examples which demonstrate how the training datasets should look like for each format.
 
 ## Preparing CSV Files
 
-To record data in a CSV file, the contents of each element are stored plainly, with each row either representing one labeled item, a pair of items that should be semantically similar, or two items of different modalities in the case that a CLIP model is being used. The provided CSV files are then parsed and a {class}`~docarray.array.document.DocumentArray` is constructed containing the elements within the CSV file.
-Currently, `excel`, `excel-tab` and `unix` CSV dialects are supported. To specify which dialect to use, provide a {class}`~finetuner.data.CSVOptions` object with `dialect=chosen_dialect` as the `csv_options` argument to the {meth}`~finetuner.fit` function. The list of all options for reading CSV files can be found in the description of the {class}`~finetuner.data.CSVOptions` class.
+To record data in a CSV file, the contents of each element are stored plainly, with each row either representing one labeled item, 
+a pair of items that should be semantically similar, or two items of different modalities in the case that a CLIP model is being used.
+The provided CSV files are then parsed and a {class}`~docarray.array.document.DocumentArray` is constructed containing the elements within the CSV file.
+Currently, `excel`, `excel-tab` and `unix` CSV dialects are supported.
+To specify which dialect to use, provide a {class}`~finetuner.data.CSVOptions` object with `dialect=chosen_dialect` as the `csv_options` argument to the {meth}`~finetuner.fit` function.
+The list of all options for reading CSV files can be found in the description of the {class}`~finetuner.data.CSVOptions` class.
 
-````{tab} Labeled data
+### Labeled data
 In cases where you want multiple elements grouped together, you can provide a label in the second column. This way, all elements in the first column that have the same label will be considered similar when training. To indicate that the second column of your CSV file represents a label instead of a second element, set `is_labeled = True` in the `csv_options` argument of the {meth}`~finetuner.fit` function. Your data can then be structured like so:
 
 ```markdown
@@ -55,9 +60,23 @@ For 3D meshes, the option `create_point_clouds` (`True` by default) creates poin
 Please note, that local files can not be processed by the Finetuner if you deactivate `convert_to_blob` or `create_point_clouds`.
 ```
 
-````
 
-````{tab} text-to-image search using CLIP
+### Query-Document relations
+In the case that you do not have explicitly annotated labels for your documents, but rather a set of query-document pairs which express that a document is relevant to a query, 
+you can provide a CSV file where each pairs is placed on one row.
+Finetuner resolves this format by assigning all documents related to a specific query with the same label.
+
+```markdown
+Rice dishes, Chicken curry
+Rice dishes, Ristto
+Pasta dishes, Spaghetti bolognese
+Vegetable dishes, Ratitouille
+...
+```
+In the example above, `Rice dishes` is used on two lines, this will result in only one {class}`~docarray.document.Document` with that text being created but,
+`Rice dishes`, `Chicken curry` and `Risotto` will all be given the same label.
+
+### text-to-image search using CLIP
 To prepare data for text-to-image search, each row must contain one URI pointing to an image and one piece of text. The order that these two are placed does not matter, so long as the ordering is kept consistent for all rows.
 
 ```markdown
@@ -72,26 +91,6 @@ During fine-tuning, we're optimizing two models in parallel.
 
 At the model saving time, you will discover, we are saving two models to your local directory. 
 ```
-
-````
-
-
-````{tab} two elements per row
-If you want two elements to be semantically close together, they can be placed on the same row as a pair. Each pair will automatically be assigned a distinct label:
-
-```markdown
-This is an English sentence, Das ist ein englischer Satz
-This is another English sentence, Dies ist ein weiterer englischer Satz
-...
-```
-
-```{warning}
-When reading in files constructed in this way, a unique label is generated for each pair.
-Some sampling methods that require more than two elements per class will not work because each class in the dataset will only contain a single pair of elements.
-```
-
-````
-
 
 ```{important} 
 If a text field contains commas, it breaks the CSV format since it is interpreted as spanning over multiple columns.
