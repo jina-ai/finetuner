@@ -1,5 +1,5 @@
 import time
-from typing import Iterator
+from typing import Dict, Iterator
 
 from finetuner.client import FinetunerV1Client
 from finetuner.console import console
@@ -96,6 +96,27 @@ class Run:
                 rich_status.update(msg_template % status)
 
         return self._client.stream_run_logs(
+            experiment_name=self._experiment_name, run_name=self._name
+        )
+
+    def metrics(self) -> Dict:
+        """Get the evaluation metrics of the :class:`Run`.
+
+        :return: dictionary with evaluation metrics before and after fine-tuning.
+        """
+        self._check_run_status_finished()
+        return self._client.get_run_metrics(
+            experiment_name=self._experiment_name, run_name=self._name
+        )
+
+    def example_results(self) -> Dict:
+        """Get the results of example queries from the evaluation data of the
+        :class:`Run`.
+
+        :return: dictionary with results before and after fine-tuning.
+        """
+        self._check_run_status_finished()
+        return self._client.get_run_examples(
             experiment_name=self._experiment_name, run_name=self._name
         )
 
