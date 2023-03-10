@@ -1,5 +1,5 @@
 import time
-from typing import Dict, Iterator
+from typing import Any, Dict, Iterator
 
 from finetuner.client import FinetunerV1Client
 from finetuner.console import console, print_examples, print_metrics
@@ -99,7 +99,7 @@ class Run:
             experiment_name=self._experiment_name, run_name=self._name
         )
 
-    def metrics(self) -> Dict:
+    def metrics(self) -> Dict[str, Dict[str, float]]:
         """Get the evaluation metrics of the :class:`Run`.
 
         :return: dictionary with evaluation metrics before and after fine-tuning.
@@ -117,7 +117,7 @@ class Run:
         for stage in metrics:
             print_metrics(stage, metrics[stage])
 
-    def example_results(self) -> Dict:
+    def example_results(self) -> Dict[str, Any]:
         """Get the results of example queries from the evaluation data of the
         :class:`Run`.
 
