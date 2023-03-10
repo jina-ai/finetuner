@@ -65,7 +65,7 @@ After running the fine-tuning job has finished, the evaluation metrics can be re
 This function returns a JSON object with the metrics before and after fine-tuning.
 Alternatively, you can also retrieve the metrics via the {func}`~Run.display_metrics()` function, which prints the evaluation results in the form of a table to the console.
 
-![Evaluation Metrics](https://user-images.githubusercontent.com/6599259/224260375-01f68685-40fb-41c5-a26c-81d41b7cf6a7.png)
+![Evaluation Metrics](https://user-images.githubusercontent.com/6599259/224283786-5803fb8e-6d40-4eb7-b1d2-ae91a24648e7.png)
 
 ### Display example results
 
@@ -74,6 +74,7 @@ In this case, the evaluation callback will store the top-k results for each quer
 You can retrieve them with the {func}`~Run.example_results()` function. 
 Alternatively, you can use the {func}`~Run.display_metrics()` function to display a table of the Top-K results before and after fine-tuning to the console.
 
+![Example Results](https://user-images.githubusercontent.com/6599259/224284912-f3f6f547-8d75-4529-8df1-7f9904423239.png)
 
 ## BestModelCheckpoint
 
