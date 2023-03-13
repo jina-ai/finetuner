@@ -50,9 +50,7 @@ def print_examples(stage: str, results: Dict[str, List[Any]], k: int = 5):
     table.add_column(justify='left', style='cyan', no_wrap=False)
     for query in results:
         table.add_row('Query', str(query), style='yellow bold')
-        for i, match in enumerate(results[query]):
-            if i >= k:
-                break
+        for i, match in enumerate(results[query][:k]):
             table.add_row(f'Match {i+1}', str(match))
     console.print(table)
 
