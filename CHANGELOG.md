@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add functions to retrieve evaluation metrics and example results. ([#687](https://github.com/jina-ai/finetuner/pull/687))
+
 ### Removed
 
 ### Changed

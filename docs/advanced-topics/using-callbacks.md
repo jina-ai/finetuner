@@ -58,6 +58,24 @@ If a different model should be used for the `index_data`, you can set this via t
 For an example, see {doc}`/notebooks/text_to_image`.
 ```
 
+### Show evaluation metrics
+
+During the fine-tuning process, the evaluation metrics are displayed in the logs, which you can retrieve via the {func}`~finetuner.run.Run.logs()` function.
+After the fine-tuning job has finished, the evaluation metrics can be retrieved from the cloud by calling the {func}`~finetuner.run.Run.metrics()` function.
+This function returns a JSON object with the metrics before and after fine-tuning.
+Alternatively, you can also retrieve the metrics via the {func}`~finetuner.run.Run.display_metrics()` function, which prints the evaluation results in the form of a table to the console.
+
+![Evaluation Metrics](https://user-images.githubusercontent.com/6599259/224283786-5803fb8e-6d40-4eb7-b1d2-ae91a24648e7.png)
+
+### Display example results
+
+If you want to compare the K most similar retrieval results (Top-K) before and after fine-tuning, you can set the `gather_examples` parameter of the evaluation callback to `True`.
+In this case, the evaluation callback will store the top-k results for each query document before and after fine-tuning.
+You can retrieve them with the {func}`~finetuner.run.Run.example_results()` function. 
+Alternatively, you can use the {func}`~finetuner.run.Run.display_examples()` function to display a table of the Top-K results before and after fine-tuning to the console.
+
+![Example Results](https://user-images.githubusercontent.com/6599259/224284912-f3f6f547-8d75-4529-8df1-7f9904423239.png)
+
 ## BestModelCheckpoint
 
 This callback evaluates the performance of the model at the end of each epoch, and keeps a record of the best perfoming model across all epochs. Once fitting is finished the best performing model is saved instead of the most recent model. The definition of best is based on two parameters:

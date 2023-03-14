@@ -3,10 +3,12 @@ from finetuner.constants import (
     CONFIG,
     CPUS,
     DELETE,
+    EXAMPLES,
     EXPERIMENTS,
     GET,
     GPUS,
     LOGS,
+    METRICS,
     NAME,
     POST,
     RUNS,
@@ -155,5 +157,37 @@ def test_get_run_logs(client_mocker, experiment_name='exp', run_name='run1'):
         RUNS,
         run_name,
         LOGS,
+    )
+    assert sent_request['method'] == GET
+
+
+def test_get_run_metrics(client_mocker, experiment_name='exp', run_name='run1'):
+    sent_request = client_mocker.get_run_metrics(
+        experiment_name=experiment_name, run_name=run_name
+    )
+    assert sent_request['url'] == client_mocker._construct_url(
+        client_mocker._base_url,
+        API_VERSION,
+        EXPERIMENTS,
+        experiment_name,
+        RUNS,
+        run_name,
+        METRICS,
+    )
+    assert sent_request['method'] == GET
+
+
+def test_get_run_examples(client_mocker, experiment_name='exp', run_name='run1'):
+    sent_request = client_mocker.get_run_examples(
+        experiment_name=experiment_name, run_name=run_name
+    )
+    assert sent_request['url'] == client_mocker._construct_url(
+        client_mocker._base_url,
+        API_VERSION,
+        EXPERIMENTS,
+        experiment_name,
+        RUNS,
+        run_name,
+        EXAMPLES,
     )
     assert sent_request['method'] == GET
