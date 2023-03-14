@@ -158,3 +158,7 @@ as many items per class as configured via the `num_items_per_class` parameter.
 However, if it is not possible, e.g., because `batch_size` is not dividable by
 `num_items_per_class` or the training dataset does not contain enough classes,
 Finetuner tries to choose a similar value for `num_items_per_class` which is working.
+A larger `batch_size` results in faster training, though too large a `batch_ size` can result
+in out of memory errors. Typically, a `batch_size` of 64 or 128 are good options when you
+are unsure of how high you can set this value, however you can also choose to not set the `batch_size`
+at all, in which case the highest possible value will be calculated for you automatically.

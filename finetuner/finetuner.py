@@ -158,7 +158,7 @@ class Finetuner:
         optimizer_options: Optional[Dict[str, Any]] = None,
         learning_rate: Optional[float] = None,
         epochs: int = 5,
-        batch_size: int = 64,
+        batch_size: Optional[int] = None,
         callbacks: Optional[List[Any]] = None,
         scheduler: Optional[str] = None,
         scheduler_options: Optional[Dict[str, Any]] = None,
