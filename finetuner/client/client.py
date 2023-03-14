@@ -10,12 +10,14 @@ from finetuner.constants import (
     DELETE,
     DESCRIPTION,
     DEVICE,
+    EXAMPLES,
     EXPERIMENTS,
     FINETUNER_VERSION,
     GET,
     GPUS,
     LOGS,
     LOGSTREAM,
+    METRICS,
     NAME,
     POST,
     RUNS,
@@ -214,6 +216,44 @@ class FinetunerV1Client(_BaseClient):
                     )
                     if msg_type in ('data', 'event'):
                         yield msg
+
+    def get_run_metrics(self, experiment_name: str, run_name: str) -> Dict[str, Any]:
+        """Get evaluation metrics of a run by its name and experiment.
+        This is only possible after the run has successfully finished.
+
+        :param experiment_name: The name of the experiment.
+        :param run_name: The name of the run.
+        :return: Dict of metrics before and after fine-tuning
+        """
+        url = self._construct_url(
+            self._base_url,
+            API_VERSION,
+            EXPERIMENTS,
+            experiment_name,
+            RUNS,
+            run_name,
+            METRICS,
+        )
+        return self._handle_request(url=url, method=GET)
+
+    def get_run_examples(self, experiment_name: str, run_name: str) -> Dict[str, Any]:
+        """Get results of example queries of a run by the run's name and experiment.
+        This is only possible after the run has successfully finished.
+
+        :param experiment_name: The name of the experiment.
+        :param run_name: The name of the run.
+        :return: Dict of results for example queries before and after fine-tuning.
+        """
+        url = self._construct_url(
+            self._base_url,
+            API_VERSION,
+            EXPERIMENTS,
+            experiment_name,
+            RUNS,
+            run_name,
+            EXAMPLES,
+        )
+        return self._handle_request(url=url, method=GET)
 
     def create_run(
         self,

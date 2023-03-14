@@ -1,8 +1,8 @@
 import time
-from typing import Iterator
+from typing import Any, Dict, Iterator
 
 from finetuner.client import FinetunerV1Client
-from finetuner.console import console
+from finetuner.console import console, print_examples, print_metrics
 from finetuner.constants import (
     ARTIFACT_ID,
     ARTIFACTS_DIR,
@@ -98,6 +98,45 @@ class Run:
         return self._client.stream_run_logs(
             experiment_name=self._experiment_name, run_name=self._name
         )
+
+    def metrics(self) -> Dict[str, Dict[str, float]]:
+        """Get the evaluation metrics of the :class:`Run`.
+
+        :return: dictionary with evaluation metrics before and after fine-tuning.
+        """
+        self._check_run_status_finished()
+        return self._client.get_run_metrics(
+            experiment_name=self._experiment_name, run_name=self._name
+        )
+
+    def display_metrics(self):
+        """
+        Prints a table of retrieval metrics before and after fine-tuning
+        """
+        metrics = self.metrics()
+        for stage in metrics:
+            print_metrics(stage, metrics[stage])
+
+    def example_results(self) -> Dict[str, Any]:
+        """Get the results of example queries from the evaluation data of the
+        :class:`Run`.
+
+        :return: dictionary with results before and after fine-tuning.
+        """
+        self._check_run_status_finished()
+        return self._client.get_run_examples(
+            experiment_name=self._experiment_name, run_name=self._name
+        )
+
+    def display_examples(self, k: int = 5):
+        """
+        Prints a table of results of example queries before and after fine-tuning.
+
+        :param k: maximal number of results per query to display
+        """
+        example_results = self.example_results()
+        for stage in example_results:
+            print_examples(stage, example_results[stage], k=k)
 
     def _check_run_status_finished(self):
         status = self.status()[STATUS]

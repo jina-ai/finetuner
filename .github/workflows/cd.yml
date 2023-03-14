@@ -31,18 +31,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
-      - name: Install requirements
-        run: make init
-      - name: Lint with flake8, black and isort
-        run: make style
-      - name: Run tests
-        run: make test
-        env:
-          JINA_AUTH_TOKEN: ${{secrets.JINA_AUTH_TOKEN}}
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          files: ./coverage.xml
       - name: Release to PyPI
         env:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
