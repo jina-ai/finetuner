@@ -121,7 +121,7 @@ def fit(
     optimizer_options: Optional[Dict[str, Any]] = None,
     learning_rate: Optional[float] = None,
     epochs: int = 5,
-    batch_size: int = 64,
+    batch_size: Optional[int] = None,
     callbacks: Optional[List[callback.CallbackStubType]] = None,
     scheduler: Optional[str] = None,
     scheduler_options: Optional[Dict[str, Any]] = None,
@@ -189,7 +189,8 @@ def fit(
         <https://pytorch.org/docs/stable/optim.html>`_
     :param learning_rate: learning rate for the optimizer.
     :param epochs: Number of epochs for fine-tuning.
-    :param batch_size: Number of items to include in a batch.
+    :param batch_size: Number of items to include in a batch. If not set, the
+        batch size will be configured automatically.
     :param callbacks: List of callback stub objects.
         subpackage for available options, or run `finetuner.list_callbacks()`.
     :param scheduler: Name of a scheduler to use for learning rate scheduling.
