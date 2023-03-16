@@ -340,6 +340,31 @@
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="finetuner.console.print_examples">
+<span class="sig-prename descclassname"><span class="pre">finetuner.console.</span></span><span class="sig-name descname"><span class="pre">print_examples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/console/#print_examples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.console.print_examples" title="Permalink to this definition">#</a></dt>
+<dd><p>Prints a table of results of example queries from the evaluation data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – either ‘before’ or ‘after’</p></li>
+<li><p><strong>results</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – The example results to display</p></li>
+<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – maximal number of results per query to display</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="finetuner.console.print_metrics">
+<span class="sig-prename descclassname"><span class="pre">finetuner.console.</span></span><span class="sig-name descname"><span class="pre">print_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/console/#print_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.console.print_metrics" title="Permalink to this definition">#</a></dt>
+<dd><p>Prints a table of retrieval metrics.
+:type stage: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>
+:param stage: either ‘before’ or ‘after’
+:type metrics: <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]
+:param metrics: dictionary with retrieval metrics before and after fine-tuning.</p>
+</dd></dl>
+
 </section>
 
                 </article>
@@ -355,7 +380,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 02, 2023</div>
+                            Last updated on Mar 16, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -389,6 +414,8 @@
                         <ul>
 <li><a class="reference internal" href="#">finetuner.console module</a><ul>
 <li><a class="reference internal" href="#finetuner.console.print_model_table"><code class="docutils literal notranslate"><span class="pre">print_model_table()</span></code></a></li>
+<li><a class="reference internal" href="#finetuner.console.print_examples"><code class="docutils literal notranslate"><span class="pre">print_examples()</span></code></a></li>
+<li><a class="reference internal" href="#finetuner.console.print_metrics"><code class="docutils literal notranslate"><span class="pre">print_metrics()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -411,6 +411,52 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="finetuner.run.Run.metrics">
+<span class="sig-name descname"><span class="pre">metrics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/run/#Run.metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.run.Run.metrics" title="Permalink to this definition">#</a></dt>
+<dd><p>Get the evaluation metrics of the <a class="reference internal" href="#finetuner.run.Run" title="finetuner.run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dictionary with evaluation metrics before and after fine-tuning.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.run.Run.display_metrics">
+<span class="sig-name descname"><span class="pre">display_metrics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/run/#Run.display_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.run.Run.display_metrics" title="Permalink to this definition">#</a></dt>
+<dd><p>Prints a table of retrieval metrics before and after fine-tuning</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.run.Run.example_results">
+<span class="sig-name descname"><span class="pre">example_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/run/#Run.example_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.run.Run.example_results" title="Permalink to this definition">#</a></dt>
+<dd><p>Get the results of example queries from the evaluation data of the
+<a class="reference internal" href="#finetuner.run.Run" title="finetuner.run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dictionary with results before and after fine-tuning.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.run.Run.display_examples">
+<span class="sig-name descname"><span class="pre">display_examples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/run/#Run.display_examples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.run.Run.display_examples" title="Permalink to this definition">#</a></dt>
+<dd><p>Prints a table of results of example queries before and after fine-tuning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – maximal number of results per query to display</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="finetuner.run.Run.save_artifact">
 <span class="sig-name descname"><span class="pre">save_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'artifacts/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/run/#Run.save_artifact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.run.Run.save_artifact" title="Permalink to this definition">#</a></dt>
 <dd><p>Save artifact if the <a class="reference internal" href="#finetuner.run.Run" title="finetuner.run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> is finished.</p>
@@ -459,7 +505,7 @@ using <cite>FinetunerExecutor</cite>.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 02, 2023</div>
+                            Last updated on Mar 16, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -498,6 +544,10 @@ using <cite>FinetunerExecutor</cite>.</p>
 <li><a class="reference internal" href="#finetuner.run.Run.status"><code class="docutils literal notranslate"><span class="pre">Run.status()</span></code></a></li>
 <li><a class="reference internal" href="#finetuner.run.Run.logs"><code class="docutils literal notranslate"><span class="pre">Run.logs()</span></code></a></li>
 <li><a class="reference internal" href="#finetuner.run.Run.stream_logs"><code class="docutils literal notranslate"><span class="pre">Run.stream_logs()</span></code></a></li>
+<li><a class="reference internal" href="#finetuner.run.Run.metrics"><code class="docutils literal notranslate"><span class="pre">Run.metrics()</span></code></a></li>
+<li><a class="reference internal" href="#finetuner.run.Run.display_metrics"><code class="docutils literal notranslate"><span class="pre">Run.display_metrics()</span></code></a></li>
+<li><a class="reference internal" href="#finetuner.run.Run.example_results"><code class="docutils literal notranslate"><span class="pre">Run.example_results()</span></code></a></li>
+<li><a class="reference internal" href="#finetuner.run.Run.display_examples"><code class="docutils literal notranslate"><span class="pre">Run.display_examples()</span></code></a></li>
 <li><a class="reference internal" href="#finetuner.run.Run.save_artifact"><code class="docutils literal notranslate"><span class="pre">Run.save_artifact()</span></code></a></li>
 <li><a class="reference internal" href="#finetuner.run.Run.artifact_id"><code class="docutils literal notranslate"><span class="pre">Run.artifact_id</span></code></a></li>
 </ul>

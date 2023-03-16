@@ -301,10 +301,10 @@
                 <article role="main">
                     <h1>Source code for finetuner.run</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterator</span>
 
 <span class="kn">from</span> <span class="nn">finetuner.client</span> <span class="kn">import</span> <span class="n">FinetunerV1Client</span>
-<span class="kn">from</span> <span class="nn">finetuner.console</span> <span class="kn">import</span> <span class="n">console</span>
+<span class="kn">from</span> <span class="nn">finetuner.console</span> <span class="kn">import</span> <span class="n">console</span><span class="p">,</span> <span class="n">print_examples</span><span class="p">,</span> <span class="n">print_metrics</span>
 <span class="kn">from</span> <span class="nn">finetuner.constants</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ARTIFACT_ID</span><span class="p">,</span>
     <span class="n">ARTIFACTS_DIR</span><span class="p">,</span>
@@ -401,6 +401,45 @@
             <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiment_name</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
         <span class="p">)</span></div>
 
+<div class="viewcode-block" id="Run.metrics"><a class="viewcode-back" href="../../../api/finetuner.run/#finetuner.run.Run.metrics">[docs]</a>    <span class="k">def</span> <span class="nf">metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the evaluation metrics of the :class:`Run`.</span>
+
+<span class="sd">        :return: dictionary with evaluation metrics before and after fine-tuning.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_run_status_finished</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_run_metrics</span><span class="p">(</span>
+            <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiment_name</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Run.display_metrics"><a class="viewcode-back" href="../../../api/finetuner.run/#finetuner.run.Run.display_metrics">[docs]</a>    <span class="k">def</span> <span class="nf">display_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints a table of retrieval metrics before and after fine-tuning</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">metrics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">stage</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+            <span class="n">print_metrics</span><span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="n">metrics</span><span class="p">[</span><span class="n">stage</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Run.example_results"><a class="viewcode-back" href="../../../api/finetuner.run/#finetuner.run.Run.example_results">[docs]</a>    <span class="k">def</span> <span class="nf">example_results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the results of example queries from the evaluation data of the</span>
+<span class="sd">        :class:`Run`.</span>
+
+<span class="sd">        :return: dictionary with results before and after fine-tuning.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_run_status_finished</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_run_examples</span><span class="p">(</span>
+            <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiment_name</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Run.display_examples"><a class="viewcode-back" href="../../../api/finetuner.run/#finetuner.run.Run.display_examples">[docs]</a>    <span class="k">def</span> <span class="nf">display_examples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints a table of results of example queries before and after fine-tuning.</span>
+
+<span class="sd">        :param k: maximal number of results per query to display</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">example_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">example_results</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">stage</span> <span class="ow">in</span> <span class="n">example_results</span><span class="p">:</span>
+            <span class="n">print_examples</span><span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="n">example_results</span><span class="p">[</span><span class="n">stage</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span></div>
+
     <span class="k">def</span> <span class="nf">_check_run_status_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()[</span><span class="n">STATUS</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">status</span> <span class="ow">in</span> <span class="p">[</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">STARTED</span><span class="p">]:</span>
@@ -461,7 +500,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 02, 2023</div>
+                            Last updated on Mar 16, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

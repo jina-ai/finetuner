@@ -8,8 +8,8 @@
 <meta property="og:url" content="https://finetuner.jina.ai/advanced-topics/using-callbacks/" />
 <meta property="og:site_name" content="Finetuner Documentation" />
 <meta property="og:description" content="Using Callbacks: Callbacks are a way of adding additional methods to the finetuning process. The methods are executed when certain events occur and there are several callback classes, each serving a different function by providing different methods for different events. A run can be assigned mult..." />
-<meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
-<meta property="og:image:alt" content="Finetuner Documentation" />
+<meta property="og:image" content="https://user-images.githubusercontent.com/6599259/224283786-5803fb8e-6d40-4eb7-b1d2-ae91a24648e7.png" />
+<meta property="og:image:alt" content="Evaluation Metrics" />
 <meta name="description" content="Using Callbacks: Callbacks are a way of adding additional methods to the finetuning process. The methods are executed when certain events occur and there are several callback classes, each serving a different function by providing different methods for different events. A run can be assigned mult..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -377,6 +377,22 @@ This can be specified by the <code class="docutils literal notranslate"><span cl
 If a different model should be used for the <code class="docutils literal notranslate"><span class="pre">index_data</span></code>, you can set this via the <code class="docutils literal notranslate"><span class="pre">index_model</span></code> attribute.
 For an example, see <a class="reference internal" href="../../notebooks/text_to_image/"><span class="doc">Text-to-Image Search via CLIP</span></a>.</p>
 </div>
+<section id="show-evaluation-metrics">
+<h3>Show evaluation metrics<a class="headerlink" href="#show-evaluation-metrics" title="Permalink to this heading">#</a></h3>
+<p>During the fine-tuning process, the evaluation metrics are displayed in the logs, which you can retrieve via the <a class="reference internal" href="../../api/finetuner.run/#finetuner.run.Run.logs" title="finetuner.run.Run.logs"><code class="xref py py-func docutils literal notranslate"><span class="pre">logs()</span></code></a> function.
+After the fine-tuning job has finished, the evaluation metrics can be retrieved from the cloud by calling the <a class="reference internal" href="../../api/finetuner.run/#finetuner.run.Run.metrics" title="finetuner.run.Run.metrics"><code class="xref py py-func docutils literal notranslate"><span class="pre">metrics()</span></code></a> function.
+This function returns a JSON object with the metrics before and after fine-tuning.
+Alternatively, you can also retrieve the metrics via the <a class="reference internal" href="../../api/finetuner.run/#finetuner.run.Run.display_metrics" title="finetuner.run.Run.display_metrics"><code class="xref py py-func docutils literal notranslate"><span class="pre">display_metrics()</span></code></a> function, which prints the evaluation results in the form of a table to the console.</p>
+<p><img alt="Evaluation Metrics" src="https://user-images.githubusercontent.com/6599259/224283786-5803fb8e-6d40-4eb7-b1d2-ae91a24648e7.png" /></p>
+</section>
+<section id="display-example-results">
+<h3>Display example results<a class="headerlink" href="#display-example-results" title="Permalink to this heading">#</a></h3>
+<p>If you want to compare the K most similar retrieval results (Top-K) before and after fine-tuning, you can set the <code class="docutils literal notranslate"><span class="pre">gather_examples</span></code> parameter of the evaluation callback to <code class="docutils literal notranslate"><span class="pre">True</span></code>.
+In this case, the evaluation callback will store the top-k results for each query document before and after fine-tuning.
+You can retrieve them with the <a class="reference internal" href="../../api/finetuner.run/#finetuner.run.Run.example_results" title="finetuner.run.Run.example_results"><code class="xref py py-func docutils literal notranslate"><span class="pre">example_results()</span></code></a> function.
+Alternatively, you can use the <a class="reference internal" href="../../api/finetuner.run/#finetuner.run.Run.display_examples" title="finetuner.run.Run.display_examples"><code class="xref py py-func docutils literal notranslate"><span class="pre">display_examples()</span></code></a> function to display a table of the Top-K results before and after fine-tuning to the console.</p>
+<p><img alt="Example Results" src="https://user-images.githubusercontent.com/6599259/224284912-f3f6f547-8d75-4529-8df1-7f9904423239.png" /></p>
+</section>
 </section>
 <section id="bestmodelcheckpoint">
 <h2>BestModelCheckpoint<a class="headerlink" href="#bestmodelcheckpoint" title="Permalink to this heading">#</a></h2>
@@ -551,7 +567,7 @@ wandb:<span class="w">  </span>View<span class="w"> </span>run<span class="w"> <
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 02, 2023</div>
+                            Last updated on Mar 16, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -584,7 +600,11 @@ wandb:<span class="w">  </span>View<span class="w"> </span>run<span class="w"> <
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-link" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg> Using Callbacks</a><ul>
-<li><a class="reference internal" href="#evaluationcallback">EvaluationCallback</a></li>
+<li><a class="reference internal" href="#evaluationcallback">EvaluationCallback</a><ul>
+<li><a class="reference internal" href="#show-evaluation-metrics">Show evaluation metrics</a></li>
+<li><a class="reference internal" href="#display-example-results">Display example results</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#bestmodelcheckpoint">BestModelCheckpoint</a></li>
 <li><a class="reference internal" href="#earlystopping">EarlyStopping</a></li>
 <li><a class="reference internal" href="#wiseftcallback">WiSEFTCallback</a></li>

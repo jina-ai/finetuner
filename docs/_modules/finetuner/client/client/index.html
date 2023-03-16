@@ -312,12 +312,14 @@
     <span class="n">DELETE</span><span class="p">,</span>
     <span class="n">DESCRIPTION</span><span class="p">,</span>
     <span class="n">DEVICE</span><span class="p">,</span>
+    <span class="n">EXAMPLES</span><span class="p">,</span>
     <span class="n">EXPERIMENTS</span><span class="p">,</span>
     <span class="n">FINETUNER_VERSION</span><span class="p">,</span>
     <span class="n">GET</span><span class="p">,</span>
     <span class="n">GPUS</span><span class="p">,</span>
     <span class="n">LOGS</span><span class="p">,</span>
     <span class="n">LOGSTREAM</span><span class="p">,</span>
+    <span class="n">METRICS</span><span class="p">,</span>
     <span class="n">NAME</span><span class="p">,</span>
     <span class="n">POST</span><span class="p">,</span>
     <span class="n">RUNS</span><span class="p">,</span>
@@ -517,6 +519,44 @@
                     <span class="k">if</span> <span class="n">msg_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;event&#39;</span><span class="p">):</span>
                         <span class="k">yield</span> <span class="n">msg</span></div>
 
+<div class="viewcode-block" id="FinetunerV1Client.get_run_metrics"><a class="viewcode-back" href="../../../../api/finetuner.client.client/#finetuner.client.client.FinetunerV1Client.get_run_metrics">[docs]</a>    <span class="k">def</span> <span class="nf">get_run_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">run_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get evaluation metrics of a run by its name and experiment.</span>
+<span class="sd">        This is only possible after the run has successfully finished.</span>
+
+<span class="sd">        :param experiment_name: The name of the experiment.</span>
+<span class="sd">        :param run_name: The name of the run.</span>
+<span class="sd">        :return: Dict of metrics before and after fine-tuning</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="p">,</span>
+            <span class="n">API_VERSION</span><span class="p">,</span>
+            <span class="n">EXPERIMENTS</span><span class="p">,</span>
+            <span class="n">experiment_name</span><span class="p">,</span>
+            <span class="n">RUNS</span><span class="p">,</span>
+            <span class="n">run_name</span><span class="p">,</span>
+            <span class="n">METRICS</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_request</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">GET</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FinetunerV1Client.get_run_examples"><a class="viewcode-back" href="../../../../api/finetuner.client.client/#finetuner.client.client.FinetunerV1Client.get_run_examples">[docs]</a>    <span class="k">def</span> <span class="nf">get_run_examples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">run_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get results of example queries of a run by the run&#39;s name and experiment.</span>
+<span class="sd">        This is only possible after the run has successfully finished.</span>
+
+<span class="sd">        :param experiment_name: The name of the experiment.</span>
+<span class="sd">        :param run_name: The name of the run.</span>
+<span class="sd">        :return: Dict of results for example queries before and after fine-tuning.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="p">,</span>
+            <span class="n">API_VERSION</span><span class="p">,</span>
+            <span class="n">EXPERIMENTS</span><span class="p">,</span>
+            <span class="n">experiment_name</span><span class="p">,</span>
+            <span class="n">RUNS</span><span class="p">,</span>
+            <span class="n">run_name</span><span class="p">,</span>
+            <span class="n">EXAMPLES</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_request</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">GET</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="FinetunerV1Client.create_run"><a class="viewcode-back" href="../../../../api/finetuner.client.client/#finetuner.client.client.FinetunerV1Client.create_run">[docs]</a>    <span class="k">def</span> <span class="nf">create_run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">experiment_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -566,7 +606,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 02, 2023</div>
+                            Last updated on Mar 16, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

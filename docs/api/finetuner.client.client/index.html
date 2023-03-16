@@ -566,6 +566,48 @@ retrieved.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="finetuner.client.client.FinetunerV1Client.get_run_metrics">
+<span class="sig-name descname"><span class="pre">get_run_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/client/client/#FinetunerV1Client.get_run_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.client.client.FinetunerV1Client.get_run_metrics" title="Permalink to this definition">#</a></dt>
+<dd><p>Get evaluation metrics of a run by its name and experiment.
+This is only possible after the run has successfully finished.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiment_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the experiment.</p></li>
+<li><p><strong>run_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the run.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict of metrics before and after fine-tuning</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.client.client.FinetunerV1Client.get_run_examples">
+<span class="sig-name descname"><span class="pre">get_run_examples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/client/client/#FinetunerV1Client.get_run_examples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.client.client.FinetunerV1Client.get_run_examples" title="Permalink to this definition">#</a></dt>
+<dd><p>Get results of example queries of a run by the run’s name and experiment.
+This is only possible after the run has successfully finished.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiment_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the experiment.</p></li>
+<li><p><strong>run_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the run.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict of results for example queries before and after fine-tuning.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="finetuner.client.client.FinetunerV1Client.create_run">
 <span class="sig-name descname"><span class="pre">create_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpus</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gpus</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/client/client/#FinetunerV1Client.create_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.client.client.FinetunerV1Client.create_run" title="Permalink to this definition">#</a></dt>
 <dd><p>Create a run inside a given experiment.</p>
@@ -603,7 +645,7 @@ retrieved.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 02, 2023</div>
+                            Last updated on Mar 16, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -649,6 +691,8 @@ retrieved.</p>
 <li><a class="reference internal" href="#finetuner.client.client.FinetunerV1Client.get_run_status"><code class="docutils literal notranslate"><span class="pre">FinetunerV1Client.get_run_status()</span></code></a></li>
 <li><a class="reference internal" href="#finetuner.client.client.FinetunerV1Client.get_run_logs"><code class="docutils literal notranslate"><span class="pre">FinetunerV1Client.get_run_logs()</span></code></a></li>
 <li><a class="reference internal" href="#finetuner.client.client.FinetunerV1Client.stream_run_logs"><code class="docutils literal notranslate"><span class="pre">FinetunerV1Client.stream_run_logs()</span></code></a></li>
+<li><a class="reference internal" href="#finetuner.client.client.FinetunerV1Client.get_run_metrics"><code class="docutils literal notranslate"><span class="pre">FinetunerV1Client.get_run_metrics()</span></code></a></li>
+<li><a class="reference internal" href="#finetuner.client.client.FinetunerV1Client.get_run_examples"><code class="docutils literal notranslate"><span class="pre">FinetunerV1Client.get_run_examples()</span></code></a></li>
 <li><a class="reference internal" href="#finetuner.client.client.FinetunerV1Client.create_run"><code class="docutils literal notranslate"><span class="pre">FinetunerV1Client.create_run()</span></code></a></li>
 </ul>
 </li>

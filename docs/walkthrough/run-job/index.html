@@ -475,7 +475,11 @@ Finetuner constructs batches so that each batch contains the same number of clas
 as many items per class as configured via the <code class="docutils literal notranslate"><span class="pre">num_items_per_class</span></code> parameter.
 However, if it is not possible, e.g., because <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> is not dividable by
 <code class="docutils literal notranslate"><span class="pre">num_items_per_class</span></code> or the training dataset does not contain enough classes,
-Finetuner tries to choose a similar value for <code class="docutils literal notranslate"><span class="pre">num_items_per_class</span></code> which is working.</p>
+Finetuner tries to choose a similar value for <code class="docutils literal notranslate"><span class="pre">num_items_per_class</span></code> which is working.
+A larger <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> results in faster training, though too large a <code class="docutils literal notranslate"><span class="pre">batch_</span> <span class="pre">size</span></code> can result
+in out of memory errors. Typically, a <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> of 64 or 128 are good options when you
+are unsure of how high you can set this value, however you can also choose to not set the <code class="docutils literal notranslate"><span class="pre">batch_size</span></code>
+at all, in which case the highest possible value will be calculated for you automatically.</p>
 </section>
 </section>
 </section>
@@ -515,7 +519,7 @@ Finetuner tries to choose a similar value for <code class="docutils literal notr
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 02, 2023</div>
+                            Last updated on Mar 16, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
