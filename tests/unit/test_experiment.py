@@ -11,6 +11,7 @@ from finetuner.constants import (
     DATA,
     EPOCHS,
     EVAL_DATA,
+    EVALUATE,
     EXPERIMENT_NAME,
     FAILED,
     FINISHED,
@@ -111,6 +112,7 @@ def test_create_run_config():
         DATA: {
             TRAIN_DATA: 'train_data',
             EVAL_DATA: 'eval_data',
+            EVALUATE: False,
             NUM_WORKERS: 8,
             NUM_ITEMS_PER_CLASS: 4,
             VAL_SPLIT: 0.0,

@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Removed
+
+### Changed
+
+### Fixed
+
+### Docs
+
+
+## [0.7.3] - 2023-03-16
+
+### Added
+
 - Add support for batch size scaling. ([#691](https://github.com/jina-ai/finetuner/pull/691))
 
 - Add functions to retrieve evaluation metrics and example results. ([#687](https://github.com/jina-ai/finetuner/pull/687))
