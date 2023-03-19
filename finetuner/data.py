@@ -57,11 +57,12 @@ class CSVHandler(ABC):
         self._file = file
         self._task = task
         self._options = options or CSVOptions()
-        self._file_ctx, self._dialect, _ = get_csv_file_context(
-            file=file, encoding=options.encoding
+        self._dialect, _ = get_csv_file_dialect_columns(
+            self._file, encoding=options.encoding
         )
         if isinstance(self._options.dialect, str) and self._options.dialect == 'auto':
             self._options.dialect = self._dialect
+        self._file_ctx = get_csv_file_context(file=file, encoding=options.encoding)
 
     @abc.abstractmethod
     def handle_csv(self):
@@ -207,7 +208,7 @@ class PairwiseScoreHandler(CSVHandler):
 
 
 class CSVContext:
-    def __init__(self, model: str, options: Optional[CSVOptions]):
+    def __init__(self, model: str, options: Optional[CSVOptions] = None):
         self._model = model
         self._options = options
         model_stub = get_stub(model, select_model='clip-text')
@@ -218,7 +219,7 @@ class CSVContext:
         if self._options.is_labeled:
             return LabeledCSVHandler(file=data, task=self._task, options=self._options)
         else:
-            _, _, num_columns = get_csv_file_context(
+            _, num_columns = get_csv_file_dialect_columns(
                 file=data, encoding=self._options.encoding
             )
             if num_columns == 2:
@@ -233,7 +234,7 @@ class CSVContext:
                 raise TypeError('Can not determine the context of the csv.')
 
     def build_dataset(self, data: Union[str, TextIO, DocumentArray]):
-        if isinstance(data, (TextIO)) or (isinstance(data, str) and isfile(data)):
+        if isinstance(data, TextIO) or (isinstance(data, str) and isfile(data)):
             handler = self._get_csv_handler(data=data)
             da_generator = handler.handle_csv()
             data = DocumentArray(da_generator)
@@ -247,15 +248,24 @@ def get_csv_file_context(file: Union[str, TextIO], encoding: str):
         file_ctx = nullcontext(file)
     else:
         file_ctx = open(file, 'r', encoding=encoding)
+    return file_ctx
+
+
+def get_csv_file_dialect_columns(file: str, encoding: str):
+    file_ctx = get_csv_file_context(file=file, encoding=encoding)
     with file_ctx as fp:
         try:
             dialect = csv.Sniffer().sniff(fp.read(1024))
+            fp.seek(0)
         except Exception:
             dialect = 'excel'  #: can not sniff delimiter, use default dialect
-        reader = csv.reader(file_ctx, dialect=dialect)
-        num_columns = len(next(reader))
+        try:
+            reader = csv.reader(file_ctx, dialect=dialect)
+            num_columns = len(next(reader))
+        except StopIteration:
+            raise IOError('CSV file not exist or is empty')
         fp.seek(0)
-    return file_ctx, dialect, num_columns
+        return dialect, num_columns
 
 
 def build_encoding_dataset(model: 'InferenceEngine', data: List[str]) -> DocumentArray:
