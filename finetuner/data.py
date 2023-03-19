@@ -6,6 +6,7 @@ from contextlib import nullcontext
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, List, Optional, TextIO, Tuple, Union
 
+from _finetuner.runner.stubs.model import get_stub
 from docarray import Document, DocumentArray
 from docarray.document.generators import _subsample
 from docarray.document.mixins.helper import _is_uri
@@ -32,8 +33,6 @@ class CSVOptions:
     :param is_labeled: Whether the second column of the CSV represents a label that
         should be assigned to the item in the first column (True), or if it is another
         item that should be semantically close to the first (False).
-    :param is_scored: Whether the third column of the CSV represents a score that
-        determines the relationship of the first two columns.
     :param convert_to_blob: Whether uris to local files should be converted to blobs
     :param create_point_clouds: Determines whether from uris to local 3D mesh files
         should point clouds be sampled.
@@ -46,7 +45,6 @@ class CSVOptions:
     dialect: Union[str, 'csv.Dialect'] = 'auto'
     encoding: str = 'utf-8'
     is_labeled: bool = False
-    is_scored: bool = False
     convert_to_blob: bool = True
     create_point_clouds: bool = True
     point_cloud_size: int = 2048
@@ -209,11 +207,12 @@ class PairwiseScoreHandler(CSVHandler):
 
 
 class CSVContext:
-    def __init__(self, model: str, task: str, options: Optional[CSVOptions]):
+    def __init__(self, model: str, options: Optional[CSVOptions]):
         self._model = model
-        self._task = task
         self._options = options
-        self._handler = None
+        model_stub = get_stub(model, select_model='clip-text')
+        # for clip select_model is mandatory, though any model will get us the task
+        self._task = model_stub.task
 
     def _get_csv_handler(self, data: Union[str, TextIO]):
         if self._options.is_labeled:
@@ -235,8 +234,8 @@ class CSVContext:
 
     def build_dataset(self, data: Union[str, TextIO, DocumentArray]):
         if isinstance(data, (TextIO)) or (isinstance(data, str) and isfile(data)):
-            self._handler = self._get_csv_handler(data=data)
-            da_generator = self._handler.handle_csv()
+            handler = self._get_csv_handler(data=data)
+            da_generator = handler.handle_csv()
             data = DocumentArray(da_generator)
 
         return data
