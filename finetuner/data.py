@@ -31,6 +31,8 @@ class CSVOptions:
     :param is_labeled: Whether the second column of the CSV represents a label that
         should be assigned to the item in the first column (True), or if it is another
         item that should be semantically close to the first (False).
+    :param is_scored: Whether the third column of the CSV represents a score that
+        determines the relationship of the first two columns.
     :param convert_to_blob: Whether uris to local files should be converted to blobs
     :param create_point_clouds: Determines whether from uris to local 3D mesh files
         should point clouds be sampled.
@@ -43,6 +45,7 @@ class CSVOptions:
     dialect: Union[str, 'csv.Dialect'] = 'auto'
     encoding: str = 'utf-8'
     is_labeled: bool = False
+    is_scored: bool = False
     convert_to_blob: bool = True
     create_point_clouds: bool = True
     point_cloud_size: int = 2048
@@ -131,7 +134,7 @@ def load_finetune_data_from_csv(
         lines = csv.reader(fp, dialect=options.dialect)
 
         artificial_label = 0
-        t1, t2 = None, None
+        modality_left, modality_right = None, None
 
         if not options.is_labeled:
             queries = {}
@@ -140,11 +143,11 @@ def load_finetune_data_from_csv(
                 col1, col2 = columns
             else:
                 continue  # skip empty lines
-            if not t1:  # determining which column contains images
-                t1, t2 = check_columns(task, col1, col2)
+            if not modality_left:  # determining which column contains images
+                modality_left, modality_right = check_columns(task, col1, col2)
 
             d1 = create_document(
-                t1,
+                modality_left,
                 col1,
                 options.convert_to_blob,
                 options.create_point_clouds,
@@ -157,7 +160,7 @@ def load_finetune_data_from_csv(
                 yield d1
             else:
                 d2 = create_document(
-                    t2,
+                    modality_right,
                     col2,
                     options.convert_to_blob,
                     options.create_point_clouds,
@@ -177,17 +180,17 @@ def load_finetune_data_from_csv(
                     d2.tags[DEFAULT_TAG_KEY] = queries[col1]
                     artificial_label += 1
 
-                if t1 == t2:
-                    d1.modality = t1
-                    d2.modality = t1
+                if modality_left == modality_right:
+                    d1.modality = modality_left
+                    d2.modality = modality_right
                     if DEFAULT_TAG_KEY in d1.tags:
                         yield d1
                     if DEFAULT_TAG_KEY in d2.tags:
                         yield d2
                 else:
                     # different modalities, for CLIP
-                    d1.modality = t1
-                    d2.modality = t2
+                    d1.modality = modality_left
+                    d2.modality = modality_right
                     yield Document(
                         chunks=[d1, d2], tags={DEFAULT_TAG_KEY: queries[col1]}
                     )
@@ -211,14 +214,14 @@ def check_columns(
         raise ValueError('MLP model does not support values read in from CSV files.')
 
     if len(task.split('-to-')) == 2:
-        t1, t2 = task.split('-to-')
+        modality_left, modality_right = task.split('-to-')
     else:
         raise ValueError(f'Model has invalid task: {task}')
 
-    if t1 == 'text' and t2 == 'image':
+    if modality_left == 'text' and modality_right == 'image':
         if _is_uri(col1) and not _is_uri(col2):
-            t1 = 'image'
-            t2 = 'text'
+            modality_left = 'image'
+            modality_right = 'text'
         elif not _is_uri(col2):
             raise ValueError(
                 (
@@ -228,7 +231,7 @@ def check_columns(
                     '.'
                 )
             )
-    return t1, t2
+    return modality_left, modality_right
 
 
 def create_document(
