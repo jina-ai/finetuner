@@ -1,16 +1,17 @@
+import abc
 import csv
 import os
+from abc import ABC
 from contextlib import nullcontext
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Generator, List, Optional, TextIO, Tuple, Union
+from typing import TYPE_CHECKING, List, Optional, TextIO, Tuple, Union
 
-from _finetuner.runner.stubs.model import get_stub
 from docarray import Document, DocumentArray
 from docarray.document.generators import _subsample
 from docarray.document.mixins.helper import _is_uri
 from genericpath import isfile
 
-from finetuner.constants import DEFAULT_TAG_KEY
+from finetuner.constants import DEFAULT_TAG_KEY, DEFAULT_TAG_SCORE_KEY
 
 if TYPE_CHECKING:
     from _finetuner.models.inference import InferenceEngine
@@ -51,27 +52,211 @@ class CSVOptions:
     point_cloud_size: int = 2048
 
 
-def build_finetuning_dataset(
-    data: Union[str, TextIO, DocumentArray],
-    model: str,
-    csv_options: Optional[CSVOptions] = None,
-) -> Union[str, DocumentArray]:
-    """If data has been provided as a CSV file, the given CSV file is parsed
-    and a :class:`DocumentArray` is created.
-    """
-    if isinstance(data, (TextIO)) or (isinstance(data, str) and isfile(data)):
-        model_stub = get_stub(
-            model, select_model='clip-text'
-        )  # for clip select_model is mandatory, though any model will get us the task
-        data = DocumentArray(
-            load_finetune_data_from_csv(
-                file=data,
-                task=model_stub.task,
-                options=csv_options or CSVOptions(),
-            )
+class CSVHandler(ABC):
+    def __init__(
+        self, file: Union[str, TextIO], task: str, options: Optional[CSVOptions]
+    ):
+        self._file = file
+        self._task = task
+        self._options = options or CSVOptions()
+        self._file_ctx, self._dialect, _ = get_csv_file_context(
+            file=file, encoding=options.encoding
         )
+        if isinstance(self._options.dialect, str) and self._options.dialect == 'auto':
+            self._options.dialect = self._dialect
 
-    return data
+    @abc.abstractmethod
+    def handle_csv(self):
+        ...
+
+
+class LabeledCSVHandler(CSVHandler):
+    """
+    CSV has two columns where the first column is the data, the second column is the
+    label. To use the handler, make sure csv contains two columns and `is_labeled=True`.
+    """
+
+    def __init__(
+        self, file: Union[str, TextIO], task: str, options: Optional[CSVOptions]
+    ):
+        super().__init__(file, task, options)
+
+    def handle_csv(self):
+        with self._file_ctx as fp:
+
+            lines = csv.reader(fp, dialect=self._options.dialect)
+
+            for columns in _subsample(
+                lines, self._options.size, self._options.sampling_rate
+            ):
+                col1, col2 = columns
+                modality_left, modality_right = check_columns(self._task, col1, col2)
+                doc = create_document(
+                    modality_left,
+                    col1,
+                    self._options.convert_to_blob,
+                    self._options.create_point_clouds,
+                    point_cloud_size=self._options.point_cloud_size,
+                )
+                doc.tags[DEFAULT_TAG_KEY] = col2
+                yield doc
+
+
+class QueryDocumentRelationsHandler(CSVHandler):
+    """
+    In the case that user do not have explicitly annotated labels,
+    but rather a set of query-document pairs which express that a document is
+    relevant to a query, or form as a text-image pair.
+    """
+
+    def __init__(
+        self, file: Union[str, TextIO], task: str, options: Optional[CSVOptions]
+    ):
+        super().__init__(file, task, options)
+
+    def handle_csv(self):
+        with self._file_ctx as fp:
+
+            queries = {}
+            artificial_label = 0
+            lines = csv.reader(fp, dialect=self._options.dialect)
+
+            for columns in _subsample(
+                lines, self._options.size, self._options.sampling_rate
+            ):
+                col1, col2 = columns
+                if col1 in queries and col2 in queries:
+                    continue
+                modality_left, modality_right = check_columns(self._task, col1, col2)
+                doc1 = create_document(
+                    modality_left,
+                    col1,
+                    self._options.convert_to_blob,
+                    self._options.create_point_clouds,
+                    point_cloud_size=self._options.point_cloud_size,
+                )
+                doc2 = create_document(
+                    modality_right,
+                    col2,
+                    self._options.convert_to_blob,
+                    self._options.create_point_clouds,
+                    point_cloud_size=self._options.point_cloud_size,
+                )
+                if col1 in queries:
+                    queries[col2] = queries[col1]
+                    doc2.tags[DEFAULT_TAG_KEY] = queries[col1]
+                    # only yield d2
+                else:
+                    queries[col1] = artificial_label
+                    queries[col2] = artificial_label
+                    # yield both
+                    doc1.tags[DEFAULT_TAG_KEY] = queries[col1]
+                    doc2.tags[DEFAULT_TAG_KEY] = queries[col1]
+                    artificial_label += 1
+
+                if modality_left == modality_right:
+                    doc1.modality = modality_left
+                    doc2.modality = modality_right
+                    if DEFAULT_TAG_KEY in doc1.tags:
+                        yield doc1
+                    if DEFAULT_TAG_KEY in doc2.tags:
+                        yield doc2
+                else:
+                    # different modalities, for CLIP
+                    doc1.modality = modality_left
+                    doc2.modality = modality_right
+                    yield Document(
+                        chunks=[doc1, doc2], tags={DEFAULT_TAG_KEY: queries[col1]}
+                    )
+
+
+class PairwiseScoreHandler(CSVHandler):
+    """
+    CSV has three columns, column1, column2 and a float value indicates the
+    similarity between column1 and column2.
+    """
+
+    def __init__(
+        self, file: Union[str, TextIO], task: str, options: Optional[CSVOptions]
+    ):
+        super().__init__(file, task, options)
+
+    def handle_csv(self):
+        with self._file_ctx as fp:
+
+            lines = csv.reader(fp, dialect=self._options.dialect)
+
+            for columns in _subsample(
+                lines, self._options.size, self._options.sampling_rate
+            ):
+                col1, col2, col3 = columns
+                modality_left, modality_right = check_columns(self._task, col1, col2)
+                doc1 = create_document(
+                    modality_left,
+                    col1,
+                    self._options.convert_to_blob,
+                    self._options.create_point_clouds,
+                    point_cloud_size=self._options.point_cloud_size,
+                )
+                doc2 = create_document(
+                    modality_right,
+                    col2,
+                    self._options.convert_to_blob,
+                    self._options.create_point_clouds,
+                    point_cloud_size=self._options.point_cloud_size,
+                )
+                yield Document(chunks=[doc1, doc2], tags={DEFAULT_TAG_SCORE_KEY: col3})
+
+
+class CSVContext:
+    def __init__(self, model: str, task: str, options: Optional[CSVOptions]):
+        self._model = model
+        self._task = task
+        self._options = options
+        self._handler = None
+
+    def _get_csv_handler(self, data: Union[str, TextIO]):
+        if self._options.is_labeled:
+            return LabeledCSVHandler(file=data, task=self._task, options=self._options)
+        else:
+            _, _, num_columns = get_csv_file_context(
+                file=data, encoding=self._options.encoding
+            )
+            if num_columns == 2:
+                return QueryDocumentRelationsHandler(
+                    file=data, task=self._task, options=self._options
+                )
+            elif num_columns == 3:
+                return PairwiseScoreHandler(
+                    file=data, task=self._task, options=self._options
+                )
+            else:
+                raise TypeError('Can not determine the context of the csv.')
+
+    def build_dataset(self, data: Union[str, TextIO, DocumentArray]):
+        if isinstance(data, (TextIO)) or (isinstance(data, str) and isfile(data)):
+            self._handler = self._get_csv_handler(data=data)
+            da_generator = self._handler.handle_csv()
+            data = DocumentArray(da_generator)
+
+        return data
+
+
+def get_csv_file_context(file: Union[str, TextIO], encoding: str):
+    """Get csv file context, such as `file_ctx`, csv dialect and number of columns."""
+    if hasattr(file, 'read'):
+        file_ctx = nullcontext(file)
+    else:
+        file_ctx = open(file, 'r', encoding=encoding)
+    with file_ctx as fp:
+        try:
+            dialect = csv.Sniffer().sniff(fp.read(1024))
+        except Exception:
+            dialect = 'excel'  #: can not sniff delimiter, use default dialect
+        reader = csv.reader(file_ctx, dialect=dialect)
+        num_columns = len(next(reader))
+        fp.seek(0)
+    return file_ctx, dialect, num_columns
 
 
 def build_encoding_dataset(model: 'InferenceEngine', data: List[str]) -> DocumentArray:
@@ -94,106 +279,6 @@ def build_encoding_dataset(model: 'InferenceEngine', data: List[str]) -> Documen
     )
 
     return data
-
-
-def load_finetune_data_from_csv(
-    file: Union[str, TextIO],
-    task: str = 'text-to-text',
-    options: Optional[CSVOptions] = None,
-) -> Generator['Document', None, None]:
-    """
-    Takes a CSV file and returns a generator of documents, with each document containing
-    the information from one line of the CSV.
-
-    :param file: Either a filepath to or a stream of a CSV file.
-    :param task: Specifies the modalities of the model that the returned data is to
-        be used for. This data is retrieved using the model name, and does not need
-        to be added to the csv_options argument when calling :meth:`finetuner.fit`
-    :param options: A :class:`CSVOptions` object.
-    :return: A generator of :class:`Document`s. Each document represents one element
-        in the CSV
-
-    """
-
-    options = options or CSVOptions()
-
-    if hasattr(file, 'read'):
-        file_ctx = nullcontext(file)
-    else:
-        file_ctx = open(file, 'r', encoding=options.encoding)
-
-    with file_ctx as fp:
-        # when set to auto, then sniff
-        try:
-            if isinstance(options.dialect, str) and options.dialect == 'auto':
-                options.dialect = csv.Sniffer().sniff(fp.read(1024))
-                fp.seek(0)
-        except Exception:
-            options.dialect = 'excel'  #: can not sniff delimiter, use default dialect
-
-        lines = csv.reader(fp, dialect=options.dialect)
-
-        artificial_label = 0
-        modality_left, modality_right = None, None
-
-        if not options.is_labeled:
-            queries = {}
-        for columns in _subsample(lines, options.size, options.sampling_rate):
-            if columns:
-                col1, col2 = columns
-            else:
-                continue  # skip empty lines
-            if not modality_left:  # determining which column contains images
-                modality_left, modality_right = check_columns(task, col1, col2)
-
-            d1 = create_document(
-                modality_left,
-                col1,
-                options.convert_to_blob,
-                options.create_point_clouds,
-                point_cloud_size=options.point_cloud_size,
-            )
-
-            if options.is_labeled:
-                label = col2
-                d1.tags[DEFAULT_TAG_KEY] = label
-                yield d1
-            else:
-                d2 = create_document(
-                    modality_right,
-                    col2,
-                    options.convert_to_blob,
-                    options.create_point_clouds,
-                    point_cloud_size=options.point_cloud_size,
-                )
-                if col1 in queries and col2 in queries:
-                    continue
-                if col1 in queries:
-                    queries[col2] = queries[col1]
-                    d2.tags[DEFAULT_TAG_KEY] = queries[col1]
-                    # only yield d2
-                else:
-                    queries[col1] = artificial_label
-                    queries[col2] = artificial_label
-                    # yield both
-                    d1.tags[DEFAULT_TAG_KEY] = queries[col1]
-                    d2.tags[DEFAULT_TAG_KEY] = queries[col1]
-                    artificial_label += 1
-
-                if modality_left == modality_right:
-                    d1.modality = modality_left
-                    d2.modality = modality_right
-                    if DEFAULT_TAG_KEY in d1.tags:
-                        yield d1
-                    if DEFAULT_TAG_KEY in d2.tags:
-                        yield d2
-                else:
-                    # different modalities, for CLIP
-                    d1.modality = modality_left
-                    d2.modality = modality_right
-                    yield Document(
-                        chunks=[d1, d2], tags={DEFAULT_TAG_KEY: queries[col1]}
-                    )
 
 
 def check_columns(

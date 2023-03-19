@@ -41,6 +41,7 @@ MODEL_ARTIFACT = 'model_artifact'
 ARTIFACT = 'artifact'
 ARTIFACT_ID = 'artifact_id'
 DEFAULT_TAG_KEY = 'finetuner_label'
+DEFAULT_TAG_SCORE_KEY = 'finetuner_score'
 # Run status
 CREATED = 'CREATED'
 STARTED = 'STARTED'
