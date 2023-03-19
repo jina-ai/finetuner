@@ -96,9 +96,9 @@ class LabeledCSVHandler(CSVHandler):
                 lines, self._options.size, self._options.sampling_rate
             ):
                 col1, col2 = columns
-                modality_left, modality_right = check_columns(self._task, col1, col2)
+                modality_col1, modality_col2 = check_columns(self._task, col1, col2)
                 doc = create_document(
-                    modality_left,
+                    modality_col1,
                     col1,
                     self._options.convert_to_blob,
                     self._options.create_point_clouds,
@@ -128,6 +128,7 @@ class QueryDocumentRelationsHandler(CSVHandler):
 
             queries = {}
             artificial_label = 0
+            modality_col1, modality_col2 = None, None
             lines = csv.reader(fp, dialect=self._options.dialect)
 
             for columns in _subsample(
@@ -136,16 +137,17 @@ class QueryDocumentRelationsHandler(CSVHandler):
                 col1, col2 = columns
                 if col1 in queries and col2 in queries:
                     continue
-                modality_left, modality_right = check_columns(self._task, col1, col2)
+                if not modality_col1:
+                    modality_col1, modality_col2 = check_columns(self._task, col1, col2)
                 doc1 = create_document(
-                    modality_left,
+                    modality_col1,
                     col1,
                     self._options.convert_to_blob,
                     self._options.create_point_clouds,
                     point_cloud_size=self._options.point_cloud_size,
                 )
                 doc2 = create_document(
-                    modality_right,
+                    modality_col2,
                     col2,
                     self._options.convert_to_blob,
                     self._options.create_point_clouds,
@@ -163,17 +165,17 @@ class QueryDocumentRelationsHandler(CSVHandler):
                     doc2.tags[DEFAULT_TAG_KEY] = queries[col1]
                     artificial_label += 1
 
-                if modality_left == modality_right:
-                    doc1.modality = modality_left
-                    doc2.modality = modality_right
+                if modality_col1 == modality_col2:
+                    doc1.modality = modality_col1
+                    doc2.modality = modality_col1
                     if DEFAULT_TAG_KEY in doc1.tags:
                         yield doc1
                     if DEFAULT_TAG_KEY in doc2.tags:
                         yield doc2
                 else:
                     # different modalities, for CLIP
-                    doc1.modality = modality_left
-                    doc2.modality = modality_right
+                    doc1.modality = modality_col1
+                    doc2.modality = modality_col2
                     yield Document(
                         chunks=[doc1, doc2], tags={DEFAULT_TAG_KEY: queries[col1]}
                     )
@@ -202,16 +204,16 @@ class PairwiseScoreHandler(CSVHandler):
                 lines, self._options.size, self._options.sampling_rate
             ):
                 col1, col2, col3 = columns
-                modality_left, modality_right = check_columns(self._task, col1, col2)
+                modality_col1, modality_col2 = check_columns(self._task, col1, col2)
                 doc1 = create_document(
-                    modality_left,
+                    modality_col1,
                     col1,
                     self._options.convert_to_blob,
                     self._options.create_point_clouds,
                     point_cloud_size=self._options.point_cloud_size,
                 )
                 doc2 = create_document(
-                    modality_right,
+                    modality_col2,
                     col2,
                     self._options.convert_to_blob,
                     self._options.create_point_clouds,
@@ -325,14 +327,14 @@ def check_columns(
         raise ValueError('MLP model does not support values read in from CSV files.')
 
     if len(task.split('-to-')) == 2:
-        modality_left, modality_right = task.split('-to-')
+        modality_col1, modality_col2 = task.split('-to-')
     else:
         raise ValueError(f'Model has invalid task: {task}')
 
-    if modality_left == 'text' and modality_right == 'image':
+    if modality_col1 == 'text' and modality_col2 == 'image':
         if _is_uri(col1) and not _is_uri(col2):
-            modality_left = 'image'
-            modality_right = 'text'
+            modality_col1 = 'image'
+            modality_col2 = 'text'
         elif not _is_uri(col2):
             raise ValueError(
                 (
@@ -342,7 +344,7 @@ def check_columns(
                     '.'
                 )
             )
-    return modality_left, modality_right
+    return modality_col1, modality_col2
 
 
 def create_document(
