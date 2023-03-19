@@ -5,7 +5,7 @@ from io import StringIO
 import pytest
 from docarray import Document, DocumentArray
 
-from finetuner.constants import DEFAULT_TAG_KEY
+from finetuner.constants import DEFAULT_TAG_KEY, DEFAULT_TAG_SCORE_KEY
 from finetuner.data import CSVContext, CSVOptions, check_columns, create_document
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -158,6 +158,29 @@ def test_load_finetune_data_from_csv_multimodal(dialect, contents, expect_error)
                 assert doc.chunks[0].modality == 'text'
                 assert doc.chunks[1].uri == expected[1]
                 assert doc.chunks[1].modality == 'image'
+
+
+@pytest.mark.parametrize('dialect', [csv.list_dialects()[0]])
+@pytest.mark.parametrize(
+    'contents, model',
+    [
+        ([[lena_img_file(), lena_img_file(), '1']], 'resnet50'),
+        ([['apple', 'orange', '0.2']], 'bert-base-cased'),
+    ],
+)
+def test_load_finetune_data_with_scores(contents, model, dialect):
+    dialect = csv.get_dialect(dialect)
+    content_stream = dialect.lineterminator.join(
+        [dialect.delimiter.join(x) for x in contents]
+    )
+    options = CSVOptions(dialect=dialect)
+    csv_context = CSVContext(model='bert-base-cased', options=options)
+
+    data = csv_context.build_dataset(data=StringIO(content_stream))
+    assert isinstance(data, DocumentArray)
+    for doc in data:
+        assert len(doc.chunks) == 2
+        assert DEFAULT_TAG_SCORE_KEY in doc.tags
 
 
 @pytest.mark.parametrize(
