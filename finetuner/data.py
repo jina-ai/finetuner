@@ -4,6 +4,7 @@ import os
 from abc import ABC
 from contextlib import nullcontext
 from dataclasses import dataclass
+from io import StringIO
 from typing import TYPE_CHECKING, List, Optional, TextIO, Tuple, Union
 
 from _finetuner.runner.stubs.model import get_stub
@@ -52,7 +53,10 @@ class CSVOptions:
 
 class CSVHandler(ABC):
     def __init__(
-        self, file: Union[str, TextIO], task: str, options: Optional[CSVOptions]
+        self,
+        file: Union[str, TextIO, StringIO],
+        task: str,
+        options: Optional[CSVOptions],
     ):
         self._file = file
         self._task = task
@@ -76,7 +80,10 @@ class LabeledCSVHandler(CSVHandler):
     """
 
     def __init__(
-        self, file: Union[str, TextIO], task: str, options: Optional[CSVOptions]
+        self,
+        file: Union[str, TextIO, StringIO],
+        task: str,
+        options: Optional[CSVOptions],
     ):
         super().__init__(file, task, options)
 
@@ -109,7 +116,10 @@ class QueryDocumentRelationsHandler(CSVHandler):
     """
 
     def __init__(
-        self, file: Union[str, TextIO], task: str, options: Optional[CSVOptions]
+        self,
+        file: Union[str, TextIO, StringIO],
+        task: str,
+        options: Optional[CSVOptions],
     ):
         super().__init__(file, task, options)
 
@@ -176,7 +186,10 @@ class PairwiseScoreHandler(CSVHandler):
     """
 
     def __init__(
-        self, file: Union[str, TextIO], task: str, options: Optional[CSVOptions]
+        self,
+        file: Union[str, TextIO, StringIO],
+        task: str,
+        options: Optional[CSVOptions],
     ):
         super().__init__(file, task, options)
 
@@ -233,8 +246,12 @@ class CSVContext:
             else:
                 raise TypeError('Can not determine the context of the csv.')
 
-    def build_dataset(self, data: Union[str, TextIO, DocumentArray]):
-        if isinstance(data, TextIO) or (isinstance(data, str) and isfile(data)):
+    def build_dataset(self, data: Union[str, TextIO, StringIO, DocumentArray]):
+        if (
+            isinstance(data, TextIO)
+            or isinstance(data, StringIO)
+            or (isinstance(data, str) and isfile(data))
+        ):
             handler = self._get_csv_handler(data=data)
             da_generator = handler.handle_csv()
             data = DocumentArray(da_generator)
@@ -242,7 +259,7 @@ class CSVContext:
         return data
 
 
-def get_csv_file_context(file: Union[str, TextIO], encoding: str):
+def get_csv_file_context(file: Union[str, TextIO, StringIO], encoding: str):
     """Get csv file context, such as `file_ctx`, csv dialect and number of columns."""
     if hasattr(file, 'read'):
         file_ctx = nullcontext(file)
@@ -260,7 +277,7 @@ def get_csv_file_dialect_columns(file: str, encoding: str):
         except Exception:
             dialect = 'excel'  #: can not sniff delimiter, use default dialect
         try:
-            reader = csv.reader(file_ctx, dialect=dialect)
+            reader = csv.reader(fp, dialect=dialect)
             num_columns = len(next(reader))
         except StopIteration:
             raise IOError('CSV file not exist or is empty')

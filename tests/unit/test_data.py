@@ -84,16 +84,21 @@ def test_load_finetune_data_from_csv_image_to_image(dialect):
 
 @pytest.mark.parametrize('dialect', csv.list_dialects())
 @pytest.mark.parametrize(
-    'contents, type',
+    'contents, type, model',
     [
-        ([['apple', 'apple-label'], ['orange', 'orange-label']], 'text'),
+        (
+            [['apple', 'apple-label'], ['orange', 'orange-label']],
+            'text',
+            'bert-base-cased',
+        ),
         (
             [[lena_img_file(), 'apple-label'], [lena_img_file(), 'orange-label']],
             'image',
+            'resnet50',
         ),
     ],
 )
-def test_load_finetune_data_from_csv_labeled(dialect, contents, type):
+def test_load_finetune_data_from_csv_labeled(dialect, contents, type, model):
     dialect = csv.get_dialect(dialect)
 
     content_stream = dialect.lineterminator.join(
@@ -101,7 +106,7 @@ def test_load_finetune_data_from_csv_labeled(dialect, contents, type):
     )
 
     options = CSVOptions(dialect=dialect, is_labeled=True)
-    csv_context = CSVContext(model='resnet50', options=options)
+    csv_context = CSVContext(model=model, options=options)
 
     docs = csv_context.build_dataset(data=StringIO(content_stream))
 
@@ -131,12 +136,12 @@ def test_load_finetune_data_from_csv_multimodal(dialect, contents, expect_error)
     )
 
     options = CSVOptions(dialect=dialect)
-    csv_context = CSVContext(model='openai::clip', options=options)
+    csv_context = CSVContext(model='ViT-B-32::openai', options=options)
 
     if expect_error:
         with pytest.raises(expect_error):
             docs = csv_context.build_dataset(data=StringIO(content_stream))
-            for doc in docs:
+            for _ in docs:
                 pass
     else:
         docs = csv_context.build_dataset(data=StringIO(content_stream))
