@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Refactor `load_finetuning_dataset` into CSV handlers ([#696](https://github.com/jina-ai/finetuner/pull/696))
+- Refactor `load_finetuning_dataset` into CSV handlers. ([#696](https://github.com/jina-ai/finetuner/pull/696))
 
 ### Fixed
 
