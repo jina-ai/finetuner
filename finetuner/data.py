@@ -223,16 +223,22 @@ class PairwiseScoreHandler(CSVHandler):
 
 
 class CSVContext:
-    def __init__(self, model: str, options: Optional[CSVOptions] = None):
+    def __init__(
+        self,
+        model: str,
+        options: Optional[CSVOptions] = None,
+    ):
         self._model = model
         self._options = options
-        model_stub = get_stub(
-            model,
-            select_model='clip-text',
-            model_options={'input_size': 128},
-        )
-        # for clip select_model is mandatory, though any model will get us the task
-        self._task = model_stub.task
+        if model == 'mlp':
+            self._task = 'image-to-image'
+        else:
+            model_stub = get_stub(
+                model,
+                select_model='clip-text',
+            )
+            # for clip select_model is mandatory, though any model will get us the task
+            self._task = model_stub.task
 
     def _get_csv_handler(self, data: Union[str, TextIO]):
         if self._options.is_labeled:
