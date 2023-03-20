@@ -92,6 +92,16 @@ During fine-tuning, we're optimizing two models in parallel.
 At the model saving time, you will discover, we are saving two models to your local directory. 
 ```
 
+### Query-Document Scores
+
+To prepare data for query document pairs together with their similarity scores,
+each row must contain three columns includes two sentences and a similarity score.
+
+```markdown
+The weather is nice, The weather is beautiful, 0.9
+The weather is nice, The weather is bad, 0
+```
+
 ```{important} 
 If a text field contains commas, it breaks the CSV format since it is interpreted as spanning over multiple columns.
 In this case, please enclose the field in double quotes, such as `field1,"field, 2"`.
@@ -127,6 +137,29 @@ train_da = DocumentArray([
         tags={'finetuner_label': 't-shirt'}
     ),
     ...,
+])
+```
+````
+````{tab} sentence-similarity
+```python
+from docarray import Document, DocumentArray
+
+train_da = DocumentArray([
+    Document(
+        chunks=[
+            Document(content='the weather is nice'),
+            Document(content='the weather is beautiful')
+        ],
+        tags={'finetuner_score': 0.9}  # note, use `finetuner_score` as ground truth.
+    ),
+    Document(
+        chunks=[
+            Document(content='the weather is nice'),
+            Document(content='the weather is bad')
+        ],
+        tags={'finetuner_score': 0.0}
+    ),
+    ...
 ])
 ```
 ````
