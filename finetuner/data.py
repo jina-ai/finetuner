@@ -223,13 +223,20 @@ class PairwiseScoreParser(_CSVParser):
 
 
 class CSVContext:
+    """
+    A CSV context switch class with conditions to parse CSVs into DocumentArray.
+
+    :param model: The model being used, to get model stub and associated task.
+    :param options: an instance of :class`CSVOptions`.
+    """
+
     def __init__(
         self,
         model: str,
         options: Optional[CSVOptions] = None,
     ):
         self._model = model
-        self._options = options
+        self._options = options or CSVOptions()
         if model == 'mlp':
             self._task = 'image-to-image'
         else:
