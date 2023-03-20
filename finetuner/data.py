@@ -51,7 +51,7 @@ class CSVOptions:
     point_cloud_size: int = 2048
 
 
-class _CSVHandler(ABC):
+class _CSVParser(ABC):
     def __init__(
         self,
         file: Union[str, TextIO, StringIO],
@@ -61,19 +61,19 @@ class _CSVHandler(ABC):
         self._file = file
         self._task = task
         self._options = options or CSVOptions()
-        self._dialect, _ = get_csv_file_dialect_columns(
-            self._file, encoding=options.encoding
-        )
         if isinstance(self._options.dialect, str) and self._options.dialect == 'auto':
+            self._dialect, _ = get_csv_file_dialect_columns(
+                self._file, encoding=options.encoding
+            )
             self._options.dialect = self._dialect
         self._file_ctx = get_csv_file_context(file=file, encoding=options.encoding)
 
     @abc.abstractmethod
-    def handle_csv(self):
+    def parse(self):
         ...
 
 
-class LabeledCSVHandler(_CSVHandler):
+class LabeledCSVParser(_CSVParser):
     """
     CSV has two columns where the first column is the data, the second column is the
     label. To use the handler, make sure csv contains two columns and `is_labeled=True`.
@@ -87,7 +87,7 @@ class LabeledCSVHandler(_CSVHandler):
     ):
         super().__init__(file, task, options)
 
-    def handle_csv(self):
+    def parse(self):
         with self._file_ctx as fp:
 
             lines = csv.reader(fp, dialect=self._options.dialect)
@@ -108,7 +108,7 @@ class LabeledCSVHandler(_CSVHandler):
                 yield doc
 
 
-class QueryDocumentRelationsHandler(_CSVHandler):
+class QueryDocumentRelationsParser(_CSVParser):
     """
     In the case that user do not have explicitly annotated labels,
     but rather a set of query-document pairs which express that a document is
@@ -123,7 +123,7 @@ class QueryDocumentRelationsHandler(_CSVHandler):
     ):
         super().__init__(file, task, options)
 
-    def handle_csv(self):
+    def parse(self):
         with self._file_ctx as fp:
 
             queries = {}
@@ -181,7 +181,7 @@ class QueryDocumentRelationsHandler(_CSVHandler):
                     )
 
 
-class PairwiseScoreHandler(_CSVHandler):
+class PairwiseScoreParser(_CSVParser):
     """
     CSV has three columns, column1, column2 and a float value indicates the
     similarity between column1 and column2.
@@ -195,7 +195,7 @@ class PairwiseScoreHandler(_CSVHandler):
     ):
         super().__init__(file, task, options)
 
-    def handle_csv(self):
+    def parse(self):
         with self._file_ctx as fp:
 
             lines = csv.reader(fp, dialect=self._options.dialect)
@@ -240,19 +240,19 @@ class CSVContext:
             # for clip select_model is mandatory, though any model will get us the task
             self._task = model_stub.task
 
-    def _get_csv_handler(self, data: Union[str, TextIO]):
+    def _get_csv_parser(self, data: Union[str, TextIO]):
         if self._options.is_labeled:
-            return LabeledCSVHandler(file=data, task=self._task, options=self._options)
+            return LabeledCSVParser(file=data, task=self._task, options=self._options)
         else:
             _, num_columns = get_csv_file_dialect_columns(
                 file=data, encoding=self._options.encoding
             )
             if num_columns == 2:
-                return QueryDocumentRelationsHandler(
+                return QueryDocumentRelationsParser(
                     file=data, task=self._task, options=self._options
                 )
             elif num_columns == 3:
-                return PairwiseScoreHandler(
+                return PairwiseScoreParser(
                     file=data, task=self._task, options=self._options
                 )
             else:
@@ -264,8 +264,8 @@ class CSVContext:
             or isinstance(data, StringIO)
             or (isinstance(data, str) and isfile(data))
         ):
-            handler = self._get_csv_handler(data=data)
-            da_generator = handler.handle_csv()
+            parser = self._get_csv_parser(data=data)
+            da_generator = parser.parse()
             data = DocumentArray(da_generator)
 
         return data
