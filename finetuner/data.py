@@ -226,7 +226,11 @@ class CSVContext:
     def __init__(self, model: str, options: Optional[CSVOptions] = None):
         self._model = model
         self._options = options
-        model_stub = get_stub(model, select_model='clip-text')
+        model_stub = get_stub(
+            model,
+            select_model='clip-text',
+            input_size=128,
+        )
         # for clip select_model is mandatory, though any model will get us the task
         self._task = model_stub.task
 
