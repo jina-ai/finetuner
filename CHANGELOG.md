@@ -10,9 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Support pair-wise score document construction from csv. ([#696](https://github.com/jina-ai/finetuner/pull/696))
+
 ### Removed
 
 ### Changed
+
+- Refactor `load_finetuning_dataset` into csv handlers ([#696](https://github.com/jina-ai/finetuner/pull/696))
 
 ### Fixed
 
