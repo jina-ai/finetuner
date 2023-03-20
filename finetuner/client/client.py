@@ -70,7 +70,7 @@ class FinetunerV1Client(_BaseClient):
         ..note:: The maximum number for `size` per page is 100.
         """
         params = {'page': page, 'size': size}
-        url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS)
+        url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS) + '/'
         return self._handle_request(url=url, method=GET, params=params)
 
     def delete_experiment(self, name: str) -> Dict[str, Any]:
