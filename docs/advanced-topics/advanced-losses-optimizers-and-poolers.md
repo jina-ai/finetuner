@@ -52,7 +52,7 @@ run = finetuner.fit(
 In cases where the chosen loss function is a form of contrastive loss, such as the default `TripletMarginLoss`, or the `ClipLoss` function (the loss function used for `text-to-image` tasks), a class sampler is needed to properly function.
 In these cases, this `sampler` parameters is ignored and the `ClassSampler` is always used.
 
-### Using an optimizer
+### Using an loss optimizer
 
 In order to keep track and refine our estimation of the class centers across batches, these SphereFace loss functions require an additional optimizer during training.
 By default, the type of optimizer used will be the same as the one used for the model itself, but you can also choose a different optimizer for your loss function using the `loss_optimizer` parameter.
@@ -112,3 +112,28 @@ run = finetuner.fit(
     }
 )
 ```
+
+## Optimizers
+
+### Layer-wise learning rate decay
+
+The LLRD assigns different learning rates for each layer of the model backbone.
+It sets a large learning rate for the top layer and uses a multiplicative decay rate to decrease the learning rate layer-by-layer from top to bottom. 
+With a large learning rate,
+the feature of the top layers changes more and could adapt to new tasks.
+On the contrary, the bottom layers have a small learning rate,
+so the strong feature learned from the pre-training is preserved.
+
+It is recommended to use LLRD to fine-tune Transformers, such as Bert or CLIP.
+
+```diff
+import finetuner
+
+run = finetuner.fit(
+    ...,
+    optimizer='Adam'
++   optimizer_options={'layer_wise_lr_decay': 0.98},
+    ...,
+)
+```
+
