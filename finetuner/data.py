@@ -51,12 +51,12 @@ class CSVOptions:
     point_cloud_size: int = 2048
 
 
-class CSVHandler(ABC):
+class _CSVHandler(ABC):
     def __init__(
         self,
         file: Union[str, TextIO, StringIO],
         task: str,
-        options: Optional[CSVOptions],
+        options: Optional[CSVOptions] = None,
     ):
         self._file = file
         self._task = task
@@ -73,7 +73,7 @@ class CSVHandler(ABC):
         ...
 
 
-class LabeledCSVHandler(CSVHandler):
+class LabeledCSVHandler(_CSVHandler):
     """
     CSV has two columns where the first column is the data, the second column is the
     label. To use the handler, make sure csv contains two columns and `is_labeled=True`.
@@ -83,7 +83,7 @@ class LabeledCSVHandler(CSVHandler):
         self,
         file: Union[str, TextIO, StringIO],
         task: str,
-        options: Optional[CSVOptions],
+        options: Optional[CSVOptions] = None,
     ):
         super().__init__(file, task, options)
 
@@ -108,7 +108,7 @@ class LabeledCSVHandler(CSVHandler):
                 yield doc
 
 
-class QueryDocumentRelationsHandler(CSVHandler):
+class QueryDocumentRelationsHandler(_CSVHandler):
     """
     In the case that user do not have explicitly annotated labels,
     but rather a set of query-document pairs which express that a document is
@@ -119,7 +119,7 @@ class QueryDocumentRelationsHandler(CSVHandler):
         self,
         file: Union[str, TextIO, StringIO],
         task: str,
-        options: Optional[CSVOptions],
+        options: Optional[CSVOptions] = None,
     ):
         super().__init__(file, task, options)
 
@@ -181,7 +181,7 @@ class QueryDocumentRelationsHandler(CSVHandler):
                     )
 
 
-class PairwiseScoreHandler(CSVHandler):
+class PairwiseScoreHandler(_CSVHandler):
     """
     CSV has three columns, column1, column2 and a float value indicates the
     similarity between column1 and column2.
@@ -191,7 +191,7 @@ class PairwiseScoreHandler(CSVHandler):
         self,
         file: Union[str, TextIO, StringIO],
         task: str,
-        options: Optional[CSVOptions],
+        options: Optional[CSVOptions] = None,
     ):
         super().__init__(file, task, options)
 
@@ -274,13 +274,12 @@ class CSVContext:
 def get_csv_file_context(file: Union[str, TextIO, StringIO], encoding: str):
     """Get csv file context, such as `file_ctx`, csv dialect and number of columns."""
     if hasattr(file, 'read'):
-        file_ctx = nullcontext(file)
-    else:
-        file_ctx = open(file, 'r', encoding=encoding)
-    return file_ctx
+        return nullcontext(file)
+    return open(file, 'r', encoding=encoding)
 
 
 def get_csv_file_dialect_columns(file: str, encoding: str):
+    """Get csv dialect and number of columns of the csv."""
     file_ctx = get_csv_file_context(file=file, encoding=encoding)
     with file_ctx as fp:
         try:
