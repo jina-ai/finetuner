@@ -92,10 +92,13 @@ During fine-tuning, we're optimizing two models in parallel.
 At the model saving time, you will discover, we are saving two models to your local directory. 
 ```
 
-### Query-Document Scores
+### Preparing Document Similarity Data for Training
 
-To prepare data for query-document pairs which are annotated with similarity scores,
-each row must contain three columns includes two sentences and a similarity score.
+To prepare data for training,
+it must consist of a pair of documents and a similarity score between 0.0 (completely unrelated) and 1.0 (identical).
+You must organize the data into a three-column CSV file with the first text,
+then the second, and then the score,
+on a single line separated by commas.
 
 ```markdown
 The weather is nice, The weather is beautiful, 0.9

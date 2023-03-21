@@ -151,11 +151,11 @@ By default, it is set to zero.
 
 ### Layer-wise learning rate decay (LLRD)
 
-The LLRD assigns different learning rates for each layer of the model backbone.
-It sets a large learning rate for the top layer and uses a multiplicative decay rate to decrease the learning rate layer-by-layer from top to bottom. 
-With a large learning rate,
-the feature of the top layers changes more and could adapt to new tasks.
-On the contrary, the bottom layers have small learning rates to preserve features learned during the pre-training.
+The LLRD assigns different learning rates to each layer of the model backbone.
+It sets a large learning rate for the top (last) layer and uses a multiplicative decay rate to decrease the learning rate layer-by-layer from top (last) to bottom (first). 
+With high learning rates,
+the features recognized by the top layers change more and adapt to new tasks more easily,
+while the bottom layers have low learning rates and more easily preserve the features learned during pre-training.
 
 It is recommended to use LLRD to fine-tune Transformers, such as Bert or CLIP.
 

@@ -81,8 +81,8 @@ with `TripletMarginLoss` sperarating them the least, and `ArcFaceLoss` separatin
 ### CosineSimilarityLoss
 
 `CosineSimilarityLoss` is a regression loss function,
-which is calculated by comparing the cosine similarity of two embeddings against their ground truth cosine similarity.
-The goal of `CosineSimilarityLoss` is to minimize the MSE (mean squared error) between document pair's similarity score and their ground truth in order to improve the representation of similarity between two semantically related documents (e.g., sentences or images).
+which is calculated by comparing the cosine similarity of two embeddings against their ground-truth cosine similarity or some other numerical measure of similarity in the range of 0.0 (completely different) to 1.0 (identical). 
+The goal of `CosineSimilarityLoss` is to minimize the MSE (mean squared error) between document pair's cosine score and their ground-truth expected similarity, in order to optimize the model for semantic relatedness, i.e. between images and sentences that describe them in part, between documents that have similar content, etc.
 
 ## Pooling layers
 
