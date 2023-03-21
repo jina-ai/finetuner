@@ -40,8 +40,12 @@ def test_get_experiment(client_mocker, name='name'):
 
 def test_list_experiments(client_mocker):
     sent_request = client_mocker.list_experiments()
-    assert sent_request['url'] == client_mocker._construct_url(
-        client_mocker._base_url, API_VERSION, EXPERIMENTS
+    assert (
+        sent_request['url']
+        == client_mocker._construct_url(
+            client_mocker._base_url, API_VERSION, EXPERIMENTS
+        )
+        + '/'
     )
     assert sent_request['method'] == GET
 

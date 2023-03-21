@@ -5,14 +5,8 @@ from io import StringIO
 import pytest
 from docarray import Document, DocumentArray
 
-from finetuner.constants import DEFAULT_TAG_KEY
-from finetuner.data import (
-    CSVOptions,
-    build_finetuning_dataset,
-    check_columns,
-    create_document,
-    load_finetune_data_from_csv,
-)
+from finetuner.constants import DEFAULT_TAG_KEY, DEFAULT_TAG_SCORE_KEY
+from finetuner.data import CSVContext, CSVOptions, check_columns, create_document
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -29,30 +23,24 @@ def dummy_csv_file():
     return os.path.join(current_dir, 'resources/dummy.csv')
 
 
-@pytest.mark.parametrize(
-    'data, is_file', [(dummy_csv_file(), True), ('notarealfile', False)]
-)
-def test_build_finetuning_dataset_str(data, is_file):
+@pytest.mark.parametrize('data, is_file', [(dummy_csv_file(), True)])
+def test_build_dataset_str(data, is_file):
 
     options = CSVOptions(dialect='excel')
-
-    new_da = build_finetuning_dataset(
-        data=data, model='bert-base-cased', csv_options=options
-    )
+    csv_context = CSVContext(model='bert-base-cased', options=options)
 
     if is_file:
+        new_da = csv_context.build_dataset(data=data)
         assert isinstance(new_da, DocumentArray)
     else:
-        assert isinstance(new_da, str)
+        with pytest.raises(IOError):
+            _ = csv_context.build_dataset(data=data)
 
 
-def test_build_finetuning_dataset_DocumentArray():
-
+def test_build_dataset_from_document_array():
     da = DocumentArray(Document())
-    new_da = build_finetuning_dataset(
-        data=da,
-        model='does not matter',
-    )
+    csv_context = CSVContext(model='bert-base-cased')
+    new_da = csv_context.build_dataset(da)
     assert da == new_da
 
 
@@ -66,11 +54,9 @@ def test_load_finetune_data_from_csv_text_to_text(dialect):
 
     options = CSVOptions(dialect=dialect)
 
-    docs = load_finetune_data_from_csv(
-        file=StringIO(content_stream),
-        task='text-to-text',
-        options=options,
-    )
+    csv_context = CSVContext(model='bert-base-cased', options=options)
+    docs = csv_context.build_dataset(data=StringIO(content_stream))
+
     flat_contents = [x for pair in contents for x in pair]
     for doc, expected in zip(docs, flat_contents):
         assert doc.content == expected
@@ -89,12 +75,8 @@ def test_load_finetune_data_from_csv_image_to_image(dialect):
     )
 
     options = CSVOptions(dialect=dialect)
-
-    docs = load_finetune_data_from_csv(
-        file=StringIO(content_stream),
-        task='image-to-image',
-        options=options,
-    )
+    csv_context = CSVContext(model='resnet50', options=options)
+    docs = csv_context.build_dataset(data=StringIO(content_stream))
 
     for doc in docs:
         assert doc.uri == path_to_lena
@@ -102,16 +84,21 @@ def test_load_finetune_data_from_csv_image_to_image(dialect):
 
 @pytest.mark.parametrize('dialect', csv.list_dialects())
 @pytest.mark.parametrize(
-    'contents, type',
+    'contents, type, model',
     [
-        ([['apple', 'apple-label'], ['orange', 'orange-label']], 'text'),
+        (
+            [['apple', 'apple-label'], ['orange', 'orange-label']],
+            'text',
+            'bert-base-cased',
+        ),
         (
             [[lena_img_file(), 'apple-label'], [lena_img_file(), 'orange-label']],
             'image',
+            'resnet50',
         ),
     ],
 )
-def test_load_finetune_data_from_csv_labeled(dialect, contents, type):
+def test_load_finetune_data_from_csv_labeled(dialect, contents, type, model):
     dialect = csv.get_dialect(dialect)
 
     content_stream = dialect.lineterminator.join(
@@ -119,12 +106,9 @@ def test_load_finetune_data_from_csv_labeled(dialect, contents, type):
     )
 
     options = CSVOptions(dialect=dialect, is_labeled=True)
+    csv_context = CSVContext(model=model, options=options)
 
-    docs = load_finetune_data_from_csv(
-        file=StringIO(content_stream),
-        task='-to-'.join((type, type)),
-        options=options,
-    )
+    docs = csv_context.build_dataset(data=StringIO(content_stream))
 
     for doc, expected in zip(docs, contents):
         assert doc.tags[DEFAULT_TAG_KEY] == expected[1]
@@ -152,22 +136,15 @@ def test_load_finetune_data_from_csv_multimodal(dialect, contents, expect_error)
     )
 
     options = CSVOptions(dialect=dialect)
+    csv_context = CSVContext(model='ViT-B-32::openai', options=options)
 
     if expect_error:
         with pytest.raises(expect_error):
-            docs = load_finetune_data_from_csv(
-                file=StringIO(content_stream),
-                task='text-to-image',
-                options=options,
-            )
-            for doc in docs:
+            docs = csv_context.build_dataset(data=StringIO(content_stream))
+            for _ in docs:
                 pass
     else:
-        docs = load_finetune_data_from_csv(
-            file=StringIO(content_stream),
-            task='text-to-image',
-            options=options,
-        )
+        docs = csv_context.build_dataset(data=StringIO(content_stream))
 
         for doc, expected in zip(docs, contents):
             assert len(doc.chunks) == 2
@@ -181,6 +158,29 @@ def test_load_finetune_data_from_csv_multimodal(dialect, contents, expect_error)
                 assert doc.chunks[0].modality == 'text'
                 assert doc.chunks[1].uri == expected[1]
                 assert doc.chunks[1].modality == 'image'
+
+
+@pytest.mark.parametrize('dialect', [csv.list_dialects()[0]])
+@pytest.mark.parametrize(
+    'contents, model',
+    [
+        ([[lena_img_file(), lena_img_file(), '1']], 'resnet50'),
+        ([['apple', 'orange', '0.2']], 'bert-base-cased'),
+    ],
+)
+def test_load_finetune_data_with_scores(contents, model, dialect):
+    dialect = csv.get_dialect(dialect)
+    content_stream = dialect.lineterminator.join(
+        [dialect.delimiter.join(x) for x in contents]
+    )
+    options = CSVOptions(dialect=dialect)
+    csv_context = CSVContext(model='bert-base-cased', options=options)
+
+    data = csv_context.build_dataset(data=StringIO(content_stream))
+    assert isinstance(data, DocumentArray)
+    for doc in data:
+        assert len(doc.chunks) == 2
+        assert DEFAULT_TAG_SCORE_KEY in doc.tags
 
 
 @pytest.mark.parametrize(
