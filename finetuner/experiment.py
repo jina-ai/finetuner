@@ -37,7 +37,7 @@ from finetuner.constants import (
     SCHEDULER_OPTIONS,
     VAL_SPLIT,
 )
-from finetuner.data import build_finetuning_dataset
+from finetuner.data import CSVContext
 from finetuner.hubble import push_data
 from finetuner.names import get_random_name
 from finetuner.run import Run
@@ -150,20 +150,17 @@ class Experiment:
             if isinstance(callback, EvaluationCallback):
                 eval_callback = callback
 
-        train_data = build_finetuning_dataset(train_data, model, csv_options)
+        csv_context = CSVContext(model=model, options=csv_options)
+        train_data = csv_context.build_dataset(data=train_data)
 
-        eval_data = (
-            build_finetuning_dataset(eval_data, model, csv_options)
-            if eval_data
-            else None
-        )
+        eval_data = csv_context.build_dataset(data=eval_data) if eval_data else None
 
         if eval_callback:
-            eval_callback.query_data = build_finetuning_dataset(
-                eval_callback.query_data, model, csv_options
+            eval_callback.query_data = csv_context.build_dataset(
+                data=eval_callback.query_data,
             )
-            eval_callback.index_data = build_finetuning_dataset(
-                eval_callback.index_data, model, csv_options
+            eval_callback.index_data = csv_context.build_dataset(
+                eval_callback.index_data
             )
 
         train_data, eval_data, query_data, index_data = push_data(
