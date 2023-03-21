@@ -157,7 +157,7 @@ With high learning rates,
 the features recognized by the top layers change more and adapt to new tasks more easily,
 while the bottom layers have low learning rates and more easily preserve the features learned during pre-training.
 
-It is recommended to use LLRD to fine-tune Transformers, such as Bert or CLIP.
+We recommended to use LLRD to fine-tune Transformers, such as Bert or CLIP.
 
 ```diff
 import finetuner
