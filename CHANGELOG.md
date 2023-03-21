@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Add query-document score into CSV data preparation. ([#697](https://github.com/jina-ai/finetuner/pull/697))
+
+- Add `CosineSimilarityLoss` into advanced loss section. ([#697](https://github.com/jina-ai/finetuner/pull/697))
+
+- Add layer-wise learning rate decay into advanced configurations . ([#697](https://github.com/jina-ai/finetuner/pull/697))
+
 
 ## [0.7.3] - 2023-03-16
 
