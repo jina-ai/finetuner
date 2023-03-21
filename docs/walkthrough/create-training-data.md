@@ -94,7 +94,7 @@ At the model saving time, you will discover, we are saving two models to your lo
 
 ### Query-Document Scores
 
-To prepare data for query document pairs together with their similarity scores,
+To prepare data for query-document pairs which are annotated with similarity scores,
 each row must contain three columns includes two sentences and a similarity score.
 
 ```markdown
