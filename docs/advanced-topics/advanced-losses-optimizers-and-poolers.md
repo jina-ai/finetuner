@@ -78,6 +78,12 @@ Each color represents a different class. You can see how all of the loss functio
 but struggle to separate the green, blue, pink, purple and red classes,
 with `TripletMarginLoss` sperarating them the least, and `ArcFaceLoss` separating them the most.
 
+### CosineSimilarityLoss
+
+`CosineSimilarityLoss` is a regression loss function,
+which is calculated by comparing the cosine similarity of two embeddings against their ground-truth cosine similarity or some other numerical measure of similarity in the range of 0.0 (completely different) to 1.0 (identical). 
+The goal of `CosineSimilarityLoss` is to minimize the MSE (mean squared error) between document pair's cosine score and their ground-truth expected similarity, in order to optimize the model for semantic relatedness, i.e. between images and sentences that describe them in part, between documents that have similar content, etc.
+
 ## Pooling layers
 
 Pooling layers are layers in a machine learning model that are used to reduce the dimensionality of data. This is usually done for one of two reasons: to remove unnecessary information contained within an embedding of a larger size, or when a model outputs multiple embeddings and only one embedding is needed. Typically, there are two ways to do this: average pooling or max pooling.

@@ -92,9 +92,24 @@ During fine-tuning, we're optimizing two models in parallel.
 At the model saving time, you will discover, we are saving two models to your local directory. 
 ```
 
+### Preparing Document Similarity Data for Training
+
+To prepare data for training,
+it must consist of a pair of documents and a similarity score between 0.0 (completely unrelated) and 1.0 (identical).
+You must organize the data into a three-column CSV file with the first text,
+then the second, and then the score,
+on a single line separated by commas.
+
+```markdown
+The weather is nice, The weather is beautiful, 0.9
+The weather is nice, The weather is bad, 0
+```
+
 ```{important} 
-If a text field contains commas, it breaks the CSV format since it is interpreted as spanning over multiple columns.
-In this case, please enclose the field in double quotes, such as `field1,"field, 2"`.
+If your texts contain commas, you must enclose them in quotes, otherwise you will break the CSV format.  For example:
+
+"If we're ordering lunch, we should get pizza", "I want to order pizza for lunch", 0.8
+"If you're headed out, can you take out the garbage?", "I'm going to have to take the trash out myself, aren't I?", 0.1
 ```
 
 We support the following dialects of CSV:
@@ -127,6 +142,29 @@ train_da = DocumentArray([
         tags={'finetuner_label': 't-shirt'}
     ),
     ...,
+])
+```
+````
+````{tab} similarity scores
+```python
+from docarray import Document, DocumentArray
+
+train_da = DocumentArray([
+    Document(
+        chunks=[
+            Document(content='the weather is nice'),
+            Document(content='the weather is beautiful')
+        ],
+        tags={'finetuner_score': 0.9}  # note, use `finetuner_score` as ground truth.
+    ),
+    Document(
+        chunks=[
+            Document(content='the weather is nice'),
+            Document(content='the weather is bad')
+        ],
+        tags={'finetuner_score': 0.0}
+    ),
+    ...
 ])
 ```
 ````
