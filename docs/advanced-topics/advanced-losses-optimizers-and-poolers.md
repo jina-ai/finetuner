@@ -52,7 +52,7 @@ run = finetuner.fit(
 In cases where the chosen loss function is a form of contrastive loss, such as the default `TripletMarginLoss`, or the `ClipLoss` function (the loss function used for `text-to-image` tasks), a class sampler is needed to properly function.
 In these cases, this `sampler` parameters is ignored and the `ClassSampler` is always used.
 
-### Using a loss optimizer
+### Using an optimizer
 
 In order to keep track and refine our estimation of the class centers across batches, these SphereFace loss functions require an additional optimizer during training.
 By default, the type of optimizer used will be the same as the one used for the model itself, but you can also choose a different optimizer for your loss function using the `loss_optimizer` parameter.
