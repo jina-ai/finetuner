@@ -156,7 +156,7 @@ It sets a large learning rate for the top layer and uses a multiplicative decay 
 With a large learning rate,
 the feature of the top layers changes more and could adapt to new tasks.
 On the contrary, the bottom layers have a small learning rate,
-so the strong feature learned from the pre-training is preserved.
+so the strong features learned from the pre-training is preserved.
 
 It is recommended to use LLRD to fine-tune Transformers, such as Bert or CLIP.
 
