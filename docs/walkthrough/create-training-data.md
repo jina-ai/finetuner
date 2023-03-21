@@ -106,8 +106,10 @@ The weather is nice, The weather is bad, 0
 ```
 
 ```{important} 
-If a text field contains commas, it breaks the CSV format since it is interpreted as spanning over multiple columns.
-In this case, please enclose the field in double quotes, such as `field1,"field, 2"`.
+If your texts contain commas, you must enclose them in quotes, otherwise you will break the CSV format.  For example:
+
+"If we're ordering lunch, we should get pizza", "I want to order pizza for lunch", 0.8
+"If you're headed out, can you take out the garbage?", "I'm going to have to take the trash out myself, aren't I?", 0.1
 ```
 
 We support the following dialects of CSV:
