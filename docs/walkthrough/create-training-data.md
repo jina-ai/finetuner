@@ -140,7 +140,7 @@ train_da = DocumentArray([
 ])
 ```
 ````
-````{tab} sentence-similarity
+````{tab} similarity scores
 ```python
 from docarray import Document, DocumentArray
 
