@@ -84,7 +84,7 @@ Now that we have the training and evaluation datasets loaded as `DocumentArray`s
 from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
-    model='openai/clip-vit-base-patch32',
+    model='clip-base-en',
     train_data='finetuner/fashion-train-data-clip',
     eval_data='finetuner/fashion-eval-data-clip',
     epochs=5,
@@ -224,7 +224,7 @@ Finetuner will trigger the callback when the fine-tuning job is finished and mer
 from finetuner.callback import WiSEFTCallback
 
 run = finetuner.fit(
-    model='ViT-B-32#openai',
+    model='clip-base-en',
     ...,
     loss='CLIPLoss',
 -   callbacks=[],

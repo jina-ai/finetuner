@@ -84,7 +84,7 @@ Now that our data has been prepared, we can start our fine-tuning run.
 from finetuner.callback import EvaluationCallback, WandBLogger
 
 run = finetuner.fit(
-    model='xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k',
+    model='clip-base-multi',
     train_data='finetuner/DE-Fashion-Image-Text-Multimodal-train',
     epochs=5,
     learning_rate=1e-6,
