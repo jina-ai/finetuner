@@ -19,18 +19,18 @@ def print_model_table(model, task: Optional[str] = None):
         title += f': {task}'
     table = Table(title=title)
     header = model.get_header()
-    model_descriptors = set()
+    model_display_names = set()
 
     for column in header:
         table.add_column(column, justify='right', style='cyan', no_wrap=False)
 
     for _, _model_class in list_model_classes().items():
-        if _model_class.descriptor not in model_descriptors:
+        if _model_class.display_name not in model_display_names:
             row = model.get_row(_model_class)
             if task and row[1] != task:
                 continue
             table.add_row(*row)
-            model_descriptors.add(_model_class.descriptor)
+            model_display_names.add(_model_class.display_name)
 
     console.print(table)
 
