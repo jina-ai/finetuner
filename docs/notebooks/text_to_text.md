@@ -32,9 +32,9 @@ This guide will lead you through an example use case to show you how Finetuner c
 <!-- #region id="FPDhvWkw7kas" -->
 ## Task
 
-In Finetuner, two BERT models are supported as backbones, namely `bert-base-cased` and `sentence-transformers/msmarco-distilbert-base-v3`, both of which are models hosted on Hugging Face.
+In Finetuner, two BERT models are supported as backbones, namely `bert-base-en` and `sbert-base-en`, both of which are models hosted on Hugging Face.
 
-In this example, we will fine-tune `bert-base-cased` on the [Quora Question Pairs](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) dataset, where the search task involves finding duplicate questions in the dataset. An example query for this search task might look as follows:
+In this example, we will fine-tune `bert-base-en` on the [Quora Question Pairs](https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset) dataset, where the search task involves finding duplicate questions in the dataset. An example query for this search task might look as follows:
 
 ```
 How can I be a good geologist?
@@ -90,8 +90,8 @@ Length of index DocumentArray: 15746
 
 <!-- #region id="aXYrABkN9vYO" -->
 ## Backbone model
-To keep things simple, we have decided to fine-tune the BERT model `bert-base-cased`. We could also have chosen `sentence-transformers/msmarco-distilbert-base-v3` as our base model, which has already been fine-tuned on the MSMarco dataset. 
-However, for the purpose of this experiment, we want to explore how much improvement in performance we can gain from fine-tuning `bert-base-cased` on the Quora Question Pairs dataset using Finetuner. 
+To keep things simple, we have decided to fine-tune the BERT model `bert-base-en`. We could also have chosen `sbert-base-en` as our base model, which has already been fine-tuned on the MSMarco dataset. 
+However, for the purpose of this experiment, we want to explore how much improvement in performance we can gain from fine-tuning `bert-base-en` on the Quora Question Pairs dataset using Finetuner. 
 Perhaps in the future, we might want to create another run where we experiment with fine-tuning other BERT models.
 
 
@@ -107,7 +107,7 @@ Now that we have the training and evaluation datasets loaded as `DocumentArray`s
 from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
-    model='bert-base-cased',
+    model='bert-base-en',
     train_data='finetuner/quora-train-da',
     loss='TripletMarginLoss',
     optimizer='Adam',
@@ -128,8 +128,8 @@ run = finetuner.fit(
 <!-- #region id="j_MxAW9E-ddZ" -->
 Our fine-tuning call has a lot of arguments. Let's discuss what the most important ones are responsible for. 
 
-Most importantly, we select our model with `model='bert-base-cased'` and pass our training data with `train_data=train_data`. These two arguments are required. 
-We set our `experiment_name` to `'finetune-quora-dataset'` and our `run_name` to `'finetune-quora-dataset-bert-base-cased'`. 
+Most importantly, we select our model with `model='bert-base-en'` and pass our training data with `train_data=train_data`. These two arguments are required. 
+We set our `experiment_name` to `'finetune-quora-dataset'` and our `run_name` to `'finetune-quora-dataset-bert-base-en'`. 
 This will make it easy for us to retrieve the experiment and run in the future. We also provide a short description of our run, just for some extra context. 
 
 For this run, we select Finetuner's `TripletMarginLoss` and `TripletMarginMiner`, as they are most relevant for our use-case. The `TripletMarginLoss` measures the similarity between three tensors, namely the anchor, a positive sample and a negative sample. This makes sense for our task, since we want duplicate questions to have representations closer together, while non-duplicates should have more dissimilar representations. Likewise, the `TripletMarginMiner` outputs a tuple of size 3, with an anchor, a positive sample and a negative sample.
@@ -157,7 +157,7 @@ Dependending on the size of the training data, some runs might take up to severa
 import finetuner
 
 finetuner.login()
-run = finetuner.get_run('finetune-quora-dataset-bert-base-cased')
+run = finetuner.get_run('finetune-quora-dataset-bert-base-en')
 print(f'Run status: {run.status()}')
 ```
 <!-- #endregion -->

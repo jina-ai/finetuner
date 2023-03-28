@@ -75,7 +75,7 @@ train_data.summary()
 Now let's see which backbone models we can use. You can see all the available models by calling `finetuner.describe_models()`.
 
 
-For this example, we're gonna go with `resnet50`, a model that has been trained on the [ImageNet](https://www.image-net.org/) classification task. In the next step, Finetuner will adapt this model, turning it into an embedding model instead.
+For this example, we're gonna go with `resnet-base`, a model that has been trained on the [ImageNet](https://www.image-net.org/) classification task. In the next step, Finetuner will adapt this model, turning it into an embedding model instead.
 <!-- #endregion -->
 
 <!-- #region id="xA7IIhIOk0h0" -->
@@ -88,7 +88,7 @@ Now that we have selected our model and loaded the training and evaluation datas
 from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
-    model='resnet50',
+    model='resnet-base',
     train_data='finetuner/stanford-cars-train',
     batch_size=128,
     epochs=5,
@@ -108,7 +108,7 @@ run = finetuner.fit(
 <!-- #region id="9gvoWipMlG5P" -->
 Let's understand what this piece of code does:
 
-* We select a `model`: `resnet50`.
+* We select a `model`: `resnet-base`.
 * We also set `run_name` and `description`, which are optional,
 but strongly recommended so that you can access and retain information about your run.
 * We specify the training data (`train_data`).
@@ -151,18 +151,18 @@ What you can do for now is to call `run.logs()` after the end of the run and see
 Training [5/5] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 48/48 0:00:00 0:00:12 • loss: 13.986
 INFO     Done ✨                                                                              __main__.py:195
 DEBUG    Finetuning took 0 days, 0 hours 3 minutes and 48 seconds                             __main__.py:197
-INFO     Metric: 'resnet50_precision_at_k' before fine-tuning:  0.11575 after fine-tuning:    __main__.py:210
+INFO     Metric: 'resnet_base_precision_at_k' before fine-tuning:  0.11575 after fine-tuning:    __main__.py:210
 0.53425
-INFO     Metric: 'resnet50_recall_at_k' before fine-tuning:  0.05745 after fine-tuning:       __main__.py:210
+INFO     Metric: 'resnet_base_recall_at_k' before fine-tuning:  0.05745 after fine-tuning:       __main__.py:210
 0.27113
-INFO     Metric: 'resnet50_f1_score_at_k' before fine-tuning:  0.07631 after fine-tuning:     __main__.py:210
+INFO     Metric: 'resnet_base_f1_score_at_k' before fine-tuning:  0.07631 after fine-tuning:     __main__.py:210
 0.35788
-INFO     Metric: 'resnet50_hit_at_k' before fine-tuning:  0.82900 after fine-tuning: 0.94100  __main__.py:210
-INFO     Metric: 'resnet50_average_precision' before fine-tuning:  0.52305 after fine-tuning: __main__.py:210
+INFO     Metric: 'resnet_base_hit_at_k' before fine-tuning:  0.82900 after fine-tuning: 0.94100  __main__.py:210
+INFO     Metric: 'resnet_base_average_precision' before fine-tuning:  0.52305 after fine-tuning: __main__.py:210
 0.79779
-INFO     Metric: 'resnet50_reciprocal_rank' before fine-tuning:  0.64909 after fine-tuning:   __main__.py:210
+INFO     Metric: 'resnet_base_reciprocal_rank' before fine-tuning:  0.64909 after fine-tuning:   __main__.py:210
 0.89224
-INFO     Metric: 'resnet50_dcg_at_k' before fine-tuning:  1.30710 after fine-tuning: 4.52143  __main__.py:210
+INFO     Metric: 'resnet_base_dcg_at_k' before fine-tuning:  1.30710 after fine-tuning: 4.52143  __main__.py:210
 INFO     Building the artifact ...                                                            __main__.py:215
 INFO     Pushing artifact to Jina AI Cloud ...                                                __main__.py:241
 [12:19:53] INFO     Artifact pushed under ID '63f8a9089c6406e19244771d'                                  __main__.py:243

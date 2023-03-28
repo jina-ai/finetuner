@@ -136,7 +136,7 @@ def test_load_finetune_data_from_csv_multimodal(dialect, contents, expect_error)
     )
 
     options = CSVOptions(dialect=dialect)
-    csv_context = CSVContext(model='ViT-B-32::openai', options=options)
+    csv_context = CSVContext(model='clip-base-en', options=options)
 
     if expect_error:
         with pytest.raises(expect_error):
