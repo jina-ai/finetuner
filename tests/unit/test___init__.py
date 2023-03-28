@@ -10,11 +10,11 @@ import finetuner
 @pytest.mark.parametrize(
     'descriptor, select_model, is_onnx, expect_error',
     [
-        ('bert-base-cased', None, False, None),
-        ('bert-base-cased', None, True, None),
-        ('openai/clip-vit-base-patch16', 'clip-text', False, None),
-        ('openai/clip-vit-base-patch16', 'clip-vision', False, None),
-        ('openai/clip-vit-base-patch16', None, False, SelectModelRequired),
+        ('bert-base-en', None, False, None),
+        ('bert-base-en', None, True, None),
+        ('clip-base-en', 'clip-text', False, None),
+        ('clip-base-en', 'clip-vision', False, None),
+        ('clip-base-en', None, False, SelectModelRequired),
         ('MADE UP MODEL', None, False, ValueError),
     ],
 )
