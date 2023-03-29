@@ -7,10 +7,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://finetuner.jina.ai/api/modules/" />
 <meta property="og:site_name" content="Finetuner Documentation" />
-<meta property="og:description" content="finetuner package- Subpackages- finetuner.client package- Submodules, Module contents.., Submodules- finetuner.console module- print_model_table(), print_examples(), print_metrics()., finetuner.data module- CSVOptions, build_finetuning_dataset(), build_encoding_dataset(), load_finetune_data_from_..." />
+<meta property="og:description" content="finetuner package- Subpackages- finetuner.client package- Submodules, Module contents.., Submodules- finetuner.console module- print_model_table(), print_examples(), print_metrics()., finetuner.data module- CSVOptions, LabeledCSVParser, QueryDocumentRelationsParser, PairwiseScoreParser, CSVContex..." />
 <meta property="og:image" content="https://finetuner.jina.ai/_static/banner.png" />
 <meta property="og:image:alt" content="Finetuner Documentation" />
-<meta name="description" content="finetuner package- Subpackages- finetuner.client package- Submodules, Module contents.., Submodules- finetuner.console module- print_model_table(), print_examples(), print_metrics()., finetuner.data module- CSVOptions, build_finetuning_dataset(), build_encoding_dataset(), load_finetune_data_from_..." />
+<meta name="description" content="finetuner package- Subpackages- finetuner.client package- Submodules, Module contents.., Submodules- finetuner.console module- print_model_table(), print_examples(), print_metrics()., finetuner.data module- CSVOptions, LabeledCSVParser, QueryDocumentRelationsParser, PairwiseScoreParser, CSVContex..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://finetuner.jina.ai/api/modules.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2023.03.27 -->
         <title>finetuner - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -348,9 +348,13 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../finetuner.data/">finetuner.data module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.data/#finetuner.data.CSVOptions"><code class="docutils literal notranslate"><span class="pre">CSVOptions</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../finetuner.data/#finetuner.data.build_finetuning_dataset"><code class="docutils literal notranslate"><span class="pre">build_finetuning_dataset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.data/#finetuner.data.LabeledCSVParser"><code class="docutils literal notranslate"><span class="pre">LabeledCSVParser</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.data/#finetuner.data.QueryDocumentRelationsParser"><code class="docutils literal notranslate"><span class="pre">QueryDocumentRelationsParser</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.data/#finetuner.data.PairwiseScoreParser"><code class="docutils literal notranslate"><span class="pre">PairwiseScoreParser</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.data/#finetuner.data.CSVContext"><code class="docutils literal notranslate"><span class="pre">CSVContext</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.data/#finetuner.data.get_csv_file_context"><code class="docutils literal notranslate"><span class="pre">get_csv_file_context()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../finetuner.data/#finetuner.data.get_csv_file_dialect_columns"><code class="docutils literal notranslate"><span class="pre">get_csv_file_dialect_columns()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.data/#finetuner.data.build_encoding_dataset"><code class="docutils literal notranslate"><span class="pre">build_encoding_dataset()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../finetuner.data/#finetuner.data.load_finetune_data_from_csv"><code class="docutils literal notranslate"><span class="pre">load_finetune_data_from_csv()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.data/#finetuner.data.check_columns"><code class="docutils literal notranslate"><span class="pre">check_columns()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../finetuner.data/#finetuner.data.create_document"><code class="docutils literal notranslate"><span class="pre">create_document()</span></code></a></li>
 </ul>
@@ -424,7 +428,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 16, 2023</div>
+                            Last updated on Mar 29, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

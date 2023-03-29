@@ -30,10 +30,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://finetuner.jina.ai/api/finetuner.data.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2023.03.27 -->
         <title>finetuner.data module - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -395,16 +395,76 @@ create a point cloud.</p></li>
 
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="finetuner.data.build_finetuning_dataset">
-<span class="sig-prename descclassname"><span class="pre">finetuner.data.</span></span><span class="sig-name descname"><span class="pre">build_finetuning_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/data/#build_finetuning_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.data.build_finetuning_dataset" title="Permalink to this definition">#</a></dt>
-<dd><p>If data has been provided as a CSV file, the given CSV file is parsed
-and a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code> is created.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.data.LabeledCSVParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.data.</span></span><span class="sig-name descname"><span class="pre">LabeledCSVParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/data/#LabeledCSVParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.data.LabeledCSVParser" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_CSVParser</span></code></p>
+<p>CSV has two columns where the first column is the data, the second column is the
+label. To use the handler, make sure csv contains two columns and <cite>is_labeled=True</cite>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.data.LabeledCSVParser.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/data/#LabeledCSVParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.data.LabeledCSVParser.parse" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.data.QueryDocumentRelationsParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.data.</span></span><span class="sig-name descname"><span class="pre">QueryDocumentRelationsParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/data/#QueryDocumentRelationsParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.data.QueryDocumentRelationsParser" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_CSVParser</span></code></p>
+<p>In the case that user do not have explicitly annotated labels,
+but rather a set of query-document pairs which express that a document is
+relevant to a query, or form as a text-image pair.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.data.QueryDocumentRelationsParser.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/data/#QueryDocumentRelationsParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.data.QueryDocumentRelationsParser.parse" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.data.PairwiseScoreParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.data.</span></span><span class="sig-name descname"><span class="pre">PairwiseScoreParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/data/#PairwiseScoreParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.data.PairwiseScoreParser" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_CSVParser</span></code></p>
+<p>CSV has three columns, column1, column2 and a float value indicates the
+similarity between column1 and column2.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.data.PairwiseScoreParser.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/data/#PairwiseScoreParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.data.PairwiseScoreParser.parse" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="finetuner.data.CSVContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">finetuner.data.</span></span><span class="sig-name descname"><span class="pre">CSVContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/data/#CSVContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.data.CSVContext" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A CSV context switch class with conditions to parse CSVs into DocumentArray.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code>]</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The model being used, to get model stub and associated task.</p></li>
+<li><p><strong>options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#finetuner.data.CSVOptions" title="finetuner.data.CSVOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSVOptions</span></code></a>]) – an instance of :class`CSVOptions`.</p></li>
+</ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="finetuner.data.CSVContext.build_dataset">
+<span class="sig-name descname"><span class="pre">build_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/data/#CSVContext.build_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.data.CSVContext.build_dataset" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="finetuner.data.get_csv_file_context">
+<span class="sig-prename descclassname"><span class="pre">finetuner.data.</span></span><span class="sig-name descname"><span class="pre">get_csv_file_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/data/#get_csv_file_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.data.get_csv_file_context" title="Permalink to this definition">#</a></dt>
+<dd><p>Get csv file context, such as <cite>file_ctx</cite>, csv dialect and number of columns.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="finetuner.data.get_csv_file_dialect_columns">
+<span class="sig-prename descclassname"><span class="pre">finetuner.data.</span></span><span class="sig-name descname"><span class="pre">get_csv_file_dialect_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/data/#get_csv_file_dialect_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.data.get_csv_file_dialect_columns" title="Permalink to this definition">#</a></dt>
+<dd><p>Get csv dialect and number of columns of the csv.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -415,31 +475,6 @@ from the elements of the list</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="finetuner.data.load_finetune_data_from_csv">
-<span class="sig-prename descclassname"><span class="pre">finetuner.data.</span></span><span class="sig-name descname"><span class="pre">load_finetune_data_from_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'text-to-text'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/finetuner/data/#load_finetune_data_from_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#finetuner.data.load_finetune_data_from_csv" title="Permalink to this definition">#</a></dt>
-<dd><p>Takes a CSV file and returns a generator of documents, with each document containing
-the information from one line of the CSV.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]) – Either a filepath to or a stream of a CSV file.</p></li>
-<li><p><strong>task</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Specifies the modalities of the model that the returned data is to
-be used for. This data is retrieved using the model name, and does not need
-to be added to the csv_options argument when calling <a class="reference internal" href="../finetuner/#finetuner.fit" title="finetuner.fit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">finetuner.fit()</span></code></a></p></li>
-<li><p><strong>options</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#finetuner.data.CSVOptions" title="finetuner.data.CSVOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSVOptions</span></code></a>]) – A <a class="reference internal" href="#finetuner.data.CSVOptions" title="finetuner.data.CSVOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSVOptions</span></code></a> object.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A generator of :class:<a href="#id3"><span class="problematic" id="id4">`</span></a>Document`s. Each document represents one element
-in the CSV</p>
 </dd>
 </dl>
 </dd></dl>
@@ -509,7 +544,7 @@ create a point cloud.</p></li>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 16, 2023</div>
+                            Last updated on Mar 29, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -553,9 +588,25 @@ create a point cloud.</p></li>
 <li><a class="reference internal" href="#finetuner.data.CSVOptions.point_cloud_size"><code class="docutils literal notranslate"><span class="pre">CSVOptions.point_cloud_size</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#finetuner.data.build_finetuning_dataset"><code class="docutils literal notranslate"><span class="pre">build_finetuning_dataset()</span></code></a></li>
+<li><a class="reference internal" href="#finetuner.data.LabeledCSVParser"><code class="docutils literal notranslate"><span class="pre">LabeledCSVParser</span></code></a><ul>
+<li><a class="reference internal" href="#finetuner.data.LabeledCSVParser.parse"><code class="docutils literal notranslate"><span class="pre">LabeledCSVParser.parse()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#finetuner.data.QueryDocumentRelationsParser"><code class="docutils literal notranslate"><span class="pre">QueryDocumentRelationsParser</span></code></a><ul>
+<li><a class="reference internal" href="#finetuner.data.QueryDocumentRelationsParser.parse"><code class="docutils literal notranslate"><span class="pre">QueryDocumentRelationsParser.parse()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#finetuner.data.PairwiseScoreParser"><code class="docutils literal notranslate"><span class="pre">PairwiseScoreParser</span></code></a><ul>
+<li><a class="reference internal" href="#finetuner.data.PairwiseScoreParser.parse"><code class="docutils literal notranslate"><span class="pre">PairwiseScoreParser.parse()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#finetuner.data.CSVContext"><code class="docutils literal notranslate"><span class="pre">CSVContext</span></code></a><ul>
+<li><a class="reference internal" href="#finetuner.data.CSVContext.build_dataset"><code class="docutils literal notranslate"><span class="pre">CSVContext.build_dataset()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#finetuner.data.get_csv_file_context"><code class="docutils literal notranslate"><span class="pre">get_csv_file_context()</span></code></a></li>
+<li><a class="reference internal" href="#finetuner.data.get_csv_file_dialect_columns"><code class="docutils literal notranslate"><span class="pre">get_csv_file_dialect_columns()</span></code></a></li>
 <li><a class="reference internal" href="#finetuner.data.build_encoding_dataset"><code class="docutils literal notranslate"><span class="pre">build_encoding_dataset()</span></code></a></li>
-<li><a class="reference internal" href="#finetuner.data.load_finetune_data_from_csv"><code class="docutils literal notranslate"><span class="pre">load_finetune_data_from_csv()</span></code></a></li>
 <li><a class="reference internal" href="#finetuner.data.check_columns"><code class="docutils literal notranslate"><span class="pre">check_columns()</span></code></a></li>
 <li><a class="reference internal" href="#finetuner.data.create_document"><code class="docutils literal notranslate"><span class="pre">create_document()</span></code></a></li>
 </ul>

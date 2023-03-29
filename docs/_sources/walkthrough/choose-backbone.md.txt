@@ -45,68 +45,50 @@ to get a list of supported models:
 
 ````{tab} text-to-text
 ```bash
-                                              Finetuner backbones: text-to-text                                               
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃                                   name ┃         task ┃ output_dim ┃ architecture ┃                            description ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│                        bert-base-cased │ text-to-text │        768 │  transformer │   BERT model pre-trained on BookCorpus │
-│                                        │              │            │              │                  and English Wikipedia │
-│ sentence-transformers/msmarco-distilb… │ text-to-text │        768 │  transformer │      Pretrained BERT, fine-tuned on MS │
-│                                        │              │            │              │                                  Marco │
-└────────────────────────────────────────┴──────────────┴────────────┴──────────────┴────────────────────────────────────────┘
+                                           Finetuner backbones: text-to-text                                           
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃          name ┃         task ┃ output_dim ┃ architecture ┃                                              description ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│  bert-base-en │ text-to-text │        768 │  transformer │         BERT model pre-trained on BookCorpus and English │
+│               │              │            │              │                                                Wikipedia │
+│ sbert-base-en │ text-to-text │        768 │  transformer │                  Pretrained BERT, fine-tuned on MS Marco │
+└───────────────┴──────────────┴────────────┴──────────────┴──────────────────────────────────────────────────────────┘
 ```
 ````
 ````{tab} image-to-image
 ```bash
-                                   Finetuner backbones: image-to-image                                    
-┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃            name ┃           task ┃ output_dim ┃ architecture ┃                             description ┃
-┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ efficientnet_b0 │ image-to-image │       1280 │          cnn │ EfficientNet B0 pre-trained on ImageNet │
-│ efficientnet_b4 │ image-to-image │       1792 │          cnn │ EfficientNet B4 pre-trained on ImageNet │
-│ efficientnet_b7 │ image-to-image │       2560 │          cnn │ EfficientNet B7 pre-trained on ImageNet │
-│       resnet152 │ image-to-image │       2048 │          cnn │       ResNet152 pre-trained on ImageNet │
-│        resnet50 │ image-to-image │       2048 │          cnn │        ResNet50 pre-trained on ImageNet │
-└─────────────────┴────────────────┴────────────┴──────────────┴─────────────────────────────────────────┘
+                                     Finetuner backbones: image-to-image                                     
+┏━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃               name ┃           task ┃ output_dim ┃ architecture ┃                             description ┃
+┡━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│  efficientnet-base │ image-to-image │       1792 │          cnn │ EfficientNet B4 pre-trained on ImageNet │
+│ efficientnet-large │ image-to-image │       2560 │          cnn │ EfficientNet B7 pre-trained on ImageNet │
+│       resnet-large │ image-to-image │       2048 │          cnn │       ResNet152 pre-trained on ImageNet │
+│        resnet-base │ image-to-image │       2048 │          cnn │        ResNet50 pre-trained on ImageNet │
+└────────────────────┴────────────────┴────────────┴──────────────┴─────────────────────────────────────────┘
 ```
 ````
 ````{tab} text-to-image
 ```bash
-                                              Finetuner backbones: text-to-image                                              
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃                                         name ┃          task ┃ output_dim ┃ architecture ┃                                              description ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│                 openai/clip-vit-base-patch16 │ text-to-image │        512 │  transformer │                       CLIP base model with patch size 16 │
-│                 openai/clip-vit-base-patch32 │ text-to-image │        512 │  transformer │                                          CLIP base model │
-│            openai/clip-vit-large-patch14-336 │ text-to-image │        768 │  transformer │                      CLIP large model for 336x336 images │
-│                openai/clip-vit-large-patch14 │ text-to-image │       1024 │  transformer │                      CLIP large model with patch size 14 │
-│                      ViT-B-16::laion400m_e31 │ text-to-image │        512 │  transformer │                Open CLIP "ViT-B-16::laion400m_e31" model │
-│                      ViT-B-16::laion400m_e32 │ text-to-image │        512 │  transformer │                Open CLIP "ViT-B-16::laion400m_e32" model │
-│                             ViT-B-16::openai │ text-to-image │        512 │  transformer │                       Open CLIP "ViT-B-16::openai" model │
-│             ViT-B-16-plus-240::laion400m_e31 │ text-to-image │        640 │  transformer │       Open CLIP "ViT-B-16-plus-240::laion400m_e31" model │
-│             ViT-B-16-plus-240::laion400m_e32 │ text-to-image │        640 │  transformer │       Open CLIP "ViT-B-16-plus-240::laion400m_e32" model │
-│                        ViT-B-32::laion2b_e16 │ text-to-image │        512 │  transformer │                  Open CLIP "ViT-B-32::laion2b_e16" model │
-│                      ViT-B-32::laion400m_e31 │ text-to-image │        512 │  transformer │                Open CLIP "ViT-B-32::laion400m_e31" model │
-│                      ViT-B-32::laion400m_e32 │ text-to-image │        512 │  transformer │                Open CLIP "ViT-B-32::laion400m_e32" model │
-│                             ViT-B-32::openai │ text-to-image │        512 │  transformer │                       Open CLIP "ViT-B-32::openai" model │
-│            ViT-B-32-quickgelu::laion400m_e31 │ text-to-image │        512 │  transformer │      Open CLIP "ViT-B-32-quickgelu::laion400m_e31" model │
-│            ViT-B-32-quickgelu::laion400m_e32 │ text-to-image │        512 │  transformer │      Open CLIP "ViT-B-32-quickgelu::laion400m_e32" model │
-│                   ViT-B-32-quickgelu::openai │ text-to-image │        512 │  transformer │             Open CLIP "ViT-B-32-quickgelu::openai" model │
-│                         ViT-L-14-336::openai │ text-to-image │        768 │  transformer │                   Open CLIP "ViT-L-14-336::openai" model │
-│                             ViT-L-14::openai │ text-to-image │        768 │  transformer │                       Open CLIP "ViT-L-14::openai" model │
-│ xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k │ text-to-image │        512 │  transformer │ Open MCLIP "xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k"│
-│                                              │               │            │              │                                                    model │
-└──────────────────────────────────────────────┴───────────────┴────────────┴──────────────┴───────────────────━━━━━━━━━━━━━━─────────────────────────┘
+                                          Finetuner backbones: text-to-image                                           
+┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃            name ┃          task ┃ output_dim ┃ architecture ┃                                           description ┃
+┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│    clip-base-en │ text-to-image │        512 │  transformer │                                       CLIP base model │
+│   clip-large-en │ text-to-image │       1024 │  transformer │                   CLIP large model with patch size 14 │
+│ clip-base-multi │ text-to-image │        512 │  transformer │                                            Open MCLIP │
+│                 │               │            │              │  "xlm-roberta-base-ViT-B-32::laion5b_s13b_b90k" model │
+└─────────────────┴───────────────┴────────────┴──────────────┴───────────────────────────────────────────────────────┘
 ```
 ````
 ````{tab} mesh-to-mesh
 ```bash
-                                       Finetuner backbones: mesh-to-mesh                                       
-┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃       name ┃         task ┃ output_dim ┃ architecture ┃                                         description ┃
-┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ pointnet++ │ mesh-to-mesh │        512 │     pointnet │ PointNet++ embedding model for 3D mesh point clouds │
-└────────────┴──────────────┴────────────┴──────────────┴─────────────────────────────────────────────────────┘
+                                        Finetuner backbones: mesh-to-mesh                                         
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃          name ┃         task ┃ output_dim ┃ architecture ┃                                         description ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ pointnet-base │ mesh-to-mesh │        512 │     pointnet │ PointNet++ embedding model for 3D mesh point clouds │
+└───────────────┴──────────────┴────────────┴──────────────┴─────────────────────────────────────────────────────┘
 ```
 ````
 

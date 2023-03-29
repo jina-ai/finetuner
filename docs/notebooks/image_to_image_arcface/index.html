@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Text-to-Image Search via CLIP" href="../text_to_image/" /><link rel="prev" title="Image-to-Image Search with TripletMarginLoss" href="../image_to_image/" />
         <link rel="canonical" href="https://finetuner.jina.ai/notebooks/image_to_image_arcface.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2023.03.27 -->
         <title>Image-to-Image Search with ArcFaceLoss - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -380,7 +380,7 @@ Important: If your documents refer to locally stored images, please call <code c
 <section id="backbone-model">
 <h2>Backbone model<a class="headerlink" href="#backbone-model" title="Permalink to this heading">#</a></h2>
 <p>Now let’s see which backbone models we can use. You can see all the available models by calling <code class="docutils literal notranslate"><span class="pre">finetuner.describe_models()</span></code>.</p>
-<p>For this example, we’re gonna go with <code class="docutils literal notranslate"><span class="pre">resnet50</span></code>, a model that has been trained on the <a class="reference external" href="https://www.image-net.org/">ImageNet</a> classification task. In the next step, Finetuner will adapt this model, turning it into an embedding model instead.</p>
+<p>For this example, we’re gonna go with <code class="docutils literal notranslate"><span class="pre">resnet-base</span></code>, a model that has been trained on the <a class="reference external" href="https://www.image-net.org/">ImageNet</a> classification task. In the next step, Finetuner will adapt this model, turning it into an embedding model instead.</p>
 <!-- #endregion -->
 <!-- #region id="xA7IIhIOk0h0" -->
 </section>
@@ -391,7 +391,7 @@ Important: If your documents refer to locally stored images, please call <code c
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.callback</span> <span class="kn">import</span> <span class="n">EvaluationCallback</span>
 
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;resnet50&#39;</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;resnet-base&#39;</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="s1">&#39;finetuner/stanford-cars-train&#39;</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
     <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
@@ -411,7 +411,7 @@ Important: If your documents refer to locally stored images, please call <code c
 <!-- #region id="9gvoWipMlG5P" -->
 <p>Let’s understand what this piece of code does:</p>
 <ul class="simple">
-<li><p>We select a <code class="docutils literal notranslate"><span class="pre">model</span></code>: <code class="docutils literal notranslate"><span class="pre">resnet50</span></code>.</p></li>
+<li><p>We select a <code class="docutils literal notranslate"><span class="pre">model</span></code>: <code class="docutils literal notranslate"><span class="pre">resnet-base</span></code>.</p></li>
 <li><p>We also set <code class="docutils literal notranslate"><span class="pre">run_name</span></code> and <code class="docutils literal notranslate"><span class="pre">description</span></code>, which are optional,
 but strongly recommended so that you can access and retain information about your run.</p></li>
 <li><p>We specify the training data (<code class="docutils literal notranslate"><span class="pre">train_data</span></code>).</p></li>
@@ -450,18 +450,18 @@ What you can do for now is to call <code class="docutils literal notranslate"><s
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Training<span class="w"> </span><span class="o">[</span><span class="m">5</span>/5<span class="o">]</span><span class="w"> </span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<span class="w"> </span><span class="m">48</span>/48<span class="w"> </span><span class="m">0</span>:00:00<span class="w"> </span><span class="m">0</span>:00:12<span class="w"> </span>•<span class="w"> </span>loss:<span class="w"> </span><span class="m">13</span>.986
 INFO<span class="w">     </span>Done<span class="w"> </span>✨<span class="w">                                                                              </span>__main__.py:195
 DEBUG<span class="w">    </span>Finetuning<span class="w"> </span>took<span class="w"> </span><span class="m">0</span><span class="w"> </span>days,<span class="w"> </span><span class="m">0</span><span class="w"> </span>hours<span class="w"> </span><span class="m">3</span><span class="w"> </span>minutes<span class="w"> </span>and<span class="w"> </span><span class="m">48</span><span class="w"> </span>seconds<span class="w">                             </span>__main__.py:197
-INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_precision_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.11575<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w">    </span>__main__.py:210
+INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet_base_precision_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.11575<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w">    </span>__main__.py:210
 <span class="m">0</span>.53425
-INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_recall_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.05745<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w">       </span>__main__.py:210
+INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet_base_recall_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.05745<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w">       </span>__main__.py:210
 <span class="m">0</span>.27113
-INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_f1_score_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.07631<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w">     </span>__main__.py:210
+INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet_base_f1_score_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.07631<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w">     </span>__main__.py:210
 <span class="m">0</span>.35788
-INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_hit_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.82900<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">0</span>.94100<span class="w">  </span>__main__.py:210
-INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_average_precision&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.52305<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span>__main__.py:210
+INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet_base_hit_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.82900<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">0</span>.94100<span class="w">  </span>__main__.py:210
+INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet_base_average_precision&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.52305<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span>__main__.py:210
 <span class="m">0</span>.79779
-INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_reciprocal_rank&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.64909<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w">   </span>__main__.py:210
+INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet_base_reciprocal_rank&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.64909<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w">   </span>__main__.py:210
 <span class="m">0</span>.89224
-INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet50_dcg_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">1</span>.30710<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">4</span>.52143<span class="w">  </span>__main__.py:210
+INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;resnet_base_dcg_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">1</span>.30710<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">4</span>.52143<span class="w">  </span>__main__.py:210
 INFO<span class="w">     </span>Building<span class="w"> </span>the<span class="w"> </span>artifact<span class="w"> </span>...<span class="w">                                                            </span>__main__.py:215
 INFO<span class="w">     </span>Pushing<span class="w"> </span>artifact<span class="w"> </span>to<span class="w"> </span>Jina<span class="w"> </span>AI<span class="w"> </span>Cloud<span class="w"> </span>...<span class="w">                                                </span>__main__.py:241
 <span class="o">[</span><span class="m">12</span>:19:53<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Artifact<span class="w"> </span>pushed<span class="w"> </span>under<span class="w"> </span>ID<span class="w"> </span><span class="s1">&#39;63f8a9089c6406e19244771d&#39;</span><span class="w">                                  </span>__main__.py:243
@@ -574,7 +574,7 @@ The example below shows exactly this:</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 16, 2023</div>
+                            Last updated on Mar 29, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

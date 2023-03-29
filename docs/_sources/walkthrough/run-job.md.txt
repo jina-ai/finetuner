@@ -149,6 +149,27 @@ For example, the `linear` scheduler decreases the learning rate linearly from th
 The length of the warm-up phase is configured via the `num_warmup_steps` option inside `scheduler_optons`.
 By default, it is set to zero.
 
+### Layer-wise learning rate decay (LLRD)
+
+The LLRD assigns different learning rates to each layer of the model backbone.
+It sets a large learning rate for the top (last) layer and uses a multiplicative decay rate to decrease the learning rate layer-by-layer from top (last) to bottom (first). 
+With high learning rates,
+the features recognized by the top layers change more and adapt to new tasks more easily,
+while the bottom layers have low learning rates and more easily preserve the features learned during pre-training.
+
+We recommended to use LLRD to fine-tune Transformers, such as Bert or CLIP.
+
+```diff
+import finetuner
+
+run = finetuner.fit(
+    ...,
+    optimizer='Adam'
++   optimizer_options={'layer_wise_lr_decay': 0.98},
+    ...,
+)
+```
+
 ### Construction of training batches
 
 The training of your model is done in batches.

@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Use FinetunerExecutor inside a Jina Flow" href="../finetuner-executor/" /><link rel="prev" title="Projection Head" href="../linear-probe/" />
         <link rel="canonical" href="https://finetuner.jina.ai/advanced-topics/advanced-losses-optimizers-and-poolers.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2023.03.27 -->
         <title>Advanced loss functions, optimizers and poolers - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -395,6 +395,12 @@ As an example, the figure below shows the domains of the 10 classes of the <a cl
 but struggle to separate the green, blue, pink, purple and red classes,
 with <code class="docutils literal notranslate"><span class="pre">TripletMarginLoss</span></code> sperarating them the least, and <code class="docutils literal notranslate"><span class="pre">ArcFaceLoss</span></code> separating them the most.</p>
 </section>
+<section id="cosinesimilarityloss">
+<h3>CosineSimilarityLoss<a class="headerlink" href="#cosinesimilarityloss" title="Permalink to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">CosineSimilarityLoss</span></code> is a regression loss function,
+which is calculated by comparing the cosine similarity of two embeddings against their ground-truth cosine similarity or some other numerical measure of similarity in the range of 0.0 (completely different) to 1.0 (identical).
+The goal of <code class="docutils literal notranslate"><span class="pre">CosineSimilarityLoss</span></code> is to minimize the MSE (mean squared error) between document pair’s cosine score and their ground-truth expected similarity, in order to optimize the model for semantic relatedness, i.e. between images and sentences that describe them in part, between documents that have similar content, etc.</p>
+</section>
 </section>
 <section id="pooling-layers">
 <h2>Pooling layers<a class="headerlink" href="#pooling-layers" title="Permalink to this heading">#</a></h2>
@@ -460,7 +466,7 @@ By default, <code class="docutils literal notranslate"><span class="pre">p=3</sp
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 16, 2023</div>
+                            Last updated on Mar 29, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -498,6 +504,7 @@ By default, <code class="docutils literal notranslate"><span class="pre">p=3</sp
 <li><a class="reference internal" href="#sphereface-losses">SphereFace losses</a></li>
 <li><a class="reference internal" href="#using-an-optimizer">Using an optimizer</a></li>
 <li><a class="reference internal" href="#comparing-with-tripletmarginloss">Comparing with TripletMarginLoss</a></li>
+<li><a class="reference internal" href="#cosinesimilarityloss">CosineSimilarityLoss</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#pooling-layers">Pooling layers</a><ul>

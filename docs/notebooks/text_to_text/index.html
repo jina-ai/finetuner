@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Image-to-Image Search with TripletMarginLoss" href="../image_to_image/" /><link rel="prev" title="Use FinetunerExecutor inside a Jina Flow" href="../../advanced-topics/finetuner-executor/" />
         <link rel="canonical" href="https://finetuner.jina.ai/notebooks/text_to_text.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2023.03.27 -->
         <title>Text-to-Text Search via BERT - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -343,8 +343,8 @@
 </section>
 <section id="task">
 <h2>Task<a class="headerlink" href="#task" title="Permalink to this heading">#</a></h2>
-<p>In Finetuner, two BERT models are supported as backbones, namely <code class="docutils literal notranslate"><span class="pre">bert-base-cased</span></code> and <code class="docutils literal notranslate"><span class="pre">sentence-transformers/msmarco-distilbert-base-v3</span></code>, both of which are models hosted on Hugging Face.</p>
-<p>In this example, we will fine-tune <code class="docutils literal notranslate"><span class="pre">bert-base-cased</span></code> on the <a class="reference external" href="https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset">Quora Question Pairs</a> dataset, where the search task involves finding duplicate questions in the dataset. An example query for this search task might look as follows:</p>
+<p>In Finetuner, two BERT models are supported as backbones, namely <code class="docutils literal notranslate"><span class="pre">bert-base-en</span></code> and <code class="docutils literal notranslate"><span class="pre">sbert-base-en</span></code>, both of which are models hosted on Hugging Face.</p>
+<p>In this example, we will fine-tune <code class="docutils literal notranslate"><span class="pre">bert-base-en</span></code> on the <a class="reference external" href="https://www.sbert.net/examples/training/quora_duplicate_questions/README.html?highlight=quora#dataset">Quora Question Pairs</a> dataset, where the search task involves finding duplicate questions in the dataset. An example query for this search task might look as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>How can I be a good geologist?
 
 </pre></div>
@@ -392,8 +392,8 @@ If you look at the summaries for the <code class="docutils literal notranslate">
 </section>
 <section id="backbone-model">
 <h2>Backbone model<a class="headerlink" href="#backbone-model" title="Permalink to this heading">#</a></h2>
-<p>To keep things simple, we have decided to fine-tune the BERT model <code class="docutils literal notranslate"><span class="pre">bert-base-cased</span></code>. We could also have chosen <code class="docutils literal notranslate"><span class="pre">sentence-transformers/msmarco-distilbert-base-v3</span></code> as our base model, which has already been fine-tuned on the MSMarco dataset.
-However, for the purpose of this experiment, we want to explore how much improvement in performance we can gain from fine-tuning <code class="docutils literal notranslate"><span class="pre">bert-base-cased</span></code> on the Quora Question Pairs dataset using Finetuner.
+<p>To keep things simple, we have decided to fine-tune the BERT model <code class="docutils literal notranslate"><span class="pre">bert-base-en</span></code>. We could also have chosen <code class="docutils literal notranslate"><span class="pre">sbert-base-en</span></code> as our base model, which has already been fine-tuned on the MSMarco dataset.
+However, for the purpose of this experiment, we want to explore how much improvement in performance we can gain from fine-tuning <code class="docutils literal notranslate"><span class="pre">bert-base-en</span></code> on the Quora Question Pairs dataset using Finetuner.
 Perhaps in the future, we might want to create another run where we experiment with fine-tuning other BERT models.</p>
 <!-- #endregion -->
 <!-- #region id="IAlQArUB99oG" -->
@@ -405,7 +405,7 @@ Perhaps in the future, we might want to create another run where we experiment w
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.callback</span> <span class="kn">import</span> <span class="n">EvaluationCallback</span>
 
 <span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;bert-base-cased&#39;</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;bert-base-en&#39;</span><span class="p">,</span>
     <span class="n">train_data</span><span class="o">=</span><span class="s1">&#39;finetuner/quora-train-da&#39;</span><span class="p">,</span>
     <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;TripletMarginLoss&#39;</span><span class="p">,</span>
     <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;Adam&#39;</span><span class="p">,</span>
@@ -425,8 +425,8 @@ Perhaps in the future, we might want to create another run where we experiment w
 </div>
 <!-- #region id="j_MxAW9E-ddZ" -->
 <p>Our fine-tuning call has a lot of arguments. Let’s discuss what the most important ones are responsible for.</p>
-<p>Most importantly, we select our model with <code class="docutils literal notranslate"><span class="pre">model='bert-base-cased'</span></code> and pass our training data with <code class="docutils literal notranslate"><span class="pre">train_data=train_data</span></code>. These two arguments are required.
-We set our <code class="docutils literal notranslate"><span class="pre">experiment_name</span></code> to <code class="docutils literal notranslate"><span class="pre">'finetune-quora-dataset'</span></code> and our <code class="docutils literal notranslate"><span class="pre">run_name</span></code> to <code class="docutils literal notranslate"><span class="pre">'finetune-quora-dataset-bert-base-cased'</span></code>.
+<p>Most importantly, we select our model with <code class="docutils literal notranslate"><span class="pre">model='bert-base-en'</span></code> and pass our training data with <code class="docutils literal notranslate"><span class="pre">train_data=train_data</span></code>. These two arguments are required.
+We set our <code class="docutils literal notranslate"><span class="pre">experiment_name</span></code> to <code class="docutils literal notranslate"><span class="pre">'finetune-quora-dataset'</span></code> and our <code class="docutils literal notranslate"><span class="pre">run_name</span></code> to <code class="docutils literal notranslate"><span class="pre">'finetune-quora-dataset-bert-base-en'</span></code>.
 This will make it easy for us to retrieve the experiment and run in the future. We also provide a short description of our run, just for some extra context.</p>
 <p>For this run, we select Finetuner’s <code class="docutils literal notranslate"><span class="pre">TripletMarginLoss</span></code> and <code class="docutils literal notranslate"><span class="pre">TripletMarginMiner</span></code>, as they are most relevant for our use-case. The <code class="docutils literal notranslate"><span class="pre">TripletMarginLoss</span></code> measures the similarity between three tensors, namely the anchor, a positive sample and a negative sample. This makes sense for our task, since we want duplicate questions to have representations closer together, while non-duplicates should have more dissimilar representations. Likewise, the <code class="docutils literal notranslate"><span class="pre">TripletMarginMiner</span></code> outputs a tuple of size 3, with an anchor, a positive sample and a negative sample.</p>
 <p>Lastly, we provide an <code class="docutils literal notranslate"><span class="pre">EvaluationCallback</span></code> with our <code class="docutils literal notranslate"><span class="pre">query_data</span></code> and <code class="docutils literal notranslate"><span class="pre">index_data</span></code>. This evaluation is done at the end of each epoch and its results will be visible to us in the logs, which we will monitor in the next section. Since we have not specified which metrics should be applied, default metrics will be computed. The <code class="docutils literal notranslate"><span class="pre">Evaluation</span></code> section of this guide will show you the default metrics.</p>
@@ -447,7 +447,7 @@ This will make it easy for us to retrieve the experiment and run in the future. 
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">finetuner</span>
 
 <span class="n">finetuner</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
-<span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span><span class="s1">&#39;finetune-quora-dataset-bert-base-cased&#39;</span><span class="p">)</span>
+<span class="n">run</span> <span class="o">=</span> <span class="n">finetuner</span><span class="o">.</span><span class="n">get_run</span><span class="p">(</span><span class="s1">&#39;finetune-quora-dataset-bert-base-en&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Run status: </span><span class="si">{</span><span class="n">run</span><span class="o">.</span><span class="n">status</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -589,7 +589,7 @@ Query: What online platforms can I post ads for beer money opportunity?
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 16, 2023</div>
+                            Last updated on Mar 29, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

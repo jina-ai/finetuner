@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex/" /><link rel="search" title="Search" href="../../../../search/" />
         <link rel="canonical" href="https://finetuner.jina.ai/_modules/finetuner/client/client.html" />
 
-    <link rel="shortcut icon" href="../../../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+    <link rel="shortcut icon" href="../../../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2023.03.27 -->
         <title>finetuner.client.client - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -372,7 +372,7 @@
 <span class="sd">        ..note:: The maximum number for `size` per page is 100.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;page&#39;</span><span class="p">:</span> <span class="n">page</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="n">size</span><span class="p">}</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="p">,</span> <span class="n">API_VERSION</span><span class="p">,</span> <span class="n">EXPERIMENTS</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="p">,</span> <span class="n">API_VERSION</span><span class="p">,</span> <span class="n">EXPERIMENTS</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_request</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">GET</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FinetunerV1Client.delete_experiment"><a class="viewcode-back" href="../../../../api/finetuner.client.client/#finetuner.client.client.FinetunerV1Client.delete_experiment">[docs]</a>    <span class="k">def</span> <span class="nf">delete_experiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
@@ -606,7 +606,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 16, 2023</div>
+                            Last updated on Mar 29, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

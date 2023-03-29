@@ -86,7 +86,7 @@ index_data[0].display()
 <!-- #region id="B3I_QUeFT_V0" -->
 ## Backbone model
 
-The model we provide for 3d mesh encoding is called `pointnet++`. In the following, we show you how to train it on the ModelNet training dataset.
+The model we provide for 3d mesh encoding is called `pointnet-base`. In the following, we show you how to train it on the ModelNet training dataset.
 <!-- #endregion -->
 
 <!-- #region id="lqg0eY9oknLL" -->
@@ -99,7 +99,7 @@ Now that we have data for training and evaluation. as well as the name of the mo
 from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
-    model='pointnet++',
+    model='pointnet-base',
     train_data='finetuner/modelnet40-train',
     epochs=10,
     batch_size=64,
@@ -119,7 +119,7 @@ run = finetuner.fit(
 <!-- #region id="ossT9LH1oh6K" -->
 Let's understand what this piece of code does:
 
-* We start with providing a `model` name, in our case "pointnet++".
+* We start with providing a `model` name, in our case "pointnet-base".
 * Via the `train_data` parameter, we inform the Finetuner about the name of the dataset in the Jina AI Cloud
 * We also provide some hyper-parameters such as the number of `epochs`, `batch_size`, and a `learning_rate`.
 * We use `TripletMarginLoss` to optimize the PointNet++ model.
@@ -161,13 +161,13 @@ Our `EvaluationCallback` during fine-tuning ensures that after each epoch, an ev
   Training [10/10] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 154/154 0:00:00 0:00:26 • loss: 0.001
            INFO     Done ✨                                                                                                                                            __main__.py:195
            DEBUG    Finetuning took 0 days, 0 hours 5 minutes and 39 seconds                                                                                           __main__.py:197
-           INFO     Metric: 'pointnet++_precision_at_k' before fine-tuning:  0.56533 after fine-tuning: 0.81100                                                        __main__.py:210
-           INFO     Metric: 'pointnet++_recall_at_k' before fine-tuning:  0.15467 after fine-tuning: 0.24175                                                           __main__.py:210
-           INFO     Metric: 'pointnet++_f1_score_at_k' before fine-tuning:  0.23209 after fine-tuning: 0.34774                                                         __main__.py:210
-           INFO     Metric: 'pointnet++_hit_at_k' before fine-tuning:  0.95667 after fine-tuning: 0.95333                                                              __main__.py:210
-           INFO     Metric: 'pointnet++_average_precision' before fine-tuning:  0.71027 after fine-tuning: 0.85515                                                     __main__.py:210
-           INFO     Metric: 'pointnet++_reciprocal_rank' before fine-tuning:  0.79103 after fine-tuning: 0.89103                                                       __main__.py:210
-           INFO     Metric: 'pointnet++_dcg_at_k' before fine-tuning:  4.71826 after fine-tuning: 6.41999                                                              __main__.py:210
+           INFO     Metric: 'pointnet_base_precision_at_k' before fine-tuning:  0.56533 after fine-tuning: 0.81100                                                        __main__.py:210
+           INFO     Metric: 'pointnet_base_recall_at_k' before fine-tuning:  0.15467 after fine-tuning: 0.24175                                                           __main__.py:210
+           INFO     Metric: 'pointnet_base_f1_score_at_k' before fine-tuning:  0.23209 after fine-tuning: 0.34774                                                         __main__.py:210
+           INFO     Metric: 'pointnet_base_hit_at_k' before fine-tuning:  0.95667 after fine-tuning: 0.95333                                                              __main__.py:210
+           INFO     Metric: 'pointnet_base_average_precision' before fine-tuning:  0.71027 after fine-tuning: 0.85515                                                     __main__.py:210
+           INFO     Metric: 'pointnet_base_reciprocal_rank' before fine-tuning:  0.79103 after fine-tuning: 0.89103                                                       __main__.py:210
+           INFO     Metric: 'pointnet_base_dcg_at_k' before fine-tuning:  4.71826 after fine-tuning: 6.41999                                                              __main__.py:210
            INFO     Building the artifact ...                                                                                                                          __main__.py:215
            INFO     Saving artifact locally ...                                                                                                                        __main__.py:237
 [15:46:55] INFO     Artifact saved in artifacts/                                                                                                                       __main__.py:239
@@ -212,11 +212,11 @@ query_data.match(index_data, limit=10, metric='cosine')
 ```
 
 <!-- #region id="xGAjr26o6j-n" -->
-To compare the matches against results obtained with a PointNet++ model without training, you can use the `build_model` function:
+To compare the matches against results obtained with a pointnet-base model without training, you can use the `build_model` function:
 <!-- #endregion -->
 
 ```python id="cChTjw3b6iXq"
-zero_shot_model = finetuner.build_model('pointnet++')
+zero_shot_model = finetuner.build_model('pointnet-base')
 
 finetuner.encode(model=zero_shot_model, data=query_data)
 finetuner.encode(model=zero_shot_model, data=index_data)

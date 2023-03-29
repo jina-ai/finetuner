@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Backbone Model" href="../choose-backbone/" /><link rel="prev" title="Login" href="../login/" />
         <link rel="canonical" href="https://finetuner.jina.ai/walkthrough/create-training-data.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2023.03.27 -->
         <title>Prepare Training Data - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -409,10 +409,23 @@ This is a black-white photo of an organge., orange.jpg
 During fine-tuning, we’re optimizing two models in parallel.</p>
 <p>At the model saving time, you will discover, we are saving two models to your local directory.</p>
 </div>
+</section>
+<section id="preparing-document-similarity-data-for-training">
+<h3>Preparing Document Similarity Data for Training<a class="headerlink" href="#preparing-document-similarity-data-for-training" title="Permalink to this heading">#</a></h3>
+<p>To prepare data for training,
+it must consist of a pair of documents and a similarity score between 0.0 (completely unrelated) and 1.0 (identical).
+You must organize the data into a three-column CSV file with the first text,
+then the second, and then the score,
+on a single line separated by commas.</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>The weather is nice, The weather is beautiful, 0.9
+The weather is nice, The weather is bad, 0
+</pre></div>
+</div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>If a text field contains commas, it breaks the CSV format since it is interpreted as spanning over multiple columns.
-In this case, please enclose the field in double quotes, such as <code class="docutils literal notranslate"><span class="pre">field1,&quot;field,</span> <span class="pre">2&quot;</span></code>.</p>
+<p>If your texts contain commas, you must enclose them in quotes, otherwise you will break the CSV format.  For example:</p>
+<p>“If we’re ordering lunch, we should get pizza”, “I want to order pizza for lunch”, 0.8
+“If you’re headed out, can you take out the garbage?”, “I’m going to have to take the trash out myself, aren’t I?”, 0.1</p>
 </div>
 <p>We support the following dialects of CSV:</p>
 <ul class="simple">
@@ -448,7 +461,30 @@ The function requires a number of points, which we recommend setting to 2048.</p
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">image-to-image search</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">similarity scores</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+
+<span class="n">train_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span>
+    <span class="n">Document</span><span class="p">(</span>
+        <span class="n">chunks</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s1">&#39;the weather is nice&#39;</span><span class="p">),</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s1">&#39;the weather is beautiful&#39;</span><span class="p">)</span>
+        <span class="p">],</span>
+        <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;finetuner_score&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">}</span>  <span class="c1"># note, use `finetuner_score` as ground truth.</span>
+    <span class="p">),</span>
+    <span class="n">Document</span><span class="p">(</span>
+        <span class="n">chunks</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s1">&#39;the weather is nice&#39;</span><span class="p">),</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s1">&#39;the weather is bad&#39;</span><span class="p">)</span>
+        <span class="p">],</span>
+        <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;finetuner_score&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+    <span class="p">),</span>
+    <span class="o">...</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--3">image-to-image search</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
 <span class="n">train_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span>
@@ -465,7 +501,7 @@ The function requires a number of points, which we recommend setting to 2048.</p
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--3">mesh-to-mesh search</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--0-input--4" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--4">mesh-to-mesh search</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
 <span class="n">train_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span>
@@ -482,7 +518,7 @@ The function requires a number of points, which we recommend setting to 2048.</p
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--0-input--4" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--4">text-to-image search on CLIP</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--0-input--5" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--5">text-to-image search on CLIP</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
 <span class="n">train_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span>
@@ -562,7 +598,7 @@ As a result, no further labels need to be provided.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 16, 2023</div>
+                            Last updated on Mar 29, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -599,6 +635,7 @@ As a result, no further labels need to be provided.</p>
 <li><a class="reference internal" href="#labeled-data">Labeled data</a></li>
 <li><a class="reference internal" href="#query-document-relations">Query-Document relations</a></li>
 <li><a class="reference internal" href="#text-to-image-search-using-clip">text-to-image search using CLIP</a></li>
+<li><a class="reference internal" href="#preparing-document-similarity-data-for-training">Preparing Document Similarity Data for Training</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#preparing-a-documentarray">Preparing a DocumentArray</a></li>

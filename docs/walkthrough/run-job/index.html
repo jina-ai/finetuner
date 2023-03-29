@@ -32,10 +32,10 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Save Artifact" href="../save-model/" /><link rel="prev" title="Backbone Model" href="../choose-backbone/" />
         <link rel="canonical" href="https://finetuner.jina.ai/walkthrough/run-job.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 6.1.3 and Furo 2023.03.27 -->
         <title>Run Job - Finetuner documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -467,6 +467,25 @@ For example, the <code class="docutils literal notranslate"><span class="pre">li
 The length of the warm-up phase is configured via the <code class="docutils literal notranslate"><span class="pre">num_warmup_steps</span></code> option inside <code class="docutils literal notranslate"><span class="pre">scheduler_optons</span></code>.
 By default, it is set to zero.</p>
 </section>
+<section id="layer-wise-learning-rate-decay-llrd">
+<h3>Layer-wise learning rate decay (LLRD)<a class="headerlink" href="#layer-wise-learning-rate-decay-llrd" title="Permalink to this heading">#</a></h3>
+<p>The LLRD assigns different learning rates to each layer of the model backbone.
+It sets a large learning rate for the top (last) layer and uses a multiplicative decay rate to decrease the learning rate layer-by-layer from top (last) to bottom (first).
+With high learning rates,
+the features recognized by the top layers change more and adapt to new tasks more easily,
+while the bottom layers have low learning rates and more easily preserve the features learned during pre-training.</p>
+<p>We recommended to use LLRD to fine-tune Transformers, such as Bert or CLIP.</p>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">import finetuner</span>
+
+<span class="w">run = finetuner.fit(</span>
+<span class="w"> </span>   ...,
+<span class="w"> </span>   optimizer=&#39;Adam&#39;
+<span class="gi">+   optimizer_options={&#39;layer_wise_lr_decay&#39;: 0.98},</span>
+<span class="w"> </span>   ...,
+<span class="w">)</span>
+</pre></div>
+</div>
+</section>
 <section id="construction-of-training-batches">
 <h3>Construction of training batches<a class="headerlink" href="#construction-of-training-batches" title="Permalink to this heading">#</a></h3>
 <p>The training of your model is done in batches.
@@ -519,7 +538,7 @@ at all, in which case the highest possible value will be calculated for you auto
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 16, 2023</div>
+                            Last updated on Mar 29, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -558,6 +577,7 @@ at all, in which case the highest possible value will be calculated for you auto
 <li><a class="reference internal" href="#loss-functions">Loss functions</a></li>
 <li><a class="reference internal" href="#configuration-of-the-optimizer">Configuration of the optimizer</a></li>
 <li><a class="reference internal" href="#configuration-of-a-learning-rate-scheduler">Configuration of a learning rate scheduler</a></li>
+<li><a class="reference internal" href="#layer-wise-learning-rate-decay-llrd">Layer-wise learning rate decay (LLRD)</a></li>
 <li><a class="reference internal" href="#construction-of-training-batches">Construction of training batches</a></li>
 </ul>
 </li>

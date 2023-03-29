@@ -72,7 +72,7 @@ train_data.summary()
 Now let's see which backbone models we can use. You can see all the available models by calling `finetuner.describe_models()`.
 
 
-For this example, we're gonna go with `resnet50`.
+For this example, we're gonna go with `resnet-base`.
 <!-- #endregion -->
 
 <!-- #region id="xA7IIhIOk0h0" -->
@@ -85,7 +85,7 @@ Now that we have selected our model and loaded the training and evaluation datas
 from finetuner.callback import EvaluationCallback
 
 run = finetuner.fit(
-    model='resnet50',
+    model='resnet-base',
     train_data='finetuner/tll-train-data',
     batch_size=128,
     epochs=5,
