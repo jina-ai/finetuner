@@ -38,6 +38,7 @@ jobs:
 
   check-versions:
     name: Check Python Versions
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         version: [3.8, 3.9, 3.11]
