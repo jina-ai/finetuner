@@ -53,6 +53,7 @@ if __name__ == '__main__':
             'Intended Audience :: Science/Research',
             'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9',
+            'Programming Language :: Python :: 3.11',
             'License :: OSI Approved :: Apache Software License',
             'Environment :: Console',
             'Operating System :: OS Independent',
