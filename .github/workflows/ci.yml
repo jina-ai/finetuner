@@ -50,7 +50,10 @@ jobs:
       - name: Install client
         run: pip install 'finetuner[full]' --no-cache-dir
       - name: Check installation
-        run: python -c "import finetuner"
+        run: |
+          pip freeze | grep finetuner
+          python -c "import finetuner"
+          python -c "import torch"
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:
