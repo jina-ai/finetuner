@@ -41,13 +41,13 @@ jobs:
     strategy:
       matrix:
         version: [3.8, 3.9, 3.11]
-      steps:
-        - name: Setp up python version
-          uses: actions/setup-python@v2
-          with:
-            python-version: ${{ matrix.version }}
-        - name: Install client
-          run: pip install 'finetuner[full]'
+    steps:
+      - name: Setp up python version
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.version }}
+      - name: Install client
+        run: pip install 'finetuner[full]'
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:
