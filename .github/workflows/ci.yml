@@ -48,7 +48,9 @@ jobs:
         with:
           python-version: ${{ matrix.version }}
       - name: Install client
-        run: pip install 'finetuner[full]'
+        run: pip install 'finetuner[full]' --no-cache-dir
+      - name: Check installation
+        run: python -c "import finetuner"
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:
