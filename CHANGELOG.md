@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add support for python 3.11. ([#704](https://github.com/jina-ai/finetuner/pull/704))
+- Add support for python 3.10. ([#704](https://github.com/jina-ai/finetuner/pull/704))
 
 ### Removed
 
