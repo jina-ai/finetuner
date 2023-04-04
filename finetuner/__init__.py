@@ -436,12 +436,13 @@ def build_model(
         name, select_model=select_model, model_options=model_options or {}
     )
 
-    model = RunnerModel(stub=stub)
+    model = RunnerModel(stub=stub, download_pretrained=True)
     if not is_onnx:
         return TorchInferenceEngine(
             artifact=model,
             batch_size=batch_size,
             device=device,
+            download_pretrained=True,
         )
     else:
         return ONNXRuntimeInferenceEngine(
@@ -519,6 +520,7 @@ def get_model(
             select_model=select_model,
             device=device,
             logging_level=logging_level,
+            download_pretrained=False,
         )
     return inference_engine
 
