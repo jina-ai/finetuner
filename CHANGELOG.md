@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Unify all models names into `name-size-lang` format. ([#700](https://github.com/jina-ai/finetuner/pull/700))
 
+- Do not download pre-trained weights when user download the artifact. ([#706](https://github.com/jina-ai/finetuner/pull/706))
+
 ### Fixed
 
 ### Docs
