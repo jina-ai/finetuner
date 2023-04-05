@@ -188,8 +188,8 @@ class Finetuner:
         if not experiment:
             raise ValueError(
                 (
-                    'unable to start finetuning run as experiment is `None`. '
-                    'make sure you have logged in using `finetuner.login()`.'
+                    'Unable to start finetuning run as experiment is `None`. '
+                    'Make sure you have logged in using `finetuner.login()`.'
                 )
             )
         return experiment.create_run(
