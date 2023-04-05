@@ -185,6 +185,13 @@ class Finetuner:
             experiment = self._default_experiment
         else:
             experiment = self.get_experiment(name=experiment_name)
+        if not experiment:
+            raise ValueError(
+                (
+                    'unable to start finetuning run as experiment is `None`. '
+                    'make sure you have logged in using `finetuner.login()`.'
+                )
+            )
         return experiment.create_run(
             model=model,
             train_data=train_data,
