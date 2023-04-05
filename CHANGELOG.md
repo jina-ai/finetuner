@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add support for python 3.10. ([#704](https://github.com/jina-ai/finetuner/pull/704))
 
+- Add error message when `experiment` is `None` when creating a run. ([#708](https://github.com/jina-ai/finetuner/pull/708))
+
 ### Removed
 
 ### Changed
