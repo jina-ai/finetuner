@@ -1,6 +1,7 @@
 from typing import Any, Dict, Iterator, List, Optional
 
 import pkg_resources
+from requests.exceptions import ReadTimeout
 
 from finetuner.client.base import _BaseClient
 from finetuner.constants import (
@@ -168,7 +169,14 @@ class FinetunerV1Client(_BaseClient):
             run_name,
             STATUS,
         )
-        return self._handle_request(url=url, method=GET)
+
+        try:
+            response = self._handle_request(url=url, method=GET, timeout=10)
+        # In the event that the request times out, attempt the request one more time.
+        except ReadTimeout:
+            response = self._handle_request(url=url, method=GET, timeout=10)
+            raise ValueError('Successfully handled timeout')
+        return response
 
     def get_run_logs(self, experiment_name: str, run_name: str) -> str:
         """Get a run logs by its name and experiment.
