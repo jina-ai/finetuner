@@ -2,6 +2,7 @@ import os
 from typing import List, Optional, Union
 
 import requests
+from requests.adapters import HTTPAdapter, Retry
 
 import hubble
 from finetuner.client.session import _HeaderPreservingSession
@@ -40,6 +41,8 @@ class _BaseClient:
     @staticmethod
     def _get_client_session() -> _HeaderPreservingSession:
         session = _HeaderPreservingSession(trusted_domains=[])
+        retries = Retry(total=1)
+        session.mount('http://', HTTPAdapter(max_retries=retries))
         api_token = TOKEN_PREFIX + str(hubble.Auth.get_auth_token())
         session.headers.update({CHARSET: UTF_8, AUTHORIZATION: api_token})
         return session
