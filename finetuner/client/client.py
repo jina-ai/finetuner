@@ -175,7 +175,6 @@ class FinetunerV1Client(_BaseClient):
         # In the event that the request times out, attempt the request one more time.
         except ReadTimeout:
             response = self._handle_request(url=url, method=GET, timeout=10)
-            raise ValueError('Successfully handled timeout')
         return response
 
     def get_run_logs(self, experiment_name: str, run_name: str) -> str:
