@@ -287,7 +287,7 @@ class Experiment:
         if kwargs.get(LOSS_OPTIMIZER_OPTIONS):
             hyper_parameters.loss_optimizer_options = kwargs.get(LOSS_OPTIMIZER_OPTIONS)
 
-        run_config = config.RunConfig(
+        run_config = config.FinetuningConfig(
             model=model,
             data=data,
             callbacks=callbacks,
