@@ -427,7 +427,7 @@ def build_model(
         ONNXRuntimeInferenceEngine,
         TorchInferenceEngine,
     )
-    from _finetuner.runner.model import RunnerModel
+    from _finetuner.runner.model import EmbeddingModel
 
     if not device:
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -436,7 +436,7 @@ def build_model(
         name, select_model=select_model, model_options=model_options or {}
     )
 
-    model = RunnerModel(stub=stub, download_pretrained=True)
+    model = EmbeddingModel(stub=stub, download_pretrained=True)
     if not is_onnx:
         return TorchInferenceEngine(
             artifact=model,

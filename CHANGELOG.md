@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Use correct schema and model stub for fine-tuning job rather than generation job. ([#711](https://github.com/jina-ai/finetuner/pull/711))
+
 ### Fixed
 
 - Fix error caused by pods restarting. ([#709](https://github.com/jina-ai/finetuner/pull/709))
