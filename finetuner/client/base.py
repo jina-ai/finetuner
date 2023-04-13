@@ -55,6 +55,7 @@ class _BaseClient:
         params: Optional[dict] = None,
         json_data: Optional[dict] = None,
         stream: bool = False,
+        timeout: Optional[int] = None,
     ) -> Union[dict, List[dict], str, requests.Response]:
         """The base request handler.
 
@@ -72,6 +73,7 @@ class _BaseClient:
             params=params,
             allow_redirects=True,
             stream=stream,
+            timeout=timeout,
         )
         if not response.ok:
             raise FinetunerServerError(
