@@ -177,7 +177,7 @@ class Experiment:
 
         kwargs[EVAL_DATA] = eval_data
 
-        config = self._create_config_for_run(
+        config = self._create_finetuning_config(
             model=model,
             train_data=train_data,
             experiment_name=self._name,
@@ -209,7 +209,7 @@ class Experiment:
         return run
 
     @staticmethod
-    def _create_config_for_run(
+    def _create_finetuning_config(
         model: str,
         train_data: str,
         experiment_name: str,
@@ -287,7 +287,7 @@ class Experiment:
         if kwargs.get(LOSS_OPTIMIZER_OPTIONS):
             hyper_parameters.loss_optimizer_options = kwargs.get(LOSS_OPTIMIZER_OPTIONS)
 
-        run_config = config.FinetuningConfig(
+        finetuning_config = config.FinetuningConfig(
             model=model,
             data=data,
             callbacks=callbacks,
@@ -297,4 +297,4 @@ class Experiment:
             run_name=run_name,
         )
 
-        return run_config.dict()
+        return finetuning_config.dict()

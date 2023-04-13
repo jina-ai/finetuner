@@ -71,7 +71,7 @@ def test_delete_experiments(client_mocker):
 
 
 def test_create_run(client_mocker, experiment_name='exp', run_name='run'):
-    config = Experiment._create_config_for_run(
+    config = Experiment._create_finetuning_config(
         model='resnet50',
         train_data='data name',
         experiment_name=experiment_name,

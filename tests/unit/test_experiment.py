@@ -87,7 +87,7 @@ def test_create_run(experiment):
         train_data=data,
         run_name=run_name,
     )
-    expected_config = Experiment._create_config_for_run(
+    expected_config = Experiment._create_finetuning_config(
         model='resnet50',
         model_options={},
         train_data=data_name,
@@ -149,7 +149,7 @@ def test_create_run_config():
         PUBLIC: False,
         RUN_NAME: 'run name',
     }
-    config = Experiment._create_config_for_run(
+    config = Experiment._create_finetuning_config(
         model='resnet50',
         train_data='train_data',
         experiment_name='exp name',
