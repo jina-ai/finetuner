@@ -9,6 +9,7 @@ from docarray import DocumentArray
 from finetuner.constants import (
     DEFAULT_FINETUNER_HOST,
     DEFAULT_HUBBLE_REGISTRY,
+    EMBEDDING,
     HOST,
     HUBBLE_REGISTRY,
 )
@@ -65,9 +66,16 @@ def _build_name_stub_map() -> Dict[str, model_stub.ModelStubType]:
     return rv
 
 
-def list_models() -> List[str]:
-    """List available models."""
-    return [name for name in list_model_classes()]
+def list_models(model_type: str = EMBEDDING) -> List[str]:
+    """List available models.
+
+    :param type: The type of backbone model, one of 'embedding', 'cross_ecoding' or
+        'relation_mining'. 'embedding' by default.
+
+    """
+    return [
+        stub.display_name for stub in list_model_classes(model_type=model_type).values()
+    ]
 
 
 def list_model_options() -> Dict[str, List[Dict[str, Any]]]:
@@ -91,16 +99,19 @@ def list_model_options() -> Dict[str, List[Dict[str, Any]]]:
     }
 
 
-def describe_models(task: Optional[str] = None) -> None:
+def describe_models(task: Optional[str] = None, model_type: str = EMBEDDING) -> None:
     """Print model information, such as name, task, output dimension, architecture
     and description as a table.
 
     :param task: The task for the backbone model, one of `text-to-text`,
         `text-to-image`, `image-to-image`. If not provided, will print all backbone
         models.
+    :param type: The type of backbone model, one of 'embedding', 'cross_ecoding' or
+        'relation_mining'. 'embedding' by default, the `task` parameter will be ignored
+        if this is set to anything else.
 
     """
-    print_model_table(model, task=task)
+    print_model_table(model, task=task, model_type=model_type)
 
 
 @login_required
@@ -294,18 +305,20 @@ def synthesize(
     """Create a Finetuner generation :class:`Run`, calling this function will submit a
     data generation job to the Jina AI Cloud.
 
-    :param query_data: Either a :class:`DocumentArray` for example queries. can be the
-        name of a `DocumentArray` that is pushed on Jina AI Cloud, the dataset itself as
+    :param query_data: Either a :class:`DocumentArray` for example queries, name of a
+        `DocumentArray` that is pushed on Jina AI Cloud, the dataset itself as
         a list of strings or a path to a CSV file.
     :param corpus_data: Either a :class:`DocumentArray` for corpus data, a name of a
         `DocumentArray` that is pushed on Jina AI Cloud, the dataset itself as a
         list of strings or a path to a CSV file.
     :param mining_models: The name or a list of names of models to be used during
-        relation mining. Run `finetuner.list_models()` or `finetuner.describe_models()`
-        to see the available model names. #TODO double check this
+        relation mining. Run `finetuner.list_models(model_type='relation_mining')` or
+        `finetuner.describe_models(model_type='relation_mining')` to see the
+        available model names.
     :param cross_encoder_model:  The name of the model to be used as the cross-encoder.
-        Run `finetuner.list_models()` or `finetuner.describe_models()` to see the
-        available model names. #TODO double check this
+        Run `finetuner.list_models(model_type='cross_encoding')` or
+        `finetuner.describe_models(model_type='cross_encoding')` to see the
+        available model names.
     :param num_relations: The number of relations to mine per query.
     :param max_num_docs: The maximum number of documents to consider.
     :param run_name: Name of the run.

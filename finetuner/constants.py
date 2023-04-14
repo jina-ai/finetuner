@@ -93,3 +93,6 @@ CORPUS = 'corpus'
 MODELS = 'models'
 NUM_RELATIONS = 'num_relations'
 MAX_NUM_DOCS = 'max_num_docs'
+# Stub types
+EMBEDDING = 'embedding'
+CROSS_ENCODING = 'cross_encoding'
