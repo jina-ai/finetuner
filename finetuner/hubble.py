@@ -6,7 +6,22 @@ from docarray import DocumentArray
 from finetuner.constants import ARTIFACTS_DIR, DA_PREFIX
 
 
-def push_data(
+def push_docarray(
+    data: Union[None, str, DocumentArray], name: str, ids2names: Dict[int, str]
+) -> Optional[str]:
+    """Upload a DocumentArray to hubble nad retur"""
+    if isinstance(data, DocumentArray):
+        _id = id(data)  # get the reference id
+        if _id in ids2names:
+            return ids2names[_id]
+        print(f'Pushing a DocumentArray to Hubble under the name {name} ...')
+        data.push(name=name, show_progress=True, public=False)
+        ids2names[id(data)] = name
+        return name
+    return data
+
+
+def push_training_data(
     experiment_name: str,
     run_name: str,
     train_data: Union[str, DocumentArray],
@@ -32,33 +47,51 @@ def push_data(
     :param index_data: Index data for `EvaluationCallback`.
     :return: Name(s) of the uploaded data.
     """
-
-    def _push_docarray(
-        data: Union[None, str, DocumentArray], name: str, ids2names: Dict[int, str]
-    ) -> Optional[str]:
-        if isinstance(data, DocumentArray):
-            _id = id(data)  # get the reference id
-            if _id in ids2names:
-                return ids2names[_id]
-            print(f'Pushing a DocumentArray to Hubble under the name {name} ...')
-            data.push(name=name, show_progress=True, public=False)
-            ids2names[id(data)] = name
-            return name
-        return data
-
     _ids2names = dict()
     return (
-        _push_docarray(
+        push_docarray(
             train_data, f'{DA_PREFIX}-{experiment_name}-{run_name}-train', _ids2names
         ),
-        _push_docarray(
+        push_docarray(
             eval_data, f'{DA_PREFIX}-{experiment_name}-{run_name}-eval', _ids2names
         ),
-        _push_docarray(
+        push_docarray(
             query_data, f'{DA_PREFIX}-{experiment_name}-{run_name}-query', _ids2names
         ),
-        _push_docarray(
+        push_docarray(
             index_data, f'{DA_PREFIX}-{experiment_name}-{run_name}-index', _ids2names
+        ),
+    )
+
+
+def push_generation_data(
+    experiment_name: str,
+    run_name: str,
+    query_data: Union[str, DocumentArray],
+    corpus_data: Union[str, DocumentArray],
+) -> Tuple[Optional[str], ...]:
+    """Upload data to Hubble and returns their names.
+
+    Uploads all data needed for data generation - query data and corpus data.
+
+    Data is given either as a `DocumentArray` or
+    a name of the `DocumentArray` that is already pushed to Hubble.
+
+    Checks not to upload same dataset twice.
+
+    :param experiment_name: Name of the experiment.
+    :param run_name: Name of the run.
+    :param query_data: Query data.
+    :param corpus_data: Corpus data.
+    :return: Name(s) of the uploaded data.
+    """
+    _ids2names = dict()
+    return (
+        push_docarray(
+            query_data, f'{DA_PREFIX}-{experiment_name}-{run_name}-query', _ids2names
+        ),
+        push_docarray(
+            corpus_data, f'{DA_PREFIX}-{experiment_name}-{run_name}-corpus', _ids2names
         ),
     )
 

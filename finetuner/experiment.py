@@ -20,6 +20,7 @@ from finetuner.constants import (
     LOSS,
     LOSS_OPTIMIZER,
     LOSS_OPTIMIZER_OPTIONS,
+    MAX_NUM_DOCS,
     MINER,
     MINER_OPTIONS,
     MODEL_ARTIFACT,
@@ -38,7 +39,7 @@ from finetuner.constants import (
     VAL_SPLIT,
 )
 from finetuner.data import CSVContext
-from finetuner.hubble import push_data
+from finetuner.hubble import push_generation_data, push_training_data
 from finetuner.names import get_random_name
 from finetuner.run import Run
 
@@ -131,7 +132,7 @@ class Experiment:
         """Delete all :class:`Run` inside the :class:`Experiment`."""
         self._client.delete_runs(experiment_name=self._name)
 
-    def create_run(
+    def create_training_run(
         self,
         model: str,
         train_data: Union[str, TextIO, DocumentArray],
@@ -140,7 +141,9 @@ class Experiment:
         csv_options: Optional[Dict[str, Any]] = None,
         **kwargs,
     ) -> Run:
-        """Create a :class:`Run` inside the :class:`Experiment`."""
+        """Create a :class:`Run` inside the :class:`Experiment` with the
+        task of 'training'.
+        """
         if not run_name:
             run_name = get_random_name()
 
@@ -163,7 +166,7 @@ class Experiment:
                 eval_callback.index_data
             )
 
-        train_data, eval_data, query_data, index_data = push_data(
+        train_data, eval_data, query_data, index_data = push_training_data(
             experiment_name=self._name,
             run_name=run_name,
             train_data=train_data,
@@ -208,6 +211,60 @@ class Experiment:
         )
         return run
 
+    def create_generation_run(
+        self,
+        query_data: str,
+        corpus_data: str,
+        mining_models: Union[str, List[str]],
+        cross_encoder_model: str,
+        num_relations: int,
+        run_name: Optional[str] = None,
+        **kwargs,
+    ) -> Run:
+        if not run_name:
+            run_name = get_random_name()
+
+        query_data, corpus_data = push_generation_data(
+            experiment_name=self._name,
+            run_name=run_name,
+            query_data=query_data,
+            corpus_data=corpus_data,
+        )
+
+        config = self._create_generation_config(
+            query_data=query_data,
+            corpus_data=corpus_data,
+            mining_models=mining_models,
+            cross_encoder_model=cross_encoder_model,
+            num_relations=num_relations,
+            experiment_name=self._name,
+            run_name=run_name,
+            **kwargs,
+        )
+
+        device = kwargs.get(DEVICE, 'cuda')
+        if device == 'cuda':
+            device = 'gpu'
+
+        num_workers = kwargs.get(NUM_WORKERS, 4)
+        run = self._client.create_run(
+            run_name=run_name,
+            experiment_name=self._name,
+            run_config=config,
+            device=device,
+            cpus=num_workers,
+            gpus=1,
+        )
+        run = Run(
+            client=self._client,
+            name=run[NAME],
+            experiment_name=self._name,
+            config=run[CONFIG],
+            created_at=run[CREATED_AT],
+            description=run[DESCRIPTION],
+        )
+        return run
+
     @staticmethod
     def _create_finetuning_config(
         model: str,
@@ -216,7 +273,7 @@ class Experiment:
         run_name: str,
         **kwargs,
     ) -> Dict[str, Any]:
-        """Create config for a :class:`Run`.
+        """Create finetuning config for a :class:`Run`.
 
         :param model: Name of the model to be fine-tuned.
         :param train_data: Either a `DocumentArray` for training data or a
@@ -298,3 +355,46 @@ class Experiment:
         )
 
         return finetuning_config.dict()
+
+    @staticmethod
+    def _create_generation_config(
+        query_data: str,
+        corpus_data: str,
+        mining_models: Union[str, List[str]],
+        cross_encoder_model: str,
+        num_relations: int,
+        experiment_name: str,
+        run_name: str,
+        **kwargs,
+    ) -> Dict[str, Any]:
+        """Create a generation config for a :class:`Run`.
+
+        :param query_data: Name of the :class:`DocumentArray` containing the query data
+            used during training.
+        :param corpus_data: Name of the :class:`DocumentArray` containing the corpus
+            data used during training.
+        :param mining_models: The name or list of names of models to be used during
+            relation mining.
+        :param cross_encoder_model: Name of the cross encoder model.
+        :param num_relations: Number of relations to mine per query.
+        :return: Run parameters wrapped up as a config dict.
+        """
+        public = kwargs[PUBLIC]
+        data = config.RawDataConfig(
+            queries=query_data,
+            corpus=corpus_data,
+        )
+        relation_mining = config.RelationMiningConfig(
+            models=[mining_models] if isinstance(mining_models, str) else mining_models,
+            num_relations=num_relations,
+        )
+        generation_config = config.DataGenerationConfig(
+            data=data,
+            relation_mining=relation_mining,
+            cross_encoder=cross_encoder_model,
+            max_num_docs=kwargs.get(MAX_NUM_DOCS),
+            public=public,
+            experiment_name=experiment_name,
+            run_name=run_name,
+        )
+        return generation_config.dict()

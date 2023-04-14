@@ -137,8 +137,8 @@ def fit(
     loss_optimizer: Optional[str] = None,
     loss_optimizer_options: Optional[Dict[str, Any]] = None,
 ) -> Run:
-    """Create a Finetuner :class:`Run`, calling this function will submit a fine-tuning
-    job to the Jina AI Cloud.
+    """Create a Finetuner training :class:`Run`, calling this function will submit a
+    fine-tuning job to the Jina AI Cloud.
 
     :param model: The name of model to be fine-tuned. Run `finetuner.list_models()` or
         `finetuner.describe_models()` to see the available model names.
@@ -240,7 +240,7 @@ def fit(
        extremely slow and inefficient.
     """
 
-    return ft.create_run(
+    return ft.create_training_run(
         model=model,
         train_data=train_data,
         eval_data=eval_data,
@@ -275,8 +275,75 @@ def fit(
     )
 
 
-# `create_run` and `fit` do the same
+@login_required
+def generate(
+    self,
+    query_data: str,
+    corpus_data: str,
+    mining_models: Union[str, List[str]],
+    cross_encoder_model: str,
+    num_relations: int,
+    run_name: Optional[str] = None,
+    description: Optional[str] = None,
+    experiment_name: Optional[str] = None,
+    device: str = 'cuda',
+    num_workers: int = 4,
+    csv_options: Optional[CSVOptions] = None,
+    public: bool = False,
+) -> Run:
+    """Create a Finetuner generation :class:`Run`, calling this function will submit a
+    data generation job to the Jina AI Cloud.
+
+    :param query_data: Either a :class:`DocumentArray` for example queries, a name of a
+        `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
+    :param corpus_data: Either a :class:`DocumentArray` for corpus data, a name of a
+        `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
+    :param mining_models: The name or a list of names of models to be used during
+        relation mining. Run `finetuner.list_models()` or `finetuner.describe_models()`
+        to see the available model names. #TODO double check this
+    :param cross_encoder_model:  The name of the model to be used as the cross-encoder.
+        Run `finetuner.list_models()` or `finetuner.describe_models()` to see the
+        available model names. #TODO double check this
+    :param num_relations: The number of relations to mine per query.
+    :param run_name: Name of the run.
+    :param: description: Run Description.
+    :param experiment_name: Name of the experiment.
+    :param device: Whether to use the CPU, if set to `cuda`, a Nvidia GPU will be used.
+        otherwise use `cpu` to run a cpu job.
+    :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
+        workers used by the dataloader.
+    :param csv_options: A :class:`CSVOptions` object containing options used for
+        reading in training and evaluation data from a CSV file, if they are
+        provided as such.
+    :param public: A boolean value indicates if the artifact is public. It should be
+        set to `True` if you would like to share your generated data with others.
+
+    .. note::
+       Unless necessary, please stick with `device="cuda"`, `cpu` training could be
+       extremely slow and inefficient.
+    """
+    return ft.create_generation_run(
+        query_data=query_data,
+        corpus_data=corpus_data,
+        mining_models=mining_models,
+        cross_encoder_model=cross_encoder_model,
+        num_relations=num_relations,
+        run_name=run_name,
+        description=description,
+        experiment_name=experiment_name,
+        device=device,
+        num_workers=num_workers,
+        csv_options=csv_options,
+        public=public,
+    )
+
+
+# `create_run`, `create_training_run` and `fit` do the same
+create_training_run = fit
 create_run = fit
+
+# `create_generation_run` and `generate` do the same
+create_generation_run = generate
 
 
 def get_run(run_name: str, experiment_name: Optional[str] = None) -> Run:

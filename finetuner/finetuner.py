@@ -140,7 +140,7 @@ class Finetuner:
         ]
 
     @login_required
-    def create_run(
+    def create_training_run(
         self,
         model: str,
         train_data: Union[str, DocumentArray],
@@ -174,7 +174,7 @@ class Finetuner:
         loss_optimizer: Optional[str] = None,
         loss_optimizer_options: Optional[Dict[str, Any]] = None,
     ) -> Run:
-        """Create a run.
+        """Create a training run.
 
         If an experiment name is not specified, the run will be created in the default
         experiment.
@@ -192,7 +192,7 @@ class Finetuner:
                     'Make sure you have logged in using `finetuner.login(force=True)`.'
                 )
             )
-        return experiment.create_run(
+        return experiment.create_training_run(
             model=model,
             train_data=train_data,
             eval_data=eval_data,
@@ -223,6 +223,54 @@ class Finetuner:
             sampler=sampler,
             loss_optimizer=loss_optimizer,
             loss_optimizer_options=loss_optimizer_options,
+        )
+
+    @login_required
+    def create_generation_run(
+        self,
+        query_data: str,
+        corpus_data: str,
+        mining_models: Union[str, List[str]],
+        cross_encoder_model: str,
+        num_relations: int,
+        run_name: Optional[str] = None,
+        description: Optional[str] = None,
+        experiment_name: Optional[str] = None,
+        device: str = 'cuda',
+        num_workers: int = 4,
+        csv_options: Optional[CSVOptions] = None,
+        public: bool = False,
+    ) -> Run:
+        """Create a generation run.
+
+        If an experiment name is not specified, the run will be created in the default
+        experiment.
+
+        :return: A `Run` object.
+        """
+        if not experiment_name:
+            experiment = self._default_experiment
+        else:
+            experiment = self.get_experiment(name=experiment_name)
+        if not experiment:
+            raise ValueError(
+                (
+                    'Unable to start finetuning run as experiment is `None`. '
+                    'Make sure you have logged in using `finetuner.login(force=True)`.'
+                )
+            )
+        return experiment.create_generation_run(
+            query_data=query_data,
+            corpus_data=corpus_data,
+            mining_models=mining_models,
+            cross_encoder_model=cross_encoder_model,
+            num_relations=num_relations,
+            run_name=run_name,
+            description=description,
+            device=device,
+            num_workers=num_workers,
+            csv_options=csv_options,
+            public=public,
         )
 
     @login_required
