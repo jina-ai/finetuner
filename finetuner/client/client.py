@@ -23,6 +23,7 @@ from finetuner.constants import (
     POST,
     RUNS,
     STATUS,
+    TASK,
 )
 
 _finetuner_core_version = pkg_resources.get_distribution('finetuner-stubs').version
@@ -267,6 +268,7 @@ class FinetunerV1Client(_BaseClient):
         experiment_name: str,
         run_name: str,
         run_config: dict,
+        task: str,
         device: str,
         cpus: int,
         gpus: int,
@@ -291,6 +293,7 @@ class FinetunerV1Client(_BaseClient):
             json_data={
                 NAME: run_name,
                 CONFIG: run_config,
+                TASK: task,
                 FINETUNER_VERSION: _finetuner_core_version,
                 DEVICE: device,
                 CPUS: cpus,

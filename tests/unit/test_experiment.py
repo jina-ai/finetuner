@@ -107,13 +107,13 @@ def test_create_training_run(experiment):
     assert run.config == expected_config
 
 
-def test_create_generation_run(experiment):
+def test_create_synthesis_run(experiment):
     query_data = docarray.DocumentArray().empty(1)
     corpus_data = docarray.DocumentArray().empty(2)
     run_name = 'run1'
     query_data_name = f'{DA_PREFIX}-{experiment.name}-{run_name}-query'
     corpus_data_name = f'{DA_PREFIX}-{experiment.name}-{run_name}-corpus'
-    run = experiment.create_generation_run(
+    run = experiment.create_synthesis_run(
         query_data=query_data,
         corpus_data=corpus_data,
         mining_models='sentence-transformers/msmarco-distilbert-base-v3',
@@ -121,7 +121,7 @@ def test_create_generation_run(experiment):
         num_relations=3,
         run_name=run_name,
     )
-    expected_config = Experiment._create_generation_config(
+    expected_config = Experiment._create_synthesis_config(
         query_data=query_data_name,
         corpus_data=corpus_data_name,
         mining_models='sentence-transformers/msmarco-distilbert-base-v3',
@@ -214,7 +214,7 @@ def test_create_training_run_config():
     assert config == expected_config
 
 
-def test_create_generation_run_config():
+def test_create_synthesis_run_config():
     expected_config = {
         RAW_DATA_CONFIG: {
             QUERIES: 'query_data',
@@ -231,7 +231,7 @@ def test_create_generation_run_config():
         RUN_NAME: 'run name',
     }
 
-    config = Experiment._create_generation_config(
+    config = Experiment._create_synthesis_config(
         train_data='train_data',
         experiment_name='exp name',
         run_name='run name',

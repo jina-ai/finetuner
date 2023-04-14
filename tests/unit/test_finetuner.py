@@ -54,11 +54,11 @@ def test_create_training_run(finetuner_mocker, experiment_name):
     'experiment_name',
     ['exp name', None],
 )
-def test_create_generation_run(finetuner_mocker, experiment_name):
+def test_create_synthesis_run(finetuner_mocker, experiment_name):
     data = docarray.DocumentArray().empty(1)
     run_name = 'run1'
     exp_name = experiment_name or 'default'
-    run = finetuner_mocker.create_generation_run(
+    run = finetuner_mocker.create_synthesis_run(
         query_data=data,
         corpus_data=data,
         mining_models='sentence-transformers/msmarco-distilbert-base-v3',

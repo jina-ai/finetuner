@@ -16,6 +16,7 @@ from finetuner.constants import (
     EPOCHS,
     EVAL_DATA,
     FREEZE,
+    GENERATION,
     LEARNING_RATE,
     LOSS,
     LOSS_OPTIMIZER,
@@ -36,6 +37,7 @@ from finetuner.constants import (
     SAMPLER,
     SCHEDULER,
     SCHEDULER_OPTIONS,
+    TRAINING,
     VAL_SPLIT,
 )
 from finetuner.data import CSVContext, CSVOptions
@@ -197,6 +199,7 @@ class Experiment:
             run_name=run_name,
             experiment_name=self._name,
             run_config=config,
+            task=TRAINING,
             device=device,
             cpus=num_workers,
             gpus=1,
@@ -211,7 +214,7 @@ class Experiment:
         )
         return run
 
-    def create_generation_run(
+    def create_synthesis_run(
         self,
         query_data: Union[str, List[str], DocumentArray],
         corpus_data: Union[str, List[str], DocumentArray],
@@ -243,7 +246,7 @@ class Experiment:
             corpus_data=corpus_data,
         )
 
-        config = self._create_generation_config(
+        config = self._create_synthesis_config(
             query_data=query_data,
             corpus_data=corpus_data,
             mining_models=mining_models,
@@ -263,6 +266,7 @@ class Experiment:
             run_name=run_name,
             experiment_name=self._name,
             run_config=config,
+            task=GENERATION,
             device=device,
             cpus=num_workers,
             gpus=1,
@@ -369,7 +373,7 @@ class Experiment:
         return finetuning_config.dict()
 
     @staticmethod
-    def _create_generation_config(
+    def _create_synthesis_config(
         query_data: str,
         corpus_data: str,
         mining_models: Union[str, List[str]],

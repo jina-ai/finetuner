@@ -276,8 +276,7 @@ def fit(
 
 
 @login_required
-def generate(
-    self,
+def synthesize(
     query_data: Union[str, List[str], DocumentArray],
     corpus_data: Union[str, List[str], DocumentArray],
     mining_models: Union[str, List[str]],
@@ -320,13 +319,13 @@ def generate(
         reading in training and evaluation data from a CSV file, if they are
         provided as such.
     :param public: A boolean value indicates if the artifact is public. It should be
-        set to `True` if you would like to share your generated data with others.
+        set to `True` if you would like to share your synthesized data with others.
 
     .. note::
        Unless necessary, please stick with `device="cuda"`, `cpu` training could be
        extremely slow and inefficient.
     """
-    return ft.create_generation_run(
+    return ft.create_synthesis_run(
         query_data=query_data,
         corpus_data=corpus_data,
         mining_models=mining_models,
@@ -347,8 +346,8 @@ def generate(
 create_training_run = fit
 create_run = fit
 
-# `create_generation_run` and `generate` do the same
-create_generation_run = generate
+# `create_synthesis_run` and `synthesize` do the same
+create_synthesis_run = synthesize
 
 
 def get_run(run_name: str, experiment_name: Optional[str] = None) -> Run:

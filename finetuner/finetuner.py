@@ -226,13 +226,14 @@ class Finetuner:
         )
 
     @login_required
-    def create_generation_run(
+    def create_synthesis_run(
         self,
         query_data: Union[str, List[str], DocumentArray],
         corpus_data: Union[str, List[str], DocumentArray],
         mining_models: Union[str, List[str]],
         cross_encoder_model: str,
         num_relations: int,
+        max_num_docs: Optional[int] = None,
         run_name: Optional[str] = None,
         description: Optional[str] = None,
         experiment_name: Optional[str] = None,
@@ -259,12 +260,13 @@ class Finetuner:
                     'Make sure you have logged in using `finetuner.login(force=True)`.'
                 )
             )
-        return experiment.create_generation_run(
+        return experiment.create_synthesis_run(
             query_data=query_data,
             corpus_data=corpus_data,
             mining_models=mining_models,
             cross_encoder_model=cross_encoder_model,
             num_relations=num_relations,
+            max_num_docs=max_num_docs,
             run_name=run_name,
             description=description,
             device=device,
