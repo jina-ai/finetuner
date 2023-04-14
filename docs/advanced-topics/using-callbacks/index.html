@@ -38,7 +38,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -330,7 +330,7 @@
 <span id="using-callbacks"></span><h1><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-link" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg> Using Callbacks<a class="headerlink" href="#svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-link-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m7-775-3-275a-75-75-0-001-06-1-06l1-25-1-25a2-2-0-112-83-2-83l-2-5-2-5a2-2-0-01-2-83-0-75-75-0-00-1-06-1-06-3-5-3-5-0-004-95-0l2-5-2-5a3-5-3-5-0-00-4-95-4-95l-1-25-1-25zm-4-69-9-64a2-2-0-010-2-83l2-5-2-5a2-2-0-012-83-0-75-75-0-001-06-1-06-3-5-3-5-0-00-4-95-0l-2-5-2-5a3-5-3-5-0-004-95-4-95l1-25-1-25a-75-75-0-00-1-06-1-06l-1-25-1-25a2-2-0-01-2-83-0z-path-svg-using-callbacks" title="Permalink to this heading">#</a></h1>
 <p>Callbacks are a way of adding additional methods to the finetuning process. The methods are executed when certain events occur and there are several callback classes, each serving a different function by providing different methods for different events.
 A run can be assigned multiple callbacks using the optional <code class="docutils literal notranslate"><span class="pre">callbacks</span></code> parameter when it is created.</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">run = finetuner.fit(</span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span>run = finetuner.fit(
 <span class="w"> </span>   ...,
 <span class="gi">+   callbacks=[</span>
 <span class="gi">+       EvaluationCallback(</span>
@@ -338,7 +338,7 @@ A run can be assigned multiple callbacks using the optional <code class="docutil
 <span class="gi">+           index_data=&#39;finetuner/tll-test-index-da&#39;</span>
 <span class="gi">+       ),</span>
 <span class="gi">+   ]</span>
-<span class="w">)</span>
+)
 </pre></div>
 </div>
 <section id="evaluationcallback">
@@ -567,7 +567,7 @@ wandb:<span class="w">  </span>View<span class="w"> </span>run<span class="w"> <
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 29, 2023</div>
+                            Last updated on Apr 14, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

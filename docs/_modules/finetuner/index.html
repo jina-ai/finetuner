@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -729,7 +729,7 @@
         <span class="n">ONNXRuntimeInferenceEngine</span><span class="p">,</span>
         <span class="n">TorchInferenceEngine</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="kn">from</span> <span class="nn">_finetuner.runner.model</span> <span class="kn">import</span> <span class="n">RunnerModel</span>
+    <span class="kn">from</span> <span class="nn">_finetuner.runner.model</span> <span class="kn">import</span> <span class="n">EmbeddingModel</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">device</span><span class="p">:</span>
         <span class="n">device</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span>
@@ -738,12 +738,13 @@
         <span class="n">name</span><span class="p">,</span> <span class="n">select_model</span><span class="o">=</span><span class="n">select_model</span><span class="p">,</span> <span class="n">model_options</span><span class="o">=</span><span class="n">model_options</span> <span class="ow">or</span> <span class="p">{}</span>
     <span class="p">)</span>
 
-    <span class="n">model</span> <span class="o">=</span> <span class="n">RunnerModel</span><span class="p">(</span><span class="n">stub</span><span class="o">=</span><span class="n">stub</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">EmbeddingModel</span><span class="p">(</span><span class="n">stub</span><span class="o">=</span><span class="n">stub</span><span class="p">,</span> <span class="n">download_pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_onnx</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">TorchInferenceEngine</span><span class="p">(</span>
             <span class="n">artifact</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
             <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+            <span class="n">download_pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ONNXRuntimeInferenceEngine</span><span class="p">(</span>
@@ -821,6 +822,7 @@
             <span class="n">select_model</span><span class="o">=</span><span class="n">select_model</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
             <span class="n">logging_level</span><span class="o">=</span><span class="n">logging_level</span><span class="p">,</span>
+            <span class="n">download_pretrained</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">inference_engine</span></div>
 
@@ -886,7 +888,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 29, 2023</div>
+                            Last updated on Apr 14, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

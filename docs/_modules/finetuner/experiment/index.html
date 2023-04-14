@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -479,7 +479,7 @@
 
         <span class="n">kwargs</span><span class="p">[</span><span class="n">EVAL_DATA</span><span class="p">]</span> <span class="o">=</span> <span class="n">eval_data</span>
 
-        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_config_for_run</span><span class="p">(</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_finetuning_config</span><span class="p">(</span>
             <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
             <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
             <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
@@ -511,7 +511,7 @@
         <span class="k">return</span> <span class="n">run</span></div>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_create_config_for_run</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">_create_finetuning_config</span><span class="p">(</span>
         <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">train_data</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">experiment_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -589,7 +589,7 @@
         <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">LOSS_OPTIMIZER_OPTIONS</span><span class="p">):</span>
             <span class="n">hyper_parameters</span><span class="o">.</span><span class="n">loss_optimizer_options</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">LOSS_OPTIMIZER_OPTIONS</span><span class="p">)</span>
 
-        <span class="n">run_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">RunConfig</span><span class="p">(</span>
+        <span class="n">finetuning_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">FinetuningConfig</span><span class="p">(</span>
             <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
             <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span>
@@ -599,7 +599,7 @@
             <span class="n">run_name</span><span class="o">=</span><span class="n">run_name</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">run_config</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="n">finetuning_config</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span></div>
 </pre></div>
                 </article>
             </div>
@@ -614,7 +614,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 29, 2023</div>
+                            Last updated on Apr 14, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

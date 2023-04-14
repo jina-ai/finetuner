@@ -38,7 +38,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -475,14 +475,14 @@ With high learning rates,
 the features recognized by the top layers change more and adapt to new tasks more easily,
 while the bottom layers have low learning rates and more easily preserve the features learned during pre-training.</p>
 <p>We recommended to use LLRD to fine-tune Transformers, such as Bert or CLIP.</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">import finetuner</span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span>import finetuner
 
-<span class="w">run = finetuner.fit(</span>
+run = finetuner.fit(
 <span class="w"> </span>   ...,
 <span class="w"> </span>   optimizer=&#39;Adam&#39;
 <span class="gi">+   optimizer_options={&#39;layer_wise_lr_decay&#39;: 0.98},</span>
 <span class="w"> </span>   ...,
-<span class="w">)</span>
+)
 </pre></div>
 </div>
 </section>
@@ -538,7 +538,7 @@ at all, in which case the highest possible value will be calculated for you auto
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 29, 2023</div>
+                            Last updated on Apr 14, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

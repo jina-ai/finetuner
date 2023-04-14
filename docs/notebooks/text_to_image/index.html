@@ -38,7 +38,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -516,15 +516,15 @@ As was introduced in the paper:</p>
 <p>Finetuner allows you to apply WiSE-FT easily,
 all you need to do is use the <code class="docutils literal notranslate"><span class="pre">WiSEFTCallback</span></code>.
 Finetuner will trigger the callback when the fine-tuning job is finished and merge the weights between the pre-trained model and the fine-tuned model:</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">from finetuner.callback import WiSEFTCallback</span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span>from finetuner.callback import WiSEFTCallback
 
-<span class="w">run = finetuner.fit(</span>
+run = finetuner.fit(
 <span class="w"> </span>   model=&#39;clip-base-en&#39;,
 <span class="w"> </span>   ...,
 <span class="w"> </span>   loss=&#39;CLIPLoss&#39;,
 <span class="gd">-   callbacks=[],</span>
 <span class="gi">+   callbacks=[WiSEFTCallback(alpha=0.5)],</span>
-<span class="w">)</span>
+)
 </pre></div>
 </div>
 <p>The value you set for <code class="docutils literal notranslate"><span class="pre">alpha</span></code> should be greater than or equal to 0 and less than or equal to 1:</p>
@@ -586,7 +586,7 @@ Finetuner will trigger the callback when the fine-tuning job is finished and mer
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 29, 2023</div>
+                            Last updated on Apr 14, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

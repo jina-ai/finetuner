@@ -38,7 +38,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -359,14 +359,14 @@ For more information on how <code class="docutils literal notranslate"><span cla
 <p><code class="docutils literal notranslate"><span class="pre">TripletMarginLoss</span></code> uses a <code class="docutils literal notranslate"><span class="pre">ClassSampler</span></code> to construct batches with an equal number of samples of each class in the batch. However, since only one sample is needed to calculate the loss with the <code class="docutils literal notranslate"><span class="pre">ArcFaceLoss</span></code> and <code class="docutils literal notranslate"><span class="pre">CosFaceLoss</span></code> functions, there are no constraints on what each batch needs to contain.
 Therefore we can construct batches using random sampling, which is a much simpler and less time consuming method.
 By default, runs created using <code class="docutils literal notranslate"><span class="pre">ArcFaceLoss</span></code> or <code class="docutils literal notranslate"><span class="pre">CosfaceLoss</span></code> will use random sampling, however you can specify which type of sampling method you would like to use like so:</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">run = finetuner.fit(</span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span>run = finetuner.fit(
 <span class="w"> </span>   ...,
 <span class="w"> </span>   loss=&#39;ArcFaceLoss&#39;,
 <span class="gi">+   sampler=&#39;random&#39;      # use random sampling</span>
 <span class="gi">+   sampler=&#39;class&#39;       # use class sampling</span>
 <span class="gi">+   sampler=&#39;auto&#39;        # infer sampling method based on the loss function (default)</span>
 
-<span class="w">)</span>
+)
 </pre></div>
 </div>
 <p>In cases where the chosen loss function is a form of contrastive loss, such as the default <code class="docutils literal notranslate"><span class="pre">TripletMarginLoss</span></code>, or the <code class="docutils literal notranslate"><span class="pre">ClipLoss</span></code> function (the loss function used for <code class="docutils literal notranslate"><span class="pre">text-to-image</span></code> tasks), a class sampler is needed to properly function.
@@ -377,12 +377,12 @@ In these cases, this <code class="docutils literal notranslate"><span class="pre
 <p>In order to keep track and refine our estimation of the class centers across batches, these SphereFace loss functions require an additional optimizer during training.
 By default, the type of optimizer used will be the same as the one used for the model itself, but you can also choose a different optimizer for your loss function using the <code class="docutils literal notranslate"><span class="pre">loss_optimizer</span></code> parameter.
 The list of available optimizers are discussed in the <a class="reference internal" href="../../walkthrough/run-job/"><span class="doc std std-doc">run job</span></a> section.</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">run = finetuner.fit(</span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span>run = finetuner.fit(
 <span class="w"> </span>   ...,
 <span class="w"> </span>   loss=&#39;ArcFaceLoss&#39;,
 <span class="gi">+   loss_optimizer=&#39;Adam&#39;,</span>
 <span class="gi">+   loss_optimizer_options={&#39;weight_decay&#39;: 0.01}</span>
-<span class="w">)</span>
+)
 </pre></div>
 </div>
 </section>
@@ -417,14 +417,14 @@ At <code class="docutils literal notranslate"><span class="pre">p</span> <span c
 As <code class="docutils literal notranslate"><span class="pre">p</span></code> increases, more weight is given to larger values, making it act more like max pooling.
 <code class="docutils literal notranslate"><span class="pre">eps</span></code> is used to clamp values to be slightly above 0, and altering this won’t result in much change to the performance.
 By default, <code class="docutils literal notranslate"><span class="pre">p=3</span></code> and <code class="docutils literal notranslate"><span class="pre">eps=1e-6</span></code>. You can specify the pooler and adjust these parameters in a dictionary provided to the <code class="docutils literal notranslate"><span class="pre">model_options</span></code> parameter:</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">run = finetuner.fit(</span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span>run = finetuner.fit(
 <span class="w"> </span>   ...,
 <span class="w"> </span>   model_options = {
 <span class="w"> </span>       ...
 <span class="gi">+       &#39;pooler&#39;: &#39;GeM&#39;,</span>
 <span class="gi">+       &#39;pooler_options&#39;: {&#39;p&#39;: 2.4, &#39;eps&#39;: 1e-5}</span>
 <span class="w"> </span>   }
-<span class="w">)</span>
+)
 </pre></div>
 </div>
 </section>
@@ -466,7 +466,7 @@ By default, <code class="docutils literal notranslate"><span class="pre">p=3</sp
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 29, 2023</div>
+                            Last updated on Apr 14, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

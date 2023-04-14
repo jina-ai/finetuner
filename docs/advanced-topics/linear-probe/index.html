@@ -38,7 +38,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -363,13 +363,13 @@ Tailor performs the micro-operations on the model architecture required for fine
 </ul>
 <p><img alt="tailor" src="../../_images/tailor.svg" /></p>
 <p>For example, just using the arguments <code class="docutils literal notranslate"><span class="pre">freeze=True</span></code> and <code class="docutils literal notranslate"><span class="pre">output_dim=X</span></code> with the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function, as shown below:</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">run = finetuner.fit(</span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span>run = finetuner.fit(
 <span class="w"> </span>   model=&#39;resnet50&#39;,
 <span class="w"> </span>   ...,
 <span class="gi">+   freeze=True,</span>
 <span class="gi">+   output_dim=1024,  # default output_dim of ResNet50 is 2048.</span>
 <span class="w"> </span>   ...,
-<span class="w">)</span>
+)
 </pre></div>
 </div>
 <p>Finetuner will:</p>
@@ -425,7 +425,7 @@ tuning a Linear Projection Head could be a good solution.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 29, 2023</div>
+                            Last updated on Apr 14, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

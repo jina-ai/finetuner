@@ -38,7 +38,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -376,12 +376,12 @@ While without this miner, all possible triples with an anchor, a positive, and a
 By default, the miner only selects triples with hard negatives where the distance between the positive and the negative example is inside a margin of <code class="docutils literal notranslate"><span class="pre">0.2</span></code>.
 To pass additional parameters to configure the miner, use the <code class="docutils literal notranslate"><span class="pre">miner_options</span></code> parameter of the fit function.
 For example, add the following to use only hard-negative triplets and set the margin to <code class="docutils literal notranslate"><span class="pre">0.3</span></code>:</p>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="w">run = finetuner.fit(</span>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span>run = finetuner.fit(
 <span class="w"> </span>   ...,
 <span class="w"> </span>   loss=&#39;TripleMarginLoss&#39;,
 <span class="gi">+   miner=&#39;TripletMarginMiner&#39;,</span>
 <span class="gi">+   miner_options={&#39;margin&#39;: 0.3, &#39;type_of_triplets&#39;: &#39;hard&#39;}</span>
-<span class="w">)</span>
+)
 </pre></div>
 </div>
 <p>Possible choices for <code class="docutils literal notranslate"><span class="pre">type_of_triplets</span></code> are:</p>
@@ -437,7 +437,7 @@ Consider using semi-hard/hard triplets for model tuning.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Mar 29, 2023</div>
+                            Last updated on Apr 14, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
