@@ -2,7 +2,7 @@ from dataclasses import fields
 from typing import Any, Dict, List, Optional, TextIO, Union
 
 from _finetuner.runner.stubs import config
-from docarray import DocumentArray
+from docarray import Document, DocumentArray
 
 from finetuner.callback import EvaluationCallback
 from finetuner.client import FinetunerV1Client
@@ -38,7 +38,7 @@ from finetuner.constants import (
     SCHEDULER_OPTIONS,
     VAL_SPLIT,
 )
-from finetuner.data import CSVContext
+from finetuner.data import CSVContext, CSVOptions
 from finetuner.hubble import push_generation_data, push_training_data
 from finetuner.names import get_random_name
 from finetuner.run import Run
@@ -138,7 +138,7 @@ class Experiment:
         train_data: Union[str, TextIO, DocumentArray],
         run_name: Optional[str] = None,
         eval_data: Optional[Union[str, TextIO, DocumentArray]] = None,
-        csv_options: Optional[Dict[str, Any]] = None,
+        csv_options: Optional[CSVOptions] = None,
         **kwargs,
     ) -> Run:
         """Create a :class:`Run` inside the :class:`Experiment` with the
@@ -213,23 +213,37 @@ class Experiment:
 
     def create_generation_run(
         self,
-        query_data: str,
-        corpus_data: str,
+        query_data: Union[str, List[str], DocumentArray],
+        corpus_data: Union[str, List[str], DocumentArray],
         mining_models: Union[str, List[str]],
         cross_encoder_model: str,
         num_relations: int,
         run_name: Optional[str] = None,
+        csv_options: Optional[CSVOptions] = None,
         **kwargs,
     ) -> Run:
         if not run_name:
             run_name = get_random_name()
 
+        csv_context = CSVContext(None, options=csv_options)
+        query_data = (
+            csv_context.build_dataset(data=query_data)
+            if isinstance(query_data, str)
+            else DocumentArray([Document(text=data) for data in query_data])
+        )
+        corpus_data = (
+            csv_context.build_dataset(data=corpus_data)
+            if isinstance(query_data, str)
+            else DocumentArray([Document(text=data) for data in corpus_data])
+        )
         query_data, corpus_data = push_generation_data(
             experiment_name=self._name,
             run_name=run_name,
             query_data=query_data,
             corpus_data=corpus_data,
         )
+        print(query_data)
+        print(corpus_data)
 
         config = self._create_generation_config(
             query_data=query_data,
@@ -379,7 +393,7 @@ class Experiment:
         :param num_relations: Number of relations to mine per query.
         :return: Run parameters wrapped up as a config dict.
         """
-        public = kwargs[PUBLIC]
+        public = kwargs[PUBLIC] if kwargs.get(PUBLIC) else False
         data = config.RawDataConfig(
             queries=query_data,
             corpus=corpus_data,

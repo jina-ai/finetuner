@@ -278,11 +278,12 @@ def fit(
 @login_required
 def generate(
     self,
-    query_data: str,
-    corpus_data: str,
+    query_data: Union[str, List[str], DocumentArray],
+    corpus_data: Union[str, List[str], DocumentArray],
     mining_models: Union[str, List[str]],
     cross_encoder_model: str,
     num_relations: int,
+    max_num_docs: Optional[int] = None,
     run_name: Optional[str] = None,
     description: Optional[str] = None,
     experiment_name: Optional[str] = None,
@@ -294,10 +295,12 @@ def generate(
     """Create a Finetuner generation :class:`Run`, calling this function will submit a
     data generation job to the Jina AI Cloud.
 
-    :param query_data: Either a :class:`DocumentArray` for example queries, a name of a
-        `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
+    :param query_data: Either a :class:`DocumentArray` for example queries. can be the
+        name of a `DocumentArray` that is pushed on Jina AI Cloud, the dataset itself as
+        a list of strings or a path to a CSV file.
     :param corpus_data: Either a :class:`DocumentArray` for corpus data, a name of a
-        `DocumentArray` that is pushed on Jina AI Cloud or a path to a CSV file.
+        `DocumentArray` that is pushed on Jina AI Cloud, the dataset itself as a
+        list of strings or a path to a CSV file.
     :param mining_models: The name or a list of names of models to be used during
         relation mining. Run `finetuner.list_models()` or `finetuner.describe_models()`
         to see the available model names. #TODO double check this
@@ -305,6 +308,7 @@ def generate(
         Run `finetuner.list_models()` or `finetuner.describe_models()` to see the
         available model names. #TODO double check this
     :param num_relations: The number of relations to mine per query.
+    :param max_num_docs: The maximum number of documents to consider.
     :param run_name: Name of the run.
     :param: description: Run Description.
     :param experiment_name: Name of the experiment.
@@ -328,6 +332,7 @@ def generate(
         mining_models=mining_models,
         cross_encoder_model=cross_encoder_model,
         num_relations=num_relations,
+        max_num_docs=max_num_docs,
         run_name=run_name,
         description=description,
         experiment_name=experiment_name,

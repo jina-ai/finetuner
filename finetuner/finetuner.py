@@ -228,8 +228,8 @@ class Finetuner:
     @login_required
     def create_generation_run(
         self,
-        query_data: str,
-        corpus_data: str,
+        query_data: Union[str, List[str], DocumentArray],
+        corpus_data: Union[str, List[str], DocumentArray],
         mining_models: Union[str, List[str]],
         cross_encoder_model: str,
         num_relations: int,

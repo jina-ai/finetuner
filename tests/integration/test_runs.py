@@ -25,7 +25,7 @@ def test_runs(finetuner_mocker, get_feature_data):
     first_run, second_run = [create_random_name(prefix='run') for _ in range(2)]
 
     # create a first run
-    finetuner_mocker.create_run(
+    finetuner_mocker.create_training_run(
         model='mlp',
         model_options={'input_size': 128, 'hidden_sizes': [32]},
         train_data=train_data,
@@ -45,7 +45,7 @@ def test_runs(finetuner_mocker, get_feature_data):
     assert run.name == first_run
 
     # create another run
-    finetuner_mocker.create_run(
+    finetuner_mocker.create_training_run(
         model='mlp',
         model_options={'input_size': 128, 'hidden_sizes': [32]},
         train_data=train_data,
@@ -91,7 +91,7 @@ def test_create_run_and_save_model(
     train_da, test_da = get_feature_data
     experiment_name = create_random_name()
     finetuner_mocker.create_experiment(name=experiment_name)
-    run = finetuner_mocker.create_run(
+    run = finetuner_mocker.create_training_run(
         model='mlp',
         model_options={'input_size': 128, 'hidden_sizes': [32]},
         train_data=train_da,

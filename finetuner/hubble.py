@@ -9,7 +9,7 @@ from finetuner.constants import ARTIFACTS_DIR, DA_PREFIX
 def push_docarray(
     data: Union[None, str, DocumentArray], name: str, ids2names: Dict[int, str]
 ) -> Optional[str]:
-    """Upload a DocumentArray to hubble nad retur"""
+    """Upload a DocumentArray to hubble and return its name"""
     if isinstance(data, DocumentArray):
         _id = id(data)  # get the reference id
         if _id in ids2names:
