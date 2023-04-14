@@ -222,7 +222,7 @@ class PairwiseScoreParser(_CSVParser):
                 yield Document(chunks=[doc1, doc2], tags={DEFAULT_TAG_SCORE_KEY: col3})
 
 
-class DataGenerationParser(_CSVParser):
+class DataSynthesisParser(_CSVParser):
     """
     CSV has either one column or one row, each item in the CSV represents a single
     document so the structure of the CSV file is not important.
@@ -264,7 +264,7 @@ class CSVContext:
         self._model = model
         self._options = options or CSVOptions()
         if not model:
-            self._task = 'generation'
+            self._task = 'synthesis'
         elif model == 'mlp':
             self._task = 'image-to-image'
         else:
@@ -276,8 +276,8 @@ class CSVContext:
             self._task = model_stub.task
 
     def _get_csv_parser(self, data: Union[str, TextIO]):
-        if self._task == 'generation':
-            return DataGenerationParser(
+        if self._task == 'synthesis':
+            return DataSynthesisParser(
                 file=data, task=self._task, options=self._options
             )
         elif self._options.is_labeled:

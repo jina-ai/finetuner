@@ -64,7 +64,7 @@ def push_training_data(
     )
 
 
-def push_generation_data(
+def push_synthesis_data(
     experiment_name: str,
     run_name: str,
     query_data: Union[str, DocumentArray],
@@ -72,7 +72,7 @@ def push_generation_data(
 ) -> Tuple[Optional[str], ...]:
     """Upload data to Hubble and returns their names.
 
-    Uploads all data needed for data generation - query data and corpus data.
+    Uploads all data needed for data synthesis - query data and corpus data.
 
     Data is given either as a `DocumentArray` or
     a name of the `DocumentArray` that is already pushed to Hubble.

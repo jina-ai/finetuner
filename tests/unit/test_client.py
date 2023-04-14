@@ -1,20 +1,18 @@
 from finetuner.constants import (
     API_VERSION,
     CONFIG,
-    CPUS,
     DELETE,
     EXAMPLES,
     EXPERIMENTS,
-    GENERATION,
+    GENERATION_TASK,
     GET,
-    GPUS,
     LOGS,
     METRICS,
     NAME,
     POST,
     RUNS,
     STATUS,
-    TRAINING,
+    TRAINING_TASK,
 )
 from finetuner.experiment import Experiment
 
@@ -83,10 +81,8 @@ def test_create_training_run(client_mocker, experiment_name='exp', run_name='run
         experiment_name=experiment_name,
         run_name=run_name,
         run_config=config,
-        task=TRAINING,
+        task=TRAINING_TASK,
         device='cpu',
-        cpus=1,
-        gpus=1,
     )
     assert sent_request['url'] == client_mocker._construct_url(
         client_mocker._base_url, API_VERSION, EXPERIMENTS, experiment_name, RUNS
@@ -94,16 +90,12 @@ def test_create_training_run(client_mocker, experiment_name='exp', run_name='run
     assert sent_request['method'] == POST
     assert sent_request['json_data'][NAME] == run_name
     assert sent_request['json_data'][CONFIG] == config
-    assert sent_request['json_data'][CPUS] == 1
-    assert sent_request['json_data'][GPUS] == 1
 
 
 def test_create_synthesis_run(client_mocker, experiment_name='exp', run_name='run'):
     config = Experiment._create_synthesis_config(
         query_data='query_data_name',
         corpus_data='corpus_data_name',
-        mining_models='sentence-transformers/msmarco-distilbert-base-v3',
-        cross_encoder_model='cross-encoder/mmarco-mMiniLMv2-L12-H384-v1',
         num_relations=3,
         experiment_name=experiment_name,
         run_name=run_name,
@@ -112,10 +104,8 @@ def test_create_synthesis_run(client_mocker, experiment_name='exp', run_name='ru
         experiment_name=experiment_name,
         run_name=run_name,
         run_config=config,
-        task=GENERATION,
+        task=GENERATION_TASK,
         device='cpu',
-        cpus=1,
-        gpus=1,
     )
     assert sent_request['url'] == client_mocker._construct_url(
         client_mocker._base_url, API_VERSION, EXPERIMENTS, experiment_name, RUNS
@@ -123,8 +113,6 @@ def test_create_synthesis_run(client_mocker, experiment_name='exp', run_name='ru
     assert sent_request['method'] == POST
     assert sent_request['json_data'][NAME] == run_name
     assert sent_request['json_data'][CONFIG] == config
-    assert sent_request['json_data'][CPUS] == 1
-    assert sent_request['json_data'][GPUS] == 1
 
 
 def test_get_run(client_mocker, experiment_name='exp', run_name='run1'):

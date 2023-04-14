@@ -11,6 +11,8 @@ from finetuner.constants import (
     CROSS_ENCODER,
     DA_PREFIX,
     DATA,
+    DEFAULT_CROSS_ENCODER,
+    DEFAULT_RELATION_MINER,
     EPOCHS,
     EVAL_DATA,
     EVALUATE,
@@ -116,16 +118,12 @@ def test_create_synthesis_run(experiment):
     run = experiment.create_synthesis_run(
         query_data=query_data,
         corpus_data=corpus_data,
-        mining_models='sentence-transformers/msmarco-distilbert-base-v3',
-        cross_encoder_model='cross-encoder/mmarco-mMiniLMv2-L12-H384-v1',
         num_relations=3,
         run_name=run_name,
     )
     expected_config = Experiment._create_synthesis_config(
         query_data=query_data_name,
         corpus_data=corpus_data_name,
-        mining_models='sentence-transformers/msmarco-distilbert-base-v3',
-        cross_encoder_model='cross-encoder/mmarco-mMiniLMv2-L12-H384-v1',
         num_relations=3,
         experiment_name=experiment.name,
         run_name=run_name,
@@ -221,10 +219,10 @@ def test_create_synthesis_run_config():
             CORPUS: 'corpus_data',
         },
         RELATION_MINING: {
-            MODELS: ['sentence-transformers/msmarco-distilbert-base-v3'],
+            MODELS: [DEFAULT_RELATION_MINER],
             NUM_RELATIONS: 3,
         },
-        CROSS_ENCODER: 'cross-encoder/mmarco-mMiniLMv2-L12-H384-v1',
+        CROSS_ENCODER: DEFAULT_CROSS_ENCODER,
         MAX_NUM_DOCS: None,
         EXPERIMENT_NAME: 'exp name',
         PUBLIC: False,
@@ -237,8 +235,6 @@ def test_create_synthesis_run_config():
         run_name='run name',
         query_data='query_data',
         corpus_data='corpus_data',
-        mining_models='sentence-transformers/msmarco-distilbert-base-v3',
-        cross_encoder_model='cross-encoder/mmarco-mMiniLMv2-L12-H384-v1',
         num_relations=3,
     )
 

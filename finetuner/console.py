@@ -3,13 +3,12 @@ from typing import Any, Dict, List, Optional
 from rich.console import Console
 from rich.table import Table
 
-from finetuner.constants import EMBEDDING
 from finetuner.model import list_model_classes
 
 console = Console()
 
 
-def print_model_table(model, task: Optional[str] = None, model_type: str = EMBEDDING):
+def print_model_table(model, task: Optional[str] = None):
     """Prints a table of model descriptions.
 
     :param model: Module with model definitions
@@ -25,7 +24,7 @@ def print_model_table(model, task: Optional[str] = None, model_type: str = EMBED
     for column in header:
         table.add_column(column, justify='right', style='cyan', no_wrap=False)
 
-    for _, _model_class in list_model_classes(model_type=model_type).items():
+    for _, _model_class in list_model_classes().items():
         if _model_class.display_name not in model_display_names:
             row = model.get_row(_model_class)
             if task and row[1] != task:

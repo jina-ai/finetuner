@@ -61,8 +61,6 @@ def test_create_synthesis_run(finetuner_mocker, experiment_name):
     run = finetuner_mocker.create_synthesis_run(
         query_data=data,
         corpus_data=data,
-        mining_models='sentence-transformers/msmarco-distilbert-base-v3',
-        cross_encoder_model='cross-encoder/mmarco-mMiniLMv2-L12-H384-v1',
         num_relations=3,
         run_name=run_name,
         experiment_name=experiment_name,

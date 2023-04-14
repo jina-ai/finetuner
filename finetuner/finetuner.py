@@ -230,9 +230,7 @@ class Finetuner:
         self,
         query_data: Union[str, List[str], DocumentArray],
         corpus_data: Union[str, List[str], DocumentArray],
-        mining_models: Union[str, List[str]],
-        cross_encoder_model: str,
-        num_relations: int,
+        num_relations: int = 3,
         max_num_docs: Optional[int] = None,
         run_name: Optional[str] = None,
         description: Optional[str] = None,
@@ -242,7 +240,7 @@ class Finetuner:
         csv_options: Optional[CSVOptions] = None,
         public: bool = False,
     ) -> Run:
-        """Create a generation run.
+        """Create a synthesis run.
 
         If an experiment name is not specified, the run will be created in the default
         experiment.
@@ -263,8 +261,6 @@ class Finetuner:
         return experiment.create_synthesis_run(
             query_data=query_data,
             corpus_data=corpus_data,
-            mining_models=mining_models,
-            cross_encoder_model=cross_encoder_model,
             num_relations=num_relations,
             max_num_docs=max_num_docs,
             run_name=run_name,

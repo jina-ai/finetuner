@@ -11,12 +11,14 @@ from finetuner.constants import (
     CALLBACKS,
     CONFIG,
     CREATED_AT,
+    DEFAULT_CROSS_ENCODER,
+    DEFAULT_RELATION_MINER,
     DESCRIPTION,
     DEVICE,
     EPOCHS,
     EVAL_DATA,
     FREEZE,
-    GENERATION,
+    GENERATION_TASK,
     LEARNING_RATE,
     LOSS,
     LOSS_OPTIMIZER,
@@ -37,11 +39,11 @@ from finetuner.constants import (
     SAMPLER,
     SCHEDULER,
     SCHEDULER_OPTIONS,
-    TRAINING,
+    TRAINING_TASK,
     VAL_SPLIT,
 )
 from finetuner.data import CSVContext, CSVOptions
-from finetuner.hubble import push_generation_data, push_training_data
+from finetuner.hubble import push_synthesis_data, push_training_data
 from finetuner.names import get_random_name
 from finetuner.run import Run
 
@@ -199,7 +201,7 @@ class Experiment:
             run_name=run_name,
             experiment_name=self._name,
             run_config=config,
-            task=TRAINING,
+            task=TRAINING_TASK,
             device=device,
             cpus=num_workers,
             gpus=1,
@@ -218,9 +220,7 @@ class Experiment:
         self,
         query_data: Union[str, List[str], DocumentArray],
         corpus_data: Union[str, List[str], DocumentArray],
-        mining_models: Union[str, List[str]],
-        cross_encoder_model: str,
-        num_relations: int,
+        num_relations: int = 3,
         run_name: Optional[str] = None,
         csv_options: Optional[CSVOptions] = None,
         **kwargs,
@@ -239,7 +239,7 @@ class Experiment:
             if isinstance(query_data, str)
             else DocumentArray([Document(text=data) for data in corpus_data])
         )
-        query_data, corpus_data = push_generation_data(
+        query_data, corpus_data = push_synthesis_data(
             experiment_name=self._name,
             run_name=run_name,
             query_data=query_data,
@@ -249,8 +249,6 @@ class Experiment:
         config = self._create_synthesis_config(
             query_data=query_data,
             corpus_data=corpus_data,
-            mining_models=mining_models,
-            cross_encoder_model=cross_encoder_model,
             num_relations=num_relations,
             experiment_name=self._name,
             run_name=run_name,
@@ -266,7 +264,7 @@ class Experiment:
             run_name=run_name,
             experiment_name=self._name,
             run_config=config,
-            task=GENERATION,
+            task=GENERATION_TASK,
             device=device,
             cpus=num_workers,
             gpus=1,
@@ -376,22 +374,17 @@ class Experiment:
     def _create_synthesis_config(
         query_data: str,
         corpus_data: str,
-        mining_models: Union[str, List[str]],
-        cross_encoder_model: str,
         num_relations: int,
         experiment_name: str,
         run_name: str,
         **kwargs,
     ) -> Dict[str, Any]:
-        """Create a generation config for a :class:`Run`.
+        """Create a synthesis config for a :class:`Run`.
 
         :param query_data: Name of the :class:`DocumentArray` containing the query data
             used during training.
         :param corpus_data: Name of the :class:`DocumentArray` containing the corpus
             data used during training.
-        :param mining_models: The name or list of names of models to be used during
-            relation mining.
-        :param cross_encoder_model: Name of the cross encoder model.
         :param num_relations: Number of relations to mine per query.
         :return: Run parameters wrapped up as a config dict.
         """
@@ -401,13 +394,13 @@ class Experiment:
             corpus=corpus_data,
         )
         relation_mining = config.RelationMiningConfig(
-            models=[mining_models] if isinstance(mining_models, str) else mining_models,
+            models=[DEFAULT_RELATION_MINER],
             num_relations=num_relations,
         )
         generation_config = config.DataGenerationConfig(
             data=data,
             relation_mining=relation_mining,
-            cross_encoder=cross_encoder_model,
+            cross_encoder=DEFAULT_CROSS_ENCODER,
             max_num_docs=kwargs.get(MAX_NUM_DOCS),
             public=public,
             experiment_name=experiment_name,

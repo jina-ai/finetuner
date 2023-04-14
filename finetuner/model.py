@@ -1,12 +1,6 @@
 from _finetuner.runner.stubs import model
 from _finetuner.runner.stubs.model import *  # noqa F401
-from _finetuner.runner.stubs.model import (
-    _CrossEncoderStub,
-    _EmbeddingModelStub,
-    _TextTransformerStub,
-)
-
-from finetuner.constants import CROSS_ENCODING, EMBEDDING, RELATION_MINING
+from _finetuner.runner.stubs.model import _EmbeddingModelStub
 
 
 def get_header() -> Tuple[str, ...]:
@@ -25,15 +19,10 @@ def get_row(model_stub) -> Tuple[str, ...]:
     )
 
 
-def list_model_classes(model_type: str = EMBEDDING) -> Dict[str, ModelStubType]:
+def list_model_classes() -> Dict[str, ModelStubType]:
     rv = {}
     members = inspect.getmembers(model, inspect.isclass)
-    if model_type == EMBEDDING:
-        parent_class = _EmbeddingModelStub
-    elif model_type == CROSS_ENCODING:
-        parent_class = _CrossEncoderStub
-    elif model_type == RELATION_MINING:
-        parent_class = _TextTransformerStub
+    parent_class = _EmbeddingModelStub
     for name, stub in members:
         if (
             name != 'MLPStub'
