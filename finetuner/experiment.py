@@ -242,8 +242,6 @@ class Experiment:
             query_data=query_data,
             corpus_data=corpus_data,
         )
-        print(query_data)
-        print(corpus_data)
 
         config = self._create_generation_config(
             query_data=query_data,
