@@ -280,7 +280,6 @@ def synthesize(
     query_data: Union[str, List[str], DocumentArray],
     corpus_data: Union[str, List[str], DocumentArray],
     num_relations: int = 3,
-    max_num_docs: Optional[int] = None,
     run_name: Optional[str] = None,
     description: Optional[str] = None,
     experiment_name: Optional[str] = None,
@@ -299,7 +298,6 @@ def synthesize(
         `DocumentArray` that is pushed on Jina AI Cloud, the dataset itself as a
         list of strings or a path to a CSV file.
     :param num_relations: The number of relations to mine per query.
-    :param max_num_docs: The maximum number of documents to consider.
     :param run_name: Name of the run.
     :param: description: Run Description.
     :param experiment_name: Name of the experiment.
@@ -321,7 +319,6 @@ def synthesize(
         query_data=query_data,
         corpus_data=corpus_data,
         num_relations=num_relations,
-        max_num_docs=max_num_docs,
         run_name=run_name,
         description=description,
         experiment_name=experiment_name,

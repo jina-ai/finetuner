@@ -23,7 +23,6 @@ from finetuner.constants import (
     LOSS,
     LOSS_OPTIMIZER,
     LOSS_OPTIMIZER_OPTIONS,
-    MAX_NUM_DOCS,
     MINER,
     MINER_OPTIONS,
     MODEL_ARTIFACT,
@@ -235,6 +234,9 @@ class Experiment:
         csv_options: Optional[CSVOptions] = None,
         **kwargs,
     ) -> Run:
+        """Create a :class:`Run` inside the :class:`Experiment` with the
+        task of 'generation' (data synthesis).
+        """
         if not run_name:
             run_name = get_random_name()
 
@@ -412,7 +414,6 @@ class Experiment:
             data=data,
             relation_mining=relation_mining,
             cross_encoder=DEFAULT_CROSS_ENCODER,
-            max_num_docs=kwargs.get(MAX_NUM_DOCS),
             public=public,
             experiment_name=experiment_name,
             run_name=run_name,

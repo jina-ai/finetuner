@@ -132,16 +132,16 @@ def test_create_training_run_and_save_model(
     assert experiment_name not in [experiment.name for experiment in experiments]
 
 
-def test_create_synthesis_run_and_save_data(finetuner_mocker):
+def test_create_synthesis_run_and_save_data(
+    finetuner_mocker, synthesis_query_data, synthesis_corpus_data
+):
     import time
 
-    query_data = 'finetuner/xmarket_queries_da_s'
-    corpus_data = 'finetuner/xmarket_corpus_da_s'
     experiment_name = create_random_name()
     finetuner_mocker.create_experiment(name=experiment_name)
     run = finetuner_mocker.create_synthesis_run(
-        query_data=query_data,
-        corpus_data=corpus_data,
+        query_data=synthesis_query_data,
+        corpus_data=synthesis_corpus_data,
         num_relations=3,
         experiment_name=experiment_name,
     )

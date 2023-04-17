@@ -7,7 +7,9 @@ from finetuner.constants import ARTIFACTS_DIR, DA_PREFIX
 
 
 def push_docarray(
-    data: Union[None, str, DocumentArray], name: str, ids2names: Dict[int, str]
+    data: Union[None, str, DocumentArray],
+    name: str,
+    ids2names: Optional[Dict[int, str]] = None,
 ) -> Optional[str]:
     """Upload a DocumentArray to Jina AI Cloud and return its name"""
     if isinstance(data, DocumentArray):
