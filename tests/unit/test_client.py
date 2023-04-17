@@ -83,6 +83,8 @@ def test_create_training_run(client_mocker, experiment_name='exp', run_name='run
         run_config=config,
         task=TRAINING_TASK,
         device='cpu',
+        cpus=1,
+        gpus=1,
     )
     assert sent_request['url'] == client_mocker._construct_url(
         client_mocker._base_url, API_VERSION, EXPERIMENTS, experiment_name, RUNS
@@ -106,6 +108,8 @@ def test_create_synthesis_run(client_mocker, experiment_name='exp', run_name='ru
         run_config=config,
         task=GENERATION_TASK,
         device='cpu',
+        cpus=1,
+        gpus=1,
     )
     assert sent_request['url'] == client_mocker._construct_url(
         client_mocker._base_url, API_VERSION, EXPERIMENTS, experiment_name, RUNS
