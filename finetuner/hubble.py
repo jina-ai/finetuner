@@ -9,12 +9,12 @@ from finetuner.constants import ARTIFACTS_DIR, DA_PREFIX
 def push_docarray(
     data: Union[None, str, DocumentArray], name: str, ids2names: Dict[int, str]
 ) -> Optional[str]:
-    """Upload a DocumentArray to hubble and return its name"""
+    """Upload a DocumentArray to Jina AI Cloud and return its name"""
     if isinstance(data, DocumentArray):
         _id = id(data)  # get the reference id
         if _id in ids2names:
             return ids2names[_id]
-        print(f'Pushing a DocumentArray to Hubble under the name {name} ...')
+        print(f'Pushing a DocumentArray to Jina AI Cloud under the name {name} ...')
         data.push(name=name, show_progress=True, public=False)
         ids2names[id(data)] = name
         return name
@@ -29,13 +29,13 @@ def push_training_data(
     query_data: Union[None, str, DocumentArray] = None,
     index_data: Union[None, str, DocumentArray] = None,
 ) -> Tuple[Optional[str], ...]:
-    """Upload data to Hubble and returns their names.
+    """Upload data to Jina AI Cloud and returns their names.
 
     Uploads all data needed for fine-tuning - training data,
     evaluation data and query/index data for `EvaluationCallback`.
 
     Data is given either as a `DocumentArray` or
-    a name of the `DocumentArray` that is already pushed to Hubble.
+    a name of the `DocumentArray` that is already pushed to Jina AI Cloud.
 
     Checks not to upload same dataset twice.
 
@@ -70,12 +70,12 @@ def push_synthesis_data(
     query_data: Union[str, DocumentArray],
     corpus_data: Union[str, DocumentArray],
 ) -> Tuple[Optional[str], ...]:
-    """Upload data to Hubble and returns their names.
+    """Upload data to Jina AI Cloud and returns their names.
 
     Uploads all data needed for data synthesis - query data and corpus data.
 
     Data is given either as a `DocumentArray` or
-    a name of the `DocumentArray` that is already pushed to Hubble.
+    a name of the `DocumentArray` that is already pushed to Jina AI Cloud.
 
     Checks not to upload same dataset twice.
 
@@ -99,10 +99,10 @@ def push_synthesis_data(
 def download_artifact(
     client, artifact_id: str, run_name: str, directory: str = ARTIFACTS_DIR
 ) -> str:
-    """Download artifact from Hubble by its ID.
+    """Download artifact from Jina AI Cloud by its ID.
 
     :param client: Hubble client instance.
-    :param artifact_id: The artifact id stored in the Hubble.
+    :param artifact_id: The artifact id stored in the Jina AI Cloud.
     :param run_name: The name of the run as artifact name to store locally.
     :param directory: Directory where the artifact will be stored.
     :returns: A string that indicates the download path.

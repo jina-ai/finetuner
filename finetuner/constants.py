@@ -83,7 +83,7 @@ NUM_ITEMS_PER_CLASS = 'num_items_per_class'
 VAL_SPLIT = 'val_split'
 TASK = 'task'
 TRAINING_TASK = 'training'
-GENERATION_TASK = 'generation'
+SYNTHESIS_TASK = 'generation'
 # Synthesis job
 RAW_DATA_CONFIG = 'data'
 RELATION_MINING = 'relation_mining'

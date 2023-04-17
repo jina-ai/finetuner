@@ -19,7 +19,6 @@ from finetuner.constants import (
     EPOCHS,
     EVAL_DATA,
     FREEZE,
-    GENERATION_TASK,
     LEARNING_RATE,
     LOSS,
     LOSS_OPTIMIZER,
@@ -40,6 +39,7 @@ from finetuner.constants import (
     SAMPLER,
     SCHEDULER,
     SCHEDULER_OPTIONS,
+    SYNTHESIS_TASK,
     TASK,
     TRAIN_DATA,
     TRAINING_TASK,
@@ -272,7 +272,7 @@ class Experiment:
             run_name=run_name,
             experiment_name=self._name,
             run_config=config,
-            task=GENERATION_TASK,
+            task=SYNTHESIS_TASK,
             device=device,
             cpus=num_workers,
             gpus=1,
@@ -284,7 +284,7 @@ class Experiment:
             config=run[CONFIG],
             created_at=run[CREATED_AT],
             description=run[DESCRIPTION],
-            task=GENERATION_TASK,
+            task=SYNTHESIS_TASK,
         )
         return run
 

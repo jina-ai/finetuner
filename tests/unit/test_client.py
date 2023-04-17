@@ -4,7 +4,6 @@ from finetuner.constants import (
     DELETE,
     EXAMPLES,
     EXPERIMENTS,
-    GENERATION_TASK,
     GET,
     LOGS,
     METRICS,
@@ -12,6 +11,7 @@ from finetuner.constants import (
     POST,
     RUNS,
     STATUS,
+    SYNTHESIS_TASK,
     TRAINING_TASK,
 )
 from finetuner.experiment import Experiment
@@ -106,7 +106,7 @@ def test_create_synthesis_run(client_mocker, experiment_name='exp', run_name='ru
         experiment_name=experiment_name,
         run_name=run_name,
         run_config=config,
-        task=GENERATION_TASK,
+        task=SYNTHESIS_TASK,
         device='cpu',
         cpus=1,
         gpus=1,
