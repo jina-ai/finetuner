@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import pytest
+from docarray import DocumentArray
 from tests.helper import create_random_name
 
 import finetuner
@@ -83,7 +84,7 @@ def test_runs(finetuner_mocker, get_feature_data):
 
 
 @pytest.mark.parametrize('use_onnx', [True, False])
-def test_create_run_and_save_model(
+def test_create_training_run_and_save_model(
     finetuner_mocker, get_feature_data, tmp_path, use_onnx
 ):
     import time
@@ -124,6 +125,39 @@ def test_create_run_and_save_model(
     finetuner.encode(model=model, data=test_da)
     assert test_da.embeddings is not None
     assert isinstance(test_da.embeddings, np.ndarray)
+
+    # delete created experiments (and runs)
+    finetuner_mocker.delete_experiment(experiment_name)
+    experiments = finetuner_mocker.list_experiments()
+    assert experiment_name not in [experiment.name for experiment in experiments]
+
+
+def test_create_synthesis_run_and_save_data(finetuner_mocker):
+    import time
+
+    query_data = 'finetuner/xmarket_queries_da_s'
+    corpus_data = 'finetuner/xmarket_corpus_da_s'
+    experiment_name = create_random_name()
+    finetuner_mocker.create_experiment(name=experiment_name)
+    run = finetuner_mocker.create_synthesis_run(
+        query_data=query_data,
+        corpus_data=corpus_data,
+        num_relations=3,
+        experiment_name=experiment_name,
+    )
+    status = run.status()[STATUS]
+    while status not in [FAILED, FINISHED]:
+        time.sleep(10)
+        status = run.status()[STATUS]
+
+    assert status == FINISHED
+
+    train_data = run.train_data
+    assert isinstance(train_data, str)
+    train_data = DocumentArray.pull(train_data)
+
+    for doc in train_data['@c']:
+        assert doc.content is not None
 
     # delete created experiments (and runs)
     finetuner_mocker.delete_experiment(experiment_name)

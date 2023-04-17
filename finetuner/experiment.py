@@ -1,3 +1,4 @@
+import json
 from dataclasses import fields
 from typing import Any, Dict, List, Optional, TextIO, Union
 
@@ -39,6 +40,8 @@ from finetuner.constants import (
     SAMPLER,
     SCHEDULER,
     SCHEDULER_OPTIONS,
+    TASK,
+    TRAIN_DATA,
     TRAINING_TASK,
     VAL_SPLIT,
 )
@@ -91,11 +94,13 @@ class Experiment:
         run = self._client.get_run(experiment_name=self._name, run_name=name)
         run = Run(
             name=run[NAME],
-            config=run[CONFIG],
+            config=json.loads(run[CONFIG]),
             created_at=run[CREATED_AT],
             description=run[DESCRIPTION],
             experiment_name=self._name,
             client=self._client,
+            task=run.get(TASK, TRAINING_TASK),
+            train_data=run.get(TRAIN_DATA, None),
         )
         return run
 
@@ -121,6 +126,8 @@ class Experiment:
                 description=run[DESCRIPTION],
                 experiment_name=self._name,
                 client=self._client,
+                task=run.get(TASK, TRAINING_TASK),
+                train_data=run.get(TRAIN_DATA, None),
             )
             for run in runs
         ]
@@ -213,6 +220,7 @@ class Experiment:
             config=run[CONFIG],
             created_at=run[CREATED_AT],
             description=run[DESCRIPTION],
+            task=TRAINING_TASK,
         )
         return run
 
@@ -276,6 +284,7 @@ class Experiment:
             config=run[CONFIG],
             created_at=run[CREATED_AT],
             description=run[DESCRIPTION],
+            task=GENERATION_TASK,
         )
         return run
 
