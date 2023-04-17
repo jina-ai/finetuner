@@ -94,7 +94,9 @@ class Experiment:
         run = self._client.get_run(experiment_name=self._name, run_name=name)
         run = Run(
             name=run[NAME],
-            config=json.loads(run[CONFIG]),
+            config=json.loads(run[CONFIG])
+            if isinstance(run[CONFIG], str)
+            else run[CONFIG],
             created_at=run[CREATED_AT],
             description=run[DESCRIPTION],
             experiment_name=self._name,
