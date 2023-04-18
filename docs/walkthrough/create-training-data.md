@@ -134,7 +134,7 @@ The function requires a number of points, which we recommend setting to 2048.
 
 ````{tab} text-to-text search
 ```python
-from finetunerrr import Document, DocumentArray
+from finetunerr import Document, DocumentArray
 
 train_da = DocumentArray([
     Document(
@@ -208,7 +208,7 @@ train_da = DocumentArray([
 ````
 ````{tab} text-to-image search on CLIP
 ```python
-from finetunerr import Document, DocumentArray
+from finetuner import Document, DocumentArray
 
 train_da = DocumentArray([
     Document(
@@ -255,7 +255,11 @@ You can store a {class}`~docarray.document.DocumentArray` on the Jina AI Cloud u
 {meth}`docarray.document.Document.push` function:
 
 ```python
+import finetuner
 from finetuner import Document, DocumentArray
+
+finetuner.login()
+
 train_da = DocumentArray([
     Document(
         content='pencil skirt slim fit available for sell',
@@ -269,10 +273,18 @@ train_da = DocumentArray([
 ])
 train_da.push('my_train_da', public=True)
 ```
+```{admonition} Pulling Jina AI Cloud
+:class: hint
+In order to push or pull data from the Jina AI Cloud, you need to first log in.
+You can do this by calling `finetuner.login()`. For more information, see [here][https://finetuner.jina.ai/walkthrough/login]
+```
 Setting `public` to `True` means that other users will be able to retrive your {class}`~docarray.document.DocumentArray`.  
 To retrieve a {class}`~docarray.document.DocumentArray` from the Jina AI Cloud, you can use the {meth}`~docarray.document.DocumentArray.pull`:
 ```python
+import finetuner
 from finetuner import DocumentArray
+
+finetuner.login()
 
 my_data = DocumentArray.pull('my_train_da')
 ```
@@ -281,7 +293,27 @@ their {class}`~docarray.document.DocumentArray` with `public` set to `True`. To 
 data pushed by another user, you need to prepend their user id, followed by a `/` character, to the name of the
 {class}`~docarray.document.DocumentArray`. For example, the code block below shows how you can pull the training data for the [Totally Looks Like Dataset](https://sites.google.com/view/totally-looks-like-dataset):
 ```python
+import finetuner
 from finetuner import DocumentArray
 
+finetuner.login()
 my_data = DocumentArray.pull('finetuner/tll-train-da')
 ```
+
+### Viewing your data
+Both {class}`~docarray.document.DocumentArray`s and {class}`~docarray.document.Document`s have a `summary` function, which provides details about their contents.  
+![DocumentArray.summary](../imgs/DocumentArray_summary.png)  
+
+When using `summary` on a {class}`~docarray.document.DocumentArray` its length, as well as any attributes that
+the {class}`~docarray.document.Document` contains are displayed.  
+
+![Document.summary](../imgs/Document_summary.png)  
+
+When using `summary` on a {class}`~docarray.document.Document` its each of it attributes as well as their values are displayed.  
+
+### Displaying Images and Meshes
+In the case that your {class}`~docarray.document.DocumentArray` consists of images, you can view these images using {meth}`docarray.document.DocumentArray.plot_image_sprites()`:  
+![DocumentArray.plot_image_sprites](../imgs/DocumentArray_plot_image_sprites.png)  
+Here, the `fig_size` argument is used to resize the grid that the images in the {class}`~docarray.document.DocumentArray` are displayed on.
+To view the image in a single {class}`~docarray.document.Document`, you can use the {meth}`docarray.document.DocumentArray.display` method:  
+![Document.display](../imgs/Document_display.png)  

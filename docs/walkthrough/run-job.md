@@ -12,7 +12,7 @@ To start fine-tuning, you can call:
 
 ```python
 import finetuner
-from finetunerr import DocumentArray
+from finetuner import DocumentArray
 
 train_data = 'path/to/some/data.csv'
 

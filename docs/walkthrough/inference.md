@@ -1,7 +1,7 @@
 # Inference
 
 Once fine-tuning is finished, it's time to actually use the model.
-You can use the fine-tuned models directly to encode [DocumentArray](https://docarray.jina.ai/) objects or to set up an encoding service.
+You can use the fine-tuned models directly to encode DocumentArray objects or to set up an encoding service.
 When encoding, data can also be provided as a regular list.
 
 ```{admonition} Use FinetunerExecutor inside a Jina Flow
@@ -13,7 +13,7 @@ If you would like to use fine-tuned model inside a Jina Flow as an Executor, che
 
 (integrate-with-list)=
 ## Encoding a List
-Data that is stored in a regular list can be embedded in the same way you would embed a [DocumentArray](https://docarray.jina.ai/).
+Data that is stored in a regular list can be embedded in the same way you would embed a DocumentArray.
 Since the modality of your input data can be inferred from the model being used, there is no need to provide any additional information besides the content you want to encode.
 When providing data as a list, the `finetuner.encode` method will return a `np.ndarray` of embeddings, instead of a `docarray.DocumentArray`:
 
@@ -102,11 +102,11 @@ For encoding a list of images, you can provide URIs, e.g.,
 (integrate-with-docarray)=
 ## Encoding a DocumentArray
 
-To embed a [DocumentArray](https://docarray.jina.ai/) with a fine-tuned model, you can get the model of your Run via the {func}`~finetuner.get_model` function and embed it via the {func}`finetuner.encode` function:
+To embed a DocumentArray with a fine-tuned model, you can get the model of your Run via the {func}`~finetuner.get_model` function and embed it via the {func}`finetuner.encode` function:
 
 ````{tab} Artifact id and token
 ```python
-from finetunerr import DocumentArray, Document
+from finetuner import DocumentArray, Document
 import finetuner
 
 finetuner.login()
