@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Install finetuner from source code instead of using a pip package [#719](https://github.com/jina-ai/finetuner/pull/719).
+
 ### Fixed
 
 - Downgrade docarray version [#719](https://github.com/jina-ai/finetuner/pull/719).
