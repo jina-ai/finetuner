@@ -58,7 +58,7 @@ The code below loads the data and prints a summary of the training datasets:
 
 ```python id="uTDreSwfYGOR"
 import finetuner
-from docarray import DocumentArray, Document
+from finetuner import DocumentArray, Document
 
 finetuner.login(force=True)
 ```

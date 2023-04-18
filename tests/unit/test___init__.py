@@ -2,9 +2,9 @@ import numpy as np
 import pytest
 from _finetuner.excepts import SelectModelRequired
 from _finetuner.models.inference import ONNXRuntimeInferenceEngine, TorchInferenceEngine
-from docarray import Document, DocumentArray
 
 import finetuner
+from finetuner import Document, DocumentArray
 
 
 @pytest.mark.parametrize(

@@ -53,7 +53,7 @@ When working with documents where images are stored locally, please call `doc.lo
 
 ```python id="vfPZBQVxxEHm"
 import finetuner
-from docarray import DocumentArray, Document
+from finetuner import DocumentArray, Document
 
 finetuner.login(force=True)
 ```

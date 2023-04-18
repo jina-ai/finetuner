@@ -55,7 +55,7 @@ We will use the `DE-Fashion-Image-Text-Multimodal-train` dataset, which we have 
 
 ```python id="4420a4ac-531a-4db3-af75-ebb58d8f828b"
 import finetuner
-from docarray import DocumentArray, Document
+from finetunerr import DocumentArray, Document
 
 finetuner.login(force=True)
 ```

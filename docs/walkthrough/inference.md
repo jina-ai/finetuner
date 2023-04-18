@@ -106,7 +106,7 @@ To embed a [DocumentArray](https://docarray.jina.ai/) with a fine-tuned model, y
 
 ````{tab} Artifact id and token
 ```python
-from docarray import DocumentArray, Document
+from finetunerr import DocumentArray, Document
 import finetuner
 
 finetuner.login()
@@ -132,7 +132,7 @@ for doc in da:
 ````
 ````{tab} Locally saved artifact
 ```python
-from docarray import DocumentArray, Document
+from finetuner import DocumentArray, Document
 import finetuner
 
 model = finetuner.get_model('/path/to/YOUR-MODEL.zip')
@@ -147,7 +147,7 @@ for doc in da:
 ````
 ````{tab} (Special case) CLIP inference
 ```python
-from docarray import DocumentArray, Document
+from finetuner import DocumentArray, Document
 import finetuner
 
 finetuner.login()
