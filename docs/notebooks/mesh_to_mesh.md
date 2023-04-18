@@ -25,7 +25,7 @@ Finding similar 3D Meshes can become very time-consuming. To support this task, 
 
 ```python colab={"background_save": true} id="vDVkw65kkQcn"
 !pip install 'finetuner[full]'
-!pip install 'docarray[full]'
+!pip install 'docarray[full]==0.21.0'
 ```
 
 <!-- #region id="q7Bb9o5ZHSZ3" -->
@@ -45,7 +45,7 @@ ModelNet40 consists of 9843 meshes provided for training and 2468 meshes for tes
 
 For this tutorial, we already prepared the data and uploaded it. Specifically, the training data is uploaded as `modelnet40-train`. For evaluating the model, we split the test set of the original dataset into 300 meshes, which serve as queries (`modelnet40-queries`), and 2168 meshes which serve as the mesh collection, which is searched in (`modelnet40-index`).
 
-Each 3D mesh in the dataset is represented by a [DocArray](https://github.com/docarray/docarray) Document object. It contains the URI (local file path) of the original file and a tensor that contains a point cloud with 2048 3D points sampled from the mesh.
+Each 3D mesh in the dataset is represented by a [DocArray](https://finetuner.jina.ai/walkthrough/create-training-data/#preparing-a-documentarray) Document object. It contains the URI (local file path) of the original file and a tensor that contains a point cloud with 2048 3D points sampled from the mesh.
 
 ```{admonition} Push data to the cloud
 We don't require you to push data to the Jina AI Cloud by yourself. Instead of a name, you can provide a `DocumentArray` or a path to a CSV file.
@@ -72,7 +72,7 @@ train_data.summary()
 ```
 
 <!-- #region id="r4cP95RzLybw" -->
-Now, we want to take a look at the point clouds of some of the meshes. Therefore, you can use the [`display`](https://docarray.jina.ai/api/docarray.document/#docarray.document.Document.display) function:
+Now, we want to take a look at the point clouds of some of the meshes. Therefore, you can use the `display` function:
 <!-- #endregion -->
 
 ```python id="kCv455NPMD1O"
@@ -227,7 +227,7 @@ query_data.match(index_data, limit=10, metric='cosine')
 <!-- #region id="CgZHPInNWWHn" -->
 ## Before and After
 
-After the inference, you can investigate the results with the [`display`](https://docarray.jina.ai/api/docarray.document/#docarray.document.Document.display) function, as shown in the code block below:
+After the inference, you can investigate the results with the `display` function, as shown in the code block below:
 <!-- #endregion -->
 
 ```python id="p37Ryip2dKoO"
