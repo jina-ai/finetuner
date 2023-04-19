@@ -3,7 +3,7 @@
 
 Finetuner provides several widely used backbone models,
 including `resnet`, `efficientnet`, `clip`, `bert` and `pointnet`.
-Each of these models have their own variants and serve a specific task.
+Each of these models have their own variants and are designed to produce embeddings for a specific modality.
 
 Finetuner will convert these backbone models to embedding models by removing
 the *head* or applying *pooling*,
@@ -20,7 +20,10 @@ We support two different variations of the `bert` model for text-to-text encodin
   It is designed for matching web search queries to short text passages and 
   is a suitable backbone for similar text-to-text search tasks.
 
-These two models have the same `output_dim` meaning that the shape of the embeddings produced are the same.
+These transformer-based models are loaded from the huggingface
+[transformers](https://github.com/huggingface/transformers) library.
+It is also worth mentioning that these two models have the same `output_dim` meaning that the shape of
+the embeddings produced are the same.
 This means that, while the performance of these models may differ depending on the domain, they can be used interchangably.
 
 ```bash
@@ -51,6 +54,8 @@ both of which having `base` and `large` variations.
 - EfficientNets are more light-weight than ResNet models, making them suitable for image-to-image search tasks
   with low training and inference times.
 
+ResNet/EfficientNet models are loaded from the [torchvision](https://pytorch.org/vision/stable/index.html) library.
+
 ```bash
                                      Finetuner backbones: image-to-image                                     
 ┏━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -79,6 +84,9 @@ CLIP models are used to text-to-image search tasks, and we support two different
 - `clip-base-multi` is a multilingual model that has been trained on the [laion5b](https://laion.ai/blog/laion-5b/)
   dataset, which contains training from 100+ different langauges. 
   You should use this model when encoding non-English text.
+
+Similarly to the models used for text-to-text tasks, these models are transformer-based, and are loaded from the huggingface
+[transformers](https://github.com/huggingface/transformers) library.
 
 ```bash
                                           Finetuner backbones: text-to-image                                           
