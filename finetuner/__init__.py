@@ -12,7 +12,7 @@ from finetuner.constants import (
     HOST,
     HUBBLE_REGISTRY,
 )
-from finetuner.data import CSVOptions
+from finetuner.data import CSVOptions, SynthesisModels
 from finetuner.run import Run
 from hubble import login_required
 
@@ -279,6 +279,7 @@ def fit(
 def synthesize(
     query_data: Union[str, List[str], DocumentArray],
     corpus_data: Union[str, List[str], DocumentArray],
+    models: SynthesisModels,
     num_relations: int = 3,
     run_name: Optional[str] = None,
     description: Optional[str] = None,
@@ -297,6 +298,10 @@ def synthesize(
     :param corpus_data: Either a :class:`DocumentArray` for corpus data, a name of a
         `DocumentArray` that is pushed on Jina AI Cloud, the dataset itself as a
         list of strings or a path to a CSV file.
+    :param models: A :class:`SynthesisModels` object containing the names of
+        the models used for relation mining and cross encoding.
+        You can pass `finetuner.data.DATA_SYNTHESIS_EN` for the recommended models for
+        synthesis based on english data.
     :param num_relations: The number of relations to mine per query.
     :param run_name: Name of the run.
     :param: description: Run Description.
@@ -318,6 +323,7 @@ def synthesize(
     return ft.create_synthesis_run(
         query_data=query_data,
         corpus_data=corpus_data,
+        models=models,
         num_relations=num_relations,
         run_name=run_name,
         description=description,

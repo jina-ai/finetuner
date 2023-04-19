@@ -68,7 +68,7 @@ class Run:
         Synthesis job, if it is a training job, a ValueError is thrown.
         """
         if self.task != SYNTHESIS_TASK:
-            raise ValueError(f'{self.task} run do not produce data.')
+            raise ValueError(f'{self.task} run does not produce data.')
         else:
             self._check_run_status_finished()
             if self._train_data:

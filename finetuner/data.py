@@ -252,13 +252,13 @@ class CSVContext:
     A CSV context switch class with conditions to parse CSVs into DocumentArray.
 
     :param model: The model being used, to get model stub and associated task.
-    :param options: an instance of :class`CSVOptions`.
+    :param options: An instance of :class`CSVOptions`.
+    :param task: Determines wether
     """
 
     def __init__(
         self,
         model: Optional[str] = None,
-        task: Optional[str] = None,
         options: Optional[CSVOptions] = None,
     ):
         self._model = model
@@ -432,3 +432,21 @@ def create_document(
         doc = Document(content=column)
 
     return doc
+
+
+@dataclass
+class SynthesisModels:
+    """Class specifying the models to be used in a data synthesis job.
+    :param: relation_miner: The name of the model or list of models to use for
+        relation mining.
+    :param cross_encoder: The name of the model to use as the cross encoder
+    """
+
+    relation_miner: Union[str, List[str]]
+    cross_encoder: str
+
+
+DATA_SYNTHESIS_EN = SynthesisModels(
+    relation_miner='sentence-transformers/msmarco-distilbert-base-v3',
+    cross_encoder='cross-encoder/mmarco-mMiniLMv2-L12-H384-v1',
+)

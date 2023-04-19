@@ -12,8 +12,6 @@ from finetuner.constants import (
     CALLBACKS,
     CONFIG,
     CREATED_AT,
-    DEFAULT_CROSS_ENCODER,
-    DEFAULT_RELATION_MINER,
     DESCRIPTION,
     DEVICE,
     EPOCHS,
@@ -44,7 +42,7 @@ from finetuner.constants import (
     TRAINING_TASK,
     VAL_SPLIT,
 )
-from finetuner.data import CSVContext, CSVOptions
+from finetuner.data import CSVContext, CSVOptions, SynthesisModels
 from finetuner.hubble import push_synthesis_data, push_training_data
 from finetuner.names import get_random_name
 from finetuner.run import Run
@@ -229,6 +227,7 @@ class Experiment:
         self,
         query_data: Union[str, List[str], DocumentArray],
         corpus_data: Union[str, List[str], DocumentArray],
+        models: SynthesisModels,
         num_relations: int = 3,
         run_name: Optional[str] = None,
         csv_options: Optional[CSVOptions] = None,
@@ -261,6 +260,7 @@ class Experiment:
         config = self._create_synthesis_config(
             query_data=query_data,
             corpus_data=corpus_data,
+            models=models,
             num_relations=num_relations,
             experiment_name=self._name,
             run_name=run_name,
@@ -387,6 +387,7 @@ class Experiment:
     def _create_synthesis_config(
         query_data: str,
         corpus_data: str,
+        models: SynthesisModels,
         num_relations: int,
         experiment_name: str,
         run_name: str,
@@ -398,6 +399,8 @@ class Experiment:
             used during training.
         :param corpus_data: Name of the :class:`DocumentArray` containing the corpus
             data used during training.
+        :param models: A :class:`SynthesisModels` object containing the names of
+            the models used for relation mining and cross encoding.
         :param num_relations: Number of relations to mine per query.
         :return: Run parameters wrapped up as a config dict.
         """
@@ -407,13 +410,15 @@ class Experiment:
             corpus=corpus_data,
         )
         relation_mining = config.RelationMiningConfig(
-            models=[DEFAULT_RELATION_MINER],
+            models=models.relation_miner
+            if isinstance(models.relation_miner, list)
+            else [models.relation_miner],
             num_relations=num_relations,
         )
         generation_config = config.DataGenerationConfig(
             data=data,
             relation_mining=relation_mining,
-            cross_encoder=DEFAULT_CROSS_ENCODER,
+            cross_encoder=models.cross_encoder,
             public=public,
             experiment_name=experiment_name,
             run_name=run_name,

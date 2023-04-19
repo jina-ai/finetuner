@@ -14,6 +14,7 @@ from finetuner.constants import (
     SYNTHESIS_TASK,
     TRAINING_TASK,
 )
+from finetuner.data import DATA_SYNTHESIS_EN
 from finetuner.experiment import Experiment
 
 
@@ -98,6 +99,7 @@ def test_create_synthesis_run(client_mocker, experiment_name='exp', run_name='ru
     config = Experiment._create_synthesis_config(
         query_data='query_data_name',
         corpus_data='corpus_data_name',
+        models=DATA_SYNTHESIS_EN,
         num_relations=3,
         experiment_name=experiment_name,
         run_name=run_name,

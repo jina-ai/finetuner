@@ -11,8 +11,6 @@ from finetuner.constants import (
     CROSS_ENCODER,
     DA_PREFIX,
     DATA,
-    DEFAULT_CROSS_ENCODER,
-    DEFAULT_RELATION_MINER,
     EPOCHS,
     EVAL_DATA,
     EVALUATE,
@@ -53,6 +51,7 @@ from finetuner.constants import (
     TRAIN_DATA,
     VAL_SPLIT,
 )
+from finetuner.data import DATA_SYNTHESIS_EN
 from finetuner.experiment import Experiment
 
 
@@ -118,12 +117,14 @@ def test_create_synthesis_run(experiment):
     run = experiment.create_synthesis_run(
         query_data=query_data,
         corpus_data=corpus_data,
+        models=DATA_SYNTHESIS_EN,
         num_relations=3,
         run_name=run_name,
     )
     expected_config = Experiment._create_synthesis_config(
         query_data=query_data_name,
         corpus_data=corpus_data_name,
+        models=DATA_SYNTHESIS_EN,
         num_relations=3,
         experiment_name=experiment.name,
         run_name=run_name,
@@ -219,10 +220,10 @@ def test_create_synthesis_run_config():
             CORPUS: 'corpus_data',
         },
         RELATION_MINING: {
-            MODELS: [DEFAULT_RELATION_MINER],
+            MODELS: [DATA_SYNTHESIS_EN.relation_miner],
             NUM_RELATIONS: 3,
         },
-        CROSS_ENCODER: DEFAULT_CROSS_ENCODER,
+        CROSS_ENCODER: DATA_SYNTHESIS_EN.cross_encoder,
         MAX_NUM_DOCS: None,
         EXPERIMENT_NAME: 'exp name',
         PUBLIC: False,
@@ -232,6 +233,7 @@ def test_create_synthesis_run_config():
     config = Experiment._create_synthesis_config(
         train_data='train_data',
         experiment_name='exp name',
+        models=DATA_SYNTHESIS_EN,
         run_name='run name',
         query_data='query_data',
         corpus_data='corpus_data',

@@ -5,7 +5,7 @@ from docarray import DocumentArray
 import hubble
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
-from finetuner.data import CSVOptions
+from finetuner.data import CSVOptions, SynthesisModels
 from finetuner.excepts import FinetunerServerError
 from finetuner.experiment import Experiment
 from finetuner.run import Run
@@ -230,6 +230,7 @@ class Finetuner:
         self,
         query_data: Union[str, List[str], DocumentArray],
         corpus_data: Union[str, List[str], DocumentArray],
+        models: SynthesisModels,
         num_relations: int = 3,
         run_name: Optional[str] = None,
         description: Optional[str] = None,
@@ -260,6 +261,7 @@ class Finetuner:
         return experiment.create_synthesis_run(
             query_data=query_data,
             corpus_data=corpus_data,
+            models=models,
             num_relations=num_relations,
             run_name=run_name,
             description=description,
