@@ -22,6 +22,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add documentation on using `Document` and `DocumentArray` from docarray v1. ([#720](https://github.com/jina-ai/finetuner/pull/720))
 
+## [0.7.6] - 2023-04-18
+
+### Added
+
+### Removed
+
+### Changed
+
+- Install finetuner from source code instead of using a pip package [#719](https://github.com/jina-ai/finetuner/pull/719).
+
+### Fixed
+
+- Downgrade docarray version [#719](https://github.com/jina-ai/finetuner/pull/719).
+
+### Docs
+
+
 ## [0.7.5] - 2023-04-14
 
 ### Added
