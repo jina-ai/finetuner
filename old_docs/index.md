@@ -21,36 +21,30 @@
 ```
 
 ```{toctree}
-:caption: Introduction
+:caption: Get Started
 :hidden:
 
-intro/objectives
-intro/technical-details
-intro/installation	
-⮚  Getting Started <notebooks/getting_started>
+get-started/how-it-works
+get-started/installation
+walkthrough/index
 ```
 
 ```{toctree}
-:caption: Concepts
+:caption: Advanced Topics
 :hidden:
 
-concepts/login
-concepts/data-preparation
-concepts/fit-function
-concepts/models
-concepts/loss-functions
-concepts/optimizers
-concepts/hyperparameters
-concepts/callbacks
-concepts/manage-runs
-concepts/inference
-concepts/evaluation
+advanced-topics/budget
+advanced-topics/negative-mining
+advanced-topics/using-callbacks
+advanced-topics/linear-probe
+advanced-topics/advanced-losses-optimizers-and-poolers
+advanced-topics/finetuner-executor
 ```
 
 
 
 ```{toctree}
-:caption: Tutorials
+:caption: Finetuning Tasks
 :hidden:
 
 notebooks/text_to_text
@@ -59,14 +53,6 @@ notebooks/image_to_image_arcface
 notebooks/text_to_image
 notebooks/multilingual_text_to_image
 notebooks/mesh_to_mesh
-```
-
-```{toctree}
-:caption: More
-:hidden:
-
-more/budget
-more/faq
 ```
 
 ```{toctree}
