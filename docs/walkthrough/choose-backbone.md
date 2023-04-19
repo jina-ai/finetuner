@@ -3,7 +3,7 @@
 
 Finetuner provides several widely used backbone models,
 including `resnet`, `efficientnet`, `clip`, `bert` and `pointnet`.
-Each of these models have their own variants and are designed to produce embeddings for a specific modality.
+Each model has its own variants and is designed to produce embeddings for a specific modality.
 
 Finetuner will convert these backbone models to embedding models by removing
 the *head* or applying *pooling*,
@@ -24,7 +24,7 @@ These transformer-based models are loaded from the huggingface
 [transformers](https://github.com/huggingface/transformers) library.
 It is also worth mentioning that these two models have the same `output_dim` meaning that the shape of
 the embeddings produced are the same.
-This means that, while the performance of these models may differ depending on the domain, they can be used interchangably.
+This means that while the performance of these models may differ depending on the domain, they can be used interchangeably.
 
 ```bash
                                            Finetuner backbones: text-to-text                                           
@@ -37,7 +37,7 @@ This means that, while the performance of these models may differ depending on t
 └───────────────┴──────────────┴────────────┴──────────────┴──────────────────────────────────────────────────────────┘
 ```
 
-To get a list of supported models during run-time, you can call:
+To get a list of supported models at run-time, you can call:
 
 ```python
 import finetuner
@@ -68,7 +68,7 @@ ResNet/EfficientNet models are loaded from the [torchvision](https://pytorch.org
 └────────────────────┴────────────────┴────────────┴──────────────┴─────────────────────────────────────────┘
 ```
 
-To get a list of supported models during run-time, you can call:
+To get a list of supported models at run-time, you can call:
 
 ```python
 import finetuner
@@ -78,14 +78,14 @@ finetuner.describe_models(task='image-to-image')
 
 ## Text-to-Image Models
 
-CLIP models are used to text-to-image search tasks, and we support two different types.
-- `clip-base-en` and `clip-large-en` are both CLIP models trained only on English text,
+CLIP models are used for text-to-image search tasks. We support two different types of CLIP models:
+- English-only models `clip-base-en` and `clip-large-en`,
   with `clip-large-en` requiring more computational resources than `clip-base-en`.
-- `clip-base-multi` is a multilingual model that has been trained on the [laion5b](https://laion.ai/blog/laion-5b/)
-  dataset, which contains training from 100+ different langauges. 
+- A multilingual model `clip-base-multi`, trained on the [laion5b](https://laion.ai/blog/laion-5b/)
+  dataset, which contains data from 100+ different langauges. 
   You should use this model when encoding non-English text.
 
-Similarly to the models used for text-to-text tasks, these models are transformer-based, and are loaded from the huggingface
+Like the models used for text-to-text tasks, these models are transformer-based, and are loaded from the huggingface
 [transformers](https://github.com/huggingface/transformers) library.
 
 ```bash
