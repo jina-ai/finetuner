@@ -73,7 +73,7 @@ def list_models() -> List[str]:
 def list_model_options() -> Dict[str, List[Dict[str, Any]]]:
     """List available options per model."""
     return {
-        name: [
+        _model_class.display_name: [
             {
                 'name': parameter.name,
                 'type': parameter.annotation,
@@ -87,7 +87,7 @@ def list_model_options() -> Dict[str, List[Dict[str, Any]]]:
             ).parameters.values()
             if parameter.name != 'self'
         ]
-        for name, _model_class in list_model_classes().items()
+        for _, _model_class in list_model_classes().items()
     }
 
 
