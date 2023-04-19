@@ -300,6 +300,25 @@ finetuner.login()
 my_data = DocumentArray.pull('finetuner/tll-train-da')
 ```
 
+### Converting Local Files to Blobs
+In the case that your training data contains paths to local files, (for images or meshes), you will need to load these files
+into memory before they can be for finetuning.
+Images can be loaded into memory using the {meth}`docarray.document.Document.load_uri_to_blob` function:
+```python
+for doc in train_data:
+    doc.convert_uri_to_blob()
+```
+Meshes can be loaded into memory using the {meth}`docarray.document.Document.load_uri_to_point_cloud_tensor` function:
+```python
+for doc in train_data:
+    doc.load_uri_to_point_cloud_tensor()
+```
+```{important} 
+Please note, that local files can not be processed by the Finetuner if you do not load them into memory before the
+{class}`~docarray.document.DocumentArray` is pushed.
+```
+
+
 ### Viewing your data
 Both {class}`~docarray.document.DocumentArray`s and {class}`~docarray.document.Document`s have a `summary` function, which provides details about their contents.  
 ![DocumentArray.summary](../imgs/DocumentArray_summary.png)  
@@ -314,6 +333,8 @@ When using `summary` on a {class}`~docarray.document.Document` its each of it at
 ### Displaying Images and Meshes
 In the case that your {class}`~docarray.document.DocumentArray` consists of images, you can view these images using {meth}`docarray.document.DocumentArray.plot_image_sprites()`:  
 ![DocumentArray.plot_image_sprites](../imgs/DocumentArray_plot_image_sprites.png)  
-Here, the `fig_size` argument is used to resize the grid that the images in the {class}`~docarray.document.DocumentArray` are displayed on.
-To view the image in a single {class}`~docarray.document.Document`, you can use the {meth}`docarray.document.DocumentArray.display` method:  
-![Document.display](../imgs/Document_display.png)  
+Here, the `fig_size` argument is used to resize the grid that the images in the {class}`~docarray.document.DocumentArray`
+are displayed on.
+To view the image in a single {class}`~docarray.document.Document`, you can use the
+{meth}`docarray.document.DocumentArray.display` method:  
+![Document.display](../imgs/Document_display.png)
