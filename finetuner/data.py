@@ -8,12 +8,12 @@ from io import StringIO
 from typing import TYPE_CHECKING, List, Optional, TextIO, Tuple, Union
 
 from _finetuner.runner.stubs.model import get_stub
+from docarray.document.generators import _subsample
+from docarray.document.mixins.helper import _is_uri
 from genericpath import isfile
 
 from finetuner import Document, DocumentArray
 from finetuner.constants import DEFAULT_TAG_KEY, DEFAULT_TAG_SCORE_KEY
-from finetuner.document.generators import _subsample
-from finetuner.document.mixins.helper import _is_uri
 
 if TYPE_CHECKING:
     from _finetuner.models.inference import InferenceEngine
