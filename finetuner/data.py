@@ -253,7 +253,6 @@ class CSVContext:
 
     :param model: The model being used, to get model stub and associated task.
     :param options: An instance of :class`CSVOptions`.
-    :param task: Determines wether
     """
 
     def __init__(
