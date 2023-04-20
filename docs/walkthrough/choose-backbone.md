@@ -3,7 +3,7 @@
 
 Finetuner provides several widely used backbone models,
 including `resnet`, `efficientnet`, `clip`, `bert` and `pointnet`.
-Each model has its own variants and is designed to produce embeddings for a specific modality.
+Each model has its own variants and are designed to produce embeddings for a specific modality.
 
 Finetuner will convert these backbone models to embedding models by removing
 the *head* or applying *pooling*,
@@ -15,7 +15,7 @@ search tasks.
 
 We support two different variations of the `bert` model for text-to-text encoding tasks.
 - `bert-base-en` is a raw pre-trained model, and should be used if you want to train something from 
-  scratch or train a model on a task where a notion of similarity is involved which is very different
+  scratch or train a model on a task where a notion of similarity you want to finetune on is very different
   from what's usually considered as similar.
 - `sbert-base-en` has been fine-tuned once by [sentence-transformers](https://www.sbert.net/) on the 
   [MS MARCO](https://microsoft.github.io/msmarco/) dataset on top of BERT.
@@ -24,7 +24,7 @@ We support two different variations of the `bert` model for text-to-text encodin
 
 These transformer-based models are loaded from the huggingface
 [transformers](https://github.com/huggingface/transformers) library.
-It is also worth mentioning that these two models have the same `output_dim` meaning that the shape of
+It is also worth mentioning that these two models have the same `output_dim`, meaning that the shape of
 the embeddings produced are the same.
 This means that while the performance of these models may differ depending on the domain, they can be used interchangeably.
 
@@ -144,7 +144,7 @@ You can see a list of additional options that you can provide for each model usi
 
 While each model has their own set of options, the `sbert_base_en` model, as shown in the example above, has the four most common options.
 ### `collate_options` and `preprocess_options`
-#TODO
+Collation and preprocessing are part of data preparation step of finetuning. Typically, these default parameters for these two functions perform well, so these options do not need to be adjusted.
 
 ### `pooler` and `pooler_options`
 
