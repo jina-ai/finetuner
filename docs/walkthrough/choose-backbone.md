@@ -3,7 +3,7 @@
 
 Finetuner provides several widely used backbone models,
 including `resnet`, `efficientnet`, `clip`, `bert` and `pointnet`.
-Each model has its own variants and are designed to produce embeddings for a specific modality.
+Each model has its own variants and is designed to produce embeddings for a specific modality.
 
 Finetuner will convert these backbone models to embedding models by removing
 the *head* or applying *pooling*,
@@ -14,15 +14,16 @@ search tasks.
 ## Text-to-Text Models
 
 We support two different variations of the `bert` model for text-to-text encoding tasks.
-- `bert-base-en` is a raw pre-trained model, and should be used if you want to train something from 
-  scratch or train a model on a task where a notion of similarity you want to finetune on is very different
+- `bert-base-en` is a pre-trained model that has undergone no finetuning.
+  It should be used if you want to train something from scratch or train a model on a task where a
+  notion of similarity you want to finetune on is very different
   from what's usually considered as similar.
 - `sbert-base-en` has been fine-tuned once by [sentence-transformers](https://www.sbert.net/) on the 
   [MS MARCO](https://microsoft.github.io/msmarco/) dataset on top of BERT.
   It is designed for matching web search queries to short text passages and 
   is a suitable backbone for traditional text-to-text search tasks.
 
-These transformer-based models are loaded from the huggingface
+These transformer-based models are loaded using the huggingface
 [transformers](https://github.com/huggingface/transformers) library.
 It is also worth mentioning that these two models have the same `output_dim`, meaning that the shape of
 the embeddings produced are the same.
@@ -51,12 +52,12 @@ finetuner.describe_models(task='text-to-text')
 
 For image-to-image tasks, we support two different types of models, `efficientnet` and `resnet`,
 both of which having `base` and `large` variations.
-- ResNets are suitable for image-to-image search tasks with high performance requirements, where resnet152 is bigger and
-  requires higher computational resources than resnet50.
+- ResNets are suitable for image-to-image search tasks with high performance requirements, where resnet152 (large variant)
+  is bigger and requires higher computational resources than resnet50 (base variant).
 - EfficientNets are more light-weight than ResNet models, making them suitable for image-to-image search tasks
   with low training and inference times.
 
-ResNet/EfficientNet models are loaded from the [torchvision](https://pytorch.org/vision/stable/index.html) library.
+ResNet/EfficientNet models are loaded using the [torchvision](https://pytorch.org/vision/stable/index.html) library.
 
 ```bash
                                      Finetuner backbones: image-to-image                                     
@@ -87,7 +88,7 @@ CLIP models are used for text-to-image search tasks. We support two different ty
   dataset, which contains data from 100+ different langauges. 
   You should use this model when encoding non-English text.
 
-Like the models used for text-to-text tasks, these models are transformer-based, and are loaded from the huggingface
+Like the models used for text-to-text tasks, these models are transformer-based, and are loaded using the huggingface
 [transformers](https://github.com/huggingface/transformers) library.
 
 ```bash
@@ -142,7 +143,7 @@ You can see a list of additional options that you can provide for each model usi
 
 ![get_model_options](../imgs/get_model_options.png)
 
-While each model has their own set of options, the `sbert_base_en` model, as shown in the example above, has the four most common options.
+While each model has their own set of options, the `sbert-base-en` model, as shown in the example above, has the four most common options.
 ### `collate_options` and `preprocess_options`
 Collation and preprocessing are part of data preparation step of finetuning. Typically, these default parameters for these two functions perform well, so these options do not need to be adjusted.
 
