@@ -3,8 +3,8 @@ import os
 from io import StringIO
 
 import pytest
-from docarray import Document, DocumentArray
 
+from finetuner import Document, DocumentArray
 from finetuner.constants import DEFAULT_TAG_KEY, DEFAULT_TAG_SCORE_KEY
 from finetuner.data import CSVContext, CSVOptions, check_columns, create_document
 

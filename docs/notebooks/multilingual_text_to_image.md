@@ -45,7 +45,7 @@ We'll be fine-tuning multilingual CLIP on the electronics section of the [German
 
 The images are a subset of the [xthan/fashion-200k dataset](https://github.com/xthan/fashion-200k), and we have commissioned their human annotations via crowdsourcing platform. Annotations were made in two steps.  First, we passed the 12,000 images to annotators in their large international user community, who added descriptive captions.
 
-Each product in the dataset contains several attributes, we will be making use of the image and captions to create a [`Document`](https://docarray.jina.ai/fundamentals/document/#document) containing two [chunks](https://docarray.jina.ai/fundamentals/document/nested/#nested-structure), one containing the image and another containing the category of the product.
+Each product in the dataset contains several attributes, we will be making use of the image and captions to create a [`Document`](https://finetuner.jina.ai/walkthrough/create-training-data/#preparing-a-documentarray) containing two chunks, one containing the image and another containing the category of the product.
 <!-- #endregion -->
 
 <!-- #region id="2a40f0b1-7272-4ae6-9d0a-f5c8d6d534d8" -->
@@ -55,7 +55,7 @@ We will use the `DE-Fashion-Image-Text-Multimodal-train` dataset, which we have 
 
 ```python id="4420a4ac-531a-4db3-af75-ebb58d8f828b"
 import finetuner
-from docarray import DocumentArray, Document
+from finetuner import DocumentArray, Document
 
 finetuner.login(force=True)
 ```
@@ -118,7 +118,7 @@ Let's understand what this piece of code does:
 Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()` - and the logs - `run.logs()` or `run.stream_logs()`. 
 <!-- #endregion -->
 
-```python tags=[] id="56d020bf-8095-4a83-a532-9b6c296e985a"
+```python id="56d020bf-8095-4a83-a532-9b6c296e985a" tags=[]
 # note, the fine-tuning might takes 20~ minutes
 for entry in run.stream_logs():
     print(entry)
