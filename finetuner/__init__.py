@@ -67,7 +67,7 @@ def _build_name_stub_map() -> Dict[str, model_stub.ModelStubType]:
 
 def list_models() -> List[str]:
     """List available models."""
-    return [stub.display_name for stub in list_model_classes().values()]
+    return [_model_class.display_name for _model_class in list_model_classes().values()]
 
 
 def list_model_options() -> Dict[str, List[Dict[str, Any]]]:
@@ -87,7 +87,7 @@ def list_model_options() -> Dict[str, List[Dict[str, Any]]]:
             ).parameters.values()
             if parameter.name != 'self'
         ]
-        for _, _model_class in list_model_classes().items()
+        for _model_class in list_model_classes().values()
     }
 
 
