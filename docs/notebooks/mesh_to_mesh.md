@@ -25,7 +25,7 @@ Finding similar 3D Meshes can become very time-consuming. To support this task, 
 
 ```python colab={"background_save": true} id="vDVkw65kkQcn"
 !pip install 'finetuner[full]'
-!pip install 'docarray[full]==0.21.0'
+!pip install 'docarray[full]<0.3.0'
 ```
 
 <!-- #region id="q7Bb9o5ZHSZ3" -->
