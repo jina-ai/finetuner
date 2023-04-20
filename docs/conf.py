@@ -23,7 +23,7 @@ exclude_patterns = [
     'tests',
     'page_templates',
     '.github',
-    'notebooks'
+    'notebooks',
 ]
 pygments_style = 'rainbow_dash'
 html_theme = 'furo'

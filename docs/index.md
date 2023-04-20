@@ -1,14 +1,6 @@
 # Welcome to Finetuner!
 
-```{include} ../README.md
-:start-after: <!-- start elevator-pitch -->
-:end-before: <!-- end elevator-pitch -->
-```
-
-```{include} ../README.md
-:start-after: <!-- start install-instruction -->
-:end-before: <!-- end install-instruction -->
-```
+Add quickstart and other maybe other things from the readme here
 
 ```{include} ../README.md
 :start-after: <!-- start finetuner-articles -->
@@ -35,8 +27,9 @@ intro/installation
 :hidden:
 
 concepts/login
-concepts/data-preparation
 concepts/fit-function
+concepts/synthesis-function
+concepts/data-preparation
 concepts/models
 concepts/loss-functions
 concepts/optimizers
