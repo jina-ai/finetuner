@@ -14,11 +14,11 @@ def push_docarray(
     """Upload a DocumentArray to Jina AI Cloud and return its name."""
     if isinstance(data, DocumentArray):
         _id = id(data)  # get the reference id
-        if ids2names and _id in ids2names:
+        if ids2names is not None and _id in ids2names:
             return ids2names[_id]
         print(f'Pushing a DocumentArray to Jina AI Cloud under the name {name} ...')
         data.push(name=name, show_progress=True, public=False)
-        if ids2names:
+        if ids2names is not None:
             ids2names[id(data)] = name
         return name
     return data
