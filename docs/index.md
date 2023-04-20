@@ -27,7 +27,7 @@
 intro/objectives
 intro/technical-details
 intro/installation	
-⮚  Getting Started <notebooks/getting_started>
+⮚  Getting Started <notebooks_md/getting_started>
 ```
 
 ```{toctree}
@@ -53,12 +53,12 @@ concepts/evaluation
 :caption: Tutorials
 :hidden:
 
-notebooks/text_to_text
-notebooks/image_to_image
-notebooks/image_to_image_arcface
-notebooks/text_to_image
-notebooks/multilingual_text_to_image
-notebooks/mesh_to_mesh
+notebooks_md/text_to_text
+notebooks_md/image_to_image
+notebooks_md/image_to_image_arcface
+notebooks_md/text_to_image
+notebooks_md/multilingual_text_to_image
+notebooks_md/mesh_to_mesh
 ```
 
 ```{toctree}
