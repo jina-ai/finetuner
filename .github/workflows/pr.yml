@@ -81,4 +81,4 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            :memo: Docs are deployed on https://ft-${{ env.BRANCH_NAME }}--jina-docs.netlify.app :tada:
+            :memo: Docs are deployed on https://ft-${{ env.BRANCH_NAME }}--jina-docs.netlify.app/${{ env.BRANCH_NAME }} :tada:
