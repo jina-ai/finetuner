@@ -16,8 +16,8 @@ Add quickstart and other maybe other things from the readme here
 :caption: Introduction
 :hidden:
 
-intro/objectives
-intro/technical-details
+intro/what-is-finetuner
+intro/how-fine-tuning-works
 intro/installation	
 ⮚  Getting Started <notebooks_md/getting_started>
 ```
