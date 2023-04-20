@@ -447,6 +447,6 @@ class SynthesisModels:
 
 
 DATA_SYNTHESIS_EN = SynthesisModels(
-    relation_miner='sentence-transformers/msmarco-distilbert-base-v3',
-    cross_encoder='cross-encoder/mmarco-mMiniLMv2-L12-H384-v1',
+    relation_miner='sbert-base-en',
+    cross_encoder='crossencoder-base-en',
 )
