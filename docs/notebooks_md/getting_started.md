@@ -21,14 +21,14 @@ Welcome to Finetuner's "Getting Started" guide! This tutorial will walk you thro
 
 <!-- #endregion -->
 
-<!-- #region id="XGALvH3uz1mF" -->
+<!-- #region id="NL4dU4Jqytyj" -->
 ![](https://user-images.githubusercontent.com/6599259/233098291-42a0bf8b-6a7c-4da9-b319-13f61ee83171.png)
 <!-- #endregion -->
 
 <!-- #region id="O0OPJ59l1X0-" -->
 In particular, you need to perform the following task for our image-to-image search example:
 
-**1. Data Preparation:** Parse the training and evaluation datasets from the *Totally Looks Like dataset* and convert them into a specifically formatted CSV file or a [DocArray](https://github.com/docarray/docarray) dataset, which is Finetuner's internal format.
+**1. Data Preparation:** Parse the training and evaluation datasets from the *UKBench dataset* and convert them into a specifically formatted CSV file or a [DocArray](https://github.com/docarray/docarray) dataset, which is Finetuner's internal format.
 
 **2. Configure and Submit the Fine-Tuning Job:** Create a fine-tuning job by configuring the desired model and its training parameters. After executing the submission (fit) function, Finetuner initiates a cloud computing job that carries out the training on high-end GPU machines.
 
@@ -63,7 +63,11 @@ https://ia600809.us.archive.org/view_archive.php?archive=/5/items/ukbench/ukbenc
 <!-- #endregion -->
 
 <!-- #region id="UFLeYrKd_odN" -->
-Before continuing with the implementation, you can take a look at data! The dataset is supposed to be used to evaluated near duplicate detection. It includes images of scenes and objects like a variety of CD covers. Every object is depicted by four images. To better process process the images, the following code creates a DocumentArray object of the image urls. Then the `plot_image_sprites()` can display them. You can try it out by running it in the notebook: 
+Before continuing with the implementation, you can take a look at data! The dataset is supposed to be used to evaluated near duplicate detection. It includes images of scenes and objects like a variety of CD covers. Every object is depicted by four images. To better process process the images, the following code creates a DocumentArray object of the image urls. Then the `plot_image_sprites()` can display them.
+<div>
+<img src="https://user-images.githubusercontent.com/6599259/233361492-fbf05c48-5b3a-49d7-bc92-32e4a0aad4f7.png" width="400"/>
+</div>
+You can try it out yourself by running it in the notebook: 
 <!-- #endregion -->
 
 ```python id="JkHvkJ18kxLK"
@@ -212,9 +216,10 @@ As an alternative to the `finetuner` package, you can also use the Web UI at htt
 <!-- #endregion -->
 
 <!-- #region id="cQem9kQ7RUYZ" -->
-Overview of all Runs | View details of a Run
-- | - 
-![image.png](https://user-images.githubusercontent.com/6599259/233099591-d27405b3-a26c-4951-81df-2c5dc096113e.png) | ![image.png](https://user-images.githubusercontent.com/6599259/233099603-6af406e1-15c1-401b-af5a-495404114f4c.png)
+<div>
+<img src="https://user-images.githubusercontent.com/6599259/233099591-d27405b3-a26c-4951-81df-2c5dc096113e.png" style="float: left" width="500"/>
+<img src="https://user-images.githubusercontent.com/6599259/233099603-6af406e1-15c1-401b-af5a-495404114f4c.png" width="500"/>
+</div>
 <!-- #endregion -->
 
 <!-- #region id="geAbdSPzisiN" -->
@@ -292,6 +297,35 @@ You can retrieve the metrics of this optimized run by using the `display_metrics
 ```python id="lq2eGCnziQ0n"
 run.display_metrics()
 ```
+
+<!-- #region id="CnZDKagtoddx" -->
+```bash
+Retrieval metrics before fine-tuning:              
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓
+┃ Retrieval Metric           ┃ Value              ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━┩
+│ resnet50_precision_at_k    │ 0.936              │
+│ resnet50_recall_at_k       │ 0.936              │
+│ resnet50_f1_score_at_k     │ 0.936              │
+│ resnet50_hit_at_k          │ 0.992              │
+│ resnet50_average_precision │ 0.9826666666666665 │
+│ resnet50_reciprocal_rank   │ 0.9853333333333333 │
+│ resnet50_dcg_at_k          │ 2.486170745114311  │
+└────────────────────────────┴────────────────────┘
+Retrieval metrics after fine-tuning:               
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓
+┃ Retrieval Metric           ┃ Value              ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━┩
+│ resnet50_precision_at_k    │ 0.9533333333333333 │
+│ resnet50_recall_at_k       │ 0.9533333333333333 │
+│ resnet50_f1_score_at_k     │ 0.9533333333333333 │
+│ resnet50_hit_at_k          │ 1.0                │
+│ resnet50_average_precision │ 0.9943333333333333 │
+│ resnet50_reciprocal_rank   │ 0.996              │
+│ resnet50_dcg_at_k          │ 2.5293130592000264 │
+└────────────────────────────┴────────────────────┘
+```
+<!-- #endregion -->
 
 <!-- #region id="EbVD9FHjjOIg" -->
 ## Set up an Encoding Service
