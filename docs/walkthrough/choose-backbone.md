@@ -178,8 +178,36 @@ run = finetuner.fit(
 When creating data synthesis jobs, two different types of models need to be chosen, the `relation_miner`
 and the `cross_encoder`.
 These are passed to the {meth}`finetuner.synthesize` function in a {class}`~finetuner.data.SynthesisModels` object.
+
+```python
+from finetuner import synthesize
+from finetuner.data import SynthesisModels
+
+synthesize(
+    query_data='my_query_data',
+    corpus_data='my_corpus_data',
+    models=SynthesisModels(
+      'sbert-base-en',
+      'crossencoder-base-en',
+    ),
+)
+
+```
 To use the recommended `relation_miner` and `cross_encoder` models, you can pass the
-`finetuner.data.DATASYNTHESIS_EN` constant, which is a premade {class}`~finetuner.data.SynthesisModels` object.
+`finetuner.data.DATA_SYNTHESIS_EN` constant, which is a premade {class}`~finetuner.data.SynthesisModels` object.
+
+```python
+from finetuner import synthesize
+from finetuner.data import DATA_SYNTHESIS_EN
+
+synthesize(
+    query_data='my_query_data',
+    corpus_data='my_corpus_data',
+    models=DATA_SYNTHESIS_EN,
+)
+
+```
+
 
 The `relation_miner` model can be any [text-to-text](#text-to-text-models) model, though we strongly encourage you to use 
 `sbert-base-en`, as `bert-base-en` will not perform as well.
