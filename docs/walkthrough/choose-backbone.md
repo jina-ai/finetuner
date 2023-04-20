@@ -14,11 +14,13 @@ search tasks.
 ## Text-to-Text Models
 
 We support two different variations of the `bert` model for text-to-text encoding tasks.
-- `bert-base-en` is a more general purpose model, which will be suitable for most text-to-text search tasks.
+- `bert-base-en` is a raw pre-trained model, and should be used if you want to train something from 
+  scratch or train a model on a task where a notion of similarity is involved which is very different
+  from what's usually considered as similar.
 - `sbert-base-en` has been fine-tuned once by [sentence-transformers](https://www.sbert.net/) on the 
   [MS MARCO](https://microsoft.github.io/msmarco/) dataset on top of BERT.
   It is designed for matching web search queries to short text passages and 
-  is a suitable backbone for similar text-to-text search tasks.
+  is a suitable backbone for traditional text-to-text search tasks.
 
 These transformer-based models are loaded from the huggingface
 [transformers](https://github.com/huggingface/transformers) library.
@@ -130,3 +132,55 @@ import finetuner
 
 finetuner.describe_models(task='mesh-to-mesh')
 ```
+
+## Model Options
+
+Once you have chosen a model you can provide a dictionary of options to adjust the behaviour of the model to the
+`model_options` parameter of the {meth}`finetuner.fit` function.
+You can see a list of additional options that you can provide for each model using the
+{meth}`finetuner.list_model_options` function:
+
+![get_model_options](../imgs/get_model_options.png)
+
+While each model has their own set of options, the `sbert_base_en` model, as shown in the example above, has the four most common options.
+### `collate_options` and `preprocess_options`
+#TODO
+
+### `pooler` and `pooler_options`
+
+Pooling layers are layers in a machine learning model that are used to reduce the dimensionality of data. This is usually done for one of two reasons: to remove unnecessary information contained within an embedding of a larger size, or when a model outputs multiple embeddings and only one embedding is needed. Typically, there are two ways to do this: average pooling or max pooling.
+While a model may have many pooling layers within it, it is unwise to replace a pooling layer with another unless it is the last layer of the model.  
+In cases where your chosen model does have a pooling layer as its last layer, Finetuner allows you to replace the default pooler with a `GeM` pooling layer.
+Currently, all of our [text-to-text](#text-to-text-models) and [image-to-image](#image-to-image-models)
+models support replacing the pooling layer.
+
+### GeM pooling
+
+`GeM` (Generalised Mean) pooling is an advanced pooling technique that is popular for computer vision and face recognition tasks.  
+The `GeM` pooler has two adjustable parameters: a scaling parameter `p` and an epsilon `eps`.
+At `p = 1`, the `GeM` pooler will act like an average pooler.
+As `p` increases, more weight is given to larger values, making it act more like max pooling.
+`eps` is used to clamp values to be slightly above 0, and altering this won't result in much change to the performance.
+By default, `p=3` and `eps=1e-6`. You can specify the pooler and adjust these parameters in a dictionary provided to the `model_options` parameter:
+```python
+run = finetuner.fit(
+    ...,
+    model_options = {
+        ...
+        'pooler': 'GeM',
+        'pooler_options': {'p': 2.4, 'eps': 1e-5}
+    }
+)
+```
+
+## Models for Data Synthesis
+
+When creating data synthesis jobs, two different types of models need to be chosen, the `relation_miner`
+and the `cross_encoder`.
+These are passed to the {meth}`finetuner.synthesize` function in a {class}`~finetuner.data.SynthesisModels` object.
+To use the recommended `relation_miner` and `cross_encoder` models, you can pass the
+`finetuner.data.DATASYNTHESIS_EN` constant, which is a premade {class}`~finetuner.data.SynthesisModels` object.
+
+The `relation_miner` model can be any [text-to-text](#text-to-text-models) model, though we strongly encourage you to use 
+`sbert-base-en`, as `bert-base-en` will not perform as well.
+Currently, we only support one cross-encoder model, `crossencoder-base-en`.
