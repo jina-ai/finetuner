@@ -2,11 +2,11 @@ import os
 
 import numpy as np
 import pytest
-from docarray import Document, DocumentArray
 from tests.constants import FINETUNER_LABEL
 
 import finetuner
 import hubble
+from finetuner import Document, DocumentArray
 
 
 @pytest.fixture()

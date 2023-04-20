@@ -16,10 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Import `Document`, `DocumentArray` from finetuner. ([#720](https://github.com/jina-ai/finetuner/pull/720))
+
 ### Fixed
 
 ### Docs
 
+- Add documentation on using `Document` and `DocumentArray` from docarray v1. ([#720](https://github.com/jina-ai/finetuner/pull/720))
 
 ## [0.7.6] - 2023-04-18
 

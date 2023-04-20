@@ -1,8 +1,7 @@
 import os
 from typing import Dict, Optional, Tuple, Union
 
-from docarray import DocumentArray
-
+from finetuner import DocumentArray
 from finetuner.constants import ARTIFACTS_DIR, DA_PREFIX
 
 

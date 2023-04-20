@@ -4,7 +4,7 @@ import warnings
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, TextIO, Union
 
 from _finetuner.runner.stubs import model as model_stub
-from docarray import DocumentArray
+from docarray import Document, DocumentArray  # noqa F401
 
 from finetuner.constants import (
     DEFAULT_FINETUNER_HOST,

@@ -3,8 +3,8 @@ from dataclasses import fields
 from typing import Any, Dict, List, Optional, TextIO, Union
 
 from _finetuner.runner.stubs import config
-from docarray import Document, DocumentArray
 
+from finetuner import Document, DocumentArray
 from finetuner.callback import EvaluationCallback
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import (

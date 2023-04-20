@@ -1,8 +1,7 @@
 from typing import Any, Dict, List, Optional, Union
 
-from docarray import DocumentArray
-
 import hubble
+from finetuner import DocumentArray
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
 from finetuner.data import CSVOptions, SynthesisModels
