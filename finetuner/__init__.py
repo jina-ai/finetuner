@@ -235,7 +235,7 @@ def fit(
         you choose. Details on the parameters can be found in the `PyTorch documentation
         <https://pytorch.org/docs/stable/optim.html>`_.
 
-    .. note::
+    :note:
        Unless necessary, please stick with `device="cuda"`, `cpu` training could be
        extremely slow and inefficient.
     """
@@ -299,14 +299,15 @@ def list_runs(
 
     If no :class:`Experiment` is specified, list :class:`Run` for all available
       :class:`Experiment`.
+
     :param experiment_name: The name of the :class:`Experiment`.
     :param page: The page index.
     :param size: Number of :class:`Run` to retrieve.
     :return: List of all :class:`Run`.
 
-    ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+    :note: `page` and `size` works together. For example, page 1 size 50 gives
         the 50 runs in the first page. To get 50-100, set `page` as 2.
-    ..note:: The maximum number for `size` per page is 100.
+    :note: The maximum number for `size` per page is 100.
     """
     return ft.list_runs(experiment_name=experiment_name, page=page, size=size)
 
@@ -362,9 +363,9 @@ def list_experiments(page: int = 1, size: int = 50) -> List[Experiment]:
     :param size: The number of experiments to retrieve.
     :return: A list of :class:`Experiment` instance.
 
-    ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+    :note: `page` and `size` works together. For example, page 1 size 50 gives
         the 50 experiments in the first page. To get 50-100, set `page` as 2.
-    ..note:: The maximum number for `size` per page is 100.
+    :note: The maximum number for `size` per page is 100.
     """
     return ft.list_experiments(page=page, size=size)
 
@@ -484,8 +485,7 @@ def get_model(
     :param is_onnx: The model output format, either `onnx` or `pt`.
     :returns: An instance of :class:`ONNXRuntimeInferenceEngine`.
 
-    ..Note::
-      please install finetuner[full] to include all the dependencies.
+    :note: please install finetuner[full] to include all the dependencies.
     """
 
     import torch
@@ -542,8 +542,7 @@ def encode(
         number of documents that will be put in each batch.
     :returns: `DocumentArray` filled with embeddings.
 
-    ..Note::
-      please install "finetuner[full]" to include all the dependencies.
+    :note: please install "finetuner[full]" to include all the dependencies.
     """
 
     from _finetuner.models.inference import ONNXRuntimeInferenceEngine

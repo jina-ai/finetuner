@@ -66,9 +66,9 @@ class FinetunerV1Client(_BaseClient):
         :return: Paginated results as a dict, where `items` are the `Experiment`s being
             retrieved.
 
-        ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+        :note: `page` and `size` works together. For example, page 1 size 50 gives
             the 50 experiments in the first page. To get 50-100, set `page` as 2.
-        ..note:: The maximum number for `size` per page is 100.
+        :note: The maximum number for `size` per page is 100.
         """
         params = {'page': page, 'size': size}
         url = self._construct_url(self._base_url, API_VERSION, EXPERIMENTS) + '/'
@@ -117,9 +117,9 @@ class FinetunerV1Client(_BaseClient):
         :return: Paginated results as a dict, where `items` are the `Runs` being
             retrieved.
 
-        ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+        :note: `page` and `size` works together. For example, page 1 size 50 gives
             the 50 runs in the first page. To get 50-100, set `page` as 2.
-        ..note:: The maximum number for `size` per page is 100.
+        :note: The maximum number for `size` per page is 100.
         """
         if not experiment_name:
             url = self._construct_url(self._base_url, API_VERSION, RUNS, RUNS)
