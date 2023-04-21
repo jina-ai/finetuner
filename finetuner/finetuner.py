@@ -26,7 +26,7 @@ class Finetuner:
 
         :param force: If set to true, overwrite token and re-login.
 
-        Note: Calling `login` is necessary for using finetuner.
+        :note: Calling `login` is necessary for using finetuner.
         """
         hubble.login(
             force=force, post_success=self._init_state, interactive=interactive
@@ -90,9 +90,9 @@ class Finetuner:
         :param size: The number of experiments to retrieve.
         :return: A list of :class:`Experiment` instance.
 
-        ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+        :note: `page` and `size` works together. For example, page 1 size 50 gives
             the 50 experiments in the first page. To get 50-100, set `page` as 2.
-        ..note:: The maximum number for `size` per page is 100.
+        :note: The maximum number for `size` per page is 100.
         """
         experiments = self._client.list_experiments(page=page, size=size)['items']
 
@@ -254,9 +254,9 @@ class Finetuner:
         :param size: Number of runs to retrieve.
         :return: List of all runs.
 
-        ..note:: `page` and `size` works together. For example, page 1 size 50 gives
+        :note: `page` and `size` works together. For example, page 1 size 50 gives
             the 50 runs in the first page. To get 50-100, set `page` as 2.
-        ..note:: The maximum number for `size` per page is 100.
+        :note: The maximum number for `size` per page is 100.
         """
         if not experiment_name:
             experiments = self.list_experiments()

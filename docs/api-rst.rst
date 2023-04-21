@@ -1,11 +1,11 @@
-======================
+========================
 :fab:`python` Python API
-======================
+========================
 
 This section includes the API documentation from the `Finetuner` codebase, as extracted from the `docstrings <https://peps.python.org/pep-0257/>`_ in the code.
 
 :mod:`finetuner.__init__` - Finetuner
---------------------
+-------------------------------------
 
 .. currentmodule:: finetuner.__init__
 
@@ -32,7 +32,7 @@ This section includes the API documentation from the `Finetuner` codebase, as ex
    finetuner.delete_experiments
 
 :mod:`finetuner.run.Run` - Run
---------------------
+------------------------------
 
 .. currentmodule:: finetuner.run.Run
 
@@ -50,7 +50,7 @@ This section includes the API documentation from the `Finetuner` codebase, as ex
 
 
 :mod:`finetuner.experiment.Experiment` - Experiment
---------------------
+---------------------------------------------------
 
 .. currentmodule:: finetuner.experiment.Experiment
 
