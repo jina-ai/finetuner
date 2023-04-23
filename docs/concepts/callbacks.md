@@ -199,6 +199,7 @@ It is recommended to use WiSEFTCallback when fine-tuning CLIP.
 We can not ensure it works for other types of models, such as ResNet or BERT.
 
 Please refer to {ref}`Apply WiSE-FT <wise-ft>` in the CLIP fine-tuning example for more information.
+```
 
 ## WandBLogger
 
