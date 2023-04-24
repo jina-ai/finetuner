@@ -4,7 +4,7 @@
 Finetuner, as part of the [Jina AI](https://jina.ai/) stack,
 uses [Jina AI Cloud](https://cloud.jina.ai/) for authentication.
 
-Accessing Jina AI Cloud is straightforward, and you can do so by following these steps:
+Accessing Jina AI Cloud is straightforward and you can do so by following these steps:
 
 ```python
 import finetuner
