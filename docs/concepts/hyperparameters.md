@@ -6,7 +6,7 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:
 
 ```python
 import finetuner
-from docarray import DocumentArray
+from finetuner import DocumentArray
 from finetuner.data import CSVOptions
 
 train_data = 'path/to/some/train_data.csv'
@@ -90,6 +90,10 @@ Please check the [developer reference](../../api/finetuner/#finetuner.fit) to ge
 ## Loss
 The loss function determines the training objective.
 The type of loss function which is most suitable for your task depends heavily on the task your training for.
+The `miner` parameter is used to specify the method used to construct batches.
+Loss functions can have different requirements for the contents of each batch,
+so the available miners can depend on the loss function used.
+
 See the [loss functions](./loss-functions.md) page to see the available loss functions.
 
 ## Optimizer
