@@ -51,8 +51,10 @@ To retrieve your own namespace,
 log in to [Jina AI Cloud](https://cloud.jina.ai/) and click the `account` button under your profile image.
 You will find your namespace in the `Namespace` section.
 
-![namespace-1](../imgs/namespace1.jpeg)
-![namespace-2](../imgs/namespace2.jpeg)
+
+...             |  ...
+:-------------------------:|:-------------------------:
+![namespace-1](../imgs/namespace1.jpeg)  |  ![namespace-2](../imgs/namespace2.jpeg)
 
 
 ## Troubleshooting
