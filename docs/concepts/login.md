@@ -44,7 +44,7 @@ they can be separately addressed.
 If you want to download public data or models published by other users,
 you must add `[namespace]/` before the name of the data or artifact.
 Public resources are in the `finetuner` namespace.
-For example, to use the Quora training dataset, use the name  `finetuner/quora-train-da`.
+For example, to use the [QuoraQA dataset](https://quoradata.quora.com/First-Quora-Dataset-Release-Question-Pairs), use the name  `finetuner/quora-train-da`.
 To use a dataset from another user,
 you must get their namespace and the name they gave the dataset.
 If they have shared it publicly, you be able to use it as `[namespace]/[dataset name]`.
