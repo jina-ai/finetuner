@@ -58,7 +58,7 @@ Step 1             |  Step 2
 
 ## Other login options
 
-More information about the login into Jina you can find in the [Jina documentation](https://docs.jina.ai/jina-ai-cloud/login/).
+For more information about logging into Jina AI Cloud, check out the [Jina documentation](https://docs.jina.ai/jina-ai-cloud/login/).
 Please note that if you are already logged into Jina AI Cloud, you still need to call `finetuner.login()` to initialize the finetuner library correctly with your credentials.
 Unless you set the `force` flag in the login function, this will not overwrite your current session.
 
