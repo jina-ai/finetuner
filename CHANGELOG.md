@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Add login page to new docs. [#737](https://github.com/jina-ai/finetuner/pull/737).
+
 
 ## [0.7.6] - 2023-04-18
 
