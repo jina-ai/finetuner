@@ -35,6 +35,28 @@ This `auth_token` will be utilized by Finetuner to carry out various tasks such 
 By default, the data and fine-tuned model are only visible to you, unless you choose to publish them manually by setting a `public` flag.
 ```
 
+## Namespace
+
+Users of Jina AI Cloud have a namespace that is linked to their personal account.
+This namespace ensures that even if data or artifacts share the same name,
+they are separated. 
+
+If you want to download public data or models published by other users,
+you must add `[namespace]/` before the name of the data or artifact.
+For example, `finetuner/quora-train-da`,
+where `finetuner` is the namespace for the account, and `quora-train-da` is the name of the data,
+which refers to the quora training set.
+
+To retrieve your own namespace,
+log in to [Jina AI Cloud](https://cloud.jina.ai/) and click the `account` button under your profile image.
+You will find your namespace in the `Namespace` section.
+
+![namespace-1](../imgs/namespace1.jpeg)
+![namespace-2](../imgs/namespace2.jpeg)
+
+
+## Troubleshooting
+
 In case the login process fails,
 you can try logging in again by using the `force` option to force re-login.
 
