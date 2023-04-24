@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Add callback page to docs restructure page. [#738](https://github.com/jina-ai/finetuner/pull/738).
+
 
 ## [0.7.6] - 2023-04-18
 
