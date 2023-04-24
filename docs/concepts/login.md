@@ -44,7 +44,7 @@ they are separated.
 If you want to download public data or models published by other users,
 you must add `[namespace]/` before the name of the data or artifact.
 For example, `finetuner/quora-train-da`,
-where `finetuner` is the namespace for the account, and `quora-train-da` is the name of the data,
+where `finetuner` is the namespace for the account, and `quora-train-da` is the name of the dataset,
 which refers to the quora training set.
 
 To retrieve your own namespace,
