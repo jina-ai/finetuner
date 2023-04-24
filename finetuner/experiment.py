@@ -402,6 +402,8 @@ class Experiment:
         :param models: A :class:`SynthesisModels` object containing the names of
             the models used for relation mining and cross encoding.
         :param num_relations: Number of relations to mine per query.
+        :param experiment_name: Name of the experiment.
+        :param run_name: Name of the run.
         :return: Run parameters wrapped up as a config dict.
         """
         public = kwargs[PUBLIC] if kwargs.get(PUBLIC) else False

@@ -107,7 +107,11 @@ def test_create_training_run_and_save_model(
         device='cpu',
     )
     status = run.status()[STATUS]
-    while status not in [FAILED, FINISHED]:
+
+    # wait for up to 20 minutes for the run to finish
+    for _ in range(6 * 20):
+        if status in [FAILED, FINISHED]:
+            break
         time.sleep(10)
         status = run.status()[STATUS]
 
@@ -148,7 +152,11 @@ def test_create_synthesis_run_and_save_data(
         experiment_name=experiment_name,
     )
     status = run.status()[STATUS]
-    while status not in [FAILED, FINISHED]:
+
+    # wait for up to 20 minutes for the run to finish
+    for _ in range(6 * 20):
+        if status in [FAILED, FINISHED]:
+            break
         time.sleep(10)
         status = run.status()[STATUS]
 

@@ -71,7 +71,7 @@ def push_synthesis_data(
     run_name: str,
     query_data: Union[str, DocumentArray],
     corpus_data: Union[str, DocumentArray],
-) -> Tuple[Optional[str], ...]:
+) -> Tuple[Optional[str], Optional[str]]:
     """Upload data to Jina AI Cloud and returns their names.
 
     Uploads all data needed for data synthesis - query data and corpus data.
@@ -85,7 +85,7 @@ def push_synthesis_data(
     :param run_name: Name of the run.
     :param query_data: Query data.
     :param corpus_data: Corpus data.
-    :return: Name(s) of the uploaded data.
+    :return: Names of the uploaded query and corpus data.
     """
     _ids2names = dict()
     return (
