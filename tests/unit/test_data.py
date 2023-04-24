@@ -45,6 +45,42 @@ def test_build_dataset_from_document_array():
 
 
 @pytest.mark.parametrize('dialect', csv.list_dialects())
+def test_load_finetune_data_from_csv_one_row(dialect):
+    dialect = csv.get_dialect(dialect)
+    contents = [['apple1', 'apple2', 'orange1', 'orange2']]
+    content_stream = dialect.lineterminator.join(
+        [dialect.delimiter.join(x) for x in contents]
+    )
+
+    options = CSVOptions(dialect=dialect)
+
+    csv_context = CSVContext(options=options)
+    docs = csv_context.build_dataset(data=StringIO(content_stream))
+
+    flat_contents = [x for pair in contents for x in pair]
+    for doc, expected in zip(docs, flat_contents):
+        assert doc.text == expected
+
+
+@pytest.mark.parametrize('dialect', csv.list_dialects())
+def test_load_finetune_data_from_csv_one_column(dialect):
+    dialect = csv.get_dialect(dialect)
+    contents = [['apple1'], ['apple2'], ['orange1'], ['orange2']]
+    content_stream = dialect.lineterminator.join(
+        [dialect.delimiter.join(x) for x in contents]
+    )
+
+    options = CSVOptions(dialect=dialect)
+
+    csv_context = CSVContext(options=options)
+    docs = csv_context.build_dataset(data=StringIO(content_stream))
+
+    flat_contents = [x for pair in contents for x in pair]
+    for doc, expected in zip(docs, flat_contents):
+        assert doc.text == expected
+
+
+@pytest.mark.parametrize('dialect', csv.list_dialects())
 def test_load_finetune_data_from_csv_text_to_text(dialect):
     dialect = csv.get_dialect(dialect)
     contents = [['apple1', 'apple2'], ['orange1', 'orange2']]

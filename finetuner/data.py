@@ -222,22 +222,49 @@ class PairwiseScoreParser(_CSVParser):
                 yield Document(chunks=[doc1, doc2], tags={DEFAULT_TAG_SCORE_KEY: col3})
 
 
+class DataSynthesisParser(_CSVParser):
+    """
+    CSV has either one column or one row, each item in the CSV represents a single
+    document so the structure of the CSV file is not important.
+    """
+
+    def __init__(
+        self,
+        file: Union[str, TextIO, StringIO],
+        task: str,
+        options: Optional[CSVOptions] = None,
+    ):
+        super().__init__(file, task, options)
+
+    def parse(self):
+        with self._file_ctx as fp:
+            lines = csv.reader(fp, dialect=self._options.dialect)
+
+            for columns in _subsample(
+                lines, self._options.size, self._options.sampling_rate
+            ):
+                for column in columns:
+                    yield Document(text=column)
+
+
 class CSVContext:
     """
     A CSV context switch class with conditions to parse CSVs into DocumentArray.
 
     :param model: The model being used, to get model stub and associated task.
-    :param options: an instance of :class`CSVOptions`.
+    :param options: An instance of :class`CSVOptions`.
     """
 
     def __init__(
         self,
-        model: str,
+        model: Optional[str] = None,
         options: Optional[CSVOptions] = None,
     ):
         self._model = model
         self._options = options or CSVOptions()
-        if model == 'mlp':
+        if not model:
+            self._task = 'synthesis'
+        elif model == 'mlp':
             self._task = 'image-to-image'
         else:
             model_stub = get_stub(
@@ -248,7 +275,11 @@ class CSVContext:
             self._task = model_stub.task
 
     def _get_csv_parser(self, data: Union[str, TextIO]):
-        if self._options.is_labeled:
+        if self._task == 'synthesis':
+            return DataSynthesisParser(
+                file=data, task=self._task, options=self._options
+            )
+        elif self._options.is_labeled:
             return LabeledCSVParser(file=data, task=self._task, options=self._options)
         else:
             _, num_columns = get_csv_file_dialect_columns(
@@ -400,3 +431,21 @@ def create_document(
         doc = Document(content=column)
 
     return doc
+
+
+@dataclass
+class SynthesisModels:
+    """Class specifying the models to be used in a data synthesis job.
+    :param: relation_miner: The name of the model or list of models to use for
+        relation mining.
+    :param cross_encoder: The name of the model to use as the cross encoder
+    """
+
+    relation_miner: Union[str, List[str]]
+    cross_encoder: str
+
+
+DATA_SYNTHESIS_EN = SynthesisModels(
+    relation_miner='sbert-base-en',
+    cross_encoder='crossencoder-base-en',
+)

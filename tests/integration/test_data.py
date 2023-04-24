@@ -18,7 +18,6 @@ def test_build_encoding_dataset_str(data, model_name, modality):
     model = build_model(name=model_name, select_model='clip-' + modality)
     da = build_encoding_dataset(model=model, data=data)
     for doc, expected in zip(da, data):
-        doc.summary()
         if modality == 'text':
             assert doc.text == expected
         else:

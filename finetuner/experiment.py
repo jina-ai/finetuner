@@ -1,9 +1,10 @@
+import json
 from dataclasses import fields
 from typing import Any, Dict, List, Optional, TextIO, Union
 
 from _finetuner.runner.stubs import config
 
-from finetuner import DocumentArray
+from finetuner import Document, DocumentArray
 from finetuner.callback import EvaluationCallback
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import (
@@ -35,10 +36,14 @@ from finetuner.constants import (
     SAMPLER,
     SCHEDULER,
     SCHEDULER_OPTIONS,
+    SYNTHESIS_TASK,
+    TASK,
+    TRAIN_DATA,
+    TRAINING_TASK,
     VAL_SPLIT,
 )
-from finetuner.data import CSVContext
-from finetuner.hubble import push_data
+from finetuner.data import CSVContext, CSVOptions, SynthesisModels
+from finetuner.hubble import push_synthesis_data, push_training_data
 from finetuner.names import get_random_name
 from finetuner.run import Run
 
@@ -86,11 +91,15 @@ class Experiment:
         run = self._client.get_run(experiment_name=self._name, run_name=name)
         run = Run(
             name=run[NAME],
-            config=run[CONFIG],
+            config=json.loads(run[CONFIG])
+            if isinstance(run[CONFIG], str)
+            else run[CONFIG],
             created_at=run[CREATED_AT],
             description=run[DESCRIPTION],
             experiment_name=self._name,
             client=self._client,
+            task=run.get(TASK, TRAINING_TASK),
+            train_data=run.get(TRAIN_DATA, None),
         )
         return run
 
@@ -116,6 +125,8 @@ class Experiment:
                 description=run[DESCRIPTION],
                 experiment_name=self._name,
                 client=self._client,
+                task=run.get(TASK, TRAINING_TASK),
+                train_data=run.get(TRAIN_DATA, None),
             )
             for run in runs
         ]
@@ -131,16 +142,18 @@ class Experiment:
         """Delete all :class:`Run` inside the :class:`Experiment`."""
         self._client.delete_runs(experiment_name=self._name)
 
-    def create_run(
+    def create_training_run(
         self,
         model: str,
         train_data: Union[str, TextIO, DocumentArray],
         run_name: Optional[str] = None,
         eval_data: Optional[Union[str, TextIO, DocumentArray]] = None,
-        csv_options: Optional[Dict[str, Any]] = None,
+        csv_options: Optional[CSVOptions] = None,
         **kwargs,
     ) -> Run:
-        """Create a :class:`Run` inside the :class:`Experiment`."""
+        """Create a :class:`Run` inside the :class:`Experiment` with the
+        task of 'training'.
+        """
         if not run_name:
             run_name = get_random_name()
 
@@ -163,7 +176,7 @@ class Experiment:
                 eval_callback.index_data
             )
 
-        train_data, eval_data, query_data, index_data = push_data(
+        train_data, eval_data, query_data, index_data = push_training_data(
             experiment_name=self._name,
             run_name=run_name,
             train_data=train_data,
@@ -194,6 +207,7 @@ class Experiment:
             run_name=run_name,
             experiment_name=self._name,
             run_config=config,
+            task=TRAINING_TASK,
             device=device,
             cpus=num_workers,
             gpus=1,
@@ -205,6 +219,76 @@ class Experiment:
             config=run[CONFIG],
             created_at=run[CREATED_AT],
             description=run[DESCRIPTION],
+            task=TRAINING_TASK,
+        )
+        return run
+
+    def create_synthesis_run(
+        self,
+        query_data: Union[str, List[str], DocumentArray],
+        corpus_data: Union[str, List[str], DocumentArray],
+        models: SynthesisModels,
+        num_relations: int = 3,
+        run_name: Optional[str] = None,
+        csv_options: Optional[CSVOptions] = None,
+        **kwargs,
+    ) -> Run:
+        """Create a :class:`Run` inside the :class:`Experiment` with the
+        task of 'generation' (data synthesis).
+        """
+        if not run_name:
+            run_name = get_random_name()
+
+        csv_context = CSVContext(None, options=csv_options)
+        query_data = (
+            csv_context.build_dataset(data=query_data)
+            if isinstance(query_data, str)
+            else DocumentArray([Document(text=data) for data in query_data])
+        )
+        corpus_data = (
+            csv_context.build_dataset(data=corpus_data)
+            if isinstance(query_data, str)
+            else DocumentArray([Document(text=data) for data in corpus_data])
+        )
+        query_data, corpus_data = push_synthesis_data(
+            experiment_name=self._name,
+            run_name=run_name,
+            query_data=query_data,
+            corpus_data=corpus_data,
+        )
+
+        config = self._create_synthesis_config(
+            query_data=query_data,
+            corpus_data=corpus_data,
+            models=models,
+            num_relations=num_relations,
+            experiment_name=self._name,
+            run_name=run_name,
+            **kwargs,
+        )
+
+        device = kwargs.get(DEVICE, 'cuda')
+        if device == 'cuda':
+            device = 'gpu'
+
+        num_workers = kwargs.get(NUM_WORKERS, 4)
+        run = self._client.create_run(
+            run_name=run_name,
+            experiment_name=self._name,
+            run_config=config,
+            task=SYNTHESIS_TASK,
+            device=device,
+            cpus=num_workers,
+            gpus=1,
+        )
+        run = Run(
+            client=self._client,
+            name=run[NAME],
+            experiment_name=self._name,
+            config=run[CONFIG],
+            created_at=run[CREATED_AT],
+            description=run[DESCRIPTION],
+            task=SYNTHESIS_TASK,
         )
         return run
 
@@ -216,7 +300,7 @@ class Experiment:
         run_name: str,
         **kwargs,
     ) -> Dict[str, Any]:
-        """Create config for a :class:`Run`.
+        """Create finetuning config for a :class:`Run`.
 
         :param model: Name of the model to be fine-tuned.
         :param train_data: Either a `DocumentArray` for training data or a
@@ -298,3 +382,47 @@ class Experiment:
         )
 
         return finetuning_config.dict()
+
+    @staticmethod
+    def _create_synthesis_config(
+        query_data: str,
+        corpus_data: str,
+        models: SynthesisModels,
+        num_relations: int,
+        experiment_name: str,
+        run_name: str,
+        **kwargs,
+    ) -> Dict[str, Any]:
+        """Create a synthesis config for a :class:`Run`.
+
+        :param query_data: Name of the :class:`DocumentArray` containing the query data
+            used during training.
+        :param corpus_data: Name of the :class:`DocumentArray` containing the corpus
+            data used during training.
+        :param models: A :class:`SynthesisModels` object containing the names of
+            the models used for relation mining and cross encoding.
+        :param num_relations: Number of relations to mine per query.
+        :param experiment_name: Name of the experiment.
+        :param run_name: Name of the run.
+        :return: Run parameters wrapped up as a config dict.
+        """
+        public = kwargs[PUBLIC] if kwargs.get(PUBLIC) else False
+        data = config.RawDataConfig(
+            queries=query_data,
+            corpus=corpus_data,
+        )
+        relation_mining = config.RelationMiningConfig(
+            models=models.relation_miner
+            if isinstance(models.relation_miner, list)
+            else [models.relation_miner],
+            num_relations=num_relations,
+        )
+        generation_config = config.DataGenerationConfig(
+            data=data,
+            relation_mining=relation_mining,
+            cross_encoder=models.cross_encoder,
+            public=public,
+            experiment_name=experiment_name,
+            run_name=run_name,
+        )
+        return generation_config.dict()
