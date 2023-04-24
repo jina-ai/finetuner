@@ -98,8 +98,8 @@ for `scheduler` and `scheduler_options`.
 ```
 
 ## Loss Functions and Miners
-The loss function determines the training objective.
-The type of loss function which is most suitable for your task depends heavily on the task your training for.
+A loss function measures how far a model's output is from the correct values.
+The loss function most suitable for your task depends heavily on the task you're training for.
 The `miner` parameter is used to specify the method used to construct batches.
 Loss functions can have different requirements for the contents of each batch,
 so the available miners can depend on the loss function used.
@@ -108,6 +108,5 @@ See the [loss functions](./loss-functions.md) page to see the available loss fun
 
 ## Optimizer
 The `optimizer` determines the method used to update the weights of the model after each training batch.
-The `optimizer` parameter, in combination with its accompanying `optimizer_options`
-parameter can be configured in a number of ways.
+The `optimizer` parameter, in combination with the `optimizer_options` parameter, can be configured in several ways.
 See the [optimizers](./optimizers.md) page to see how to configure the optimizer.
