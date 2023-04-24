@@ -32,7 +32,7 @@ This `auth_token` will be utilized by Finetuner to carry out various tasks such 
 3. Storing fine-tuned models (referred to as Artifacts) on the Jina AI Cloud.
 4. Performing billing (applicable only when the user exhausts their free resources).
 
-By default, the data and fine-tuned model are only visible to you, unless you choose to manually set them to public.
+By default, the data and fine-tuned model are only visible to you, unless you choose to publish them manually by setting a `public` flag.
 ```
 
 In case the login process fails,
