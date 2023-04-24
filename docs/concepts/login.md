@@ -12,8 +12,8 @@ import finetuner
 finetuner.login()
 ```
 
-Once you execute the `~finetuner.login()` method,
-a browser window will appear, offering various login options.
+Once you call the `~finetuner.login()` method,
+a new tab will open in your browser, offering several login options.
 After completing the login process, you will receive the following message in your terminal:
 
 ```bash
@@ -32,14 +32,14 @@ This `auth_token` will be utilized by Finetuner to carry out various tasks such 
 3. Storing fine-tuned models (referred to as Artifacts) on the Jina AI Cloud.
 4. Performing billing (applicable only when the user exhausts their free resources).
 
-By default, the data and fine-tuned model are only visible to you, unless you choose to publish them manually by setting a `public` flag.
+By default, your data and fine-tuned models are visible only to you unless you publish them by manually setting the `public` flag to `True`.
 ```
 
 ## Namespace
 
-Users of Jina AI Cloud have a namespace that is linked to their personal account.
-This namespace ensures that even if data or artifacts share the same name,
-they are separated. 
+Jina AI Cloud users automatically have a namespace linked to their accounts.
+This ensures that even if two users give some artifact or resource the same name,
+they can be separately addressed.
 
 If you want to download public data or models published by other users,
 you must add `[namespace]/` before the name of the data or artifact.
@@ -47,7 +47,7 @@ For example, `finetuner/quora-train-da`,
 where `finetuner` is the namespace for the account, and `quora-train-da` is the name of the data,
 which refers to the quora training set.
 
-To retrieve your own namespace,
+To find the name of your namespace,
 log in to [Jina AI Cloud](https://cloud.jina.ai/) and click the `account` button under your profile image.
 You will find your namespace in the `Namespace` section.
 
@@ -56,11 +56,10 @@ Step 1             |  Step 2
 :-------------------------:|:-------------------------:
 ![namespace-1](https://user-images.githubusercontent.com/9794489/233982646-9476b885-89a9-45e4-9dd7-eea9127afb4c.jpeg)  |  ![namespace-2](https://user-images.githubusercontent.com/9794489/233982661-25a840a0-6812-4752-96b2-6c692dbf0ead.jpeg)
 
-## Other login options
-
-More information about the login into Jina you can find in the [Jina documentation](https://docs.jina.ai/jina-ai-cloud/login/).
-Please note that if you are already logged into Jina, you still need to call `finetuner.login()` to initialize the finetuner library correctly with your credentials.
-Unless you don't set the `force` flag in the login function, this will not overwrite your current session.
+```{admonition}
+Please note that if you are already logged into Jina AI Cloud, you still need to call `finetuner.login()` to initialize the finetuner library correctly with your credentials.
+This will join your existing Jina AI Cloud session if one is open. Setting the `force` flag in the login function will create a new session and terminate the previous one.
+```
 
 ## Troubleshooting
 
