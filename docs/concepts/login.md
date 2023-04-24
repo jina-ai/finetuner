@@ -1,10 +1,10 @@
 (login)=
 # {octicon}`sign-in` Login
 
-Finetuner, being a product of [Jina](https://jina.ai/) ,
+Finetuner, as part of the [Jina AI](https://jina.ai/) stack,
 uses [Jina AI Cloud](https://cloud.jina.ai/) for authentication.
 
-Accessing Jina AI Cloud is straightforward, and you can do so by following these steps:
+Accessing Jina AI Cloud is straightforward and you can do so by following these steps:
 
 ```python
 import finetuner
@@ -44,7 +44,7 @@ they can be separately addressed.
 If you want to download public data or models published by other users,
 you must add `[namespace]/` before the name of the data or artifact.
 For example, `finetuner/quora-train-da`,
-where `finetuner` is the namespace for the account, and `quora-train-da` is the name of the data,
+where `finetuner` is the namespace for the account, and `quora-train-da` is the name of the dataset,
 which refers to the quora training set.
 
 To find the name of your namespace,
