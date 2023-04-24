@@ -106,7 +106,7 @@ run = finetuner.fit(
 )
 ```
 
-### Loss functions
+### Loss functions and Miners
 
 The loss function determines the training objective.
 The type of loss function which is most suitable for your task depends heavily on the task your training for.
