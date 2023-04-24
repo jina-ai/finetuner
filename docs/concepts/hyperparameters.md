@@ -106,8 +106,7 @@ See the [loss functions](./loss-functions.md) page to see the available loss fun
 ## Miner
 Depending on the loss function, the contents of each batch must meet certain requirements,
 for example, the `TripletMarginLoss` function requires at least two of each class to be present in the batch.
-The `miner` is responsible for creating these batches,
-and there are several different miners that each use different techniques to construct these batches.
+The `miner` is responsible for creating these batches so that they match the loss function's requirements.
 Moreover, each of these miners can take additional arguments specified in the `miner_options` parameter.
 
 ```{Important}
