@@ -49,28 +49,38 @@ Several of these parameters are explained in detail in their own sections,
 the rest of this section will explain how to use the ones that aren't.
 
 ## Learning Rate
-The learning rate affects how much each item of new training data can affect the weights of the model you are training each time the model sees it.
-A higher learning rate means faster changes to the model, with greater change to the weights for each training epoch. A lower rate means changes will be slower.
+The learning rate affects how much each item of new training data can affect the weights of
+the model you are training each time the model sees it.
+A higher learning rate means faster changes to the model, with greater change to the weights
+for each training epoch. A lower rate means changes will be slower.
 It is essential to choose an appropriate learning rate when training:
-too high, and you risk unstable model weights that never converge, overfitting your training data, and you may lose the knowledge gained from pre-training,
+too high, and you risk unstable model weights that never converge, overfitting your training data,
+and you may lose the knowledge gained from pre-training,
 too low, and the model will take too long to learn and may not change enough to produce significant improvement.  
-An appropriate learning rate is typically somewhere between `1e-4` and `1e-6`. To see typical learning rates for various models and tasks, check out our [examples](#todo: figure out what to put here).
+An appropriate learning rate is typically somewhere between `1e-4` and `1e-6`.
+To see typical learning rates for various models and tasks, check out our examples.
 
 ## Epochs
-An epoch is a single round of training in which the model is presented with each item of training data, and after each item, weights are updated. Training for more epochs will result in a larger change in the model's performance but will take more time.
+An epoch is a single round of training in which the model is presented with each item of training data,
+and after each item, weights are updated.
+Training for more epochs will result in a larger change in the model's performance but will take more time.
 Typically 3-10 epochs are enough for a fine-tuning job.
 
 ## Batch Size
-During fine-tuning, your training data is split up into batches and is trained on one batch at a time.
-The `batch_size` parameter can be used to configure the size of each batch.
+During fine-tuning, training data is split into batches, and training takes place one batch at a time.
+The `batch_size` parameter sets the size of each batch.
 A larger `batch_size` results in faster training, though too large a `batch_size` can result
-in out of memory errors. Typically, a `batch_size` of 64 or 128 are good options when you
-are unsure of how high you can set this value, however you can also choose to not set the `batch_size`
-at all, in which case the highest possible value will be calculated for you automatically.
+in out of memory errors.
+The optimal `batch_size` is dependent on the model you are using and the contents of your training data.
+A `batch_size` of 64 or 128 is generally reasonably safe if you don't know how high you can set this value. However, if you do not set the `batch_size` at all,
+Finetuner will determine the highest possible value for your system and set it automatically.
 
 ## Learning Rate Scheduler
-You can configure Finetuner to use a learning rate scheduler.
-The scheduler is used to adjust the learning rate during training.
+A learning rate scheduler adjusts the learning rate over the course of training.
+This can speed up training under some conditions.
+You can configure Finetuner to use a learning rate scheduler by setting the `scheduler` parameter,
+supported types are: `linear`, `cosine`, `cosine_with_restarts`, `polynomial`,
+`constant` and `constant_with_warmup`.
 If no scheduler is configured, the learning rate is constant during training.
 When a scheduler is configured, the learning rate is adjusted after each batch by default.
 Alternatively, you can set `scheduler_options = {'scheduler_step': 'epoch'}` to adjust the learning rate after
@@ -83,7 +93,8 @@ The length of the warm-up phase is configured via the `num_warmup_steps` option 
 By default, it is set to zero.
 
 ```{Important}
-Please check the [developer reference](../../api/finetuner/#finetuner.fit) to get the available options for `scheduler`.
+Please check the [developer reference](../../api/finetuner/#finetuner.fit) to get the available options
+for `scheduler` and `scheduler_options`.
 ```
 
 ## Loss Functions and Miners
