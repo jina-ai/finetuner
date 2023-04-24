@@ -100,8 +100,6 @@ for `scheduler` and `scheduler_options`.
 ## Loss Functions
 The loss function determines the training objective.
 The type of loss function which is most suitable for your task depends heavily on the task your training for.
-Loss functions can have different requirements for the contents of each batch,
-so the available miners can depend on the loss function used.
 
 See the [loss functions](./loss-functions.md) page to see the available loss functions.
 
