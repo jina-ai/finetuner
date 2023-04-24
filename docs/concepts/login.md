@@ -54,7 +54,7 @@ You will find your namespace in the `Namespace` section.
 
 ...             |  ...
 :-------------------------:|:-------------------------:
-![namespace-1](../imgs/namespace1.jpeg)  |  ![namespace-2](../imgs/namespace2.jpeg)
+![namespace-1](https://user-images.githubusercontent.com/9794489/233982646-9476b885-89a9-45e4-9dd7-eea9127afb4c.jpeg)  |  ![namespace-2](https://user-images.githubusercontent.com/9794489/233982661-25a840a0-6812-4752-96b2-6c692dbf0ead.jpeg)
 
 
 ## Troubleshooting
