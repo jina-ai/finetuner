@@ -97,14 +97,25 @@ Please check the [developer reference](../../api/finetuner/#finetuner.fit) to ge
 for `scheduler` and `scheduler_options`.
 ```
 
-## Loss Functions and Miners
+## Loss Functions
 The loss function determines the training objective.
 The type of loss function which is most suitable for your task depends heavily on the task your training for.
-The `miner` parameter is used to specify the method used to construct batches.
 Loss functions can have different requirements for the contents of each batch,
 so the available miners can depend on the loss function used.
 
 See the [loss functions](./loss-functions.md) page to see the available loss functions.
+
+## Miner
+Depending on the loss function, the contents of each batch must meet certain requirements,
+for example, the `TripletMarginLoss` function requires at least two of each class to be present in the batch.
+The `miner` is responsible for creating these batches,
+and there are several different miners that each use different techniques to construct these batches.
+Moreover, each of these miners can take additional arguments specified in the `miner_options` parameter.
+
+```{Important}
+Please check the [developer reference](../../api/finetuner/#finetuner.fit) to get the available options
+for `miner` and `miner_options`.
+```
 
 ## Optimizer
 The `optimizer` determines the method used to update the weights of the model after each training batch.
