@@ -87,7 +87,7 @@ By default, it is set to zero.
 Please check the [developer reference](../../api/finetuner/#finetuner.fit) to get the available options for `scheduler`.
 ```
 
-## Loss
+## Loss Functions and Miners
 The loss function determines the training objective.
 The type of loss function which is most suitable for your task depends heavily on the task your training for.
 The `miner` parameter is used to specify the method used to construct batches.
