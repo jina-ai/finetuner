@@ -52,10 +52,15 @@ log in to [Jina AI Cloud](https://cloud.jina.ai/) and click the `account` button
 You will find your namespace in the `Namespace` section.
 
 
-...             |  ...
+Step 1             |  Step 2
 :-------------------------:|:-------------------------:
 ![namespace-1](https://user-images.githubusercontent.com/9794489/233982646-9476b885-89a9-45e4-9dd7-eea9127afb4c.jpeg)  |  ![namespace-2](https://user-images.githubusercontent.com/9794489/233982661-25a840a0-6812-4752-96b2-6c692dbf0ead.jpeg)
 
+## Other login options
+
+More information about the login into Jina you can find in the [Jina documentation](https://docs.jina.ai/jina-ai-cloud/login/).
+Please note that if you are already logged into Jina, you still need to call `finetuner.login()` to initialize the finetuner library correctly with your credentials.
+Unless you don't set the force flag, this will not overwrite your current session.
 
 ## Troubleshooting
 
