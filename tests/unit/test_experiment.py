@@ -6,7 +6,9 @@ from finetuner.constants import (
     ARTIFACT,
     BATCH_SIZE,
     CALLBACKS,
+    CORPUS,
     CREATED,
+    CROSS_ENCODER,
     DA_PREFIX,
     DATA,
     EPOCHS,
@@ -22,11 +24,14 @@ from finetuner.constants import (
     LOSS_OPTIMIZER,
     LOSS_OPTIMIZER_OPTIONS,
     LOSS_OPTIONS,
+    MAX_NUM_DOCS,
     MINER,
     MINER_OPTIONS,
     MODEL,
+    MODELS,
     NAME,
     NUM_ITEMS_PER_CLASS,
+    NUM_RELATIONS,
     NUM_WORKERS,
     ONNX,
     OPTIMIZER,
@@ -34,6 +39,9 @@ from finetuner.constants import (
     OPTIONS,
     OUTPUT_DIM,
     PUBLIC,
+    QUERIES,
+    RAW_DATA_CONFIG,
+    RELATION_MINING,
     RUN_NAME,
     SAMPLER,
     SCHEDULER,
@@ -43,6 +51,7 @@ from finetuner.constants import (
     TRAIN_DATA,
     VAL_SPLIT,
 )
+from finetuner.data import DATA_SYNTHESIS_EN
 from finetuner.experiment import Experiment
 
 
@@ -77,11 +86,11 @@ def test_list_runs(experiment):
         assert run.status()[STATUS] in [CREATED, STARTED, FINISHED, FAILED]
 
 
-def test_create_run(experiment):
+def test_create_training_run(experiment):
     data = docarray.DocumentArray().empty(1)
     run_name = 'run1'
     data_name = f'{DA_PREFIX}-{experiment.name}-{run_name}-train'
-    run = experiment.create_run(
+    run = experiment.create_training_run(
         model='resnet50',
         model_options={},
         train_data=data,
@@ -99,7 +108,33 @@ def test_create_run(experiment):
     assert run.config == expected_config
 
 
-def test_create_run_config():
+def test_create_synthesis_run(experiment):
+    query_data = docarray.DocumentArray().empty(1)
+    corpus_data = docarray.DocumentArray().empty(2)
+    run_name = 'run1'
+    query_data_name = f'{DA_PREFIX}-{experiment.name}-{run_name}-query'
+    corpus_data_name = f'{DA_PREFIX}-{experiment.name}-{run_name}-corpus'
+    run = experiment.create_synthesis_run(
+        query_data=query_data,
+        corpus_data=corpus_data,
+        models=DATA_SYNTHESIS_EN,
+        num_relations=3,
+        run_name=run_name,
+    )
+    expected_config = Experiment._create_synthesis_config(
+        query_data=query_data_name,
+        corpus_data=corpus_data_name,
+        models=DATA_SYNTHESIS_EN,
+        num_relations=3,
+        experiment_name=experiment.name,
+        run_name=run_name,
+    )
+    assert run.name == run_name
+    assert run.status()[STATUS] in [CREATED, STARTED, FINISHED, FAILED]
+    assert run.config == expected_config
+
+
+def test_create_training_run_config():
     expected_config = {
         MODEL: {
             NAME: 'resnet50',
@@ -175,4 +210,34 @@ def test_create_run_config():
         multi_modal=False,
         device='cuda',
     )
+    assert config == expected_config
+
+
+def test_create_synthesis_run_config():
+    expected_config = {
+        RAW_DATA_CONFIG: {
+            QUERIES: 'query_data',
+            CORPUS: 'corpus_data',
+        },
+        RELATION_MINING: {
+            MODELS: [DATA_SYNTHESIS_EN.relation_miner],
+            NUM_RELATIONS: 3,
+        },
+        CROSS_ENCODER: DATA_SYNTHESIS_EN.cross_encoder,
+        MAX_NUM_DOCS: None,
+        EXPERIMENT_NAME: 'exp name',
+        PUBLIC: False,
+        RUN_NAME: 'run name',
+    }
+
+    config = Experiment._create_synthesis_config(
+        train_data='train_data',
+        experiment_name='exp name',
+        models=DATA_SYNTHESIS_EN,
+        run_name='run name',
+        query_data='query_data',
+        corpus_data='corpus_data',
+        num_relations=3,
+    )
+
     assert config == expected_config

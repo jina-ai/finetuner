@@ -19,7 +19,7 @@ Add quickstart and other maybe other things from the readme here
 intro/what-is-finetuner
 intro/how-fine-tuning-works
 intro/installation	
-⮚  Getting Started <notebooks_md/getting_started>
+⮚  Getting Started <notebooks-md/getting_started>
 ```
 
 ```{toctree}
@@ -46,12 +46,12 @@ concepts/evaluation
 :caption: Tutorials
 :hidden:
 
-notebooks_md/text_to_text
-notebooks_md/image_to_image
-notebooks_md/image_to_image_arcface
-notebooks_md/text_to_image
-notebooks_md/multilingual_text_to_image
-notebooks_md/mesh_to_mesh
+notebooks-md/text_to_text
+notebooks-md/image_to_image
+notebooks-md/image_to_image_arcface
+notebooks-md/text_to_image
+notebooks-md/multilingual_text_to_image
+notebooks-md/mesh_to_mesh
 ```
 
 ```{toctree}

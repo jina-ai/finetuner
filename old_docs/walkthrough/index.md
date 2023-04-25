@@ -19,7 +19,7 @@ to address this by providing a simple interface, which can be as easy as:
 
 ```python
 import finetuner
-from docarray import DocumentArray
+from finetuner import DocumentArray
 
 # Login to Jina AI Cloud
 finetuner.login()

@@ -20,6 +20,6 @@ help:
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 notebook:
-	mkdir -p notebooks_md
-	@for f in $(shell ls notebooks/*.ipynb); do jupytext --to markdown $${f} --output notebooks_md/$$(basename -s .ipynb $${f}).md; done
+	mkdir -p notebooks-md
+	@for f in $(shell ls notebooks/*.ipynb); do jupytext --to markdown $${f} --output notebooks-md/$$(basename -s .ipynb $${f}).md; done
 

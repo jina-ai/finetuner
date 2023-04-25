@@ -10,15 +10,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add support for data generation jobs. ([#715](https://github.com/jina-ai/finetuner/pull/715))
+
 ### Removed
 
 ### Changed
+
+- Import `Document`, `DocumentArray` from finetuner. ([#720](https://github.com/jina-ai/finetuner/pull/720))
 
 ### Fixed
 
 ### Docs
 
+- Add hyper-parameters page to new docs structure. ([#739](https://github.com/jina-ai/finetuner/pull/739))
+
 - Add login page to new docs. [#737](https://github.com/jina-ai/finetuner/pull/737).
+
+- Add documentation on using `Document` and `DocumentArray` from docarray v1. ([#720](https://github.com/jina-ai/finetuner/pull/720))
 
 
 ## [0.7.6] - 2023-04-18
@@ -29,11 +37,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Install finetuner from source code instead of using a pip package [#719](https://github.com/jina-ai/finetuner/pull/719).
+- Install finetuner from source code instead of using a pip package. ([#719](https://github.com/jina-ai/finetuner/pull/719))
 
 ### Fixed
 
-- Downgrade docarray version [#719](https://github.com/jina-ai/finetuner/pull/719).
+- Downgrade docarray version. ([#719](https://github.com/jina-ai/finetuner/pull/719))
 
 ### Docs
 
