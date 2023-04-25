@@ -1,7 +1,7 @@
 (hyperparameters)=
 # {octicon}`tools` Hyperparameters
 
-Several of the [`finetuner.fit`](../../api/finetuner/#finetuner.fit) function's parameters are
+Several of the {meth}`~finetuner.fit` function's parameters are
 _hyper-parameters_: values that do not change the methods used during training but control the overall
 behavior and settings of the training process.
 These fall into four areas:
