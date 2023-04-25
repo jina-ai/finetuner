@@ -253,3 +253,7 @@ wandb: Syncing run cool-wildflower-2
 wandb:  View project at https://wandb.ai/anony-mouse-279369/[YOUR-PROJECT-URL]
 wandb:  View run at https://wandb.ai/anony-mouse-279369/[YOUR-RUN-URL]
 ```
+
+WandBLogger             |
+:-------------------------:|
+![wandblogger](https://user-images.githubusercontent.com/6599259/212645881-20071aba-8643-4878-bc53-97eb6f766bf0.png) | 
