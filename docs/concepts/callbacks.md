@@ -7,7 +7,7 @@ A run can be assigned multiple callbacks using the optional `callbacks` paramete
 
 ## EvaluationCallback
 
-The `EvaluationCallback` is used to calculate performance metrics for the model being tuned at the end of each epoch.
+The `EvaluationCallback` is used to calculate retrieval metrics for the model being tuned at the end of each epoch.
 In order to evaluate the model, two additional data sets - a query dataset and an index dataset - need to be provided as arguments.
 If no index set is provided, the query dataset is reused instead.
 To use `EvaluationCallback`:
@@ -194,6 +194,12 @@ run = finetuner.fit(
 )
 ```
 
+Alpha should be assigned a value that is greater than or equal to 0 but less than or equal to 1:
+
+1. When alpha is set to 0, the fine-tuned model is the same as the pre-trained model.
+2. When alpha is set to 1, the pre-trained weights are not used.
+3. When alpha is a floating-point number between 0 and 1, we combine the weights of the pre-trained and fine-tuned models.
+
 ```{warning}
 It is recommended to use WiSEFTCallback when fine-tuning CLIP.
 We can not ensure it works for other types of models, such as ResNet or BERT.
@@ -221,11 +227,11 @@ from finetuner.callback import WandBLogger, EvaluationCallback
 run = finetuner.fit(
     ...,
     callbacks=[
+        WandBLogger(),
         EvaluationCallback(
             query_data='finetuner/tll-test-query-da',
             index_data='finetuner/tll-test-index-da'
         ),
-        WandBLogger(),
     ]
 )
 
