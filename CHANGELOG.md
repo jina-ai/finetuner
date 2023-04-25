@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add hyper-parameters page to new docs structure. ([#739](https://github.com/jina-ai/finetuner/pull/739))
 
+- Add login page to new docs. [#737](https://github.com/jina-ai/finetuner/pull/737).
+
+
 ## [0.7.6] - 2023-04-18
 
 ### Added
