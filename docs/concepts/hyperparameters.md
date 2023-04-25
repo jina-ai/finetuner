@@ -7,6 +7,7 @@ These fall into four areas:
 - [Setting a loss function and using a miner.](./loss-functions.md)
 - Setting the batch size.
 - Choosing how many epochs to train.
+
 For the first two, see the pages linked above. For epochs and batch sizes, read the discussion below.
 
 ## Epochs
@@ -26,7 +27,6 @@ A `batch_size` of 64 or 128 is generally reasonably safe if you don't know how h
 Finetuner will determine the highest possible value for your system and set it automatically.
 
 ```{Important}
-CLIP models are usually larger than other models, with the `vit-large-en` model only being able to be trained safely with a `batch_size` of 8.  
-If you are not sure what `batch_size` to use for a model, we recommend not setting it and allowing the `batch_size` to be calculated automatically.
+CLIP models are usually larger than other models, with the `vit-large-en` model only being able to be trained safely with a `batch_size` of 8. If you are not sure what `batch_size` to use for a model, we recommend not setting it and allowing the `batch_size` to be calculated automatically.
 ```
 
