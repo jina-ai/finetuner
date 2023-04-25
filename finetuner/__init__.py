@@ -4,7 +4,7 @@ import warnings
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, TextIO, Union
 
 from _finetuner.runner.stubs import model as model_stub
-from docarray import DocumentArray
+from docarray import Document, DocumentArray  # noqa F401
 
 from finetuner.constants import (
     DEFAULT_FINETUNER_HOST,
@@ -12,7 +12,7 @@ from finetuner.constants import (
     HOST,
     HUBBLE_REGISTRY,
 )
-from finetuner.data import CSVOptions
+from finetuner.data import CSVOptions, SynthesisModels
 from finetuner.run import Run
 from hubble import login_required
 
@@ -67,13 +67,13 @@ def _build_name_stub_map() -> Dict[str, model_stub.ModelStubType]:
 
 def list_models() -> List[str]:
     """List available models."""
-    return [name for name in list_model_classes()]
+    return [_model_class.display_name for _model_class in list_model_classes().values()]
 
 
 def list_model_options() -> Dict[str, List[Dict[str, Any]]]:
     """List available options per model."""
     return {
-        name: [
+        _model_class.display_name: [
             {
                 'name': parameter.name,
                 'type': parameter.annotation,
@@ -87,7 +87,7 @@ def list_model_options() -> Dict[str, List[Dict[str, Any]]]:
             ).parameters.values()
             if parameter.name != 'self'
         ]
-        for name, _model_class in list_model_classes().items()
+        for _model_class in list_model_classes().values()
     }
 
 
@@ -137,8 +137,8 @@ def fit(
     loss_optimizer: Optional[str] = None,
     loss_optimizer_options: Optional[Dict[str, Any]] = None,
 ) -> Run:
-    """Create a Finetuner :class:`Run`, calling this function will submit a fine-tuning
-    job to the Jina AI Cloud.
+    """Create a Finetuner training :class:`Run`, calling this function will submit a
+    fine-tuning job to the Jina AI Cloud.
 
     :param model: The name of model to be fine-tuned. Run `finetuner.list_models()` or
         `finetuner.describe_models()` to see the available model names.
@@ -240,7 +240,7 @@ def fit(
        extremely slow and inefficient.
     """
 
-    return ft.create_run(
+    return ft.create_training_run(
         model=model,
         train_data=train_data,
         eval_data=eval_data,
@@ -275,8 +275,72 @@ def fit(
     )
 
 
-# `create_run` and `fit` do the same
+@login_required
+def synthesize(
+    query_data: Union[str, List[str], DocumentArray],
+    corpus_data: Union[str, List[str], DocumentArray],
+    models: SynthesisModels,
+    num_relations: int = 3,
+    run_name: Optional[str] = None,
+    description: Optional[str] = None,
+    experiment_name: Optional[str] = None,
+    device: str = 'cuda',
+    num_workers: int = 4,
+    csv_options: Optional[CSVOptions] = None,
+    public: bool = False,
+) -> Run:
+    """Create a Finetuner synthesis :class:`Run`, calling this function will submit a
+    data synthesis job to the Jina AI Cloud.
+
+    :param query_data: Either a :class:`DocumentArray` for example queries, name of a
+        `DocumentArray` that is pushed on Jina AI Cloud, the dataset itself as
+        a list of strings or a path to a CSV file.
+    :param corpus_data: Either a :class:`DocumentArray` for corpus data, a name of a
+        `DocumentArray` that is pushed on Jina AI Cloud, the dataset itself as a
+        list of strings or a path to a CSV file.
+    :param models: A :class:`SynthesisModels` object containing the names of
+        the models used for relation mining and cross encoding.
+        You can pass `finetuner.data.DATA_SYNTHESIS_EN` for the recommended models for
+        synthesis based on english data.
+    :param num_relations: The number of relations to mine per query.
+    :param run_name: Name of the run.
+    :param: description: Run Description.
+    :param experiment_name: Name of the experiment.
+    :param device: Whether to use the CPU, if set to `cuda`, a Nvidia GPU will be used.
+        otherwise use `cpu` to run a cpu job.
+    :param num_workers: Number of CPU workers. If `cpu: False` this is the number of
+        workers used by the dataloader.
+    :param csv_options: A :class:`CSVOptions` object containing options used for
+        reading in training and evaluation data from a CSV file, if they are
+        provided as such.
+    :param public: A boolean value indicates if the artifact is public. It should be
+        set to `True` if you would like to share your synthesized data with others.
+
+    .. note::
+       Unless necessary, please stick with `device="cuda"`, `cpu` training could be
+       extremely slow and inefficient.
+    """
+    return ft.create_synthesis_run(
+        query_data=query_data,
+        corpus_data=corpus_data,
+        models=models,
+        num_relations=num_relations,
+        run_name=run_name,
+        description=description,
+        experiment_name=experiment_name,
+        device=device,
+        num_workers=num_workers,
+        csv_options=csv_options,
+        public=public,
+    )
+
+
+# `create_run`, `create_training_run` and `fit` do the same
+create_training_run = fit
 create_run = fit
+
+# `create_synthesis_run` and `synthesize` do the same
+create_synthesis_run = synthesize
 
 
 def get_run(run_name: str, experiment_name: Optional[str] = None) -> Run:

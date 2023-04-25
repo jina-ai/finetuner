@@ -3,8 +3,8 @@ import os
 from io import StringIO
 
 import pytest
-from docarray import Document, DocumentArray
 
+from finetuner import Document, DocumentArray
 from finetuner.constants import DEFAULT_TAG_KEY, DEFAULT_TAG_SCORE_KEY
 from finetuner.data import CSVContext, CSVOptions, check_columns, create_document
 
@@ -42,6 +42,42 @@ def test_build_dataset_from_document_array():
     csv_context = CSVContext(model='bert-base-cased')
     new_da = csv_context.build_dataset(da)
     assert da == new_da
+
+
+@pytest.mark.parametrize('dialect', csv.list_dialects())
+def test_load_finetune_data_from_csv_one_row(dialect):
+    dialect = csv.get_dialect(dialect)
+    contents = [['apple1', 'apple2', 'orange1', 'orange2']]
+    content_stream = dialect.lineterminator.join(
+        [dialect.delimiter.join(x) for x in contents]
+    )
+
+    options = CSVOptions(dialect=dialect)
+
+    csv_context = CSVContext(options=options)
+    docs = csv_context.build_dataset(data=StringIO(content_stream))
+
+    flat_contents = [x for pair in contents for x in pair]
+    for doc, expected in zip(docs, flat_contents):
+        assert doc.text == expected
+
+
+@pytest.mark.parametrize('dialect', csv.list_dialects())
+def test_load_finetune_data_from_csv_one_column(dialect):
+    dialect = csv.get_dialect(dialect)
+    contents = [['apple1'], ['apple2'], ['orange1'], ['orange2']]
+    content_stream = dialect.lineterminator.join(
+        [dialect.delimiter.join(x) for x in contents]
+    )
+
+    options = CSVOptions(dialect=dialect)
+
+    csv_context = CSVContext(options=options)
+    docs = csv_context.build_dataset(data=StringIO(content_stream))
+
+    flat_contents = [x for pair in contents for x in pair]
+    for doc, expected in zip(docs, flat_contents):
+        assert doc.text == expected
 
 
 @pytest.mark.parametrize('dialect', csv.list_dialects())

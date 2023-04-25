@@ -12,7 +12,7 @@ To start fine-tuning, you can call:
 
 ```python
 import finetuner
-from docarray import DocumentArray
+from finetuner import DocumentArray
 
 train_data = 'path/to/some/data.csv'
 
@@ -67,7 +67,7 @@ Finetuner gives you the flexibility to set hyper-parameters explicitly:
 
 ```python
 import finetuner
-from docarray import DocumentArray
+from finetuner import DocumentArray
 from finetuner.data import CSVOptions
 
 train_data = 'path/to/some/train_data.csv'

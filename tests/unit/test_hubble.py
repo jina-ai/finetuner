@@ -1,15 +1,15 @@
 import docarray
 
 from finetuner.constants import DA_PREFIX
-from finetuner.hubble import push_data
+from finetuner.hubble import push_training_data
 
 
-def test_push_data(client_mocker, experiment_name='exp', run_name='run'):
+def test_push_training_data(client_mocker, experiment_name='exp', run_name='run'):
     train_data = docarray.DocumentArray.empty(10)
     eval_data = query_data = docarray.DocumentArray.empty(5)
     index_data = None
 
-    train_name, eval_name, query_name, index_name = push_data(
+    train_name, eval_name, query_name, index_name = push_training_data(
         experiment_name=experiment_name,
         run_name=run_name,
         train_data=train_data,

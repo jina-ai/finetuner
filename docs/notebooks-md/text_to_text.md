@@ -62,7 +62,7 @@ We will use the [Quora Question Pairs](https://www.sbert.net/examples/training/q
 
 ```python id="pwS11Nsg7jPM"
 import finetuner
-from docarray import DocumentArray, Document
+from finetuner import DocumentArray, Document
 
 finetuner.login(force=True)
 
