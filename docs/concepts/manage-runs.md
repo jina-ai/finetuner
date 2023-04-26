@@ -2,7 +2,8 @@
 # {octicon}`terminal` Managing Runs
 
 After starting a fine-tuning or a synthesis job by calling {meth}`~finetuner.fit` or {meth}`~finetuner.synthesize`,
-those methods return a {class}`~finetuner.run.Run` object. This object holds information about your job and serves as a handle to access the job running on the Jina AI Cloud.
+those methods return a {class}`~finetuner.run.Run` object.
+This object holds information about your job and serves as a handle to access the job running on the Jina AI Cloud.
 
 For example, the name of your run is in the `name` attribute of the `Run` object:
 
@@ -12,6 +13,7 @@ run = finetuner.fit(
 )
 
 print(run.name)
+```
 
 If you end your session or lose track of the `Run` object for the job, you can create a new `Run` object with the {meth}`finetuner.get_run` function:
 
@@ -29,7 +31,10 @@ you will need to add that to the `get_run` call:
 
 ```python
 run = finetuner.get_run('your-run-name', 'your-experiment-name')
-Further, you can use the {meth}`finetuner.list_runs` function to obtain a list of run objects for all jobs you submitted.
+```
+
+Furthermore, you can use the {meth}`finetuner.list_runs` function to get a list of run objects for all jobs you submitted (or for a specific experiment).
+This might also be helpful, if you have lost all information about your run.
 
 ```{admonition} Run-time of the list_runs function
 :class: hint
@@ -80,12 +85,11 @@ for entry in run.stream_logs():
 In addition to log messages, you can obtain more tracking information with the `WandBLogger` callback.
 See the [Callbacks Section](callbacks) for more details.
 
-## View runs in Jina AI Cloud
+## Viewing runs on the Jina AI Cloud website
 
-You can also view your runs in the Jina AI Cloud.
-After you login (see [Login Section](login)),
-you can click on the "Finetuner" section in the left sidebar at the [cloud.jina.ai](https://cloud.jina.ai/) Website.
-This will show you a list of all your runs:
+You can also view your runs in your browser via the Jina AI Cloud website.
+After you log in via your browser at [cloud.jina.ai](https://cloud.jina.ai/),
+click the "Finetuner" section in the left sidebar to see a list of all your runs:
 
 ![Jina AI Cloud - List of Runs](https://user-images.githubusercontent.com/6599259/233099591-d27405b3-a26c-4951-81df-2c5dc096113e.png)
 
