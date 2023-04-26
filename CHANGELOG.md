@@ -22,11 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
-- Add hyper-parameters page to new docs structure. ([#739](https://github.com/jina-ai/finetuner/pull/739))
+- Add hyperparameters page to new docs structure. ([#739](https://github.com/jina-ai/finetuner/pull/739))
 
 - Add login page to new docs. [#737](https://github.com/jina-ai/finetuner/pull/737).
 
 - Add documentation on using `Document` and `DocumentArray` from docarray v1. ([#720](https://github.com/jina-ai/finetuner/pull/720))
+
+- Add manage runs page to new docs. ([#741](https://github.com/jina-ai/finetuner/pull/741))
 
 
 ## [0.7.6] - 2023-04-18
