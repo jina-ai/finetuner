@@ -13,6 +13,8 @@ run = finetuner.fit(
 
 print(run.name)
 
+If you end your session or lose track of the `Run` object for the job, you can create a new `Run` object with the {meth}`finetuner.get_run` function:
+
 ```python
 import finetuner
 
