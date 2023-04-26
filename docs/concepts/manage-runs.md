@@ -83,7 +83,7 @@ It will show you information, like the logs and the configuration of the job:
 
 ![Jina AI Cloud - View Logs](https://user-images.githubusercontent.com/6599259/233099603-6af406e1-15c1-401b-af5a-495404114f4c.png)
 
-## Save Artifact
+## Save artifacts
 
 When a job finishes, it produces a model (for fine-tuning runs) or a training dataset (for synthesis runs).
 In both cases, its output is stored in an artifact on Jina AI Cloud.
