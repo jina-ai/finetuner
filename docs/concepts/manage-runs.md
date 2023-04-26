@@ -4,7 +4,14 @@
 After starting a fine-tuning or a synthesis job by calling {meth}`~finetuner.fit` or {meth}`~finetuner.synthesize`,
 those methods return a {class}`~finetuner.run.Run` object. This object holds information about your job and serves as a handle to access the job running on the Jina AI Cloud.
 
-If you lost the run object for the job, you can create a new `Run` object with the {meth}`finetuner.get_run` function:
+For example, the name of your run is in the `name` attribute of the `Run` object:
+
+```python
+run = finetuner.fit(
+    ...
+)
+
+print(run.name)
 
 ```python
 import finetuner
