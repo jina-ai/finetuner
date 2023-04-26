@@ -50,7 +50,6 @@ During fine-tuning or synthesis, the run status changes from:
 3. FINISHED: The job finished successfully and the model has been sent to Jina AI Cloud.
 4. FAILED: The job failed, please check the logs for more details.
 
-
 ## Retrieve the logs of a run
 
 When the status of your run is STARTED or FINISHED,
@@ -83,6 +82,18 @@ You will see more details of a specific run after you click on the respective ro
 It will show you information, like the logs and the configuration of the job:
 
 ![Jina AI Cloud - View Logs](https://user-images.githubusercontent.com/6599259/233099603-6af406e1-15c1-401b-af5a-495404114f4c.png)
+
+## Save Artifact
+
+When a job finishes, it produces a model (for fine-tuning runs) or a training dataset (for synthesis runs).
+In both cases, its output is stored in an artifact on Jina AI Cloud.
+You can save this artifact with the {meth}`~finetuner.run.Run.save_artifact` method:
+
+```python
+run.save_artifact('path/for/tuned_model')
+```
+
+To see how to use this model, read further in the [Inference Section](inference).
 
 ## Evaluation data
 
