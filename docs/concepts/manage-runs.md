@@ -46,7 +46,7 @@ If this list is very long, the function call might take a while since it needs t
 
 A `Run` object has the following attributes:
 - `name`: It references a job in the Jina AI Cloud. Therefore, it has to be unique for its experiment. If you don't specify a name yourself, Finetuner will give it a memorable name.
-- `config`: A configuration which is serialized from the attributes, which you passed to the `fit` or `synthesize` function.
+- `config`: A configuration which is created from the attributes, which you passed to the `fit` or `synthesize` function.
 - `artifact_id`: The results of your job are stored in an artifact on Jina AI Cloud identified by this artifact id. You can use this id in the {meth}`~finetuner.get_model` function to retrieve your fine-tuned mode, as explained in the [Inference Section](inference).
 
 ## Check the status of a run
