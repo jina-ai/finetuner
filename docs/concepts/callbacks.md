@@ -47,47 +47,7 @@ DEBUG    Artifact size is 83.580 MB                                             
 INFO     Finished 🚀    
 ```
 
-The `query_data` and `index_data` datasets are specified in the same format as the `train_data` and `eval_data` parameters of the {meth}`~finetuner.fit` method;
-either as a path to a CSV file, a {class}`~finetuner.DocumentArray` or the name of a {class}`~finetuner.DocumentArray` that has been pushed to the Jina AI Cloud.
-See {doc}`/concepts/data-preparation/` for more information about preparing your data.
-
-It is worth noting that the evaluation callback and the `eval_data` parameter of the fit method do not do the same thing.
-The `eval_data` parameter is used to evaluate model loss during training,
-while the evaluation callback is used to measure model quality at the end of each epoch using metrics such as average precision and recall.
-Other callbacks may use these metrics if the evaluation callback is first in the list of callbacks when creating a run.
-These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.
-
-```{admonition} Evaluation callback with two models
-:class: hint
-You don't usually need to provide the name of a model to the evaluation callback.
-It assumes you mean to evaluate the model that you are fine-tuning.
-However, if multiple models are involved in the fine-tuning process,
-for example, if you fine-tune CLIP models,
-then you need to be clear about which model to use to encode the documents in `query_data` and `index_data`.
-This is specified by the `model` parameter of the callback.
-If the `index_data` should be encoded by a different model from the `query_data`,
-you must specify this with the `index_model` parameter.
-For an example, see {doc}`/notebooks/text_to_image`.
-```
-
-### Show evaluation metrics
-
-During the fine-tuning process, the evaluation metrics are displayed in the logs, which you can retrieve via the {func}`~finetuner.run.Run.logs()` function.
-After the fine-tuning job has finished, the evaluation metrics can be retrieved from the cloud by calling the {func}`~finetuner.run.Run.metrics()` function.
-This function returns a JSON object with the metrics before and after fine-tuning.
-Alternatively, you can also retrieve the metrics via the {func}`~finetuner.run.Run.display_metrics()` function, which prints the evaluation results in the form of a table to the console.
-
-![Evaluation Metrics](https://user-images.githubusercontent.com/6599259/224283786-5803fb8e-6d40-4eb7-b1d2-ae91a24648e7.png)
-
-### Display example results
-
-If you want to compare the K most similar retrieval results (Top-K) before and after fine-tuning,
-you can set the `gather_examples` parameter of the evaluation callback to `True`.
-In this case, the evaluation callback will store the top-k results for each query document before and after fine-tuning.
-You can retrieve them with the {func}`~finetuner.run.Run.example_results()` function. 
-Alternatively, you can use the {func}`~finetuner.run.Run.display_examples()` function to display a table of the Top-K results before and after fine-tuning to the console.
-
-![Example Results](https://user-images.githubusercontent.com/6599259/224284912-f3f6f547-8d75-4529-8df1-7f9904423239.png)
+For a more detailed explanation of parameters and usage, please refer to the {ref}`evaluation <evaluation>` page.
 
 
 ## BestModelCheckpoint
