@@ -3,6 +3,7 @@
 
 A callback is a function provided as an argument to another function that can optionally run when a specific kind of event occurs.
 There are several events during a Finetuner run that support callbacks. 
+
 You can assign callbacks to the `finetuner.fit` method with the optional `callbacks` parameter.
 
 ## EvaluationCallback
@@ -10,6 +11,7 @@ You can assign callbacks to the `finetuner.fit` method with the optional `callba
 The `EvaluationCallback` calculates retrieval metrics at the end of each epoch for the model being tuned.
 In order to evaluate the model, two additional data sets - a query dataset and an index dataset - need to be provided as arguments.
 If no index set is provided, the evaluation is performed with the query dataset.
+
 To use `EvaluationCallback`:
 
 ```python
@@ -47,17 +49,18 @@ DEBUG    Artifact size is 83.580 MB                                             
 INFO     Finished 🚀    
 ```
 
-For a more detailed explanation of parameters and usage, please refer to the {ref}`evaluation <evaluation>` page.
+For a more detailed explanation of the parameters and usage of `EvaluationCallback`, please refer to the {ref}`evaluation <evaluation>` page.
 
 
 ## BestModelCheckpoint
 
 This callback evaluates the performance of the model at the end of each epoch, and keeps a record of the best performing model across all epochs.
 Once fitting is finished the best performing model is saved instead of the most recent model.
+
 Finetuner determines which model is the best is based on two parameters:
 
 - `monitor`: This parameter is by default `val_loss`, which uses the evaluation data to compare models. Alternatively, you can set this to `train_loss`, which will compare models using the training data. You can specify any metric recorded by the evaluation callback for this parameter.
-- `mode`: Whether the monitored metric should be maximised (`max`) or minimised (`min`). By default the mode is set to `auto`, meaning that it will automatically choose the correct mode depending on the chosen metric: 'min' if the metric is loss and 'max' if the metric is one recorded by the evaluation callback.
+- `mode`: Whether the monitored metric should be maximized (`max`) or minimized (`min`). By default the mode is set to `auto`, meaning that it will automatically choose the correct mode depending on the chosen metric: `min` if the metric is loss and `max` if the metric is one recorded by the evaluation callback.
 
 The console output below shows how the evaluation loss of the model is monitored between epochs and how the best-performing model is tracked. Since the final model has a higher loss than the previously recorded best model, the best model will be saved instead of the latest one.
 
@@ -116,7 +119,7 @@ The user-specified parameters are:
 
 - `min_delta`: The minimum amount of improvement that a model must have over the previous best model in order for fine-tuning to continue. By default, this is zero, meaning that the training will not stop early unless the performance starts to decrease.
 - `patience`: The number of consecutive rounds without improvement before the training is stopped, set to two by default.
-- `baseline`: an optional parameter that is used to compare the model's score against instead of the best previous model when checking for improvement. If specified, the improvement every epoch is measured by comparison to this value instead of the best-performing model so far.
+- `baseline`: an optional parameter against which the model's score is compared when checking for improvement, instead of the best previous model. If specified, the improvement every epoch is measured by comparison to this value instead of the best-performing model so far.
 
 In code:
 
@@ -145,6 +148,8 @@ has proven to be an effective way of fine-tuning models with strong zero-shot ca
 such as CLIP:
 
 > Large pre-trained models such as CLIP or ALIGN offer consistent accuracy across a range of data distributions when performing zero-shot inference (i.e., without fine-tuning on a specific dataset). Although existing fine-tuning methods substantially improve accuracy on a given target distribution, they often reduce robustness to distribution shifts. We address this tension by introducing a simple and effective method for improving robustness while fine-tuning: ensembling the weights of the zero-shot and fine-tuned models (WiSE-FT).
+
+To use WiSE-FT in a Finetuner run:
 
 ```python
 import finetuner
