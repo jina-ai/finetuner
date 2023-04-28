@@ -168,7 +168,7 @@ Alpha should be assigned a value that is greater than or equal to 0 but less tha
 It is recommended to use WiSEFTCallback when fine-tuning CLIP.
 We can not ensure it works for other types of models, such as ResNet or BERT.
 
-Please refer to {ref}`Apply WiSE-FT <wise-ft>` in the CLIP fine-tuning example for more information.
+Please refer to [Apply WiSE-FT](https://finetuner.jina.ai/notebooks/text_to_image/#advanced-wise-ft) in the CLIP fine-tuning example for more information.
 ```
 
 ## WandBLogger
