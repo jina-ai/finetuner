@@ -11,6 +11,7 @@ You can assign callbacks to the `finetuner.fit` method with the optional `callba
 The `EvaluationCallback` calculates retrieval metrics at the end of each epoch for the model being tuned.
 In order to evaluate the model, two additional data sets - a query dataset and an index dataset - need to be provided as arguments.
 If no index set is provided, the evaluation is performed with the query dataset.
+
 To use `EvaluationCallback`:
 
 ```python
