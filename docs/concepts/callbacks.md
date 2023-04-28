@@ -60,7 +60,7 @@ Once fitting is finished the best performing model is saved instead of the most 
 Finetuner determines which model is the best is based on two parameters:
 
 - `monitor`: This parameter is by default `val_loss`, which uses the evaluation data to compare models. Alternatively, you can set this to `train_loss`, which will compare models using the training data. You can specify any metric recorded by the evaluation callback for this parameter.
-- `mode`: Whether the monitored metric should be maximised (`max`) or minimised (`min`). By default the mode is set to `auto`, meaning that it will automatically choose the correct mode depending on the chosen metric: 'min' if the metric is loss and 'max' if the metric is one recorded by the evaluation callback.
+- `mode`: Whether the monitored metric should be maximized (`max`) or minimized (`min`). By default the mode is set to `auto`, meaning that it will automatically choose the correct mode depending on the chosen metric: `min` if the metric is loss and `max` if the metric is one recorded by the evaluation callback.
 
 The console output below shows how the evaluation loss of the model is monitored between epochs and how the best-performing model is tracked. Since the final model has a higher loss than the previously recorded best model, the best model will be saved instead of the latest one.
 
