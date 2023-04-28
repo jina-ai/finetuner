@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Add callback page to docs restructure page. [#738](https://github.com/jina-ai/finetuner/pull/738).
+
 - Add hyperparameters page to new docs structure. ([#739](https://github.com/jina-ai/finetuner/pull/739))
 
 - Add login page to new docs. [#737](https://github.com/jina-ai/finetuner/pull/737).
