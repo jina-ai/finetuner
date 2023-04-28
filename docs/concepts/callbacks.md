@@ -56,6 +56,7 @@ For a more detailed explanation of the parameters and usage of `EvaluationCallba
 
 This callback evaluates the performance of the model at the end of each epoch, and keeps a record of the best performing model across all epochs.
 Once fitting is finished the best performing model is saved instead of the most recent model.
+
 Finetuner determines which model is the best is based on two parameters:
 
 - `monitor`: This parameter is by default `val_loss`, which uses the evaluation data to compare models. Alternatively, you can set this to `train_loss`, which will compare models using the training data. You can specify any metric recorded by the evaluation callback for this parameter.
