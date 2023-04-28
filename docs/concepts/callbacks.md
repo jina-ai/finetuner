@@ -131,13 +131,10 @@ based on user-provided criteria, if it should stop training and save the current
 It takes `monitor` and `mode` parameters that work the same way they do for `BestModelCheckpoint` above.
 However, instead of using this information to identify the best-performing model out of all epochs, it uses user-specified parameters at the end of each epoch to determine if it should terminate fine-tuning and save the current model.
 
-Below is some example output for a run with the early stopping callback followed by the output for the same run without the early stopping callback,
-and then the python code used to create the run.
-The output for the run with early stopping finished after just ten epochs whereas the other run finished all twenty epochs,
-resulting in nearly twice the runtime.
-That said, the resulting loss value of the early stopping run is only 0.284,
-compared to the full run's 0.272, less than five percent higher.
-The early stopping callback can be used in this way to reduce the amount of training time while still showing improvement.
+Below is the output of a Finetuner run with early stopping, compared to one with the same data parameters but without early stopping.
+Note that the early stopping run terminated after ten epochs, while the other run continued for the whole twenty epochs. The loss of the final model is, in the two cases, nearly identical.
+The early stopping run has a loss of 0.284, while taking the whole 20 epochs produced a model with a loss of 0.272.
+Early stopping halved the runtime at a cost to performance of less than five percent.
 
 ```bash
   Training [10/20] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 54/54 0:00:00 0:00:14 • loss: 0.284
@@ -154,6 +151,14 @@ The early stopping callback can be used in this way to reduce the amount of trai
            INFO     Building the artifact ...                                                            __main__.py:207
            INFO     Pushing artifact to Hubble ...                                                       __main__.py:231
 ```
+
+The user-specified parameters are:
+
+- `min_delta`: The minimum amount of improvement that a model must have over the previous best model in order for fine-tuning to continue. By default, this is zero, meaning that the training will not stop early unless the performance starts to decrease.
+- `patience`: The number of consecutive rounds without improvement before the training is stopped, set to two by default.
+- `baseline`: an optional parameter that is used to compare the model's score against instead of the best previous model when checking for improvement. If specified, the improvement every epoch is measured by comparison to this value instead of the best-performing model so far.
+
+In code:
 
 ```python
 import finetuner
@@ -172,12 +177,6 @@ run = finetuner.fit(
     ]
 )
 ```
-
-The early stopping callback triggers at the end of training and evaluation batches to record the loss, and at the end of each epoch to evaluate the model and compare it to the best so far. Whether it stops training at the end of an epoch depends on several parameters:
-
-- `minimum_delta`: The minimum amount of improvement that a model can have over the previous best model to be considered worthwhile, zero by default, meaning that the training will not stop early unless the performance starts to decrease
-- `patience`: The number of consecutive rounds without improvement before the training is stopped, two by default.
-- `baseline`: an optional parameter that is used to compare the model's score against instead of the best previous model when checking for improvement. This baseline does not get changed over the course of a run.
 
 ## WiSEFTCallback
 
