@@ -149,6 +149,8 @@ such as CLIP:
 
 > Large pre-trained models such as CLIP or ALIGN offer consistent accuracy across a range of data distributions when performing zero-shot inference (i.e., without fine-tuning on a specific dataset). Although existing fine-tuning methods substantially improve accuracy on a given target distribution, they often reduce robustness to distribution shifts. We address this tension by introducing a simple and effective method for improving robustness while fine-tuning: ensembling the weights of the zero-shot and fine-tuned models (WiSE-FT).
 
+To use WiSE-FT in a Finetuner run:
+
 ```python
 import finetuner
 from finetuner.callback import WiSEFTCallback
