@@ -3,6 +3,7 @@
 
 A callback is a function provided as an argument to another function that can optionally run when a specific kind of event occurs.
 There are several events during a Finetuner run that support callbacks. 
+
 You can assign callbacks to the `finetuner.fit` method with the optional `callbacks` parameter.
 
 ## EvaluationCallback
