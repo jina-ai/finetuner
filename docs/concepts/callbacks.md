@@ -125,11 +125,11 @@ The console output below shows how the evaluation loss of the model is monitored
 
 ## EarlyStopping
 
-Similarly to the best model checkpoint callback,
-the early stopping callback measures a given metric at the end of every epoch.
-Unlike the best model checkpoint callback,
-the early stopping callback does not save the best model;
-only the monitored metric is recorded between runs in order to assess the rate of improvement.
+The `EarlyStopping` callback runs at the end of each training epoch and decides,
+based on user-provided criteria, if it should stop training and save the current model.
+
+It takes `monitor` and `mode` parameters that work the same way they do for `BestModelCheckpoint` above.
+However, instead of using this information to identify the best-performing model out of all epochs, it uses user-specified parameters at the end of each epoch to determine if it should terminate fine-tuning and save the current model.
 
 Below is some example output for a run with the early stopping callback followed by the output for the same run without the early stopping callback,
 and then the python code used to create the run.
@@ -182,7 +182,7 @@ The early stopping callback triggers at the end of training and evaluation batch
 ## WiSEFTCallback
 
 WiSE-FT, proposed by Mitchell et al. in [Robust fine-tuning of zero-shot models](https://arxiv.org/abs/2109.01903),
-has been proven to be an effective way for fine-tuning models with a strong zero-shot capability,
+has proven to be an effective way of fine-tuning models with strong zero-shot capability,
 such as CLIP:
 
 > Large pre-trained models such as CLIP or ALIGN offer consistent accuracy across a range of data distributions when performing zero-shot inference (i.e., without fine-tuning on a specific dataset). Although existing fine-tuning methods substantially improve accuracy on a given target distribution, they often reduce robustness to distribution shifts. We address this tension by introducing a simple and effective method for improving robustness while fine-tuning: ensembling the weights of the zero-shot and fine-tuned models (WiSE-FT).
