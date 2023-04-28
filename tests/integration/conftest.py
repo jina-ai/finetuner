@@ -2,11 +2,11 @@ import os
 
 import numpy as np
 import pytest
-from docarray import Document, DocumentArray
 from tests.constants import FINETUNER_LABEL
 
 import finetuner
 import hubble
+from finetuner import Document, DocumentArray
 
 
 @pytest.fixture()
@@ -65,3 +65,13 @@ def finetuner_mocker(mocker):
     finetuner.login()
 
     yield finetuner.ft
+
+
+@pytest.fixture()
+def synthesis_query_data():
+    return 'finetuner/xmarket_queries_da_s'
+
+
+@pytest.fixture()
+def synthesis_corpus_data():
+    return 'finetuner/xmarket_corpus_da_s'

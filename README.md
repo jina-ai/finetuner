@@ -149,7 +149,7 @@ Make sure you have Python 3.8+ installed. Finetuner can be installed via `pip` b
 pip install -U finetuner
 ```
 
-If you want to encode `docarray.DocumentArray` objects with the `finetuner.encode` function, you need to install 
+If you want to encode local data with the `finetuner.encode` function, you need to install 
 `"finetuner[full]"`. This includes a number of additional dependencies, which are necessary for encoding: Torch, 
 Torchvision and OpenCLIP:
 

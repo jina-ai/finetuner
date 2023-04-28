@@ -22,12 +22,13 @@ def get_row(model_stub) -> Tuple[str, ...]:
 def list_model_classes() -> Dict[str, ModelStubType]:
     rv = {}
     members = inspect.getmembers(model, inspect.isclass)
+    parent_class = _EmbeddingModelStub
     for name, stub in members:
         if (
             name != 'MLPStub'
             and not name.startswith('_')
             and type(stub) != type
-            and issubclass(stub, _EmbeddingModelStub)
+            and issubclass(stub, parent_class)
         ):
             rv[name] = stub
     return rv

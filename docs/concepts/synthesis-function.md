@@ -1,4 +1,4 @@
 (fit-function)=
-# {octicon}`beaker` Synthesis Training Data
+# {octicon}`beaker` Synthesizing Training Data
 
 Short explanations of all parameters of the synthesis function with references to other sections

@@ -2,10 +2,12 @@ import os
 
 import numpy as np
 import pytest
+from docarray import DocumentArray
 from tests.helper import create_random_name
 
 import finetuner
 from finetuner.constants import FAILED, FINISHED, STATUS
+from finetuner.data import DATA_SYNTHESIS_EN
 
 
 def test_runs(finetuner_mocker, get_feature_data):
@@ -25,7 +27,7 @@ def test_runs(finetuner_mocker, get_feature_data):
     first_run, second_run = [create_random_name(prefix='run') for _ in range(2)]
 
     # create a first run
-    finetuner_mocker.create_run(
+    finetuner_mocker.create_training_run(
         model='mlp',
         model_options={'input_size': 128, 'hidden_sizes': [32]},
         train_data=train_data,
@@ -45,7 +47,7 @@ def test_runs(finetuner_mocker, get_feature_data):
     assert run.name == first_run
 
     # create another run
-    finetuner_mocker.create_run(
+    finetuner_mocker.create_training_run(
         model='mlp',
         model_options={'input_size': 128, 'hidden_sizes': [32]},
         train_data=train_data,
@@ -83,7 +85,7 @@ def test_runs(finetuner_mocker, get_feature_data):
 
 
 @pytest.mark.parametrize('use_onnx', [True, False])
-def test_create_run_and_save_model(
+def test_create_training_run_and_save_model(
     finetuner_mocker, get_feature_data, tmp_path, use_onnx
 ):
     import time
@@ -91,7 +93,7 @@ def test_create_run_and_save_model(
     train_da, test_da = get_feature_data
     experiment_name = create_random_name()
     finetuner_mocker.create_experiment(name=experiment_name)
-    run = finetuner_mocker.create_run(
+    run = finetuner_mocker.create_training_run(
         model='mlp',
         model_options={'input_size': 128, 'hidden_sizes': [32]},
         train_data=train_da,
@@ -105,7 +107,11 @@ def test_create_run_and_save_model(
         device='cpu',
     )
     status = run.status()[STATUS]
-    while status not in [FAILED, FINISHED]:
+
+    # wait for up to 20 minutes for the run to finish
+    for _ in range(6 * 20):
+        if status in [FAILED, FINISHED]:
+            break
         time.sleep(10)
         status = run.status()[STATUS]
 
@@ -124,6 +130,44 @@ def test_create_run_and_save_model(
     finetuner.encode(model=model, data=test_da)
     assert test_da.embeddings is not None
     assert isinstance(test_da.embeddings, np.ndarray)
+
+    # delete created experiments (and runs)
+    finetuner_mocker.delete_experiment(experiment_name)
+    experiments = finetuner_mocker.list_experiments()
+    assert experiment_name not in [experiment.name for experiment in experiments]
+
+
+def test_create_synthesis_run_and_save_data(
+    finetuner_mocker, synthesis_query_data, synthesis_corpus_data
+):
+    import time
+
+    experiment_name = create_random_name()
+    finetuner_mocker.create_experiment(name=experiment_name)
+    run = finetuner_mocker.create_synthesis_run(
+        query_data=synthesis_query_data,
+        corpus_data=synthesis_corpus_data,
+        models=DATA_SYNTHESIS_EN,
+        num_relations=3,
+        experiment_name=experiment_name,
+    )
+    status = run.status()[STATUS]
+
+    # wait for up to 20 minutes for the run to finish
+    for _ in range(6 * 20):
+        if status in [FAILED, FINISHED]:
+            break
+        time.sleep(10)
+        status = run.status()[STATUS]
+
+    assert status == FINISHED
+
+    train_data = run.train_data
+    assert isinstance(train_data, str)
+    train_data = DocumentArray.pull(train_data)
+
+    for doc in train_data['@c']:
+        assert doc.content is not None
 
     # delete created experiments (and runs)
     finetuner_mocker.delete_experiment(experiment_name)
