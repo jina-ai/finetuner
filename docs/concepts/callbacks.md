@@ -196,11 +196,11 @@ from finetuner.callback import WandBLogger, EvaluationCallback
 run = finetuner.fit(
     ...,
     callbacks=[
-        WandBLogger(),
         EvaluationCallback(
             query_data='finetuner/tll-test-query-da',
             index_data='finetuner/tll-test-index-da'
         ),
+        WandBLogger(),
     ]
 )
 
