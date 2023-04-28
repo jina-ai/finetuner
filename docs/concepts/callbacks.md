@@ -119,7 +119,7 @@ The user-specified parameters are:
 
 - `min_delta`: The minimum amount of improvement that a model must have over the previous best model in order for fine-tuning to continue. By default, this is zero, meaning that the training will not stop early unless the performance starts to decrease.
 - `patience`: The number of consecutive rounds without improvement before the training is stopped, set to two by default.
-- `baseline`: an optional parameter that is used to compare the model's score against instead of the best previous model when checking for improvement. If specified, the improvement every epoch is measured by comparison to this value instead of the best-performing model so far.
+- `baseline`: an optional parameter against which the model's score is compared when checking for improvement, instead of the best previous model. If specified, the improvement every epoch is measured by comparison to this value instead of the best-performing model so far.
 
 In code:
 
