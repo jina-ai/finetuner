@@ -1,15 +1,15 @@
 (callbacks)=
 # {octicon}`link` Callbacks
 
-Callbacks are a way of adding additional methods to the finetuning process.
-The methods are executed when certain events occur and there are several callback classes, each serving a different function by providing different methods for different events.
-A run can be assigned multiple callbacks using the optional `callbacks` parameter when it is created.
+A callback is a function provided as an argument to another function that can optionally run when a specific kind of event occurs.
+There are several events during a Finetuner run that support callbacks. 
+You can assign callbacks to the `finetuner.fit` method with the optional `callbacks` parameter.
 
 ## EvaluationCallback
 
-The `EvaluationCallback` is used to calculate retrieval metrics for the model being tuned at the end of each epoch.
+The `EvaluationCallback` calculates retrieval metrics at the end of each epoch for the model being tuned.
 In order to evaluate the model, two additional data sets - a query dataset and an index dataset - need to be provided as arguments.
-If no index set is provided, the query dataset is reused instead.
+If no index set is provided, the evaluation is performed with the query dataset.
 To use `EvaluationCallback`:
 
 ```python
@@ -47,21 +47,26 @@ DEBUG    Artifact size is 83.580 MB                                             
 INFO     Finished 🚀    
 ```
 
-The evaluation callback is triggered at the end of each epoch, in which the model is evaluated using the `query_data` and `index_data` datasets that were provided when the callback was created.
-These datasets can be provided in the same way the `train_data` and `eval_data` parameters of the {meth}`~finetuner.fit` method; either as a path to a CSV file, a {class}`~finetuner.DocumentArray` or the name of a {class}`~finetuner.DocumentArray` that has been pushed on the Jina AI Cloud. See {doc}`/concepts/data-preparation/` for more information about how to prepare your data.
+The `query_data` and `index_data` datasets are specified in the same format as the `train_data` and `eval_data` parameters of the {meth}`~finetuner.fit` method;
+either as a path to a CSV file, a {class}`~finetuner.DocumentArray` or the name of a {class}`~finetuner.DocumentArray` that has been pushed to the Jina AI Cloud.
+See {doc}`/concepts/data-preparation/` for more information about preparing your data.
 
 It is worth noting that the evaluation callback and the `eval_data` parameter of the fit method do not do the same thing.
-The `eval_data` parameter is used to evaluate the loss of the model.
-On the other hand, the evaluation callback is used to evaluate the quality of the searches using metrics such as average precision and recall.
+The `eval_data` parameter is used to evaluate model loss during training,
+while the evaluation callback is used to measure model quality at the end of each epoch using metrics such as average precision and recall.
+Other callbacks may use these metrics if the evaluation callback is first in the list of callbacks when creating a run.
 These search metrics can be used by other callbacks if the evaluation callback is first in the list of callbacks when creating a run.
 
 ```{admonition} Evaluation callback with two models
 :class: hint
-Usually, you don't need to provide the name of a model to the evalution callback.
-The callback just takes the model which is fine-tuned.
-However, if multiple models are involved in the fine-tuning process, like this is the case for CLIP models, it needs to be clear which model is used to encode the documents in `query_data` and `index_data`.
-This can be specified by the `model` attribute of the callback.
-If a different model should be used for the `index_data`, you can set this via the `index_model` attribute.
+You don't usually need to provide the name of a model to the evaluation callback.
+It assumes you mean to evaluate the model that you are fine-tuning.
+However, if multiple models are involved in the fine-tuning process,
+for example, if you fine-tune CLIP models,
+then you need to be clear about which model to use to encode the documents in `query_data` and `index_data`.
+This is specified by the `model` parameter of the callback.
+If the `index_data` should be encoded by a different model from the `query_data`,
+you must specify this with the `index_model` parameter.
 For an example, see {doc}`/notebooks/text_to_image`.
 ```
 
@@ -89,12 +94,12 @@ Alternatively, you can use the {func}`~finetuner.run.Run.display_examples()` fun
 
 This callback evaluates the performance of the model at the end of each epoch, and keeps a record of the best performing model across all epochs.
 Once fitting is finished the best performing model is saved instead of the most recent model.
-The definition of best is based on two parameters:
+Finetuner determines which model is the best is based on two parameters:
 
-- `monitor`: The metric that is used to compare models to each other. By default this value is `val_loss`, the loss function calculated using the evaluation data, however the loss calculated on the training data can be used instead with `train_loss`; any metric that is recorded by the evaluation callback can also be used.
+- `monitor`: This parameter is by default `val_loss`, which uses the evaluation data to compare models. Alternatively, you can set this to `train_loss`, which will compare models using the training data. You can specify any metric recorded by the evaluation callback for this parameter.
 - `mode`: Whether the monitored metric should be maximised (`max`) or minimised (`min`). By default the mode is set to `auto`, meaning that it will automatically choose the correct mode depending on the chosen metric: 'min' if the metric is loss and 'max' if the metric is one recorded by the evaluation callback.
 
-The console output below shows how the evaluation loss of the model is monitored between each epoch, and how the best performing model is tracked. Since the final model has a higher loss than the previously recorded best model, the best model will be saved instead of the latest one.
+The console output below shows how the evaluation loss of the model is monitored between epochs and how the best-performing model is tracked. Since the final model has a higher loss than the previously recorded best model, the best model will be saved instead of the latest one.
 
 ```bash
            INFO     Finetuning ...                                                   
