@@ -49,7 +49,7 @@ DEBUG    Artifact size is 83.580 MB                                             
 INFO     Finished 🚀    
 ```
 
-For a more detailed explanation of parameters and usage, please refer to the {ref}`evaluation <evaluation>` page.
+For a more detailed explanation of the parameters and usage of `EvaluationCallback`, please refer to the {ref}`evaluation <evaluation>` page.
 
 
 ## BestModelCheckpoint
