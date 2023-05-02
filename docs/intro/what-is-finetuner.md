@@ -56,13 +56,13 @@ This teaches the model a lot about what kinds of things appear in pictures and w
     <tr>
         <td width="45%">
             <figure>
-                <img src="../_images/MonaLisa1.png" alt="The Mona Lisa with a section cut out."/>
+                <img src="../../_images/MonaLisa1.png" alt="The Mona Lisa with a section cut out."/>
                 <figcaption style="text-align:center">The Mona Lisa with a section cut out.</figcaption>
             </figure>
         </td>
         <td width="45%">
             <figure>
-                <img src="../_images/MonaLisa2.png" alt="The Mona Lisa with added blurring."/>
+                <img src="../../_images/MonaLisa2.png" alt="The Mona Lisa with added blurring."/>
                 <figcaption style="text-align:center">The Mona Lisa with added blurring.</figcaption>
             </figure>
         </td>
