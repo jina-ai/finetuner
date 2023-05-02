@@ -39,6 +39,7 @@ freezing, dimensionality reduction, hard-negative mining, cross-modal models, an
 ☁ **All-in-cloud**: Train using our GPU infrastructure, manage runs, experiments, and artifacts on Jina AI Cloud
 without worrying about resource availability, complex integration, or infrastructure costs.
 
+
 <!-- end elevator-pitch -->
 
 ## [Documentation](https://finetuner.jina.ai/)
