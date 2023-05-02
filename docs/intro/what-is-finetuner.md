@@ -39,7 +39,15 @@ Image-processing AI models are pre-trained using similar techniques.
 Typically, this means training to fill in the blank squares in pictures or by distorting or adding noise to images and training the model to “fix” them.
 This teaches the model a lot about what kinds of things appear in pictures and what they should look like.
 
-<table style="border: none;">
+<style>
+    table: {border: none;}
+</style>
+| |                                                               |
+|---|---------------------------------------------------------------|
+|![The Mona Lisa with a section cut out.](../imgs/MonaLisa1.png)| ![The Mona Lisa with added blurring.](../imgs/MonaLisa2.png)  |
+
+
+<!-- <table style="border: none;">
     <tr>
         <td width="45%">
             <figure>
@@ -54,7 +62,7 @@ This teaches the model a lot about what kinds of things appear in pictures and w
             </figure>
         </td>
     </tr>
-</table>
+</table> -->
 
 AI models that have already learned some relevant things are much easier to train than ones that start without knowing anything.
 This is called *transfer learning*, and it's a very intuitive idea.
