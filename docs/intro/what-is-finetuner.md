@@ -39,30 +39,35 @@ Image-processing AI models are pre-trained using similar techniques.
 Typically, this means training to fill in the blank squares in pictures or by distorting or adding noise to images and training the model to “fix” them.
 This teaches the model a lot about what kinds of things appear in pictures and what they should look like.
 
-<style>
-    table: {border: none;}
-</style>
-| |                                                               |
-|---|---------------------------------------------------------------|
-|![The Mona Lisa with a section cut out.](../imgs/MonaLisa1.png)| ![The Mona Lisa with added blurring.](../imgs/MonaLisa2.png)  |
+[//]: # (<style>)
+
+[//]: # (    table: {border: none;})
+
+[//]: # (</style>)
+
+[//]: # (| |                                                               |)
+
+[//]: # (|---|---------------------------------------------------------------|)
+
+[//]: # (|![The Mona Lisa with a section cut out.]&#40;../imgs/MonaLisa1.png&#41;| ![The Mona Lisa with added blurring.]&#40;../imgs/MonaLisa2.png&#41;  |)
 
 
-<!-- <table style="border: none;">
+<table style="border: none;">
     <tr>
         <td width="45%">
             <figure>
-                <img src="../imgs/MonaLisa1.png" alt="The Mona Lisa with a section cut out."/>
+                <img src="../_images/MonaLisa1.png" alt="The Mona Lisa with a section cut out."/>
                 <figcaption style="text-align:center">The Mona Lisa with a section cut out.</figcaption>
             </figure>
         </td>
         <td width="45%">
             <figure>
-                <img src="../imgs/MonaLisa2.png" alt="The Mona Lisa with added blurring."/>
+                <img src="../_images/MonaLisa2.png" alt="The Mona Lisa with added blurring."/>
                 <figcaption style="text-align:center">The Mona Lisa with added blurring.</figcaption>
             </figure>
         </td>
     </tr>
-</table> -->
+</table>
 
 AI models that have already learned some relevant things are much easier to train than ones that start without knowing anything.
 This is called *transfer learning*, and it's a very intuitive idea.
