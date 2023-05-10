@@ -75,8 +75,7 @@ between them is zero. If two vectors are not the same, the distance is some
 amount greater than zero.
 
 Please read our brief refresher on vectors if you are not already very familiar 
-with the mathematical concept: [Brief Refresher on Vectors](../brief-refresher-on-vectors/)
-
+with the mathematical concept: [Brief Refresher on Vectors](../brief-refresher-on-vectors)
 
 > Computer data, like a vector, is just a sequence of numbers. So any digital 
 > information can be treated like a vector just by calling it one!
