@@ -5,7 +5,7 @@
 <!-- Here should be the guides from [Part 1](https://www.notion.so/Not-So-Brief-Explanation-of-Neural-Networks-dd8cd521023642f792683ff43bd2ccf1), 
 [Part 2](https://www.notion.so/Transfer-learning-and-fine-tuning-d405c1fee3d4444cb343a05e73f02db6), ... -->
 
-# Fine-tuning
+## Introduction to Fine-tuning
 
 To understand fine-tuning, you will need to understand how neural network models work, 
 in general, if not in fine detail.
@@ -343,7 +343,7 @@ text as input, but both output embeddings in the same vector space.
 
 ![Dog embeddings](../imgs/dog_w_text.png)
 
-# Transfer learning and fine-tuning
+## Transfer learning and fine-tuning
 
 In the previous section, we discussed a neural network model that recognizes a 
 few kinds of fruit. Let’s say we now want to recognize vegetables instead of fruit.
