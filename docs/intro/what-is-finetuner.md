@@ -39,19 +39,6 @@ Image-processing AI models are pre-trained using similar techniques.
 Typically, this means training to fill in the blank squares in pictures or by distorting or adding noise to images and training the model to “fix” them.
 This teaches the model a lot about what kinds of things appear in pictures and what they should look like.
 
-[//]: # (<style>)
-
-[//]: # (    table: {border: none;})
-
-[//]: # (</style>)
-
-[//]: # (| |                                                               |)
-
-[//]: # (|---|---------------------------------------------------------------|)
-
-[//]: # (|![The Mona Lisa with a section cut out.]&#40;../imgs/MonaLisa1.png&#41;| ![The Mona Lisa with added blurring.]&#40;../imgs/MonaLisa2.png&#41;  |)
-
-
 <table style="border: none;">
     <tr>
         <td width="45%">
