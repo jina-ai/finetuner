@@ -95,12 +95,12 @@ Seen in this way, we can calculate the *angle* between the two vectors.
 For two vectors of dimension *n*:
 
 [//]: # (![Untitled]&#40;../imgs/Cosine1.png&#41;)
-<p align="center"><img src="../../_images/Cosine1.png"/></p>
+<p align="left"><img src="../../_images/Cosine1.png"/></p>
 
 For the two-dimensional vectors `[2,3]` and `[5,1]`:
 
 [//]: # (![Untitled]&#40;../imgs/Cosine2.png&#41;)
-<p align="center"><img src="../../_images/Cosine2.png"/></p>
+<p align="left"><img src="../../_images/Cosine2.png"/></p>
 
 Usually, we just stick to the cosine, without calculating the radians or 
 degrees of the angle. If *cos(θ) = 1*, then the angle *θ* is zero degrees, 
