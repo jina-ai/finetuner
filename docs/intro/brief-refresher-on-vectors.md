@@ -63,21 +63,25 @@ the Pythagorean theorem:
 If sides *a* and *b* form a right angle (= 90 degrees), then the length of 
 side *c* must fit the equation:
 
-![Untitled](../imgs/algebra1.png)
+[//]: # (![Untitled]&#40;../imgs/algebra1.png&#41;)
+<p align="left"><img src="../../_images/algebra1.png"/></p>
 
 This means:
 
-![Untitled](../imgs/algebra2.png)
+[//]: # (![Untitled]&#40;../imgs/algebra2.png&#41;)
+<p align="left"><img src="../../_images/algebra2.png"/></p>
 
 We can generalize this to get the Euclidean distance between any two 
 *n*-dimensional vectors with the formula:
 
-![Untitled](../imgs/algebra3.png)
+[//]: # (![Untitled]&#40;../imgs/algebra3.png&#41;)
+<p align="left"><img src="../../_images/algebra3.png"/></p>
 
 For two five-dimensional vectors, `[2 -3 7 4 1]` and `[-7 0 -2 5 4]`, 
 it looks like this:
 
-![Untitled](../imgs/algebra4.png)
+[//]: # (![Untitled]&#40;../imgs/algebra4.png&#41;)
+<p align="left"><img src="../../_images/algebra4.png"/></p>
 
 Even if two vectors have thousands or millions of dimensions, it’s 
 pretty trivial for a computer to calculate the Euclidean distance 
