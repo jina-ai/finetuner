@@ -83,7 +83,7 @@ Even if two vectors have thousands or millions of dimensions, it’s
 pretty trivial for a computer to calculate the Euclidean distance 
 between them.
 
-## Cosine distance
+### Cosine distance
 
 Vectors can also be seen as lines in a high-dimensional space from the 
 origin (the point where all the numbers in the vector are zero) to the 
@@ -98,7 +98,7 @@ For two vectors of dimension *n*:
 
 For the two-dimensional vectors `[2,3]` and `[5,1]`:
 
-![Untitled](../imgs/Cosine2.png)
+![Untitled](../imgs/Cosine2.png | width=100)
 
 Usually, we just stick to the cosine, without calculating the radians or 
 degrees of the angle. If *cos(θ) = 1*, then the angle *θ* is zero degrees, 
