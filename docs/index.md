@@ -18,6 +18,7 @@ Add quickstart and other maybe other things from the readme here
 
 intro/what-is-finetuner
 intro/how-fine-tuning-works
+intro/brief-refresher-on-vectors
 intro/installation	
 ⮚  Getting Started <notebooks-md/getting_started>
 ```
