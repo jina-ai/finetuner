@@ -98,7 +98,8 @@ For two vectors of dimension *n*:
 
 For the two-dimensional vectors `[2,3]` and `[5,1]`:
 
-![Untitled](../imgs/Cosine2.png)
+[//]: # (![Untitled]&#40;../imgs/Cosine2.png&#41;)
+<p align="center"><img src="../../_images/Cosine2.png"/></p>
 
 Usually, we just stick to the cosine, without calculating the radians or 
 degrees of the angle. If *cos(θ) = 1*, then the angle *θ* is zero degrees, 
