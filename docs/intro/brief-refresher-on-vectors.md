@@ -15,7 +15,7 @@ point *Q* is defined by the vector `[-5, -5, 7]` and point *P* by `[3,0,5]`:
 
 A vector isn’t limited to three numbers. It can have any amount — hundreds, 
 thousands, even millions or billions — defining a point in what’s called a 
-*vector space*.
+*vector space*. 
 
 These vector spaces are just extensions of the three-dimensional space we are 
 all used to. It can be hard to imagine a space with millions of dimensions, and 
