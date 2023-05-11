@@ -94,7 +94,8 @@ point designated by the coordinates in the vector.
 Seen in this way, we can calculate the *angle* between the two vectors. 
 For two vectors of dimension *n*:
 
-![Untitled](../imgs/Cosine1.png)
+[//]: # (![Untitled]&#40;../imgs/Cosine1.png&#41;)
+<p align="center"><img src="../../_images/Cosine1.png"/></p>
 
 For the two-dimensional vectors `[2,3]` and `[5,1]`:
 
