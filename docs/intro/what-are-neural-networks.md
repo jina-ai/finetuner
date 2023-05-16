@@ -43,7 +43,7 @@ machine learning and artificial intelligence:
 
 To explain how all this works, we need to use some linear algebra.
 
-![Don't panic](../imgs/Don't_Panic.png)
+![Don't panic](../imgs/Dont_Panic.png)
 
 The only mathematical operations going on here are addition, subtraction, 
 multiplication, and in one spot, division and an exponent. There is no calculus
