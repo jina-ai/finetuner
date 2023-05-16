@@ -1,4 +1,4 @@
-# Neural Networks
+# {octicon}`light-bulb` Neural Networks
 
 Neural Networks are a family of computational techniques for data analysis
 and machine learning that underlie most of the recent breakthroughs in

@@ -1,56 +1,54 @@
 (technical-details)=
 # {octicon}`mortar-board` How Fine-tuning Works
 
+To understand what fine-tuning does and how it works, you will need to first 
+understand how neural network models work, in general, if not in fine detail.
 
-<!-- Here should be the guides from [Part 1](https://www.notion.so/Not-So-Brief-Explanation-of-Neural-Networks-dd8cd521023642f792683ff43bd2ccf1), 
-[Part 2](https://www.notion.so/Transfer-learning-and-fine-tuning-d405c1fee3d4444cb343a05e73f02db6), ... -->
-
-## Introduction to Fine-tuning
-
-To understand fine-tuning, you will need to understand how neural network models work, 
-in general, if not in fine detail.
-
-This document is intended for readers with some understanding of algebra and 
-computer engineering but who may not have any experience with machine learning 
-or artificial intelligence. If any section covers subjects you are already 
-familiar with, feel free to skip it.
+If you are new to neural networks or not particularly familiar with what it means
+to train and use a neural AI model, we have a [presentation of the core concepts](../intro/what-are-neural-networks)
+relevant to fine-tuning. It is intended for readers with some understanding 
+of algebra and computer engineering but who may have little or no experience with 
+machine learning or artificial intelligence.
 
 We also have a [non-technical summary of what fine-tuning does](../intro/what-is-finetuner), 
 but without explaining how it works.
 
+## Transfer Learning
+
+[TO DO]
 
 ## Example: Recognizing pictures of fruit
 
-Let’s consider a more concrete example. Imagine we trained a neural network to 
-take as input pictures of fruit, and then tell us which fruit it is. To make 
-the problem simpler, let’s say it can recognize different kinds of fruit, 
+Let’s consider a more concrete example. Imagine we trained a neural network to
+take as input pictures of fruit, and then tell us which fruit it is. To make
+the problem simpler, let’s say it can recognize different kinds of fruit,
 specified in advance.
 
-We don’t need to be very specific about the exact number of nodes and hidden 
+We don’t need to be very specific about the exact number of nodes and hidden
 layers, the network will look basically like this:
 
 ![Fruit neural network](../imgs/fruit_NN2.png)
 
-The last hidden layer will be a vector with some high number of dimensions. 
-Since it’s very hard to draw that, we’re going to pretend the last hidden layer 
-forms a two-dimensional space. Before training, when all the weights are set to 
-random values, we would expect that layer to give us randomly distributed 
+The last hidden layer will be a vector with some high number of dimensions.
+Since it’s very hard to draw that, we’re going to pretend the last hidden layer
+forms a two-dimensional space. Before training, when all the weights are set to
+random values, we would expect that layer to give us randomly distributed
 results when we enter pictures of fruit:
 
 ![Fruit embeddings pre-training](../imgs/scatterplot_fruit.png)
 
-After training, we would expect the last hidden layer’s distribution to look 
+After training, we would expect the last hidden layer’s distribution to look
 more like this:
 
 ![Fruit embeddings post-training](../imgs/scatterplot_fruit_ordered.png)
 
-In short, the last hidden layer should be organized so that the output layer 
-can easily recognize fruits just by drawing lines around the parts of the 
+In short, the last hidden layer should be organized so that the output layer
+can easily recognize fruits just by drawing lines around the parts of the
 vector space each fruit falls into.
 
 ![Fruit embeddings partitioned](../imgs/scatterplot_fruit_partitioned.png)
 
-Then, when we present the model with new images, we can expect them to appear 
+Then, when we present the model with new images, we can expect them to appear
 in the right part of the vector space so that they are easily recognized:
 
 ![New fruit inputs](../imgs/fruit_and_dots.png)

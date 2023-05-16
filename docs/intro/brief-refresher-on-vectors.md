@@ -1,4 +1,4 @@
-# Brief Refresher on Vectors
+# {octicon}`light-bulb` Brief Refresher on Vectors
 
 Vectors are ordered lists of numbers that correspond to points in a high-dimensional 
 metric space. For example, a point on a graph is defined by a vector. In the 
