@@ -5,7 +5,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.14.5
+      jupytext_version: 1.14.1
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -118,7 +118,7 @@ Let's understand what this piece of code does:
 Now that we've created a run, let's see its status. You can monitor the run by checking the status - `run.status()` - and the logs - `run.logs()` or `run.stream_logs()`. 
 <!-- #endregion -->
 
-```python id="56d020bf-8095-4a83-a532-9b6c296e985a"
+```python id="56d020bf-8095-4a83-a532-9b6c296e985a" tags=[]
 # note, the fine-tuning might takes 20~ minutes
 for entry in run.stream_logs():
     print(entry)
