@@ -2,7 +2,7 @@ import docarray
 import pytest
 
 from finetuner.constants import CREATED, FAILED, FINISHED, STARTED, STATUS
-from finetuner.model import synthesis_models_en
+from finetuner.model import synthesis_model_en
 
 
 @pytest.mark.parametrize(
@@ -62,7 +62,7 @@ def test_create_synthesis_run(finetuner_mocker, experiment_name):
     run = finetuner_mocker.create_synthesis_run(
         query_data=data,
         corpus_data=data,
-        models=synthesis_models_en,
+        models=synthesis_model_en,
         num_relations=3,
         run_name=run_name,
         experiment_name=experiment_name,

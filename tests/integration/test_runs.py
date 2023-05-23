@@ -7,7 +7,7 @@ from tests.helper import create_random_name
 
 import finetuner
 from finetuner.constants import FAILED, FINISHED, STATUS
-from finetuner.model import synthesis_models_en
+from finetuner.model import synthesis_model_en
 
 
 def test_runs(finetuner_mocker, get_feature_data):
@@ -147,7 +147,7 @@ def test_create_synthesis_run_and_save_data(
     run = finetuner_mocker.create_synthesis_run(
         query_data=synthesis_query_data,
         corpus_data=synthesis_corpus_data,
-        models=synthesis_models_en,
+        models=synthesis_model_en,
         num_relations=3,
         experiment_name=experiment_name,
     )
