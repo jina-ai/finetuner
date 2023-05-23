@@ -42,8 +42,9 @@ from finetuner.constants import (
     TRAINING_TASK,
     VAL_SPLIT,
 )
-from finetuner.data import CSVContext, CSVOptions, SynthesisModels
+from finetuner.data import CSVContext, CSVOptions
 from finetuner.hubble import push_synthesis_data, push_training_data
+from finetuner.model import SynthesisModels
 from finetuner.names import get_random_name
 from finetuner.run import Run
 
