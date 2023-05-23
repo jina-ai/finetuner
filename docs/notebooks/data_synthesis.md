@@ -16,7 +16,7 @@ jupyter:
 
 <a href="https://colab.research.google.com/drive/1sX5K0eophlHXu1S7joysZJUj1zfh28Gi?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
-When using Finetuner, each item in your training data must either have a label, or have a similarity score comparing it to some other item. see the Finetuner documentation on [preparing training data](https://finetuner.jina.ai/walkthrough/create-training-data/).
+When using Finetuner, each item in your training data must either have a label, or have a similarity score comparing it to some other item. See the Finetuner documentation on [preparing training data](https://finetuner.jina.ai/walkthrough/create-training-data/).
 If your data is not labelled, and you don't want to spend time manually organizing and labelling it, you can use the `finetuner.synthesize` function to automatically construct a dataset that can be used in training.
 
 This guide will walk you through the process of using the `finetuner.synthesize` function, as well as how to use its output for training.
