@@ -24,6 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add documentation on using `Document` and `DocumentArray` from docarray v1. ([#720](https://github.com/jina-ai/finetuner/pull/720))
 
+- Add notebook on data generation. ([#745](https://github.com/jina-ai/finetuner/pull/745))
+
+
 ## [0.7.6] - 2023-04-18
 
 ### Added
