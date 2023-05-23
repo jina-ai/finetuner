@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import List, Union
 
 from _finetuner.runner.stubs import model
@@ -48,7 +49,7 @@ class SynthesisModels:
     cross_encoder: str
 
 
-synthesis_models_en = SynthesisModels(
+synthesis_model_en = SynthesisModels(
     relation_miner='sbert-base-en',
     cross_encoder='crossencoder-base-en',
 )

@@ -53,6 +53,7 @@ notebooks/image_to_image_arcface
 notebooks/text_to_image
 notebooks/multilingual_text_to_image
 notebooks/mesh_to_mesh
+notebooks/data_synthesis
 ```
 
 ```{toctree}
