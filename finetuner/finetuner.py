@@ -4,9 +4,10 @@ import hubble
 from finetuner import DocumentArray
 from finetuner.client import FinetunerV1Client
 from finetuner.constants import CREATED_AT, DESCRIPTION, NAME, STATUS
-from finetuner.data import CSVOptions, SynthesisModels
+from finetuner.data import CSVOptions
 from finetuner.excepts import FinetunerServerError
 from finetuner.experiment import Experiment
+from finetuner.model import SynthesisModels
 from finetuner.run import Run
 from hubble import login_required
 

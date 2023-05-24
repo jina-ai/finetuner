@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+from typing import List, Union
+
 from _finetuner.runner.stubs import model
 from _finetuner.runner.stubs.model import *  # noqa F401
 from _finetuner.runner.stubs.model import _EmbeddingModelStub
@@ -32,3 +35,21 @@ def list_model_classes() -> Dict[str, ModelStubType]:
         ):
             rv[name] = stub
     return rv
+
+
+@dataclass
+class SynthesisModels:
+    """Class specifying the models to be used in a data synthesis job.
+    :param: relation_miner: The name of the model or list of models to use for
+        relation mining.
+    :param cross_encoder: The name of the model to use as the cross encoder
+    """
+
+    relation_miner: Union[str, List[str]]
+    cross_encoder: str
+
+
+synthesis_model_en = SynthesisModels(
+    relation_miner='sbert-base-en',
+    cross_encoder='crossencoder-base-en',
+)

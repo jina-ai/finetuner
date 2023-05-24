@@ -12,7 +12,8 @@ from finetuner.constants import (
     HOST,
     HUBBLE_REGISTRY,
 )
-from finetuner.data import CSVOptions, SynthesisModels
+from finetuner.data import CSVOptions
+from finetuner.model import SynthesisModels
 from finetuner.run import Run
 from hubble import login_required
 

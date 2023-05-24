@@ -431,21 +431,3 @@ def create_document(
         doc = Document(content=column)
 
     return doc
-
-
-@dataclass
-class SynthesisModels:
-    """Class specifying the models to be used in a data synthesis job.
-    :param: relation_miner: The name of the model or list of models to use for
-        relation mining.
-    :param cross_encoder: The name of the model to use as the cross encoder
-    """
-
-    relation_miner: Union[str, List[str]]
-    cross_encoder: str
-
-
-DATA_SYNTHESIS_EN = SynthesisModels(
-    relation_miner='sbert-base-en',
-    cross_encoder='crossencoder-base-en',
-)
