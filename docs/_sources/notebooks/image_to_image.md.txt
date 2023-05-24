@@ -54,7 +54,7 @@ Important: If your documents refer to locally stored images, please call `doc.lo
 
 ```python id="L0NfPGbTkNsc"
 import finetuner
-from docarray import DocumentArray, Document
+from finetuner import DocumentArray, Document
 
 finetuner.login(force=True)
 ```

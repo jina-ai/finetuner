@@ -4,7 +4,7 @@
 Finetuner, being part of the Jina AI Cloud, provides a convenient way to use tuned models via [Jina Executors](https://docs.jina.ai/fundamentals/executor/).
 
 We've created the [`FinetunerExecutor`](https://cloud.jina.ai/executor/13dzxycc) which can be added in a [Jina Flow](https://docs.jina.ai/fundamentals/flow/) and load any tuned model. 
-More specifically, the executor exposes an `/encode` endpoint that embeds [Documents](https://docarray.jina.ai/fundamentals/document/) using the fine-tuned model.
+More specifically, the executor exposes an `/encode` endpoint that embeds [Documents](https://finetuner.jina.ai/walkthrough/create-training-data/#preparing-a-documentarray) using the fine-tuned model.
 
 Loading a tuned model is simple! You just need to provide a few parameters under the `uses_with` argument when adding the `FinetunerExecutor` to the [Flow]((https://docs.jina.ai/fundamentals/flow/)).
 You have three options:
