@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Removed
+
+### Changed
+
+### Fixed
+
+### Docs
+
+
+## [0.7.7] - 2023-05-24
+
+### Added
+
 - Add support for data generation jobs. ([#715](https://github.com/jina-ai/finetuner/pull/715))
 
 ### Removed
