@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bump black, flake8 and isort ([#747](https://github.com/jina-ai/finetuner/pull/747))
+
 ### Fixed
 
 ### Docs
