@@ -89,7 +89,6 @@ class LabeledCSVParser(_CSVParser):
 
     def parse(self):
         with self._file_ctx as fp:
-
             lines = csv.reader(fp, dialect=self._options.dialect)
 
             for columns in _subsample(
@@ -125,7 +124,6 @@ class QueryDocumentRelationsParser(_CSVParser):
 
     def parse(self):
         with self._file_ctx as fp:
-
             queries = {}
             artificial_label = 0
             modality_col1, modality_col2 = None, None
@@ -197,7 +195,6 @@ class PairwiseScoreParser(_CSVParser):
 
     def parse(self):
         with self._file_ctx as fp:
-
             lines = csv.reader(fp, dialect=self._options.dialect)
 
             for columns in _subsample(
