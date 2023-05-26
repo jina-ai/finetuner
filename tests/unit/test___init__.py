@@ -19,7 +19,6 @@ from finetuner import Document, DocumentArray
     ],
 )
 def test_build_model(descriptor, select_model, is_onnx, expect_error):
-
     if expect_error:
         with pytest.raises(expect_error):
             model = finetuner.build_model(
@@ -40,7 +39,6 @@ def test_build_model(descriptor, select_model, is_onnx, expect_error):
 
 @pytest.mark.parametrize('is_onnx', [True, False])
 def test_build_model_embedding(is_onnx):
-
     model = finetuner.build_model(name='bert-base-cased', is_onnx=is_onnx)
 
     da = DocumentArray(Document(text='TEST TEXT'))

@@ -11,7 +11,6 @@ from finetuner.model import synthesis_model_en
 
 
 def test_runs(finetuner_mocker, get_feature_data):
-
     experiment_name = create_random_name()
 
     # get preprocessed data

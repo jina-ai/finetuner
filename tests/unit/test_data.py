@@ -25,7 +25,6 @@ def dummy_csv_file():
 
 @pytest.mark.parametrize('data, is_file', [(dummy_csv_file(), True)])
 def test_build_dataset_str(data, is_file):
-
     options = CSVOptions(dialect='excel')
     csv_context = CSVContext(model='bert-base-cased', options=options)
 

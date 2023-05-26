@@ -2,7 +2,6 @@ from tests.helper import create_random_name
 
 
 def test_experiments(finetuner_mocker):
-
     first_exp_name, second_exp_name = [create_random_name() for _ in range(2)]
 
     # create an experiment and retrieve it
