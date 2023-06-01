@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fix create synthesis run not accepting `DocumentArray` as input type. ([#748](https://github.com/jina-ai/finetuner/pull/748))
+
 ### Docs
 
 

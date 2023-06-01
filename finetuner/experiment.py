@@ -241,16 +241,16 @@ class Experiment:
             run_name = get_random_name()
 
         csv_context = CSVContext(None, options=csv_options)
-        query_data = (
-            csv_context.build_dataset(data=query_data)
-            if isinstance(query_data, str)
-            else DocumentArray([Document(text=data) for data in query_data])
-        )
-        corpus_data = (
-            csv_context.build_dataset(data=corpus_data)
-            if isinstance(query_data, str)
-            else DocumentArray([Document(text=data) for data in corpus_data])
-        )
+        if isinstance(query_data, str):
+            query_data = csv_context.build_dataset(data=query_data)
+        elif isinstance(query_data, list):
+            query_data = DocumentArray([Document(text=data) for data in query_data])
+
+        if isinstance(corpus_data, str):
+            corpus_data = csv_context.build_dataset(data=corpus_data)
+        elif isinstance(corpus_data, list):
+            corpus_data = DocumentArray([Document(text=data) for data in corpus_data])
+
         query_data, corpus_data = push_synthesis_data(
             experiment_name=self._name,
             run_name=run_name,
