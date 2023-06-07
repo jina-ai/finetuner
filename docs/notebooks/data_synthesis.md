@@ -67,7 +67,7 @@ The relation miner is used to identify one similar and several dissimilar docume
 
 The cross encoder is then used to calculate a similarity between each query and its corresponding (dis)similar documents.  
 
-Currently, we support synthesis jobs for data in English or Multilingual, so when choosing a model you can just provide the `synthesis_models_en` or `synthesis_model_multi` object which contains the appropriate models for each of these tasks.
+Currently, we support synthesis jobs for data in English or Multilingual, so when choosing a model you can just provide the `synthesis_model_en` or `synthesis_model_multi` object which contains the appropriate models for each of these tasks.
 <!-- #endregion -->
 
 <!-- #region id="KXtNctnH50AI" -->
