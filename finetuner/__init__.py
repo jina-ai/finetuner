@@ -519,7 +519,7 @@ def build_model(
         )
 
 
-def download_huggingface_model(model_name: str, token: Optional[str] = None):
+def download_huggingface_model(model_name: str, token: Optional[str] = None) -> str:
     """Download a model from the HuggingFace Hub.
 
     :param model_name: Either a URL or a model identifier from the HuggingFace Hub.
