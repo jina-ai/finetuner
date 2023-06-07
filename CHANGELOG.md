@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Bump black, flake8 and isort ([#747](https://github.com/jina-ai/finetuner/pull/747))
 
+- Increase the default `num_relations` from 3 to 10 for data synthesis job ([#750](https://github.com/jina-ai/finetuner/pull/750))
+
 ### Fixed
 
 - Fix create synthesis run not accepting `DocumentArray` as input type. ([#748](https://github.com/jina-ai/finetuner/pull/748))
