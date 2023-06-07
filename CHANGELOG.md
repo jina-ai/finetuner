@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Update data synthesis tutorial include english and multilingual model . ([#750](https://github.com/jina-ai/finetuner/pull/750))
+
 
 ## [0.7.7] - 2023-05-24
 
