@@ -16,7 +16,7 @@ jupyter:
 
 <a href="https://colab.research.google.com/drive/1sX5K0eophlHXu1S7joysZJUj1zfh28Gi?usp=sharing"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 
-When using Finetuner, each item in your training data must either have a label, or have a similarity score comparing it to some other item. see the Finetuner documentation on [preparing training data](https://finetuner.jina.ai/walkthrough/create-training-data/).
+When using Finetuner, each item in your training data must either have a label, or have a similarity score comparing it to some other item. See the Finetuner documentation on [preparing training data](https://finetuner.jina.ai/walkthrough/create-training-data/).
 If your data is not labelled, and you don't want to spend time manually organizing and labelling it, you can use the `finetuner.synthesize` function to automatically construct a dataset that can be used in training.
 
 This guide will walk you through the process of using the `finetuner.synthesize` function, as well as how to use its output for training.
@@ -67,7 +67,7 @@ The relation miner is used to identify one similar and several dissimilar docume
 
 The cross encoder is then used to calculate a similarity between each query and its corresponding (dis)similar documents.  
 
-Currently, we only support synthesis jobs for data in English, so when choosing a model you can just provide the `synthesis_models_en` object which contains the appropriate models for each of these tasks.
+Currently, we support synthesis jobs for data in English or Multilingual, so when choosing a model you can just provide the `synthesis_models_en` or `synthesis_model_multi` object which contains the appropriate models for each of these tasks.
 <!-- #endregion -->
 
 <!-- #region id="KXtNctnH50AI" -->
@@ -132,6 +132,8 @@ train_data.summary()
 Using your synthesised data, you can now train a model using the `MarginMSELoss` function.  
 
  We have prepared the index and query datasets `xmarket-gpl-eval-queries` and `xmarket-gpl-eval-queries` so that we can evaluate the improvement provided by training on this data:
+
+ Note: if you use `synthesis_model_multi` for training data synthesis for english other than English, please choose `distiluse-base-multi` or `bert-base-multi` as the backbone embedding model.
 <!-- #endregion -->
 
 ```python id="ebfxt4NStvvg"
