@@ -45,14 +45,15 @@ to get a list of supported models:
 
 ````{tab} text-to-text
 ```bash
-                                           Finetuner backbones: text-to-text                                           
-┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃          name ┃         task ┃ output_dim ┃ architecture ┃                                              description ┃
-┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│  bert-base-en │ text-to-text │        768 │  transformer │         BERT model pre-trained on BookCorpus and English │
-│               │              │            │              │                                                Wikipedia │
-│ sbert-base-en │ text-to-text │        768 │  transformer │                  Pretrained BERT, fine-tuned on MS Marco │
-└───────────────┴──────────────┴────────────┴──────────────┴──────────────────────────────────────────────────────────┘
+                                        Finetuner backbones: text-to-text                                                        
+┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                 name ┃         task ┃ output_dim ┃ architecture ┃                                                                description ┃
+┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│         bert-base-en │ text-to-text │        768 │  transformer │                 BERT model pre-trained on BookCorpus and English Wikipedia │
+│      bert-base-multi │ text-to-text │        768 │  transformer │                           BERT model pre-trained on multilingual Wikipedia │
+│ distiluse-base-multi │ text-to-text │        512 │  transformer │ Knowledge distilled version of the multilingual Universal Sentence Encoder │
+│        sbert-base-en │ text-to-text │        768 │  transformer │                                    Pretrained BERT, fine-tuned on MS Marco │
+└──────────────────────┴──────────────┴────────────┴──────────────┴────────────────────────────────────────────────────────────────────────────┘
 ```
 ````
 ````{tab} image-to-image
