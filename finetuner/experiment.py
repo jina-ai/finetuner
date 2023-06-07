@@ -229,7 +229,7 @@ class Experiment:
         query_data: Union[str, List[str], DocumentArray],
         corpus_data: Union[str, List[str], DocumentArray],
         models: SynthesisModels,
-        num_relations: int = 3,
+        num_relations: int = 10,
         run_name: Optional[str] = None,
         csv_options: Optional[CSVOptions] = None,
         **kwargs,

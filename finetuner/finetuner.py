@@ -231,7 +231,7 @@ class Finetuner:
         query_data: Union[str, List[str], DocumentArray],
         corpus_data: Union[str, List[str], DocumentArray],
         models: SynthesisModels,
-        num_relations: int = 3,
+        num_relations: int = 10,
         run_name: Optional[str] = None,
         description: Optional[str] = None,
         experiment_name: Optional[str] = None,

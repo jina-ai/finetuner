@@ -53,3 +53,8 @@ synthesis_model_en = SynthesisModels(
     relation_miner='sbert-base-en',
     cross_encoder='crossencoder-base-en',
 )
+
+synthesis_model_multi = SynthesisModels(
+    relation_miner='distiluse-base-multi',
+    cross_encoder='crossencoder-base-ml',
+)
