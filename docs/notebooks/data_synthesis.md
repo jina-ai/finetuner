@@ -133,7 +133,7 @@ Using your synthesised data, you can now train a model using the `MarginMSELoss`
 
  We have prepared the index and query datasets `xmarket-gpl-eval-queries` and `xmarket-gpl-eval-queries` so that we can evaluate the improvement provided by training on this data:
 
- Note: if you use `synthesis_model_multi` for training data synthesis for english other than English, please choose `distiluse-base-multi` or `bert-base-multi` as the backbone embedding model.
+ Note: if you use `synthesis_model_multi` for training data synthesis on languages other than English, please choose `distiluse-base-multi` or `bert-base-multi` as the backbone embedding model.
 <!-- #endregion -->
 
 ```python id="ebfxt4NStvvg"
