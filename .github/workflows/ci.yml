@@ -5,6 +5,7 @@ on: [push]
 env:
   HOST: ${{ secrets.FINETUNER_HOST }}
   JINA_AUTH_TOKEN: ${{ secrets.JINA_AUTH_TOKEN }}
+  HUGGING_FACE_HUB_TOKEN: ${{ secrets.HF_HUB_ACCESS_TOKEN }}
 
 jobs:
 
