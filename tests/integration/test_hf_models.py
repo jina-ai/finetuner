@@ -1,8 +1,6 @@
-import os
-
 import pytest
 
-from finetuner import download_huggingface_model
+from finetuner import get_model
 
 
 @pytest.mark.parametrize(
@@ -12,6 +10,6 @@ from finetuner import download_huggingface_model
         'jinaai/ecommerce-sbert-model',
     ],
 )
-def test_download_hf_model(model):
-    path = download_huggingface_model(model)
-    assert os.path.isdir(path)
+def test_get_model(model):
+    model = get_model(model)
+    assert model

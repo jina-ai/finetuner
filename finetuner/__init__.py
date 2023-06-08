@@ -519,7 +519,7 @@ def build_model(
         )
 
 
-def download_huggingface_model(model_name: str, token: Optional[str] = None) -> str:
+def _download_huggingface_model(model_name: str, token: Optional[str] = None) -> str:
     """Download a model from the HuggingFace Hub.
 
     :param model_name: Either a URL or a model identifier from the HuggingFace Hub.
@@ -596,7 +596,7 @@ def get_model(
         )
 
     if artifact.startswith(HF_URL_PREFIX) or artifact.startswith(HF_ORG_PREFIX):
-        artifact = download_huggingface_model(artifact, token=token)
+        artifact = _download_huggingface_model(artifact, token=token)
         token = None  # hf token is not needed for local models and can not be used for
         # inference engine
 
