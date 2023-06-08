@@ -2,6 +2,7 @@ import inspect
 import os
 import warnings
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, TextIO, Union
+from urllib.parse import urlparse
 
 from _finetuner.runner.stubs import model as model_stub
 from docarray import Document, DocumentArray  # noqa F401
@@ -25,6 +26,7 @@ if HUBBLE_REGISTRY not in os.environ:
 
 from finetuner import callback, model
 from finetuner.console import print_model_table
+from finetuner.constants import HF_ORG_PREFIX, HF_URL_PREFIX
 from finetuner.data import build_encoding_dataset
 from finetuner.experiment import Experiment
 from finetuner.finetuner import Finetuner
@@ -517,6 +519,29 @@ def build_model(
         )
 
 
+def _download_huggingface_model(model_name: str, token: Optional[str] = None) -> str:
+    """Download a model from the HuggingFace Hub.
+
+    :param model_name: Either a URL or a model identifier from the HuggingFace Hub.
+    :param token: Optional token to access private models.
+    :return: The local path to the downloaded model.
+    """
+    from huggingface_hub import hf_hub_download, list_repo_files
+
+    repo_id = urlparse(model_name).path
+    if repo_id.startswith('/'):
+        repo_id = repo_id[1:]
+    filenames = list_repo_files(
+        repo_id=repo_id, repo_type='model', use_auth_token=token
+    )
+    for fname in filenames:
+        dest_filename = hf_hub_download(
+            repo_id=repo_id, filename=fname, repo_type='model', use_auth_token=token
+        )
+    local_dir_path = dest_filename[: -len(filenames[-1])]
+    return local_dir_path
+
+
 def get_model(
     artifact: str,
     token: Optional[str] = None,
@@ -529,12 +554,13 @@ def get_model(
     """Re-build the model based on the model inference session with ONNX.
 
     :param artifact: Specify a finetuner run artifact. Can be a path to a local
-        directory, a path to a local zip file, or a Hubble artifact ID. Individual
-        model artifacts (model sub-folders inside the run artifacts) can also be
-        specified using this argument.
-    :param token: A Jina authentication token required for pulling artifacts from
-        Hubble. If not provided, the Hubble client will try to find one either in a
-        local cache folder or in the environment.
+        directory, a path to a local zip file, a Hubble artifact ID, or a huggingface
+        model created with finetuner. Individual model artifacts (model sub-folders
+        inside the run artifacts) can also be specified using this argument.
+    :param token: A Jina authentication token (required for pulling artifacts from
+        Hubble) or a HuggingFace authentication token (required only when downloading
+        private models from huggingface). If not provided, the Hubble client might try
+        to find one either in a local cache folder or in the environment.
     :param batch_size: Incoming documents are fed to the graph in batches, both to
         speed-up inference and avoid memory errors. This argument controls the
         number of documents that will be put in each batch.
@@ -568,6 +594,12 @@ def get_model(
             'calling `pip install onnxruntime-gpu` to speed up inference.',
             category=RuntimeWarning,
         )
+
+    if artifact.startswith(HF_URL_PREFIX) or artifact.startswith(HF_ORG_PREFIX):
+        artifact = _download_huggingface_model(artifact, token=token)
+        token = None  # hf token is not needed for local models and can not be used for
+        # inference engine
+
     if is_onnx:
         inference_engine = ONNXRuntimeInferenceEngine(
             artifact=artifact,

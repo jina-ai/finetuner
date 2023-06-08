@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Support loading models from Jina's huggingface site. ([#751](https://github.com/jina-ai/finetuner/pull/751))
+
 - Add multilingual model for training data generation job. ([#750](https://github.com/jina-ai/finetuner/pull/750))
 
 ### Removed
