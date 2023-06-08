@@ -371,14 +371,15 @@ search tasks.</p>
 <p>to get a list of supported models:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">text-to-text</label><div class="tab-content docutils">
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">                                           </span>Finetuner<span class="w"> </span>backbones:<span class="w"> </span>text-to-text<span class="w">                                           </span>
-┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃<span class="w">          </span>name<span class="w"> </span>┃<span class="w">         </span>task<span class="w"> </span>┃<span class="w"> </span>output_dim<span class="w"> </span>┃<span class="w"> </span>architecture<span class="w"> </span>┃<span class="w">                                              </span>description<span class="w"> </span>┃
-┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│<span class="w">  </span>bert-base-en<span class="w"> </span>│<span class="w"> </span>text-to-text<span class="w"> </span>│<span class="w">        </span><span class="m">768</span><span class="w"> </span>│<span class="w">  </span>transformer<span class="w"> </span>│<span class="w">         </span>BERT<span class="w"> </span>model<span class="w"> </span>pre-trained<span class="w"> </span>on<span class="w"> </span>BookCorpus<span class="w"> </span>and<span class="w"> </span>English<span class="w"> </span>│
-│<span class="w">               </span>│<span class="w">              </span>│<span class="w">            </span>│<span class="w">              </span>│<span class="w">                                                </span>Wikipedia<span class="w"> </span>│
-│<span class="w"> </span>sbert-base-en<span class="w"> </span>│<span class="w"> </span>text-to-text<span class="w"> </span>│<span class="w">        </span><span class="m">768</span><span class="w"> </span>│<span class="w">  </span>transformer<span class="w"> </span>│<span class="w">                  </span>Pretrained<span class="w"> </span>BERT,<span class="w"> </span>fine-tuned<span class="w"> </span>on<span class="w"> </span>MS<span class="w"> </span>Marco<span class="w"> </span>│
-└───────────────┴──────────────┴────────────┴──────────────┴──────────────────────────────────────────────────────────┘
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">                                        </span>Finetuner<span class="w"> </span>backbones:<span class="w"> </span>text-to-text<span class="w">                                                        </span>
+┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span class="w">                 </span>name<span class="w"> </span>┃<span class="w">         </span>task<span class="w"> </span>┃<span class="w"> </span>output_dim<span class="w"> </span>┃<span class="w"> </span>architecture<span class="w"> </span>┃<span class="w">                                                                </span>description<span class="w"> </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│<span class="w">         </span>bert-base-en<span class="w"> </span>│<span class="w"> </span>text-to-text<span class="w"> </span>│<span class="w">        </span><span class="m">768</span><span class="w"> </span>│<span class="w">  </span>transformer<span class="w"> </span>│<span class="w">                 </span>BERT<span class="w"> </span>model<span class="w"> </span>pre-trained<span class="w"> </span>on<span class="w"> </span>BookCorpus<span class="w"> </span>and<span class="w"> </span>English<span class="w"> </span>Wikipedia<span class="w"> </span>│
+│<span class="w">      </span>bert-base-multi<span class="w"> </span>│<span class="w"> </span>text-to-text<span class="w"> </span>│<span class="w">        </span><span class="m">768</span><span class="w"> </span>│<span class="w">  </span>transformer<span class="w"> </span>│<span class="w">                           </span>BERT<span class="w"> </span>model<span class="w"> </span>pre-trained<span class="w"> </span>on<span class="w"> </span>multilingual<span class="w"> </span>Wikipedia<span class="w"> </span>│
+│<span class="w"> </span>distiluse-base-multi<span class="w"> </span>│<span class="w"> </span>text-to-text<span class="w"> </span>│<span class="w">        </span><span class="m">512</span><span class="w"> </span>│<span class="w">  </span>transformer<span class="w"> </span>│<span class="w"> </span>Knowledge<span class="w"> </span>distilled<span class="w"> </span>version<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>multilingual<span class="w"> </span>Universal<span class="w"> </span>Sentence<span class="w"> </span>Encoder<span class="w"> </span>│
+│<span class="w">        </span>sbert-base-en<span class="w"> </span>│<span class="w"> </span>text-to-text<span class="w"> </span>│<span class="w">        </span><span class="m">768</span><span class="w"> </span>│<span class="w">  </span>transformer<span class="w"> </span>│<span class="w">                                    </span>Pretrained<span class="w"> </span>BERT,<span class="w"> </span>fine-tuned<span class="w"> </span>on<span class="w"> </span>MS<span class="w"> </span>Marco<span class="w"> </span>│
+└──────────────────────┴──────────────┴────────────┴──────────────┴────────────────────────────────────────────────────────────────────────────┘
 </pre></div>
 </div>
 </div>
@@ -471,7 +472,7 @@ The original model is designed for classifying 3D meshes. Our derived model can 
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on May 24, 2023</div>
+                            Last updated on Jun 08, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

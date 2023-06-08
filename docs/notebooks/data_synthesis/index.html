@@ -371,7 +371,7 @@ If your data is not labelled, and you don’t want to spend time manually organi
 <p>Data synthesis jobs require two different models: a relation miner and a cross encoder.</p>
 <p>The relation miner is used to identify one similar and several dissimilar documents from the corpus data for each query in the query data.</p>
 <p>The cross encoder is then used to calculate a similarity between each query and its corresponding (dis)similar documents.</p>
-<p>Currently, we only support synthesis jobs for data in English, so when choosing a model you can just provide the <code class="docutils literal notranslate"><span class="pre">synthesis_model_en</span></code> object which contains the appropriate models for each of these tasks.</p>
+<p>Currently, we support synthesis jobs for data in English or Multilingual, so when choosing a model you can just provide the <code class="docutils literal notranslate"><span class="pre">synthesis_model_en</span></code> or <code class="docutils literal notranslate"><span class="pre">synthesis_model_multi</span></code> object which contains the appropriate models for each of these tasks.</p>
 <!-- #endregion -->
 <!-- #region id="KXtNctnH50AI" -->
 </section>
@@ -379,7 +379,7 @@ If your data is not labelled, and you don’t want to spend time manually organi
 <section id="start-synthesis-run">
 <h2>Start Synthesis Run<a class="headerlink" href="#start-synthesis-run" title="Permalink to this heading">#</a></h2>
 <p>Now that we have the query and corpus datasets loaded as <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>s, we can begin our synthesis run. We only need to provide the query and corpus data and the models that we are using.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">num_relations</span></code> parameter is set to 10. This parameter determines how many documents are retrieved for each query. There will always be one similar document and <code class="docutils literal notranslate"><span class="pre">(num_relations</span> <span class="pre">-</span> <span class="pre">1)</span></code> dissimilar documents retrieved. These dissimilar documents are what make up the generated documents, so the size of the generated <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> is always equal to <code class="docutils literal notranslate"><span class="pre">len(query_data)</span> <span class="pre">*</span> <span class="pre">(num_relations</span> <span class="pre">-</span> <span class="pre">1)</span></code>. By default this parameter is set to 3, meaning that the size of the generated dataset would be twice as large as the size of the query dataset.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">num_relations</span></code> parameter is set to 10. This parameter determines how many documents are retrieved for each query. There will always be one similar document and <code class="docutils literal notranslate"><span class="pre">(num_relations</span> <span class="pre">-</span> <span class="pre">1)</span></code> dissimilar documents retrieved. These dissimilar documents are what make up the generated documents, so the size of the generated <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> is always equal to <code class="docutils literal notranslate"><span class="pre">len(query_data)</span> <span class="pre">*</span> <span class="pre">(num_relations</span> <span class="pre">-</span> <span class="pre">1)</span></code>. By default this parameter is set to 10, meaning that the size of the generated dataset would be twice as large as the size of the query dataset.</p>
 <!-- #endregion -->
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.model</span> <span class="kn">import</span> <span class="n">synthesis_model_en</span>
 
@@ -387,7 +387,7 @@ If your data is not labelled, and you don’t want to spend time manually organi
     <span class="n">query_data</span><span class="o">=</span><span class="s1">&#39;finetuner/xmarket_queries_da&#39;</span><span class="p">,</span>
     <span class="n">corpus_data</span><span class="o">=</span><span class="s1">&#39;finetuner/xmarket_corpus_da&#39;</span><span class="p">,</span>
     <span class="n">models</span><span class="o">=</span><span class="n">synthesis_model_en</span><span class="p">,</span>
-    <span class="n">num_relations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">num_relations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
 <span class="p">)</span>
 
 </pre></div>
@@ -430,6 +430,7 @@ If your data is not labelled, and you don’t want to spend time manually organi
 <h2>Start Training with Synthesised Data<a class="headerlink" href="#start-training-with-synthesised-data" title="Permalink to this heading">#</a></h2>
 <p>Using your synthesised data, you can now train a model using the <code class="docutils literal notranslate"><span class="pre">MarginMSELoss</span></code> function.</p>
 <p>We have prepared the index and query datasets <code class="docutils literal notranslate"><span class="pre">xmarket-gpl-eval-queries</span></code> and <code class="docutils literal notranslate"><span class="pre">xmarket-gpl-eval-queries</span></code> so that we can evaluate the improvement provided by training on this data:</p>
+<p>Note: if you use <code class="docutils literal notranslate"><span class="pre">synthesis_model_multi</span></code> for training data synthesis on languages other than English, please choose <code class="docutils literal notranslate"><span class="pre">distiluse-base-multi</span></code> or <code class="docutils literal notranslate"><span class="pre">bert-base-multi</span></code> as the backbone embedding model.</p>
 <!-- #endregion -->
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">finetuner.callback</span> <span class="kn">import</span> <span class="n">EvaluationCallback</span>
 
@@ -464,27 +465,24 @@ If your data is not labelled, and you don’t want to spend time manually organi
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Training<span class="w"> </span><span class="o">[</span><span class="m">3</span>/3<span class="o">]</span><span class="w"> </span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<span class="w"> </span><span class="m">470</span>/470<span class="w"> </span><span class="m">0</span>:00:00<span class="w"> </span><span class="m">0</span>:02:34<span class="w"> </span>•<span class="w"> </span>loss:<span class="w"> </span><span class="m">5</span>.191
 INFO<span class="w">     </span>Done<span class="w"> </span>✨<span class="w">                                                                              </span>__main__.py:192
 DEBUG<span class="w">    </span>Finetuning<span class="w"> </span>took<span class="w"> </span><span class="m">0</span><span class="w"> </span>days,<span class="w"> </span><span class="m">0</span><span class="w"> </span>hours<span class="w"> </span><span class="m">11</span><span class="w"> </span>minutes<span class="w"> </span>and<span class="w"> </span><span class="m">55</span><span class="w"> </span>seconds<span class="w">                            </span>__main__.py:194
-INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;sentence-transformers/msmarco-distilbert-base-v3_precision_at_k&#39;</span><span class="w"> </span>before<span class="w">     </span>__main__.py:207
-fine-tuning:<span class="w">  </span><span class="m">0</span>.16069<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">0</span>.19134
-INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;sentence-transformers/msmarco-distilbert-base-v3_recall_at_k&#39;</span><span class="w"> </span>before<span class="w">        </span>__main__.py:207
-fine-tuning:<span class="w">  </span><span class="m">0</span>.29887<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">0</span>.34635
-INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;sentence-transformers/msmarco-distilbert-base-v3_f1_score_at_k&#39;</span><span class="w"> </span>before<span class="w">      </span>__main__.py:207
-fine-tuning:<span class="w">  </span><span class="m">0</span>.13676<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">0</span>.16519
-INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;sentence-transformers/msmarco-distilbert-base-v3_hit_at_k&#39;</span><span class="w"> </span>before<span class="w">           </span>__main__.py:207
-fine-tuning:<span class="w">  </span><span class="m">0</span>.64277<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">0</span>.66069
-INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;sentence-transformers/msmarco-distilbert-base-v3_average_precision&#39;</span><span class="w"> </span>before<span class="w">  </span>__main__.py:207
-fine-tuning:<span class="w">  </span><span class="m">0</span>.34337<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">0</span>.39265
-INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;sentence-transformers/msmarco-distilbert-base-v3_reciprocal_rank&#39;</span><span class="w"> </span>before<span class="w">    </span>__main__.py:207
-fine-tuning:<span class="w">  </span><span class="m">0</span>.39998<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">0</span>.44711
-INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;sentence-transformers/msmarco-distilbert-base-v3_dcg_at_k&#39;</span><span class="w"> </span>before<span class="w">           </span>__main__.py:207
+INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;precision_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.16063<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">0</span>.20824<span class="w">     </span>__main__.py:207
+INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;recall_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.29884<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">0</span>.39044<span class="w">        </span>__main__.py:207
+INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;f1_score_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.13671<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">0</span>.18335<span class="w">      </span>__main__.py:207
+INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;hit_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.64277<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">0</span>.70012<span class="w">           </span>__main__.py:207
+INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;average_precision&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.34342<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">0</span>.41825<span class="w">  </span>__main__.py:207
+INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;reciprocal_rank&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">0</span>.40001<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">0</span>.47258<span class="w">    </span>__main__.py:207
+INFO<span class="w">     </span>Metric:<span class="w"> </span><span class="s1">&#39;dcg_at_k&#39;</span><span class="w"> </span>before<span class="w"> </span>fine-tuning:<span class="w">  </span><span class="m">1</span>.49599<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">1</span>.89955<span class="w">           </span>__main__.py:207
 fine-tuning:<span class="w">  </span><span class="m">1</span>.49618<span class="w"> </span>after<span class="w"> </span>fine-tuning:<span class="w"> </span><span class="m">1</span>.77899
 INFO<span class="w">     </span>Building<span class="w"> </span>the<span class="w"> </span>artifact<span class="w"> </span>...<span class="w">                                                            </span>__main__.py:231
 INFO<span class="w">     </span>Pushing<span class="w"> </span>artifact<span class="w"> </span>to<span class="w"> </span>Jina<span class="w"> </span>AI<span class="w"> </span>Cloud<span class="w"> </span>...<span class="w">                                                </span>__main__.py:260
 </pre></div>
 </div>
-<p>The amount of improvement is highly dependent on the amount of data generated during synthesis, <strong>as the amount of training data increases, so will the performance of the finetuned model</strong>. To increase the number of documents generated, we can either increase the size of the query dataset provided to the <code class="docutils literal notranslate"><span class="pre">finetuner.synthesize</span></code> function, or increase value of the <code class="docutils literal notranslate"><span class="pre">num_relations</span></code> parameter, which will result in more documents being generated per query. Conversely, choosing a smaller value for <code class="docutils literal notranslate"><span class="pre">num_relations</span></code> would result in shorter generation and training times, but less improvement after training.<br />
-To better understand the relationship between the amount of training data and the increase in performance, have a look at the <a class="reference external" href="https://finetuner.jina.ai/advanced-topics/budget/">how much data?</a> section of our documentation.</p>
+<p>The amount of improvement is highly dependent on the amount of data generated during synthesis, <strong>as the amount of training data increases, so will the performance of the finetuned model</strong>. To increase the number of documents generated, we can either increase the size of the query dataset provided to the <code class="docutils literal notranslate"><span class="pre">finetuner.synthesize</span></code> function, or increase value of the <code class="docutils literal notranslate"><span class="pre">num_relations</span></code> parameter, which will result in more documents being generated per query. Conversely, choosing a smaller value for <code class="docutils literal notranslate"><span class="pre">num_relations</span></code> would result in shorter generation and training times, but less improvement after training.</p>
+<p>To better understand the relationship between the amount of training data and the increase in performance, have a look at the <a class="reference external" href="https://finetuner.jina.ai/advanced-topics/budget/">how much data?</a> section of our documentation.</p>
 <!-- #endregion -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </section>
 </section>
 </section>
@@ -524,7 +522,7 @@ To better understand the relationship between the amount of training data and th
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on May 24, 2023</div>
+                            Last updated on Jun 08, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
