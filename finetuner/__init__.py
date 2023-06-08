@@ -559,7 +559,7 @@ def get_model(
         inside the run artifacts) can also be specified using this argument.
     :param token: A Jina authentication token (required for pulling artifacts from
         Hubble) or a HuggingFace authentication token (required only when downloading
-        private models from huggingface) If not provided, the Hubble client might try
+        private models from huggingface). If not provided, the Hubble client might try
         to find one either in a local cache folder or in the environment.
     :param batch_size: Incoming documents are fed to the graph in batches, both to
         speed-up inference and avoid memory errors. This argument controls the
