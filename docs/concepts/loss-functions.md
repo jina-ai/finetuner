@@ -3,14 +3,15 @@
 
 The choice of loss functions relies heavily on your data. In summary, you should utilize loss functions when:
 
-| data type                        | loss function                                     |
-|----------------------------------|---------------------------------------------------|
-| article-label                    | `TripletMarginLoss`, `ArcFaceLoss`, `CosFaceLoss` |
-| text-image pair                  | `CLIPLoss`                                        |
-| query-article-score              | `CosineSimilarityLoss`                            |
-| query-article                    | `MultipleNegativeRankingLoss`                     |
-| query-article-irrelevant_article | `MarginMSELoss`                                   |
+| data type                                 | loss function                                     |
+|-------------------------------------------|---------------------------------------------------|
+| article-label tuple                       | `TripletMarginLoss`, `ArcFaceLoss`, `CosFaceLoss` |
+| text-image tuple                          | `CLIPLoss`                                        |
+| query-article-score triplets              | `CosineSimilarityLoss`                            |
+| query-article tuple                       | `MultipleNegativeRankingLoss`                     |
+| query-article-irrelevant_article triplets | `MarginMSELoss`                                   |
 
+For more information, please checkout {doc}`/concepts/data-preparation` .
 
 ## TripletMarginLoss
 
