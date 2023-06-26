@@ -66,6 +66,12 @@ The goal of `CosineSimilarityLoss` is to minimize the MSE (mean squared error) b
 
 ## MarginMSELoss
 
+```{admonition} Note
+:class: hint
+Use `MarginMSELoss` together with data synthesis job.
+Check out {doc}`/concepts/synthesis-function` for more information.
+```
+
 `MarginMSELoss` calculates the mean squared error between the margins of two similarity values.
 It operates on triplets consisting of a query embedding, an embedding of a positive example,
 and an embedding of a negative example.
