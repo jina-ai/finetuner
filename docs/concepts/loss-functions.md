@@ -24,7 +24,7 @@ The goal of `TripletMarginLoss` is to minimize the difference between the distan
 
 SphereFace loss is a loss function that was first formulated for computer vision and face recognition tasks.
 Finetuner supports two variations of this loss function, `ArcFaceLoss` and `CosFaceLoss`.
-Instead of attempting to minimise the distance between positive pairs and maximise the distance between negative pairs, the SphereFace loss functions compare each sample with an estimate of the center point of each classes' embeddings.
+Instead of attempting to minimize the distance between positive pairs and maximize the distance between negative pairs, the SphereFace loss functions compare each sample with an estimate of the center point of each class's embeddings.
 and attempt to minimize the *angular distance* between the document and its class centroid, and maximise the angular distance between the document and the centroids of the other classes.
 
 The `ArcFaceLoss` and `CosFaceLoss` both deviate from the traditional SphereFace loss by including a margin and scaling parameter, which can be used to increase the boundary between each class.
