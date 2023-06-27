@@ -69,7 +69,7 @@ The goal of `CosineSimilarityLoss` is to minimize the MSE (mean squared error) b
 
 ```{admonition} Note
 :class: hint
-Use `MarginMSELoss` together with data synthesis job.
+Use `MarginMSELoss` together with data synthesis.
 Check out {doc}`/concepts/synthesis-function` for more information.
 ```
 
