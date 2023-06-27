@@ -116,7 +116,6 @@ while pushing the embeddings of items which belong to different classes farther 
 ### The Triplet Margin Miner
 
 For some triplets, the pre-trained model already performs well, i.e.
-
 the distance between the `anchor` embedding and `pos` is much smaller than
 the distance between `anchor` and `neg`?
 These triplets do not contribute to improving the model, since they are already in the desired relation to each other in the embedding space.
@@ -137,12 +136,12 @@ Training is more effective when using only **hard** and **semi-hard** negatives,
 ### Doing Negative Mining in Finetuner
 
 Finetuner is compatible with the miners provided by the [PyTorch Metric Learning](https://kevinmusgrave.github.io/pytorch-metric-learning) framework.
-To select a specific miner, pass its name to the `fit` function, e.g., `AngularMiner`, `TripletMarginMiner`, ...
+To select a specific miner, pass its name to the `fit` function, e.g., `AngularMiner`, `TripletMarginMiner`, etc.
 
 Please note that the miner has to be compatible with the loss function you selected.
-For instance, if you choose to train a model with the `TripleMarginLoss`, you can use the `TripletMarginMiner`.
+For instance, if you choose to train a model with the `TripleMarginLoss`, you can only use the `TripletMarginMiner`.
 While without this miner, all possible triples with an anchor, a positive, and a negative candidate are used to calculate the loss, the miner reduces this set of triples.
-By default, the miner only selects triples with hard negatives where the distance between the positive and the negative example is inside a margin of `0.2`.
+By default, the miner only selects hard negative triples where the distance between the positive and the negative example is inside a margin of `0.2`.
 To pass additional parameters to configure the miner, use the `miner_options` parameter of the fit function.
 For example, add the following to use only hard-negative triplets and set the margin to `0.3`:
 
