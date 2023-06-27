@@ -33,7 +33,7 @@ For more information on how `ArcFaceLoss` and `CosFaceLoss` calculate loss, and 
 
 `TripletMarginLoss` uses a `ClassSampler` to construct batches with an equal number of samples of each class in the batch. However, since only one sample is needed to calculate the loss with the `ArcFaceLoss` and `CosFaceLoss` functions, there are no constraints on what each batch needs to contain.
 Therefore we can construct batches using random sampling, which is a much simpler and less time consuming method.
-By default, runs created using `ArcFaceLoss` or `CosfaceLoss` will use random sampling, however you can specify which type of sampling method you would like to use like so:
+By default, runs created using `ArcFaceLoss` or `CosfaceLoss` will use random sampling, however you can specify which type of sampling method you would like to use with the `sampler` parameter:
 
 ```diff
 run = finetuner.fit(
