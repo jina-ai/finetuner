@@ -47,7 +47,7 @@ run = finetuner.fit(
 ```
 
 In cases where the chosen loss function is a form of contrastive loss, such as the default `TripletMarginLoss`, or the `ClipLoss` function (the loss function used for `text-to-image` tasks), a class sampler is needed to properly function.
-In these cases, this `sampler` parameters is ignored and the `ClassSampler` is always used.
+In these cases, this `sampler` parameter is ignored and the `ClassSampler` is always used.
 
 ## CLIPLoss
 
