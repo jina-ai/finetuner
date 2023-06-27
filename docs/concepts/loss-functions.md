@@ -18,7 +18,7 @@ For more information, please checkout {doc}`/concepts/data-preparation` .
 `TripletMarginLoss` is a *contrastive* loss function, meaning that the loss is calculated by comparing the embeddings of multiple documents (3 to be exact) documents to each other.
 Each triplet of documents consists of an anchor document, a positive document and a negative document.
 The anchor and the positive document belong to the same class, and the negative document belongs to a different class.
-The goal of `TripletMarginLoss` is to maximise the difference between the distance from the anchor to the positive document, and the distance from the anchor to the negative document.
+The goal of `TripletMarginLoss` is to minimize the difference between the distance from the anchor to the positive document, and maximize the distance from the anchor to the negative document.
 
 ## ArcFaceLoss and CosFaceLoss
 
