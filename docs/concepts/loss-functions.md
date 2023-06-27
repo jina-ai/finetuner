@@ -101,7 +101,7 @@ Finetuner constructs training data in the following way:
 ![batch-sample](../imgs/batch-sampling.png)
 
 Assume we have a list of Documents belonging to four classes: `1`, `2`, `3`, and `4`,
-Finetuner will evenly sample *X* items per class to make a batch *B* which is encoded by the model into a set of embeddings.
+Finetuner will evenly sample *X* items per class to make a batch, which is then encoded by the model into a set of embeddings.
 
 Afterward, the loss is calculated based on the relations between the embeddings.
 Many of Finetuner's loss functions contrast the embeddings of three items, or a __Triplet__. 
