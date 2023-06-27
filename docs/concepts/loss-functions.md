@@ -156,10 +156,10 @@ run = finetuner.fit(
 
 Possible choices for `type_of_triplets` are:
 
-+ `easy`: Use all easy triplets - all triplets that do not violate the margin.
++ `easy`: Use all easy triplets where the margin is less than the amount specified.
 + `semihard`: Use semi-hard triplets, but not hard triplets, i.e. those where difference in distance is within the specified margin.
 + `hard`: Use only hard triplets - the negative is closer to the anchor than the positive.
-+ `all`: Use `hard` and `semihard` triples - all but the `easy` triples
++ `all`: Use `hard` and `semihard` triples, but no `easy` triples
 
-Finetuner takes `TripleMarginLoss` as its default loss function with no negative mining.
+`TripleMarginLoss` is Finetuner's default loss function with no negative mining.
 For a detailed description of the miners and their parameters, see the [PyTorch Metric Learning documentation](https://kevinmusgrave.github.io/pytorch-metric-learning/miners/).
