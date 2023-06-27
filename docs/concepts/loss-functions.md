@@ -83,7 +83,9 @@ The loss is calculated as the mean squared error between the computed margin and
 ## Negative Mining
 
 Negative Mining is an advanced machine learning technique, which optimizes the way data is sampled from your training dataset.
-Usually, it aims at making the metric learning tasks for the model harder during the training. 
+Usually, it aims at making the metric learning tasks for the model harder during the training.
+During training, negative mining focuses on making the metric learning task more challenging for the model.
+It achieves this by carefully selecting negative samples from the dataset.
 In this way, it can lead to better fine-tuning results.
 
 ### Context: Deep Metric Learning
