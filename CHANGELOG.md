@@ -32,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add manage runs page to new docs. ([#741](https://github.com/jina-ai/finetuner/pull/741))
 
+- Add loss function page to new docs. ([#754](https://github.com/jina-ai/finetuner/pull/754))
+
 
 ## [0.7.6] - 2023-04-18
 
