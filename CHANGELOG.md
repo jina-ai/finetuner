@@ -10,9 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add jina embeddings suit. ([#757](https://github.com/jina-ai/finetuner/pull/757))
+
 ### Removed
 
 ### Changed
+
+- Finetuner always install torch and other dependencies. ([#757](https://github.com/jina-ai/finetuner/pull/757))
 
 ### Fixed
 
