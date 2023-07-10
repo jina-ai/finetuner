@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add jina embeddings suit. ([#757](https://github.com/jina-ai/finetuner/pull/757))
 
+- Add `cos_sim` helper to finetuner. ([#757](https://github.com/jina-ai/finetuner/pull/757))
+
 ### Removed
 
 ### Changed
