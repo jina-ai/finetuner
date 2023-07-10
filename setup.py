@@ -28,8 +28,8 @@ if __name__ == '__main__':
         setup_requires=['setuptools>=18.0', 'wheel'],
         install_requires=[
             'docarray[common]<0.30.0',
-            'finetuner-stubs==0.13.8',
-            'finetuner-commons==0.13.8'
+            'finetuner-stubs==0.13.9',
+            'finetuner-commons==0.13.9'
 
         ],
         extras_require={
