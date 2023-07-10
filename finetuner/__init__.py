@@ -502,6 +502,7 @@ def build_model(
     stub = model_stub.get_stub(
         name, select_model=select_model, model_options=model_options or {}
     )
+
     model = EmbeddingModel(stub=stub, download_pretrained=True)
     if not is_onnx:
         return TorchInferenceEngine(
