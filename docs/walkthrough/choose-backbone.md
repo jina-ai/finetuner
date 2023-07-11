@@ -45,15 +45,18 @@ to get a list of supported models:
 
 ````{tab} text-to-text
 ```bash
-                                        Finetuner backbones: text-to-text                                                        
-┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃                 name ┃         task ┃ output_dim ┃ architecture ┃                                                                description ┃
-┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│         bert-base-en │ text-to-text │        768 │  transformer │                 BERT model pre-trained on BookCorpus and English Wikipedia │
-│      bert-base-multi │ text-to-text │        768 │  transformer │                           BERT model pre-trained on multilingual Wikipedia │
-│ distiluse-base-multi │ text-to-text │        512 │  transformer │ Knowledge distilled version of the multilingual Universal Sentence Encoder │
-│        sbert-base-en │ text-to-text │        768 │  transformer │                                    Pretrained BERT, fine-tuned on MS Marco │
-└──────────────────────┴──────────────┴────────────┴──────────────┴────────────────────────────────────────────────────────────────────────────┘
+                                                       Finetuner backbones: text-to-text                                                       
+┏━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                   name ┃         task ┃ output_dim ┃ architecture ┃                                                             description ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ jina-embedding-s-en-v1 │ text-to-text │        512 │  transformer │    Text embedding model trained using Linnaeus-Clean dataset by Jina AI │
+│ jina-embedding-b-en-v1 │ text-to-text │        768 │  transformer │    Text embedding model trained using Linnaeus-Clean dataset by Jina AI │
+│ jina-embedding-l-en-v1 │ text-to-text │       1024 │  transformer │    Text embedding model trained using Linnaeus-Clean dataset by Jina AI │
+│           bert-base-en │ text-to-text │        768 │  transformer │              BERT model pre-trained on BookCorpus and English Wikipedia │
+│        bert-base-multi │ text-to-text │        768 │  transformer │                        BERT model pre-trained on multilingual Wikipedia │
+│   distiluse-base-multi │ text-to-text │        512 │  transformer │      Knowledge distilled version of the multilingual Sentence Encoder   │
+│          sbert-base-en │ text-to-text │        768 │  transformer │                                 Pretrained BERT, fine-tuned on MS Marco │
+└────────────────────────┴──────────────┴────────────┴──────────────┴─────────────────────────────────────────────────────────────────────────┘
 ```
 ````
 ````{tab} image-to-image

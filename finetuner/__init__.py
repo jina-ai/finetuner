@@ -4,6 +4,7 @@ import warnings
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, TextIO, Union
 from urllib.parse import urlparse
 
+import numpy as np
 from _finetuner.runner.stubs import model as model_stub
 from docarray import Document, DocumentArray  # noqa F401
 
@@ -33,7 +34,6 @@ from finetuner.finetuner import Finetuner
 from finetuner.model import list_model_classes
 
 if TYPE_CHECKING:
-    import numpy as np
     from _finetuner.models.inference import InferenceEngine
 
 ft = Finetuner()
@@ -669,3 +669,13 @@ def encode(
             batch.embeddings = output.detach().cpu().numpy()
 
     return data if return_da else data.embeddings
+
+
+def cos_sim(a: np.ndarray, b: np.ndarray) -> float:
+    """Cosine similarity between two vectors.
+
+    :param a: The first vector.
+    :param b: The second vector.
+    :return: Cosine similarity between two vectors.
+    """
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
