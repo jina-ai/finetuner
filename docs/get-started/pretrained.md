@@ -1,20 +1,21 @@
 (pretrained-models)=
 # {octicon}`rocket` Jina Embeddings
 
-Starting from Finetuner 0.7.9,
-we bring a suit of pre-trained text embedding models, includes:
+Starting with Finetuner 0.7.9,
+we introduce a suite of pre-trained text embedding models licensed under Apache 2.0.
+The model has a range of use cases, including information retrieval, semantic textual similarity, text reranking, and more.
+The suite includes the following:
 
-- `jina-embedding-s-en-v1`: With a compact size of just 35 million parameters, the model enables lightning-fast inference while still delivering impressive performance.
-- `jina-embedding-b-en-v1`: With a standard size of 110 million parameters, the model enables fast inference while delivering better performance than our small model.
-- `jina-embedding-l-en-v1`: With a size of 330 million parameters, the model enables single-gpu inference while delivering better performance than our small and base model.
+- `jina-embedding-s-en-v1` [[Huggingface](jinaai/jina-embedding-s-en-v1)]: With a compact size of just 35 million parameters, the model enables lightning-fast inference while still delivering impressive performance.
+- `jina-embedding-b-en-v1` [[Huggingface](jinaai/jina-embedding-b-en-v1)]: With a standard size of 110 million parameters, the model enables fast inference while delivering better performance than our small model.
+- `jina-embedding-l-en-v1` [[Huggingface](jinaai/jina-embedding-l-en-v1)]: With a size of 330 million parameters, the model enables single-gpu inference while delivering better performance than our small and base model.
 
 ## Usage
 
 ```python
-!pip install finetuner
 import finetuner
 
-model = finetuner.build_model('jinaai/jina-embedding-l-en-v1')
+model = finetuner.build_model('jinaai/jina-embedding-s-en-v1')
 embeddings = finetuner.encode(
     model=model,
     data=['how is the weather today', 'What is the current weather like today?']
@@ -31,6 +32,11 @@ The Linnaeus-Full dataset, from which the Linnaeus-Clean dataset is derived, ori
 
 ## Characteristics
 
+Each Jina embedding model allows encoding of up to 512 tokens,
+with any additional tokens being truncated.
+The output dimensionality varies across different models.
+Please consult the table below for more details.
+
 |Name|param    |context| Dimension |
 |------------------------------|-----|------|-----------|
 |jina-embedding-s-en-v1|35m      |512| 512       |
@@ -39,11 +45,4 @@ The Linnaeus-Full dataset, from which the Linnaeus-Clean dataset is derived, ori
 
 ## Performance
 
-The model has a range of use cases, including information retrieval, semantic textual similarity, text reranking, and more.
-The table below indicates some key metrics:
-
-|Name|STS12|STS13|STS14|STS15|STS16|STS17|TRECOVID|Quora|SciFact|
-|------------------------------|-----|-----|-----|-----|-----|-----|--------|-----|-----|
-|jina-embedding-s-en-v1|0.736|0.78|0.745|0.84|0.79|0.868|0.484   |0.856|0.606  |
-|jina-embedding-b-en-v1|**0.74**|0.792|0.752|0.851|0.801|0.88|0.505   |0.871|0.64  |
-|jina-embedding-l-en-v1|0.736|0.832|0.762|0.846|0.805|0.885|0.477   |**0.876**|0.65  |
+Please refer to the [[Huggingface](jinaai/jina-embedding-s-en-v1)] page.
