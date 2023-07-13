@@ -1,7 +1,7 @@
 (pretrained-models)=
 # {octicon}`rocket` Jina Embeddings
 
-Starting with Finetuner 0.7.9,
+Starting with Finetuner 0.8.0,
 we have introduced a suite of pre-trained text embedding models licensed under Apache 2.0.
 The model have a range of useThese models have a variety of use cases, including information retrieval, semantic textual similarity, text reranking, and more.
 The suite consists of the following models:
