@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Add Jina embeddings documentation page. ([#759](https://github.com/jina-ai/finetuner/pull/759))
+
 
 ## [0.7.8] - 2023-06-08
 
