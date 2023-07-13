@@ -26,6 +26,7 @@
 
 get-started/how-it-works
 get-started/installation
+get-started/pretrained
 walkthrough/index
 ```
 
