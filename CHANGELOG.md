@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Fix huggingface link of jina embeddings. ([#761](https://github.com/jina-ai/finetuner/pull/761))
+
 
 ## [0.8.0] - 2023-07-13
 
