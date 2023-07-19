@@ -1,15 +1,14 @@
 import pytest
 
-from finetuner import get_model
+from finetuner import build_model
 
 
 @pytest.mark.parametrize(
     'model',
     [
-        'https://huggingface.co/jinaai/ecommerce-sbert-model',
-        'jinaai/ecommerce-sbert-model',
+        'jinaai/jina-embedding-s-en-v1',
     ],
 )
-def test_get_model(model):
-    model = get_model(model)
+def test_build_model(model):
+    model = build_model(name=model)
     assert model
