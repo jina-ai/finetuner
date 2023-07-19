@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix huggingface link of jina embeddings. ([#761](https://github.com/jina-ai/finetuner/pull/761))
 
+- Remove redundant text in jina embedding page. ([#762](https://github.com/jina-ai/finetuner/pull/762))
+
 
 ## [0.8.0] - 2023-07-13
 
