@@ -3,12 +3,12 @@
 
 Starting with Finetuner 0.8.0,
 we have introduced a suite of pre-trained text embedding models licensed under Apache 2.0.
-The model have a range of useThese models have a variety of use cases, including information retrieval, semantic textual similarity, text reranking, and more.
+These models have a variety of use cases, including information retrieval, semantic textual similarity, text reranking, and more.
 The suite consists of the following models:
 
-- `jina-embedding-s-en-v1` **[Huggingface](https://huggingface.co/jinaai/jina-embedding-s-en-v1)**: This is a compact model with just 35 million parameters, that performs lightning-fast inference while delivering impressive performance.
-- `jina-embedding-b-en-v1` **[Huggingface](https://huggingface.co/jinaai/jina-embedding-b-en-v1)**: This model has a size of 110 million parameters, performs fast inference and delivers better performance than our smaller model.
-- `jina-embedding-l-en-v1` **[Huggingface](https://huggingface.co/jinaai/jina-embedding-l-en-v1)**: This is a relatively large model with a size of 330 million parameters, that performs single-gpu inference and delivers better performance than our other model.
+- `jina-embedding-s-en-v1` [**[Huggingface](https://huggingface.co/jinaai/jina-embedding-s-en-v1)**]: This is a compact model with just 35 million parameters, that performs lightning-fast inference while delivering impressive performance.
+- `jina-embedding-b-en-v1` [**[Huggingface](https://huggingface.co/jinaai/jina-embedding-b-en-v1)**]: This model has a size of 110 million parameters, performs fast inference and delivers better performance than our smaller model.
+- `jina-embedding-l-en-v1` [**[Huggingface](https://huggingface.co/jinaai/jina-embedding-l-en-v1)**]: This is a relatively large model with a size of 330 million parameters, that performs single-gpu inference and delivers better performance than our other model.
 
 ## Usage
 
