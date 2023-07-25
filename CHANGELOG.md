@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
+- Add tiny model and citation to Readme and docs. ([#763](https://github.com/jina-ai/finetuner/pull/763))
+
 - Fix huggingface link of jina embeddings. ([#761](https://github.com/jina-ai/finetuner/pull/761))
 
 - Remove redundant text in jina embedding page. ([#762](https://github.com/jina-ai/finetuner/pull/762))
