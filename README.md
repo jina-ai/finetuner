@@ -43,6 +43,15 @@ without worrying about resource availability, complex integration, or infrastruc
 
 ## [Documentation](https://finetuner.jina.ai/)
 
+## Pretrained Text Embedding Models
+
+| name                     | parameter | dimension | Huggingface                                            |
+|--------------------------|-----------|-----------|--------------------------------------------------------|
+| `jina-embedding-t-en-v1` | 14m       | 312             | [link](https://huggingface.co/jinaai/jina-embedding-t-en-v1) |
+| `jina-embedding-s-en-v1` | 35m       | 512             | [link](https://huggingface.co/jinaai/jina-embedding-s-en-v1) |
+| `jina-embedding-b-en-v1` | 110m      | 768             | [link](https://huggingface.co/jinaai/jina-embedding-b-en-v1) |
+| `jina-embedding-l-en-v1` | 330m      | 1024            | [link](https://huggingface.co/jinaai/jina-embedding-l-en-v1) |
+
 ## Benchmarks
 
 <table>
@@ -171,6 +180,22 @@ Check out our published blogposts and tutorials to see Finetuner in action!
 - [How Much Do We Get by Finetuning CLIP?](https://jina.ai/news/applying-jina-ai-finetuner-to-clip-less-data-smaller-models-higher-performance/)
 
 <!-- end finetuner-articles -->
+
+<!-- start citations -->
+If you find Jina Embeddings useful in your research, please cite the following paper:
+
+```text
+@misc{günther2023jina,
+      title={Jina Embeddings: A Novel Set of High-Performance Sentence Embedding Models}, 
+      author={Michael Günther and Louis Milliken and Jonathan Geuter and Georgios Mastrapas and Bo Wang and Han Xiao},
+      year={2023},
+      eprint={2307.11224},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+```
+<!-- end citations -->
 
 <!-- start support-pitch -->
 ## Support
