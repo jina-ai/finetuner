@@ -47,3 +47,19 @@ The models have different output dimensionalities, as shown in the table below:
 ## Performance
 
 Please refer to the [Huggingface](https://huggingface.co/jinaai/jina-embedding-s-en-v1) page.
+
+## Citations
+
+If you find Jina Embeddings useful in your research, please cite the following paper:
+
+```text
+@misc{günther2023jina,
+      title={Jina Embeddings: A Novel Set of High-Performance Sentence Embedding Models}, 
+      author={Michael Günther and Louis Milliken and Jonathan Geuter and Georgios Mastrapas and Bo Wang and Han Xiao},
+      year={2023},
+      eprint={2307.11224},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+
+```
