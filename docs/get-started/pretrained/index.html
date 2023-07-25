@@ -32,15 +32,15 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Walkthrough" href="../../walkthrough/" /><link rel="prev" title="Installation" href="../installation/" />
         <link rel="canonical" href="https://finetuner.jina.ai/get-started/pretrained.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.1.0 and Furo 2023.05.20 -->
         <title>Jina Embeddings - Finetuner documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d98b4ee7" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=8f9e6779" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/main.css?v=ce1624c6" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
     
     
@@ -335,6 +335,7 @@ we have introduced a suite of pre-trained text embedding models licensed under A
 These models have a variety of use cases, including information retrieval, semantic textual similarity, text reranking, and more.
 The suite consists of the following models:</p>
 <ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">jina-embedding-t-en-v1</span></code> [<strong><a class="reference external" href="https://huggingface.co/jinaai/jina-embedding-t-en-v1">Huggingface</a></strong>]: The fastest embedding model in the world with 14 million parameters.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">jina-embedding-s-en-v1</span></code> [<strong><a class="reference external" href="https://huggingface.co/jinaai/jina-embedding-s-en-v1">Huggingface</a></strong>]: This is a compact model with just 35 million parameters, that performs lightning-fast inference while delivering impressive performance.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">jina-embedding-b-en-v1</span></code> [<strong><a class="reference external" href="https://huggingface.co/jinaai/jina-embedding-b-en-v1">Huggingface</a></strong>]: This model has a size of 110 million parameters, performs fast inference and delivers better performance than our smaller model.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">jina-embedding-l-en-v1</span></code> [<strong><a class="reference external" href="https://huggingface.co/jinaai/jina-embedding-l-en-v1">Huggingface</a></strong>]: This is a relatively large model with a size of 330 million parameters, that performs single-gpu inference and delivers better performance than the other models.</p></li>
@@ -375,6 +376,12 @@ The models have different output dimensionalities, as shown in the table below:<
 </thead>
 <tbody>
 <tr>
+<td>jina-embedding-t-en-v1</td>
+<td>14m</td>
+<td>512</td>
+<td>312</td>
+</tr>
+<tr>
 <td>jina-embedding-s-en-v1</td>
 <td>35m</td>
 <td>512</td>
@@ -398,6 +405,20 @@ The models have different output dimensionalities, as shown in the table below:<
 <section id="performance">
 <h2>Performance<a class="headerlink" href="#performance" title="Permalink to this heading">#</a></h2>
 <p>Please refer to the <a class="reference external" href="https://huggingface.co/jinaai/jina-embedding-s-en-v1">Huggingface</a> page.</p>
+</section>
+<section id="citations">
+<h2>Citations<a class="headerlink" href="#citations" title="Permalink to this heading">#</a></h2>
+<p>If you find Jina Embeddings useful in your research, please cite the following paper:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@misc{günther2023jina,
+      title={Jina Embeddings: A Novel Set of High-Performance Sentence Embedding Models}, 
+      author={Michael Günther and Louis Milliken and Jonathan Geuter and Georgios Mastrapas and Bo Wang and Han Xiao},
+      year={2023},
+      eprint={2307.11224},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -436,7 +457,7 @@ The models have different output dimensionalities, as shown in the table below:<
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 19, 2023</div>
+                            Last updated on Jul 25, 2023</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -473,6 +494,7 @@ The models have different output dimensionalities, as shown in the table below:<
 <li><a class="reference internal" href="#training-data">Training Data</a></li>
 <li><a class="reference internal" href="#characteristics">Characteristics</a></li>
 <li><a class="reference internal" href="#performance">Performance</a></li>
+<li><a class="reference internal" href="#citations">Citations</a></li>
 </ul>
 </li>
 </ul>
@@ -507,14 +529,14 @@ The models have different output dimensionalities, as shown in the table below:<
           </template>
         </qa-bot>
 </div>
-<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=e0caedb8-a833-4e85-983d-d3394a5f16d2" /><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/scripts/furo.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/tabs.js"></script>
-    <script src="../../_static/design-tabs.js"></script>
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=e0caedb8-a833-4e85-983d-d3394a5f16d2" /><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=df4b10f6"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=71494f10"></script>
+    <script src="../../_static/tabs.js?v=3ee01567"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
