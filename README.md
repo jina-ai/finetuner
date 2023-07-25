@@ -45,12 +45,12 @@ without worrying about resource availability, complex integration, or infrastruc
 
 ## Pretrained Text Embedding Models
 
-| name                     | parameter | dimension | Huggingface                                            |
-|--------------------------|-----------|-----------|--------------------------------------------------------|
-| `jina-embedding-t-en-v1` | 14m       | 312             | [link](https://huggingface.co/jinaai/jina-embedding-t-en-v1) |
-| `jina-embedding-s-en-v1` | 35m       | 512             | [link](https://huggingface.co/jinaai/jina-embedding-s-en-v1) |
-| `jina-embedding-b-en-v1` | 110m      | 768             | [link](https://huggingface.co/jinaai/jina-embedding-b-en-v1) |
-| `jina-embedding-l-en-v1` | 330m      | 1024            | [link](https://huggingface.co/jinaai/jina-embedding-l-en-v1) |
+| name                   | parameter | dimension | Huggingface                                            |
+|------------------------|-----------|-----------|--------------------------------------------------------|
+| jina-embedding-t-en-v1 | 14m       | 312             | [link](https://huggingface.co/jinaai/jina-embedding-t-en-v1) |
+| jina-embedding-s-en-v1 | 35m       | 512             | [link](https://huggingface.co/jinaai/jina-embedding-s-en-v1) |
+| jina-embedding-b-en-v1 | 110m      | 768             | [link](https://huggingface.co/jinaai/jina-embedding-b-en-v1) |
+| jina-embedding-l-en-v1 | 330m      | 1024            | [link](https://huggingface.co/jinaai/jina-embedding-l-en-v1) |
 
 ## Benchmarks
 
