@@ -49,6 +49,7 @@ to get a list of supported models:
 ┏━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃                   name ┃         task ┃ output_dim ┃ architecture ┃                                                             description ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ jina-embedding-t-en-v1 │ text-to-text │        312 │  transformer │    Text embedding model trained using Linnaeus-Clean dataset by Jina AI │
 │ jina-embedding-s-en-v1 │ text-to-text │        512 │  transformer │    Text embedding model trained using Linnaeus-Clean dataset by Jina AI │
 │ jina-embedding-b-en-v1 │ text-to-text │        768 │  transformer │    Text embedding model trained using Linnaeus-Clean dataset by Jina AI │
 │ jina-embedding-l-en-v1 │ text-to-text │       1024 │  transformer │    Text embedding model trained using Linnaeus-Clean dataset by Jina AI │
