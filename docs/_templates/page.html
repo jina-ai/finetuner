@@ -223,29 +223,6 @@
             {% endif %}
             {% endblock right_sidebar %}
         </aside>
-
-        <qa-bot
-            token="vizI4XaM1li8kQW2kQOiiBjtk02hzBDl0Em8lBjpzAKsjhX_z03mix_i3wKpiA=="
-            theme="infer"
-            target="_self"
-            orientation="bottom-right"
-            title="Finetuner"
-            description="Task-oriented finetuning for better embeddings on neural search"
-            show-tip>
-          <template>
-            <dl>
-             <dt>You can ask questions about our docs. Try:</dt>
-             <dd>What is Finetuner?</dd>
-             <dd>How does Finetuner Work?</dd>
-             <dd>What makes Finetuner unique?</dd>
-            </dl>
-          </template>
-          <template slot="texts">
-            <span for="tip">Hi there 👋
-         Ask our docs!</span>
-            <span for="unknownAnswerText">😵‍💫 I'm sorry but I don't know the answer.</span>
-          </template>
-        </qa-bot>
 </div>
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=e0caedb8-a833-4e85-983d-d3394a5f16d2" />
 {%- endblock %}
